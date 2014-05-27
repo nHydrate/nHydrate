@@ -1,0 +1,16 @@
+﻿<Project DefaultTargets="PostBuild" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+
+	<PropertyGroup>
+		<RelativeBuildDir>..\..\..\Build</RelativeBuildDir>
+	</PropertyGroup>
+	<Import Project="$(RelativeBuildDir)\globalimport.targets.xml" />
+
+
+	<Target Name="PostBuild">
+		<Message Text="PostBuild Called For $(TargetName)" />
+		<CallTarget Targets="MoveTargetToLocalBin" />
+		<CallTarget Targets="MoveTargetToInstallDir" />
+		<CallTarget Targets="DefaultPostBuild" />
+	</Target>
+
+</Project>

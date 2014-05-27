@@ -1,0 +1,9 @@
+﻿<Project DefaultTargets="TestMessage" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+
+	<PropertyGroup>
+		<RootDir>..\..\..</RootDir>
+		<InstallDir>C:\%HOMEPATH%\AppData\Local\Microsoft\VisualStudio\10.0Exp\Extensions\nHydrate.org\nHydrate Modeler\5.0.0.0</InstallDir>
+		<BinDir>$(RootDir)\Bin</BinDir>
+	</PropertyGroup>
+
+</Project>

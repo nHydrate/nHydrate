@@ -1,0 +1,74 @@
+<!--
+Purpose:
+1. Import the properties files that provide users with the ability to user properties like $(SourceDir)
+2. Setup default build scripts that can be called by the pre and post build scripts
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+
+	<!--
+	The imports were pulled from the existing build setups.
+	Import the msbuild extensions for additional build tasks.
+	Import Domain specific property overrides
+	Import User specific properyt overrides
+	Import Default properites
+	Import Additional properties file if it exists
+	-->
+	<Import Project="default.properties.xml" />
+	<Import Project="$(USERDOMAIN).properties.xml" Condition="Exists('$(RelativeBuildDir)\$(USERDOMAIN).properties.xml') And '$(OverridePropertiesFile)' == ''" />
+	<Import Project="$(USERNAME).$(COMPUTERNAME).properties.xml" Condition="Exists('$(RelativeBuildDir)\$(USERNAME).$(COMPUTERNAME).properties.xml') And '$(OverridePropertiesFile)' == ''" />
+
+	<ItemGroup>
+		<ProjectBuildFiles Include="$(TargetDir)$(TargetName).*" />
+		<VSAddinFiles Include="$(RootDir)\VSADDIN\*.*" />
+	</ItemGroup>
+
+	<!--
+	Default target for calling Domain and User Specific PostBuild targets
+	-->
+	<Target Name="DefaultPostBuild">
+		<Message Text="Called DefaultPostBuild  $(USERNAME).$(COMPUTERNAME).properties.xml" />
+		<MSBuild Projects="$(USERDOMAIN).postbuild.targets.xml" Condition="Exists('$(USERDOMAIN).postbuild.targets.xml')"/>
+		<MSBuild Projects="$(USERNAME).$(COMPUTERNAME).postbuild.targets.xml" Condition="Exists('$(USERNAME).$(COMPUTERNAME).postbuild.targets.xml')"/>
+	</Target>
+
+
+	<!--
+	Default target for calling Domain and User Specific PreBuild targets
+	-->
+	<Target Name="DefaultPreBuild">
+		<Message Text="Called DefaultPreBuild" />
+		<MSBuild Projects="$(USERDOMAIN).prebuild.targets.xml" Condition="Exists('$(USERDOMAIN).prebuild.targets.xml')"/>
+		<MSBuild Projects="$(USERNAME).$(COMPUTERNAME).prebuild.targets.xml" Condition="Exists('$(USERNAME).$(COMPUTERNAME).prebuild.targets.xml')"/>
+	</Target>
+
+	<!--
+	Default target for moving Target output to the Artifacts directory. Generally called from PostBuild.targets.xml file.
+	-->
+	<Target Name="MoveTargetToLocalBin">
+		<Message Text="Copy to BinDir $(BinDir)"/>
+		<Copy SourceFiles="@(ProjectBuildFiles)" DestinationFolder="$(BinDir)" Condition="Exists('$(BinDir)') AND '$(BinDir)' != ''" />
+	</Target>
+
+	<!--
+	Default target for moving Target output to the Artifacts directory. Generally called from PostBuild.targets.xml file.
+	-->
+	<Target Name="MoveTargetToInstallDir">
+		<Copy SourceFiles="@(ProjectBuildFiles)" DestinationFolder="$(InstallDir)" Condition="Exists('$(InstallDir)') AND '$(InstallDir)' != ''" />
+	</Target>
+
+	<!--
+	Default target for moving Target output to the Artifacts directory. Generally called from PostBuild.targets.xml file.
+	-->
+	<Target Name="MoveTemplateFilesToInstallDir">
+		<Copy SourceFiles="@(VSAddinFiles)" DestinationFolder="$(InstallDir)" Condition="Exists('$(InstallDir)') AND '$(InstallDir)' != ''" />
+	</Target>
+
+
+
+	<!--
+	Set Bin Attributes
+	-->
+	<Target Name="SetBinAttributes">
+		<Exec Command="attrib -r '$(BinDir)\*.*'" />
+	</Target>
+</Project>

@@ -1,0 +1,17 @@
+﻿<!--
+
+-->
+
+<Project DefaultTargets="PreBuild" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+
+	<PropertyGroup>
+		<RelativeBuildDir>..\..\..\Build</RelativeBuildDir>
+	</PropertyGroup>
+	<Import Project="$(RelativeBuildDir)\globalimport.targets.xml" />
+
+	<Target Name="PreBuild">
+		<Message Text="PreBuild Called For $(TargetName)" />
+		<Message Text="SetBinAttributes" />
+		<CallTarget Targets="DefaultPreBuild" />
+	</Target>
+</Project>
