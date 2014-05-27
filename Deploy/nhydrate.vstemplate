@@ -1,0 +1,15 @@
+<VSTemplate Version="2.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+	<TemplateData>
+		<Name>nHydrate Model</Name>
+		<Description>Add an nHydrate model to this project for a model-driven-architecture.</Description>
+		<Icon>nhydrate32.png</Icon>
+		<ProjectType>CSharp</ProjectType>
+		<SortOrder>100</SortOrder>
+		<DefaultName>Model.nhydrate</DefaultName>
+		<RequiredFrameworkVersion>4.0</RequiredFrameworkVersion>
+	</TemplateData>
+	<TemplateContent>
+			<ProjectItem ReplaceParameters="true" TargetFileName="$fileinputname$.nhydrate">model.nhydrate</ProjectItem>
+			<ProjectItem ReplaceParameters="true" TargetFileName="$fileinputname$.nhydrate.diagram">model.nhydrate.diagram</ProjectItem>
+	</TemplateContent>
+</VSTemplate>

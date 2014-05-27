@@ -1,0 +1,5 @@
+<#
+	string directiveName = this.Dsl.Name;
+#>
+<#@ include file="..\Templates\ModelDirectiveProcessor.tt" #>
+<#@ Dsl processor="DslDirectiveProcessor"  requires="fileName='..\DslDefinition.dsl'" #>

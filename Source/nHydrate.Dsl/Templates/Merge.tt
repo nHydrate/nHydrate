@@ -1,0 +1,505 @@
+<#+ // Template functions to generate Merge methods on DomainClasses
+
+/// <summary>
+/// Sort a list of element merge directives arranged in order of the inheritance hierarchy of their indexes.
+/// </summary>
+/// <param name="directives"></param>
+/// <returns></returns>
+internal ICollection<ElementMergeDirective> GetSortedElementMergeDirectives(ICollection<ElementMergeDirective> directives)
+{
+	List<ElementMergeDirective> sortedList = new List<ElementMergeDirective>(directives);
+	sortedList.Sort(delegate (ElementMergeDirective x, ElementMergeDirective y)
+		{
+			DomainClassInheritanceComparer c = new DomainClassInheritanceComparer();
+			DomainClass xDC = ClassIndexesElementMergeDirective.GetIndex(x);
+			DomainClass yDC = ClassIndexesElementMergeDirective.GetIndex(y);
+			int result = c.Compare(xDC, yDC);
+			return result;
+		});
+	return sortedList;
+}
+
+internal string ThrowingNullTraverseActionGenerator(PathSegment segment)
+{
+	return @"throw new global::System.InvalidOperationException(""Null encountered while traversing path '" + segment.Path.ToString() + @"'."");";
+}
+
+private string CastPropertyHost(string propertyHost, DomainPath path, int startingSegment, int expectedSegment)
+{
+	string castString = GetCast(path.Segments[startingSegment], path.Segments[expectedSegment].Role.RolePlayer.GetFullName(true), false);
+	if (string.IsNullOrEmpty(castString))
+	{
+		return propertyHost;
+	}
+	else
+	{
+		return "(" + propertyHost + castString +")";
+	}
+}
+	
+// Generate the members for enabling an ElementGroupPrototype merge on a DomainClass
+private void GenerateEGPMergeMembers(DomainClass domainClass)
+{
+	bool forwarding = false;
+	if ( domainClass.ElementMergeDirectives.Count > 0 )
+	{
+#>
+#region ElementGroupPrototype Merge methods
+/// <summary>
+/// Returns a value indicating whether the source element represented by the
+/// specified root ProtoElement can be added to this element.
+/// </summary>
+/// <param name="rootElement">
+/// The root ProtoElement representing a source element.  This can be null, 
+/// in which case the ElementGroupPrototype does not contain an ProtoElements
+/// and the code should inspect the ElementGroupPrototype context information.
+/// </param>
+/// <param name="elementGroupPrototype">The ElementGroupPrototype that contains the root ProtoElement.</param>
+/// <returns>true if the source element represented by the ProtoElement can be added to this target element.</returns>
+protected override bool CanMerge(DslModeling::ProtoElementBase rootElement, DslModeling::ElementGroupPrototype elementGroupPrototype)
+{
+	if ( elementGroupPrototype == null ) throw new global::System.ArgumentNullException("elementGroupPrototype");
+	
+	if (rootElement != null)
+	{
+		DslModeling::DomainClassInfo rootElementDomainInfo = this.Partition.DomainDataDirectory.GetDomainClass(rootElement.DomainClassId);
+<#+
+		foreach (ElementMergeDirective directive in GetSortedElementMergeDirectives(domainClass.ElementMergeDirectives))
+		{
+			DomainClass index = ClassIndexesElementMergeDirective.GetIndex(directive);
+			if (directive.AppliesToSubclasses)
+			{
+#>		
+		if (rootElementDomainInfo.IsDerivedFrom(<#= index.GetFullName(true) #>.DomainClassId)) 
+		{
+<#+
+			}
+			else // Not applying to subclasses
+			{
+#>		
+		if (rootElementDomainInfo.Id == <#= index.GetFullName(true) #>.DomainClassId) 
+		{
+<#+
+			}
+			if ( !directive.UsesCustomAccept )
+			{
+				// If we have any link creation paths which have singular multiplicity then we need to check that we're not breaking that
+				int lcpCount=0;
+				foreach (DomainPath lcp in directive.LinkCreationPaths)
+				{
+					DomainRole collectionRole = lcp.Segments[lcp.Segments.Count-1].Role;
+					if (!CodeGenerationUtilities.IsMultiple(collectionRole.Multiplicity))
+					{
+						// First work out the object that the property is set on.
+						string propertyHost = "this"; // Default
+						if ( lcp.Segments.Count > 1 )
+						{
+							// Calculate the traversal to the place where the link must be created.
+							propertyHost = CodeGenerationUtilities.GetCamelCase(index.Name) + "Host";
+							if ( directive.LinkCreationPaths.Count > 1 )
+							{
+								propertyHost= propertyHost + lcpCount;
+							}
+						}
+#>
+			// Check that creating a link with this path doesn't cause multiplicity overflow: <#= lcp.ToString() #>
+<#+
+						GeneratePathMethodBody(lcp, "this", propertyHost, null, lcp.Segments.Count-1, seg => "return false;");
+						string castString = null;
+						if ( lcp.Segments.Count > 1 )
+						{
+							string actualHostType = lcp.Segments[lcp.Segments.Count-1].Role.RolePlayer.GetFullName(true);
+							castString = GetCast(lcp.Segments[lcp.Segments.Count-2], actualHostType, false);
+							if (!string.IsNullOrEmpty(castString))
+							{
+								string baseHost = propertyHost;
+								propertyHost += "Derived";
+#>			<#= actualHostType #> <#= propertyHost #> = <#= baseHost + castString #>;
+			if (<#= propertyHost #> == null) return false;
+<#+
+							}
+						}
+						if (collectionRole.IsPropertyGenerator)
+						{
+ #>			if (<#= propertyHost #>.<#= collectionRole.PropertyName #> != null)
+<#+
+						}
+						else // No property to set directly
+						{
+ #>			if (<#= collectionRole.Relationship.GetFullName(true) #>.Get<#= collectionRole.PropertyName.TrimStart('@') #>((<#=collectionRole.RolePlayer.GetFullName(true)#>)<#= propertyHost #>) != null)
+<#+
+						}
+#>			{
+				return false;
+			}
+<#+
+					}
+				}
+#>			return true;
+<#+
+			}
+			else // Custom Accept
+			{
+#>
+			// Call custom method implemented in partial class
+			return this.CanMerge<#= index.Name #>(rootElement, elementGroupPrototype);
+<#+
+			}																			
+#>
+		}
+<#+
+			if (directive.ForwardingPath != null )
+			{
+				forwarding = true;
+			}
+		}
+#>
+	}
+	return base.CanMerge(rootElement, elementGroupPrototype);
+}
+
+<#+
+		if(forwarding)
+		{
+#>
+/// <summary>
+/// Gets the ModelElement to be used as the target for the ElementGroupPrototype merge 
+/// process.  
+/// This is called by the merge process when this element is the target of the merge.  
+/// This provides this element with the opportunity to forward the target to something 
+/// other than itself.
+/// </summary>
+/// <param name="elementGroupPrototype">The ElementGroupPrototype that will be reconstituted and merged with the target element.</param>
+/// <returns>The ModelElement to use as the target for the merge process.</returns>
+protected override DslModeling::ModelElement ChooseMergeTarget(DslModeling::ElementGroupPrototype elementGroupPrototype)
+{
+	if ( elementGroupPrototype == null ) throw new global::System.ArgumentNullException("elementGroupPrototype");
+
+	if (elementGroupPrototype.RootProtoElements.Count > 0)
+	{
+		// We choose to assume that the first rootProtoElement is representative of the set
+		DslModeling::ProtoElementBase rootProtoElement = elementGroupPrototype.RootProtoElements[0];
+		DslModeling::DomainClassInfo classInfo;
+<#+
+			foreach (ElementMergeDirective directive in GetSortedElementMergeDirectives(domainClass.ElementMergeDirectives))
+			{
+				if ( directive.ForwardingPath != null )
+				{
+					DomainClass index = ClassIndexesElementMergeDirective.GetIndex(directive);
+#>
+		classInfo = this.Partition.DomainDataDirectory.GetDomainClass(rootProtoElement.DomainClassId);
+<#+
+					if (directive.AppliesToSubclasses)
+					{
+#>		
+		if (classInfo.IsDerivedFrom(<#= index.GetFullName(true) #>.DomainClassId))
+<#+
+					}
+					else
+					{
+#>		
+		if (classInfo.Id == <#= index.GetFullName(true) #>.DomainClassId)
+<#+
+					}
+#>		
+		{
+			// Find Target by traversing path <#= directive.ForwardingPath #>
+<#+
+					string targetName = CodeGenerationUtilities.GetCamelCase(index.Name) + "Target";
+					this.PushIndent("\t\t");
+					GeneratePathMethodBody(directive.ForwardingPath, "this", targetName, null, directive.ForwardingPath.Segments.Count, ThrowingNullTraverseActionGenerator);
+					this.PopIndent();
+#>
+			return <#= targetName #>;
+		}
+<#+
+				}
+			}
+#>
+	}
+	return this;
+}
+
+/// <summary>
+/// Gets the ModelElement to be used as the target for the ElementGroup merge 
+/// process.  
+/// This is called by the merge process when this element is the target of the merge.  
+/// This provides this element with the opportunity to forward the target to something 
+/// other than itself.
+/// </summary>
+/// <param name="elementGroup">The ElementGroup that will be merged with the target element.</param>
+/// <returns>The ModelElement to use as the target for the merge process.</returns>
+protected override DslModeling::ModelElement ChooseMergeTarget(DslModeling::ElementGroup elementGroup)
+{
+	if ( elementGroup == null ) throw new global::System.ArgumentNullException("elementGroup");
+
+	if (elementGroup.RootElements.Count > 0)
+	{
+		// We choose to assume that the first rootProtoElement is representative of the set
+		DslModeling::ModelElement rootElement = elementGroup.RootElements[0];
+		DslModeling::DomainClassInfo classInfo;
+<#+
+			foreach (ElementMergeDirective directive in GetSortedElementMergeDirectives(domainClass.ElementMergeDirectives))
+			{
+				if ( directive.ForwardingPath != null )
+				{
+					DomainClass index = ClassIndexesElementMergeDirective.GetIndex(directive);
+#>
+		classInfo = rootElement.GetDomainClass();
+<#+
+					if (directive.AppliesToSubclasses)
+					{
+#>		
+		if (classInfo.IsDerivedFrom(<#= index.GetFullName(true) #>.DomainClassId))
+<#+
+					}
+					else
+					{
+#>		
+		if (classInfo.Id == <#= index.GetFullName(true) #>.DomainClassId)
+<#+
+					}
+#>	
+		{
+			// Find Target by traversing path <#= directive.ForwardingPath #>
+<#+
+					string targetName = CodeGenerationUtilities.GetCamelCase(index.Name) + "Target";
+					this.PushIndent("\t\t");
+					GeneratePathMethodBody(directive.ForwardingPath, "this", targetName, null, directive.ForwardingPath.Segments.Count, ThrowingNullTraverseActionGenerator);
+					this.PopIndent();
+#>
+			return <#= targetName #>;
+		}
+<#+
+				}
+			}
+#>
+	}
+	return this;
+}
+
+<#+
+		}
+		
+		// Shapes are hooked in to the PEL structure through view fixup, not MergeRelate.
+		// However, it still makes sense to create the rest of the merge code for them,
+		// because they may be created through the merge process in the case of PEL-only
+		// merges (usual example is comment shapes, where there is no backing MEL).
+		DomainClassInfo classInfo = domainClass.GetDomainClass();
+		if(!(classInfo.IsDerivedFrom(Shape.DomainClassId) 
+			|| classInfo.IsDerivedFrom(Connector.DomainClassId)
+			|| classInfo.IsDerivedFrom(Diagram.DomainClassId)))
+		{
+#>
+/// <summary>
+/// Called by the Merge process to create a relationship between 
+/// this target element and the specified source element. 
+/// Typically, a parent-child relationship is established
+/// between the target element (the parent) and the source element 
+/// (the child), but any relationship can be established.
+/// </summary>
+/// <param name="sourceElement">The element that is to be related to this model element.</param>
+/// <param name="elementGroup">The group of source ModelElements that have been rehydrated into the target store.</param>
+/// <remarks>
+/// This method is overriden to create the relationship between the target element and the specified source element.
+/// The base method does nothing.
+/// </remarks>
+protected override void MergeRelate(DslModeling::ModelElement sourceElement, DslModeling::ElementGroup elementGroup)
+{
+	// In general, sourceElement is allowed to be null, meaning that the elementGroup must be parsed for special cases.
+	// However this is not supported in generated code.  Use double-deriving on this class and then override MergeRelate completely if you 
+	// need to support this case.
+	if ( sourceElement == null ) throw new global::System.ArgumentNullException("sourceElement");
+
+<#+
+			int i=1;
+			foreach ( ElementMergeDirective directive in GetSortedElementMergeDirectives(domainClass.ElementMergeDirectives))
+			{
+				DomainClass index = ClassIndexesElementMergeDirective.GetIndex(directive);
+				string sourceIndexName = "source" + index.Name.Replace('@','_') + i;
+				i++;
+#>		
+	<#= index.GetFullName(true) #> <#= sourceIndexName #> = sourceElement as <#= index.GetFullName(true) #>;
+	if (<#= sourceIndexName #> != null)
+	{
+<#+
+				if ( !directive.UsesCustomMerge )
+				{
+					// Make a link for each specified LinkCreationPath
+					ReadOnlyLinkedElementCollection<DomainPath> lcps = ElementMergeDirectiveHasLinkCreationPaths.GetLinkCreationPaths(directive);
+					int lcpCount=0;
+					foreach ( DomainPath lcp in lcps )
+					{
+#>
+		// Create link for path <#= lcp #>
+<#+
+						// First work out the object that the property is set on.
+						string propertyHost = "this"; // Default
+						if ( lcp.Segments.Count > 1 )
+						{
+							// Calculate the traversal to the place where the link must be created.
+							propertyHost = CodeGenerationUtilities.GetCamelCase(index.Name) + "Host";
+							if ( lcps.Count > 1 )
+							{
+								propertyHost= propertyHost + lcpCount;
+							}
+							this.PushIndent("\t");
+							GeneratePathMethodBody(lcp, "this", propertyHost, null, lcp.Segments.Count-1, ThrowingNullTraverseActionGenerator);
+							if ( lcps.Count > 1 )
+							{
+								propertyHost = CastPropertyHost(propertyHost, lcp, lcp.Segments.Count-2, lcp.Segments.Count-1);
+							}
+							this.PopIndent();
+						}
+
+						// Second set the property (or create the link if the property is not generated)
+						DomainRole collectionRole = lcp.Segments[lcp.Segments.Count-1].Role;
+						if (collectionRole.IsPropertyGenerator)
+						{
+							if (CodeGenerationUtilities.IsMultiple(collectionRole.Multiplicity))
+							{
+#>		<#= propertyHost #>.<#= collectionRole.PropertyName #>.Add(<#= sourceIndexName  #>);
+<#+
+							}
+							else
+							{
+ #>		<#= propertyHost #>.<#= collectionRole.PropertyName #> = <#= sourceIndexName  #>;
+<#+
+							}
+						}
+						else // No property to set directly
+						{
+							if (CodeGenerationUtilities.IsMultiple(collectionRole.Multiplicity))
+							{
+#>		<#= collectionRole.Relationship.GetFullName(true) #>.Get<#= collectionRole.PropertyName.TrimStart('@') #>((<#=collectionRole.RolePlayer.GetFullName(true)#>)<#= propertyHost #>).Add(<#= sourceIndexName  #>);
+<#+
+							}
+							else
+							{
+ #>		<#= collectionRole.Relationship.GetFullName(true) #>.Set<#= collectionRole.PropertyName.TrimStart('@') #>((<#=collectionRole.RolePlayer.GetFullName(true)#>)<#= propertyHost #>, <#= sourceIndexName  #>);
+<#+
+							}
+						}
+						this.WriteLine("");
+						lcpCount++;
+					}
+				}
+				else // Custom Merge
+				{
+#>		
+		// Call custom method implemented in partial class
+		this.MergeRelate<#= index.Name #>(<#= sourceIndexName #>, elementGroup);
+<#+
+				}
+#>		return;
+	}
+<#+
+			}
+#>
+
+	// Sdk workaround to runtime bug #879350 (DSL: can't copy and paste a MEL that has a MEX). Avoid MergeRelate on ModelElementExtension
+	// during a "Paste".
+	if (sourceElement is DslModeling::ExtensionElement
+		&& sourceElement.Store.TransactionManager.CurrentTransaction.TopLevelTransaction.Context.ContextInfo.ContainsKey("{9DAFD42A-DC0E-4d78-8C3F-8266B2CF8B33}"))
+	{
+		return;
+	}
+
+	// Fall through to base class if this class hasn't handled the merge.
+	base.MergeRelate(sourceElement, elementGroup);
+}
+
+/// <summary>
+/// Performs operation opposite to MergeRelate - i.e. disconnects a given
+/// element from the current one (removes links created by MergeRelate).
+/// </summary>
+/// <param name="sourceElement">Element to be unmerged/disconnected.</param>
+[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
+protected override void MergeDisconnect(DslModeling::ModelElement sourceElement)
+{
+	if (sourceElement == null) throw new global::System.ArgumentNullException("sourceElement");
+<#+
+			i=1;
+			foreach ( ElementMergeDirective directive in GetSortedElementMergeDirectives(domainClass.ElementMergeDirectives))
+			{
+				DomainClass index = ClassIndexesElementMergeDirective.GetIndex(directive);
+				string sourceIndexName = "source" + index.Name.Replace('@','_') + i;
+				i++;
+#>		
+	<#= index.GetFullName(true) #> <#= sourceIndexName #> = sourceElement as <#= index.GetFullName(true) #>;
+	if (<#= sourceIndexName #> != null)
+	{
+<#+
+				if (!directive.UsesCustomMerge)
+				{
+					// Delete a link for each specified LinkCreationPath
+					ReadOnlyLinkedElementCollection<DomainPath> lcps = ElementMergeDirectiveHasLinkCreationPaths.GetLinkCreationPaths(directive);
+					int lcpCount=0;
+					foreach (DomainPath lcp in lcps)
+					{
+#>
+		// Delete link for path <#= lcp #>
+<#+
+						// First work out the object that the property is set on.
+						string propertyHost = "this"; // Default
+						if (lcp.Segments.Count > 1)
+						{
+							// Calculate the traversal to the place where the link must be created.
+							propertyHost = CodeGenerationUtilities.GetCamelCase(index.Name) + "Host";
+							if (lcps.Count > 1)
+							{
+								propertyHost= propertyHost + lcpCount;
+							}
+							GeneratePathMethodBody(lcp, "this", propertyHost, null, lcp.Segments.Count-1, ThrowingNullTraverseActionGenerator);
+							if (lcps.Count > 1)
+							{
+								propertyHost = CastPropertyHost(propertyHost, lcp, lcp.Segments.Count-2, lcp.Segments.Count-1);
+							}
+						}
+
+						// Second set the property (or create the link if the property is not generated)
+						DomainRole collectionRole = lcp.Segments[lcp.Segments.Count-1].Role;
+						string relFullName = collectionRole.Relationship.GetFullName(true);
+						if (collectionRole.IsSource)
+						{
+#>		
+		foreach (DslModeling::ElementLink link in <#=relFullName#>.GetLinks((<#=collectionRole.RolePlayer.GetFullName(true)#>)<#=propertyHost#>, <#=sourceIndexName#>))
+<#+
+						} else {
+#>		
+		foreach (DslModeling::ElementLink link in <#=relFullName#>.GetLinks(<#=sourceIndexName#>, (<#=collectionRole.RolePlayer.GetFullName(true)#>)<#=propertyHost#>))
+<#+
+						}
+#>
+		{
+			// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
+			link.Delete(<#=relFullName#>.<#=collectionRole.Name#>DomainRoleId, <#=relFullName#>.<#=collectionRole.Opposite.Name#>DomainRoleId);
+		}
+<#+
+						this.WriteLine("");
+						lcpCount++;
+					}
+				}
+				else // Custom Unmerge
+				{
+#>		
+		// Call custom method implemented in partial class
+		this.MergeDisconnect<#= index.Name #>(<#= sourceIndexName #>);
+<#+
+				}
+#>		return;
+	}
+<#+
+			}
+#>
+	// Fall through to base class if this class hasn't handled the unmerge.
+	base.MergeDisconnect(sourceElement);
+}
+<#+
+		} // end if(!(<domain class is PEL>))
+#>
+#endregion
+<#+
+	}
+}		
+#>

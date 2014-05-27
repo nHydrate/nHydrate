@@ -1,0 +1,448 @@
+<#+
+//
+// Decorator code gen
+// 
+private void GenerateDecorators(DiagramElement diagramElement)
+{
+#>
+/// <summary>
+/// Initialize the collection of shape fields associated with this shape type.
+/// </summary>
+protected override void InitializeShapeFields(global::System.Collections.Generic.IList<DslDiagrams::ShapeField> shapeFields)
+{
+	base.InitializeShapeFields(shapeFields);
+<#+
+	int i=0;
+	string resourceManager = this.DslLibrary.GetFullName(true) + "DomainModel." + "SingletonResourceManager";
+	foreach(DiagramElementHasDecorators decoratorLink in DiagramElementHasDecorators.GetLinksToDecorators(diagramElement))
+	{
+		// Outer decorators do have shape fields associated with the shape.  These are created in
+		// InitializeDecorators below.
+		if(CodeGenerationUtilities.IsOuterDecorator(decoratorLink)) continue;
+		
+		i++;
+		GenerateShapeFieldForDecorator(decoratorLink, i, resourceManager);
+#>
+	shapeFields.Add(field<#= i #>);
+	
+<#+
+	}
+#>
+}
+
+/// <summary>
+/// Initialize the collection of decorators associated with this shape type.  This method also
+/// creates shape fields for outer decorators, because these are not part of the shape fields collection
+/// associated with the shape, so they must be created here rather than in InitializeShapeFields.
+/// </summary>
+protected override void InitializeDecorators(global::System.Collections.Generic.IList<DslDiagrams::ShapeField> shapeFields, global::System.Collections.Generic.IList<DslDiagrams::Decorator> decorators)
+{
+	base.InitializeDecorators(shapeFields, decorators);
+	
+<#+	
+	i=0;
+	resourceManager = "global::" + this.DslLibrary.Namespace + "." + this.DslLibrary.Name + "DomainModel." + "SingletonResourceManager";
+	foreach(DiagramElementHasDecorators decoratorLink in DiagramElementHasDecorators.GetLinksToDecorators(diagramElement))
+	{
+		i++;
+		
+		string typeName;
+		string position;
+		double offsetX, offsetY;
+		bool canMove;
+		GetDecoratorInfo(decoratorLink, out typeName, out position, out offsetX, out offsetY, out canMove);
+		
+		if(string.IsNullOrEmpty(typeName) || string.IsNullOrEmpty(position))
+		{
+			continue;
+		}
+		
+		string offset = null;
+		if(offsetX == 0 && offsetY == 0)
+		{
+			offset = "DslDiagrams::PointD.Empty";
+		}
+		else
+		{
+			offset = "new DslDiagrams::PointD(" + offsetX.ToString(System.Globalization.CultureInfo.InvariantCulture) + ", " + offsetY.ToString(System.Globalization.CultureInfo.InvariantCulture) + ")";
+		}	
+		
+		if(CodeGenerationUtilities.IsOuterDecorator(decoratorLink))
+		{	
+			// generate outer decorator code.
+			GenerateShapeFieldForDecorator(decoratorLink, i, resourceManager);
+		}
+		else
+		{
+			// find the shape field in the shape field collection passed in
+#>
+	DslDiagrams::ShapeField field<#= i #> = DslDiagrams::ShapeElement.FindShapeField(shapeFields, "<#= decoratorLink.Decorator.Name #>");
+<#+
+		}
+		if(decoratorLink.Decorator is ExpandCollapseDecorator)
+		{
+#>
+	DslDiagrams::Decorator decorator<#= i #> = new DslDiagrams::ExpandCollapseDecorator(this.Store, (DslDiagrams::ToggleButtonField)field<#= i #>, <#= position #>, <#= offset #>);
+<#+
+		}
+		else
+		{
+#>
+	DslDiagrams::Decorator decorator<#= i #> = new <#= typeName #>(field<#= i #>, <#= position #>, <#= offset #><#= canMove ? ", true" : string.Empty #>);
+<#+
+		}
+#>
+	decorators.Add(decorator<#= i #>);
+		
+<#+
+	}
+#>
+}
+
+<#+
+}
+#>
+
+<#+
+private void GenerateShapeFieldForDecorator(DiagramElementHasDecorators decoratorLink, int index, string resourceManager)
+{
+	TextDecorator textDecorator = decoratorLink.Decorator as TextDecorator;
+	if(textDecorator != null)
+	{
+#>
+	DslDiagrams::TextField field<#= index #> = new DslDiagrams::TextField("<#= textDecorator.Name #>");
+	field<#= index #>.DefaultText = <#= string.IsNullOrEmpty(textDecorator.DefaultText) ? "string.Empty;" : resourceManager + ".GetString(\"" + decoratorLink.DiagramElement.Name + textDecorator.Name + "DefaultText\");" #>
+	field<#= index #>.DefaultFocusable = true;
+	field<#= index #>.DefaultAutoSize = true;
+	field<#= index #>.AnchoringBehavior.MinimumHeightInLines = 1;
+	field<#= index #>.AnchoringBehavior.MinimumWidthInCharacters = 1;
+	field<#= index #>.DefaultAccessibleState = global::System.Windows.Forms.AccessibleStates.Invisible;
+<#+
+		string fontId = GetFontId(textDecorator);
+		if(fontId != null)
+		{
+#>
+	field<#= index #>.DefaultFontId = new DslDiagrams::StyleSetResourceId(string.Empty, "<#= fontId #>");			
+<#+
+		}
+	}
+	else
+	{
+		IconDecorator iconDecorator = decoratorLink.Decorator as IconDecorator;
+		if(iconDecorator != null)
+		{
+#>
+	DslDiagrams::ImageField field<#= index #> = new DslDiagrams::ImageField("<#= iconDecorator.Name #>");
+<#+
+			if(!String.IsNullOrEmpty(iconDecorator.DefaultIcon))
+			{
+#>
+	field<#= index #>.DefaultImage = DslDiagrams::ImageHelper.GetImage(<#= resourceManager #>.GetObject("<#= decoratorLink.DiagramElement.Name #><#= iconDecorator.Name #>DefaultImage"));
+<#+
+			}
+		}
+		else
+		{
+			ExpandCollapseDecorator expandCollapseDecorator = decoratorLink.Decorator as ExpandCollapseDecorator;
+			if(expandCollapseDecorator != null)
+			{
+#>
+	DslDiagrams::ChevronButtonField field<#= index #> = new DslDiagrams::ChevronButtonField("<#= expandCollapseDecorator.Name #>");
+	field<#= index #>.DefaultSelectable = false;
+	field<#= index #>.DefaultFocusable = false;
+<#+
+			}
+		}
+	}
+}
+#>
+
+<#+
+private void GetDecoratorInfo(DiagramElementHasDecorators decoratorLink, out string typeName, out string position, out double offsetX, out double offsetY, out bool canMove)
+{
+	typeName = position = null;
+	canMove = false;
+	ShapeHasDecorators shapeLink = decoratorLink as ShapeHasDecorators;
+	if(shapeLink != null)
+	{
+		typeName = "DslDiagrams::ShapeDecorator";
+		position = "DslDiagrams::ShapeDecoratorPosition." + shapeLink.Position.ToString();
+		offsetX = shapeLink.HorizontalOffset;
+		offsetY = shapeLink.VerticalOffset;
+		switch (shapeLink.Position)
+		{
+			// Only outer decorators can be moved.
+			case ShapeDecoratorPosition.OuterTopLeft:
+			case ShapeDecoratorPosition.OuterTopCenter:
+			case ShapeDecoratorPosition.OuterTopRight:
+			case ShapeDecoratorPosition.OuterMiddleLeft:
+			case ShapeDecoratorPosition.OuterMiddleRight:
+			case ShapeDecoratorPosition.OuterBottomLeft:
+			case ShapeDecoratorPosition.OuterBottomCenter:
+			case ShapeDecoratorPosition.OuterBottomRight:
+				canMove = shapeLink.IsMoveable;
+				break;
+			default:
+				canMove = false;
+				break;
+		}
+	}
+	else
+	{
+		ConnectorHasDecorators connectorLink = decoratorLink as ConnectorHasDecorators;
+		if(connectorLink != null)
+		{
+			typeName = "DslDiagrams::ConnectorDecorator";
+			position = "DslDiagrams::ConnectorDecoratorPosition." + connectorLink.Position.ToString();
+			offsetX = connectorLink.OffsetFromShape;
+			offsetY = connectorLink.OffsetFromLine;
+			canMove = connectorLink.IsMoveable;
+		}
+		else
+		{
+			SwimLaneHasDecorators swimlaneLink = decoratorLink as SwimLaneHasDecorators;
+			if(swimlaneLink != null)
+			{
+				typeName = "DslDiagrams::ShapeDecorator";
+				position = "DslDiagrams::ShapeDecoratorPosition." + swimlaneLink.Position.ToString();
+				offsetX = swimlaneLink.HorizontalOffset;
+				offsetY = swimlaneLink.VerticalOffset;
+			}
+			else
+			{
+				throw new Exception("Unrecognized decorator link type: " + decoratorLink.GetType());
+			}
+		}
+	}
+	
+	if (decoratorLink.Decorator is ExpandCollapseDecorator)
+	{
+		// ExpandCollapseDecorator cannot be moved.
+		canMove = false;
+	}
+}
+
+public string MakeColorInitializer( System.Drawing.Color color )
+{
+		string initializer;
+		if ( color.IsKnownColor )
+		{
+			initializer = "global::System.Drawing.Color.FromKnownColor(global::System.Drawing.KnownColor." + color.Name + ")";
+		}
+		else
+		{
+			initializer = string.Format("global::System.Drawing.Color.FromArgb({0}, {1}, {2}, {3})", color.A, color.R, color.G, color.B);
+		}
+		return initializer;
+}
+
+public string GetFontId(TextDecorator textDecorator)
+{
+	if(textDecorator.FontSize != 8 || textDecorator.FontStyle != FontStyle.Regular)
+	{
+		return "ShapeText" + textDecorator.FontStyle.ToString() + textDecorator.FontSize.ToString(System.Globalization.CultureInfo.InvariantCulture);
+	}
+	
+	return null;
+}
+#>
+
+<#+
+private void GenerateDiagramElementConstructor(DomainClass domainClass, object context)
+{
+	if(domainClass is BaseShape)
+	{
+		if(domainClass is CompartmentShape)
+		{
+			if(((CompartmentShape)domainClass).DefaultExpandCollapseState==ExpandCollapseState.Collapsed)
+			{
+#>
+if (!this.Store.TransactionManager.CurrentTransaction.IsSerializing)
+	this.IsExpanded = false;
+<#+
+			}
+		}
+	}
+}
+
+private void GenerateTooltipCode(DiagramElement diagramElement)
+{
+	if(diagramElement.TooltipType == TooltipType.Fixed || diagramElement.TooltipType == TooltipType.Variable)
+	{
+#>
+#region Tooltip
+/// <summary>
+/// Gets a value indicating whether this shape displays a tooltip.
+/// </summary>
+public override bool HasToolTip
+{
+	get
+	{
+		return true;
+	}
+}
+
+/// <summary>
+/// Gets the tooltip text.
+/// </summary>
+public override string GetToolTipText(DslDiagrams::DiagramItem item)
+{
+<#+
+		if(diagramElement.TooltipType == TooltipType.Fixed)
+		{
+			string resourceManager = this.DslLibrary.GetFullName(true) + "DomainModel." + "SingletonResourceManager";
+#>
+	return <#= resourceManager #>.GetString("<#= diagramElement.Name #>Tooltip");
+<#+
+		}
+		else if(diagramElement.TooltipType == TooltipType.Variable)
+		{
+#>
+	// You must define a partial class of <#= CodeGenerationUtilities.GetGenerationClassName(diagramElement) #> containing this method:
+	// private string GetVariableTooltipText(DslDiagrams::DiagramItem item)
+	// {
+	// }
+	// It should be implemented to return the appropriate tooltip text.
+	return this.GetVariableTooltipText(item);
+<#+
+		}
+#>
+}
+#endregion
+<#+
+	}
+}
+
+public void GenerateDiagramElementBoilerplate(DiagramElement element)
+{
+	// no need to generate any of this for abstract shape classes, as their types will never be instantiated.
+	if(element.InheritanceModifier == InheritanceModifier.Abstract) return;
+	
+	string eventModifier = CodeGenerationUtilities.HasNonAbstractBaseClass(element) ? "new " : string.Empty;
+#>
+#region DiagramElement boilerplate
+private static DslDiagrams::StyleSet classStyleSet;
+private static global::System.Collections.Generic.IList<DslDiagrams::ShapeField> shapeFields;
+private static global::System.Collections.Generic.IList<DslDiagrams::Decorator> decorators;
+
+/// <summary>
+/// Per-class style set for this shape.
+/// </summary>
+protected override DslDiagrams::StyleSet ClassStyleSet
+{
+	get
+	{
+		if (classStyleSet == null)
+		{
+			classStyleSet = CreateClassStyleSet();
+		}
+		return classStyleSet;
+	}
+}
+
+/// <summary>
+/// Per-class ShapeFields for this shape.
+/// </summary>
+public override global::System.Collections.Generic.IList<DslDiagrams::ShapeField> ShapeFields
+{
+	get
+	{
+		if (shapeFields == null)
+		{
+			shapeFields = CreateShapeFields();
+		}
+		return shapeFields;
+	}
+}
+
+/// <summary>
+/// Event fired when decorator initialization is complete for this shape type.
+/// </summary>
+public static <#= eventModifier #>event global::System.EventHandler DecoratorsInitialized;
+
+/// <summary>
+/// List containing decorators used by this type.
+/// </summary>
+public override global::System.Collections.Generic.IList<DslDiagrams::Decorator> Decorators
+{
+	get 
+	{
+		if(decorators == null)
+		{
+			decorators = CreateDecorators();
+			
+			// fire this event to allow the diagram to initialize decorator mappings for this shape type.
+			if(DecoratorsInitialized != null)
+			{
+				DecoratorsInitialized(this, global::System.EventArgs.Empty);
+			}
+		}
+		
+		return decorators; 
+	}
+}
+
+/// <summary>
+/// Finds a decorator associated with <#= element.Name #>.
+/// </summary>
+public static DslDiagrams::Decorator Find<#= element.Name.Replace('@','_') #>Decorator(string decoratorName)
+{	
+	if(decorators == null) return null;
+	return DslDiagrams::ShapeElement.FindDecorator(decorators, decoratorName);
+}
+
+<#+
+	BaseShape baseShape = element as BaseShape;
+	
+	bool baseClassHasDecorators = false;
+	bool concreteBaseClassHasDecorators = false;
+
+	DiagramElement elementBase = element.BaseClass as DiagramElement;
+	while(!baseClassHasDecorators && elementBase != null)
+	{
+		baseClassHasDecorators = elementBase.Decorators.Count > 0;
+		if(baseClassHasDecorators)
+		{
+			concreteBaseClassHasDecorators = (elementBase.InheritanceModifier != InheritanceModifier.Abstract);
+		}
+		elementBase = elementBase.BaseClass as DiagramElement;
+	}
+
+	// No need to generate call to ConfigureHostShapes if there are no decorators for this shape, or there is a concrete base class with decorators.
+	bool generateConfigureHostShapes = !concreteBaseClassHasDecorators && (element.Decorators.Count > 0 || baseClassHasDecorators);
+	
+	if(generateConfigureHostShapes)
+	{
+#>
+
+/// <summary>
+/// Shape instance initialization.
+/// </summary>
+public override void OnInitialize()
+{
+	base.OnInitialize();
+	
+<#+
+		if(generateConfigureHostShapes)
+		{
+#>
+	// Create host shapes for outer decorators.
+	foreach(DslDiagrams::Decorator decorator in this.Decorators)
+	{
+		if(decorator.RequiresHost)
+		{
+			decorator.ConfigureHostShape(this);
+		}
+	}
+	
+<#+
+		}
+#>
+}
+<#+
+	}
+#>
+#endregion
+<#+
+}
+#>

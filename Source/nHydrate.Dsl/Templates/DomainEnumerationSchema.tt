@@ -1,0 +1,70 @@
+<#+
+private void GenerateDomainEnumerationSchema(DomainEnumeration domainEnum)
+{
+#>
+<!-- Enum <#= domainEnum.Name #> -->
+<xsd:simpleType name="<#= domainEnum.Name #>">
+<#+
+	if (!((domainEnum.IsDescriptionTracking || string.IsNullOrEmpty(domainEnum.Description)) && string.IsNullOrEmpty(domainEnum.Notes)))
+	{
+#>
+  <xsd:annotation>
+<#+
+		if (!domainEnum.IsDescriptionTracking && !string.IsNullOrEmpty(domainEnum.Description))
+		{
+#>
+    <xsd:documentation><#= EscapeXmlSpecialChars(domainEnum.Description) #></xsd:documentation>
+<#+
+		}
+		if (!string.IsNullOrEmpty(domainEnum.Notes))
+		{
+#>
+    <xsd:documentation><#= EscapeXmlSpecialChars(domainEnum.Notes) #></xsd:documentation>
+<#+
+		}
+#>
+  </xsd:annotation>
+<#+
+	}
+#>
+  <xsd:restriction base="xsd:string">
+<#+
+	foreach (EnumerationLiteral literal in domainEnum.Literals)
+	{
+		if (!((literal.IsDescriptionTracking || string.IsNullOrEmpty(literal.Description)) && string.IsNullOrEmpty(literal.Notes)))
+		{
+#>
+    <xsd:enumeration value="<#=literal.Name#>">
+      <xsd:annotation>
+<#+
+			if (!literal.IsDescriptionTracking && !string.IsNullOrEmpty(literal.Description))
+			{
+#>
+        <xsd:documentation><#= EscapeXmlSpecialChars(literal.Description) #></xsd:documentation>
+<#+
+			}
+			if (!string.IsNullOrEmpty(literal.Notes))
+			{
+#>
+        <xsd:documentation><#= EscapeXmlSpecialChars(literal.Notes) #></xsd:documentation>
+<#+
+			}
+#>
+      </xsd:annotation>
+    </xsd:enumeration>
+<#+
+		}
+		else
+		{
+#>
+    <xsd:enumeration value="<#=literal.Name#>"/>
+<#+
+		}
+	}
+#>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<#+
+}
+#>

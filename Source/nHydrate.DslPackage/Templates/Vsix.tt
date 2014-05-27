@@ -1,0 +1,39 @@
+﻿<#@ template inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".vsixmanifest" #>
+<#
+/***************************************************************************
+	Please note this .tt file is OBSOLETE and will be removed from a 
+	future release. It is included only for backwards compatibility with 
+	DSL solutions first unfolded using the interim VS2010 RC version of 
+	the VsVmSdk. Current VS2010 solutions (and those from Beta 2) have 
+	the template content inlined in the DslPackage project to make it 
+	easier to customise. It is recommended the VS2010RC solutions be
+	migrated to the new format as soon as convenient.
+***************************************************************************/
+#>
+<?xml version="1.0" encoding="utf-8"?>
+<Vsix Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
+  <Identifier Id="<#= this.Dsl.PackageGuid #>">
+    <Name><#= this.Dsl.DisplayName #></Name>
+    <Author><#= this.Dsl.CompanyName #></Author>
+    <Version><#= this.Dsl.MajorVersion #>.<#= this.Dsl.MinorVersion #>.<#= this.Dsl.Build #>.<#= this.Dsl.Revision #></Version>
+    <Description><#= this.Dsl.Description #></Description>
+    <Locale><#= localeId #></Locale>
+    <SupportedProducts>
+      <VisualStudio Version="11.0">
+        <Edition>Ultimate</Edition>
+        <Edition>Premium</Edition>
+        <Edition>Pro</Edition>
+      </VisualStudio>
+    </SupportedProducts>
+    <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.0" />
+  </Identifier>
+  <References/>
+  <Content>
+    <VsPackage>|%CurrentProject%;PkgdefProjectOutputGroup|</VsPackage>
+    <MefComponent>|<#= dslProjectName #>|</MefComponent>
+    <MefComponent>|%CurrentProject%|</MefComponent>
+    <ItemTemplate>ItemTemplates</ItemTemplate>
+    <#= string.IsNullOrWhiteSpace(customContent) ? "" : customContent #>
+  </Content>
+</Vsix>

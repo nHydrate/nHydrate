@@ -1,0 +1,586 @@
+<#+
+/// <summary>
+/// Generates error/warning messages used during serialization.
+/// </summary>
+private void GenerateSerializationMessages(DslLibrary dsl)
+{
+	XmlSerializationBehavior behavior = dsl.XmlSerializationBehavior;
+	string behaviorName = behavior.Name;
+	string namespaceString = behavior.Namespace;
+	if(!string.IsNullOrEmpty(namespaceString))
+	{
+#>
+
+namespace <#= namespaceString #>
+{
+<#+
+		PushIndent("\t");
+	}
+#>
+/// <summary>
+/// Utility class to provide serialization messages
+/// </summary>
+public static partial class <#= behaviorName #>SerializationMessages
+{
+	/// <summary>
+	/// ResourceManager to get serialization messages from.
+	/// </summary>
+	[global::System.Diagnostics.DebuggerBrowsable(global::System.Diagnostics.DebuggerBrowsableState.Never)] // Will trigger creation otherwise.
+	public static global::System.Resources.ResourceManager ResourceManager
+	{
+		[global::System.Diagnostics.DebuggerStepThrough]
+		get { return <#= dsl.Name #>DomainModel.SingletonResourceManager; }
+	}
+
+	#region Warnings
+	/// <summary>
+	/// Add a warning for ambiguous schemas.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the warning message to.</param>
+	/// <param name="reader">The reader pointing to where the message is raised.</param>
+	/// <param name="targetNamespace">Target namespace to be resolved.</param>
+	/// <param name="schemaPath">The schema that is used to resolve the definition of the target namespace.</param>
+	public static void AmbiguousSchema(DslModeling::SerializationContext serializationContext, global::System.Xml.XmlReader reader, string targetNamespace, string schemaPath)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(reader != null);
+		if (reader == null)
+			throw new global::System.ArgumentNullException("reader");
+		global::System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(targetNamespace));
+		if (string.IsNullOrEmpty(targetNamespace))
+			throw new global::System.ArgumentNullException("targetNamespace");
+		global::System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(schemaPath));
+		if (string.IsNullOrEmpty(schemaPath))
+			throw new global::System.ArgumentNullException("schemaPath");
+		#endregion
+
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext,
+			DslModeling::SerializationMessageKind.Warning,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("AmbiguousSchema"),
+				targetNamespace,
+				schemaPath
+			),
+			reader as global::System.Xml.IXmlLineInfo
+		);
+	}
+	
+	/// <summary>
+	/// Add a warning when a full-form relationship seems to be serialized in short-form.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the warning message to.</param>
+	/// <param name="reader">The reader pointing to where the message is raised.</param>
+	/// <param name="relationshipType">Type of the relationship.</param>
+	[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "This is the type of the relationship, making it MemberInfo only adds confusion.")]
+	public static void ExpectingFullFormRelationship(DslModeling::SerializationContext serializationContext, global::System.Xml.XmlReader reader, global::System.Type relationshipType)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(reader != null);
+		if (reader == null)
+			throw new global::System.ArgumentNullException("reader");
+		global::System.Diagnostics.Debug.Assert(relationshipType != null);
+		if (relationshipType == null)
+			throw new global::System.ArgumentNullException("relationshipType");
+		#endregion
+		
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext,
+			DslModeling::SerializationMessageKind.Warning,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("ExpectingFullFormRelationship"),
+				reader.Name,
+				relationshipType.Name
+			),
+			reader as global::System.Xml.IXmlLineInfo
+		);
+	}
+	
+	/// <summary>
+	/// Add a warning when a short-form relationship seems to be serialized in full-form.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the warning message to.</param>
+	/// <param name="reader">The reader pointing to where the message is raised.</param>
+	/// <param name="relationshipType">Type of the relationship.</param>
+	[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "This is the type of the relationship, making it MemberInfo only adds confusion.")]
+	public static void ExpectingShortFormRelationship(DslModeling::SerializationContext serializationContext, global::System.Xml.XmlReader reader, global::System.Type relationshipType)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(reader != null);
+		if (reader == null)
+			throw new global::System.ArgumentNullException("reader");
+		global::System.Diagnostics.Debug.Assert(relationshipType != null);
+		if (relationshipType == null)
+			throw new global::System.ArgumentNullException("relationshipType");
+		#endregion
+		
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext,
+			DslModeling::SerializationMessageKind.Warning,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("ExpectingShortFormRelationship"),
+				relationshipType.Name
+			),
+			reader as global::System.Xml.IXmlLineInfo
+		);
+	}
+	
+	/// <summary>
+	/// Add a warning for invalid property value with the given type, which will be ignored.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the warning message to.</param>
+	/// <param name="reader">The reader pointing to where the message is raised.</param>
+	/// <param name="propertyName">Name of the property.</param>
+	/// <param name="propertyType">Type of the property.</param>
+	/// <param name="value">Invalid value that causes this warning.</param>
+	[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "This is the type of the property, making it MemberInfo only adds confusion.")]
+	public static void IgnoredPropertyValue(DslModeling::SerializationContext serializationContext, global::System.Xml.XmlReader reader, string propertyName, global::System.Type propertyType, string value)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(reader != null);
+		if (reader == null)
+			throw new global::System.ArgumentNullException("reader");
+		global::System.Diagnostics.Debug.Assert(propertyType != null);
+		if (propertyType == null)
+			throw new global::System.ArgumentNullException("propertyType");
+		global::System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(propertyName));
+		if (string.IsNullOrEmpty(propertyName))
+			throw new global::System.ArgumentNullException("propertyName");
+		#endregion
+		
+		if (value == null)
+			value = "<null>";
+
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext,
+			DslModeling::SerializationMessageKind.Warning,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("IgnoredPropertyValue"),
+				value,
+				propertyName,
+				propertyType.Name
+			),
+			reader as global::System.Xml.IXmlLineInfo
+		);
+	}
+	
+	/// <summary>
+	/// Add a warning for missing "Id" property.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the warning message to.</param>
+	/// <param name="reader">The reader pointing to where the message is raised.</param>
+	/// <param name="newId">Auto-generated new Id.</param>
+	public static void MissingId(DslModeling::SerializationContext serializationContext, global::System.Xml.XmlReader reader, global::System.Guid newId)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(reader != null);
+		if (reader == null)
+			throw new global::System.ArgumentNullException("reader");
+		#endregion
+		
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext,
+			DslModeling::SerializationMessageKind.Warning,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("MissingId"),
+				newId.ToString("D", global::System.Globalization.CultureInfo.CurrentCulture)
+			),
+			reader as global::System.Xml.IXmlLineInfo
+		);
+	}
+	
+		
+	/// <summary>
+	/// Add an warning for moniker resolved to duplicate link. The moniker will be ignored.
+	/// </summary>
+	/// <param name="serializationResult">SerializationResult to add the error message to.</param>
+	/// <param name="moniker">Offending moniker.</param>
+	public static void MonikerResolvedToDuplicateLink(DslModeling::SerializationResult serializationResult, DslModeling::Moniker moniker)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationResult != null);
+		if (serializationResult == null)
+			throw new global::System.ArgumentNullException("serializationResult");
+		global::System.Diagnostics.Debug.Assert(moniker != null);
+		if (moniker == null)
+			throw new global::System.ArgumentNullException("moniker");
+		#endregion
+		
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationResult,
+			moniker.Location,
+			DslModeling::SerializationMessageKind.Warning,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("MonikerResolvedToDuplicateLink"),
+				moniker.MonikerName
+			),
+			moniker.Line,
+			moniker.Column
+		);
+	}
+	
+	/// <summary>
+	/// Add a warning for no schema found for the given target namespace, schema validation will be skipped in this case.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the warning message to.</param>
+	/// <param name="reader">The reader pointing to where the message is raised.</param>
+	/// <param name="targetNamespace">Target namespace that cannot be resolved.</param>
+	public static void NoSchema(DslModeling::SerializationContext serializationContext, global::System.Xml.XmlReader reader, string targetNamespace)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(reader != null);
+		if (reader == null)
+			throw new global::System.ArgumentNullException("reader");
+		global::System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(targetNamespace));
+		if (string.IsNullOrEmpty(targetNamespace))
+			throw new global::System.ArgumentNullException("targetNamespace");
+		#endregion
+
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext,
+			DslModeling::SerializationMessageKind.Warning,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("NoSchema"),
+				targetNamespace
+			),
+			reader as global::System.Xml.IXmlLineInfo
+		);
+	}
+	
+	/// <summary>
+	/// Add a warning for schema validation error.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the warning message to.</param>
+	/// <param name="reader">The reader pointing to where the message is raised.</param>
+	/// <param name="message">Validation message reported from schema validation.</param>
+	public static void SchemaValidationError(DslModeling::SerializationContext serializationContext, global::System.Xml.XmlReader reader, string message)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(reader != null);
+		if (reader == null)
+			throw new global::System.ArgumentNullException("reader");
+		global::System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(message));
+		if (string.IsNullOrEmpty(message))
+			throw new global::System.ArgumentNullException("message");
+		#endregion
+
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext,
+			DslModeling::SerializationMessageKind.Warning,
+			message,
+			reader as global::System.Xml.IXmlLineInfo
+		);
+	}
+	
+	/// <summary>
+	/// Add an warning for unexpected XML element.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the warning message to.</param>
+	/// <param name="reader">The reader pointing to where the message is raised.</param>
+	public static void UnexpectedXmlElement(DslModeling::SerializationContext serializationContext, global::System.Xml.XmlReader reader)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(reader != null);
+		if (reader == null)
+			throw new global::System.ArgumentNullException("reader");
+		#endregion
+			
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext,
+			DslModeling::SerializationMessageKind.Warning,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("UnexpectedXmlElement"),
+				reader.Name
+			),
+			reader as global::System.Xml.IXmlLineInfo
+		);
+	}
+	#endregion
+
+	#region Errors
+	/// <summary>
+	/// Add an error for ambiguous moniker.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the error message to.</param>
+	/// <param name="moniker">The ambiguous moniker string.</param>
+	/// <param name="element1">The first element using the given moniker.</param>
+	/// <param name="element2">The second element using the given moniker.</param>
+	public static void AmbiguousMoniker(DslModeling::SerializationContext serializationContext, string moniker, DslModeling::ModelElement element1, DslModeling::ModelElement element2)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(moniker != null);
+		if (moniker == null)
+			throw new global::System.ArgumentNullException("moniker");
+		global::System.Diagnostics.Debug.Assert(element1 != null);
+		if (element1 == null)
+			throw new global::System.ArgumentNullException("element1");
+		global::System.Diagnostics.Debug.Assert(element2 != null);
+		if (element2 == null)
+			throw new global::System.ArgumentNullException("element2");
+		#endregion
+
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext,
+			DslModeling::SerializationMessageKind.Error,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("AmbiguousMoniker"),
+				moniker,
+				DslModeling::SerializationUtilities.GetElementName(element1),
+				DslModeling::SerializationUtilities.GetElementName(element2)
+			),
+			null	// No location info available
+		);
+	}
+	
+	/// <summary>
+	/// Add an error for not able to monikerize an instance of the given DomainClass.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the error message to.</param>
+	/// <param name="domainClassName">Name of the DomainClass whose instance cannot be monikerized.</param>
+	[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "Generated code.")]	
+	public static void CannotMonikerizeElement(DslModeling::SerializationContext serializationContext, string domainClassName)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(domainClassName));
+		if (string.IsNullOrEmpty(domainClassName))
+			throw new global::System.ArgumentNullException("domainClassName");
+		#endregion
+		
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext.Result,
+			null,	/* no location available for this error, because save failed. */
+			DslModeling::SerializationMessageKind.Error,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("CannotMonikerizeElement"),
+				domainClassName
+			),
+			0,
+			0
+		);
+	}
+	
+	/// <summary>
+	/// Add an error for dangling relationship instance.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the error message to.</param>
+	/// <param name="reader">The reader pointing to where the message is raised.</param>
+	/// <param name="relationshipType">Type name of the relationship.</param>
+	public static void DanglingRelationship(DslModeling::SerializationContext serializationContext, global::System.Xml.XmlReader reader, string relationshipType)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(reader != null);
+		if (reader == null)
+			throw new global::System.ArgumentNullException("reader");
+		global::System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(relationshipType));
+		if (string.IsNullOrEmpty(relationshipType))
+			throw new global::System.ArgumentNullException("relationshipType");
+		#endregion
+		
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext,
+			DslModeling::SerializationMessageKind.Error,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("DanglingRelationship"),
+				relationshipType
+			),
+			reader as global::System.Xml.IXmlLineInfo
+		);
+	}
+	
+	/// <summary>
+	/// Add an error for invalid property value with given type.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the error message to.</param>
+	/// <param name="reader">The reader pointing to where the message is raised.</param>
+	/// <param name="propertyName">Name of the property.</param>
+	/// <param name="propertyType">Type of the property.</param>
+	/// <param name="value">Invalid value that causes this error.</param>
+	[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "This is the type of the property, making it MemberInfo only adds confusion.")]
+	public static void InvalidPropertyValue(DslModeling::SerializationContext serializationContext, global::System.Xml.XmlReader reader, string propertyName, global::System.Type propertyType, string value)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(reader != null);
+		if (reader == null)
+			throw new global::System.ArgumentNullException("reader");
+		global::System.Diagnostics.Debug.Assert(propertyType != null);
+		if (propertyType == null)
+			throw new global::System.ArgumentNullException("propertyType");
+		global::System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(propertyName));
+		if (string.IsNullOrEmpty(propertyName))
+			throw new global::System.ArgumentNullException("propertyName");
+		#endregion
+		
+		if (value == null)
+			value = "<null>";
+
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext,
+			DslModeling::SerializationMessageKind.Error,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("InvalidPropertyValue"),
+				value,
+				propertyName,
+				propertyType.Name
+			),
+			reader as global::System.Xml.IXmlLineInfo
+		);
+	}
+	
+	/// <summary>
+	/// Add an error for missing moniker.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the error message to.</param>
+	/// <param name="reader">The reader pointing to where the message is raised.</param>
+	/// <param name="monikerAttributeName">Name of the attribute that should hold the moniker.</param>
+	public static void MissingMoniker(DslModeling::SerializationContext serializationContext, global::System.Xml.XmlReader reader, string monikerAttributeName)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(reader != null);
+		if (reader == null)
+			throw new global::System.ArgumentNullException("reader");
+		global::System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(monikerAttributeName));
+		if (string.IsNullOrEmpty(monikerAttributeName))
+			throw new global::System.ArgumentNullException("monikerAttributeName");
+		#endregion
+		
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext,
+			DslModeling::SerializationMessageKind.Error,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("MissingMoniker"),
+				monikerAttributeName
+			),
+			reader as global::System.Xml.IXmlLineInfo
+		);
+	}
+	
+	/// <summary>
+	/// Add an error for unresolved moniker.
+	/// </summary>
+	/// <param name="serializationResult">SerializationResult to add the error message to.</param>
+	/// <param name="moniker">Unresolved moniker.</param>
+	public static void UnresolvedMoniker(DslModeling::SerializationResult serializationResult, DslModeling::Moniker moniker)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationResult != null);
+		if (serializationResult == null)
+			throw new global::System.ArgumentNullException("serializationResult");
+		global::System.Diagnostics.Debug.Assert(moniker != null);
+		if (moniker == null)
+			throw new global::System.ArgumentNullException("moniker");
+		#endregion
+		
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationResult,
+			moniker.Location,
+			DslModeling::SerializationMessageKind.Error,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("UnresolvedMoniker"),
+				moniker.MonikerName
+			),
+			moniker.Line,
+			moniker.Column
+		);
+	}
+
+	/// <summary>
+	/// Add an error for Version mismatch.
+	/// </summary>
+	/// <param name="serializationContext">SerializationContext to add the error message to.</param>
+	/// <param name="reader">The reader pointing to where the message is raised.</param>
+	/// <param name="expectedVersion">The version that's expected.</param>
+	/// <param name="actualVersion">Actual version from the file.</param>
+	public static void VersionMismatch(DslModeling::SerializationContext serializationContext, global::System.Xml.XmlReader reader, global::System.Version expectedVersion, global::System.Version actualVersion)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(reader != null);
+		if (reader == null)
+			throw new global::System.ArgumentNullException("reader");
+		global::System.Diagnostics.Debug.Assert(expectedVersion != null);
+		if (expectedVersion == null)
+			throw new global::System.ArgumentNullException("expectedVersion");
+		global::System.Diagnostics.Debug.Assert(actualVersion != null);
+		if (actualVersion == null)
+			throw new global::System.ArgumentNullException("actualVersion");
+		#endregion
+		
+		DslModeling::SerializationUtilities.AddMessage(
+			serializationContext,
+			DslModeling::SerializationMessageKind.Error,
+			string.Format(
+				global::System.Globalization.CultureInfo.CurrentCulture,
+				ResourceManager.GetString("VersionMismatch"), 
+				actualVersion.ToString(4), 
+				expectedVersion.ToString(4)
+			),
+			reader as global::System.Xml.IXmlLineInfo
+		);
+	}
+	#endregion
+}
+<#+
+	if(!string.IsNullOrEmpty(namespaceString))
+	{ // close namespace declaration:
+		PopIndent();
+#>
+}
+<#+
+	}
+}
+#>

@@ -1,0 +1,3 @@
+namespace Acme.Northwind.EFDAL
+{
+}

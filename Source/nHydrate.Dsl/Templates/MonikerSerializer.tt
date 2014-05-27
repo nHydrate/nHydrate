@@ -1,0 +1,748 @@
+<#+
+/// <summary>
+/// Generate overrides of ModelElement.CalculateQualifiedName and ModelElement.GetMonikerQualifier, if approriate
+/// </summary>
+/// <param name="behavior">XmlSerializationBehavior used to generate the code.</param>
+/// <param name="domainClass">The DomainClass whose CalculateQualifiedName method we will generate</param>
+/// <param name="isCustom">If true, the generated code will call a custom method that the user can supply.</param>
+private void GenerateMonikerOverrides(XmlSerializationBehavior behavior, DomainClass domainClass, bool isCustom)
+{
+#>
+
+	#region Moniker Support
+<#+
+	this.GenerateCalculateQualifiedName(behavior, domainClass, isCustom);
+	this.GenerateGetMonikerQualifier(behavior, domainClass, isCustom);
+#>
+	#endregion
+<#+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Logic to calculate MonikerKind, Qualifier, Moniker and SerializeId.
+///
+///  |  Has (or inherits)  |  Has (or inherits)  |  SerializeId  ||  MonikerKind  ||   Qualifier  |        Moniker       |  Serialize Id   |
+///  |  key K?             |  qualifier Q?       |               ||               ||              |                      |  in Read/Write  |
+/// ----------------------------------------------------------------------------------------------------------------------------------------
+///            Y                 Y (K != Q)              Y             Normal             Q                 Q/K                   Y
+///            Y                 Y (K != Q)              N             Normal             Q                 Q/K                   N
+///            Y                 Y (K == Q)              Y             Custom             ""                 K                    Y
+///            Y                 Y (K == Q)              N             Custom             ""                 K                    N
+///            Y                     N                   Y             Normal        Container.Q     Container.Moniker/K          Y
+///            Y                     N                   N             Normal        Container.Q     Container.Moniker/K          N
+///            N                     Y                   Y             Id                 ""                Id                    Y
+///            N                     N                   Y             Id                 ""                Id                    Y
+/// All other cases are not monikerizable.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// <summary>
+/// Generate code to calculate Moniker for the given domain class.
+/// </summary>
+/// <param name="behavior">XmlSerializationBehavior used to generate the code.</param>
+/// <param name="domainClass">The DomainClass whose CalculateQualifiedName method we will generate</param>
+/// <param name="isCustom">If true, the generated code will call a custom method that the user can supply.</param>
+private void GenerateCalculateQualifiedName(XmlSerializationBehavior behavior, DomainClass domainClass, bool isCustom)
+{
+	string namespaceString = behavior.Namespace;
+	string classTypeString = domainClass.GetRelativeName (namespaceString, true);
+#>
+	/// <summary>
+	/// This method calculates a moniker to a given <#= domainClass.Name #> instance.
+	/// </summary>
+	/// <param name="directory">Directory to look up serializer based on model element type.</param>
+	/// <param name="element"><#= domainClass.Name #> instance to calculate qualified name for.</param>
+	/// <returns>A fully qualified string moniker to the <#= domainClass.Name #> instance.</returns>
+	public override string CalculateQualifiedName(DslModeling::DomainXmlSerializerDirectory directory, DslModeling::ModelElement element)
+	{
+<#+
+	if (isCustom)
+	{
+#>
+		// IsCustom == true, calling CustomCalculateQualifiedName().
+		// Provide your custom implementation with following signature:
+		//   private string CustomCalculateQualifiedName(DslModeling::DomainXmlSerializerDirectory directory, DslModeling::ModelElement element);
+		// You can call DefaultCalculateQualifiedName() for the default implementation.
+		return this.CustomCalculateQualifiedName(directory, element);
+	}
+	
+	/// <summary>
+	/// Default implementation of CalculateQualifiedName().
+	/// </summary>
+	[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Provided to help custom implementation")]
+	[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMethodsAsStatic", Justification = "Matching the signature of CustomCalculateQualifiedName.")]
+	private string DefaultCalculateQualifiedName(DslModeling::DomainXmlSerializerDirectory directory, DslModeling::ModelElement element)
+	{
+<#+
+	}
+#>
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert (directory != null);
+		if (directory == null)
+			throw new global::System.ArgumentNullException ("directory");
+		global::System.Diagnostics.Debug.Assert(element != null);
+		if (element == null)
+			throw new global::System.ArgumentNullException("element");
+		#endregion	
+		
+		<#= classTypeString #> instance = element as <#= classTypeString #>;
+		global::System.Diagnostics.Debug.Assert(instance != null, "Expecting an instance of <#= classTypeString #>!");
+
+<#+
+	MonikerData monikerData = MonikerDataCache[domainClass];
+	switch (monikerData.MonikerKind)
+	{
+		case MonikerKind.Normal:
+			if (monikerData.QualifierProperty != null)
+			{
+#>
+		string qualifier = this.GetMonikerQualifier(directory, instance);
+		<#+ monikerData.WriteKeyPropertyAsString("string key = ", namespaceString); #>;
+		return string.Format(global::System.Globalization.CultureInfo.CurrentCulture, "{0}/{1}", qualifier, key);
+<#+
+			}
+			else
+			{
+#>
+		<#+ monikerData.WriteKeyPropertyAsString("string key = ", namespaceString); #>;
+		string containerMoniker = null;
+		DslModeling::ModelElement container = <#+ monikerData.WriteContainerElementExpression(domainClass); #>;
+		if(container != null)
+		{
+			DslModeling::DomainClassXmlSerializer containerSerializer = directory.GetSerializer(container.GetDomainClass().Id);
+			global::System.Diagnostics.Debug.Assert(containerSerializer != null, "Cannot find serializer for " + container.GetDomainClass().Name + "!");
+			containerMoniker = containerSerializer.CalculateQualifiedName(directory, container);
+		}
+		if (string.IsNullOrEmpty(containerMoniker))
+		{
+			return string.Format(global::System.Globalization.CultureInfo.CurrentCulture, "/{0}", key);
+		}
+		else if (DslModeling::SimpleMonikerResolver.IsFullyQualified(containerMoniker))
+		{
+			return string.Format(global::System.Globalization.CultureInfo.CurrentCulture, "{0}/{1}", containerMoniker, key);
+		}
+		else
+		{
+			return string.Format(global::System.Globalization.CultureInfo.CurrentCulture, "/{0}/{1}", containerMoniker, key);
+		}
+<#+
+			}
+			break;
+		case MonikerKind.Custom:
+#>
+		<#+ monikerData.WriteKeyPropertyAsString("return ", namespaceString); #>;
+<#+
+			break;
+		case MonikerKind.Id:
+#>
+		return instance.Id.ToString("D", global::System.Globalization.CultureInfo.CurrentCulture);
+<#+
+			break;
+		case MonikerKind.None:
+		default:
+#>
+		DslModeling::ModelElement container = <#+ monikerData.WriteContainerElementExpression(domainClass); #>;
+		if(container != null)
+		{
+			DslModeling::DomainClassXmlSerializer containerSerializer = directory.GetSerializer(container.GetDomainClass().Id);
+			global::System.Diagnostics.Debug.Assert(containerSerializer != null, "Cannot find serializer for " + container.GetDomainClass().Name + "!");
+			return containerSerializer.CalculateQualifiedName(directory, container);
+		}
+		else
+		{
+			return string.Empty;
+		}
+<#+
+			break;
+	}
+#>
+	}
+
+<#+
+}
+
+/// <summary>
+/// Generate the GetMonikerQualifier override, if appropriate, for this domain class
+/// </summary>
+/// <param name="behavior">XmlSerializationBehavior used to generate the code.</param>
+/// <param name="domainClass"></param>
+/// <param name="isCustom">If true, the generated code will call a custom method that the user can supply.</param>
+private void GenerateGetMonikerQualifier(XmlSerializationBehavior behavior, DomainClass domainClass, bool isCustom)
+{
+	bool generateOverride = !CodeGenerationUtilities.IsRootClass(domainClass);
+	string namespaceString = behavior.Namespace;
+	string classTypeString = domainClass.GetRelativeName (namespaceString, true);
+#>
+	/// <summary>
+	/// A domain class can be monikerized in different ways: standard /qualifier/key mechanism, custom moniker, or element ID. If the domain class is serialized
+	/// using standard /qualifier/key mechanism, this method returns the qualifier of the moniker; if the domain class uses other ways for monikerization, this method
+	/// returns empty string.
+	/// </summary>
+	/// <param name="directory">Directory to look up serializer based on model element type.</param>
+	/// <param name="element"><#= domainClass.Name #> instance to get moniker qualifier from.</param>
+	/// <returns>
+	/// Value of this element's moniker qualifier property, if it has one, or the value of the container's moniker qualifier property. Or empty string if this
+	/// element is not monikerized using standard /qualifier/key mechanism.
+	/// </returns>
+	public override string GetMonikerQualifier(DslModeling::DomainXmlSerializerDirectory directory, DslModeling::ModelElement element)
+	{
+<#+
+	if (isCustom)
+	{
+#>
+		// IsCustom == true, calling CustomGetMonikerQualifier().
+		// Provide your custom implementation with following signature:
+		//   private string CustomGetMonikerQualifier(DslModeling::DomainXmlSerializerDirectory directory, DslModeling::ModelElement element);
+		// You can call DefaultGetMonikerQualifier() for the default implementation.
+		return this.CustomGetMonikerQualifier(directory, element);
+	}
+	
+	/// <summary>
+	/// Default implementation of GetMonikerQualifier().
+	/// </summary>
+	[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Provided to help custom implementation")]
+	[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMethodsAsStatic", Justification = "Matching the signature of CustomGetMonikerQualifier.")]
+	private string DefaultGetMonikerQualifier(DslModeling::DomainXmlSerializerDirectory directory, DslModeling::ModelElement element)
+	{
+<#+
+	}
+#>
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert (directory != null);
+		if (directory == null)
+			throw new global::System.ArgumentNullException ("directory");
+		global::System.Diagnostics.Debug.Assert(element != null);
+		if (element == null)
+			throw new global::System.ArgumentNullException("element");
+		#endregion	
+		
+<#+
+	MonikerData monikerData = MonikerDataCache[domainClass];
+	switch (monikerData.MonikerKind)
+	{
+		case MonikerKind.Normal:
+			if (monikerData.QualifierProperty != null)
+			{
+#>
+		<#= classTypeString #> instance = element as <#= classTypeString #>;
+		global::System.Diagnostics.Debug.Assert(instance != null, "Expecting an instance of <#= classTypeString #>!");
+		<#+ monikerData.WriteQualifierPropertyAsString("string qualifier = ", namespaceString); #>;
+		return string.Format(global::System.Globalization.CultureInfo.CurrentCulture, "/{0}", qualifier);
+<#+
+			}
+			else
+			{
+#>
+		<#= classTypeString #> instance = element as <#= classTypeString #>;
+		global::System.Diagnostics.Debug.Assert(instance != null, "Expecting an instance of <#= classTypeString #>!");
+		DslModeling::ModelElement container = <#+ monikerData.WriteContainerElementExpression(domainClass); #>;
+		if(container != null)
+		{
+			DslModeling::DomainClassXmlSerializer containerSerializer = directory.GetSerializer(container.GetDomainClass().Id);
+			global::System.Diagnostics.Debug.Assert(containerSerializer != null, "Cannot find serializer for " + container.GetDomainClass().Name + "!");
+			return containerSerializer.GetMonikerQualifier(directory, container);
+		}
+		else
+		{
+			return string.Empty;
+		}
+<#+
+			}
+			break;
+		case MonikerKind.None:
+#>
+		<#= classTypeString #> instance = element as <#= classTypeString #>;
+		global::System.Diagnostics.Debug.Assert(instance != null, "Expecting an instance of <#= classTypeString #>!");
+		DslModeling::ModelElement container = <#+ monikerData.WriteContainerElementExpression(domainClass); #>;
+		if(container != null)
+		{
+			DslModeling::DomainClassXmlSerializer containerSerializer = directory.GetSerializer(container.GetDomainClass().Id);
+			global::System.Diagnostics.Debug.Assert(containerSerializer != null, "Cannot find serializer for " + container.GetDomainClass().Name + "!");
+			return containerSerializer.GetMonikerQualifier(directory, container);
+		}
+		else
+		{
+			return string.Empty;
+		}
+<#+
+			break;
+		case MonikerKind.Custom:
+		case MonikerKind.Id:
+		default:
+#>
+		return string.Empty;
+<#+
+			break;
+	}
+#>
+	}
+<#+
+}
+
+internal enum MonikerKind
+{
+	None,	// Cannot be monikerized
+	Normal,	// The moniker is constructed using Key and Qualifier
+	Custom,	// The moniker is constructed using Key
+	Id,		// Use ID as moniker.
+}
+
+/// <summary>
+/// Encapsulates per class moniker information
+/// </summary>
+internal class MonikerData
+{
+	private Microsoft.VisualStudio.TextTemplating.TextTransformation textTransformation;
+	internal MonikerData(Microsoft.VisualStudio.TextTemplating.TextTransformation textTransformation)
+		: this (textTransformation, null, null, false, null, null, MonikerKind.None)
+	{
+	}
+	
+	internal MonikerData(Microsoft.VisualStudio.TextTemplating.TextTransformation textTransformation, DomainProperty keyProp, DomainProperty qualifierProp, bool serializeId, string monikerXmlAttribute, DomainRole parentRole, MonikerKind monikerKind)
+	{
+		this.textTransformation = textTransformation;
+		this.KeyProperty = keyProp;
+		this.QualifierProperty = qualifierProp;
+		this.SerializeId = serializeId;
+		this.MonikerXmlAttribute = monikerXmlAttribute;
+		this.ParentRole = parentRole;
+		this.MonikerKind = monikerKind;
+	}
+
+	// the DomainProperty marked as the MonikerKey. null if no property is marked as the moniker key 
+	internal DomainProperty KeyProperty;
+
+	// the string used to serialize the KeyProperty
+	internal string MonikerXmlAttribute;
+
+	// the DomainProperty marked as the MonikerKey. null if no property is marked as the moniker key 
+	internal DomainProperty QualifierProperty;
+	
+	// whether this domain class is marked as "SerializeId"
+	internal bool SerializeId;
+
+	// the role of the parent domain class of this domain class, if it is known
+	internal DomainRole ParentRole;
+	
+	// kind of moniker when the DomainClass is monikerized (if possible).
+	internal MonikerKind MonikerKind;
+	
+	// Can this MonikerData's DomainClass be monikerized?
+	internal bool CanBeMonikerized
+	{
+		get{ return (this.MonikerKind != MonikerKind.None); }
+	}
+
+	// write out the KeyProperty.Name with appropriate conversion to strign if the KeyProperty is not of string type
+	internal void WriteKeyPropertyAsString(string prefix, string namespaceString)
+	{
+		if (KeyProperty.GetterAccessModifier == AccessModifier.Public)
+		{
+			if( CodeGenerationUtilities.IsStringProperty(KeyProperty) )
+			{
+#><#= prefix #>instance.<#= KeyProperty.Name #><#+
+			}
+			else
+			{
+#><#= prefix #>DslModeling::SerializationUtilities.GetString<<#= KeyProperty.Type.GetRelativeName(namespaceString, true) #>>(instance.<#= KeyProperty.Name #>)<#+
+			}
+		}
+		else
+		{
+#>// Non-public getter, use DomainPropertyInfo method.
+		DslModeling::DomainPropertyInfo propInfo = element.Partition.DomainDataDirectory.GetDomainProperty (<#= KeyProperty.Class.GetRelativeName(namespaceString, true) #>.<#= KeyProperty.Name #>DomainPropertyId);
+<#+
+			if( CodeGenerationUtilities.IsStringProperty(KeyProperty) )
+			{
+#>
+		<#= prefix #>(propInfo.GetValue(element) as string)<#+
+			}
+			else
+			{
+#>
+		<#= prefix #>DslModeling::SerializationUtilities.GetString<<#= KeyProperty.Type.GetRelativeName(namespaceString, true) #>>(propInfo.GetValue(element))<#+
+			}
+		}
+	}
+	
+	// write out the QualifierProperty.Name with appropriate conversion to strign if the KeyProperty is not of string type
+	internal void WriteQualifierPropertyAsString(string prefix, string namespaceString)
+	{
+		if (QualifierProperty.GetterAccessModifier == AccessModifier.Public)
+		{
+			if( CodeGenerationUtilities.IsStringProperty(QualifierProperty) )
+			{
+#><#= prefix #>instance.<#= QualifierProperty.Name #><#+
+			}
+			else
+			{
+#><#= prefix #>DslModeling::SerializationUtilities.GetString<<#= QualifierProperty.Type.GetRelativeName(namespaceString, true) #>>(instance.<#= QualifierProperty.Name #>)<#+
+			}
+		}
+		else
+		{
+#>// Non-public getter, use DomainPropertyInfo method.
+		DslModeling::DomainPropertyInfo propInfo = element.Partition.DomainDataDirectory.GetDomainProperty (<#= QualifierProperty.Class.GetRelativeName(namespaceString, true) #>.<#= QualifierProperty.Name #>DomainPropertyId);
+<#+
+			if( CodeGenerationUtilities.IsStringProperty(QualifierProperty) )
+			{
+#>
+		<#= prefix #>(propInfo.GetValue(element) as string)<#+
+			}
+			else
+			{
+#>
+		<#= prefix #>DslModeling::SerializationUtilities.GetString<<#= QualifierProperty.Type.GetRelativeName(namespaceString, true) #>>(propInfo.GetValue(element))<#+
+			}
+		}
+	}	
+	
+	internal void WriteContainerElementExpression(DomainClass domainClass)
+	{
+		if( domainClass is DomainRelationship )
+		{	// Container of a relationship is its source role.
+			DomainRole nonAnchorRole = ((DomainRelationship)domainClass).Target;
+			DomainRole anchorRole = nonAnchorRole.Opposite;
+#>instance.<#= anchorRole.Name #><#+
+		}
+		else if (this.ParentRole != null)
+		{	// Known parent.
+#>instance.<#= this.ParentRole.PropertyName #><#+
+		}
+		else
+		{	// General case
+#>DslModeling::DomainClassInfo.FindEmbeddingElement(instance)<#+
+		}
+	}
+	
+	public void Write(string textToAppend)
+	{
+		textTransformation.Write(textToAppend);	
+	}
+}
+
+private MonikerDataCacheClass monikerDataCache = null;
+[System.Diagnostics.DebuggerBrowsable (System.Diagnostics.DebuggerBrowsableState.Never)]
+private MonikerDataCacheClass MonikerDataCache 
+{
+	[System.Diagnostics.DebuggerStepThrough]
+	get
+	{
+		if (monikerDataCache == null)
+			monikerDataCache = new MonikerDataCacheClass (this);
+		return monikerDataCache;
+	}
+}
+
+// Cache of moniker Data. We use this information alot. Avoids calculating it multiple times.
+internal class MonikerDataCacheClass
+{
+	private Dictionary<DomainClass,MonikerData> tableMonikerData = new Dictionary<DomainClass,MonikerData>();
+	private Microsoft.VisualStudio.TextTemplating.TextTransformation textTransformation;
+	
+	internal MonikerDataCacheClass(Microsoft.VisualStudio.TextTemplating.TextTransformation textTransformation)
+	{
+		this.textTransformation = textTransformation;
+	}
+
+	/// <summary>
+	/// Gets the cached MonikerData for domainClass. Calculates the information if it is the first time 
+	/// </summary>
+	/// <param name="domainClass"></param>
+	/// <returns></returns>
+	internal MonikerData this [DomainClass domainClass]
+	{
+		get
+		{ 
+			ensureDataExists(domainClass);
+			return tableMonikerData[domainClass];
+		}
+	}
+
+	// populate the cache table with data for domainClass, if necessary
+	private void ensureDataExists(DomainClass domainClass)
+	{
+		MonikerData monikerData;
+		if( tableMonikerData.TryGetValue(domainClass, out monikerData) )
+			return;
+
+		monikerData = new MonikerData(textTransformation);
+		tableMonikerData[domainClass] = monikerData;
+			
+		this.GetMonikerRelatedProperties (domainClass, out monikerData.KeyProperty, out monikerData.QualifierProperty, out monikerData.SerializeId, out monikerData.MonikerXmlAttribute);
+		bool hasMonikerKey = (monikerData.KeyProperty != null);
+		bool hasMonikerQualifier = (monikerData.QualifierProperty != null);
+		monikerData.ParentRole = this.GetKnownParent(domainClass);
+		bool hasKnownParent = monikerData.ParentRole != null;
+		
+		if (hasMonikerKey)
+		{
+			if (hasMonikerQualifier)
+			{
+				if (monikerData.KeyProperty == monikerData.QualifierProperty)
+				{	// Key and Qualifier properties are the same one, Custom moniker.
+					monikerData.MonikerKind = MonikerKind.Custom;
+				}
+				else
+				{	// Normal monikers consisting of key and qualifier
+					monikerData.MonikerKind = MonikerKind.Normal;
+				}
+			}
+			else
+			{	// Key as moniker
+				monikerData.MonikerKind = MonikerKind.Normal;
+			}
+		}
+		else if (monikerData.SerializeId)
+		{	// No key, use Id as moniker
+			monikerData.MonikerKind = MonikerKind.Id;
+		}
+		else
+		{	// Cannot be monikerized
+			monikerData.MonikerKind = MonikerKind.None;
+		}
+	}
+	
+	/// <summary>
+	/// Given a DomainClass, find its key/qualifier DomainProperty, and whether it's marked as SerializeId or not.
+	/// </summary>
+	private void GetMonikerRelatedProperties (DomainClass domainClass, out DomainProperty keyProp, out DomainProperty qualifierProp, out bool serializeId, out string monikerAttributeName)
+	{
+		keyProp = null;
+		qualifierProp = null;
+		serializeId = false;
+		monikerAttributeName = null;
+		
+		DomainClass dc = domainClass;
+		while (dc != null && (keyProp == null || qualifierProp == null || !serializeId || string.IsNullOrEmpty(monikerAttributeName)))
+		{
+			if (keyProp == null || qualifierProp == null)
+			{
+				foreach (DomainProperty prop in dc.Properties)
+				{
+					XmlPropertyData pData = prop.XmlElement;
+					if (pData != null)
+					{
+						if (pData.IsMonikerKey && keyProp == null)
+							keyProp = prop;
+						if (pData.IsMonikerQualifier && qualifierProp == null)
+							qualifierProp = prop;
+					}
+				}
+			}
+			if (!serializeId || string.IsNullOrEmpty(monikerAttributeName))
+			{
+				XmlClassData cData = dc.ClassData;
+				if (cData != null)
+				{
+					if (!serializeId)
+						serializeId = cData.SerializeId;
+					if (string.IsNullOrEmpty(monikerAttributeName))
+						monikerAttributeName = cData.MonikerAttributeName;
+				}
+			}
+			dc = dc.BaseClass;
+		}
+		if (dc == null)
+		{
+			MonikerData baseMonikerData = BaseClassHelper.Instance.GetBaseMonikerData(domainClass);
+			if (keyProp == null)
+				keyProp = baseMonikerData.KeyProperty;
+			if (qualifierProp == null)
+				qualifierProp = baseMonikerData.QualifierProperty;
+			if (!serializeId)
+				serializeId = baseMonikerData.SerializeId;
+		}
+		if (string.IsNullOrEmpty(monikerAttributeName))
+		{	// If the domain class can be monikerized, but the moniker attribute name is not specified, use some default value.
+			if (keyProp != null)
+				monikerAttributeName = CodeGenerationUtilities.GetPropertyTagName(keyProp);
+			else if (serializeId)
+				monikerAttributeName = "Id";
+		}
+	}
+
+	/// <summary>
+	/// Are we sure that domainClass will be embedded? - the answer is yes if it has at least one embedding relationship in the current model and at least one of the 
+	/// embedding role players has a multiplicity of 1
+	/// </summary>
+	/// <param name="domainClass"></param>
+	/// <returns></returns>
+	private DomainRole GetKnownParent(DomainClass domainClass)
+	{	
+		DomainClass dc = domainClass;
+
+		while( dc != null )
+		{
+			foreach (DomainRole role in dc.RolesPlayed)
+			{
+				DomainRelationship rel = role.Relationship;
+				if (rel.IsEmbedding && role == rel.Target && role.Multiplicity == Microsoft.VisualStudio.Modeling.DslDefinition.Multiplicity.One && role.IsPropertyGenerator)
+				{
+					return role;
+				}
+			}
+			dc = dc.BaseClass;
+		}
+		
+		return null;
+	}
+}
+
+/// <summary>
+/// Generate Moniker Support into this DomainRelationship class
+/// </summary>
+/// <param name="behavior">XmlSerializationBehavior used to generate the code.</param>
+/// <param name="domainRelationship"></param>
+private void GenerateRelationshipMonikerSupport(XmlSerializationBehavior behavior, DomainRelationship domainRelationship)
+{
+	// embedded relationships are never monikerized
+	if( domainRelationship.IsEmbedding )
+		return;
+
+	string namespaceString = behavior.Namespace;
+	string classTypeString = domainRelationship.GetRelativeName (namespaceString, true);
+	
+	DomainRole nonAnchorRole = domainRelationship.Target;
+	DomainRole anchorRole = nonAnchorRole.Opposite;
+	string relType = domainRelationship.GetRelativeName(namespaceString, true);
+	
+	// HasCustomMonikerSerialization
+	bool hasXmlCustomMoniker = false;
+	if (domainRelationship.XmlRelationshipData != null)
+		hasXmlCustomMoniker = domainRelationship.XmlRelationshipData.HasCustomMonikerSerialization;
+	
+#>
+
+	#region Monikerization Support
+	/// <summary>
+	/// Calculates a Moniker, given a reference to a <#= nonAnchorRole.RolePlayer.Name #>
+	/// </summary>
+	/// <param name="serializationContext">Serialization context.</param>
+	/// <param name="sourceElement">Instance of <#= anchorRole.RolePlayer.Name #> that contains the given serialized reference</param>
+	/// <param name="domainClassId">DomainClassId of the model element that the given moniker string will be resolved to.</param>
+	/// <param name="monikerString">Serialized string reference to an instance of <#= nonAnchorRole.RolePlayer.Name #></param>
+	/// <param name="store">Store where the Moniker will be created</param>
+	/// <returns>A Moniker encapsulating the serialized string reference of <#= nonAnchorRole.RolePlayer.Name #> instance</returns>
+	public override DslModeling::Moniker MonikerizeReference(DslModeling::SerializationContext serializationContext, DslModeling::ModelElement sourceElement, global::System.Guid domainClassId, string monikerString, DslModeling::Store store)
+	{
+<#+
+	if (hasXmlCustomMoniker)
+	{
+#>
+		// HasXmlCustomMoniker == true, calling CustomMonikerizeReference().
+		// Provide your custom implementation with following signature:
+		//   private DslModeling::Moniker CustomMonikerizeReference(DslModeling::SerializationContext serializationContext, DslModeling::ModelElement sourceElement, global::System.Guid domainClassId, string monikerString, DslModeling::Store store);
+		// You can call DefaultMonikerizeReference() for the default implementation.
+		return this.CustomMonikerizeReference(serializationContext, sourceElement, domainClassId, monikerString, store);
+	}
+	
+	/// <summary>
+	/// Default implementation of MonikerizeReference().
+	/// </summary>
+	[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Provided to help custom implementation")]
+	private DslModeling::Moniker DefaultMonikerizeReference(DslModeling::SerializationContext serializationContext, DslModeling::ModelElement sourceElement, global::System.Guid domainClassId, string monikerString, DslModeling::Store store)
+	{
+<#+
+	}
+#>
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(sourceElement != null);
+		if (sourceElement == null)
+			throw new global::System.ArgumentNullException ("sourceElement");
+		global::System.Diagnostics.Debug.Assert (sourceElement is <#= anchorRole.RolePlayer.GetRelativeName(namespaceString, true) #>, "Expecting an instance of <#= anchorRole.RolePlayer.Name #>!");
+		global::System.Diagnostics.Debug.Assert (!string.IsNullOrEmpty (monikerString));
+		if (string.IsNullOrEmpty (monikerString))
+			throw new global::System.ArgumentNullException ("monikerString");
+		global::System.Diagnostics.Debug.Assert(store != null);
+		if (store == null)
+			throw new global::System.ArgumentNullException ("store");
+		#endregion
+		
+		DslModeling::MonikerKey key = null;
+		if (DslModeling::SimpleMonikerResolver.IsFullyQualified(monikerString))
+		{
+			key = new DslModeling::MonikerKey(monikerString, <#= relType #>.DomainClassId, domainClassId, store);
+		}
+		else
+		{
+			DslModeling::DomainClassXmlSerializer sourceSerializer = serializationContext.Directory.GetSerializer(sourceElement.GetDomainClass().Id);
+			global::System.Diagnostics.Debug.Assert(sourceSerializer != null, "Cannot find serializer for " + sourceElement.GetDomainClass().Name + "!");
+			string sourceQualifier = sourceSerializer.GetMonikerQualifier(serializationContext.Directory, sourceElement);
+			key = new DslModeling::MonikerKey(string.Format(global::System.Globalization.CultureInfo.CurrentCulture, "{0}/{1}", sourceQualifier, monikerString), <#= relType #>.DomainClassId, domainClassId, store);
+		}
+		return new DslModeling::Moniker(key, store);
+	}
+
+	/// <summary>
+	/// Calculates a monikerized string reference to a <#= nonAnchorRole.RolePlayer.Name #>.
+	/// </summary>
+	/// <param name="serializationContext">Serialization context.</param>
+	/// <param name="sourceElement">Source side of reference relationship. The referenced target element will be serialized.</param>
+	/// <param name="targetElement">Target side of relationship that will be serialized.</param>
+	/// <returns>A monikerized string reference to target element.</returns>		
+	public override string SerializeReference(DslModeling::SerializationContext serializationContext, DslModeling::ModelElement sourceElement, DslModeling::ModelElement targetElement)
+	{
+<#+
+	if (hasXmlCustomMoniker)
+	{
+#>
+		// HasXmlCustomMoniker == true, calling CustomSerializeReference().
+		// Provide your custom implementation with following signature:
+		//   private string CustomSerializeReference(DslModeling::SerializationContext serializationContext, DslModeling::ModelElement sourceElement, DslModeling::ModelElement targetElement)
+		// You can call DefaultSerializeReference() for the default implementation.
+		return this.CustomSerializeReference(serializationContext, sourceElement, targetElement);
+	}
+	
+	/// <summary>
+	/// Default implementation of SerializeReference().
+	/// </summary>
+	[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Provided to help custom implementation")]
+	private string DefaultSerializeReference(DslModeling::SerializationContext serializationContext, DslModeling::ModelElement sourceElement, DslModeling::ModelElement targetElement)
+	{
+<#+
+	}
+#>
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(serializationContext != null);
+		if (serializationContext == null)
+			throw new global::System.ArgumentNullException("serializationContext");
+		global::System.Diagnostics.Debug.Assert(sourceElement != null);
+		if (sourceElement == null)
+			throw new global::System.ArgumentNullException ("sourceElement");
+		global::System.Diagnostics.Debug.Assert (sourceElement is <#= anchorRole.RolePlayer.GetRelativeName(namespaceString, true) #>, "Expecting an instance of <#= anchorRole.RolePlayer.Name #>!");
+		global::System.Diagnostics.Debug.Assert(targetElement != null);
+		if (targetElement == null)
+			throw new global::System.ArgumentNullException ("targetElement");
+		global::System.Diagnostics.Debug.Assert (targetElement is <#= nonAnchorRole.RolePlayer.GetRelativeName(namespaceString, true) #>, "Expecting an instance of <#= nonAnchorRole.RolePlayer.Name #>!");
+		#endregion
+		
+		// full form reference
+		DslModeling::DomainClassXmlSerializer targetSerializer = serializationContext.Directory.GetSerializer(targetElement.GetDomainClass().Id);
+		global::System.Diagnostics.Debug.Assert(targetSerializer != null, "Cannot find serializer for " + targetElement.GetDomainClass().Name + "!");
+		string targetMoniker = targetSerializer.CalculateQualifiedName(serializationContext.Directory, targetElement);
+		string targetQualifier = targetSerializer.GetMonikerQualifier(serializationContext.Directory, targetElement);
+		
+		if (!string.IsNullOrEmpty(targetQualifier))
+		{
+			DslModeling::DomainClassXmlSerializer sourceSerializer = serializationContext.Directory.GetSerializer(sourceElement.GetDomainClass().Id);
+			global::System.Diagnostics.Debug.Assert(sourceSerializer != null, "Cannot find serializer for " + sourceElement.GetDomainClass().Name + "!");
+			string sourceQualifier = sourceSerializer.GetMonikerQualifier(serializationContext.Directory, sourceElement);
+			if (string.Compare(targetQualifier, sourceQualifier, global::System.StringComparison.CurrentCulture) == 0)
+			{
+				// See if we can create a short form reference by omitting the qualifier
+				global::System.Diagnostics.Debug.Assert(targetMoniker.StartsWith(targetQualifier + "/", global::System.StringComparison.CurrentCulture));
+				string shortFormTargetMoniker = targetMoniker.Substring(targetQualifier.Length + 1);
+				if (!DslModeling::SimpleMonikerResolver.IsFullyQualified(shortFormTargetMoniker))
+					targetMoniker = shortFormTargetMoniker;
+			}
+		}
+
+		return targetMoniker;
+	}
+	#endregion
+<#+
+}
+#>

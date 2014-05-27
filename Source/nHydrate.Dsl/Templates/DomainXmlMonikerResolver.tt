@@ -1,0 +1,174 @@
+<#+
+/// <summary>
+/// Generate a SimpleMonikerResolver implementation that can resolve monikers of domain classes defined in the model associated with the 
+/// given XmlSerializationBehavior.
+/// </summary>
+private void GenerateXmlMonikerResolver (Microsoft.VisualStudio.Modeling.DslDefinition.DslLibrary dm, XmlSerializationBehavior behavior)
+{
+	DomainClass rootClass = null;
+	Microsoft.VisualStudio.Modeling.DslDefinition.Dsl dsl = dm as Microsoft.VisualStudio.Modeling.DslDefinition.Dsl;
+	if (dsl != null)
+	{
+	   rootClass = (dsl.Editor != null) ? dsl.Editor.RootClass : null;
+	}
+
+	string namespaceString = behavior.Namespace;
+	if (!string.IsNullOrEmpty (namespaceString))
+	{
+#>
+
+namespace <#= namespaceString #>
+{
+<#+
+		PushIndent ("\t");
+	}
+	
+	// TODO: frankfan, 02/28/2006, we can add a new meta-attribute to XmlSerializationBehavior to specify moniker resolver name.
+	string behaviorName = behavior.Name;
+	string className = behaviorName + "MonikerResolver";
+#>
+/// <summary>
+/// Moniker resolver for serialization behavior <#= behaviorName #>.
+/// </summary>
+<#= GetTypeAccessModifier(rootClass) #> partial class <#= className #> : <#= className #>Base
+{
+	/// <summary>
+	/// Constructor.
+	/// </summary>
+	/// <param name="store">Store for this moniker resolver.</param>
+	/// <param name="directory">Directory to used by this resolver to look up for serializers.</param>
+	public <#= className #>(DslModeling::Store store, DslModeling::DomainXmlSerializerDirectory directory)
+		: base(store,directory)
+	{
+	}
+}
+
+/// <summary>
+/// Base moniker resolver for serialization behavior <#= behaviorName #>.
+/// </summary>
+<#= GetTypeAccessModifier(rootClass) #> partial class <#= className #>Base : DslModeling::SimpleMonikerResolver
+{
+	#region Member Variables
+	/// <summary>
+	/// Look-up directory to find serializers for domain classes.
+	/// </summary>
+	private DslModeling::DomainXmlSerializerDirectory directory;
+	#endregion
+
+	#region Constructor
+	/// <summary>
+	/// Constructor.
+	/// </summary>
+	/// <param name="store">Store for this moniker resolver.</param>
+	/// <param name="directory">Directory to used by this resolver to look up for serializers.</param>
+	public <#= className #>Base(DslModeling::Store store, DslModeling::DomainXmlSerializerDirectory directory)
+		: base (store)
+	{
+		#region Check Parameters
+		global::System.Diagnostics.Debug.Assert(directory != null);
+		if (directory == null)
+			throw new global::System.ArgumentNullException("directory");
+		#endregion
+
+		this.directory = directory;
+	}
+	#endregion
+
+	#region Base Overrides
+	/// <summary>
+	/// Tells if a DomainClass can be monikerized or not.
+	/// </summary>
+	/// <param name="domainClassInfo">DomainClassInfo of the DomainClass to be checked.</param>
+	/// <returns>True if the DomainClass can be monikerized, false otherwise.</returns>
+	protected override bool CanBeMonikerized(DslModeling::DomainClassInfo domainClassInfo)
+	{
+		if (this.IsDisposed || this.directory == null || domainClassInfo == null)
+			return false;
+			
+		DslModeling::DomainClassXmlSerializer serializer = this.directory.GetSerializer(domainClassInfo.Id);
+		if (serializer != null)
+			return (!string.IsNullOrEmpty(serializer.MonikerTagName));
+		return false;
+	}
+		
+	/// <summary>
+	/// Calculate the fully qualified monikerized string of the given ModelElement.
+	/// </summary>
+	/// <param name="mel">ModelElement to get moniker from.</param>
+	/// <returns>Calculated moniker string, returns null or empty string is the given ModelElement cannot be monikerized.</returns>
+	protected override string CalculateQualifiedName(DslModeling::ModelElement mel)
+	{
+		if (this.IsDisposed || this.directory == null || mel == null)
+			return string.Empty;
+
+		string result = string.Empty;
+		DslModeling::DomainClassXmlSerializer serializer = this.directory.GetSerializer(mel.GetDomainClass().Id);
+		if (serializer != null)
+			result = serializer.CalculateQualifiedName(this.directory, mel);
+		return result;
+	}
+	
+	/// <summary>
+	/// Called at the end of synchronization when they're unresolved monikers.
+	/// </summary>
+	/// <param name="serializationResult">SerializationResult to store error/warning messages.</param>
+	/// <param name="moniker">Unresolved moniker.</param>
+	protected override void OnUnresolvedMoniker(DslModeling::SerializationResult serializationResult, DslModeling::Moniker moniker)
+	{
+		if (serializationResult != null)
+		{
+			<#= behaviorName #>SerializationMessages.UnresolvedMoniker(serializationResult, moniker);
+		}
+	}
+	
+	/// <summary>
+	/// Called when resolving a moniker causes a duplicate link to be created.
+	/// </summary>
+	/// <param name="serializationResult">SerializationResult to store error/warning messages.</param>
+	/// <param name="moniker">Moniker that causes duplicate link to be created.</param>
+	protected override void OnMonikerResolvedToDuplicateLink(DslModeling::SerializationResult serializationResult, DslModeling::Moniker moniker)
+	{
+		if (serializationResult != null)
+		{
+			<#= behaviorName #>SerializationMessages.MonikerResolvedToDuplicateLink(serializationResult, moniker);
+		}
+		base.OnMonikerResolvedToDuplicateLink(serializationResult, moniker);
+	}
+	
+	/// <summary>
+	/// Called when two new elements are giving the same moniker, which will cause ambiguity during moniker resolution.
+	/// </summary>
+	/// <param name="context">SerializationContext to store error/warning messages.</param>
+	/// <param name="moniker">Moniker that both elements give.</param>
+	/// <param name="element1">The first element giving the moniker.</param>
+	/// <param name="element2">The second element giving the same moniker.</param>
+	protected override void OnAmbiguousMoniker(DslModeling::SerializationContext context, string moniker, DslModeling::ModelElement element1, DslModeling::ModelElement element2)
+	{
+		if (context != null)
+		{
+			<#= behaviorName #>SerializationMessages.AmbiguousMoniker(context, moniker, element1, element2);
+		}
+		base.OnAmbiguousMoniker(context, moniker, element1, element2);
+	}
+	
+	/// <summary>
+	/// Error message for UnresolvedMonikerException.
+	/// </summary>
+	[global::System.Diagnostics.DebuggerBrowsable(global::System.Diagnostics.DebuggerBrowsableState.Never)]
+	protected override string UnresolvedMonikerExceptionMessage
+	{
+		[global::System.Diagnostics.DebuggerStepThrough]
+		get { return <#= behaviorName #>SerializationMessages.ResourceManager.GetString("CannotOpenDocument"); }
+	}
+	#endregion
+}
+<#+
+	if (!string.IsNullOrEmpty (namespaceString))
+	{
+		PopIndent ();
+#>
+}
+<#+
+	}
+}
+#>

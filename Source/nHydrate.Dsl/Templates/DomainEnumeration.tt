@@ -1,0 +1,75 @@
+<#+
+// Generate an enum for each DomainEnumeration in the model
+private void GenerateDomainEnumeration(DomainEnumeration domainEnum) 
+{
+	if(!string.IsNullOrEmpty(domainEnum.Namespace))
+	{
+#>
+namespace <#= domainEnum.Namespace #>
+{
+<#+
+		PushIndent("\t");
+	}
+#>
+/// <summary>
+/// DomainEnumeration: <#= domainEnum.Name #>
+<#+
+	GenerateComments(domainEnum.Description);
+#>
+/// </summary>
+<#+
+	GenerateClrAttributes(domainEnum.Attributes);
+	GenerateClsCompliantAttribute(domainEnum.AccessModifier);
+	if(domainEnum.IsFlags)
+	{
+#>
+[global::System.Flags]
+<#+
+	}
+#>
+<#= CodeGenerationUtilities.GetTypeAccessModifier(domainEnum.AccessModifier) #> enum <#= domainEnum.Name #>
+{
+<#+
+	foreach(EnumerationLiteral literal in domainEnum.Literals)
+	{
+#>
+	/// <summary>
+	/// <#= literal.Name #>
+<#+
+		PushIndent("\t");
+		GenerateComments(literal.Description);
+		PopIndent();
+#>
+	/// </summary>
+<#+
+		PushIndent("\t");
+		GenerateClrAttributes(literal.Attributes);
+		GenerateResourceAttributes(literal);
+		PopIndent();
+		if(literal.Value.HasValue)
+		{
+#>
+	<#= literal.Name #> = <#= literal.Value #>,
+<#+
+		}
+		else
+		{
+#>
+	<#= literal.Name #>,
+<#+
+		}
+	}
+#>
+}
+<#+
+	if(!string.IsNullOrEmpty(domainEnum.Namespace))
+	{
+		PopIndent();
+#>
+}
+<#+
+	}
+#>
+<#+
+}
+#>

@@ -1,0 +1,541 @@
+<#+
+
+private void GenerateDomainClassSchema(DomainClass domainClass, DomainClass rootClass, Dictionary<DslLibrary, string> xmlNamespaceQualifiers)
+{
+
+	DomainClassGenerationData context = CreateContextData(domainClass, rootClass, xmlNamespaceQualifiers);
+	
+	EmitElementInstanceDeclaration(context);
+
+	EmitCustomSchemaStart(context.DomainClass.Name, "element", context.HasCustomElementSchema);  // Note: method is defined in DomainSchema.tt
+	
+	if (context.IsLaxElementSchemaRequired)
+	{	
+		EmitElementTypeWithCustomBase(context);
+	}
+	else
+	{
+		EmitElementType(context, xmlNamespaceQualifiers);
+	}
+	
+	EmitCustomSchemaEnd(context.HasCustomElementSchema);  // Note: method is defined in DomainSchema.tt
+}
+
+#region Schema-Related Helper Methods
+
+/// <summary>
+/// If a derived relationship uses the same non-anchor type as the base one, then there's no need to re-define it in the 
+/// generated schema.
+/// </summary>
+private static bool DefinesNewNonAnchor (DomainRelationship domainRelationship)
+{
+	bool result = true;
+	
+	DomainRole nonAnchorRole = domainRelationship.Target;
+	Guid nonAnchorType = nonAnchorRole.RolePlayer.Id;
+	
+	DomainRelationship baseRelationship = domainRelationship.BaseClass as DomainRelationship;
+	while (baseRelationship != null)
+	{
+		string baseClassFullName = baseRelationship.GetFullName(false);
+		if (string.CompareOrdinal (baseClassFullName, typeof(global::Microsoft.VisualStudio.Modeling.ElementLink).FullName) == 0)
+			break;
+		
+		DomainRole nonAnchorBaseRole = baseRelationship.Target;
+		if (nonAnchorBaseRole.RolePlayer.Id == nonAnchorType)
+		{
+			result = false;
+			break;
+		}
+		baseRelationship = baseRelationship.BaseClass as DomainRelationship;
+	}
+	return result;
+}
+
+private static string EscapeXmlSpecialChars(string input)
+{
+	return System.Security.SecurityElement.Escape(input);
+}
+
+/// <summary>
+/// Data class - stores data related to generating the schema for a single domain class
+/// </summary>
+private class DomainClassGenerationData
+{
+	public DomainClass DomainClass {get; set;}
+	public DomainClass RootClass {get; set;}
+	public string CurrentXmlNamespace {get; set;}
+	public string NamespaceString {get; set;}
+	public string XmlTagName {get; set;}
+	public string SchemaTypeName {get; set;}
+	public string BaseClassTagName {get; set;}
+	public string BaseSchemaTypeName {get; set;}
+	public bool IsRelationship {get; set;}
+	public bool IsAbstract {get; set;}
+	public bool IsSealed {get; set;}
+	public bool SerializeId {get; set;}
+	public DomainClass BaseClass {get; set;}
+	public bool IsLaxElementSchemaRequired {get; set;}	
+	public bool HasCustomElementSchema {get; set;}	
+}
+
+
+/// <summary>
+/// Creates and returns the context data object for the specified domainClass
+/// </summary>
+private static DomainClassGenerationData CreateContextData(DomainClass domainClass, DomainClass rootClass, Dictionary<DslLibrary, string> xmlNamespaceQualifiers)
+{
+	DomainClassGenerationData context = new DomainClassGenerationData();
+	context.DomainClass = domainClass;
+	context.RootClass = rootClass;
+	context.NamespaceString = domainClass.Namespace;
+	context.CurrentXmlNamespace = CodeGenerationUtilities.GetXmlSchemaNamespace(domainClass.DslLibrary);
+	context.XmlTagName = CodeGenerationUtilities.GetDomainClassXmlTagName (domainClass, context.CurrentXmlNamespace, xmlNamespaceQualifiers);
+	context.SchemaTypeName = CodeGenerationUtilities.GetDomainClassSchemaTypeName (domainClass, context.CurrentXmlNamespace, xmlNamespaceQualifiers);
+	context.BaseClassTagName = CodeGenerationUtilities.GetBaseDomainClassXmlTagName(domainClass, context.CurrentXmlNamespace, xmlNamespaceQualifiers);
+	context.BaseSchemaTypeName = CodeGenerationUtilities.GetBaseDomainClassSchemaTypeName(domainClass, context.CurrentXmlNamespace, xmlNamespaceQualifiers);
+	context.IsRelationship = (domainClass is DomainRelationship);
+	context.IsAbstract = (domainClass.InheritanceModifier == InheritanceModifier.Abstract);
+	context.IsSealed = (domainClass.InheritanceModifier == InheritanceModifier.Sealed);
+	context.BaseClass = (CodeGenerationUtilities.IsRootClass (domainClass) ? null : domainClass.BaseClass);
+
+	context.HasCustomElementSchema = domainClass.ClassData.HasCustomElementSchema;
+	context.IsLaxElementSchemaRequired = CodeGenerationUtilities.IsLaxElementSchemaRequired(domainClass);
+	
+	context.SerializeId = false;
+	if (domainClass.ClassData != null && domainClass.ClassData.SerializeId)
+	{
+		context.SerializeId = true;
+	}
+		
+	if (context.IsRelationship)
+	{	// Consider a relationship "AHasBs" that connects two domain classes "A" and "B". If "AHasBs" is not abstract,
+		// we will go through "A.Bs" to serialize all instances of "AHasBs". Now if "AHasBs" is not sealed, some of these
+		// instances can be of derived types of "AHasBs", so we need to serialize those instances in full-form (so that
+		// we can create the correct derived instance when deserializing). If "AHasBs" itself is not marked as "UseFullForm",
+		// then the serialized instances will be mixed with the target role-player and derived instances of "AHasBs" 
+		// (in full-form). For example:
+		// <A>
+		//   <Bs>
+		//     <B name="B1" />
+		//     <AHasSpecialB>
+		//       <SpecialB name="B2" />
+		//     </AHasSpecialB>
+		//     <B name="B3" />
+		//   </B>
+		// </A>
+		// To define the schema properly, we will use a "xsd:choice" to capture that there are two kinds of allowed child elements:
+		// target role-player and derived instances of the relationship itself. To make the schema precise, we also need to 
+		// constraint that only derived types of the relationship are allowed, the relationship itself is not allowed. To do this,
+		// we define "AHasBs" as abstract in the generated schema (even though it is not), so that the type itself will not be allowed
+		// to appear in the <Bs> tag, but all the derived types will be valid. Since "AHasBs" is not marked with UseFullForm, it will 
+		// never appear as a stand-alone tag anyway, which makes it effectively an abstract relationship. This way, we can dinstinguish 
+		// the derived types from the relationship itself.
+		// Only the most-base non-abstract short-form relationship will require this special treatment.
+		if (!context.IsAbstract && !context.IsSealed && !CodeGenerationUtilities.HasNonAbstractBaseClass (domainClass) && !CodeGenerationUtilities.UseFullForm (domainClass as DomainRelationship))
+		{
+			context.IsAbstract = true;
+		}
+	}
+
+	return context;
+}
+
+#endregion
+
+#region Output method(s)
+
+// **************************
+// Output method(s)
+// **************************
+
+/// <summary>
+/// Returns the XML for the "abstract" and "final" XSD attributes.
+/// </summary>
+/// <remarks>
+/// The string return by this method will either be empty, or will contain XML attributes followed by a single space.
+/// </remarks>
+private static string GetAbstractSealedAttributes(DomainClassGenerationData context)
+{
+	return (context.IsAbstract ? "abstract=\"true\" " : string.Empty) + (context.IsSealed ? "final=\"#all\" " : string.Empty);
+}
+
+/// <summary>
+/// Outputs the xsd:element declaration for a domain class.
+/// </summary>
+/// <remarks>
+/// the declaration varies slightly depending on whether the domain class, or
+/// any of its base classes, has a custom serializer.
+/// </remarks>
+private void EmitElementInstanceDeclaration(DomainClassGenerationData context)
+{
+#>
+<!-- <#= context.DomainClass.Name #> -->
+<#+
+	if (context.IsLaxElementSchemaRequired)
+	{
+#>
+<xsd:element name="<#= context.XmlTagName #>" <#= GetAbstractSealedAttributes(context) #>type="<#= context.SchemaTypeName #>" />
+<#+
+	}
+	else
+	{
+#>
+<xsd:element name="<#= context.XmlTagName #>" <#= GetAbstractSealedAttributes(context) #>type="<#= context.SchemaTypeName #>" <#= (string.IsNullOrEmpty(context.BaseClassTagName) ? string.Empty : "substitutionGroup=\"" + context.BaseClassTagName + "\" ") #>/>
+<#+
+	}
+}
+
+/// <summary>
+/// Outputs the xsd:complexType declaration for a domain class that has a custom base serializer
+/// </summary>
+/// <remarks>
+/// If the domain class (or any of its parent) is defined with customized methods, then the XML can appear in any form.
+/// So we generate the schema to accept any well-formed XML.
+/// </remarks>
+private void EmitElementTypeWithCustomBase(DomainClassGenerationData context)
+{
+	System.Diagnostics.Debug.Assert(context.IsLaxElementSchemaRequired);
+#>
+<xsd:complexType name="<#= context.SchemaTypeName #>" <#= GetAbstractSealedAttributes(context) #>mixed="true">
+<#+ EmitElementTypeDocumentation(context); #>
+  <xsd:sequence>
+    <xsd:any minOccurs="0" maxOccurs="unbounded" processContents="lax" />
+  </xsd:sequence>
+  <xsd:anyAttribute processContents="lax" />
+</xsd:complexType>
+
+<#+
+}
+
+/// <summary>
+/// Outputs the documentation for the domain class element type
+/// </summary>
+private void EmitElementTypeDocumentation(DomainClassGenerationData context)
+{
+	string documentation = string.Empty;
+	if (!context.DomainClass.IsDescriptionTracking && !string.IsNullOrEmpty(context.DomainClass.Description))
+	{
+		documentation = string.Format("<xsd:documentation>{0}</xsd:documentation>", 
+			EscapeXmlSpecialChars(context.DomainClass.Description));
+	}
+	if (context.IsLaxElementSchemaRequired)
+	{
+		documentation += "<xsd:documentation>[This class or one of its base class has custom implementation, so the content is unbounded]</xsd:documentation>";
+	}
+	
+	if (!string.IsNullOrEmpty(documentation))
+	{
+#>
+  <xsd:annotation>
+    <#= documentation #>
+  </xsd:annotation>
+<#+
+	}
+}
+
+
+/// <summary>
+/// Outputs the xsd:extension element, if required.
+/// </summary>
+/// <remarks>
+/// If a domain class has a base schema type, then it's type will
+/// be defined as an extension of that base type.
+/// </remarks>
+private void EmitElementExtensionStart(DomainClassGenerationData context)
+{
+	if (!string.IsNullOrEmpty (context.BaseSchemaTypeName))
+	{
+#>
+  <xsd:complexContent>
+    <xsd:extension base="<#= context.BaseSchemaTypeName #>">
+<#+
+		PushIndent ("    ");  
+	}
+}
+
+/// <summary>
+/// Outputs the /xsd:extension element, if required.
+/// </summary>
+private void EmitElementExtensionEnd(DomainClassGenerationData context)
+{
+	if (!string.IsNullOrEmpty (context.BaseSchemaTypeName))
+	{
+		PopIndent ();
+#>
+    </xsd:extension>
+  </xsd:complexContent>
+<#+
+	}
+}
+
+/// <summary>
+/// Outputs the xsd:complextype declaration for a "normal" domain class
+/// (i.e. one that does not have a custom serializer / does not inherit
+/// from a custom serializer.
+/// </summary>
+private void EmitElementType(DomainClassGenerationData context, Dictionary<DslLibrary, string> xmlNamespaceQualifiers)
+{
+#>
+<xsd:complexType name="<#= context.SchemaTypeName #>"<#= (context.IsAbstract ? " abstract=\"true\" " : string.Empty) #><#= (context.IsSealed ? " final=\"#all\"" : string.Empty)#>>
+<#+
+		EmitElementTypeDocumentation(context);
+	
+		EmitElementExtensionStart(context);
+
+		// Properties of this domain class that will be serialized as XML attributes.
+		int calculatedAttribPropCount;
+		List<DomainProperty> attribProps = CodeGenerationUtilities.GetAttributeProperties (context.DomainClass, out calculatedAttribPropCount);
+		CodeGenerationUtilities.SortProperties (attribProps);
+		
+		// Properties of this domain class that will be serialized as nested XML elements.
+		int calculatedElementPropCount;
+		List<DomainProperty> elementProps = CodeGenerationUtilities.GetElementProperties (context.DomainClass, out calculatedElementPropCount);
+		CodeGenerationUtilities.SortProperties (elementProps);
+		
+		// All relationships on this domain class.
+		List<DomainRole> roles = GetSerializedRelationships (context.DomainClass);
+		CodeGenerationUtilities.SortRoles (roles);
+		
+		if (elementProps.Count > 0 || roles.Count > 0 || (context.IsRelationship && DefinesNewNonAnchor (context.DomainClass as DomainRelationship)))
+		{	// Generate schema for each allowed child XML element.
+#>
+  <xsd:sequence minOccurs="0" maxOccurs="1">
+<#+
+
+			bool isBaseRelationship = context.IsRelationship && (CodeGenerationUtilities.IsRootClass(context.DomainClass));
+
+			// Non-anchor end of the base relationship
+			if (isBaseRelationship)
+			{
+				DomainRole nonAnchorRole = (context.DomainClass as DomainRelationship).Target;
+				DomainClass nonAnchorClass = nonAnchorRole.RolePlayer;
+				string nonAnchorTagName = CodeGenerationUtilities.GetDomainClassXmlTagName (nonAnchorClass, context.CurrentXmlNamespace, xmlNamespaceQualifiers);
+#>
+    <!-- Target end <#= nonAnchorClass.Name #> -->
+<#+
+				if (((DomainRelationship)context.DomainClass).IsEmbedding)
+				{	// Containment relationship. The element will be serialized inline here, so generate
+					// a "ref" to the schema definition of the DomainClass of the contained role.
+#>
+    <xsd:element ref="<#= nonAnchorTagName #>" minOccurs="1" maxOccurs="1">
+      <xsd:annotation>
+        <xsd:documentation>[Target role-player]</xsd:documentation>
+      </xsd:annotation>
+    </xsd:element>
+<#+
+				}
+				else
+				{	// Reference relationship. A moniker will be serialized here, so generate the schema 
+					// definition for that.
+#>
+    <xsd:element ref="<#= CodeGenerationUtilities.GetDomainClassMonikerTagName (nonAnchorClass, context.CurrentXmlNamespace, xmlNamespaceQualifiers) #>" minOccurs="1" maxOccurs="1">
+      <xsd:annotation>
+        <xsd:documentation>[Target role-player]</xsd:documentation>
+      </xsd:annotation>
+    </xsd:element>
+<#+
+				}
+			}
+
+			// Properties serialized nested XML elements.
+			foreach (DomainProperty elementProp in elementProps)
+			{
+#>
+    <!-- Property: <#= elementProp.Name #> -->
+    <xsd:element name="<#= CodeGenerationUtilities.GetPropertyTagName (elementProp) #>" type="<#= CodeGenerationUtilities.MapToSchemaType (elementProp.Type) #>" minOccurs="0" maxOccurs="1"<#+
+				if (!elementProp.IsDescriptionTracking && !string.IsNullOrEmpty(elementProp.Description))
+				{
+#>>
+      <xsd:annotation>
+        <xsd:documentation><#= EscapeXmlSpecialChars(elementProp.Description) #></xsd:documentation>
+      </xsd:annotation>
+    </xsd:element>
+<#+
+				}
+				else
+				{
+#> />
+<#+
+				}
+			}
+			
+			// Child elements.
+			foreach (DomainRole role in roles)
+			{
+				DomainRelationship rel = role.Relationship;
+				DomainRole nonAnchorRole = role.Opposite;
+				DomainClass nonAnchorClass = nonAnchorRole.RolePlayer;
+				bool allowMultiple = CodeGenerationUtilities.AllowMultiple (role);
+				string minOccurs = "0";
+				if (role.Multiplicity == Microsoft.VisualStudio.Modeling.DslDefinition.Multiplicity.One || role.Multiplicity == Microsoft.VisualStudio.Modeling.DslDefinition.Multiplicity.OneMany)
+				{	// At least one instance of this relationship is required.
+					minOccurs = "1";
+				}
+#>
+    <!-- Relationship: <#= rel.Name #> -->
+<#+
+				bool omitElement = CodeGenerationUtilities.OmitElement (rel);
+				if (!omitElement)
+				{	// Schema for the relationship element tag.
+					
+#>
+    <xsd:element name="<#= CodeGenerationUtilities.GetRelationshipTagName (role) #>" minOccurs="<#= minOccurs #>" maxOccurs="1">
+      <xsd:annotation>
+<#+
+					if (allowMultiple)
+					{
+#>
+        <xsd:documentation>Instances of <#= rel.Name #></xsd:documentation>
+<#+
+					}
+					else
+					{
+#>
+        <xsd:documentation>Instance of <#= rel.Name #></xsd:documentation>
+<#+
+					}
+#>
+      </xsd:annotation>
+      <xsd:complexType>
+        <xsd:sequence>
+<#+
+					PushIndent ("      ");
+				}
+				if (CodeGenerationUtilities.UseFullForm (rel))
+				{	// The relationship instance will be serialized as a stand-alone tag.
+#>
+    <xsd:element ref="<#= CodeGenerationUtilities.GetDomainClassXmlTagName (rel, context.CurrentXmlNamespace, xmlNamespaceQualifiers) #>" minOccurs="<#= minOccurs #>" maxOccurs="<#= (allowMultiple ? "unbounded" : "1") #>">
+      <xsd:annotation>
+        <xsd:documentation>[Instance of <#= rel.Name #> needs to be serialized in full-form]</xsd:documentation>
+      </xsd:annotation>
+    </xsd:element>
+<#+
+				}
+				else
+				{
+					bool sealedRel = (rel.InheritanceModifier == InheritanceModifier.Sealed);
+					string occcursString = "minOccurs=\"" + minOccurs + "\" maxOccurs=\"" + (allowMultiple ? "unbounded" : "1") + "\" ";
+					if (!sealedRel)
+					{	// For a non-sealed relationship, the allowed content here will be mix of non-anchor role-player and derived relationships (in full-form),
+						// so generate a "xsd:choice".
+#>
+    <xsd:choice <#= occcursString #>>
+      <xsd:element ref="<#= CodeGenerationUtilities.GetDomainClassXmlTagName (rel, context.CurrentXmlNamespace, xmlNamespaceQualifiers) #>">
+        <xsd:annotation>
+          <xsd:documentation>[Relationship deriving from <#= rel.Name #> needs to be serialized in full-form]</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+<#+
+						occcursString = string.Empty;
+						PushIndent ("  ");
+					}
+					if (rel.IsEmbedding)
+					{	// Containment relationship. The element will be serialized inline here, so generate
+						// a "ref" to the schema definition of the DomainClass of the contained role.
+#>
+    <xsd:element ref="<#= CodeGenerationUtilities.GetDomainClassXmlTagName (nonAnchorClass, context.CurrentXmlNamespace, xmlNamespaceQualifiers) #>" <#= occcursString #>>
+      <xsd:annotation>
+        <xsd:documentation>[Target role-player]</xsd:documentation>
+      </xsd:annotation>
+    </xsd:element>
+<#+
+					}
+					else
+					{	// Reference relationship. A moniker will be serialized here, so generate the schema 
+						// definition for that.
+#>
+    <xsd:element ref="<#= CodeGenerationUtilities.GetDomainClassMonikerTagName (nonAnchorClass, context.CurrentXmlNamespace, xmlNamespaceQualifiers) #>" <#= occcursString #>>
+      <xsd:annotation>
+        <xsd:documentation>[Target role-player]</xsd:documentation>
+      </xsd:annotation>
+    </xsd:element>
+<#+
+					}
+					if (!sealedRel)
+					{
+						PopIndent ();
+#>
+    </xsd:choice>
+<#+
+					}
+				}
+				
+				if (!omitElement)
+				{
+					PopIndent ();
+#>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:element>
+<#+
+				}
+			}
+#>
+  </xsd:sequence>
+<#+
+		}
+		
+		// If SerializeId is true, need to write an Id attribute
+		if (context.SerializeId)
+		{
+#>
+  <!-- Id -->
+  <xsd:attribute name="Id" type="xsd:string">
+    <xsd:annotation>
+      <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:attribute>
+<#+
+		}
+		
+		// If this is a root DomainClass, need to write a "dslVersion" attribute. 
+		// TODO: how to handle custom version support that doesn't use "dslVersion" attribute?
+		if (context.DomainClass == context.RootClass)
+		{	// Not force the attribute here, so custom version support doesn't have to use the attribute.
+#>
+  <!-- dslVersion -->
+  <xsd:attribute name="dslVersion" type="xsd:string">
+    <xsd:annotation>
+      <xsd:documentation>Version of the model serialized in this file.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:attribute>
+<#+
+		}
+				
+		// Domain properties serialized as XML attributes.
+		foreach (DomainProperty attribProp in attribProps)
+		{
+			bool isMonikerKey = attribProp.XmlElement == null ? false : attribProp.XmlElement.IsMonikerKey;
+			bool isMonikerQualifier = attribProp.XmlElement == null ? false : attribProp.XmlElement.IsMonikerQualifier;
+#>
+  <!-- Property: <#= attribProp.Name #> -->
+  <xsd:attribute name="<#= CodeGenerationUtilities.GetPropertyTagName (attribProp) #>" type="<#= CodeGenerationUtilities.MapToSchemaType (attribProp.Type) #>" <#= ((isMonikerKey || isMonikerQualifier) ? "use=\"required\" " : string.Empty) #><#+
+			if (!attribProp.IsDescriptionTracking && !string.IsNullOrEmpty(attribProp.Description))
+			{
+#>>
+    <xsd:annotation>
+      <xsd:documentation><#= EscapeXmlSpecialChars(attribProp.Description) #></xsd:documentation>
+    </xsd:annotation>
+  </xsd:attribute>
+<#+
+			}
+			else
+			{
+#>/>
+<#+
+			}
+		}
+		
+		EmitElementExtensionEnd(context);
+	
+#>
+</xsd:complexType>
+
+<#+
+} // method EmitElementType
+
+
+#endregion
+
+#>

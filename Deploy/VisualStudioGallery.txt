@@ -1,0 +1,18 @@
+CATEGORY
+Data
+Modeling
+Team Development
+
+TAGS
+Modeling, Data Visualization, Database, ORM, hibernate
+
+HTML
+<div><a style="text-decoration: underline; color: #5499d3;" title="nHydrate Home" href="http://nhydrate.codeplex.com" target="_blank"><img id="93409" style="margin-bottom: 0px;" src="/site/view/file/93409/1/nhydrate-small.png" alt="" width="250" height="75" /> </a>
+<p style="text-align: justify; color: #6c6b6b; line-height: 18px;"><a href="/site/view/file/93412/1/vsix-gallery.png" target="_blank"><img id="93412" src="/site/view/file/93412/1/vsix-gallery-small.png" border="0" alt="" width="350" height="260" /></a></p>
+<p style="font-size: 20px; color: #333; height: 30px; margin-top: 10px; margin-bottom: 20px; padding-left: 8px;">nHydrate.org</p>
+<p style="text-align: justify; color: #6c6b6b; line-height: 18px;">You can manage your whole architectural framework from the modeler. The generated code allows you manage your database and all underlying framework code. You literally can concentrate on the business  rules of your application not the framework. The data layer is completely Entity Framework based with database management built-in.</p>
+<p style="text-align: justify; color: #6c6b6b; line-height: 18px;"><span style="line-height: 18px;">Model your application and let the modeler manage your database for you. The framework versions the database and handles all upgrades with automatically generated  upgrade scripts. The database installer can be run from the command line, the VS.NET environment, or as part of your custom installation application.</span></p>
+<p style="text-align: justify; color: #6c6b6b; line-height: 18px;"><span style="line-height: 18px;">Try the sample Acme Sales application. Click <a href="http://nhydrate.codeplex.com/downloads/get/84554">here</a>&nbsp;to download.</span></p>
+<p style="text-align: justify; color: #6c6b6b; line-height: 18px;"><span style="line-height: 18px;">Also see the <a href="http://nhydrate.codeplex.com/downloads/get/87269">Getting Started</a> document and the <a href="http://nhydrate.codeplex.com/downloads/get/94926">User's Guide</a>.</span></p>
+<div align="center"><a style="text-decoration: underline; color: #5499d3;" title="feedback@nhydrate.org" href="mailto:feedback@nhydrate.org" target="_blank">feedback@nhydrate.org</a>&nbsp; |&nbsp;&nbsp; <a style="text-decoration: underline; color: #5499d3;" href="http://nhydrate.codeplex.com" target="_blank"> nhydrate.codeplex.com</a></div>
+</div>

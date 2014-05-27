@@ -1,0 +1,406 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7AFCBF23-3095-4767-8E46-9CAAC73F47DB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>nHydrate.Generator.Resources</RootNamespace>
+    <AssemblyName>nHydrate.Generator.Resources</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.CoreUtility.dll">
+      <Link>Microsoft.VisualStudio.CoreUtility.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.Modeling.Sdk.11.0.dll">
+      <Link>Microsoft.VisualStudio.Modeling.Sdk.11.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.Modeling.Sdk.Diagrams.11.0.dll">
+      <Link>Microsoft.VisualStudio.Modeling.Sdk.Diagrams.11.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.Modeling.Sdk.Diagrams.GraphObject.11.0.dll">
+      <Link>Microsoft.VisualStudio.Modeling.Sdk.Diagrams.GraphObject.11.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.Modeling.Sdk.Shell.10.0.dll">
+      <Link>Microsoft.VisualStudio.Modeling.Sdk.Shell.10.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.Modeling.Sdk.Shell.11.0.dll">
+      <Link>Microsoft.VisualStudio.Modeling.Sdk.Shell.11.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.OLE.Interop.dll">
+      <Link>Microsoft.VisualStudio.OLE.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.Shell.11.0.dll">
+      <Link>Microsoft.VisualStudio.Shell.11.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.Shell.Immutable.10.0.dll">
+      <Link>Microsoft.VisualStudio.Shell.Immutable.10.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.Shell.Immutable.11.0.dll">
+      <Link>Microsoft.VisualStudio.Shell.Immutable.11.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.Shell.Interop.8.0.dll">
+      <Link>Microsoft.VisualStudio.Shell.Interop.8.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.Shell.Interop.9.0.dll">
+      <Link>Microsoft.VisualStudio.Shell.Interop.9.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.Shell.Interop.dll">
+      <Link>Microsoft.VisualStudio.Shell.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.TextManager.Interop.10.0.dll">
+      <Link>Microsoft.VisualStudio.TextManager.Interop.10.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.TextManager.Interop.11.0.dll">
+      <Link>Microsoft.VisualStudio.TextManager.Interop.11.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.TextManager.Interop.8.0.dll">
+      <Link>Microsoft.VisualStudio.TextManager.Interop.8.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.TextManager.Interop.9.0.dll">
+      <Link>Microsoft.VisualStudio.TextManager.Interop.9.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.TextManager.Interop.dll">
+      <Link>Microsoft.VisualStudio.TextManager.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.Core.SQLGeneration.pdb">
+      <Link>nHydrate.Core.SQLGeneration.pdb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.TextTemplating.11.0.dll">
+      <Link>Microsoft.VisualStudio.TextTemplating.11.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.TextTemplating.Interfaces.10.0.dll">
+      <Link>Microsoft.VisualStudio.TextTemplating.Interfaces.10.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.TextTemplating.Interfaces.11.0.dll">
+      <Link>Microsoft.VisualStudio.TextTemplating.Interfaces.11.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.TextTemplating.VSHost.11.0.dll">
+      <Link>Microsoft.VisualStudio.TextTemplating.VSHost.11.0.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.XmlEditor.dll">
+      <Link>Microsoft.VisualStudio.XmlEditor.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
+      <Link>Properties\AssemblyInfoGeneratorCommon.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Microsoft.VisualStudio.Shell.Interop.10.0.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\bin\nHydrate.Core.SQLGeneration.dll">
+      <Link>nHydrate.Core.SQLGeneration.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.DataImport.dll">
+      <Link>nHydrate.DataImport.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.DataImport.MySqlClient.dll">
+      <Link>nHydrate.DataImport.MySqlClient.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.DataImport.SqlClient.dll">
+      <Link>nHydrate.DataImport.SqlClient.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.EFCore.dll">
+      <Link>nHydrate.EFCore.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.Generator.Common.dll">
+      <Link>nHydrate.Generator.Common.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.Generator.Datasite.dll">
+      <Link>nHydrate.Generator.Datasite.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.Generator.DataTransfer.dll">
+      <Link>nHydrate.Generator.DataTransfer.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.Generator.dll">
+      <Link>nHydrate.Generator.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.Generator.EFDAL.dll">
+      <Link>nHydrate.Generator.EFDAL.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+      <Content Include="..\..\bin\nHydrate.Generator.EFCodeFirst.dll">
+          <Link>nHydrate.Generator.EFCodeFirst.dll</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\..\bin\nHydrate.Generator.EFDAL.Interfaces.dll">
+      <Link>nHydrate.Generator.EFDAL.Interfaces.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.Generator.EFDAL.Mocks.dll">
+      <Link>nHydrate.Generator.EFDAL.Mocks.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.Generator.MySQLInstaller.dll">
+      <Link>nHydrate.Generator.MySQLInstaller.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.Generator.SQLInstaller.dll">
+      <Link>nHydrate.Generator.SQLInstaller.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.Generator.XSDSchema.dll">
+      <Link>nHydrate.Generator.XSDSchema.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\bin\nHydrate.Wizard.dll">
+      <Link>nHydrate.Wizard.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\database.csproj">
+      <Link>database.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\database.vstemplate">
+      <Link>database.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\databasemysql.csproj">
+      <Link>databasemysql.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\databasemysql.vstemplate">
+      <Link>databasemysql.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\datatransfer.csproj">
+      <Link>datatransfer.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\datatransfer.vstemplate">
+      <Link>datatransfer.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\documentation.csproj">
+      <Link>documentation.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\documentation.vstemplate">
+      <Link>documentation.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\efcodefirst.csproj">
+      <Link>efcodefirst.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\efcodefirst.vstemplate">
+      <Link>efcodefirst.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\efdal.csproj">
+      <Link>efdal.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\efdal.vstemplate">
+      <Link>efdal.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\efdalinterfaces.csproj">
+      <Link>efdalinterfaces.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\efdalinterfaces.vstemplate">
+      <Link>efdalinterfaces.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\efdalmocks.csproj">
+      <Link>efdalmocks.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\efdalmocks.vstemplate">
+      <Link>efdalmocks.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\iocextensions.csproj">
+      <Link>iocextensions.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\iocextensions.vstemplate">
+      <Link>iocextensions.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\mockproxy.csproj">
+      <Link>mockproxy.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\mockproxy.vstemplate">
+      <Link>mockproxy.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\serviceinterfaces.csproj">
+      <Link>serviceinterfaces.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\serviceinterfaces.vstemplate">
+      <Link>serviceinterfaces.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\testwebapplication.csproj">
+      <Link>testwebapplication.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\testwebapplication.vstemplate">
+      <Link>testwebapplication.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\wcfproxy.csproj">
+      <Link>wcfproxy.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\wcfproxy.vstemplate">
+      <Link>wcfproxy.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\wcfservice.csproj">
+      <Link>wcfservice.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\VSADDIN\wcfservice.vstemplate">
+      <Link>wcfservice.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\ThirdParty\DiffPlex.dll">
+      <Link>DiffPlex.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\FastColoredTextBox.dll">
+      <Link>FastColoredTextBox.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\MySql.Data.dll">
+      <Link>MySql.Data.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\nHydrate.SyncServer.Client.dll">
+      <Link>nHydrate.SyncServer.Client.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\nHydrate.SyncServer.Service.Interfaces.dll">
+      <Link>nHydrate.SyncServer.Service.Interfaces.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\Docs\GettingStarted.pdf">
+      <Link>GettingStarted.pdf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Docs\UsersGuide.pdf">
+      <Link>UsersGuide.pdf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

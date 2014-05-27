@@ -1,0 +1,191 @@
+<#+
+/// <summary>
+/// Generate a XmlSerializationBehavior implementation that contains a mapping from DomainClasses defined in this domain model to
+/// the generated serializers.
+/// </summary>
+private void GenerateXmlSerializationBehavior (Microsoft.VisualStudio.Modeling.DslDefinition.DslLibrary dm, XmlSerializationBehavior behavior, List<KeyValuePair<DomainClass, string>> generatedSerializers)
+{
+	DomainClass rootClass = null;
+	Microsoft.VisualStudio.Modeling.DslDefinition.Dsl dsl = dm as Microsoft.VisualStudio.Modeling.DslDefinition.Dsl;
+	if (dsl != null)
+	{
+	   rootClass = (dsl.Editor != null) ? dsl.Editor.RootClass : null;
+	}
+	
+	string namespaceString = behavior.Namespace;
+	OpenNamespace(namespaceString);
+
+	string className = behavior.Name;
+	string targetNamespace = CodeGenerationUtilities.GetXmlSchemaNamespace(DslLibrary);
+#>
+/// <summary>
+/// A DomainXmlSerializationBehavior implementation for defined behavior <#= className #>.
+/// This is the abstract base of the double-derived implementation.
+/// </summary>
+[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Generated code.")]		
+<#= GetTypeAccessModifier(rootClass) #> abstract class <#= className #>Base : DslModeling::DomainXmlSerializationBehavior
+{
+<#+
+
+	if (!string.IsNullOrEmpty(targetNamespace))
+	{
+#>
+	///<summary>
+	/// The xml namespace used by this domain model when serializing
+	///</summary>
+	public const string DomainModelXmlNamespace = @"<#= targetNamespace #>";
+<#+
+
+	}
+#>
+
+	#region Member Variables
+	/// <summary>
+	/// A list of DomainClass Ids mapped to DomainClassXmlSerializer types.
+	/// </summary>
+	private static global::System.Collections.Generic.List<DslModeling::DomainXmlSerializerDirectoryEntry> serializerTypes;
+
+	/// <summary>
+	/// A list of xml namespaces mapped to domain model types.
+	/// </summary>
+	private static global::System.Collections.Generic.List<DslModeling::DomainXmlSerializerNamespaceEntry> namespaceEntries;
+
+	#endregion
+
+	#region Constructor
+	/// <summary>
+	/// Protected constructor to prevent public instantiation.
+	/// </summary>
+	protected <#= className #>Base() : base() { }
+	#endregion
+	
+	#region Protected Methods
+	/// <summary>
+	/// Allows custom serializers to be added.
+	/// Base implementation doesn't do anything.
+	/// </summary>
+	/// <returns>Custom serializer types, null or empty list if there's no custom serializer types.</returns>
+	[global::System.Diagnostics.DebuggerBrowsable(global::System.Diagnostics.DebuggerBrowsableState.Never)]
+	protected virtual global::System.Collections.ObjectModel.ReadOnlyCollection<DslModeling::DomainXmlSerializerDirectoryEntry> CustomSerializerTypes
+	{
+		[global::System.Diagnostics.DebuggerStepThrough]
+		get { return null; }
+	}
+	#endregion
+
+	#region Public Methods
+	/// <summary>
+	/// This provides a mapping from DomainClass Id to DomainXmlSerializer implementation types.
+	/// </summary>
+	[global::System.Diagnostics.DebuggerBrowsable (global::System.Diagnostics.DebuggerBrowsableState.Never)]	// Will trigger creation otherwise.
+	[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Generated code.")]		
+	public override global::System.Collections.ObjectModel.ReadOnlyCollection<DslModeling::DomainXmlSerializerDirectoryEntry> AllSerializers
+	{
+		get
+		{
+			if (<#= className #>.serializerTypes == null)
+			{
+				global::System.Collections.ObjectModel.ReadOnlyCollection<DslModeling::DomainXmlSerializerDirectoryEntry> customSerializerTypes = this.CustomSerializerTypes;
+				int customSerializerCount = (customSerializerTypes == null ? 0 : customSerializerTypes.Count);
+				<#= className #>.serializerTypes = new global::System.Collections.Generic.List<DslModeling::DomainXmlSerializerDirectoryEntry>(<#= generatedSerializers.Count #> + customSerializerCount);
+
+				#region Serializers defined in this model
+<#+
+	foreach (KeyValuePair<DomainClass, string> pair in generatedSerializers)
+	{
+#>
+				<#= className #>.serializerTypes.Add(new DslModeling::DomainXmlSerializerDirectoryEntry(<#= pair.Key.GetRelativeName(namespaceString, true) #>.DomainClassId, typeof(<#= pair.Value #>)));
+<#+
+	}
+#>
+				#endregion
+				
+				// Custom ones
+				if (customSerializerCount > 0)
+				{
+					<#= className #>.serializerTypes.AddRange(customSerializerTypes);
+				}
+			}
+			return <#= className #>.serializerTypes.AsReadOnly();
+		}
+	}
+	
+	/// <summary>
+	/// This provides a mapping from xml namespaces to domain model implementation types.
+	/// </summary>
+	[global::System.Diagnostics.DebuggerBrowsable (global::System.Diagnostics.DebuggerBrowsableState.Never)]	// Will trigger creation otherwise.
+	//[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Generated code.")]		
+	public override global::System.Collections.ObjectModel.ReadOnlyCollection<DslModeling::DomainXmlSerializerNamespaceEntry> AllNamespaces
+	{
+		get
+		{
+			if (<#= className #>.namespaceEntries == null)
+			{
+				<#= className #>.namespaceEntries = new global::System.Collections.Generic.List<DslModeling::DomainXmlSerializerNamespaceEntry>();
+<#+
+	if (!string.IsNullOrEmpty(targetNamespace))
+	{
+#>
+				<#= className #>.namespaceEntries.Add(new DslModeling::DomainXmlSerializerNamespaceEntry(DomainModelXmlNamespace, typeof(<#= this.DslLibrary.GetFullName(true) #>DomainModel)));
+<#+
+	}
+#>
+			}
+			return <#= className #>.namespaceEntries.AsReadOnly();
+		}
+	}
+	
+	#endregion
+}
+
+/// <summary>
+/// A DomainXmlSerializationBehavior implementation for defined behavior <#= className #>.
+/// This is the concrete type of the double-derived implementation.
+/// </summary>
+<#= GetTypeAccessModifier(rootClass) #> sealed partial class <#= className #> : <#= className #>Base
+{
+	#region Singleton Instance
+	/// <summary>
+	/// Singleton instance.
+	/// </summary>
+	private static <#= className #> instance;
+
+	/// <summary>
+	/// Singleton instance.
+	/// </summary>
+	[global::System.Diagnostics.DebuggerBrowsable (global::System.Diagnostics.DebuggerBrowsableState.Never)]	// Will trigger creation otherwise.
+	public static <#= className #> Instance
+	{
+		get
+		{	// No need for synchronization. Most likely running in single-thread environment, and creating an extra instance
+			// doesn't really hurt.
+			if (<#= className #>.instance == null)
+				<#= className #>.instance = new <#= className #> ();
+			return <#= className #>.instance;
+		}
+	}
+
+	/// <summary>
+	/// Private constructor to prevent public instantiation.
+	/// </summary>
+	private <#= className #>() : base() { }
+	#endregion
+}
+<#+
+	CloseNamespace();
+	
+}
+#>
+<#+
+	private static string GetTypeAccessModifier(DomainClass rootClass)
+	{
+		if (rootClass == null)
+		{
+			return "public";
+		}
+		else
+		{
+			return CodeGenerationUtilities.GetTypeAccessModifier(rootClass.AccessModifier);
+		}
+	}
+#>

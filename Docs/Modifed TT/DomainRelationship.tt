@@ -1,0 +1,308 @@
+<#+
+// Generate code for a domain relationship
+private void GenerateDomainRelationship(DomainRelationship domainRelationship)
+{
+#>
+<#+
+	string namespaceString = domainRelationship.Namespace;
+	if(!string.IsNullOrEmpty(namespaceString))
+	{
+#>
+namespace <#= namespaceString #>
+{
+<#+
+		PushIndent("\t");
+	}
+	GenerateSummary("DomainRelationship", domainRelationship, true);
+	GenerateClrAttributes(domainRelationship.Attributes);
+	GenerateResourceAttributes(domainRelationship);
+	GenerateClsCompliantAttribute(domainRelationship.AccessModifier);
+	GenerateDebuggerDisplayAttribute(domainRelationship); 
+#>
+[DslModeling::DomainRelationship(<#+ if(domainRelationship.IsEmbedding) { #>IsEmbedding=true<#+ if(domainRelationship.AllowsDuplicates) { #>, <#+ } } if(domainRelationship.AllowsDuplicates) { #>AllowsDuplicates = true<#+ } #>)]
+[DslModeling::DomainObjectId("<#= domainRelationship.Id.ToString("D") #>")]
+<#= CodeGenerationUtilities.GetTypeAccessModifier(domainRelationship.AccessModifier) #><#= CodeGenerationUtilities.GetGenerationInheritanceModifier(domainRelationship) #> partial class <#= CodeGenerationUtilities.GetGenerationClassName(domainRelationship) #> : <#= CodeGenerationUtilities.GetBaseRelationship(domainRelationship) #>, System.ComponentModel.INotifyPropertyChanged
+{
+	#region INotifyPropertyChanged
+	public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+	protected virtual void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
+	{
+		if (this.PropertyChanged != null)
+			this.PropertyChanged(this, e);
+	}
+	#endregion
+
+	#region Constructors, domain class Id
+	
+	/// <summary>
+	/// <#= domainRelationship.Name #> domain class Id.
+	/// </summary>
+	public static readonly new global::System.Guid DomainClassId = <#= CodeGenerationUtilities.GetGuid(domainRelationship.Id) #>;
+
+<#+
+	PushIndent("\t");
+	GenerateDomainRelationshipConstructors(domainRelationship, true);
+	PopIndent();
+#>
+	#endregion
+<#+
+	PushIndent("\t");
+	// Generate properties to access the roles of this link, and static
+	// methods to access the opposite roleplayers given a roleplayer.
+	foreach(DomainRole role in domainRelationship.Roles)
+	{
+		GenerateDomainRole(role);
+		GenerateStaticRoleAccessorOnRelationship(role.Opposite, domainRelationship);
+		GenerateDomainRoleOverride(role);
+	}
+	
+	// Generate properties for domain properties on this relationship
+	foreach(DomainProperty property in domainRelationship.Properties) 
+	{
+		GenerateDomainProperty(property);
+	}
+	
+	// Add accessors for roles that this REL plays in some other REL.
+	if ( domainRelationship.RolesPlayed.Count > 0 )
+	{
+#>
+#region Accessors for roles that this REL plays in other RELs
+<#+
+	}
+	foreach(DomainRole role in domainRelationship.RolesPlayed)
+	{
+		GenerateOppositeRoleAccessor(role);
+	}
+	if ( domainRelationship.RolesPlayed.Count > 0 )
+	{
+#>
+#endregion
+<#+
+	}
+	
+	// Add static accessors for link instances
+	GenerateRoleLinkAccessor(domainRelationship.Source);
+	GenerateRoleLinkAccessor(domainRelationship.Target);
+	GenerateLinkAccessor(domainRelationship);
+	GenerateEGPMergeMembers(domainRelationship);
+	this.PopIndent();
+#>
+}
+<#+
+	// If this link is double-derived, generate the skeleton derived class (with just the
+	// constructors)
+	if ( domainRelationship.GeneratesDoubleDerived )
+	{
+		GenerateSummary("DomainRelationship", domainRelationship, false);
+		GenerateClsCompliantAttribute(domainRelationship.AccessModifier);
+#>
+<#= CodeGenerationUtilities.GetTypeAccessModifier(domainRelationship.AccessModifier) #><#= CodeGenerationUtilities.GetInheritanceModifier(domainRelationship.InheritanceModifier) #> partial class <#= domainRelationship.Name #> : <#= CodeGenerationUtilities.GetGenerationClassName(domainRelationship) #>
+{
+	#region Constructors
+<#+
+		PushIndent("\t");
+		GenerateDomainRelationshipConstructors(domainRelationship, false);
+		PopIndent();
+#>
+	#endregion
+}
+<#+
+	}
+	if(!string.IsNullOrEmpty(namespaceString))
+	{
+		PopIndent();
+#>
+}
+<#+
+	}
+}
+
+// Generate a strongly-typed static accessor placed on a REL for getting REL instances that connect two MELs
+private void GenerateLinkAccessor(DomainRelationship rel)
+{
+	bool getLinksRequiresNew = false;
+	bool getLinkRequiresNew = false;
+	for (DomainRelationship baseRel = rel.BaseClass as DomainRelationship; baseRel != null; baseRel = baseRel.BaseClass as DomainRelationship)
+	{
+		// If the roleplayer types in any of the base relationships is the same, we need a 'new'
+		// keyword for this method.
+		if (rel.Source.RolePlayer.GetFullName(true) == baseRel.Source.RolePlayer.GetFullName(true) &&
+			rel.Target.RolePlayer.GetFullName(true) == baseRel.Target.RolePlayer.GetFullName(true))
+		{
+			getLinksRequiresNew = true;
+			if(!baseRel.AllowsDuplicates)
+			{
+				getLinkRequiresNew = true;
+				break;
+			}
+		}
+	}
+#>
+#region <#= rel.Name #> instance accessors
+
+/// <summary>
+/// Get any <#= rel.Name #> links between a given <#= rel.Source.RolePlayer.Name #> and a <#= rel.Target.RolePlayer.Name #>.
+/// </summary>
+[global::System.Diagnostics.DebuggerStepThrough]
+[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+<#= CodeGenerationUtilities.GetGeneratedLinkAccessModifier(rel) #> static <#=getLinksRequiresNew ? "new " : ""#>global::System.Collections.ObjectModel.ReadOnlyCollection<<#= rel.GetFullName(true) #>> GetLinks( <#= rel.Source.RolePlayer.GetFullName(true) #> source, <#= rel.Target.RolePlayer.GetFullName(true) #> target )
+{
+	global::System.Collections.Generic.List<<#= rel.GetFullName(true) #>> outLinks = new global::System.Collections.Generic.List<<#= rel.GetFullName(true) #>>();
+	global::System.Collections.Generic.IList<<#= rel.GetFullName(true) #>> links = DslModeling::DomainRoleInfo.GetElementLinks<<#= rel.GetFullName(true) #>>(source, <#= rel.GetFullName(true) #>.<#= rel.Source.Name #>DomainRoleId);
+	foreach ( <#= rel.GetFullName(true) #> link in links )
+	{
+		if ( target.Equals(link.<#= rel.Target.Name #>) )
+		{
+			outLinks.Add(link);
+		}
+	}
+	return outLinks.AsReadOnly();
+}
+<#+
+	// If AllowsDuplicates is false, only one link is allowed between any two role players
+	if(!rel.AllowsDuplicates)
+	{
+#>
+/// <summary>
+/// Get the one <#= rel.Name #> link between a given <#= rel.Source.RolePlayer.Name #>and a <#= rel.Target.RolePlayer.Name #>.
+/// </summary>
+[global::System.Diagnostics.DebuggerStepThrough]
+[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+<#= CodeGenerationUtilities.GetGeneratedLinkAccessModifier(rel) #> static <#=getLinkRequiresNew ? "new " : ""#><#= rel.GetFullName(true) #> GetLink( <#= rel.Source.RolePlayer.GetFullName(true) #> source, <#= rel.Target.RolePlayer.GetFullName(true) #> target )
+{
+	global::System.Collections.Generic.IList<<#= rel.GetFullName(true) #>> links = DslModeling::DomainRoleInfo.GetElementLinks<<#= rel.GetFullName(true) #>>(source, <#= rel.GetFullName(true) #>.<#= rel.Source.Name #>DomainRoleId);
+	foreach ( <#= rel.GetFullName(true) #> link in links )
+	{
+		if ( target.Equals(link.<#= rel.Target.Name #>) )
+		{
+			return link;
+		}
+	}
+	return null;
+}
+
+<#+
+	}
+#>
+#endregion
+<#+
+}
+
+/// <summary>
+/// Generate the constructors for a DomainRelationship
+/// </summary>
+/// <param name="domainRelationship">the domain relationship to generate constructors for</param>
+/// <param name="generatedClass">Whether this is the class carrying the generated code or the derived class in a double-derived pair</param>
+private void GenerateDomainRelationshipConstructors(DomainRelationship domainRelationship, bool generatedClass)
+{
+	if(domainRelationship.HasCustomConstructor)
+	{
+#>
+// Constructors were not generated for this relationship because it had HasCustomConstructor
+// set to true. Please provide the constructors below in a partial class.
+<#+
+		// We comment out the constructors if HasCustomConstructor is set to true
+		PushIndent("//");
+	}
+	string ctorName;
+	if ( generatedClass )
+	{
+		ctorName = CodeGenerationUtilities.GetGenerationClassName(domainRelationship);
+	}
+	else
+	{
+		ctorName = domainRelationship.Name;
+	}
+	if(domainRelationship.InheritanceModifier == InheritanceModifier.Abstract || (generatedClass && domainRelationship.GeneratesDoubleDerived ))
+	{
+#>
+/// <summary>
+/// Constructor.
+/// </summary>
+/// <param name="partition">The Partition instance containing this ElementLink</param>
+/// <param name="roleAssignments">A set of role assignments for roleplayer initialization</param>
+/// <param name="propertyAssignments">A set of attribute assignments for attribute initialization</param>
+protected <#= ctorName #>(DslModeling::Partition partition, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+	: base(partition, roleAssignments, propertyAssignments)
+{
+}
+<#+
+	}
+	else 
+	{
+		string sourceType = domainRelationship.Source.RolePlayer.GetRelativeName(domainRelationship.Namespace, true);
+		string targetType = domainRelationship.Target.RolePlayer.GetRelativeName(domainRelationship.Namespace, true);
+		string sourceName = "source";
+		string targetName = "target";
+		
+
+		// calc access modifier for the ctor. It has to be the minimum among source and target.
+		string ctorAccessModifier = "public";
+		if ( domainRelationship.Source.RolePlayer.AccessModifier == TypeAccessModifier.Assembly || 
+			 domainRelationship.Target.RolePlayer.AccessModifier == TypeAccessModifier.Assembly)
+		{
+			ctorAccessModifier = "internal";	
+		}
+	
+#>		
+/// <summary>
+/// Constructor
+/// Creates a <#= domainRelationship.Name #> link in the same Partition as the given <#= domainRelationship.Source.RolePlayer.Name #>
+/// </summary>
+/// <param name="<#= sourceName #>"><#= domainRelationship.Source.RolePlayer.Name #> to use as the source of the relationship.</param>
+/// <param name="<#= targetName #>"><#= domainRelationship.Target.RolePlayer.Name #> to use as the target of the relationship.</param>
+<#= ctorAccessModifier #> <#= ctorName #>(<#= sourceType #> <#= sourceName #>, <#= targetType #> <#= targetName #>)
+	: base((<#= sourceName #> != null ? <#= sourceName #>.Partition : null), new DslModeling::RoleAssignment[]{new DslModeling::RoleAssignment(<#= domainRelationship.Name #>.<#= domainRelationship.Source.Name #>DomainRoleId, <#= sourceName #>), new DslModeling::RoleAssignment(<#= domainRelationship.Name #>.<#= domainRelationship.Target.Name #>DomainRoleId, <#= targetName #>)}, null)
+{
+}
+
+/// <summary>
+/// Constructor
+/// </summary>
+/// <param name="store">Store where new link is to be created.</param>
+/// <param name="roleAssignments">List of relationship role assignments.</param>
+public <#= ctorName #>(DslModeling::Store store, params DslModeling::RoleAssignment[] roleAssignments)
+	: base(store != null ? store.DefaultPartitionForClass(DomainClassId) : null, roleAssignments, null)
+{
+}
+
+/// <summary>
+/// Constructor
+/// </summary>
+/// <param name="store">Store where new link is to be created.</param>
+/// <param name="roleAssignments">List of relationship role assignments.</param>
+/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
+public <#= ctorName #>(DslModeling::Store store, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+	: base(store != null ? store.DefaultPartitionForClass(DomainClassId) : null, roleAssignments, propertyAssignments)
+{
+}
+
+/// <summary>
+/// Constructor
+/// </summary>
+/// <param name="partition">Partition where new link is to be created.</param>
+/// <param name="roleAssignments">List of relationship role assignments.</param>
+public <#= ctorName #>(DslModeling::Partition partition, params DslModeling::RoleAssignment[] roleAssignments)
+	: base(partition, roleAssignments, null)
+{
+}
+
+/// <summary>
+/// Constructor
+/// </summary>
+/// <param name="partition">Partition where new link is to be created.</param>
+/// <param name="roleAssignments">List of relationship role assignments.</param>
+/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
+public <#= ctorName #>(DslModeling::Partition partition, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+	: base(partition, roleAssignments, propertyAssignments)
+{
+}
+<#+
+	}
+	if(domainRelationship.HasCustomConstructor)
+	{
+		PopIndent();
+	}
+}
+#>
+

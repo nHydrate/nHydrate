@@ -1,0 +1,17 @@
+<VSTemplate Version="2.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+	<TemplateData>
+		<Name Package="{33E04EC1-301F-11d3-BF4B-00C04F79EFBC}" ID="2322" />
+		<Description Package="{33E04EC1-301F-11d3-BF4B-00C04F79EFBC}" ID="2323" />
+		<Icon Package="{33E04EC1-301F-11d3-BF4B-00C04F79EFBC}" ID="4547" />
+		<ProjectType>CSharp</ProjectType>
+		<SortOrder>20</SortOrder>
+		<NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+		<CreateNewFolder>true</CreateNewFolder>
+		<DefaultName>ClassLibrary</DefaultName>
+		<ProvideDefaultName>true</ProvideDefaultName>
+	</TemplateData>
+	<TemplateContent>
+		<Project File="documentation.csproj" ReplaceParameters="true">
+		</Project>
+	</TemplateContent>
+</VSTemplate>

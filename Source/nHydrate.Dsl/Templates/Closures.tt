@@ -1,0 +1,236 @@
+<#+
+private void GenerateClosureProperties(DslLibrary dm)
+{
+	// Don't generate closure properties for the Core domain model
+	if (CodeGenerationUtilities.IsCoreDomainModel(dm)) { return; }
+
+#>
+/// <summary>
+/// CopyClosure cache
+/// </summary>
+private static DslModeling::IElementVisitorFilter copyClosure;
+/// <summary>
+/// DeleteClosure cache
+/// </summary>
+private static DslModeling::IElementVisitorFilter removeClosure;
+/// <summary>
+/// Returns an IElementVisitorFilter that corresponds to the ClosureType.
+/// </summary>
+/// <param name="type">closure type</param>
+/// <param name="rootElements">collection of root elements</param>
+/// <returns>IElementVisitorFilter or null</returns>
+public override DslModeling::IElementVisitorFilter GetClosureFilter(DslModeling::ClosureType type, global::System.Collections.Generic.ICollection<DslModeling::ModelElement> rootElements)
+{
+	switch (type)
+	{
+		case DslModeling::ClosureType.CopyClosure:
+			return <#= dm.Name #>DomainModel.CopyClosure;
+		case DslModeling::ClosureType.DeleteClosure:
+			return <#= dm.Name #>DomainModel.DeleteClosure;
+	}
+	return base.GetClosureFilter(type, rootElements);
+}
+/// <summary>
+/// CopyClosure cache
+/// </summary>
+private static DslModeling::IElementVisitorFilter CopyClosure
+{
+	get
+	{
+		// Incorporate all of the closures from the models we extend
+		if (<#= dm.Name #>DomainModel.copyClosure == null)
+		{
+			DslModeling::ChainingElementVisitorFilter copyFilter = new DslModeling::ChainingElementVisitorFilter();
+			copyFilter.AddFilter(new <#= dm.Name #>CopyClosure());
+			copyFilter.AddFilter(new DslModeling::CoreCopyClosure());
+<#+
+	// Add the CDS Model if we have diagram elements in this Dsl
+	if(dm.DiagramElements!=null && dm.DiagramElements.Count>0)
+	{
+#>
+			copyFilter.AddFilter(new DslDiagrams::CoreDesignSurfaceCopyClosure());
+<#+
+	}
+#>
+			
+			<#= dm.Name #>DomainModel.copyClosure = copyFilter;
+		}
+		return <#= dm.Name #>DomainModel.copyClosure;
+	}
+}
+/// <summary>
+/// DeleteClosure cache
+/// </summary>
+private static DslModeling::IElementVisitorFilter DeleteClosure
+{
+	get
+	{
+		// Incorporate all of the closures from the models we extend
+<#+
+		// UNDONE: GeMathew - Add closure filters of all models we extend.
+#>
+		if (<#= dm.Name #>DomainModel.removeClosure == null)
+		{
+			DslModeling::ChainingElementVisitorFilter removeFilter = new DslModeling::ChainingElementVisitorFilter();
+			removeFilter.AddFilter(new <#= dm.Name #>DeleteClosure());
+			removeFilter.AddFilter(new DslModeling::CoreDeleteClosure());
+<#+
+	// Add the CDS Model if we have diagram elements in this Dsl
+	if(dm.DiagramElements!=null && dm.DiagramElements.Count>0)
+	{
+#>
+			removeFilter.AddFilter(new DslDiagrams::CoreDesignSurfaceDeleteClosure());
+<#+
+	}
+#>
+
+			<#= dm.Name #>DomainModel.removeClosure = removeFilter;
+		}
+		return <#= dm.Name #>DomainModel.removeClosure;
+	}
+}
+<#+
+}
+#>
+
+<#+
+private void GenerateCopyClosure(DslLibrary dm)
+{
+#>
+/// <summary>
+/// Copy closure visitor filter
+/// </summary>
+<#+
+GenerateClsCompliantAttribute(dm.AccessModifier);
+#>
+<#= CodeGenerationUtilities.GetTypeAccessModifier(dm.AccessModifier) #> partial class <#= dm.Name #>CopyClosure : <#= dm.Name #>CopyClosureBase, DslModeling::IElementVisitorFilter
+{
+	/// <summary>
+	/// Constructor
+	/// </summary>
+	public <#= dm.Name #>CopyClosure() : base()
+	{
+	}
+}
+/// <summary>
+/// Base class for copy closure visitor filter
+/// </summary>
+<#+
+GenerateClsCompliantAttribute(dm.AccessModifier);
+#>
+<#= CodeGenerationUtilities.GetTypeAccessModifier(dm.AccessModifier) #> partial class <#= dm.Name #>CopyClosureBase : DslModeling::CopyClosureFilter, DslModeling::IElementVisitorFilter
+{
+	/// <summary>
+	/// Constructor
+	/// </summary>
+	public <#= dm.Name #>CopyClosureBase():base()
+	{
+	}
+}
+<#+
+}
+#>
+
+<#+
+private void GenerateDeleteClosure(DslLibrary dm)
+{
+#>
+/// <summary>
+/// Remove closure visitor filter
+/// </summary>
+<#+
+GenerateClsCompliantAttribute(dm.AccessModifier);
+#>
+<#= CodeGenerationUtilities.GetTypeAccessModifier(dm.AccessModifier) #> partial class <#= dm.Name #>DeleteClosure : <#= dm.Name #>DeleteClosureBase, DslModeling::IElementVisitorFilter
+{
+	/// <summary>
+	/// Constructor
+	/// </summary>
+	public <#= dm.Name #>DeleteClosure() : base()
+	{
+	}
+}
+
+/// <summary>
+/// Base class for remove closure visitor filter
+/// </summary>
+<#+
+GenerateClsCompliantAttribute(dm.AccessModifier);
+#>
+<#= CodeGenerationUtilities.GetTypeAccessModifier(dm.AccessModifier) #> partial class <#= dm.Name #>DeleteClosureBase : DslModeling::IElementVisitorFilter
+{
+	/// <summary>
+	/// DomainRoles
+	/// </summary>
+	private global::System.Collections.Specialized.HybridDictionary domainRoles;
+	/// <summary>
+	/// Constructor
+	/// </summary>
+	public <#= dm.Name #>DeleteClosureBase()
+	{
+		#region Initialize DomainData Table
+<#+
+	foreach(DomainRelationship r in dm.Relationships)
+	{
+		if(r.Source.PropagatesDelete)
+		{
+#>
+		DomainRoles.Add(<#= r.GetFullName(true) #>.<#= r.Source.Name #>DomainRoleId, true);
+<#+
+		}
+		if(r.Target.PropagatesDelete)
+		{
+#>
+		DomainRoles.Add(<#= r.GetFullName(true) #>.<#= r.Target.Name #>DomainRoleId, true);
+<#+
+		}
+	}
+#>
+		#endregion
+	}
+	/// <summary>
+	/// Called to ask the filter if a particular relationship from a source element should be included in the traversal
+	/// </summary>
+	/// <param name="walker">ElementWalker that is traversing the model</param>
+	/// <param name="sourceElement">Model Element playing the source role</param>
+	/// <param name="sourceRoleInfo">DomainRoleInfo of the role that the source element is playing in the relationship</param>
+	/// <param name="domainRelationshipInfo">DomainRelationshipInfo for the ElementLink in question</param>
+	/// <param name="targetRelationship">Relationship in question</param>
+	/// <returns>Yes if the relationship should be traversed</returns>
+	public virtual DslModeling::VisitorFilterResult ShouldVisitRelationship(DslModeling::ElementWalker walker, DslModeling::ModelElement sourceElement, DslModeling::DomainRoleInfo sourceRoleInfo, DslModeling::DomainRelationshipInfo domainRelationshipInfo, DslModeling::ElementLink targetRelationship)
+	{
+		return DslModeling::VisitorFilterResult.Yes;
+	}
+	/// <summary>
+	/// Called to ask the filter if a particular role player should be Visited during traversal
+	/// </summary>
+	/// <param name="walker">ElementWalker that is traversing the model</param>
+	/// <param name="sourceElement">Model Element playing the source role</param>
+	/// <param name="elementLink">Element Link that forms the relationship to the role player in question</param>
+	/// <param name="targetDomainRole">DomainRoleInfo of the target role</param>
+	/// <param name="targetRolePlayer">Model Element that plays the target role in the relationship</param>
+	/// <returns></returns>
+	public virtual DslModeling::VisitorFilterResult ShouldVisitRolePlayer(DslModeling::ElementWalker walker, DslModeling::ModelElement sourceElement, DslModeling::ElementLink elementLink, DslModeling::DomainRoleInfo targetDomainRole, DslModeling::ModelElement targetRolePlayer)
+	{
+		if (targetDomainRole == null) throw new global::System.ArgumentNullException("targetDomainRole");
+		return this.DomainRoles.Contains(targetDomainRole.Id) ? DslModeling::VisitorFilterResult.Yes : DslModeling::VisitorFilterResult.DoNotCare;
+	}
+	/// <summary>
+	/// DomainRoles
+	/// </summary>
+	private global::System.Collections.Specialized.HybridDictionary DomainRoles
+	{
+		get
+		{
+			if (this.domainRoles == null)
+			{
+				this.domainRoles = new global::System.Collections.Specialized.HybridDictionary();
+			}
+			return this.domainRoles;
+		}
+	}
+
+}
+<#+
+}
+#>

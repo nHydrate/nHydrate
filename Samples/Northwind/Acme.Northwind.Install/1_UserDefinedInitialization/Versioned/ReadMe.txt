@@ -1,0 +1,1 @@
+Add scripts that will be run first on an existing versioned database in this folder. Make them embedded resources and they will be run in alphabetical order.

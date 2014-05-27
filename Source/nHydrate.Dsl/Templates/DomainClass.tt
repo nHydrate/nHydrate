@@ -1,0 +1,227 @@
+<#+
+// context object is user-specifiable, just gets passed through to the delegate (null is fine).
+public delegate void DomainClassCodeGenerator(DomainClass domainClass, object context);
+
+// Method to generate code for a DomainClass
+private void GenerateDomainClass(DomainClass domainClass)
+{
+	GenerateDomainClass(domainClass, null, null, null, null);
+}
+
+private void GenerateDomainClass(DomainClass domainClass, string baseClass, DomainClassCodeGenerator preImsCodeGenerator)
+{
+	GenerateDomainClass(domainClass, baseClass, preImsCodeGenerator, null, null);
+}
+
+private void GenerateDomainClass(DomainClass domainClass, string baseClass, DomainClassCodeGenerator preImsCodeGenerator, DomainClassCodeGenerator constructorBodyGenerator, object context)
+{
+	if(string.IsNullOrEmpty(baseClass))
+	{
+		baseClass="DslModeling::ModelElement";
+	}
+	baseClass=CodeGenerationUtilities.GetBaseClass(domainClass, baseClass);
+	
+	string namespaceString = domainClass.Namespace;
+	if(!string.IsNullOrEmpty(namespaceString))
+	{
+#>
+namespace <#= namespaceString #>
+{
+<#+
+		PushIndent("\t");
+	}
+	
+	int inheritanceDepth = CodeGenerationUtilities.CalculateInheritanceDepth (domainClass);	
+	
+	GenerateSummary("DomainClass", domainClass, true);
+	if (domainClass.GeneratesDoubleDerived)
+	{
+		if (inheritanceDepth > 6)
+		{
+#>
+[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance", Justification = "Generated code.")]
+<#+
+		}
+	}
+	else if (inheritanceDepth > 5)
+	{
+#>
+[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance", Justification = "Generated code.")]
+<#+
+	}
+	GenerateClrAttributes(domainClass.Attributes);
+	GenerateResourceAttributes(domainClass);
+	GenerateClsCompliantAttribute(domainClass.AccessModifier);
+	GenerateDebuggerDisplayAttribute(domainClass); 
+#>
+[DslModeling::DomainObjectId("<#= domainClass.Id.ToString("D") #>")]
+<#= CodeGenerationUtilities.GetTypeAccessModifier(domainClass.AccessModifier) #><#= CodeGenerationUtilities.GetGenerationInheritanceModifier(domainClass) #> partial class <#= CodeGenerationUtilities.GetGenerationClassName(domainClass) #> : <#= baseClass #>, System.ComponentModel.INotifyPropertyChanged
+{
+<#+
+	if(preImsCodeGenerator!=null)
+	{
+		PushIndent("\t");
+		preImsCodeGenerator(domainClass, context);
+		PopIndent();
+	}
+#>
+	#region INotifyPropertyChanged
+	public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+	protected virtual void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
+	{
+		if (this.PropertyChanged != null)
+			this.PropertyChanged(this, e);
+	}
+	#endregion
+
+	#region Constructors, domain class Id
+
+	/// <summary>
+	/// <#= domainClass.Name #> domain class Id.
+	/// </summary>
+	public static readonly new global::System.Guid DomainClassId = <#= CodeGenerationUtilities.GetGuid(domainClass.Id) #>;
+<#+ 
+	PushIndent("\t");
+	GenerateDomainClassConstructors(domainClass, constructorBodyGenerator, context, true);
+	PopIndent();
+#>
+	#endregion
+<#+
+	PushIndent("\t");
+	foreach(DomainProperty property in domainClass.Properties)
+	{
+		GenerateDomainProperty(property);
+	}
+	
+	foreach(DomainRole role in domainClass.RolesPlayed)
+	{
+		GenerateOppositeRoleAccessor(role);
+	}
+	GenerateEGPMergeMembers(domainClass);
+	PopIndent();
+#>
+}
+<#+
+	// If this class is double-derived, generate the skeleton derived class (with just the
+	// constructors)
+	if ( domainClass.GeneratesDoubleDerived )
+	{
+		GenerateSummary("DomainClass", domainClass, false);
+		GenerateClsCompliantAttribute(domainClass.AccessModifier);
+		if (inheritanceDepth > 5)
+		{
+#>
+[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance", Justification = "Generated code.")]
+<#+
+		}
+#>		
+<#= CodeGenerationUtilities.GetTypeAccessModifier(domainClass.AccessModifier) #><#= CodeGenerationUtilities.GetInheritanceModifier(domainClass.InheritanceModifier) #> partial class <#= domainClass.Name #> : <#= CodeGenerationUtilities.GetGenerationClassName(domainClass) #>
+{
+	#region Constructors
+<#+ 
+		PushIndent("\t");
+		GenerateDomainClassConstructors(domainClass, constructorBodyGenerator, context, false);
+		PopIndent();
+#>
+	#endregion
+}
+<#+ 
+	}
+	if(!string.IsNullOrEmpty(namespaceString))
+	{
+		PopIndent();
+#>
+}
+<#+
+	}
+#>
+<#+
+}
+#>
+<#+
+/// <summary>
+/// Generate the constructors for a DomainClass
+/// </summary>
+/// <param name="domainClass">the domain class to generate constructors for</param>
+/// <param name="generatedClass">Whether this is the class carrying the generated code or the derived class in a double-derived pair</param>
+private void GenerateDomainClassConstructors(DomainClass domainClass, DomainClassCodeGenerator constructorBodyGenerator, object context, bool generatedClass)
+{
+	if(domainClass.HasCustomConstructor && !(generatedClass && domainClass.GeneratesDoubleDerived))
+	{
+#>
+// Constructors were not generated for this class because it had HasCustomConstructor
+// set to true. Please provide the constructors below in a partial class.
+<#+
+		// We comment out the constructors if HasCustomConstructor is set to true
+		PushIndent("//");
+	}
+	string ctorName;
+	if ( generatedClass )
+	{
+		ctorName = CodeGenerationUtilities.GetGenerationClassName(domainClass);
+	}
+	else
+	{
+		ctorName = domainClass.Name;
+	}
+	if(domainClass.InheritanceModifier == InheritanceModifier.Abstract || (generatedClass && domainClass.GeneratesDoubleDerived ))
+	{
+#>
+/// <summary>
+/// Constructor.
+/// </summary>
+/// <param name="partition">Partition where new element is to be created.</param>
+/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
+protected <#= ctorName #>(DslModeling::Partition partition, DslModeling::PropertyAssignment[] propertyAssignments)
+	: base(partition, propertyAssignments)
+{
+<#+
+		if(constructorBodyGenerator != null && (!domainClass.GeneratesDoubleDerived || generatedClass))
+		{
+			PushIndent("\t");
+			constructorBodyGenerator(domainClass, context);
+			PopIndent();
+		}
+#>
+}
+<#+
+	}
+	else
+	{
+#>
+/// <summary>
+/// Constructor
+/// </summary>
+/// <param name="store">Store where new element is to be created.</param>
+/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
+public <#= ctorName #>(DslModeling::Store store, params DslModeling::PropertyAssignment[] propertyAssignments)
+	: this(store != null ? store.DefaultPartitionForClass(DomainClassId) : null, propertyAssignments)
+{
+}
+
+/// <summary>
+/// Constructor
+/// </summary>
+/// <param name="partition">Partition where new element is to be created.</param>
+/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
+public <#= ctorName #>(DslModeling::Partition partition, params DslModeling::PropertyAssignment[] propertyAssignments)
+	: base(partition, propertyAssignments)
+{
+<#+
+		if(constructorBodyGenerator != null && !domainClass.GeneratesDoubleDerived)
+		{
+			PushIndent("\t");
+			constructorBodyGenerator(domainClass, context);
+			PopIndent();
+		}
+#>
+}
+<#+
+	}
+	if(domainClass.HasCustomConstructor && !(generatedClass && domainClass.GeneratesDoubleDerived))
+	{
+		PopIndent();
+	}
+}
+#>
+

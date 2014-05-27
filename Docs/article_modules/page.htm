@@ -1,0 +1,173 @@
+﻿<h2>Modules with nHydrate</h2>
+
+<p>
+Modules are an advanced feature that is useful for large projects. This concept allows you to group model objects into logical modules that will be created as completely separate projects in Visual Studio. A Module is a logical grouping that will manifest itself as a separate API. This allows you to have a common model and share it amongst teams. This is quite useful for teams that work on products that have some commonality in their databases (or application parts) but should still be considered different API.
+</p>
+
+<p>
+Let's discuss this more in detail. We can use modules to group functionality into separate API layers. Assume there are two teams working on two applications or pieces of an application. Each team has its own piece of a database (or even a different database) with which to interact and the teams have a lot of overlapping commonality. Team1 has 3 tables (Order, Order Detail, and Product) that overlap with Team2 and an additional table not shared with Team2 (Customer). Team2 shares the common three tables but has an additional table (Employee) not shared with Team1.
+</p>
+
+<div align="center">
+<strong>Full Database</strong><br />
+<img src="fulldatabase.png"><br />
+</div>
+
+<p>
+The goal is to share a database but have a limited API that will only expose the entities that each team needs. Team1 will handle the customer aspect of the application. They will lookup a customer by id, name, or email perhaps and then walk the relationship to the orders for that customer and finally display the details for each order. The API they use has no entity or notion at all of Employee.
+</p>
+
+<p>
+Team2 must write similar functionality however they only care about it from the Employee side. They might lookup an employee and use that entity to walk to the Order table and finally down to the details for the order as well. Team2 has no knowledge of the Customer table. It is not in their API.
+</p>
+
+<p>
+Now the functionality structure allows the two teams to use the same database while providing the ease of maintaining one model. If any table in common changes its structure both APIs will be affected. For example, if the Order table adds a column, Tax, then both APIs will be regenerated. The installer projects will reflect this new column and each Entity Framework API will also reflect this change.
+</p>
+
+<div align="center">
+<strong>Module 1 (Customer + Common)</strong><br />
+<img src="module1.png"><br />
+</div>
+<br />
+
+<div align="center">
+<strong>Module 2 (Employee + Common)</strong><br />
+<img src="module2.png"><br />
+</div>
+
+<p>
+Normally to create a different API, you would create a model for each team and each one would generate a separate API. However with the overlap, there is a lot of duplicate maintenance of models. With two models, a change to the Order table would require a change to both models. This is error prone and inefficient. With a single model, the change would propagate to both module APIs from the same model.
+</p>
+
+<p>
+We can easily accomplish this split by using the module functionality of nHydrate. First select the model and in the properties window set the UseModules property to true. Now the model cannot be generated until there are some defined modules. In the nHydrate Explorer window, right click on the root node and add two modules named Customer and Employer.
+</p>
+
+<div align="center">
+<strong>Explorer Add</strong><br />
+<img src="explorermenu.png"><br />
+</div>
+
+<p>
+Once these modules are created you see them in the explorer tree like all other model elements.
+</p>
+
+<div align="center">
+<strong>Explorer with Modules</strong><br />
+<img src="exploreropen.png"><br />
+</div>
+
+<p>
+Now you must assign all model objects to one or more modules. Right click on any empty spot of the model canvas and select the menu Model | Module Associations. This will bring up the module assignment window. From here you can choose a module and assign objects to it. A table (or any other object) can be assigned to any number of modules. In this way modules can have as much overlapping functionality as your business rules call for.
+</p>
+
+<p>
+Views, Stored Procedures, and Functions have all or nothing inclusion. In other words, they are in a module or they are not. You cannot include half of a view into a module. However tables are different story. You may include partial tables into modules.
+</p>
+
+<p>
+Partial tables are very useful when component functionality is required. You may have a very large table (lots of columns) however an application part may only need part of it. In our Employee module, perhaps there is no need to expose the Order table’s Freight property; maybe it is not necessary or maybe it is a security concern. In any case, if the developers using the Employee module will never need the field then it need not be included in the first place. When you assign objects to the Employee module, simply uncheck the Freight field from the Order table. Now when the module API is generated there is an Order entity but it is missing the Freight field. Rest assured, this field is still in the database but cannot be accessed or set from the Employee module assembly.
+</p>
+
+<div align="center">
+<strong>Customer Module</strong><br />
+<img src="module1gen.png"><br />
+</div>
+
+<p>
+Now we can define the Employee module. Select the specified module from the drop down box and check which objects to include.
+</p>
+
+<div align="center">
+<strong>Employee Module</strong><br />
+<img src="module2gen.png"><br />
+</div>
+
+<p>
+Now that we have defined our tables and assigned them to modules, we can generate code. Right click on any empty spot of the model canvas and choose the Model | Generate menu. From here you will be prompted for what to generate.
+</p>
+
+<div align="center">
+<strong>Generate Dialog</strong><br />
+<img src="generatedialog.png"><br />
+</div>
+
+<p>
+You must also choose which modules to generate as well.
+</p>
+
+<div align="center">
+<strong>Choose Modules</strong><br />
+<img src="moduledialog.png"><br />
+</div>
+
+<p>
+Once the generation is complete, you should see the new projects in the Solution Explorer.
+</p>
+
+<div align="center">
+<strong>Solution Explorer</strong><br />
+<img src="explorerclosed.png"><br />
+</div>
+
+<p>
+A Module will be run through the specified generators to create discrete APIs. Normally when not using Modules, a generation of a model would create a separate project for each generator. For instance, to create an Entity Framework API, three generator templates are used: EFDAL, Interfaces, and Installer. When using Modules, there will be a new project for each Module and each Generator. In this example, if you define two modules: Customer and Employee, there will be six projects created not three (3 generators x 2 modules = 6 assemblies).
+</p>
+
+<h2>Common Modules</h2>
+
+<p>
+We can now manage a single model for the entire application but actually generate a unique API for each team. This actually has some big benefits beyond the obvious ones we have covered. If you think about the two libraries generated above there is still a problem. We cannot write common libraries that are shared between teams. This is because each of these libraries is specific to one of the implementations above: Customer or Employee. What we really need is a common API.
+</p>
+
+<p>
+We would like to have a common business library that can talk to either database (these two APIs might actually talk to the same database or different databases) with no chance of run-time errors for missing objects. If we create a Module that is a subset of both modules above, we have a common framework API. Create a new Module and add the common entities to it. Now we can write a common framework assembly that does common actions for both teams. This means that there are actually three distinct APIs now: Employee, Customer, and Common. However they are all managed from the same model.
+</p>
+
+<div align="center">
+<strong>Module 3 (Common)</strong><br />
+<img src="module3.png"><br />
+</div>
+
+<p>
+Since this is managed from a common model, it is always up to date. If we change one of the common tables in the model, a regeneration will ensure that all APIs and Installer projects are updated. Once we update the databases, the common API works on more than one database schema. We are now free write a shared assembly that encapsulates global (cross-module) business rules that all development groups can use. This shared assembly uses the common generated API to apply common business rules and can be referenced by both teams to perform supply functionality. Now there is no need for both teams to write the same code twice to duplicate business rules that they both share. We can write once with no duplicate effort.
+</p>
+
+<p>
+Of course these would be low level, shared assemblies in our application. Each team writing its application part would also write custom assemblies that use its own specific API as well. This allows two applications with overlapping functionality to share code.
+</p>
+
+<div align="center">
+<strong>Application Structure</strong><br />
+<img src="arch.png"><br />
+</div>
+
+<p>
+The diagram above shows a possible application configuration. The main application knows about the libraries that Team1 and Team2 have written: Customer and Employee business API. These two libraries can make use of the common business API since it is a subset of both. Each business API uses a generated Entity Framework API. All generated API libraries are managed by one model. A change to the model can be propagated across all APIs by regenerating. The custom API hand-written by each team use the generated APIs so they also talk to the proper version of the database, since the installer project always keeps the database up to date with the model.
+</p>
+
+<h2>Module Rules</h2>
+
+<p>
+The above example describes how one module is a subset of another. If this is the way you wish to organize your model, it would be best not to do it manually. If you add a table to the Common module and not to the Customer module, the Customer module is no longer a superset of Common. What we really need is a way for the model to enforce this model rule.
+</p>
+
+<p>
+A Module Rule allow you to define inclusion or exclusion rules between modules. These will be enforced by the model and provide validation errors if necessary. A rule can be defined as a subset or an outerset. In the validation process, the rule is applied to ensure that the defined rule is met. The subset or outerset rule will be applied only to the object types specified in the inclusion property. If you want to ensure that the Common module is a subset of the Customer module, you could define a module rule as follows.
+</p>
+
+<ol>
+<li>Create a module rule on the Common module.</li>
+<li>Set its status to Subset</li>
+<li>Set its dependent module as Customer.</li>
+<li>Set its Inclusion property to Entity only. </li>
+</ol>
+
+<p>
+This ensures that views, stored procedure, and functions are not checked for meeting the subset rule. This defined rule will cause a validation error if all the entities in the Common module are not in the Customer module and you will not be allowed to generate.
+</p>
+
+<p>
+An outerset rule does much the same thing except that it ensures that there is no overlap between the two modules. You can apply any number of module rules. This is a very nice feature if you are managing a model with many interacting modules.
+</p>

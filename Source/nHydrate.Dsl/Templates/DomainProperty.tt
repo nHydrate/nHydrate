@@ -1,0 +1,317 @@
+<#+
+// Generate code for domain properties
+private void GenerateDomainProperty(DomainProperty property)
+{
+	AccessModifier setterAccessModifier = property.SetterAccessModifier;
+	AccessModifier getterAccessModifier = property.GetterAccessModifier;
+	AccessModifier overallAccessModifier;
+	
+	if(setterAccessModifier==AccessModifier.Public || getterAccessModifier==AccessModifier.Public)
+	{
+		overallAccessModifier = AccessModifier.Public;
+	}
+	else if(setterAccessModifier==AccessModifier.FamilyOrAssembly || getterAccessModifier==AccessModifier.FamilyOrAssembly)
+	{
+		overallAccessModifier = AccessModifier.FamilyOrAssembly;	
+	}
+	else if(setterAccessModifier==AccessModifier.Family || getterAccessModifier==AccessModifier.Family)
+	{
+		overallAccessModifier = AccessModifier.Family;
+	}
+	else if(setterAccessModifier==AccessModifier.Assembly || getterAccessModifier==AccessModifier.Assembly)
+	{
+		overallAccessModifier = AccessModifier.Assembly;
+	}
+	else 
+	{
+		overallAccessModifier = AccessModifier.Private;
+	}
+#>
+#region <#= property.Name #> domain property code
+
+/// <summary>
+/// <#= property.Name #> domain property Id.
+/// </summary>
+public static readonly global::System.Guid <#= property.Name #>DomainPropertyId = <#= CodeGenerationUtilities.GetGuid(property.Id) #>;
+<#+
+	// A property only has storage if it is a 'Normal' property
+	if(property.Kind==PropertyKind.Normal)
+	{
+#>
+
+/// <summary>
+/// Storage for <#= property.Name #>
+/// </summary>
+<#+
+		bool needsSerialization = false;
+		string defaultValue = CodeGenerationUtilities.GetPropertyDefaultValue(property, out needsSerialization);
+		if (needsSerialization)
+		{
+#>
+private <#= CodeGenerationUtilities.GetDomainTypeFullName(property) #> <#= CodeGenerationUtilities.GetCamelCase(property.Name) #>PropertyStorage = DslModeling::SerializationUtilities.GetValue<<#= CodeGenerationUtilities.GetDomainTypeFullName(property) #>>(<#= defaultValue #>);
+<#+
+		}
+		else
+		{
+			if (string.IsNullOrEmpty(defaultValue))
+			{
+#>
+private <#= CodeGenerationUtilities.GetDomainTypeFullName(property) #> <#= CodeGenerationUtilities.GetCamelCase(property.Name) #>PropertyStorage;
+<#+
+			}
+			else
+			{
+#>
+private <#= CodeGenerationUtilities.GetDomainTypeFullName(property) #> <#= CodeGenerationUtilities.GetCamelCase(property.Name) #>PropertyStorage = <#= defaultValue #>;
+<#+
+			}
+		}
+	}
+#>
+
+/// <summary>
+/// Gets or sets the value of <#= property.Name #> domain property.
+<#+
+	GenerateComments(property.Description);
+#>
+/// </summary>
+<#+
+	GenerateClrAttributes(property.Attributes);
+	GenerateResourceAttributes(property);
+#>
+<#+
+	string defaultValueAttribute = CodeGenerationUtilities.GetPropertyDefaultValueAttribute(property);
+	if (!string.IsNullOrEmpty(defaultValueAttribute))
+	{
+#>
+[global::System.ComponentModel.DefaultValue(<#= defaultValueAttribute #>)]
+<#+
+	}
+	if(!property.IsBrowsable)
+	{
+#>
+[global::System.ComponentModel.Browsable(false)]
+<#+
+	}
+	if(property.IsUIReadOnly || property.Kind==PropertyKind.Calculated || setterAccessModifier!=AccessModifier.Public)
+	{
+#>
+[global::System.ComponentModel.ReadOnly(true)]
+<#+
+	}
+	if (property.IsElementName || property.ElementNameProvider!=null)
+	{
+#>
+[DslModeling::ElementName<#+ if(property.ElementNameProvider!=null) { #>(typeof(<#= CodeGenerationUtilities.GetDomainTypeFullName(property.ElementNameProvider, property.Class.Namespace) #>))<#+ } #>]
+<#+
+	}
+	string propertyKind = CodeGenerationUtilities.GetPropertyKind(property.Kind);
+	if (!string.IsNullOrEmpty(propertyKind))
+	{
+#>
+[DslModeling::DomainProperty(<#= propertyKind #>)]
+<#+
+	}
+#>
+[DslModeling::DomainObjectId("<#= property.Id.ToString("D") #>")]
+<#= CodeGenerationUtilities.GetAccessModifier(overallAccessModifier) #> virtual <#= CodeGenerationUtilities.GetDomainTypeFullName(property) #> <#= property.Name #>
+{
+	[global::System.Diagnostics.DebuggerStepThrough]
+<#+
+	if(getterAccessModifier!=overallAccessModifier)
+	{
+#>
+	<#= CodeGenerationUtilities.GetAccessModifier(getterAccessModifier) #> get
+<#+
+	}
+	else
+	{
+#>
+	get
+<#+
+	}
+#>
+	{
+<#+
+	if(property.Kind!=PropertyKind.Normal)
+	{
+#>
+		return <#= CodeGenerationUtilities.GetPropertyHandlerName(property) #>.Instance.GetValue(this);
+<#+
+	}
+	else
+	{
+#>
+		return <#= CodeGenerationUtilities.GetCamelCase(property.Name) #>PropertyStorage;
+<#+
+	}
+#>
+	}
+<#+
+	// Calculated properties cannot be set
+	if(property.Kind != PropertyKind.Calculated)
+	{
+#>
+	[global::System.Diagnostics.DebuggerStepThrough]
+<#+
+		if(setterAccessModifier != overallAccessModifier)
+		{
+#>
+	<#= CodeGenerationUtilities.GetAccessModifier(setterAccessModifier) #> set
+<#+
+		}
+		else
+		{
+#>
+	set
+<#+
+		}
+#>
+	{
+		<#= CodeGenerationUtilities.GetPropertyHandlerName(property) #>.Instance.SetValue(this, value);
+	}
+<#+
+	}
+#>
+}
+<#+
+	// Generate the PropertyHandler for this property. 
+#>
+/// <summary>
+/// Value handler for the <#= property.Class.Name #>.<#= property.Name #> domain property.
+/// </summary>
+internal sealed partial class <#= CodeGenerationUtilities.GetPropertyHandlerName(property) #> : <#= CodeGenerationUtilities.GetBasePropertyHandlerName(property) #>
+{
+	private <#= CodeGenerationUtilities.GetPropertyHandlerName(property) #>() { }
+
+	/// <summary>
+	/// Gets the singleton instance of the <#= property.Class.Name #>.<#= property.Name #> domain property value handler.
+	/// </summary>
+	public static readonly <#= CodeGenerationUtilities.GetPropertyHandlerName(property) #> Instance = new <#= CodeGenerationUtilities.GetPropertyHandlerName(property) #>();
+
+	/// <summary>
+	/// Gets the Id of the <#=property.Class.Name#>.<#=property.Name#> domain property.
+	/// </summary>
+	public sealed override global::System.Guid DomainPropertyId
+	{
+		[global::System.Diagnostics.DebuggerStepThrough]
+		get
+		{
+			return <#= property.Name #>DomainPropertyId;
+		}
+	}
+	
+	/// <summary>
+	/// Gets a strongly-typed value of the property on specified element.
+	/// </summary>
+	/// <param name="element">Element which owns the property.</param>
+	/// <returns>Property value.</returns>
+	public override sealed <#= CodeGenerationUtilities.GetDomainTypeFullName(property) #> GetValue(<#= CodeGenerationUtilities.GetGenerationClassName(property.Class) #> element)
+	{
+		if (element == null) throw new global::System.ArgumentNullException("element");
+<#+
+	if(property.Kind==PropertyKind.Normal)
+	{
+#>
+		return element.<#= property.Name #>;
+		//return element.GetValue<<#= CodeGenerationUtilities.GetDomainTypeFullName(property) #>>("<#= property.Name #>", element.<#= CodeGenerationUtilities.GetCamelCase(property.Name) #>PropertyStorage);
+		//return element.<#= CodeGenerationUtilities.GetCamelCase(property.Name) #>PropertyStorage; //ORIGINAL CODE
+<#+
+	}
+	else
+	{
+#>
+		// There is no storage for <#= property.Name #> because its Kind is
+		// set to <#= property.Kind #>. Please provide the Get<#= property.Name.TrimStart('@') #>Value()
+		// method on the domain class.
+		return element.Get<#= property.Name.TrimStart('@') #>Value();
+<#+
+	}
+#>
+	}
+
+<#+
+	if(property.Kind!=PropertyKind.Calculated)
+	{
+		string propTypeName = CodeGenerationUtilities.GetDomainTypeFullName(property);
+#>
+	/// <summary>
+	/// Sets property value on an element.
+	/// </summary>
+	/// <param name="element">Element which owns the property.</param>
+	/// <param name="newValue">New property value.</param>
+	public override sealed void SetValue(<#= CodeGenerationUtilities.GetGenerationClassName(property.Class) #> element, <#= propTypeName #> newValue)
+	{
+		if (element == null) throw new global::System.ArgumentNullException("element");
+
+		<#= CodeGenerationUtilities.GetDomainTypeFullName(property) #> oldValue = GetValue(element);
+<#+
+		switch (propTypeName)
+		{
+			case "global::System.Double":
+			{
+#>
+		// double type precision is guaranteed only to 15th digit.
+		//if (global::System.Math.Abs(newValue - oldValue) > 1e-15) //OLD CODE
+		if (true)
+<#+
+				break;
+			}
+			case "global::System.Single":
+			{
+#>
+		// float type precision is guaranteed only to 7th digit.
+		if (global::System.Math.Abs(newValue - oldValue) > 1e-7)
+<#+
+				break;
+			}
+			case "global::System.Object":
+			{
+#>
+		// Don't use != with object properties
+		if (!global::System.Object.Equals(newValue, oldValue))
+<#+
+				break;
+			}
+			default:
+			{
+#>
+		if (newValue != oldValue)
+<#+
+				break;
+			}
+		}
+#>
+		{
+			ValueChanging(element, oldValue, newValue);
+<#+
+		if(property.Kind==PropertyKind.Normal)
+		{
+#>
+			element.<#= CodeGenerationUtilities.GetCamelCase(property.Name) #>PropertyStorage = newValue;
+			ValueChanged(element, oldValue, newValue);
+			element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("<#= property.Class.Name #>"));
+<#+
+		}
+		else
+		{
+#>
+			// There is no storage for <#= property.Name #> because its Kind is
+			// set to <#= property.Kind #>. Please provide the Set<#= property.Name.TrimStart('@') #>Value()
+			// method on the domain class.
+			element.Set<#= property.Name.TrimStart('@') #>Value(newValue);
+			ValueChanged(element, oldValue, GetValue(element));
+<#+
+		}
+#>
+		}
+	}
+<#+
+	}
+#>
+}
+
+#endregion
+<#+
+}
+#>

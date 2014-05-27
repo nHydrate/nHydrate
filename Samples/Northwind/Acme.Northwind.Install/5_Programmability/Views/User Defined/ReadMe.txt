@@ -1,0 +1,1 @@
+Add user-defined scripts for database views in this folder.

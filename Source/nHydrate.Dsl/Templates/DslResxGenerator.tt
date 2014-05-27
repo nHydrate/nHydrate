@@ -1,0 +1,467 @@
+﻿<#@ template inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" debug="true" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Globalization" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ output extension=".resx" encoding="utf-8" #>
+<#@ include file="Utilities.tt" #>
+<#
+	Dictionary<string, KeyValuePair<string, string>> resourcedStrings = new Dictionary<string, KeyValuePair<string, string>>();
+	Dictionary<string, KeyValuePair<string, string>> resourcedFileObjects = new Dictionary<string, KeyValuePair<string, string>>();
+
+	string commentString = "{0} for {1} '{2}'";
+	string propertyCommentString = "{0} for {1} '{2}' on {3} '{4}'";
+	string domainModelNamespace = String.IsNullOrEmpty(this.DslLibrary.Namespace) ? "" : (this.DslLibrary.Namespace)+".";
+	
+	// Don't generate any resources if there is no resource name.
+	if(!String.IsNullOrEmpty(GeneratedResourceName))
+	{
+		resourcedStrings.Add(domainModelNamespace+this.DslLibrary.Name+"DomainModel.Description", new KeyValuePair<string, string>(this.DslLibrary.Description, String.Format(CultureInfo.CurrentCulture, commentString, "Description", "DslLibrary", this.DslLibrary.Name)));
+		resourcedStrings.Add(domainModelNamespace+this.DslLibrary.Name+"DomainModel.DisplayName", new KeyValuePair<string, string>(this.DslLibrary.DisplayName, String.Format(CultureInfo.CurrentCulture, commentString, "DisplayName", "DslLibrary", this.DslLibrary.Name)));
+	
+		foreach(DomainClass c in this.DslLibrary.Classes)
+		{
+			AddDomainClassResources(c, resourcedStrings, commentString, propertyCommentString);
+		}
+		
+		foreach(DomainRelationship r in this.DslLibrary.Relationships)
+		{
+			AddDomainClassResources(r, resourcedStrings, commentString, propertyCommentString);
+			string fullName = r.GetFullName(false);
+			
+			DomainRole role = r.Source;
+			resourcedStrings.Add(fullName+"/"+role.Name+".Description", new KeyValuePair<string, string>(role.Description, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "Description", "DomainRole", role.Name, "DomainRelationship", r.Name)));
+			resourcedStrings.Add(fullName+"/"+role.Name+".DisplayName", new KeyValuePair<string, string>(role.DisplayName, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "DisplayName", "DomainRole", role.Name, "DomainRelationship", r.Name)));
+			if(!String.IsNullOrEmpty(role.Category))
+			{
+				resourcedStrings.Add(fullName+"/"+role.Name+".Category", new KeyValuePair<string, string>(role.Category, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "Category", "DomainRole", role.Name, "DomainRelationship", r.Name)));
+			}
+			if(!String.IsNullOrEmpty(role.PropertyDisplayName))
+			{
+				resourcedStrings.Add(fullName+"/"+role.Name+".PropertyDisplayName", new KeyValuePair<string, string>(role.PropertyDisplayName, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "PropertyDisplayName", "DomainRole", role.Name, "DomainRelationship", r.Name)));
+			}
+			
+			role = r.Target;
+			resourcedStrings.Add(fullName+"/"+role.Name+".Description", new KeyValuePair<string, string>(role.Description, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "Description", "DomainRole", role.Name, "DomainRelationship", r.Name)));
+			resourcedStrings.Add(fullName+"/"+role.Name+".DisplayName", new KeyValuePair<string, string>(role.DisplayName, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "DisplayName", "DomainRole", role.Name, "DomainRelationship", r.Name)));
+			if(!String.IsNullOrEmpty(role.Category))
+			{
+				resourcedStrings.Add(fullName+"/"+role.Name+".Category", new KeyValuePair<string, string>(role.Category, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "Category", "DomainRole", role.Name, "DomainRelationship", r.Name)));
+			}
+			if(!String.IsNullOrEmpty(role.PropertyDisplayName))
+			{
+				resourcedStrings.Add(fullName+"/"+role.Name+".PropertyDisplayName", new KeyValuePair<string, string>(role.PropertyDisplayName, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "PropertyDisplayName", "DomainRole", role.Name, "DomainRelationship", r.Name)));
+			}
+		}
+		
+		foreach(DomainType t in this.DslLibrary.Types)
+		{
+			if(t is DomainEnumeration)
+			{
+				string fullName = t.GetFullName(false);
+				foreach(EnumerationLiteral literal in ((DomainEnumeration)t).Literals)
+				{
+					// Add an entry for localizable field names
+					resourcedStrings.Add(fullName+"/"+literal.Name+".DisplayName", new KeyValuePair<string, string>(literal.Name, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "Display name", "EnumerationLiteral", literal.Name, "DomainEnumeration", t.Name)));					
+					resourcedStrings.Add(fullName+"/"+literal.Name+".Description", new KeyValuePair<string, string>(literal.Description, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "Description", "EnumerationLiteral", literal.Name, "DomainEnumeration", t.Name)));
+				}
+			}
+		}
+		
+		foreach(BaseShape shape in this.DslLibrary.Shapes)
+		{
+			AddDomainClassResources(shape, resourcedStrings, commentString, propertyCommentString);
+			
+			ImageShape imageShape = shape as ImageShape;
+			if(imageShape != null && !string.IsNullOrEmpty(imageShape.Image))
+			{
+				string imagePath = this.ConvertDslLibraryRelativePathToTemplateRelativePath(imageShape.Image);
+				resourcedFileObjects.Add(imageShape.Name + "Image", new KeyValuePair<string, string>(imagePath + ";System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", imageShape.Name + " shape image"));
+			}
+			else
+			{
+				CompartmentShape compartmentShape = shape as CompartmentShape;
+				if(compartmentShape != null)
+				{
+					foreach(Compartment compartment in compartmentShape.Compartments)
+					{
+						string title = compartment.Title != null ? compartment.Title : "";
+						resourcedStrings.Add(compartmentShape.Name + compartment.Name + "Title", new KeyValuePair<string, string>(title, "Compartment title"));
+					}
+				}
+			}
+			
+			AddDiagramElementResources(shape, resourcedStrings, resourcedFileObjects);
+		}
+		
+		foreach(Connector connector in this.DslLibrary.Connectors)
+		{
+			AddDomainClassResources(connector, resourcedStrings, commentString, propertyCommentString);
+			AddDiagramElementResources(connector, resourcedStrings, resourcedFileObjects);
+		}
+		
+		// extra generation for editor-related entries
+		if(this.IsDsl && this.Dsl.Editor != null)
+		{
+			if (!string.IsNullOrEmpty(this.Dsl.Editor.FileExtension))
+			{
+				resourcedStrings.Add(
+					"FormatList",
+					new KeyValuePair<string, string>(
+						string.Format(System.Globalization.CultureInfo.CurrentCulture,
+							"{0} (*.{1})|*.{1}", this.Dsl.DisplayName, this.Dsl.Editor.FileExtension),
+						"A list of file format specifiers for the Save dialog box"
+					)
+				);
+			}
+			
+			// calculate Explorer Title
+			resourcedStrings.Add("ModelExplorerTitle", new KeyValuePair<string, string>( this.Dsl.ExplorerTitleMenuName, "Model Explorer Toolwindow title"));
+			
+			ExplorerBehavior behavior = DslDefinesExplorerBehavior.GetExplorerBehavior( this.DslLibrary);
+			if ( behavior != null )
+			{
+				foreach(ExplorerNodeSettings explorerNodeSettings in behavior.CustomNodeSettings)
+				{
+					if(!String.IsNullOrEmpty(explorerNodeSettings.IconToDisplay))
+					{
+						string iconPath = this.ConvertDslLibraryRelativePathToTemplateRelativePath(explorerNodeSettings.IconToDisplay);
+						resourcedFileObjects.Add(explorerNodeSettings.Class.Name + "ExplorerImage", new KeyValuePair<string, string>(iconPath + ";System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "Toolbox item image"));
+					}
+				}
+			}
+		
+			Diagram diagram = this.Dsl.Diagram;
+			
+			if(diagram != null)
+			{
+				AddDomainClassResources(diagram, resourcedStrings, commentString, propertyCommentString);
+			}
+		
+			foreach(ToolboxTab tab in this.Dsl.Editor.ToolboxTabs)
+			{
+				resourcedStrings.Add(tab.TabText + "ToolboxTab", new KeyValuePair<string, string>(tab.TabText, "Toolbox item tab name"));
+					
+				// contains references to objects such as bitmaps that are referenced by external file path.
+				foreach(Tool tool in tab.Tools)
+				{
+					resourcedStrings.Add(tool.Name + "ToolboxItem", new KeyValuePair<string, string>(tool.Caption, "Toolbox item name"));
+					resourcedStrings.Add(tool.Name + "ToolboxTooltip", new KeyValuePair<string, string>(tool.Tooltip, "Toolbox tooltip text"));
+					if(!String.IsNullOrEmpty(tool.ToolboxIcon))
+					{
+						string iconPath = this.ConvertDslLibraryRelativePathToTemplateRelativePath(tool.ToolboxIcon);
+						resourcedFileObjects.Add(tool.Name + "ToolboxBitmap", new KeyValuePair<string, string>(iconPath + ";System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "Toolbox item image"));
+					}
+					
+					ConnectionTool connectionTool = tool as ConnectionTool;
+					if(connectionTool != null)
+					{
+						if(!String.IsNullOrEmpty(connectionTool.SourceCursorIcon))
+						{
+							string cursorPath = this.ConvertDslLibraryRelativePathToTemplateRelativePath(connectionTool.SourceCursorIcon);
+							resourcedFileObjects.Add(tool.Name + "SourceCursor", new KeyValuePair<string, string>(cursorPath + ";System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "Custom connection tool cursor"));
+						}
+						if(!String.IsNullOrEmpty(connectionTool.TargetCursorIcon))
+						{
+							string cursorPath = this.ConvertDslLibraryRelativePathToTemplateRelativePath(connectionTool.TargetCursorIcon);
+							resourcedFileObjects.Add(tool.Name + "TargetCursor", new KeyValuePair<string, string>(cursorPath + ";System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "Custom connection tool cursor"));
+						}
+					}
+				}
+			}
+			
+			// ToolboxItem related error strings
+			resourcedStrings.Add("UnresolvedToolboxItem", new KeyValuePair<string, string>( "ToolboxItem {0} was not found", "Invalid toolId"));
+			resourcedStrings.Add("UnsupportedToolboxFormat", new KeyValuePair<string, string>( "Unsupported toolbox format: {0}", "Unsupported format Id"));
+		}
+	}
+	
+	// Incorrect ElementType passed in to CreateElement API
+	resourcedStrings.Add("UnrecognizedElementType", new KeyValuePair<string, string>( "ElementType {0} is not recognized as a type of domain class which belongs to this domain model.", "Incorrect ElementType passed in to Model.CreateElement method"));
+	
+	// Incorrect ElementLinkType passed in to CreateElementLink API
+	resourcedStrings.Add("UnrecognizedElementLinkType", new KeyValuePair<string, string>( "ElementLinkType {0} is not recognized as a type of domain relationship which belongs to this domain model.", "Incorrect ElementLinkType passed in to Model.CreateElementLink method"));
+	
+	
+	// Add default resource strings for serialization.
+	CodeGenerationUtilities.AddSerializationResourceStrings(resourcedStrings);
+	
+	// Cannot open file due to user rejects closing diagram file
+	resourcedStrings.Add("CannotCloseExistingDiagramDocument", new KeyValuePair<string, string>( "Diagram file '{0}' cannot be closed.", "User cancel closing diagram file. Hence, the DSL model file cannot be opened"));
+
+	// MEF binding error
+	resourcedStrings.Add("BindingErrorOccurred", new KeyValuePair<string, string>( "Extensions for this designer may not be found as a MEF binding error has occurred. The error that occurred was:\n{0}", "MEF binding error occurred - exception message being logged in the error window so the user is aware."));
+
+	// IDomainModelSerializer argument errors
+	resourcedStrings.Add("InvalidSaveRootElementType", new KeyValuePair<string, string>( "'{0}' is not a valid root element type.", "Exception message used if an invalid root element type is passed to IDomainModelSerializer.SaveModel / SaveModelAndDiagram"));
+
+	resourcedStrings.Add("InvalidSaveDiagramType", new KeyValuePair<string, string>( "'{0}' is not a valid diagram type.", "Exception message used if an invalid diagram type is passed to IDomainModelSerializer.SaveModelAndDiagram"));
+
+
+	// Add resource strings for validation.
+	
+			resourcedStrings.Add(
+				"MinimumMultiplicityMissingLink",
+				new KeyValuePair<string, string>(
+					"{0} {1} has no {2}.",
+					"Multiplicity underflow validation."
+				)
+			);
+			resourcedStrings.Add(
+				"SaveOperationCancelled",
+				new KeyValuePair<string, string>(
+					"Save operation cancelled.",
+					"Message when save is cancelled on validation errors"
+				)
+			);
+			resourcedStrings.Add(
+				"SaveValidationFailed",
+				new KeyValuePair<string, string>(
+					"There were validation errors, continue save?",
+					"Message when validation errors are found on save"
+				)
+			);
+			resourcedStrings.Add(
+				"UnloadableSaveValidationFailed",
+				new KeyValuePair<string, string>(
+					"There were validation errors. Continuing to save may cause the file to become unloadable, do you want to continue?",
+					"Message when validation errors are found on save that will cause file to become unloadable"
+				)
+			);
+			
+		
+#>
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+<#
+	foreach(string resourceKey in resourcedStrings.Keys)
+	{
+		KeyValuePair<string, string> pair = resourcedStrings[resourceKey];
+		string resourceValue = pair.Key;
+		string resourceComment = pair.Value;
+		if(resourceValue==null)
+		{
+			resourceValue="";
+		}
+#>
+  <data name="<#= System.Security.SecurityElement.Escape(resourceKey) #>" xml:space="preserve">
+    <value><#= System.Security.SecurityElement.Escape(resourceValue) #></value>
+    <comment><#= System.Security.SecurityElement.Escape(resourceComment) #></comment>
+  </data>
+<#
+	}
+	if(resourcedFileObjects.Count > 0)
+	{
+#>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+<#
+		foreach(string resourceKey in resourcedFileObjects.Keys)
+		{
+			KeyValuePair<string, string> pair = resourcedFileObjects[resourceKey];
+			string resourceValue = pair.Key;
+			string resourceComment = pair.Value;
+			if(resourceValue==null)
+			{
+				resourceValue="";
+			}
+#>
+  <data name="<#= System.Security.SecurityElement.Escape(resourceKey) #>" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value><#= System.Security.SecurityElement.Escape(resourceValue) #></value>
+    <comment><#= System.Security.SecurityElement.Escape(resourceComment) #></comment>
+  </data>
+<#
+		}
+	}
+#>
+</root>
+
+<#+
+private void AddDiagramElementResources(DiagramElement diagramElement, 
+	Dictionary<string, KeyValuePair<string, string>> resourcedStrings,
+	Dictionary<string, KeyValuePair<string, string>> resourcedFileObjects)
+{
+	foreach(Decorator decorator in diagramElement.Decorators)
+	{
+		TextDecorator textDecorator = decorator as TextDecorator;
+		if(textDecorator != null && !String.IsNullOrEmpty(textDecorator.DefaultText))
+		{
+			resourcedStrings.Add(diagramElement.Name + textDecorator.Name + "DefaultText", new KeyValuePair<string, string>(textDecorator.DefaultText, "Text decorator default text")); 
+		}
+		else
+		{
+			IconDecorator iconDecorator = decorator as IconDecorator;
+			if(iconDecorator != null && !string.IsNullOrEmpty(iconDecorator.DefaultIcon))
+			{
+				string iconPath = this.ConvertDslLibraryRelativePathToTemplateRelativePath(iconDecorator.DefaultIcon);
+				resourcedFileObjects.Add(diagramElement.Name + iconDecorator.Name + "DefaultImage", new KeyValuePair<string, string>(iconPath + ";System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "Icon decorator default image"));
+			}
+		}
+	}
+	
+	if(diagramElement.TooltipType == TooltipType.Fixed)
+	{
+		resourcedStrings.Add(diagramElement.Name + "Tooltip", new KeyValuePair<string, string>(diagramElement.FixedTooltipText, "Tooltip text")); 
+	}
+}
+
+private void AddDomainClassResources(DomainClass c, Dictionary<string, KeyValuePair<string, string>> resourcedStrings, string commentString, string propertyCommentString)
+{
+	string fullName = c.GetFullName(false);
+	resourcedStrings.Add(fullName+".Description", new KeyValuePair<string, string>(c.Description, String.Format(CultureInfo.CurrentCulture, commentString, "Description", "DomainClass", c.Name)));
+	resourcedStrings.Add(fullName+".DisplayName", new KeyValuePair<string, string>(c.DisplayName, String.Format(CultureInfo.CurrentCulture, commentString, "DisplayName", "DomainClass", c.Name)));
+	
+	foreach(DomainProperty p in c.Properties)
+	{
+		resourcedStrings.Add(fullName+"/"+p.Name+".Description", new KeyValuePair<string, string>(p.Description, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "Description", "DomainProperty", p.Name, "DomainClass", c.Name)));
+		resourcedStrings.Add(fullName+"/"+p.Name+".DisplayName", new KeyValuePair<string, string>(p.DisplayName, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "DisplayName", "DomainProperty", p.Name, "DomainClass", c.Name)));
+		if(!String.IsNullOrEmpty(p.Category))
+		{
+			resourcedStrings.Add(fullName+"/"+p.Name+".Category", new KeyValuePair<string, string>(p.Category, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "Category", "DomainProperty", p.Name, "DomainClass", c.Name)));
+		}
+	}
+	
+	DomainTypeDescriptor descriptor = c.CustomTypeDescriptor;
+	if(descriptor != null)
+	{
+		int i = 0;
+		foreach(CustomPropertyDescriptor link in CustomPropertyDescriptor.GetLinksToPathsOfCustomPropertyDescriptors(descriptor))
+		{
+			if(CodeGenerationUtilities.RequiresGeneratedPropertyDescriptor(link))
+			{
+				i++; // increment counter to ensure name uniqueness; matches logic in PropertyGrid.tt
+				
+				if(!string.IsNullOrEmpty(link.Category))
+				{
+					DomainProperty property = link.DistantPropertyPath.Property;
+					resourcedStrings.Add(fullName+"/"+property.Class.Name+"/"+property.Name+i+".Category", new KeyValuePair<string, string>(link.Category, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "Category", "custom property", property.Name, "DomainClass", c.Name)));
+				}
+				
+				if(!string.IsNullOrEmpty(link.DisplayName))
+				{
+					DomainProperty property = link.DistantPropertyPath.Property;
+					resourcedStrings.Add(fullName+"/"+property.Class.Name+"/"+property.Name+i+".DisplayName", new KeyValuePair<string, string>(link.DisplayName, String.Format(CultureInfo.CurrentCulture, propertyCommentString, "DisplayName", "custom property", property.Name, "DomainClass", c.Name)));
+				}
+			}
+		}
+	}
+}
+#>

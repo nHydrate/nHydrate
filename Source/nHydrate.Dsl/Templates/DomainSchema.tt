@@ -1,0 +1,192 @@
+<#@ template inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ output extension=".xsd" encoding="utf-8"#>
+<#@ include file="DomainClassSchema.tt" #>
+<#@ include file="DomainClassMonikerSchema.tt" #>
+<#@ include file="DomainEnumerationSchema.tt" #>
+<#@ include file="SerializationUtilities.tt" #>
+<#@ include file="MonikerSerializer.tt" #>
+<#
+	GenerateDomainModelSchema(this.DslLibrary);
+#>
+<#+
+
+// **************************
+// Navigation method(s)
+// **************************
+
+private void GenerateDomainModelSchema(Microsoft.VisualStudio.Modeling.DslDefinition.DslLibrary dm)
+{
+	string targetNamespace = CodeGenerationUtilities.GetXmlSchemaNamespace(dm);
+	Dsl dsl = dm as Dsl;
+	DomainClass rootClass = null;
+	if (dsl != null && dsl.Editor != null)
+	{
+		rootClass = dsl.Editor.RootClass;
+	}
+	
+	Dictionary<DslLibrary, string> xmlNamespaceQualifiers = CodeGenerationUtilities.CreateXmlNamespaceQualifiers(dm);
+	EmitSchemaStart(dm, xmlNamespaceQualifiers);
+	EmitImportSchemas(dm, xmlNamespaceQualifiers);
+	EmitIncludeCustomSchema(dm);	
+
+	PushIndent ("  ");
+
+	foreach(DomainClass domainClass in dm.Classes)
+	{
+		GenerateDomainClassSchema(domainClass, rootClass, xmlNamespaceQualifiers);
+		GenerateDomainClassMonikerSchema(domainClass, xmlNamespaceQualifiers);
+	}
+	foreach(DomainRelationship domainRelationship in dm.Relationships)
+	{	// Only relationships with "UseFullForm==true" or "Sealed=false" needs to be serialized explicitly.
+		if (domainRelationship.InheritanceModifier != InheritanceModifier.Sealed || CodeGenerationUtilities.UseFullForm (domainRelationship))
+		{
+			GenerateDomainClassSchema(domainRelationship, rootClass, xmlNamespaceQualifiers);
+			GenerateDomainClassMonikerSchema(domainRelationship, xmlNamespaceQualifiers);
+		}
+	}
+	foreach(DomainType domainType in dm.Types)
+	{
+		if (domainType is DomainEnumeration)
+			GenerateDomainEnumerationSchema(domainType as DomainEnumeration);
+	}
+	PopIndent ();
+	
+	EmitSchemaEnd();
+	
+} // GenerateDomainModelSchema
+
+// **************************
+// Helper method(s)
+// **************************
+
+/// <summary>
+/// Returns a flag indicating whether an xsd "import" for a core schema should be emitted.
+/// </summary>
+/// <remarks>
+/// The import is required is a custom schema location has been specified, or if any
+/// domain class has a custom schema.
+/// </remarks>
+private static bool IsIncludeCustomSchemaRequired(Microsoft.VisualStudio.Modeling.DslDefinition.XmlSerializationBehavior behavior)
+{
+	return ((!string.IsNullOrEmpty(behavior.CustomSchemaLocation)) ||
+		behavior.ClassData.Any(c => c.HasCustomElementSchema));
+}
+
+#region Output methods
+
+// **************************
+// Output method(s)
+// **************************
+
+/// <summary>
+/// Emits an xsd "import" for the core schema, unless it is the core schema that is being generated.
+/// </summary>
+private void EmitImportSchemas(Microsoft.VisualStudio.Modeling.DslDefinition.DslLibrary dm, Dictionary<Microsoft.VisualStudio.Modeling.DslDefinition.DslLibrary, string> shortXmlNamespaces)
+{
+	string targetNamespace = CodeGenerationUtilities.GetXmlSchemaNamespace(dm);
+
+	// If necessary, import the core schema
+	if(string.CompareOrdinal(targetNamespace, CoreDomainModelSerializationBehavior.DomainModelXmlNamespace) != 0)
+	{
+#>
+  <xsd:import id="CoreSchema" namespace="<#= CoreDomainModelSerializationBehavior.DomainModelXmlNamespace #>" />
+<#+
+	}
+	
+	foreach (Microsoft.VisualStudio.Modeling.DslDefinition.DslLibrary library in shortXmlNamespaces.Keys)
+	{
+		string xmlNamespaceToImport = CodeGenerationUtilities.GetXmlSchemaNamespace(library);
+		if(string.CompareOrdinal(xmlNamespaceToImport, CoreDomainModelSerializationBehavior.DomainModelXmlNamespace) != 0 &&
+		   string.CompareOrdinal(xmlNamespaceToImport, targetNamespace) != 0)
+		{
+#>
+  <xsd:import id="<#=shortXmlNamespaces[library]#>" namespace="<#= xmlNamespaceToImport #>" />
+<#+			
+		}
+	}
+}
+
+/// <summary>
+/// Emits an xsd "include" for the custom schema, if required
+/// </summary>
+private void EmitIncludeCustomSchema(Microsoft.VisualStudio.Modeling.DslDefinition.DslLibrary dm)
+{
+	if (!IsIncludeCustomSchemaRequired(dm.XmlSerializationBehavior))
+	{
+		return;
+	}
+	
+	string location = dm.XmlSerializationBehavior.CustomSchemaLocation;
+	if (string.IsNullOrEmpty(location))
+	{
+		location = dm.Name + "Schema.Custom.xsd";
+	}
+#>
+  <xsd:include id="CustomSchema" schemaLocation="<#= location#>" />
+<#+
+}
+
+/// <summary>
+/// Emits the schema opening tags and namespace declarations.
+/// </summary>
+private void EmitSchemaStart(Microsoft.VisualStudio.Modeling.DslDefinition.DslLibrary dm, Dictionary<Microsoft.VisualStudio.Modeling.DslDefinition.DslLibrary, string> shortXmlNamespaces)
+{
+	string targetNamespace = CodeGenerationUtilities.GetXmlSchemaNamespace(dm);
+	
+	string schemasToImport = "";
+	foreach (Microsoft.VisualStudio.Modeling.DslDefinition.DslLibrary library in shortXmlNamespaces.Keys)
+	{			
+			if (library != dm)
+			{				
+				schemasToImport += " xmlns:" + shortXmlNamespaces[library]+"=\""+CodeGenerationUtilities.GetXmlSchemaNamespace(library)+"\"";		
+			}
+	}
+#>
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema id="<#= dm.Name #>Schema" targetNamespace="<#= targetNamespace #>" elementFormDefault="qualified" xmlns="<#= targetNamespace #>" xmlns:<#= CodeGenerationUtilities.CoreDomainModelNamespacePrefix #>="<#= CoreDomainModelSerializationBehavior.DomainModelXmlNamespace #>"<#= schemasToImport#> xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<#+
+}
+
+/// <summary>
+/// Emits the schema closing tag
+/// </summary>
+private void EmitSchemaEnd()
+{
+	this.WriteLine("</xsd:schema>");
+}
+
+private void EmitCustomSchemaStart(string className, string typeDescription, bool condition)
+{
+	if (condition)
+	{
+	#>
+<xsd:annotation>
+  <xsd:documentation>
+  <#= className #> is marked as having a custom <#= typeDescription #> schema, so the schema definition for the type 
+  has been ommitted. The standard schema declaration is given below for reference:
+  
+  <![CDATA[
+<#+
+	}
+}
+
+private void EmitCustomSchemaEnd(bool condition)
+{
+	if (condition)
+	{
+	#>
+      ]]>
+    </xsd:documentation>
+  </xsd:annotation>
+<#+
+	}
+}
+
+#endregion
+
+#>

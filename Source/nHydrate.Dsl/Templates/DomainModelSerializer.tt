@@ -1,0 +1,455 @@
+<#+
+
+/// <summary>
+/// Generates an IDomainModelSerializer implementation for a Dsl or
+/// a Dsl library. The Dsl Library implementation is different because library domain models cannot be
+/// loaded directly.
+/// </summary>
+//***********************************************************************
+private void GenerateSerializerInterfaceImplementation(Microsoft.VisualStudio.Modeling.DslDefinition.DslLibrary dslLibrary)
+{
+
+	string namespaceString = dslLibrary.Namespace;
+
+	string serializationBehaviorClassName = dslLibrary.XmlSerializationBehavior.GetFullName(true);
+
+	OpenNamespace();
+
+	Dsl dsl = dslLibrary as Dsl;
+	if (dsl == null)
+	{
+		EmitLibrarySerializerImplementation(dslLibrary, serializationBehaviorClassName);
+	}
+	else
+	{
+		EmitDslSerializerImplementation(dsl, serializationBehaviorClassName);
+	}
+
+	CloseNamespace();
+
+}
+//***********************************************************************
+
+//***********************************************************************
+private void EmitDoubleDerivedBaseClass(DslLibrary dslLibrary, string serializationBehaviorClassName, string fileExtension)
+{
+
+#>
+/// <summary>
+/// Provides an implementation of the IDomainModelSerializer interface
+/// that can be used to serialize / deserialize the <#= dslLibrary.Name #> domain model.
+/// </summary>
+/// <remarks>Double-derived class - the default implementation is in <#= dslLibrary.Name #>DomainModelSerializerBase.
+/// This class exist so users can customize behavior easily.</remarks>
+[global::System.ComponentModel.Composition.Export(typeof(DslModeling::IDomainModelSerializer))]
+[DslModeling::DomainModelSerializer(typeof(<#= dslLibrary.GetFullName(true)#>DomainModel), <#= serializationBehaviorClassName #>.DomainModelXmlNamespace, <#=fileExtension#>)]
+public partial class <#= dslLibrary.Name #>DomainModelSerializer : <#= dslLibrary.Name #>DomainModelSerializerBase
+{
+}
+
+<#+
+} // end of EmitDoubleDerivedBaseClass
+//***********************************************************************
+
+//***********************************************************************
+// Generates the implementation of IDomainModelSerializer for a Dsl library
+private void EmitLibrarySerializerImplementation(DslLibrary dslLibrary, string serializationBehaviorClassName)
+{
+	string extension = "null";
+
+	EmitDoubleDerivedBaseClass(dslLibrary, serializationBehaviorClassName, extension);
+
+#>
+/// <summary>
+/// Base class that implements IDomainModelSerializer
+/// </summary>
+public abstract partial class <#= dslLibrary.Name #>DomainModelSerializerBase : DslModeling::IDomainModelSerializer
+{
+
+	#region Public properties
+
+	/// <summary>
+	/// The XML namespace used when serializing the domain model
+	/// </summary>
+	public virtual string DomainModelNamespace
+	{
+		get { return <#= serializationBehaviorClassName #>.DomainModelXmlNamespace; }
+	}
+
+	/// <summary>
+	/// The type of the domain model
+	/// </summary>
+	public virtual global::System.Type DomainModelType
+	{
+		get { return typeof(<#= dslLibrary.GetFullName(true)#>DomainModel); }
+	}
+
+	/// <summary>
+	/// Returns false: Dsl libraries cannot be serialized / deserialized directly.
+	/// </summary>
+	public virtual bool IsSerializable
+	{
+		get { return false; }
+	}
+
+	/// <summary>
+	/// Returns null: Dsl libraries cannot be serialized / deserialized directly.
+	/// </summary>
+	public virtual string ModelFileExtension
+	{
+		get { return null; }
+	}
+
+	#endregion
+
+	#region Public methods
+
+	/// <summary>
+	/// Throws NotImplementedException - Dsl libraries cannot be serialized / deserialized directly.
+	/// </summary>
+	public virtual string CalculateDiagramFileName(string modelFileName)
+	{
+		throw new global::System.NotImplementedException();
+	}
+
+	/// <summary>
+	/// Throws NotImplementedException - Dsl libraries cannot be serialized / deserialized directly.
+	/// </summary>
+	public virtual DslModeling::ModelElement LoadModel(DslModeling::SerializationResult serializationResult, DslModeling::Partition partition, string fileName, DslModeling::ISerializerLocator serializerLocator)
+	{
+		throw new global::System.NotImplementedException();
+	}
+
+	/// <summary>
+	/// Throws NotImplementedException - Dsl libraries cannot be serialized / deserialized directly.
+	/// </summary>
+	public virtual DslModeling::ModelElement LoadModelAndDiagram(DslModeling::SerializationResult serializationResult, DslModeling::Partition modelPartition, string modelFileName, DslModeling::Partition diagramPartition, string diagramFileName, DslModeling::ISerializerLocator serializerLocator)
+	{
+		throw new global::System.NotImplementedException();
+	}
+
+	/// <summary>
+	/// Throws NotImplementedException - Dsl libraries cannot be serialized / deserialized directly.
+	/// </summary>
+	public virtual void SaveModel(DslModeling::SerializationResult serializationResult, DslModeling::ModelElement modelRoot, string fileName, System.Text.Encoding encoding)
+	{
+		throw new global::System.NotImplementedException();
+	}
+
+	/// <summary>
+	/// Throws NotImplementedException - Dsl libraries cannot be serialized / deserialized directly.
+	/// </summary>
+	public virtual void SaveModelAndDiagram(DslModeling::SerializationResult serializationResult, DslModeling::ModelElement modelRoot, string modelFileName, DslModeling::ModelElement diagram, string diagramFileName, System.Text.Encoding encoding)
+	{
+		throw new global::System.NotImplementedException();
+	}
+
+	#endregion
+}
+
+<#+
+	
+} // end of method EmitLibrarySerializerImplementation
+//***********************************************************************
+
+//***********************************************************************
+// Generates the implementation of IDomainModelSerializer for a Dsl
+private void EmitDslSerializerImplementation(Dsl dsl, string serializationBehaviorClassName)
+{
+	DslLibrary dslLibrary = dsl;
+
+	string extension = dsl.Editor.FileExtension;
+	EmitDoubleDerivedBaseClass(dsl, serializationBehaviorClassName, "\"" + extension + "\"");
+
+
+	// The generated class will always have the same same implementations for for LoadModel and SaveModel.
+	// However, not every domain model will have a diagram, so the implementations of CalculateDiagramFileName,
+	// LoadModelAndDiagram and SaveModelAndDiagram will vary.
+
+	string namespaceString = dslLibrary.Namespace;
+	string rootElementShortName = null;
+	
+
+	DomainClass rootClass = dsl.Editor.RootClass;
+	rootElementShortName = rootClass.GetRelativeName(namespaceString, true);
+	string rootElementFullName = rootClass.GetFullName(true);
+
+	EmitDslSerializerInvariantCode(dsl, serializationBehaviorClassName, rootElementShortName, rootElementFullName, extension);
+
+	Diagram diagram = dsl.Diagram;
+
+	if (diagram != null)
+	{	
+		string diagramName = diagram.Name;
+		string diagramShortName = diagram.GetRelativeName (namespaceString, true);
+		string diagramFullName = diagram.GetFullName(true);
+		
+		EmitDslSerializer_HasDiagram(dsl, serializationBehaviorClassName, rootElementShortName, rootElementFullName, diagramShortName, diagramFullName);
+	}
+	else
+	{
+		EmitDslSerializer_NoDiagram(dsl, serializationBehaviorClassName, rootElementShortName);
+	}
+	
+	EmitDslSerializerClassFooter();
+
+}
+// end of method EmitDslSerializerImplementation
+//***********************************************************************
+
+//***********************************************************************
+private void EmitDslSerializerInvariantCode(Dsl dsl, string serializationBehaviorClassName, string rootElementShortName, string rootElementFullName, string fileExtension)
+{
+#>
+
+/// <summary>
+/// Base class that implements IDomainModelSerializer
+/// </summary>
+public abstract partial class <#= dsl.Name #>DomainModelSerializerBase : DslModeling::IDomainModelSerializer
+{
+
+	#region Public properties
+
+	/// <summary>
+	/// The XML namespace used when serializing the domain model
+	/// </summary>
+	public virtual string DomainModelNamespace
+	{
+		[global::System.Diagnostics.DebuggerStepThrough]
+		get { return <#= serializationBehaviorClassName #>.DomainModelXmlNamespace; }
+	}
+
+	/// <summary>
+	/// Returns true: this DSL can be serialized / deserialized directly.
+	/// </summary>
+	public virtual bool IsSerializable
+	{
+		[global::System.Diagnostics.DebuggerStepThrough]
+		get { return true; }
+	}
+
+	/// <summary>
+	/// The type of the domain model
+	/// </summary>
+	public virtual global::System.Type DomainModelType
+	{
+		[global::System.Diagnostics.DebuggerStepThrough]
+		get { return typeof(<#= dsl.GetFullName(true)#>DomainModel); }
+	}
+
+	/// <summary>
+	/// File extension used for model files of this kind of domain model
+	/// </summary>
+	/// <remarks>If a domain model type cannot be serialized independently, or cannot
+	/// be serialized to a file, it should return null or empty.</remarks>
+	public string ModelFileExtension
+	{
+		[global::System.Diagnostics.DebuggerStepThrough]
+		get { return "<#= fileExtension #>"; }
+	}
+
+	#endregion
+	
+	
+	#region Load / Save model methods
+	
+	/// <summary>
+	/// Loads a <#= rootElementShortName #> instance and its associated diagram file.
+	/// </summary>
+	/// <param name="serializationResult">Stores serialization result from the load operation.</param>
+	/// <param name="partition">Partition in which the new <#= rootElementShortName #> instance will be created.</param>
+	/// <param name="fileName">Name of the file from which the <#= rootElementShortName #> instance will be deserialized.</param>
+	/// <param name="serializerLocator">Used to locate any additional domain model types required to load the model. Can be null.</param>
+	/// <returns>The loaded <#= rootElementShortName #> instance.</returns>
+	public virtual DslModeling::ModelElement LoadModel(DslModeling::SerializationResult serializationResult, 
+		DslModeling::Partition partition, 
+		string fileName, 
+		DslModeling::ISerializerLocator serializerLocator)
+	{
+		if (serializationResult == null) { throw new global::System.ArgumentNullException("serializationResult"); }
+		if (partition == null) { throw new global::System.ArgumentNullException("partition"); }
+		if (string.IsNullOrEmpty(fileName)) { throw new global::System.ArgumentNullException("fileName"); }
+
+		return <#= dsl.Name #>SerializationHelper.Instance.LoadModel(serializationResult, partition, fileName, null, null, serializerLocator);
+	}
+
+	/// <summary>
+	/// Saves the given model root to the given file, with specified encoding.
+	/// </summary>
+	/// <param name="serializationResult">Stores serialization result from the save operation.</param>
+	/// <param name="modelRoot"><#= rootElementShortName #> instance to be saved.</param>
+	/// <param name="fileName">Name of the file in which the <#= rootElementShortName #> instance will be saved.</param>
+	/// <param name="encoding">Encoding to use when saving the <#= rootElementShortName #> instance.</param>
+	public void SaveModel(DslModeling::SerializationResult serializationResult, 
+		DslModeling::ModelElement modelRoot, 
+		string fileName, 
+		System.Text.Encoding encoding)
+	{
+		if (serializationResult == null) { throw new global::System.ArgumentNullException("serializationResult"); }
+		if (modelRoot == null) { throw new global::System.ArgumentNullException("modelRoot"); }
+		if (string.IsNullOrEmpty("fileName")) { throw new global::System.ArgumentNullException("fileName"); }
+
+		<#=rootElementFullName#> rootElement = modelRoot as <#=rootElementFullName#>;
+		if (rootElement == null)
+		{
+			string errorMessage = string.Format(global::System.Globalization.CultureInfo.CurrentCulture,
+				<#= this.Dsl.GetFullName(true) #>DomainModel.SingletonResourceManager.GetString("InvalidSaveRootElementType"),
+				modelRoot.GetType().ToString());
+
+			throw new global::System.ArgumentException(errorMessage, "modelRoot");
+
+		}
+
+		<#= dsl.Name #>SerializationHelper.Instance.SaveModel(serializationResult, rootElement, fileName,encoding, true);
+	}
+
+	#endregion
+
+<#+
+} // EmitDslSerializerInvariantCode
+//***********************************************************************
+
+//***********************************************************************
+private void EmitDslSerializer_HasDiagram(Dsl dsl, string serializationBehaviorClassName, string rootElementShortName, string rootElementFullName, string diagramClassName, string diagramFullName)
+{
+#>
+	#region Load / Save model and diagram methods
+
+	/// <summary>
+	/// Calculates and returns the name of the diagram file for the specified model file
+	/// </summary>
+	/// <param name="modelFileName">The relevant model file name</param>
+	/// <returns>Name of the associated diagram file</returns>
+	/// <remarks>There is no guarantee that either the model file or the calculated diagram file exist.</remarks>
+	public virtual string CalculateDiagramFileName(string modelFileName)
+	{
+		if (string.IsNullOrEmpty(modelFileName))
+		{
+			throw new global::System.ArgumentNullException("modelFileName");
+		}
+		return modelFileName + ".diagram";
+	}
+
+	/// <summary>
+	/// Loads a <#= rootElementShortName #> instance and its associated diagram file.
+	/// </summary>
+	/// <param name="serializationResult">Stores serialization result from the load operation.</param>
+	/// <param name="modelPartition">Partition in which the new <#= rootElementShortName #> instance will be created.</param>
+	/// <param name="modelFileName">Name of the file from which the <#= rootElementShortName #> instance will be deserialized.</param>
+	/// <param name="diagramPartition">Partition in which the new <#= diagramClassName #> instance will be created.</param>
+	/// <param name="diagramFileName">Name of the file from which the <#= diagramClassName #> instance will be deserialized.</param>
+	/// <param name="serializerLocator">Used to locate any additional domain model types required to load the model. Can be null.</param>
+	/// <returns>The loaded <#= rootElementShortName #> instance.</returns>
+	public DslModeling::ModelElement LoadModelAndDiagram(DslModeling::SerializationResult serializationResult, 
+		DslModeling::Partition modelPartition, 
+		string modelFileName, 
+		DslModeling::Partition diagramPartition, 
+		string diagramFileName, 
+		DslModeling::ISerializerLocator serializerLocator)
+	{
+		if (serializationResult == null) { throw new global::System.ArgumentNullException("serializationResult"); }
+		if (modelPartition == null) { throw new global::System.ArgumentNullException("modelPartition"); }
+		if (string.IsNullOrEmpty(modelFileName)) { throw new global::System.ArgumentNullException("modelFileName"); }
+		if (diagramPartition == null) { throw new global::System.ArgumentNullException("diagramPartition"); }
+		if (string.IsNullOrEmpty(diagramFileName)) { throw new global::System.ArgumentNullException("diagramFileName"); }
+
+		return <#= dsl.Name #>SerializationHelper.Instance.LoadModelAndDiagram(serializationResult, modelPartition, modelFileName, diagramPartition, diagramFileName, null, null, serializerLocator);
+	}
+
+	/// <summary>
+	/// Saves the given <#= rootElementShortName #> and <#= diagramClassName #> to the given files, with specified encoding.
+	/// </summary>
+	/// <param name="serializationResult">Stores serialization result from the save operation.</param>
+	/// <param name="modelRoot"><#= rootElementShortName #> instance to be saved.</param>
+	/// <param name="modelFileName">Name of the file in which the CanonicalSampleRoot instance will be saved.</param>
+	/// <param name="diagram"><#= diagramClassName #> to be saved.</param>
+	/// <param name="diagramFileName">Name of the file in which the diagram will be saved.</param>
+	/// <param name="encoding">Encoding to use when saving the diagram.</param>
+	public void SaveModelAndDiagram(DslModeling::SerializationResult serializationResult, 
+		DslModeling::ModelElement modelRoot, 
+		string modelFileName, 
+		DslModeling::ModelElement diagram, 
+		string diagramFileName, 
+		System.Text.Encoding encoding)
+	{
+		if (serializationResult == null) { throw new global::System.ArgumentNullException("serializationResult"); }
+		if (modelRoot == null) { throw new global::System.ArgumentNullException("modelRoot"); }
+		if (string.IsNullOrEmpty("modelFileName")) { throw new global::System.ArgumentNullException("modelFileName"); }
+		if (diagram == null) { throw new global::System.ArgumentNullException("diagram"); }
+		if (string.IsNullOrEmpty("diagramFileName")) { throw new global::System.ArgumentNullException("diagramFileName"); }
+
+		<#= rootElementFullName #> typedRoot = modelRoot as <#= rootElementFullName #>;
+		if (typedRoot == null)
+		{
+			string errorMessage = string.Format(global::System.Globalization.CultureInfo.CurrentCulture,
+				<#= this.Dsl.GetFullName(true) #>DomainModel.SingletonResourceManager.GetString("InvalidSaveRootElementType"),
+				modelRoot.GetType().ToString());
+
+			throw new global::System.ArgumentException(errorMessage, "modelRoot");
+		}
+		<#= diagramFullName #> typedDiagram = diagram as <#= diagramFullName #>;
+		if (typedDiagram == null)
+		{
+			string errorMessage = string.Format(global::System.Globalization.CultureInfo.CurrentCulture,
+				<#= this.Dsl.GetFullName(true) #>DomainModel.SingletonResourceManager.GetString("InvalidSaveDiagramType"),
+				diagram.GetType().ToString());
+
+			throw new global::System.ArgumentException(errorMessage, "diagram");
+		}
+
+		<#= dsl.Name #>SerializationHelper.Instance.SaveModelAndDiagram(serializationResult, typedRoot, modelFileName, typedDiagram, diagramFileName, encoding, true);
+	}
+
+	#endregion
+	
+<#+
+} // EmitDslSerializer_HasDiagram
+//***********************************************************************
+
+//***********************************************************************
+private void EmitDslSerializer_NoDiagram(Dsl dsl, string serializationBehaviorClassName, string rootElementShortName)
+{
+#>
+	#region Load / Save model and diagram methods
+
+	/// <summary>
+	/// Returns null - this domain model does not have a diagram.
+	/// </summary>
+	public virtual string CalculateDiagramFileName(string modelFileName)
+	{
+		return null;
+	}
+
+	/// <summary>
+	/// Throws NotImplementedException - this domain model does not have a diagram.
+	/// </summary>
+	public virtual DslModeling::ModelElement LoadModelAndDiagram(DslModeling::SerializationResult serializationResult, DslModeling::Partition modelPartition, string modelFileName, DslModeling::Partition diagramPartition, string diagramFileName, DslModeling::ISerializerLocator serializerLocator)
+	{
+		throw new global::System.NotImplementedException();
+	}
+	
+	/// <summary>
+	/// Throws NotImplementedException - this domain model does not have a diagram.
+	/// </summary>
+	public virtual void SaveModelAndDiagram(DslModeling::SerializationResult serializationResult, DslModeling::ModelElement modelRoot, string modelFileName, DslModeling::ModelElement diagram, string diagramFileName, System.Text.Encoding encoding)
+	{
+		throw new global::System.NotImplementedException();
+	}
+
+	#endregion
+	
+<#+
+} // EmitDslSerializer_NoDiagram
+//***********************************************************************
+
+//***********************************************************************
+private void EmitDslSerializerClassFooter()
+{
+#>
+}
+<#+
+}
+// end of method EmitDslSerializerClassFooter
+//***********************************************************************
+
+#>

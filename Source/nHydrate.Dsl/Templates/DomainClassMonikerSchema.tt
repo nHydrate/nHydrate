@@ -1,0 +1,97 @@
+<#+
+private void GenerateDomainClassMonikerSchema(DomainClass domainClass, Dictionary<DslLibrary, string> xmlNamespaceQualifiers )
+{
+	string namespaceString = domainClass.Namespace;
+	string currentXmlNamespace = CodeGenerationUtilities.GetXmlSchemaNamespace(domainClass.DslLibrary);
+	string monikerTagName = CodeGenerationUtilities.GetDomainClassMonikerTagName (domainClass, currentXmlNamespace, xmlNamespaceQualifiers);
+	string monikerTypeName = CodeGenerationUtilities.GetDomainClassMonikerSchemaTypeName (domainClass, currentXmlNamespace, xmlNamespaceQualifiers);
+	string baseMonikerTagName = CodeGenerationUtilities.GetBaseDomainClassMonikerTagName(domainClass, currentXmlNamespace, xmlNamespaceQualifiers);
+	string baseSchemaTypeName = CodeGenerationUtilities.GetBaseDomainClassMonikerSchemaTypeName(domainClass, currentXmlNamespace, xmlNamespaceQualifiers);
+	bool isRelationship = (domainClass is DomainRelationship);
+	bool isAbstract = (domainClass.InheritanceModifier == InheritanceModifier.Abstract);
+	bool isSealed = (domainClass.InheritanceModifier == InheritanceModifier.Sealed);
+	DomainClass baseClass = domainClass.BaseClass;
+	MonikerData monikerData = MonikerDataCache[domainClass];
+
+	if(!monikerData.CanBeMonikerized)
+	{	
+		if (isSealed)
+		{	// Can't be monikerized.
+			return;
+		}
+		isAbstract = true;
+	}	
+#>
+<!-- <#= domainClass.Name #> Moniker -->
+<xsd:element name="<#= monikerTagName #>" <#= (isAbstract ? "abstract=\"true\" " : string.Empty) #><#= (isSealed ? "final=\"#all\" " : string.Empty) #>type="<#= monikerTypeName #>" <#= (string.IsNullOrEmpty(baseMonikerTagName) ? string.Empty : "substitutionGroup=\"" + baseMonikerTagName + "\" ") #>/>
+<#+
+	bool hasCustomMonikerSchema = domainClass.ClassData.HasCustomMonikerSchema;
+	EmitCustomSchemaStart(domainClass.Name, "moniker", hasCustomMonikerSchema); // Note: method is defined in DomainSchema.tt
+#>
+<xsd:complexType name="<#= monikerTypeName #>">
+  <xsd:annotation>
+    <xsd:documentation>Moniker for <#= domainClass.Name #> instance.</xsd:documentation>
+  </xsd:annotation>
+<#+
+	if (!string.IsNullOrEmpty(baseSchemaTypeName))
+	{
+#>
+  <xsd:complexContent>
+    <xsd:extension base="<#= baseSchemaTypeName #>">
+<#+
+		PushIndent ("    ");  
+	}
+	
+	if (monikerData.CanBeMonikerized)
+	{
+		// Moniker attribute.
+		// A moniker XML tag should contain one attribute to tell the moniker name. However, due to type
+		// derivation, it is not possible to constraint its "use" to be "required". Otherwise, if the derived class
+		// specifies a different moniker attribute name, the schema will require it moniker XML tag to contain
+		// two attributes, one for the moniker attribute of base class, and one for the derived class itself.
+		// So we have to losen the schema here to not generate "use=required". The generated serializer code
+		// will then check to ensure that moniker tag really contains a moniker.
+		// In addtion, we need to make sure that we're not re-defining the same attribute on derived classes if 
+		// it is the same as the base class.
+		string monikerXmlAttribute = monikerData.MonikerXmlAttribute;
+		bool definesNewMonikerXmlAttribute = true;
+		DomainClass currentClass = domainClass.BaseClass;
+		while (currentClass != null)
+		{
+			MonikerData currentData = MonikerDataCache[currentClass];
+			if (currentData.CanBeMonikerized &&
+			    string.CompareOrdinal (monikerXmlAttribute, currentData.MonikerXmlAttribute) == 0)
+			{
+				definesNewMonikerXmlAttribute = false;
+				break;
+			}
+			currentClass = currentClass.BaseClass;
+		}
+		if (definesNewMonikerXmlAttribute)
+		{
+#>
+  <xsd:attribute name="<#= monikerXmlAttribute #>" type="xsd:string" <#= (isSealed ? "use=\"required\" " : string.Empty) #>>
+    <xsd:annotation>
+      <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:attribute>
+<#+
+		}
+	}
+	
+	if (!string.IsNullOrEmpty(baseSchemaTypeName))
+	{
+		PopIndent ();
+#>
+    </xsd:extension>
+  </xsd:complexContent>
+<#+
+	}
+#>
+</xsd:complexType>
+
+<#+
+	EmitCustomSchemaEnd(hasCustomMonikerSchema);  // Note: method is defined in DomainSchema.tt
+
+}
+#>

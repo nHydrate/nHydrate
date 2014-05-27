@@ -1,0 +1,536 @@
+<#+
+// Generate code to access a roleplayer on a relationship instance
+private void GenerateDomainRole(DomainRole role) 
+{
+	DomainRelationship relationship = role.Relationship;
+
+	// Check to see if domain role has a base domain role with the same name.
+	DomainRole baseRole = CodeGenerationUtilities.GetSameNameBaseRole(role);
+	
+	// Get domain role inheritance modifier.
+	string inheritanceModifier;
+	switch (relationship.InheritanceModifier)
+	{
+		case InheritanceModifier.Abstract:
+			inheritanceModifier = baseRole != null ? "override abstract " : "abstract ";
+			break;
+		
+		case InheritanceModifier.Sealed:
+			inheritanceModifier = baseRole != null ? "override sealed " : string.Empty;
+			break;
+		
+		default:
+			inheritanceModifier = baseRole != null ? "override " : "virtual ";
+			break;
+	}
+	
+	// Calculate Source/Target specifier for the role.
+	string roleOrder;
+	if (role == relationship.Source)
+	{
+		roleOrder = "DslModeling::DomainRoleOrder.Source, ";
+	}
+	else
+	{
+		roleOrder = "DslModeling::DomainRoleOrder.Target, ";
+	}
+
+	// The type of the role property is defined by the root role with the same name.
+	DomainRole typeRole = CodeGenerationUtilities.GetTypeRole(role);
+	
+	// Generate RolePlayer if it doesn't match the role's type.
+	string typeRoleTypeName = typeRole.RolePlayer.GetRelativeName(role.Relationship.Namespace, true);
+	string roleTypeName = role.RolePlayer.GetRelativeName(role.Relationship.Namespace, true);
+	string rolePlayer = string.Empty;
+	if (roleTypeName != typeRoleTypeName)
+	{
+		rolePlayer = "RolePlayer = typeof(" + roleTypeName + "), ";
+	}
+	
+#>
+#region <#= role.Name #> domain role code
+
+/// <summary>
+/// <#= role.Name #> domain role Id.
+/// </summary>
+public static readonly<#= baseRole != null ? " new" : string.Empty #> global::System.Guid <#= role.Name #>DomainRoleId = <#= CodeGenerationUtilities.GetGuid(role.Id) #>;
+
+/// <summary>
+/// DomainRole <#= role.Name #>
+<#+
+	GenerateComments(role.Description);
+#>
+/// </summary>
+<#+
+	GenerateClrAttributes(role.Attributes);
+	GenerateResourceAttributes(role);
+	if(!role.IsPropertyBrowsable)
+	{
+#>
+[global::System.ComponentModel.Browsable(false)]
+<#+
+	}
+	if(role.IsPropertyUIReadOnly || role.PropertySetterAccessModifier!=AccessModifier.Public)
+	{
+#>
+[global::System.ComponentModel.ReadOnly(true)]
+<#+
+	}
+#>
+[DslModeling::DomainRole(<#= roleOrder #><#= rolePlayer #><#+ if(!string.IsNullOrEmpty(role.PropertyName)){ #>PropertyName = "<#= role.PropertyName #>", <#+ } if (!string.IsNullOrEmpty(role.PropertyDisplayName)) { #>PropertyDisplayNameKey="<#= GetDomainRoleResourceKey(role) #>.PropertyDisplayName", <#+ } if(role.PropagatesDelete) { #>PropagatesDelete = true, <#+ } #> PropagatesCopy = DslModeling::PropagatesCopyOption.<#=role.PropagatesCopy#>, Multiplicity = DslModeling::Multiplicity.<#= role.Multiplicity #>)]
+[DslModeling::DomainObjectId("<#= role.Id.ToString("D") #>")]
+<#= CodeGenerationUtilities.GetTypeAccessModifier(role.RolePlayer.AccessModifier)#> <#= inheritanceModifier #><#= typeRoleTypeName #> <#= role.Name #>
+{
+<#+
+	if (relationship.InheritanceModifier == InheritanceModifier.Abstract)
+	{
+#>
+	get;
+	set;
+<#+
+	}
+	else
+	{
+#>
+	[global::System.Diagnostics.DebuggerStepThrough]
+	get
+	{
+		return (<#= typeRoleTypeName #>)DslModeling::DomainRoleInfo.GetRolePlayer(this, <#= role.Name #>DomainRoleId);
+	}
+	[global::System.Diagnostics.DebuggerStepThrough]
+	set
+	{
+		DslModeling::DomainRoleInfo.SetRolePlayer(this, <#= role.Name #>DomainRoleId, value);
+	}
+<#+
+	}
+#>
+}
+		
+#endregion
+<#+
+}
+
+// Generate overrides of the base role accessor
+private void GenerateDomainRoleOverride(DomainRole role)
+{
+	DomainRelationship rel = role.Relationship;
+	DomainRole baseRole = CodeGenerationUtilities.GetBaseRole(role);
+	if (baseRole != null && baseRole.Name != role.Name)
+	{
+		DomainRole typeRole = CodeGenerationUtilities.GetTypeRole(role);
+		string roleType = typeRole.RolePlayer.GetRelativeName(typeRole.Relationship.Namespace, true);
+		
+		DomainRole baseTypeRole = CodeGenerationUtilities.GetTypeRole(baseRole);
+		string baseRoleType = baseTypeRole.RolePlayer.GetRelativeName(rel.Namespace, true);
+		
+		string typeCast = roleType != baseRoleType ? "(" + roleType + ")" : string.Empty;
+		string inheritanceModifier = rel.InheritanceModifier == InheritanceModifier.Sealed ? "override sealed" : "override";
+#>
+#region <#= baseRole.Name #> domain role override
+
+/// <summary>
+/// Gets the element playing <#= role.Name #> domain role.
+<#+
+		GenerateComments(baseRole.Description);
+#>
+/// </summary>
+<#= CodeGenerationUtilities.GetTypeAccessModifier(baseRole.RolePlayer.AccessModifier)#> <#= inheritanceModifier #> <#= baseRoleType #> <#= baseRole.Name #>
+{
+	[global::System.Diagnostics.DebuggerStepThrough]
+	get
+	{
+		return this.<#= role.Name #>;
+	}
+	[global::System.Diagnostics.DebuggerStepThrough]
+	set
+	{
+		this.<#= role.Name #> = <#= typeCast #>value;
+	}
+}
+
+#endregion
+<#+
+	}
+}
+#>
+
+<#+
+// Generate code on a domain class to access the opposite role players for a role it plays
+private void GenerateOppositeRoleAccessor(DomainRole role)
+{
+	if(!role.IsPropertyGenerator) 
+	{
+		return;
+	}
+	DomainRole opposite = role.Opposite;
+	
+	// Check if property needs a 'new' modifier on it.
+	string inheritanceModifier = (role.Relationship.InheritanceModifier==InheritanceModifier.Sealed || role.RolePlayer.InheritanceModifier==InheritanceModifier.Sealed || (role.PropertyGetterAccessModifier == AccessModifier.Private && role.PropertySetterAccessModifier == AccessModifier.Private)) ? "" : "virtual ";
+	string castString = "";
+	string propertyType = opposite.RolePlayer.GetRelativeName(role.RolePlayer.Namespace, true);
+	DomainRole typeRole = role;
+	for (DomainRole current = role.BaseRole; current!=null; current = current.BaseRole)
+	{
+		if(current!= role && current.IsPropertyGenerator && current.PropertyName==role.PropertyName)
+		{
+			if((current.Relationship.InheritanceModifier==InheritanceModifier.Abstract || role.Relationship.InheritanceModifier==InheritanceModifier.Abstract) && current.Relationship.InheritanceModifier != role.Relationship.InheritanceModifier)
+			{
+				inheritanceModifier+= "new ";
+				break;
+			}
+			else 
+			{
+				typeRole = current;
+			}
+		}
+	}
+	if(typeRole!=role)
+	{
+		inheritanceModifier = "override ";
+		castString = "("+propertyType+")";
+		propertyType = typeRole.Opposite.RolePlayer.GetRelativeName(role.RolePlayer.Namespace, true);
+	}
+
+	// Determine collection type for the property.
+	string linkedElementCollectionType;
+	if(typeRole.CollectionType!=null)
+	{
+		// If a custom collection type was specified, use it.
+		linkedElementCollectionType = StripGenericSpecification(CodeGenerationUtilities.GetDomainTypeFullName(typeRole.CollectionType, role.RolePlayer.Namespace));
+	}
+	else
+	{
+		switch (typeRole.Relationship.InheritanceModifier)
+		{
+			case InheritanceModifier.Abstract:
+				linkedElementCollectionType = "DslModeling::ReadOnlyLinkedElementCollection";
+				break;
+			case InheritanceModifier.None:
+			case InheritanceModifier.Sealed:
+				linkedElementCollectionType = "DslModeling::LinkedElementCollection";
+				break;
+			default:
+				throw new NotSupportedException();
+		}
+	}
+	
+	// Determine access modifier of the property.
+	AccessModifier setterAccessModifier = typeRole.PropertySetterAccessModifier;
+	AccessModifier getterAccessModifier = typeRole.PropertyGetterAccessModifier;
+	AccessModifier overallAccessModifier;
+	
+	if(setterAccessModifier==AccessModifier.Public || getterAccessModifier==AccessModifier.Public)
+	{
+		overallAccessModifier = AccessModifier.Public;
+	}
+	else if(setterAccessModifier==AccessModifier.FamilyOrAssembly || getterAccessModifier==AccessModifier.FamilyOrAssembly)
+	{
+		overallAccessModifier = AccessModifier.FamilyOrAssembly;	
+	}
+	else if(setterAccessModifier==AccessModifier.Family || getterAccessModifier==AccessModifier.Family)
+	{
+		overallAccessModifier = AccessModifier.Family;
+	}
+	else if(setterAccessModifier==AccessModifier.Assembly || getterAccessModifier==AccessModifier.Assembly)
+	{
+		overallAccessModifier = AccessModifier.Assembly;
+	}
+	else 
+	{
+		overallAccessModifier = AccessModifier.Private;
+	}
+	
+	
+	if ( overallAccessModifier == AccessModifier.Public )
+	{
+		// Make sure the role player modifier complies with the role player modifier settings
+		// If role player is internal. We need to change overallAccessModifier to internal as well
+		if (role.Opposite.RolePlayer.AccessModifier == TypeAccessModifier.Assembly )
+		{
+			overallAccessModifier = AccessModifier.Assembly;
+			
+			if ( getterAccessModifier == AccessModifier.Public)
+			{
+				getterAccessModifier = AccessModifier.Assembly;
+			}
+			
+			if ( setterAccessModifier == AccessModifier.Public)
+			{
+				setterAccessModifier = AccessModifier.Assembly;
+			}
+		}
+	}
+
+	
+#>
+#region <#= role.PropertyName #> opposite domain role accessor
+<#+
+	if(role.Multiplicity == Microsoft.VisualStudio.Modeling.DslDefinition.Multiplicity.One || role.Multiplicity == Microsoft.VisualStudio.Modeling.DslDefinition.Multiplicity.ZeroOne)
+	{
+#>
+/// <summary>
+/// Gets or sets <#= role.PropertyName #>.
+<#+
+	GenerateComments(role.Description);
+#>
+/// </summary>
+<#+
+	GenerateClrAttributes(role.PropertyAttributes);
+#>
+<#= CodeGenerationUtilities.GetAccessModifier(overallAccessModifier) #> <#= inheritanceModifier#><#= propertyType #> <#= role.PropertyName #>
+{
+	[global::System.Diagnostics.DebuggerStepThrough]
+<#+
+	if(getterAccessModifier!=overallAccessModifier)
+	{
+#>
+	<#= CodeGenerationUtilities.GetAccessModifier(getterAccessModifier) #> get
+<#+
+	}
+	else
+	{
+#>
+	get
+<#+
+	}
+#>
+	{
+		return DslModeling::DomainRoleInfo.GetLinkedElement(this, <#= role.Relationship.GetFullName(true) #>.<#= role.Name #>DomainRoleId) as <#= opposite.RolePlayer.GetRelativeName(role.RolePlayer.Namespace, true) #>;
+	}
+<#+
+		if (role.Relationship.InheritanceModifier != InheritanceModifier.Abstract)
+		{
+#>
+	[global::System.Diagnostics.DebuggerStepThrough]
+<#+
+		if(setterAccessModifier != overallAccessModifier)
+		{
+#>
+	<#= CodeGenerationUtilities.GetAccessModifier(setterAccessModifier) #> set
+<#+
+		}
+		else
+		{
+#>
+	set
+<#+
+		}
+#>
+	{
+		DslModeling::DomainRoleInfo.SetLinkedElement(this, <#= role.Relationship.GetFullName(true) #>.<#= role.Name #>DomainRoleId, <#= castString #>value);
+	}
+<#+
+		}
+#>
+}
+<#+
+	}
+	else
+	{
+		string fieldName = CodeGenerationUtilities.GetCamelCase(role.PropertyName) + "CollectionStorage";
+#>
+
+/// <summary>
+/// Gets a list of <#= role.PropertyName #>.
+<#+
+		GenerateComments(role.Description);
+#>
+/// </summary>
+<#+
+	GenerateClrAttributes(role.PropertyAttributes);
+#>
+<#= CodeGenerationUtilities.GetAccessModifier(typeRole.PropertyGetterAccessModifier) #> <#= inheritanceModifier #><#= linkedElementCollectionType #><<#= propertyType #>> <#= role.PropertyName #>
+{
+	[global::System.Diagnostics.DebuggerStepThrough]
+	get
+	{
+		return GetRoleCollection<<#= linkedElementCollectionType #><<#= propertyType #>>, <#= propertyType #>>(<#= role.Relationship.GetFullName(true) #>.<#= role.Name #>DomainRoleId);
+	}
+}
+<#+
+	}
+#>
+#endregion
+<#+
+}
+
+// Generate static methods on the relationship to access the opposite role players of a given role player.
+private void GenerateStaticRoleAccessorOnRelationship(DomainRole role, DomainRelationship relationship)
+{
+	DomainRole opposite = role.Opposite;
+	// Camel case the role player name to use as the parameter name
+	string roleParameterName = "element";
+	string oppositeRoleParameterName = "new"+opposite.Name.TrimStart('@');
+#>
+#region Static methods to access <#= role.PropertyName #> of a <#= role.RolePlayer.Name #>
+<#+
+
+	bool getRequiresNew = false;
+	bool setRequiresNew = false;
+	
+	string roleType = role.RolePlayer.GetRelativeName(relationship.Namespace, true);
+	string oppositeRoleType = opposite.RolePlayer.GetRelativeName(relationship.Namespace, true);
+	
+	// Figure out if the get or set requires a 'new' keyword (if it's already declared in a base relationship).
+	for (DomainRelationship baseRel = role.Relationship.BaseClass as DomainRelationship; baseRel != null; baseRel = baseRel.BaseClass as DomainRelationship)
+	{
+		foreach (DomainRole baseRole in baseRel.Roles)
+		{
+			if (baseRole.PropertyName == role.PropertyName &&
+				// UNDONE: GeMathew - should we be using relationship.Namespace instead in the line below?
+				baseRole.RolePlayer.GetRelativeName(baseRel.Namespace, true) == roleType)
+			{
+				getRequiresNew = true;
+				if (baseRole.Opposite.RolePlayer.GetRelativeName(baseRel.Namespace, true) == oppositeRoleType)
+				{
+					setRequiresNew = true;
+				}
+			}
+		}
+	}
+	
+	if(role.Multiplicity == Microsoft.VisualStudio.Modeling.DslDefinition.Multiplicity.One || role.Multiplicity == Microsoft.VisualStudio.Modeling.DslDefinition.Multiplicity.ZeroOne)
+	{
+#>
+/// <summary>
+/// Gets <#= role.PropertyName #>.
+/// </summary>
+[global::System.Diagnostics.DebuggerStepThrough]
+[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+<#= CodeGenerationUtilities.GetGeneratedPropertyGetterAccessModifier(role) #> static <#=getRequiresNew ? "new " : ""#><#=oppositeRoleType#> Get<#= role.PropertyName.TrimStart('@') #>(<#=roleType#> <#= roleParameterName #>)
+{
+	return DslModeling::DomainRoleInfo.GetLinkedElement(<#= roleParameterName #>, <#= role.Name #>DomainRoleId) as <#= opposite.RolePlayer.GetRelativeName(relationship.Namespace, true) #>;
+}
+
+/// <summary>
+/// Sets <#= role.PropertyName #>.
+/// </summary>
+[global::System.Diagnostics.DebuggerStepThrough]
+[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+<#= CodeGenerationUtilities.GetGeneratedPropertySetterAccessModifier(role) #> static <#=setRequiresNew ? "new " : ""#>void Set<#= role.PropertyName.TrimStart('@') #>(<#=roleType#> <#= roleParameterName #>, <#=oppositeRoleType#> <#= oppositeRoleParameterName #>)
+{
+	DslModeling::DomainRoleInfo.SetLinkedElement(<#= roleParameterName #>, <#= role.Name #>DomainRoleId, <#= oppositeRoleParameterName #>);
+}
+<#+
+	}
+	else
+	{
+		// If the multiplicity of the role is *, figure out what type of 
+		// collection type to use. If the user specified a custom collection
+		// type, use that.
+		string linkedElementCollectionType;
+		if(role.CollectionType!=null)
+		{
+			linkedElementCollectionType = StripGenericSpecification(CodeGenerationUtilities.GetDomainTypeFullName(role.CollectionType, role.Relationship.Namespace));
+		}
+		else
+		{
+			if (role.Relationship.InheritanceModifier == InheritanceModifier.Abstract)
+			{
+				linkedElementCollectionType = "DslModeling::ReadOnlyLinkedElementCollection";
+			}
+			else
+			{
+				linkedElementCollectionType = "DslModeling::LinkedElementCollection";
+			}
+		}
+
+#>
+/// <summary>
+/// Gets a list of <#= role.PropertyName #>.
+/// </summary>
+[global::System.Diagnostics.DebuggerStepThrough]
+[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+<#= CodeGenerationUtilities.GetGeneratedPropertyGetterAccessModifier(role) #> static <#=getRequiresNew ? "new " : ""#><#= linkedElementCollectionType #><<#=oppositeRoleType#>> Get<#= role.PropertyName.TrimStart('@') #>(<#=roleType#> <#= roleParameterName #>)
+{
+	return GetRoleCollection<<#= linkedElementCollectionType #><<#=oppositeRoleType#>>, <#=oppositeRoleType#>>(<#= roleParameterName #>, <#= role.Name #>DomainRoleId);
+}
+<#+
+	}
+#>
+#endregion
+<#+
+}
+
+// Generate a strongly-typed static accessor placed on a REL for getting REL instances from a MEL
+private void GenerateRoleLinkAccessor(DomainRole role)
+{
+	bool requiresNew = false;
+	string rolePlayerType = role.RolePlayer.GetFullName(true);
+	
+	// Figure out if the method requires a 'new' keyword (if it's already declared in a base relationship).
+	for (DomainRelationship baseRel = role.Relationship.BaseClass as DomainRelationship; baseRel != null; baseRel = baseRel.BaseClass as DomainRelationship)
+	{
+		foreach (DomainRole baseRole in baseRel.Roles)
+		{
+			if (baseRole.PropertyName == role.PropertyName && baseRole.RolePlayer.GetFullName(true) == rolePlayerType)
+			{
+				requiresNew = true;
+				break;
+			}
+		}
+	}
+#>
+#region <#= role.Name #> link accessor
+<#+
+	if(role.Multiplicity == Microsoft.VisualStudio.Modeling.DslDefinition.Multiplicity.One || role.Multiplicity == Microsoft.VisualStudio.Modeling.DslDefinition.Multiplicity.ZeroOne)
+	{
+#>
+/// <summary>
+/// Get the <#= role.Relationship.Name  #> link to a <#= role.RolePlayer.Name #>.
+/// </summary>
+[global::System.Diagnostics.DebuggerStepThrough]
+[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+<#= CodeGenerationUtilities.GetGeneratedPropertyGetterAccessModifier(role) #> static <#=requiresNew ? "new " : ""#><#= role.Relationship.GetFullName(true) #> GetLinkTo<#= role.PropertyName.TrimStart('@') #> (<#= rolePlayerType #> <#= CodeGenerationUtilities.GetCamelCase(role.Name) #>Instance)
+{
+	global::System.Collections.Generic.IList<<#= role.Relationship.GetFullName(true) #>> links = DslModeling::DomainRoleInfo.GetElementLinks<<#= role.Relationship.GetFullName(true) #>>(<#= CodeGenerationUtilities.GetCamelCase(role.Name) #>Instance, <#= role.Relationship.GetFullName(true) #>.<#= role.Name #>DomainRoleId);
+	global::System.Diagnostics.Debug.Assert(links.Count <= 1, "Multiplicity of <#= role.Name #> not obeyed.");
+	if ( links.Count == 0 )
+	{
+		return null;
+	}
+	else
+	{
+		return links[0];
+	}
+}
+<#+
+	}
+	else // Multiplicity == many
+	{
+#>
+/// <summary>
+/// Get the list of <#= role.Relationship.Name  #> links to a <#= role.RolePlayer.Name #>.
+/// </summary>
+[global::System.Diagnostics.DebuggerStepThrough]
+[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+<#= CodeGenerationUtilities.GetGeneratedPropertyGetterAccessModifier(role) #> static <#=requiresNew ? "new " : ""#>global::System.Collections.ObjectModel.ReadOnlyCollection<<#= role.Relationship.GetFullName(true) #>> GetLinksTo<#= role.PropertyName.TrimStart('@') #> ( <#=rolePlayerType#> <#= CodeGenerationUtilities.GetCamelCase(role.Name) #>Instance )
+{
+	return DslModeling::DomainRoleInfo.GetElementLinks<<#= role.Relationship.GetFullName(true) #>>(<#= CodeGenerationUtilities.GetCamelCase(role.Name) #>Instance, <#= role.Relationship.GetFullName(true) #>.<#= role.Name #>DomainRoleId);
+}
+<#+
+	}
+#>
+#endregion
+<#+
+}
+#>
+<#+
+// Strip a type name down to its non-generic component
+// Converts:
+// foo<t> into foo
+// foo into foo
+private string StripGenericSpecification(string typeName)
+{
+	int firstGeneric = typeName.IndexOf("<", 0, StringComparison.Ordinal);
+	if (firstGeneric != -1)
+	{
+		return typeName.Substring(0, firstGeneric);
+	}
+	else
+	{
+		return typeName;
+	}
+}
+#>

@@ -1,0 +1,313 @@
+<#+
+
+///<summary>
+///Emits a PropertyPath-based type descriptor for the specified domain class
+///</summary>
+private void GeneratePropertyPathTypeDescriptor(DomainClass domainClass, string baseClassName)
+{
+	DomainTypeDescriptor descriptor = domainClass.CustomTypeDescriptor;
+	string className = CodeGenerationUtilities.GetGenerationClassName(domainClass);
+	string accessModifier = CodeGenerationUtilities.GetTypeAccessModifier(domainClass.AccessModifier);
+	string namespaceString = domainClass.Namespace;
+	
+
+#>
+/// <summary>
+/// Factory class for <#= className #>TypeDescriptors.
+/// </summary>
+internal class <#= className #>TypeDescriptionProvider : DslDesign::ElementTypeDescriptionProvider
+{
+
+	/// <summary>
+	/// Constructor
+	/// </summary>
+	public <#= className #>TypeDescriptionProvider()
+	{
+	}
+
+	/// <summary>
+	/// Called by the System.ComponentModel framework when it requires a type descriptor instance.
+	/// </summary>
+	protected override DslDesign::ElementTypeDescriptor CreateTypeDescriptor(global::System.ComponentModel.ICustomTypeDescriptor parent, DslModeling::ModelElement element)
+	{
+		return new <#= className #>TypeDescriptor(parent, element);
+	}
+
+	/// <summary>
+	/// Called by the System.ComponentModel framework when it requires a type descriptor instance for a type.
+	/// </summary>
+	protected override DslDesign::ElementTypeDescriptor CreateTypeDescriptor(global::System.ComponentModel.ICustomTypeDescriptor parent, global::System.Type modelElementType)
+	{
+		return new <#= className #>TypeDescriptor(parent, modelElementType);
+	}
+}
+
+/// <summary>
+/// Custom type descriptor class for <#= className #> elements.
+/// </summary>
+<#= accessModifier #> partial class <#= className #>TypeDescriptor : <#= baseClassName #>
+{
+	/// <summary>
+	/// Constructor
+	/// </summary>
+	public <#= className #>TypeDescriptor(global::System.ComponentModel.ICustomTypeDescriptor parent,
+											DslModeling::ModelElement selectedElement)
+		: base(parent, selectedElement)
+	{
+	}
+
+	/// <summary>
+	/// Constructor
+	/// </summary>
+	public <#= className #>TypeDescriptor(global::System.ComponentModel.ICustomTypeDescriptor parent,
+											global::System.Type modelElementType)
+		: base(parent, modelElementType)
+	{
+	}
+
+<#+
+			// Maps paths to sets of domain properties.  Prevents redundant model traversal to
+			// retrieve the same element multiple times.
+			// 
+			// Each KeyValuePair in the list contains a custom property descriptor and a corresponding
+			// counter that ensures it is unique.  This counter must be incremented while the (ordered) list of custom
+			// property descriptors is traversed, to ensure that the matching counter is used in other templates,
+			// such as the ResX template where resources for custom category, etc. are stored.
+			Dictionary<string, List<KeyValuePair<int, CustomPropertyDescriptor>>> propertyPathMap = new Dictionary<string, List<KeyValuePair<int, CustomPropertyDescriptor>>>();
+			List<CustomPropertyDescriptor> derivedDescriptors = new List<CustomPropertyDescriptor>();
+			int propertyIndex = 0;
+			foreach(CustomPropertyDescriptor link in CustomPropertyDescriptor.GetLinksToPathsOfCustomPropertyDescriptors(descriptor))
+			{
+				PropertyPath path = link.DistantPropertyPath;
+				// gets a string representation of the property path
+				string pathString = String.Empty;
+				
+				if(path != null && path.PathToProperty != null && path.PathToProperty.Segments.Count > 0)
+				{
+					pathString = path.PathToProperty.ToString();
+				}
+				
+				// if we need to create a derived descriptor class, add it to the list
+				if(CodeGenerationUtilities.RequiresGeneratedPropertyDescriptor(link))
+				{
+					propertyIndex++; // increment counter to ensure name uniqueness
+					derivedDescriptors.Add(link);
+				}
+				
+				List<KeyValuePair<int, CustomPropertyDescriptor>> propertyList;
+				if(!propertyPathMap.TryGetValue(pathString, out propertyList))
+				{
+					propertyList = new List<KeyValuePair<int, CustomPropertyDescriptor>>();
+					propertyPathMap[pathString] = propertyList;
+				}
+				
+				propertyList.Add(new KeyValuePair<int, CustomPropertyDescriptor>(propertyIndex, link));
+			}
+#>
+	/// <summary>
+	/// Returns a collection of property descriptors an instance of <#= className #>.
+	/// </summary>
+	public override global::System.ComponentModel.PropertyDescriptorCollection GetProperties(global::System.Attribute[] attributes)
+	{
+		global::System.ComponentModel.PropertyDescriptorCollection propertyDescriptors = base.GetProperties(attributes);
+		
+		// Add in our custom properties.
+<#+
+			string sourceClassName = domainClass.GetFullName(true);
+#>
+		<#= sourceClassName #> source = this.ModelElement as <#= sourceClassName #>;
+		DslModeling::DomainPropertyInfo domainProperty;
+		global::System.Attribute[] propertyAttributes;
+
+<#+
+			int elementIndex=0;
+			foreach(List<KeyValuePair<int, CustomPropertyDescriptor>> propertyList in propertyPathMap.Values)
+			{
+				PropertyPath path = propertyList[0].Value.DistantPropertyPath;
+				string targetClassName = null;
+				elementIndex++;
+				
+				if(path.PathToProperty != null && path.PathToProperty.Segments.Count > 0)
+				{
+					string inputClassName = CodeGenerationUtilities.GetSegmentInputType(path.PathToProperty.Segments[0]);
+					targetClassName = CodeGenerationUtilities.GetSegmentOutputType(path.PathToProperty.Segments[path.PathToProperty.Segments.Count-1]);
+					if (string.CompareOrdinal (sourceClassName, inputClassName) == 0)
+					{
+#>
+		<#= targetClassName #> element<#= elementIndex #> = source == null ? null : FindPropertyElement<#= elementIndex #>(source);
+<#+
+					}
+					else
+					{
+#>
+		<#= targetClassName #> element<#= elementIndex #> = source == null ? null : FindPropertyElement<#= elementIndex #>(source as <#= inputClassName #>);
+<#+
+					}
+				}
+				else
+				{
+					targetClassName = path.Property.Class.GetFullName(true);
+#>
+			<#= sourceClassName #> element<#= elementIndex #> = source;
+<#+
+				}
+#>
+		// If this is either a type-based request or there is something to traverse
+		if(source == null || element<#= elementIndex #> != null)
+		{
+<#+
+				foreach(KeyValuePair<int, CustomPropertyDescriptor> pair in propertyList)
+				{
+					CustomPropertyDescriptor property = pair.Value;
+					path = property.DistantPropertyPath;
+					string targetName = CodeGenerationUtilities.GetGenerationClassName(path.Property.Class) + path.Property.Name;
+#>
+			domainProperty = base.Store.DomainDataDirectory.FindDomainProperty(<#= targetClassName #>.<#= path.Property.Name #>DomainPropertyId);
+			propertyAttributes = base.GetDomainPropertyAttributes(domainProperty);
+<#+
+					if(CodeGenerationUtilities.RequiresGeneratedPropertyDescriptor(property))
+					{
+#>
+			propertyDescriptors.Add(new <#= targetName #>PropertyDescriptor<#= pair.Key #>(this, element<#= elementIndex #>, domainProperty, propertyAttributes));
+<#+
+					}
+					else
+					{
+#>
+			propertyDescriptors.Add(new DslDesign::ElementPropertyDescriptor(this, element<#= elementIndex #>, domainProperty, propertyAttributes));
+<#+
+					}
+				}
+#>
+		}
+<#+
+			}
+#>
+		return propertyDescriptors;
+	}
+	
+	#region Navigation methods to find elements hosting custom properties.
+<#+
+			elementIndex=0;
+			if(!string.IsNullOrEmpty(namespaceString))
+			{
+				PopIndent();
+			}
+			foreach(List<KeyValuePair<int, CustomPropertyDescriptor>> propertyList in propertyPathMap.Values)
+			{
+				PropertyPath path = propertyList[0].Value.DistantPropertyPath;
+				
+				elementIndex++;
+				if(path.PathToProperty != null && path.PathToProperty.Segments.Count > 0)
+				{
+					GeneratePathMethod(path.PathToProperty, "FindPropertyElement"+elementIndex, "private");
+				}
+			}
+			if(!string.IsNullOrEmpty(namespaceString))
+			{
+				PushIndent("\t");
+			}
+#>
+	#endregion
+<#+		
+			propertyIndex=0;
+			foreach(CustomPropertyDescriptor derivedDescriptor in derivedDescriptors)
+			{
+				PropertyPath path = derivedDescriptor.DistantPropertyPath;
+				string targetClassName = CodeGenerationUtilities.GetGenerationClassName(path.Property.Class);
+				string targetPropertyName = path.Property.Name;
+				string targetName = targetClassName + targetPropertyName;
+				
+				propertyIndex++; // increment counter to ensure name uniqueness 
+				
+				DomainProperty originalProperty = derivedDescriptor.DistantPropertyPath.Property;
+#>
+
+	/// <summary>
+	/// Specialized property descriptor used when the <#= path.Property.Name #> property appears on the <#= className #> class.
+	/// </summary>
+	private partial class <#= targetName #>PropertyDescriptor<#= propertyIndex #> : DslDesign::ElementPropertyDescriptor
+	{
+	
+		/// <summary>
+		/// Constructs a new <#= targetName #>PropertyDescriptor<#= propertyIndex #>.
+		/// </summary>
+		public <#= targetName #>PropertyDescriptor<#= propertyIndex #>(DslDesign::ElementTypeDescriptor owner, DslModeling::ModelElement modelElement, DslModeling::DomainPropertyInfo domainProperty, global::System.Attribute[] attributes)
+			: base(owner, modelElement, domainProperty, attributes) 
+		{
+<#+
+				if(!originalProperty.IsBrowsable)
+				{
+#>
+				// Ensure that this property is browsable.
+				for (int i = 0; i < attributes.Length; i++)
+				{
+					if (attributes[i] is global::System.ComponentModel.BrowsableAttribute)
+					{
+						attributes[i] = new global::System.ComponentModel.BrowsableAttribute(true);
+					}
+				}
+<#+
+				}
+#>
+		}
+		
+<#+
+				if(!string.IsNullOrEmpty(derivedDescriptor.Category))
+				{
+#>
+		/// <summary>
+		/// Category this property appears in.
+		/// </summary>
+		public override string Category
+		{
+			get
+			{
+				global::System.Resources.ResourceManager resourceManager = <#= this.DslLibrary.GetFullName(true) #>DomainModel.SingletonResourceManager;
+				return resourceManager.GetString("<#= domainClass.GetFullName(false) #>/<#= targetClassName #>/<#= targetPropertyName #><#= propertyIndex #>.Category");
+			}
+		}
+<#+
+				}
+				
+				if(!string.IsNullOrEmpty(derivedDescriptor.DisplayName))
+				{
+#>
+		/// <summary>
+		/// Display name for this property.
+		/// </summary>
+		public override string DisplayName
+		{
+			get
+			{
+				global::System.Resources.ResourceManager resourceManager = <#= this.DslLibrary.GetFullName(true) #>DomainModel.SingletonResourceManager;
+				return resourceManager.GetString("<#= domainClass.GetFullName(false) #>/<#= targetClassName #>/<#= targetPropertyName #><#= propertyIndex #>.DisplayName");
+			}
+		}
+<#+
+				}
+
+				if(derivedDescriptor.IsUIReadOnly != originalProperty.IsUIReadOnly)
+				{
+#>
+		/// <summary>
+		/// Returns true if this property should be read-only in the property grid, false otherwise.
+		/// </summary>
+		public override bool IsReadOnly
+		{
+			get
+			{
+				return <#= derivedDescriptor.IsUIReadOnly ? "true" : "false" #>;
+			}
+		}
+<#+
+				}
+#>
+	}
+<#+
+			}
+#>
+}
+<#+
+	}
+#>

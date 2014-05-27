@@ -1,0 +1,317 @@
+<#+
+private void GenerateClrAttributes(System.Collections.Generic.IList<ClrAttribute> attributes)
+{
+	foreach(ClrAttribute attribute in attributes)
+	{
+		if (attribute.Name == "global::Microsoft.VisualStudio.Modeling.DslDefinition.ImportDslLibrary" ||
+			attribute.Name == "Microsoft.VisualStudio.Modeling.DslDefinition.ImportDslLibrary")
+		{
+			continue;
+		}
+
+		bool firstParameter = true;
+		System.Text.StringBuilder parameters = new System.Text.StringBuilder();
+		foreach(AttributeParameter parameter in attribute.Parameters)
+		{
+			if(!firstParameter)
+			{
+				parameters.Append(", ");
+			}
+			else 
+			{
+				firstParameter = false;
+			}
+			if(!string.IsNullOrEmpty(parameter.Name)) 
+			{
+				parameters.AppendFormat("{0} = {1}", parameter.Name, parameter.Value);
+			}
+			else 
+			{
+				parameters.Append(parameter.Value);
+			}
+		}
+#>
+[<#=attribute.Name#>(<#=parameters#>)]
+<#+
+	}
+}
+
+// Generate the Summary XML comment for a DomainClass-derived type.
+// generatedClass specifies whether this is the main generated code carrying class in a double-derived pair.
+private void GenerateSummary(string domainClassType, DomainClass domainClass, bool generatedClass)
+{
+#>/// <summary>
+<#+
+	if ( generatedClass )
+	{
+		if ( !domainClass.GeneratesDoubleDerived )
+		{
+#>
+/// <#= domainClassType #> <#= domainClass.Name #>
+<#+
+		GenerateComments(domainClass.Description);
+		}
+		else // Double-derived base class - no comments to avoid repetition
+		{
+#>
+/// Double-derived base class for <#= domainClassType #> <#= domainClass.Name #>
+<#+
+		}
+	}
+	else // Derived class in double-derived pair.
+	{
+#>
+/// <#= domainClassType #> <#= domainClass.Name #>
+<#+
+		GenerateComments(domainClass.Description);
+	}
+#>
+/// </summary>
+<#+
+}
+private void GenerateComments(string comment)
+{
+	if(string.IsNullOrEmpty(comment))
+	{
+		return;
+	}
+	for(int i=0; i<comment.Length;)
+	{
+		int subStringLength = Math.Min(80, comment.Length - i);
+		int pos = comment.LastIndexOf(" ", i + subStringLength, subStringLength, StringComparison.Ordinal);
+		if (i + subStringLength >= comment.Length)
+		{
+			pos=-1; // Don't split a short comment at all
+		}
+		string subString;
+		if (pos != -1)
+		{
+			subString = comment.Substring(i, pos - i);
+			i = pos + 1; // Skip space
+		}
+		else
+		{
+			subString = comment.Substring(i);
+			i = comment.Length;
+		}
+#>
+/// <#= subString #>
+<#+
+	}
+}
+
+
+private string GetDomainRoleResourceKey( DomainRole r)
+{
+	string resourceKey = r.Relationship.GetFullName(false)+"/"+r.Name;
+	return resourceKey;
+}
+
+private void GenerateResourceAttributes(DomainElement domainObj)
+{
+	string resourceKey = "";
+	string domainModelType = "";
+	string className = "";
+	string helpKeyword = "";
+	bool generateCategory = false;
+	bool generateDisplayName = false;
+	bool generateCustomTypeDescriptor = false;
+	bool generateHelpKeyword = false;
+
+	DslLibrary dm = null;	
+	if(domainObj is DomainClass)
+	{
+		generateDisplayName = true;
+		DomainClass c = (DomainClass)domainObj;
+		resourceKey = c.GetFullName(false);
+		dm = c.DslLibrary;
+		generateCustomTypeDescriptor = CodeGenerationUtilities.HasCustomTypeDescriptor(c);
+		className = CodeGenerationUtilities.GetGenerationClassName(c);
+		helpKeyword = c.HelpKeyword;
+		generateHelpKeyword = !String.IsNullOrEmpty(helpKeyword);
+	}
+	else if(domainObj is DomainProperty)
+	{
+		generateDisplayName = true;
+		DomainProperty p = (DomainProperty)domainObj;
+		DomainClass c = p.Class;
+		resourceKey = c.GetFullName(false)+"/"+p.Name;
+		generateCategory = !String.IsNullOrEmpty(p.Category);
+		dm = c.DslLibrary;
+		helpKeyword = p.HelpKeyword;
+		generateHelpKeyword = !String.IsNullOrEmpty(helpKeyword);
+	}
+	else if(domainObj is DomainRole)
+	{
+		generateDisplayName = true;
+		DomainRole r = (DomainRole)domainObj;
+		generateCategory = !String.IsNullOrEmpty(r.Category);
+		DomainRelationship rel = r.Relationship;
+		resourceKey = rel.GetFullName(false)+"/"+r.Name;		
+		dm = rel.DslLibrary;
+		helpKeyword = r.HelpKeyword;
+		generateHelpKeyword = !String.IsNullOrEmpty(helpKeyword);
+	}
+	else if(domainObj is EnumerationLiteral)
+	{
+		EnumerationLiteral literal = (EnumerationLiteral)domainObj;
+		DomainEnumeration domainEnum = literal.Enumeration;
+		dm = domainEnum.DslLibrary;
+		resourceKey = domainEnum.GetFullName(false)+"/"+literal.Name;
+	}
+	else if(domainObj is DslLibrary)
+	{
+		generateDisplayName = true;
+		dm = (DslLibrary)domainObj;
+		resourceKey = dm.GetFullName(false)+"DomainModel";
+	}
+	domainModelType = dm.GetFullName(true)+"DomainModel";
+	
+	// If no resource name specified for DslLibrary, don't generate any resource attributes.
+	if(String.IsNullOrEmpty(GeneratedResourceName))
+	{
+		return;
+	}
+	
+	if(generateDisplayName)
+	{
+#>
+[DslDesign::DisplayNameResource("<#= resourceKey #>.DisplayName", typeof(<#= domainModelType #>), "<#= GeneratedResourceName #>")]
+<#+
+	}
+	if(generateCategory)
+	{
+#>
+[DslDesign::CategoryResource("<#= resourceKey #>.Category", typeof(<#= domainModelType #>), "<#= GeneratedResourceName #>")]
+<#+
+	}
+	if(generateCustomTypeDescriptor)
+	{
+#>
+[global::System.ComponentModel.TypeDescriptionProvider(typeof(<#= className #>TypeDescriptionProvider))]
+<#+
+	}
+	if(generateHelpKeyword)
+	{
+#>
+[global::System.ComponentModel.Design.HelpKeyword("<#= helpKeyword #>")]
+<#+
+	}
+#>
+[DslDesign::DescriptionResource("<#= resourceKey #>.Description", typeof(<#= domainModelType #>), "<#= GeneratedResourceName #>")]
+<#+
+	if(domainObj is DomainClass)
+	{
+#>
+[DslModeling::DomainModelOwner(typeof(<#= domainModelType #>))]
+<#+
+	}
+}
+private void GenerateDebuggerDisplayAttribute(DomainClass domainClass)
+{
+	foreach (DomainProperty domainProperty in domainClass.Properties)
+	{
+		if (domainProperty.IsElementName)
+		{
+			if ( domainProperty.Kind == PropertyKind.Normal )
+			{
+#>
+[global::System.Diagnostics.DebuggerDisplay("{GetType().Name,nq} (<#= domainProperty.Name #> = {<#= CodeGenerationUtilities.GetCamelCase(domainProperty.Name) #>PropertyStorage})")]
+<#+
+			}
+			else
+			{
+#>
+[global::System.Diagnostics.DebuggerDisplay("{GetType().Name,nq} (<#= domainProperty.Name #> = {<#= domainProperty.Name #>})")]
+<#+
+			}
+			break;
+		}
+	}
+}
+private void GenerateClsCompliantAttribute(TypeAccessModifier modifier)
+{
+	if(modifier==TypeAccessModifier.Public)
+	{
+#>
+[global::System.CLSCompliant(true)]
+<#+
+	}
+	
+}
+
+///<summary>
+///Return a list of the domain models used by supplied type
+///</summary>
+private System.Collections.Generic.IEnumerable<string> GetRequiredModelsList(DslLibrary library)
+{
+	
+	System.Collections.Generic.List<string> modelNames = new System.Collections.Generic.List<string>();
+	
+	// Every model uses "Core"
+	modelNames.Add("global::Microsoft.VisualStudio.Modeling.CoreDomainModel");
+	
+	if (CodeGenerationUtilities.DefinesDiagramElements(library))
+	{
+		modelNames.Add("global::Microsoft.VisualStudio.Modeling.Diagrams.CoreDesignSurfaceDomainModel");
+	}
+	
+	foreach(DslLibrary importedLib in library.AllLibraries)
+	{
+		modelNames.Add(importedLib.GetFullName(true) + "DomainModel");
+	}
+	
+	return modelNames.Distinct();
+}
+
+///<summary>
+/// Emit [DependsOnDomainModel] attributes for each model this library uses.
+///</summary>
+private void GenerateExtendsAttributes(DslLibrary library)
+{
+	foreach (string extendedModel in GetRequiredModelsList(library))
+	{
+		if (string.CompareOrdinal(library.GetFullName(true) + "DomainModel", extendedModel) != 0)
+		{
+#>
+[DslModeling::DependsOnDomainModel(typeof(<#= extendedModel #>))]
+<#+
+		}
+	}  
+}
+
+private void OpenNamespace()
+{
+	OpenNamespace(this.DslLibrary.Namespace);
+}
+
+private void OpenNamespace(string namespaceString)
+{
+	if (!string.IsNullOrEmpty (namespaceString))
+	{
+#>
+namespace <#= namespaceString #>
+{
+<#+
+
+		PushIndent ("\t");
+	}
+}
+
+private void CloseNamespace()
+{
+	CloseNamespace(this.DslLibrary.Namespace);
+}
+
+private void CloseNamespace(string namespaceString)
+{
+	if (!string.IsNullOrEmpty(namespaceString))
+	{
+		PopIndent();
+#>
+}
+<#+
+	}
+}
+
+#>

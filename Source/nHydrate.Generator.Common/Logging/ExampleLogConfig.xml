@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<applications>
+	<application name="VSCodeTools">
+		<system.diagnostics>
+			<switches>
+				<add name="Default" value="4" />
+			</switches>
+			<trace autoflush="true" indentsize="0">
+				<listeners>
+					<add name="MultiProcessFileTraceListener" type="nHydrate.Generator.Common.Logging.MultiProcessFileTraceListener, nHydrate.Generator.Common" initializeData="C:\Logs\nHydrate.log" />
+				</listeners>
+			</trace>
+		</system.diagnostics>
+	</application>
+</applications>

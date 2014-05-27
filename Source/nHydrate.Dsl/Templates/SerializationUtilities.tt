@@ -1,0 +1,193 @@
+<#+
+#region Helper Classes/Methods
+private class BaseClassHelper
+{
+	private Dictionary<Type, string> defaultBaseClasses;
+	private Dictionary<Type, IsRootClassDelegate> isBaseClassDelegates;
+	private Dictionary<Type, MonikerData> baseMonikerData;
+
+	private BaseClassHelper()
+	{
+		this.defaultBaseClasses = new Dictionary<Type, string>();
+		this.isBaseClassDelegates = new Dictionary<Type, IsRootClassDelegate>();
+		this.baseMonikerData = new Dictionary<Type, MonikerData>();
+		
+		// DomainClass
+		this.defaultBaseClasses[typeof(DomainClass)] = "DslModeling::DomainClassXmlSerializer";
+		this.isBaseClassDelegates[typeof(DomainClass)] = new IsRootClassDelegate(this.IsRootDomainClass);
+		this.baseMonikerData[typeof(DomainClass)] = new MonikerData(null, null, null, false, null, null, MonikerKind.None);
+		
+		// DomainRelationship
+		this.defaultBaseClasses[typeof(DomainRelationship)] = "DslModeling::DomainRelationshipXmlSerializer";
+		this.isBaseClassDelegates[typeof(DomainRelationship)] = new IsRootClassDelegate(this.IsRootDomainRelationship);
+		this.baseMonikerData[typeof(DomainRelationship)] = new MonikerData(null, null, null, false, null, null, MonikerKind.None);
+		
+		// Diagram
+		this.defaultBaseClasses[typeof(Diagram)] = "DslDiagrams::DiagramSerializer";
+		this.isBaseClassDelegates[typeof(Diagram)] = new IsRootClassDelegate(this.NotRoot);
+		this.baseMonikerData[typeof(Diagram)] = new MonikerData(null, null, null, false, null, null, MonikerKind.None);
+		
+		// CompartmentShape
+		this.defaultBaseClasses[typeof(CompartmentShape)] = "DslDiagrams::CompartmentShapeSerializer";
+		this.isBaseClassDelegates[typeof(CompartmentShape)] = new IsRootClassDelegate(this.NotRoot);
+		this.baseMonikerData[typeof(CompartmentShape)] = new MonikerData(null, null, null, true, "Id", null, MonikerKind.Id);
+		
+		// GeometryShape
+		this.defaultBaseClasses[typeof(GeometryShape)] = "DslDiagrams::NodeShapeSerializer";
+		this.isBaseClassDelegates[typeof(GeometryShape)] = new IsRootClassDelegate(this.NotRoot);
+		this.baseMonikerData[typeof(GeometryShape)] = new MonikerData(null, null, null, true, "Id", null, MonikerKind.Id);
+		
+		// ImageShape
+		this.defaultBaseClasses[typeof(ImageShape)] = "DslDiagrams::ImageShapeSerializer";
+		this.isBaseClassDelegates[typeof(ImageShape)] = new IsRootClassDelegate(this.NotRoot);
+		this.baseMonikerData[typeof(ImageShape)] = new MonikerData(null, null, null, true, "Id", null, MonikerKind.Id);
+		
+		// SwimlaneShape
+		this.defaultBaseClasses[typeof(SwimLane)] = "DslDiagrams::SwimlaneShapeSerializer";
+		this.isBaseClassDelegates[typeof(SwimLane)] = new IsRootClassDelegate(this.NotRoot);
+		this.baseMonikerData[typeof(SwimLane)] = new MonikerData(null, null, null, true, "Id", null, MonikerKind.Id);
+		
+		// Connector
+		this.defaultBaseClasses[typeof(Connector)] = "DslDiagrams::BinaryLinkShapeSerializer";
+		this.isBaseClassDelegates[typeof(Connector)] = new IsRootClassDelegate(this.NotRoot);
+		this.baseMonikerData[typeof(Connector)] = new MonikerData(null, null, null, false, null, null, MonikerKind.None);
+	}
+	private static BaseClassHelper instance;	
+	[System.Diagnostics.DebuggerBrowsable (System.Diagnostics.DebuggerBrowsableState.Never)]
+	internal static BaseClassHelper Instance
+	{
+		[System.Diagnostics.DebuggerStepThrough]
+		get 
+		{ 
+			if (instance == null)
+				instance = new BaseClassHelper();
+			return instance;
+		}
+	}
+	
+	internal string this[Type type]
+	{
+		get
+		{
+			string result = null;
+			Type t = type;
+			while (t != null && !this.defaultBaseClasses.TryGetValue (t, out result))
+			{
+				t = t.BaseType;
+			}
+			if (t == null || string.IsNullOrEmpty (result))
+				result = "Dsl::DomainClassXmlSerializer";	// Default for all serializers
+			return result;
+		}
+	}
+	
+	internal bool IsRootClass (DomainClass domainClass)
+	{
+		IsRootClassDelegate del = null;
+		Type t = domainClass.GetType();
+		while (t != null && !this.isBaseClassDelegates.TryGetValue (t, out del))
+		{
+			t = t.BaseType;
+		}
+		if (t == null || del == null)
+			return true;
+		return del(domainClass);
+	}
+	
+	internal MonikerData GetBaseMonikerData (DomainClass domainClass)
+	{
+		MonikerData result = null;
+		Type t = domainClass.GetType();
+		while (t != null && !this.baseMonikerData.TryGetValue (t, out result))
+		{
+			t = t.BaseType;
+		}
+		if (t == null || result == null)
+			return new MonikerData(null);
+		return result;
+	}
+
+
+	internal static bool IsModelElement(DomainClass domainClass)
+	{
+		return (string.CompareOrdinal (domainClass.GetFullName(false), "Microsoft.VisualStudio.Modeling.ModelElement") == 0);
+	}
+	
+	private bool IsRootDomainClass (DomainClass domainClass)
+	{
+		bool result = false;
+		if (domainClass.BaseClass == null)
+		{	// Every DomainClass by default inherits from Microsoft.VisualStudio.Modeling.ModelElement.
+			result = true;
+		}
+		else
+		{
+			if (IsModelElement(domainClass.BaseClass))
+			{
+				result = true;
+			}
+		}
+		return result;
+	}
+	
+	private bool IsRootDomainRelationship (DomainClass domainClass)
+	{
+		bool result = false;
+		if (domainClass.BaseClass == null)
+		{	// Every DomainRelationship by default inherits from Microsoft.VisualStudio.Modeling.ElementLink.
+			result = true;
+		}
+		else
+		{
+			string baseClassFullName = domainClass.BaseClass.GetFullName(false);
+			if (string.CompareOrdinal (baseClassFullName, "Microsoft.VisualStudio.Modeling.ElementLink") == 0)
+				result = true;
+		}
+		return result;
+	}
+	
+	private bool NotRoot (DomainClass domainClass)
+	{
+		return false;
+	}
+	
+	private delegate bool IsRootClassDelegate (DomainClass domainClass);
+	
+	
+}
+
+private List<DomainRole> GetSerializedRelationships (DomainClass domainClass)
+{
+	List<DomainRole> result = new List<DomainRole> ();
+	
+	foreach (DomainRole role in domainClass.RolesPlayed)
+	{
+		DomainRelationship rel = role.Relationship;
+		if (rel.InheritanceModifier == InheritanceModifier.Abstract)
+			continue;	// Abstract relationship will not be serialized directly.
+		else if (CodeGenerationUtilities.HasNonAbstractBaseClass (rel))
+		{	// If a relationship has a non-abstract base relationship, the instances of this relationship
+			// will be serialized through the base relationship instead.
+			continue;
+		}
+			
+		if (role.IsEmbedding)
+			result.Add (role);
+		else if( !rel.IsEmbedding )
+		{
+			if (rel.Source.Id == role.Id)
+			{	// The given role is a source role, so the relationship is serialized as a child element of it.
+				DomainClass targetRolePlayer = role.Opposite.RolePlayer;
+				MonikerData monikerData = MonikerDataCache[targetRolePlayer];
+				if (monikerData.CanBeMonikerized || targetRolePlayer.InheritanceModifier != InheritanceModifier.Sealed)
+				{
+					result.Add (role);
+				}
+			}
+		}
+	}
+	
+	return result;
+}
+#endregion
+#>

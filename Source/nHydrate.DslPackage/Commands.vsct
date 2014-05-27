@@ -1,0 +1,561 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- -->
+    <!-- This file contains custom command definitions. -->
+    <!-- -->
+    <!-- NOTE: Each time commands are added or changed, the "version" parameter to the -->
+    <!-- ProvideMenuResource attribute in Shell\Package.tt should be incremented. -->
+    <!-- This causes Visual Studio to re-merge the menu definitions for the package. -->
+    <!-- Otherwise, changes won't take effect until the next time devenv /setup is run. -->
+    <!-- -->
+    <Extern href="stdidcmd.h" />
+    <Extern href="vsshlids.h" />
+    <!--<Extern href="msobtnid.h" xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" />-->
+    <Extern href="virtkeys.h" />
+    <Extern href="DSLToolsCmdID.h" />
+    <Include href="GeneratedCode\GeneratedVsct.vsct" />
+
+    <Commands package="guidPkg">
+
+        <!-- Define a group - a section in the menu -->
+        <Groups>
+            <Group guid="guidMenuGroupMain" id="grpidGroupMain" priority="0x0100">
+                <!-- These symbols are defined in GeneratedVSCT.vsct -->
+                <Parent guid="guidCmdSet" id="menuidContext" />
+            </Group>
+            <Group guid="guidDiagramMenuCmdSet" id="DiagramSubMenuGroup" priority="0x0100">
+                <Parent guid="guidDiagramMenuCmdSet" id="DiagramSubMenuGroup" />
+            </Group>
+            <Group guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" priority="0x0100">
+                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
+            </Group>
+            <Group guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" priority="0x0100">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+            </Group>
+            <Group guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" priority="0x0000">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenu" />
+            </Group>
+            <Group guid="guidMenuNHydrateCmdSet" id="grpidNHydrateMenuGroup" priority="0x0000">
+                <Parent guid="guidMenuNHydrateCmdSet" id="grpidNHydrateMenu" />
+            </Group>
+        </Groups>
+
+        <Bitmaps>
+            <Bitmap guid="guidWidgetImages" href="Resources\Images_32bit.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpCompile, bmpVerify, bmpImport, bmpImportLegacy, bmpArrange" />
+        </Bitmaps>
+
+        <Menus>
+            <Menu guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" priority="0x600" type="Menu">
+                <Parent guid="guidMenuGroupMain" id="grpidGroupMain" />
+                <Strings>
+                    <ButtonText>Model</ButtonText>
+                    <CommandName>Model</CommandName>
+                </Strings>
+            </Menu>
+            <Menu guid="guidDiagramMenuCmdSet" id="DiagramSubMenuGroup" priority="0x700" type="Menu">
+                <Parent guid="guidMenuGroupMain" id="grpidGroupMain" />
+                <Strings>
+                    <ButtonText>Diagram</ButtonText>
+                    <CommandName>Diagram</CommandName>
+                </Strings>
+            </Menu>
+            <Menu guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" priority="0x800" type="Menu">
+                <Parent guid="guidMenuGroupMain" id="grpidGroupMain" />
+                <Strings>
+                    <ButtonText>Refactor</ButtonText>
+                    <CommandName>Refactor</CommandName>
+                </Strings>
+            </Menu>
+            <Menu guid="guidMenuNHydrateCmdSet" id="grpidNHydrateMenu" priority="0x100" type="Menu">
+                <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+                <CommandFlag>AlwaysCreate</CommandFlag>
+                <Strings>
+                    <ButtonText>nHydrate</ButtonText>
+                    <CommandName>nHydrate</CommandName>
+                </Strings>
+            </Menu>
+            <Menu guid="guidZoomMenuCmdSet" id="ZoomSubMenu" priority="0x0900" type="Menu">
+                <Parent guid="guidMenuGroupMain" id="grpidGroupMain" />
+                <Strings>
+                    <ButtonText>Zoom</ButtonText>
+                    <CommandName>Zoom</CommandName>
+                </Strings>
+            </Menu>
+
+        </Menus>
+
+        <!-- Define a button - a menu item - inside the Group -->
+        <Buttons>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuImportDatabase" priority="0x0300" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <Icon guid="guidWidgetImages" id="bmpImport" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Import Database...</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuVerify" priority="0x0200" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <Icon guid="guidWidgetImages" id="bmpVerify" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Verify</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuGenerate" priority="0x0100" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <Icon guid="guidWidgetImages" id="bmpCompile" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Generate...</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuRelationDialog" priority="0x0100" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Relationship Details...</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuEntityRefreshFromDatabase" priority="0x0105" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Refresh from database...</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuEntityRelations" priority="0x0100" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Relationships...</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuBulkImportColumns" priority="0x0200" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Bulk Import Columns...</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuShowRelatedEntities" priority="0x0300" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Show Related Entities...</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuStaticData" priority="0x0400" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Static Data...</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuShowIndexes" priority="0x0500" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>View Indexes...</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuComponentFields" priority="0x0100" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Setup Fields...</ButtonText>
+                </Strings>
+            </Button>
+
+            <!--<Button guid="guidMenuFilterDiagram" id="cmdidMenuFilterDiagram" priority="0x0100" type="Button">
+                <Parent guid="guidMenuGroupMain" id="grpidGroupMain"/>
+                -->
+            <!-- If you do not want to place the command in your own Group, 
+                 use Parent guid="guidCmdSet" id="grpidContextMain".
+                 These symbols are defined in VerifydVSCT.vsct -->
+            <!--
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Filter Diagram...</ButtonText>
+                </Strings>
+            </Button>-->
+
+            <Button guid="guidDiagramMenuCmdSet" id="cmdidMenuArrange" priority="0x0100" type="Button">
+                <Parent guid="guidDiagramMenuCmdSet" id="DiagramSubMenuGroup" />
+                <Icon guid="guidWidgetImages" id="bmpArrange" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Layout Diagram</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidDiagramMenuCmdSet" id="cmdidMenuSaveImage" priority="0x0100" type="Button">
+                <Parent guid="guidDiagramMenuCmdSet" id="DiagramSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Export as Image...</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidDiagramMenuCmdSet" id="cmdidMenuDiagramCollapseAll" priority="0x0100" type="Button">
+                <Parent guid="guidDiagramMenuCmdSet" id="DiagramSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Collapse All</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidDiagramMenuCmdSet" id="cmdidMenuDiagramExpandAll" priority="0x0100" type="Button">
+                <Parent guid="guidDiagramMenuCmdSet" id="DiagramSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Expand All</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidDiagramMenuCmdSet" id="cmdidMenuDiagramShowTypes" priority="0x0100" type="Button">
+                <Parent guid="guidDiagramMenuCmdSet" id="DiagramSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Show Types</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuRelationShowSource" priority="0x0100" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Highlight Parent</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuRelationShowTarget" priority="0x0100" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Highlight Child</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuShowOnDiagram" priority="0x0100" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Show on Diagram</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuModuleDialog" priority="0x0500" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Module Associations...</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidModelMenuCmdSet" id="cmdidMenuUtilityDialog" priority="0x0600" type="Button">
+                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Utilities...</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidDiagramMenuCmdSet" id="cmdidMenuAbout" priority="0x0100" type="Button">
+                <Parent guid="guidDiagramMenuCmdSet" id="DiagramSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>About...</ButtonText>
+                </Strings>
+            </Button>
+
+            <!-- ZOOM BUTTONS -->
+            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoomIn" priority="0x0000" type="Button">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
+                <Strings>
+                    <CommandName>cmdidMenuZoomIn</CommandName>
+                    <ButtonText>Zoom In</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoomOut" priority="0x0000" type="Button">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
+                <Strings>
+                    <CommandName>cmdidMenuZoomOut</CommandName>
+                    <ButtonText>Zoom Out</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoomToFit" priority="0x0000" type="Button">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
+                <Strings>
+                    <CommandName>cmdidMenuZoomToFit</CommandName>
+                    <ButtonText>Zoom To Fit</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom10" priority="0x0001" type="Button">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
+                <Strings>
+                    <CommandName>cmdidMenuZoom10</CommandName>
+                    <ButtonText>10%</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom20" priority="0x0001" type="Button">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
+                <Strings>
+                    <CommandName>cmdidMenuZoom20</CommandName>
+                    <ButtonText>20%</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom30" priority="0x0001" type="Button">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
+                <Strings>
+                    <CommandName>cmdidMenuZoom30</CommandName>
+                    <ButtonText>30%</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom40" priority="0x0001" type="Button">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
+                <Strings>
+                    <CommandName>cmdidMenuZoom40</CommandName>
+                    <ButtonText>40%</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom50" priority="0x0001" type="Button">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
+                <Strings>
+                    <CommandName>cmdidMenuZoom50</CommandName>
+                    <ButtonText>50%</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom60" priority="0x0001" type="Button">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
+                <Strings>
+                    <CommandName>cmdidMenuZoom60</CommandName>
+                    <ButtonText>60%</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom70" priority="0x0001" type="Button">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
+                <Strings>
+                    <CommandName>cmdidMenuZoom70</CommandName>
+                    <ButtonText>70%</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom80" priority="0x0001" type="Button">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
+                <Strings>
+                    <CommandName>cmdidMenuZoom80</CommandName>
+                    <ButtonText>80%</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom90" priority="0x0001" type="Button">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
+                <Strings>
+                    <CommandName>cmdidMenuZoom90</CommandName>
+                    <ButtonText>90%</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom100" priority="0x0001" type="Button">
+                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
+                <Strings>
+                    <CommandName>cmdidMenuZoom100</CommandName>
+                    <ButtonText>100%</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorSplitTable" priority="0x0100" type="Button">
+                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Split Entity</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorCombineTable" priority="0x0100" type="Button">
+                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Combine Entities</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorReplaceIDWithGuid" priority="0x0100" type="Button">
+                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Replace Identity with GUID</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorReplaceGuidWithID" priority="0x0100" type="Button">
+                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Replace GUID with Identity</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorCreateAssoc" priority="0x0100" type="Button">
+                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Create Associative Table</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorChangeVarchar" priority="0x0100" type="Button">
+                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Convert Varchar/NVarchar Datatypes</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorChangeNText" priority="0x0100" type="Button">
+                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Convert Deprecated Datatypes</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorRetypePK" priority="0x0100" type="Button">
+                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Change Primary Key Type</ButtonText>
+                </Strings>
+            </Button>
+
+        </Buttons>
+
+    </Commands>
+
+    <CommandPlacements>
+        <CommandPlacement guid="guidDiagramMenuCmdSet" id="cmdidMyCommandPlacement" priority="0x105">
+            <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+        </CommandPlacement>
+    </CommandPlacements>
+
+    <VisibilityConstraints>
+        <!-- Ensures the command is only loaded for this DSL -->
+        <VisibilityItem guid="guidMenuGroupMain" id="grpidGroupMain" context="guidEditor" />
+        <VisibilityItem guid="guidMenuGroupDiagram" id="grpidGroupDiagram" context="guidEditor" />
+        <VisibilityItem guid="guidMenuDiagramMenu" id="grpidDiagramMenu" context="guidEditor" />
+        <VisibilityItem guid="guidMenuRefactorMenu" id="grpidRefactorMenu" context="guidEditor" />
+    </VisibilityConstraints>
+
+    <Symbols>
+        <!-- Substitute a unique GUID for the placeholder: -->
+        <GuidSymbol name="guidMenuGroupMain" value="{ABCDAA34-817C-44FC-8227-EC4C4C56BE3C}">
+            <IDSymbol name="grpidGroupMain" value="0x01001" />
+        </GuidSymbol>
+
+        <GuidSymbol name="guidMenuGroupDiagram" value="{BBCDAA34-817C-44FC-8227-EC4C4C56BE3C}">
+            <IDSymbol name="grpidGroupDiagram" value="0x01002" />
+        </GuidSymbol>
+
+        <GuidSymbol name="guidMenuNHydrateCmdSet" value="{ABCDEF11-817C-44FC-8227-EC4C4C561300}">
+                        <IDSymbol name="grpidNHydrateMenuGroup" value="0x1020" />
+            <IDSymbol name="grpidNHydrateMenu" value="0x01005" />
+        </GuidSymbol>
+
+        <GuidSymbol name="guidMenuDiagramMenu" value="{CBCDAA34-817C-44FC-8227-EC4C4C56BE3C}">
+            <IDSymbol name="grpidDiagramMenu" value="0x01003" />
+        </GuidSymbol>
+
+        <GuidSymbol name="guidMenuRefactorMenu" value="{DDCDAA34-817C-44FC-8227-EC4C4C56BE3C}">
+            <IDSymbol name="grpidRefactorMenu" value="0x01005" />
+        </GuidSymbol>
+
+        <GuidSymbol name="guidModelMenuCmdSet" value="{66457976-07EF-4CF1-AE6C-FA5E2D926EA9}">
+            <IDSymbol name="ModelSubMenu" value="0x1102" />
+            <IDSymbol name="ModelSubMenuGroup" value="0x1152" />
+            <IDSymbol name="cmdidMenuImportDatabase" value="0x00001" />
+            <IDSymbol name="cmdidMenuVerify" value="0x00003" />
+            <IDSymbol name="cmdidMenuGenerate" value="0x00002" />
+            <IDSymbol name="cmdidMenuRelationDialog" value="0x00004" />
+            <IDSymbol name="cmdidMenuEntityRefreshFromDatabase" value="0x001F" />
+            <IDSymbol name="cmdidMenuEntityRelations" value="0x00006" />
+            <IDSymbol name="cmdidMenuBulkImportColumns" value="0x00007" />
+            <IDSymbol name="cmdidMenuShowRelatedEntities" value="0x00008" />
+            <IDSymbol name="cmdidMenuStaticData" value="0x00009" />
+            <IDSymbol name="cmdidMenuShowIndexes" value="0x0000A" />
+            <IDSymbol name="cmdidMenuComponentFields" value="0x0000C" />
+            <IDSymbol name="cmdidMenuRelationShowSource" value="0x00012" />
+            <IDSymbol name="cmdidMenuRelationShowTarget" value="0x00013" />
+            <IDSymbol name="cmdidMenuShowOnDiagram" value="0x00014" />
+            <IDSymbol name="cmdidMenuModuleDialog" value="0x00016" />
+            <IDSymbol name="cmdidMenuUtilityDialog" value="0x00017" />
+        </GuidSymbol>
+
+        <GuidSymbol name="guidDiagramMenuCmdSet" value="{55457976-07EF-4CF1-AE6C-FA5E2D926EA9}">
+            <IDSymbol name="DiagramSubMenu" value="0x1101" />
+            <IDSymbol name="DiagramSubMenuGroup" value="0x1151" />
+            <IDSymbol name="cmdidMyCommandPlacement" value="0x105" />
+            <IDSymbol name="cmdidMenuArrange" value="0x00005" />
+            <IDSymbol name="cmdidMenuSaveImage" value="0x0000E" />
+            <IDSymbol name="cmdidMenuDiagramCollapseAll" value="0x0000F" />
+            <IDSymbol name="cmdidMenuDiagramExpandAll" value="0x00010" />
+            <IDSymbol name="cmdidMenuDiagramShowTypes" value="0x00011" />
+            <IDSymbol name="cmdidMenuAbout" value="0x00015" />
+        </GuidSymbol>
+
+        <GuidSymbol name="guidRefactorMenuCmdSet" value="{99887976-07EF-4CF1-AE6C-FA5E2D926EA9}">
+            <IDSymbol name="RefactorSubMenu" value="0x1101" />
+            <IDSymbol name="RefactorSubMenuGroup" value="0x1153" />
+            <IDSymbol name="cmdidMenuRefactorSplitTable" value="0x00019" />
+            <IDSymbol name="cmdidMenuRefactorCombineTable" value="0x0001A" />
+            <IDSymbol name="cmdidMenuRefactorReplaceIDWithGuid" value="0x0001B" />
+            <IDSymbol name="cmdidMenuRefactorReplaceGuidWithID" value="0x0001C" />
+            <IDSymbol name="cmdidMenuRefactorCreateAssoc" value="0x0001D" />
+            <IDSymbol name="cmdidMenuRefactorChangeVarchar" value="0x00020" />
+            <IDSymbol name="cmdidMenuRefactorChangeNText" value="0x0001E" />
+            <IDSymbol name="cmdidMenuRefactorRetypePK" value="0x0001F" />
+        </GuidSymbol>
+
+        <GuidSymbol name="guidZoomMenuCmdSet" value="{65457976-07EF-4CF1-AE6C-FA5E2D926EA9}">
+            <IDSymbol name="ZoomSubMenu" value="0x1100" />
+            <IDSymbol name="ZoomSubMenuGroup" value="0x1150" />
+            <IDSymbol name="cmdidMenuZoomIn" value="0x0320" />
+            <IDSymbol name="cmdidMenuZoomOut" value="0x0321" />
+            <IDSymbol name="cmdidMenuZoomToFit" value="0x0322" />
+            <IDSymbol name="cmdidMenuZoom10" value="0x0300" />
+            <IDSymbol name="cmdidMenuZoom20" value="0x0301" />
+            <IDSymbol name="cmdidMenuZoom30" value="0x0302" />
+            <IDSymbol name="cmdidMenuZoom40" value="0x0303" />
+            <IDSymbol name="cmdidMenuZoom50" value="0x0304" />
+            <IDSymbol name="cmdidMenuZoom60" value="0x0305" />
+            <IDSymbol name="cmdidMenuZoom70" value="0x0306" />
+            <IDSymbol name="cmdidMenuZoom80" value="0x0307" />
+            <IDSymbol name="cmdidMenuZoom90" value="0x0308" />
+            <IDSymbol name="cmdidMenuZoom100" value="0x0309" />
+        </GuidSymbol>
+        
+        <GuidSymbol name="guidWidgetImages" value="{2e19ef27-4e4c-44cb-82b5-a0c78c37046b}">
+            <IDSymbol name="bmpPic1" value="1" />
+            <IDSymbol name="bmpPic2" value="2" />
+            <IDSymbol name="bmpPicSearch" value="3" />
+            <IDSymbol name="bmpPicX" value="4" />
+            <IDSymbol name="bmpPicArrows" value="5" />
+            <IDSymbol name="bmpCompile" value="6" />
+            <IDSymbol name="bmpVerify" value="7" />
+            <IDSymbol name="bmpImport" value="8" />
+            <IDSymbol name="bmpImportLegacy" value="9" />
+            <IDSymbol name="bmpArrange" value="10" />
+        </GuidSymbol>
+
+    </Symbols>
+
+</CommandTable>

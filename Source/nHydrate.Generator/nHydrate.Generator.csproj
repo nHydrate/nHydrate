@@ -1,0 +1,527 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E2040FE8-13C7-4A6B-860B-E612A0FDBEFF}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>nHydrate.Generator</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>nHydrate.Generator</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <PublishUrl>http://localhost/Widgetsphere.Generators/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE;UNITTEST</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>pdbonly</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;UNITTEST</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <FileAlignment>4096</FileAlignment>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <Optimize>true</Optimize>
+    <FileAlignment>4096</FileAlignment>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EnvDTE">
+      <Name>envdte</Name>
+    </Reference>
+    <Reference Include="nHydrate.Wizard">
+      <HintPath>..\..\bin\nHydrate.Wizard.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Design">
+      <Name>System.Design</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
+      <Link>Properties\AssemblyInfoGeneratorCommon.cs</Link>
+    </Compile>
+    <Compile Include="BaseModelCollection.cs" />
+    <Compile Include="BaseModelObject.cs" />
+    <Compile Include="BaseModelObjectController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BaseUIControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DatabaseConnectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DatabaseConnectionControl.Designer.cs">
+      <DependentUpon>DatabaseConnectionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataImportOptions.cs" />
+    <Compile Include="DefaultMenuCommand.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ErrorControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ErrorControl.Designer.cs">
+      <DependentUpon>ErrorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GenerationHelper.cs" />
+    <Compile Include="IModelObjectController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="INHydrateModelObject.cs" />
+    <Compile Include="INHydrateGenerator.cs" />
+    <Compile Include="ListViewComparer.cs" />
+    <Compile Include="MenuCommand.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Message.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MessageCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MessageCollectionEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MessageEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ModelHelper.cs" />
+    <Compile Include="ModelObjectTreeNode.cs" />
+    <Compile Include="ModelObjectUserInterface.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Models\ColumnBase.cs" />
+    <Compile Include="Models\ViewColumnRelationship.cs" />
+    <Compile Include="Models\ViewColumnRelationshipCollection.cs" />
+    <Compile Include="Models\ViewRelation.cs" />
+    <Compile Include="Models\ViewRelationCollection.cs" />
+    <Compile Include="Models\TableIndexColumn.cs" />
+    <Compile Include="Models\TableIndex.cs" />
+    <Compile Include="Models\FunctionCollection.cs" />
+    <Compile Include="Models\FunctionColumn.cs" />
+    <Compile Include="Models\FunctionColumnCollection.cs" />
+    <Compile Include="Models\Function.cs" />
+    <Compile Include="Models\MetadataItemCollection.cs" />
+    <Compile Include="Models\CustomAggregate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\CustomAggregateCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\CustomAggregateColumn.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\CustomAggregateColumnCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Extensions.cs" />
+    <Compile Include="Models\MetadataItem.cs" />
+    <Compile Include="Models\ModelRootController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\TableComponent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\TableComponentCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\TableComposite.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\TableCompositeCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\UserInterface.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\VersionHistoryCollection.cs" />
+    <Compile Include="Models\VersionHistory.cs" />
+    <Compile Include="Models\CustomStoredProcedure.cs" />
+    <Compile Include="Models\CustomStoredProcedureCollection.cs" />
+    <Compile Include="Models\CustomStoredProcedureColumn.cs" />
+    <Compile Include="Models\CustomStoredProcedureColumnCollection.cs" />
+    <Compile Include="Models\CustomRetrieveRuleCollection.cs" />
+    <Compile Include="Models\CustomRetrieveRule.cs" />
+    <Compile Include="Models\CustomView.cs" />
+    <Compile Include="Models\CustomViewCollection.cs" />
+    <Compile Include="Models\CustomViewColumn.cs" />
+    <Compile Include="Models\CustomViewColumnCollection.cs" />
+    <Compile Include="Models\Package.cs" />
+    <Compile Include="Models\PackageCollection.cs" />
+    <Compile Include="Models\Parameter.cs" />
+    <Compile Include="Models\ParameterCollection.cs" />
+    <Compile Include="ModelUI\GenerateSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModelUI\GenerateSettings.Designer.cs">
+      <DependentUpon>GenerateSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModelUI\StatisticsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModelUI\StatisticsForm.Designer.cs">
+      <DependentUpon>StatisticsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectItemGenerators\BaseProjectGenerator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="nHydrateGeneratorProject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ConnectStringForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConnectStringForm.Designer.cs">
+      <DependentUpon>ConnectStringForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImageHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\CellEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\CellEntryCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Column.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\ColumnCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\ColumnRelationship.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\ColumnRelationshipCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Database.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\ModelRoot.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Reference.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\ReferenceCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Relation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\RelationCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\RowEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\RowEntryCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Table.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\TableCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ProjectItemGenerators\BaseClassGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ProjectItemGenerators\BaseClassTemplate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ProjectItemGenerators\BaseProjectItemGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DatabaseHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PropertyGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SqlSchemaToModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Include="BaseUIControl.resx">
+      <DependentUpon>BaseUIControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ErrorControl.resx">
+      <DependentUpon>ErrorControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Images\Attribute.ico" />
+    <EmbeddedResource Include="Images\AttributeForeignKey.ico" />
+    <EmbeddedResource Include="Images\AttributePrimaryKey.ico" />
+    <EmbeddedResource Include="Images\AttributePrimaryKeyForeignKey.ico" />
+    <EmbeddedResource Include="Images\AttributeRegular.ico" />
+    <EmbeddedResource Include="Images\Column.ico" />
+    <EmbeddedResource Include="Images\Database.ico" />
+    <EmbeddedResource Include="Images\Databases.ico" />
+    <EmbeddedResource Include="Images\Domain.ico" />
+    <EmbeddedResource Include="Images\Down.ico" />
+    <EmbeddedResource Include="Images\Entity.ico" />
+    <EmbeddedResource Include="Images\Error.ico" />
+    <EmbeddedResource Include="Images\FolderClose.ico" />
+    <EmbeddedResource Include="Images\FolderOpen.ico" />
+    <EmbeddedResource Include="Images\Relationship.ico" />
+    <EmbeddedResource Include="Images\Table.ico" />
+    <EmbeddedResource Include="Images\Tables.ico" />
+    <EmbeddedResource Include="Images\UI.ico" />
+    <EmbeddedResource Include="Images\Up.ico" />
+    <EmbeddedResource Include="Images\WarningAttribute.ico" />
+    <EmbeddedResource Include="Images\WarningAttributeForeignKey.ico" />
+    <EmbeddedResource Include="Images\WarningAttributePrimaryKey.ico" />
+    <EmbeddedResource Include="Images\WarningAttributePrimaryKeyForeignKey.ico" />
+    <EmbeddedResource Include="Images\WarningDomain.ico" />
+    <EmbeddedResource Include="Images\WarningEntity.ico" />
+    <EmbeddedResource Include="ModelUI\GenerateSettings.resx">
+      <DependentUpon>GenerateSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModelUI\StatisticsForm.resx">
+      <DependentUpon>StatisticsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyGrid.resx">
+      <DependentUpon>PropertyGrid.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ConnectStringForm.resx">
+      <DependentUpon>ConnectStringForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Images\ColumnPrimaryKey.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\TableAssociative.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\CustomViews.ico" />
+    <EmbeddedResource Include="Images\CustomView.ico" />
+    <EmbeddedResource Include="Images\CustomRetrieveRules.ico" />
+    <EmbeddedResource Include="Images\CustomRetrieveRule.ico" />
+    <EmbeddedResource Include="Images\Parameter.ico" />
+    <EmbeddedResource Include="Images\CustomViewColumn.ico" />
+    <EmbeddedResource Include="Images\Package.ico" />
+    <EmbeddedResource Include="Images\Packages.ico" />
+    <EmbeddedResource Include="Images\CustomStoredProcedure.ico" />
+    <EmbeddedResource Include="Images\CustomStoredProcedureColumn.ico" />
+    <EmbeddedResource Include="Images\CustomStoredProcedures.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DatabaseConnectionControl.resx">
+      <DependentUpon>DatabaseConnectionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Images\TableType.ico" />
+    <EmbeddedResource Include="ModelObjectUserInterface.resx">
+      <DependentUpon>ModelObjectUserInterface.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Build\postbuild.targets.xml" />
+    <Content Include="Build\prebuild.targets.xml" />
+    <Content Include="Images\delete.png" />
+    <Content Include="Images\edit.png" />
+    <Content Include="Images\error.png" />
+    <Content Include="Images\import.png" />
+    <EmbeddedResource Include="Images\warning.png" />
+    <EmbeddedResource Include="Images\import_storedprocedure.png" />
+    <EmbeddedResource Include="Images\import_storedprocedure_header.png" />
+    <EmbeddedResource Include="Images\import_table.png" />
+    <EmbeddedResource Include="Images\import_table_header.png" />
+    <EmbeddedResource Include="Images\import_view.png" />
+    <EmbeddedResource Include="Images\import_view_header.png" />
+    <Content Include="Images\progress.png" />
+    <Content Include="Images\relationship.png" />
+    <Content Include="Images\version.png" />
+    <EmbeddedResource Include="Images\Field.png" />
+    <EmbeddedResource Include="Images\Fields.png" />
+    <EmbeddedResource Include="Images\Entities.png" />
+    <EmbeddedResource Include="Images\Entity.png" />
+    <EmbeddedResource Include="Images\Database.png" />
+    <EmbeddedResource Include="Images\Default.png" />
+    <EmbeddedResource Include="Images\Model.png" />
+    <None Include="Resources\components.png" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <EmbeddedResource Include="Images\TableDerived.ico" />
+    <EmbeddedResource Include="Images\ColumnInherit.ico" />
+    <EmbeddedResource Include="Images\TableNonGen.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\nHydrate.Generator.Common\nHydrate.Generator.Common.csproj">
+      <Project>{97136026-3D75-4830-AECB-8E364AFF0B01}</Project>
+      <Name>nHydrate.Generator.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"%25SystemRoot%25\Microsoft.NET\Framework\v3.5\msbuild" "$(ProjectDir)Build\prebuild.targets.xml" /property:TargetPath=$(TargetExt);TargetPath=$(TargetPath);TargetDir=$(TargetDir);TargetFileName=$(TargetFileName);TargetName=$(TargetName)</PreBuildEvent>
+    <PostBuildEvent>"%25SystemRoot%25\Microsoft.NET\Framework\v3.5\msbuild" "$(ProjectDir)Build\postbuild.targets.xml" /property:TargetPath=$(TargetExt);TargetPath=$(TargetPath);TargetDir=$(TargetDir);TargetFileName=$(TargetFileName);TargetName=$(TargetName)</PostBuildEvent>
+  </PropertyGroup>
+</Project>

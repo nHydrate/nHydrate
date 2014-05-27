@@ -1,0 +1,804 @@
+<#+
+	// Template functions to generate DomainPath Traversal code
+	
+	#region DomainPath traversal generation functions where the output is of multiplicity "1"
+	/// <summary>
+	/// Generate the body of a traversal method for the given path
+	/// which returns a single-valued element
+	/// </summary>
+	internal void GeneratePathMethodBody(DomainPath path, string rootName, string resultName)
+	{
+		this.GeneratePathMethodBody(path, rootName, resultName, null, path.Segments.Count, SimpleNullTraverseActionGenerator);
+	}
+	
+	/// <summary>
+	/// Generate the body of a reverse-traversal method for the given 
+	/// </summary>
+	// returns true iff result of this reverse path is a collection.
+	internal bool GenerateReversePathMethodBody(DomainPath path, string rootName, string resultName)
+	{
+		return this.GenerateReversePathMethodBody(path, rootName, resultName, null, path.Segments.Count, SimpleNullTraverseActionGenerator);
+	}
+	
+	internal string SimpleNullTraverseActionGenerator(PathSegment segment)
+	{
+		return "return null;";
+	}
+	
+	internal delegate string NullTraverseActionDelegate(PathSegment segment);
+	
+	/// <summary>
+	/// Generate the body of a traversal method for the given path
+	/// which returns a single-valued element
+	/// </summary>
+	// numSegments = how many of the path's segments to traverse starting from 0
+	internal void GeneratePathMethodBody(DomainPath path, string rootName, string resultName, string resultType, int numSegments, NullTraverseActionDelegate nullTraverseAction)
+	{
+	    // Assume partial path specifier knows what they're doing
+		if ( numSegments == path.Segments.Count && path.IsCollectionPath )
+		{
+			this.Error("All Link-interpreted Roles in the path must have single multiplicity");
+			return;
+		}
+		if ( numSegments > path.Segments.Count )
+		{
+			this.Error("numSegments must be <= the total Segments in the DomainPath.");
+			return;
+		}
+		for(int i=0; i < numSegments; i++)
+		{
+			PathSegment segment = path.Segments[i];
+			
+			string inputType = CodeGenerationUtilities.GetSegmentInputType(segment); 
+			string contextName;
+			if ( i==0 )
+			{
+				contextName = rootName;
+			}
+			else
+			{
+				contextName = rootName + i;
+			}
+			
+			bool shortcut = i < numSegments -1 &&
+			     CanShortcutPair(segment, path.Segments[i+1]);
+			     
+			PathSegment outputSegment = shortcut ? path.Segments[i+1] : segment;
+			int outputSegmentIndex = shortcut ? i+1 : i;
+			string outputType;
+			if(outputSegmentIndex+1<numSegments)
+			{
+				outputType = CodeGenerationUtilities.GetSegmentInputType(path.Segments[outputSegmentIndex+1]);
+			}
+			else
+			{
+				if(!string.IsNullOrEmpty(resultType))
+				{
+					outputType = resultType;
+				}
+				else
+				{
+					outputType = CodeGenerationUtilities.GetSegmentOutputType(outputSegment);
+				}
+			}
+			string outContextName;
+			if ( outputSegmentIndex == (numSegments - 1) )
+			{
+				outContextName = resultName;
+			}
+			else
+			{
+				outContextName = rootName + (outputSegmentIndex + 1);
+			}
+			
+			if ( shortcut )
+			{
+				// Traverse two at a time
+				GenerateShortcutSegmentCode(segment, outputSegment, i, inputType, outputType, contextName, outContextName, nullTraverseAction);
+				i++; // Skip the second of the pair
+			}
+			else // Traverse one at a time
+			{
+				if ( segment.Interpretation == PathSegmentInterpretation.Elements )
+				{
+					GenerateElementSegmentCode(segment, i, inputType, outputType, contextName, outContextName, nullTraverseAction);
+				}
+				else // Links interpretation
+				{
+					GenerateLinkSegmentCode(segment, i, inputType, outputType, contextName, outContextName, nullTraverseAction);
+				}
+			}
+		}
+	}
+	
+	/// <summary>
+	/// Generate the body of a reverse-traversal method for the given path
+	/// </summary>
+	// numSegments = how many of the path's segments to traverse starting from path.Segments.Count-1
+	// returns true iff result of this reverse path is a collection.
+	internal bool GenerateReversePathMethodBody(DomainPath path, string rootName, string resultName, string resultType, int numSegments, NullTraverseActionDelegate nullTraverseAction)
+	{
+		if ( numSegments > path.Segments.Count )
+		{
+			this.Error("numSegments must be <= the total Segments in the DomainPath.");
+			return false;
+		}
+		bool contextIsCollection = false;
+		for(int i=numSegments-1; i >= 0; i--)
+		{
+			PathSegment segment = path.Segments[i];
+			
+			string inputType = CodeGenerationUtilities.GetSegmentOutputType(segment); 
+			string contextName;
+			if ( i==numSegments - 1 )
+			{
+				contextName = rootName;
+			}
+			else
+			{
+				contextName = rootName + i;
+			}
+			
+			bool shortcut = i > 0 &&
+			     CanShortcutReversePair(segment, path.Segments[i-1]);
+			     
+			PathSegment outputSegment = shortcut ? path.Segments[i-1] : segment;
+			int outputSegmentIndex = shortcut ? i-1 : i;
+			string outputType;
+			if(outputSegmentIndex-1>=0)
+			{
+				outputType = CodeGenerationUtilities.GetSegmentOutputType(path.Segments[outputSegmentIndex-1]);
+			}
+			else
+			{
+				if(!string.IsNullOrEmpty(resultType))
+				{
+					outputType = resultType;
+				}
+				else
+				{
+					outputType = CodeGenerationUtilities.GetSegmentInputType(outputSegment);
+				}
+			}
+			string outContextName;
+			if ( outputSegmentIndex == (0) )
+			{
+				outContextName = resultName;
+			}
+			else
+			{
+				outContextName = rootName + (outputSegmentIndex - 1);
+			}
+			if ( shortcut )
+			{
+				// Traverse two at a time
+				GenerateReverseShortcutSegmentCode(segment, outputSegment, i, inputType, outputType, contextName, outContextName, contextIsCollection, nullTraverseAction);
+				i--; // Skip the second of the pair
+				contextIsCollection |= segment.Role.IsMany;
+			}
+			else // Traverse one at a time
+			{
+				if ( segment.Interpretation == PathSegmentInterpretation.Elements )
+				{
+					GenerateReverseElementSegmentCode(segment, i, inputType, outputType, contextName, outContextName, contextIsCollection, nullTraverseAction);
+					contextIsCollection |= segment.Role.IsMany;
+				}
+				else // Links interpretation
+				{
+					GenerateReverseLinkSegmentCode(segment, i, inputType, outputType, contextName, outContextName, contextIsCollection, nullTraverseAction);
+				}
+			}
+		}
+		
+		return contextIsCollection;
+	} 
+	
+	internal void GeneratePathMethod(DomainPath path, string methodName)
+	{
+		GeneratePathMethod(path, methodName, "public");
+	}
+	
+	// Generate a traversal method for the given path
+	// which returns a single-valued element
+	internal void GeneratePathMethod(DomainPath path, string methodName, string accessModifier)
+	{
+		if ( path.Segments.Count <= 0 )
+		{
+			this.Error("DomainPath provided for method " + methodName + " contains no segments");
+			return;
+		}
+		string outputType = CodeGenerationUtilities.GetSegmentOutputType(path.Segments[path.Segments.Count-1]);
+		string inputType = CodeGenerationUtilities.GetSegmentInputType(path.Segments[0]);
+#>
+		<#= accessModifier #> static <#= outputType #> <#= methodName #>( <#= inputType #> root )
+		{
+<#+
+		GeneratePathMethodBody(path, "root", "result");
+#>
+			return result;
+		}
+<#+
+	}
+	// Generate a reverse-traversal method for the given path
+	// returns true iff result of this reverse path is a collection.
+	internal bool GenerateReversePathMethod(DomainPath path, string methodName)
+	{
+		if ( path.Segments.Count <= 0 )
+		{
+			this.Error("DomainPath provided for method " + methodName + " contains no segments");
+			return false;
+		}
+		string outputType = CodeGenerationUtilities.GetSegmentInputType(path.Segments[0]);
+		string inputType = CodeGenerationUtilities.GetSegmentOutputType(path.Segments[path.Segments.Count-1]);
+		bool isCollection = false;
+		foreach(PathSegment segment in path.Segments)
+		{
+			if(segment.Interpretation==PathSegmentInterpretation.Elements && segment.Role.IsMany)
+			{
+				isCollection = true;
+				break;
+			}
+		}
+		
+		if(isCollection)
+		{
+#>
+		public static global::System.Collections.Generic.IList<<#= outputType #>> <#= methodName #>( <#= inputType #> root )
+<#+
+		}
+		else
+		{
+#>
+		public static <#= outputType #> <#= methodName #>( <#= inputType #> root )
+<#+
+		}
+#>
+		{
+<#+
+		GenerateReversePathMethodBody(path, "root", "result");
+#>
+			return result;
+		}
+<#+	return isCollection;
+	}
+	#endregion
+		
+	#region DomainPath traversal generation functions where the output is of multiplicity "*"
+	// Generate the body of a traversal method for the given path
+	// which returns a collection-valued element
+	internal void GenerateCollectionPathMethodBody(DomainPath path, string rootName, string resultName)
+	{
+		GenerateCollectionPathMethodBody(path, rootName, resultName, null, SimpleNullTraverseActionGenerator);
+	}
+	
+	// Generate the body of a traversal method for the given path
+	// which returns a collection-valued element
+	internal void GenerateCollectionPathMethodBody(DomainPath path, string rootName, string resultName, string resultType, NullTraverseActionDelegate nullTraverseAction)
+	{
+		// Validation will have ensured that if it is a collection path then it is one tnat's valid for V1 (i.e. no flattening)
+		if ( !path.IsCollectionPath )
+		{
+			this.Error("The path must be a collection-valued path - the final Role must have multiplicity > 1");
+			return;
+		}
+		
+		for(int i=0; i < path.Segments.Count; i++)
+		{
+			PathSegment segment = path.Segments[i];
+			
+			string inputType = CodeGenerationUtilities.GetSegmentInputType(segment); 
+			string contextName;
+			if ( i==0 )
+			{
+				contextName = rootName;
+			}
+			else
+			{
+				contextName = rootName + i;
+			}
+			
+			bool shortcut = i < path.Segments.Count -1 &&
+			     CanShortcutPair(segment, path.Segments[i+1]);
+			bool multiple = CodeGenerationUtilities.IsMultiple(segment.Role.Multiplicity) && segment.Interpretation == PathSegmentInterpretation.Links; // Multiple is irreleant on elements segements.
+			bool useNextSegmentForOutput = shortcut || ( multiple && i < path.Segments.Count-1 );
+			     
+			PathSegment outputSegment = useNextSegmentForOutput ? path.Segments[i+1] : segment;
+			int outputSegmentIndex = useNextSegmentForOutput ? i+1 : i;
+			string outputType;
+			if(outputSegmentIndex+1<path.Segments.Count)
+			{
+				outputType = CodeGenerationUtilities.GetSegmentInputType(path.Segments[outputSegmentIndex+1]);
+			}
+			else
+			{
+				if(!string.IsNullOrEmpty(resultType))
+				{
+					outputType = resultType;
+				}
+				else
+				{
+					outputType = CodeGenerationUtilities.GetSegmentOutputType(outputSegment);
+				}
+			}
+			string outContextName;
+			if ( outputSegmentIndex == (path.Segments.Count - 1) )
+			{
+				outContextName = resultName;
+			}
+			else
+			{
+				outContextName = rootName + (outputSegmentIndex + 1);
+			}
+
+			// Process segments up until we hit the multiple segment just like a non-collection path.
+			if (!multiple)
+			{
+				if (shortcut)
+				{
+					// Traverse two at a time
+					GenerateShortcutSegmentCode(segment, outputSegment, i, inputType, outputType, contextName, outContextName, nullTraverseAction);
+					i++; // Skip the second of the pair
+				}
+				else // Traverse one at a time
+				{
+					if ( segment.Interpretation == PathSegmentInterpretation.Elements )
+					{
+						GenerateElementSegmentCode(segment, i, inputType, outputType, contextName, outContextName, nullTraverseAction);
+					}
+					else // Links interpretation
+					{
+						GenerateLinkSegmentCode(segment, i, inputType, outputType, contextName, outContextName, nullTraverseAction);
+					}
+				}
+			}
+			else // The multiple segment
+			{
+				if ( shortcut )
+				{
+					// Traverse last two using role property
+					GenerateCollectionShortcutSegmentCode(segment, outputSegment, i, inputType, outputType, contextName, outContextName);
+					i++; // Skip the second of the pair
+				}
+				else if ( useNextSegmentForOutput )
+				{
+					GenerateCollectionLinkAndElementSegmentCode(segment, outputSegment, i, inputType, outputType, contextName, outContextName);
+					i++; // Skip the second of the pair
+				}
+				else
+				{
+					GenerateCollectionLinkSegmentCode(segment, i, inputType, outputType, contextName, outContextName);
+				}
+			}
+		}
+	}
+
+	// Generate a traversal method for the given path
+	// which returns a collection-valued element
+	internal void GenerateCollectionPathMethod(DomainPath path, string methodName)
+	{
+		if ( path.Segments.Count <= 0 )
+		{
+			this.Error("DomainPath provided for method " + methodName + " contains no segments");
+			return;
+		}
+		string outputType=string.Empty;
+		if ( path.Segments[path.Segments.Count-1].Interpretation == PathSegmentInterpretation.Links )
+		{
+			outputType = "global::System.Collections.ObjectModel.ReadOnlyCollection<" + CodeGenerationUtilities.GetSegmentOutputType(path.Segments[path.Segments.Count-1]) + ">";
+		}
+		else
+		{
+			string abstractModifier = path.Segments[path.Segments.Count-1].Role.Relationship.InheritanceModifier == InheritanceModifier.Abstract ? "ReadOnly" : string.Empty;
+			outputType = "DslModeling::" + abstractModifier + "LinkedElementCollection<" + CodeGenerationUtilities.GetSegmentOutputType(path.Segments[path.Segments.Count-1]) + ">";
+		}
+		string inputType = CodeGenerationUtilities.GetSegmentInputType(path.Segments[0]);
+#>
+		public static <#= outputType #> <#= methodName #>( <#= inputType #> root )
+		{
+<#+
+		   GenerateCollectionPathMethodBody(path, "root", "result");
+#>
+			return result;
+		}
+<#+
+	}
+	#endregion
+	
+	#region Helper methods
+	
+	// Can the code for a pair of segments be shortcut using strongly-typed accessors
+	private bool CanShortcutPair(PathSegment one, PathSegment two)
+	{
+		return one.Role.IsPropertyGenerator && 
+			   ( one.Interpretation == PathSegmentInterpretation.Links && two.Interpretation == PathSegmentInterpretation.Elements ) &&
+			   one.Role.Opposite.Equals(two.Role);
+		
+	}
+
+	// Can the code for a pair of segments be shortcut using strongly-typed accessors, when generating
+	// reverse-traversal code for a path.
+	private bool CanShortcutReversePair(PathSegment one, PathSegment two)
+	{
+		return one.Role.IsPropertyGenerator && 
+			   ( one.Interpretation == PathSegmentInterpretation.Elements && two.Interpretation == PathSegmentInterpretation.Links ) &&
+			   one.Role.Opposite.Equals(two.Role);
+		
+	}
+	
+	//This method should return a cast only when a cast is needed!
+	private string GetCast(PathSegment segment, string expectedOutputType, bool isReversePath)
+	{
+		string segmentOutputType;
+		if(isReversePath)
+		{
+			segmentOutputType = CodeGenerationUtilities.GetSegmentInputType(segment, true);
+		}
+		else
+		{
+			segmentOutputType = CodeGenerationUtilities.GetSegmentOutputType(segment, true);
+		}
+		string castString = string.Empty;
+		if(StringComparer.Ordinal.Compare(segmentOutputType, expectedOutputType)!=0)
+		{
+			castString = " as "+expectedOutputType;
+		}
+		return castString;
+	}
+
+	#region Singular Segment Generation	
+	// Generate code for a link segment in a single chain path
+	// Assumes that a variable called contextName of theis segment's input type is declared in scope 
+	// Leaves a variable called resultName of this segment's output type in scope.
+	private void GenerateLinkSegmentCode(PathSegment segment, int count, string inputType, string outputType, string contextName, string resultName, NullTraverseActionDelegate nullTraverseAction)
+	{
+		string relationshipName = segment.Role.Relationship.GetFullName(true);
+		string castString = GetCast(segment, outputType, false);
+#>
+			// Segment <#= count #>
+			<#= outputType #> <#= resultName #> = <#= relationshipName #>.GetLinkTo<#= segment.Role.PropertyName.TrimStart('@') #>(<#= contextName #>)<#= castString #>;
+			if ( <#= resultName #> == null ) <#= nullTraverseAction(segment) #>
+<#+
+	}
+
+	// Generate code for a link segment in a path when traversing in the reverse direction
+	// Assumes that a variable called contextName of theis segment's input type is declared in scope 
+	// Leaves a variable called resultName of this segment's output type in scope.
+	private void GenerateReverseLinkSegmentCode(PathSegment segment, int count, string inputType, string outputType, string contextName, string resultName, bool contextIsCollection, NullTraverseActionDelegate nullTraverseAction)
+	{
+		string castString = GetCast(segment, outputType, true);
+#>
+			// Segment <#= count #>
+<#+
+		if(contextIsCollection)
+		{
+#>
+			global::System.Collections.Generic.List<<#= outputType #>> <#= resultName #> = new global::System.Collections.Generic.List<<#= outputType #>>();
+			foreach(<#= inputType #> link in <#= contextName #>)
+			{
+				<#= outputType #> element = link.<#= segment.Role.Name #><#= castString #>;
+				if(element!=null)
+				{
+					<#= resultName #>.Add(element);
+				}
+			}
+<#+
+		}
+		else
+		{
+#>
+			<#= outputType #> <#= resultName #> = <#= contextName #>.<#= segment.Role.Name #><#= castString #>;
+			if ( <#= resultName #> == null ) <#= nullTraverseAction(segment) #>
+<#+
+		}
+#>
+<#+
+	}
+
+	// Generate code for an element segment in a single chain path
+	// Assumes that a variable called contextName of this segment's input type is declared in scope 
+	// Leaves a variable called resultName of this segment's output type in scope.
+	private void GenerateElementSegmentCode(PathSegment segment, int count, string inputType, string outputType, string contextName, string resultName, NullTraverseActionDelegate nullTraverseAction)
+	{
+		string castString = GetCast(segment, outputType, false);
+#>
+			// Segment <#= count #>
+			<#= outputType #> <#= resultName #> = <#= contextName #>.<#= segment.Role.Name #><#= castString #>;
+			if ( <#= resultName #> == null ) <#= nullTraverseAction(segment) #>
+<#+
+	}
+
+	// Generate code for an element when traversing in the reverse direction.
+	// Assumes that a variable called contextName of this segment's input type is declared in scope 
+	// Leaves a variable called resultName of this segment's output type in scope.
+	private void GenerateReverseElementSegmentCode(PathSegment segment, int count, string inputType, string outputType, string contextName, string resultName, bool contextIsCollection, NullTraverseActionDelegate nullTraverseAction)
+	{
+		string castString = GetCast(segment, outputType, true);
+#>
+			// Segment <#= count #>
+<#+
+		bool isMany = segment.Role.IsMany;
+		string relationshipName = segment.Role.Relationship.GetFullName(true);
+		if(contextIsCollection)
+		{
+#>
+			global::System.Collections.Generic.List<<#= outputType #>> <#= resultName #> = new global::System.Collections.Generic.List<<#= outputType #>>();
+			foreach(<#= inputType #> element in <#= contextName #>)
+			{
+<#+
+			if(isMany)
+			{
+				if(string.IsNullOrEmpty(castString))
+				{
+#>
+				<#= resultName #>.AddRange(<#= relationshipName #>.GetLinksTo<#= segment.Role.PropertyName.TrimStart('@') #>(element));
+<#+
+				}
+				else
+				{
+#>
+				foreach(DslModeling::ElementLink link in <#= relationshipName #>.GetLinksTo<#= segment.Role.PropertyName.TrimStart('@') #>(element))
+				{
+					<#= outputType #> castLink = link<#= castString #>;
+					if(castLink!=null)
+					{
+						<#= resultName #>.Add(castLink);
+					}
+				}
+<#+
+				}
+			}
+			else
+			{
+#>
+				<#= outputType #> link = <#= relationshipName #>.GetLinkTo<#= segment.Role.PropertyName.TrimStart('@') #>(element)<#= castString #>;
+				if(link!=null)
+				{
+					<#= resultName #>.Add(link);
+				}
+<#+
+			}
+#>
+			}
+<#+
+		}
+		else 
+		{
+			if(isMany)
+			{
+				if(string.IsNullOrEmpty(castString))
+				{
+#>
+				global::System.Collections.ObjectModel.ReadOnlyCollection<<#= outputType #>> <#= resultName #> = <#= relationshipName #>.GetLinksTo<#= segment.Role.PropertyName.TrimStart('@') #>(<#= contextName #>);
+<#+
+				}
+				else
+				{
+#>
+				global::System.Collections.Generic.List<<#= outputType #>> <#= resultName #> = new global::System.Collections.Generic.List<<#= outputType #>>();
+				foreach(DslModeling::ElementLink link in <#= relationshipName #>.GetLinksTo<#= segment.Role.PropertyName.TrimStart('@') #>(element))
+				{
+					<#= outputType #> castLink = link<#= castString #>;
+					if(castLink!=null)
+					{
+						<#= resultName #>.Add(castLink);
+					}
+				}
+<#+
+				}
+			}
+			else
+			{
+#>
+			<#= outputType #> <#= resultName #> = <#= relationshipName #>.GetLinkTo<#= segment.Role.PropertyName.TrimStart('@') #>(<#= contextName #>)<#= castString #>;
+			if ( <#= resultName #> == null ) <#= nullTraverseAction(segment) #>
+<#+
+			}
+		}
+#>
+<#+
+	}
+
+	// Generate shortcut traversal code for a segment pair in a single chain path
+	// Assumes that a variable called contextName of this segment's input type is declared in scope 
+	// Leaves a variable called resultName of this segment's output type in scope.
+	private void GenerateShortcutSegmentCode(PathSegment firstSegment, PathSegment secondSegment, int count, string inputType, string outputType, string contextName, string resultName, NullTraverseActionDelegate nullTraverseAction)
+	{
+		string castString = GetCast(secondSegment, outputType, false);
+#>
+			// Segments <#= count #> and <#= count + 1#>
+			<#= outputType #> <#= resultName #> = <#= contextName #>.<#= firstSegment.Role.PropertyName #><#= castString #>;
+			if ( <#= resultName #> == null ) <#= nullTraverseAction(firstSegment) #>
+<#+
+	}
+	
+	// Generate shortcut traversal code for a segment pair when traversing a path in the reverse direction.
+	// Assumes that a variable called contextName of this segment's input type is declared in scope 
+	// Leaves a variable called resultName of this segment's output type in scope.
+	private void GenerateReverseShortcutSegmentCode(PathSegment firstSegment, PathSegment secondSegment, int count, string inputType, string outputType, string contextName, string resultName, bool isCollection, NullTraverseActionDelegate nullTraverseAction)
+	{
+		string castString = GetCast(secondSegment, outputType, true);
+#>
+			// Segments <#= count #> and <#= count - 1#>
+<#+
+		bool isMany = firstSegment.Role.IsMany;
+		if(isCollection)
+		{
+#>
+			global::System.Collections.Generic.List<<#= outputType #>> <#= resultName #> = new global::System.Collections.Generic.List<<#= outputType #>>();
+			foreach(<#= inputType #> source in <#= contextName #>)
+			{
+<#+
+			if(isMany)
+			{
+				if(string.IsNullOrEmpty(castString))
+				{
+#>
+				<#= resultName #>.AddRange(source.<#= firstSegment.Role.PropertyName #>);
+<#+
+				}
+				else
+				{
+#>
+				foreach(DslModeling::ModelElement element in source.<#= firstSegment.Role.PropertyName #>)
+				{
+					<#= outputType #> castElement = element<#= castString #>;
+					if(castElement != null)
+					{
+						<#= resultName #>.Add(castElement);
+					}
+				}
+<#+
+				}
+			}
+			else
+			{
+#>
+				<#= outputType #> element = source.<#= firstSegment.Role.PropertyName #><#= castString #>;
+				if(element!=null)
+				{
+					<#= resultName #>.Add(element);
+				}
+<#+
+			}
+#>
+			}
+<#+
+		}
+		else
+		{
+			if(isMany)
+			{
+				if(string.IsNullOrEmpty(castString))
+				{
+#>
+			DslModeling::ReadOnlyLinkedElementCollection<<#= outputType #>> <#= resultName #> = <#= contextName #>.<#= firstSegment.Role.PropertyName #>;
+<#+
+				}
+				else
+				{
+#>
+			global::System.Collections.Generic.List<<#= outputType #>> <#= resultName #> = new global::System.Collections.Generic.List<<#= outputType #>>();
+			foreach(DslModeling::ModelElement element in <#= contextName #>.<#= firstSegment.Role.PropertyName #>)
+			{
+				<#= outputType #> castElement = element<#= castString #>;
+				if(castElement!=null)
+				{
+					<#= resultName #>.Add(castElement);
+				}
+			}
+<#+
+				}
+			}
+			else
+			{
+#>
+			<#= outputType #> <#= resultName #> = <#= contextName #>.<#= firstSegment.Role.PropertyName #><#= castString #>;
+			if ( <#= resultName #> == null ) <#= nullTraverseAction(firstSegment) #>
+<#+
+			}
+		}
+	}
+	#endregion
+	
+	#region Collection Segment Generation
+	// Generate code for a link segment in a collection chain path
+	// Assumes that a variable called contextName of theis segment's input type is declared in scope 
+	// Leaves a variable called resultName of a collectionof this segment's output type in scope.
+	private void GenerateCollectionLinkSegmentCode(PathSegment segment, int count, string inputType, string outputType, string contextName, string resultName)
+	{
+		string castString = GetCast(segment, outputType, false);
+		string relationshipName = segment.Role.Relationship.GetFullName(true);
+#>
+			// Segment <#= count #>
+<#+
+		if(string.IsNullOrEmpty(castString))
+		{
+#>
+			global::System.Collections.ObjectModel.ReadOnlyCollection<<#= outputType #>> <#= resultName #> = <#= relationshipName #>.GetLinksTo<#= segment.Role.PropertyName.TrimStart('@') #>(<#= contextName #>);
+<#+
+		}
+		else 
+		{
+#>
+			global::System.Collections.Generic.List<<#= outputType #>> <#= resultName #> = new global::System.Collections.Generic.List<<#= outputType #>>();
+			foreach(DslModeling::ModelElement element in <#= relationshipName #>.GetLinksTo<#= segment.Role.PropertyName.TrimStart('@') #>(<#= contextName #>))
+			{
+				<#= outputType #> castElement = element<#= castString #>;
+				if(castElement!=null)
+				{
+					<#= resultName #>.Add(castElement);
+				}
+			}
+<#+
+		}
+	}
+
+	// Generate code for an non-shortuct final link/element pair in a collection chain path
+	// Assumes that a variable called contextName containing a collection of this segment's input type is declared in scope 
+	// Leaves a variable called resultName of the element segment's output type in scope.
+	private void GenerateCollectionLinkAndElementSegmentCode(PathSegment segment, PathSegment outputSegment, int count, string inputType, string outputType, string contextName, string resultName)
+	{
+		string relationshipName = segment.Role.Relationship.GetFullName(true);
+		string castString = GetCast(outputSegment, outputType, false);
+#>
+			// Segment <#= count #>
+<#+
+		if(string.IsNullOrEmpty(castString))
+		{
+			string abstractModifier = segment.Role.Relationship.InheritanceModifier == InheritanceModifier.Abstract ? "ReadOnly" : string.Empty;
+#>
+			DslModeling::<#= abstractModifier #>LinkedElementCollection<<#= outputType #>> <#= resultName #> = <#= relationshipName #>.Get<#= segment.Role.PropertyName.TrimStart('@') #>( <#= contextName #>);
+<#+
+		}
+		else 
+		{
+#>
+			global::System.Collections.Generic.List<<#= outputType #>> <#= resultName #> = new global::System.Collections.Generic.List<<#= outputType #>>();
+			foreach(DslModeling::ModelElement element in <#= relationshipName #>.Get<#= segment.Role.PropertyName.TrimStart('@') #>(<#= contextName #>))
+			{
+				<#= outputType #> castElement = element<#= castString #>;
+				if(castElement!=null)
+				{
+					<#= resultName #>.Add(castElement);
+				}
+			}
+<#+
+		}
+	}
+
+
+	// Generate shortcut traversal code for a segment pair in a collection chain path
+	// Assumes that a variable called contextName of this segment's input type is declared in scope 
+	// Leaves a variable called resultName woth a collection of this segment's output type in scope.
+	private void GenerateCollectionShortcutSegmentCode(PathSegment firstSegment, PathSegment secondSegment, int count, string inputType, string outputType, string contextName, string resultName)
+	{
+		string castString = GetCast(secondSegment, outputType, false);
+#>
+			// Segments <#= count #> and <#= count + 1#>
+<#+
+		if(string.IsNullOrEmpty(castString))
+		{
+			string abstractModifier = secondSegment.Role.Relationship.InheritanceModifier == InheritanceModifier.Abstract ? "ReadOnly" : string.Empty;
+#>
+			DslModeling::<#= abstractModifier #>LinkedElementCollection<<#= outputType #>> <#= resultName #> = <#= contextName #>.<#= firstSegment.Role.PropertyName #>;
+<#+
+		}
+		else
+		{
+#>
+			global::System.Collections.Generic.List<<#= outputType #>> <#= resultName #> = new global::System.Collections.Generic.List<<#= outputType #>>();
+			foreach(DslModeling::ModelElement element in <#= contextName #>.<#= firstSegment.Role.PropertyName #>)
+			{
+				<#= outputType #> castElement = element<#= castString #>;
+				if(castElement!=null)
+				{
+					<#= resultName #>.Add(castElement);
+				}
+			}
+<#+
+		}
+	}
+	#endregion
+
+	#endregion
+#>
