@@ -63,12 +63,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
         {
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
-                EntityExtenderTemplate template = new EntityExtenderTemplate(_model, table);
+                var template = new EntityExtenderTemplate(_model, table);
                 string fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
-                ProjectItemGeneratedEventArgs eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false);
+                var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false);
                 OnProjectItemGenerated(this, eventArgs);
             }
-            ProjectItemGenerationCompleteEventArgs gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
+            var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
             OnGenerationComplete(this, gcEventArgs);
         }
 

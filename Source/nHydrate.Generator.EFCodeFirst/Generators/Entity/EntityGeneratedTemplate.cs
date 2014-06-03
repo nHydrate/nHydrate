@@ -336,6 +336,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		{");
             if (_currentTable.PrimaryKeyColumns.Count == 1 && _currentTable.PrimaryKeyColumns[0].DataType == System.Data.SqlDbType.UniqueIdentifier)
                 sb.AppendLine("			this." + _currentTable.PrimaryKeyColumns[0].PascalName + " = Guid.NewGuid();");
+            sb.Append(this.SetInitialValues("this"));
             sb.AppendLine();
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -523,61 +524,64 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     }
                     else
                         sb.AppendLine("		/// The property that maps back to the database '" + (column.ParentTableRef.Object as Table).DatabaseName + "." + column.DatabaseName + "' field.");
-
-                    //If this field has a related convenience property then explain it
-                    if (typeTable != null)
-                    {
-                        sb.AppendLine("		/// This property has an additional enumeration wrapper property " + pascalRoleName + typeTable.PascalName + "Value. Use it as a strongly-typed property.");
-                    }
-                    else if (column.PrimaryKey && _currentTable.TypedTable != TypedTableConstants.None)
-                    {
-                        sb.AppendLine("		/// This property has an additional enumeration wrapper property " + pascalRoleName + typeTable.PascalName + "Value. Use it as a strongly-typed property.");
-                    }
-
-                    sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		/// <remarks>" + column.GetIntellisenseRemarks() + "</remarks>");
-                    sb.AppendLine("		[DataMember]");
-
-                    sb.AppendLine("		[System.ComponentModel.Browsable(" + column.IsBrowsable.ToString().ToLower() + ")]");
-                    if (!string.IsNullOrEmpty(column.Category))
-                        sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
-                    sb.AppendLine("		[EdmScalarPropertyAttribute(EntityKeyProperty = " + (column.PrimaryKey ? "true" : "false") + ", IsNullable = " + (column.AllowNull ? "true" : "false") + ")]");
-                    sb.AppendLine("		[System.ComponentModel.DisplayName(\"" + column.GetFriendlyName() + "\")]");
-
-                    if (column.UIDataType != System.ComponentModel.DataAnnotations.DataType.Custom)
-                    {
-                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.DataType(System.ComponentModel.DataAnnotations.DataType." + column.UIDataType.ToString() + ")]");
-                    }
-
-                    if (!string.IsNullOrEmpty(column.Mask))
-                    {
-                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = @\"" + column.Mask.Replace(@"\\", @"\\\\") + "\")]");
-                    }
-
-                    if (column.PrimaryKey)
-                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
-
-                    if (column.PrimaryKey || _currentTable.Immutable || column.ComputedColumn || column.IsReadOnly)
-                        sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
-
-                    if (!string.IsNullOrEmpty(column.Description))
-                        sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
-
-                    foreach (var meta in column.MetaData)
-                    {
-                        sb.AppendLine("	[nHydrate.EFCore.Attributes.CustomMetadata(Key = \"" + StringHelper.ConvertTextToSingleLineCodeString(meta.Key) + "\", Value = \"" + meta.Value.Replace("\"", "\\\"") + "\")]");
-                    }
-
-                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
-
-                    if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml && column.Length > 0)
-                    {
-                        sb.AppendLine("		[StringLength(" + column.Length + ")]");
-                    }
-
-                    sb.AppendLine("		public virtual " + column.GetCodeType() + " " + column.PascalName + " { get; set; }");
-                    sb.AppendLine();
                 }
+                //If this field has a related convenience property then explain it
+                if (typeTable != null)
+                {
+                    sb.AppendLine("		/// This property has an additional enumeration wrapper property " + pascalRoleName + typeTable.PascalName + "Value. Use it as a strongly-typed property.");
+                }
+                else if (column.PrimaryKey && _currentTable.TypedTable != TypedTableConstants.None)
+                {
+                    sb.AppendLine("		/// This property has an additional enumeration wrapper property " + pascalRoleName + typeTable.PascalName + "Value. Use it as a strongly-typed property.");
+                }
+
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		/// <remarks>" + column.GetIntellisenseRemarks() + "</remarks>");
+                sb.AppendLine("		[DataMember]");
+
+                sb.AppendLine("		[System.ComponentModel.Browsable(" + column.IsBrowsable.ToString().ToLower() + ")]");
+                if (!string.IsNullOrEmpty(column.Category))
+                    sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
+                sb.AppendLine("		[EdmScalarPropertyAttribute(EntityKeyProperty = " + (column.PrimaryKey ? "true" : "false") + ", IsNullable = " + (column.AllowNull ? "true" : "false") + ")]");
+                sb.AppendLine("		[System.ComponentModel.DisplayName(\"" + column.GetFriendlyName() + "\")]");
+
+                if (column.UIDataType != System.ComponentModel.DataAnnotations.DataType.Custom)
+                {
+                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.DataType(System.ComponentModel.DataAnnotations.DataType." + column.UIDataType.ToString() + ")]");
+                }
+
+                if (!string.IsNullOrEmpty(column.Mask))
+                {
+                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = @\"" + column.Mask.Replace(@"\\", @"\\\\") + "\")]");
+                }
+
+                if (column.PrimaryKey)
+                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
+
+                if (column.PrimaryKey || _currentTable.Immutable || column.ComputedColumn || column.IsReadOnly)
+                    sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
+
+                if (!string.IsNullOrEmpty(column.Description))
+                    sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
+
+                foreach (var meta in column.MetaData)
+                {
+                    sb.AppendLine("	[nHydrate.EFCore.Attributes.CustomMetadata(Key = \"" + StringHelper.ConvertTextToSingleLineCodeString(meta.Key) + "\", Value = \"" + meta.Value.Replace("\"", "\\\"") + "\")]");
+                }
+
+                sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+
+                if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml && column.Length > 0)
+                {
+                    sb.AppendLine("		[StringLength(" + column.Length + ")]");
+                }
+
+                sb.AppendLine("		public virtual " + column.GetCodeType() + " " + column.PascalName);
+                sb.AppendLine("		{");
+                sb.AppendLine("			get { return _" + column.CamelName + "; }");
+                sb.AppendLine("			set { _" + column.CamelName + " = value; }");
+                sb.AppendLine("		}");
+                sb.AppendLine();
             }
 
             //Audit Fields
@@ -1042,7 +1046,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             //DEFAULT PROPERTIES START
             foreach (var column in _currentTable.GeneratedColumns.Where(x => x.DataType != System.Data.SqlDbType.Timestamp).ToList())
             {
-                if ((column.Default != null) && (!string.IsNullOrEmpty(column.Default)))
+                if (!string.IsNullOrEmpty(column.Default))
                 {
                     var defaultValue = column.GetCodeDefault();
 
