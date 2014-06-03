@@ -160,7 +160,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
 
             #region Constructors
-            sb.AppendLine("	#region Constructors");
+            sb.AppendLine("		#region Constructors");
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
@@ -239,7 +239,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("	#endregion");
+            sb.AppendLine("		#endregion");
             sb.AppendLine();
             #endregion
 
