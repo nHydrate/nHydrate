@@ -576,6 +576,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     sb.AppendLine("		[StringLength(" + column.Length + ")]");
                 }
 
+                if (column.ComputedColumn)
+                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)]");
+
                 sb.AppendLine("		public virtual " + column.GetCodeType() + " " + column.PascalName);
                 sb.AppendLine("		{");
                 sb.AppendLine("			get { return _" + column.CamelName + "; }");
