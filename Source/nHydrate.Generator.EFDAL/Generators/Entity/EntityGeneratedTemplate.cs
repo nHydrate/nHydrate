@@ -1696,6 +1696,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                             sb.AppendLine("		" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + childTable.PascalName + " " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + "." + relation.PascalRoleName + childTable.PascalName);
                             sb.AppendLine("		{");
                             sb.AppendLine("			get { return this." + relation.PascalRoleName + childTable.PascalName + "; }");
+                            sb.AppendLine("			set { ; }");
                             sb.AppendLine("		}");
                             sb.AppendLine();
                             sb.AppendLine("		#endregion");

@@ -355,8 +355,8 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
                         sb.AppendLine("		[XmlIgnoreAttribute()]");
                         sb.AppendLine("		[SoapIgnoreAttribute()]");
                         sb.AppendLine("		[DataMemberAttribute()]");
-                        sb.AppendLine("		[EdmRelationshipNavigationPropertyAttribute(\"" + this.GetLocalNamespace() + ".Entity" + "\", \"FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _currentTable.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "List\")]");
-                        sb.AppendLine("		" + this.GetLocalNamespace() + ".Entity.I" + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; }");
+                        sb.AppendLine("		[EdmRelationshipNavigationPropertyAttribute(\"" + this.GetLocalNamespace() + ".Entity" + "\", \"FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _currentTable.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "\")]");
+                        sb.AppendLine("		" + this.GetLocalNamespace() + ".Entity.I" + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; set; }");
                         sb.AppendLine();
                     }
                     else
