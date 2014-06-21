@@ -337,6 +337,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             if (_currentTable.PrimaryKeyColumns.Count == 1 && _currentTable.PrimaryKeyColumns[0].DataType == System.Data.SqlDbType.UniqueIdentifier)
                 sb.AppendLine("			this." + _currentTable.PrimaryKeyColumns[0].PascalName + " = Guid.NewGuid();");
             sb.Append(this.SetInitialValues("this"));
+
+            //if (_currentTable.AllowCreateAudit)
+            //{
+            //    sb.AppendLine("			this." + _model.Database.CreatedDatePascalName + " = DateTime.Now;");
+            //}
+            //if (_currentTable.AllowModifiedAudit)
+            //{
+            //    sb.AppendLine("			this." + _model.Database.ModifiedDateColumnName + " = DateTime.Now;");
+            //}
+
             sb.AppendLine();
             sb.AppendLine("		}");
             sb.AppendLine();

@@ -246,6 +246,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		partial void OnContextCreated();");
             sb.AppendLine();
 
+            #region OnModelCreating
+
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Model creation event");
             sb.AppendLine("		/// </summary>");
@@ -421,6 +423,217 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             sb.AppendLine("		}");
             sb.AppendLine();
+
+            #endregion
+
+            #region Auditing
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Persists all updates to the data source and resets change tracking in the object context.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"options\"></param>");
+            sb.AppendLine("		/// <returns>The number of objects in an System.Data.Entity.EntityState.Added, System.Data.Entity.EntityState.Modified, or System.Data.Entity.EntityState.Deleted state when System.Data.Objects.ObjectContext.SaveChanges() was called.</returns>");
+            sb.AppendLine("		public override int SaveChanges()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			//Process deleted list");
+            sb.AppendLine("			var deletedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Deleted);");
+            sb.AppendLine("			foreach (var item in deletedList)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var entity = item.Entity as nHydrate.EFCore.DataAccess.IAuditable;");
+            sb.AppendLine("				if (entity != null)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
+            sb.AppendLine("					{");
+            sb.AppendLine("						System.Data.SqlClient.SqlConnection connection = null;");
+            sb.AppendLine("						try");
+            sb.AppendLine("						{");
+            sb.AppendLine("							connection = new System.Data.SqlClient.SqlConnection(GetConnectionString());");
+            sb.AppendLine("							connection.Open();");
+            sb.AppendLine("							System.Data.SqlClient.SqlCommand command = null;");
+
+            var index2 = 0;
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowModifiedAudit && x.AllowAuditTracking).OrderBy(x => x.PascalName))
+            {
+                sb.AppendLine("							" + (index2 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")");
+                sb.AppendLine("							{");
+                sb.Append("								command = new System.Data.SqlClient.SqlCommand(\"UPDATE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] SET [" + _model.Database.ModifiedByDatabaseName + "] = @mod WHERE ");
+
+                var ii = 1;
+                foreach (var column in table.PrimaryKeyColumns)
+                {
+                    sb.Append("[" + column.DatabaseName + "] = @pk" + ii + " AND ");
+                    ii++;
+                }
+                sb.Append("(([" + _model.Database.ModifiedByDatabaseName + "] != @mod) OR ([" + _model.Database.ModifiedByDatabaseName + "] IS NULL AND @mod IS NOT NULL) OR ([" + _model.Database.ModifiedByDatabaseName + "] IS NOT NULL AND @mod IS NULL))");
+                sb.AppendLine("\", connection);");
+
+                ii = 1;
+                foreach (var column in table.PrimaryKeyColumns)
+                {
+                    sb.AppendLine("								command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@pk" + ii + "\", ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + column.PascalName + "));");
+                }
+
+                sb.AppendLine("							}");
+                index2++;
+            }
+
+            sb.AppendLine("							if (command != null)");
+            sb.AppendLine("							{");
+            sb.AppendLine("								command.CommandType = System.Data.CommandType.Text;");
+            sb.AppendLine("								if (this.ContextStartup.Modifer == null)");
+            sb.AppendLine("									command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@mod\", System.DBNull.Value));");
+            sb.AppendLine("								else");
+            sb.AppendLine("									command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@mod\", this.ContextStartup.Modifer));");
+            sb.AppendLine("								command.ExecuteNonQuery();");
+            sb.AppendLine("							}");
+            sb.AppendLine("						}");
+            sb.AppendLine("						catch");
+            sb.AppendLine("						{");
+            sb.AppendLine("							throw;");
+            sb.AppendLine("						}");
+            sb.AppendLine("						finally");
+            sb.AppendLine("						{");
+            sb.AppendLine("							if (connection != null && connection.State == System.Data.ConnectionState.Open)");
+            sb.AppendLine("								connection.Close();");
+            sb.AppendLine("						}");
+            sb.AppendLine("					}");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+
+            sb.AppendLine("			var markedTime = " + (_model.UseUTCTime ? "System.DateTime.UtcNow" : "System.DateTime.Now") + ";");
+            sb.AppendLine("			//Process added list");
+            sb.AppendLine("			var addedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added);");
+            sb.AppendLine("			foreach (var item in addedList)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var entity = item.Entity as nHydrate.EFCore.DataAccess.IAuditable;");
+            sb.AppendLine("				if (entity != null)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
+            sb.AppendLine("					{");
+
+            var index3 = 0;
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowCreateAudit).OrderBy(x => x.PascalName))
+            {
+                sb.AppendLine("						" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity).ResetCreatedBy(this.ContextStartup.Modifer);");
+                index3++;
+            }
+            sb.AppendLine("					}");
+
+            index3 = 0;
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowCreateAudit).OrderBy(x => x.PascalName))
+            {
+                sb.AppendLine("					" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.CreatedDatePascalName + " = markedTime;");
+                index3++;
+            }
+
+            index3 = 0;
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowModifiedAudit).OrderBy(x => x.PascalName))
+            {
+                sb.AppendLine("					" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.ModifiedDatePascalName + " = markedTime;");
+                index3++;
+            }
+            sb.AppendLine();
+
+            #region IsTimestampAuditImplemented
+            sb.AppendLine("					if (this.CurrentPlatform == DatabasePlatformConstants.MySql)");
+            sb.AppendLine("					{");
+            sb.AppendLine("						if (entity.IsTimestampAuditImplemented)");
+            sb.AppendLine("						{");
+
+            //For all MySQL tables with a managed Timestamp add code to set a new value to mimic Sql Server
+            index3 = 0;
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowTimestamp).OrderBy(x => x.PascalName))
+            {
+                sb.AppendLine("							" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.TimestampPascalName + " = new byte[] { (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256) };");
+                index3++;
+            }
+
+            sb.AppendLine("						}");
+
+            //For all MySQL tables with a user-defined Timestamp add code to set a new value to mimic Sql Server
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable).OrderBy(x => x.PascalName))
+            {
+                foreach (var column in table.GeneratedColumns.Where(x => x.DataType == System.Data.SqlDbType.Timestamp).OrderBy(x => x.Name))
+                {
+                    sb.AppendLine("						" + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + column.PascalName + " = new byte[] { (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256) };");
+                }
+            }
+
+            sb.AppendLine("					}");
+            sb.AppendLine();
+            #endregion
+
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+
+            sb.AppendLine("			//Process modified list");
+            sb.AppendLine("			var modifiedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Modified);");
+            sb.AppendLine("			foreach (var item in modifiedList)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var entity = item.Entity as nHydrate.EFCore.DataAccess.IAuditable;");
+            sb.AppendLine("				if (entity != null)");
+            sb.AppendLine("				{");
+
+            #region IsModifyAuditImplemented
+            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
+            sb.AppendLine("					{");
+
+            index3 = 0;
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowModifiedAudit).OrderBy(x => x.PascalName))
+            {
+                sb.AppendLine("						" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.ModifiedByPascalName + " = this.ContextStartup.Modifer;");
+                index3++;
+            }
+
+            sb.AppendLine("					}");
+            sb.AppendLine();
+            #endregion
+
+            #region IsTimestampAuditImplemented
+            sb.AppendLine("					if (this.CurrentPlatform == DatabasePlatformConstants.MySql)");
+            sb.AppendLine("					{");
+            sb.AppendLine("						if (entity.IsTimestampAuditImplemented)");
+            sb.AppendLine("						{");
+
+            //For all MySQL tables with a managed Timestamp add code to set a new value to mimic Sql Server
+            index3 = 0;
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowTimestamp).OrderBy(x => x.PascalName))
+            {
+                sb.AppendLine("							" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.TimestampPascalName + " = new byte[] { (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256) };");
+                index3++;
+            }
+            sb.AppendLine("						}");
+
+            //For all MySQL tables with a user-defined Timestamp add code to set a new value to mimic Sql Server
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable).OrderBy(x => x.PascalName))
+            {
+                foreach (var column in table.GeneratedColumns.Where(x => x.DataType == System.Data.SqlDbType.Timestamp).OrderBy(x => x.Name))
+                {
+                    sb.AppendLine("						" + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + column.PascalName + " = new byte[] { (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256) };");
+                }
+            }
+
+            sb.AppendLine("					}");
+            sb.AppendLine();
+            #endregion
+
+            index3 = 0;
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowModifiedAudit).OrderBy(x => x.PascalName))
+            {
+                sb.AppendLine("					" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.ModifiedDatePascalName + " = markedTime;");
+                index3++;
+            }
+
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+
+            sb.AppendLine("			return base.SaveChanges();");
+            sb.AppendLine("		}");
+            sb.AppendLine("		private Random _rnd = new Random();"); //Used for MySql
+            sb.AppendLine();
+            #endregion
 
             #region Entity Sets
             sb.AppendLine("		#region Entity Sets");
@@ -678,12 +891,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		public new void DeleteObject(object entity)");
             sb.AppendLine("		{");
 
-            var index2 = 0;
+            var index5 = 0;
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && (x.TypedTable != TypedTableConstants.EnumOnly)))
             {
-                sb.AppendLine("			" + (index2 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")");
+                sb.AppendLine("			" + (index5 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")");
                 sb.AppendLine("				this.DeleteItem(entity as " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ");");
-                index2++;
+                index5++;
             }
 
             sb.AppendLine("		}");
@@ -1034,7 +1247,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		public int? CommandTimeout");
             sb.AppendLine("		{");
             sb.AppendLine("			get { return this.ObjectContext.CommandTimeout; }");
-            sb.AppendLine("			set { this.ObjectContext.CommandTimeout = value;; }");
+            sb.AppendLine("			set { this.ObjectContext.CommandTimeout = value; }");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");

@@ -191,7 +191,9 @@ namespace nHydrate.Generator.EFDAL.Generators.Helpers
 
                 sb.AppendLine("		internal static string ConvertNormalCS2EF(string connectionString, ContextStartup contextStartup)");
                 sb.AppendLine("		{");
-                sb.AppendLine("		return ConvertNormalCS2EFFromConfig(connectionString, contextStartup);");
+
+                sb.AppendLine("			return ConvertNormalCS2EFFromConfig(connectionString, contextStartup);");
+
                 //sb.AppendLine("			if (string.IsNullOrEmpty(connectionString)) return connectionString;");
                 //sb.AppendLine("			if (connectionString.StartsWith(\"metadata=\")) return connectionString;");
                 //sb.AppendLine();
@@ -206,6 +208,8 @@ namespace nHydrate.Generator.EFDAL.Generators.Helpers
                 //sb.AppendLine("			}");
                 //sb.AppendLine("			else");
                 //sb.AppendLine("				throw new Exception(\"Unknown platform!\");");
+
+
                 sb.AppendLine("		}");
                 sb.AppendLine();
 
@@ -230,26 +234,14 @@ namespace nHydrate.Generator.EFDAL.Generators.Helpers
                 sb.AppendLine("					}");
                 sb.AppendLine("					else if (foundEQ)");
                 sb.AppendLine("					{");
-                sb.AppendLine("						if (connectionString.Substring(ii, 1) == \"\\\"\")");
-                sb.AppendLine("						{");
-                sb.AppendLine("							index1 = ii + 1;");
-                sb.AppendLine("							index2 = connectionString.IndexOf(\"\\\"\", ii + 1);");
-                sb.AppendLine("						}");
-                sb.AppendLine("						else if (connectionString.Substring(ii, 1) == \"'\")");
-                sb.AppendLine("						{");
-                sb.AppendLine("							index1 = ii + 1;");
-                sb.AppendLine("							index2 = connectionString.IndexOf(\"'\", ii + 1);");
-                sb.AppendLine("						}");
-                sb.AppendLine("						else if (connectionString.Substring(ii, 6) == \"&quot;\")");
-                sb.AppendLine("						{");
-                sb.AppendLine("							index1 = ii + 6;");
-                sb.AppendLine("							index2 = connectionString.IndexOf(\"&quot;\", ii + 1);");
-                sb.AppendLine("						}");
+                sb.AppendLine("						connectionString = connectionString.Substring(ii, connectionString.Length - ii);");
+                sb.AppendLine("						index1 = connectionString.IndexOf('\"');");
+                sb.AppendLine("						index2 = connectionString.LastIndexOf('\"');");
                 sb.AppendLine("					}");
                 sb.AppendLine();
                 sb.AppendLine("					if (index1 != -1 && index2 != -1)");
                 sb.AppendLine("					{");
-                sb.AppendLine("						return connectionString.Substring(index1, index2 - index1);");
+                sb.AppendLine("						return connectionString.Substring(index1 + 1, index2 - index1 - 1);");
                 sb.AppendLine("					}");
                 sb.AppendLine();
                 sb.AppendLine("				}");
