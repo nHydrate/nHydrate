@@ -581,6 +581,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
                 sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
 
+                if (column.Identity == IdentityTypeConstants.Database)
+                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]");
+
                 if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml && column.Length > 0)
                 {
                     sb.AppendLine("		[StringLength(" + column.Length + ")]");
