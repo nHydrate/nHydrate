@@ -833,7 +833,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine();
 
             //TODO: Implement this!!
+            sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public event PropertyChangedEventHandler PropertyChanged;");
+            sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public event PropertyChangingEventHandler PropertyChanging;");
             sb.AppendLine();
         }
