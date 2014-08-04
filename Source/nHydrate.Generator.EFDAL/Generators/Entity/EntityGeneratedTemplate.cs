@@ -392,6 +392,24 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             {
                 sb.AppendLine("			newItem." + column.PascalName + " = item." + column.PascalName + ";");
             }
+
+            if (_currentTable.AllowCreateAudit)
+            {
+                sb.AppendLine("			newItem." + _model.Database.CreatedDateColumnName + " = item." + _model.Database.CreatedDateColumnName + ";");
+                sb.AppendLine("			newItem." + _model.Database.CreatedByColumnName + " = item." + _model.Database.CreatedByColumnName + ";");
+            }
+
+            if (_currentTable.AllowModifiedAudit)
+            {
+                sb.AppendLine("			newItem." + _model.Database.ModifiedDateColumnName + " = item." + _model.Database.ModifiedDateColumnName + ";");
+                sb.AppendLine("			newItem." + _model.Database.ModifiedByColumnName + " = item." + _model.Database.ModifiedByColumnName + ";");
+            }
+
+            if (_currentTable.AllowTimestamp)
+            {
+                sb.AppendLine("			newItem." + _model.Database.TimestampColumnName + " = item." + _model.Database.TimestampColumnName + ";");
+            }
+
             sb.AppendLine("			return newItem;");
             sb.AppendLine("		}");
             sb.AppendLine();
