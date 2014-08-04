@@ -450,11 +450,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("			newItem." + _model.Database.ModifiedByColumnName + " = item." + _model.Database.ModifiedByColumnName + ";");
             }
 
-            if (_currentTable.AllowTimestamp)
-            {
-                sb.AppendLine("			newItem." + _model.Database.TimestampColumnName + " = item." + _model.Database.TimestampColumnName + ";");
-            }
-
             sb.AppendLine("			return newItem;");
             sb.AppendLine("		}");
             sb.AppendLine();
