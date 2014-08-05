@@ -430,7 +430,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Persists all updates to the data source and resets change tracking in the object context.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"options\"></param>");
             sb.AppendLine("		/// <returns>The number of objects in an System.Data.Entity.EntityState.Added, System.Data.Entity.EntityState.Modified, or System.Data.Entity.EntityState.Deleted state when System.Data.Objects.ObjectContext.SaveChanges() was called.</returns>");
             sb.AppendLine("		public override int SaveChanges()");
             sb.AppendLine("		{");
@@ -669,6 +668,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			get { return _contextStartup; }");
             sb.AppendLine("		}");
             sb.AppendLine();
+            sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public virtual System.Data.Entity.Core.Objects.ObjectContextOptions ContextOptions");
             sb.AppendLine("		{");
             sb.AppendLine("			get { return this.ObjectContext.ContextOptions; }");
@@ -762,7 +762,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				}");
             sb.AppendLine("				return string.Empty;");
             sb.AppendLine("			}");
-            sb.AppendLine("			catch (Exception ex)");
+            sb.AppendLine("			catch (Exception)");
             sb.AppendLine("			{");
             sb.AppendLine("				throw;");
             sb.AppendLine("			}");
@@ -827,17 +827,17 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             }
             #endregion
 
-            //Overload the original signature as an error
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Adds an object to the object context.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		[Obsolete(\"This method signature is no longer used. Use the AddItem method.\", true)]");
-            sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]");
-            sb.AppendLine("		public new void AddObject(string entitySetName, object entity)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			throw new Exception(\"This method signature is no longer used. Use the AddItem method.\");");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            ////Overload the original signature as an error
+            //sb.AppendLine("		/// <summary>");
+            //sb.AppendLine("		/// Adds an object to the object context.");
+            //sb.AppendLine("		/// </summary>");
+            //sb.AppendLine("		[Obsolete(\"This method signature is no longer used. Use the AddItem method.\", true)]");
+            //sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]");
+            //sb.AppendLine("		public new void AddObject(string entitySetName, object entity)");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			throw new Exception(\"This method signature is no longer used. Use the AddItem method.\");");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
@@ -883,24 +883,24 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             }
             #endregion
 
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Marks an object for deletion.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		[Obsolete(\"This method signature is no longer used. Use the AddItem method.\", true)]");
-            sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]");
-            sb.AppendLine("		public new void DeleteObject(object entity)");
-            sb.AppendLine("		{");
+            //sb.AppendLine("		/// <summary>");
+            //sb.AppendLine("		/// Marks an object for deletion.");
+            //sb.AppendLine("		/// </summary>");
+            //sb.AppendLine("		[Obsolete(\"This method signature is no longer used. Use the AddItem method.\", true)]");
+            //sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]");
+            //sb.AppendLine("		public void DeleteObject(object entity)");
+            //sb.AppendLine("		{");
 
-            var index5 = 0;
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && (x.TypedTable != TypedTableConstants.EnumOnly)))
-            {
-                sb.AppendLine("			" + (index5 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")");
-                sb.AppendLine("				this.DeleteItem(entity as " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ");");
-                index5++;
-            }
+            //var index5 = 0;
+            //foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && (x.TypedTable != TypedTableConstants.EnumOnly)))
+            //{
+            //    sb.AppendLine("			" + (index5 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")");
+            //    sb.AppendLine("				this.DeleteItem(entity as " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ");");
+            //    index5++;
+            //}
 
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
@@ -926,7 +926,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("					}");
             sb.AppendLine();
             sb.AppendLine("				}");
-            sb.AppendLine("				catch (Exception ex)");
+            sb.AppendLine("				catch (Exception)");
             sb.AppendLine("				{");
             sb.AppendLine("					return null;");
             sb.AppendLine("				}");
@@ -958,7 +958,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("					throw new Exception(\"The connection string was not found.\");");
             sb.AppendLine("				}");
             sb.AppendLine("			}");
-            sb.AppendLine("			catch (Exception ex)");
+            sb.AppendLine("			catch (Exception)");
             sb.AppendLine("			{");
             sb.AppendLine("				throw new Exception(\"The connection string was not found.\");");
             sb.AppendLine("			}");
@@ -1234,16 +1234,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #region ObjectContext
             sb.AppendLine("		#region ObjectContext");
             sb.AppendLine();
+            sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public System.Data.Entity.Core.Objects.ObjectContext ObjectContext");
             sb.AppendLine("		{");
             sb.AppendLine("			get { return ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext; }");
             sb.AppendLine("		}");
             sb.AppendLine();
+            sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public void AcceptAllChanges()");
             sb.AppendLine("		{");
             sb.AppendLine("			this.ObjectContext.AcceptAllChanges();");
             sb.AppendLine("		}");
             sb.AppendLine();
+            sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public int? CommandTimeout");
             sb.AppendLine("		{");
             sb.AppendLine("			get { return this.ObjectContext.CommandTimeout; }");

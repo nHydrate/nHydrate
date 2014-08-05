@@ -608,7 +608,15 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("		public virtual " + column.GetCodeType() + " " + column.PascalName);
                 sb.AppendLine("		{");
                 sb.AppendLine("			get { return _" + column.CamelName + "; }");
-                sb.AppendLine("			set { _" + column.CamelName + " = value; }");
+                //sb.AppendLine("			set { _" + column.CamelName + " = value; }");
+                sb.AppendLine("			set");
+                sb.AppendLine("			{");
+                sb.AppendLine("				var eventArg = new nHydrate.EFCore.EventArgs.ChangingEventArgs<" + column.GetCodeType() + ">(value, \"" + column.PascalName + "\");");
+                sb.AppendLine("				this.OnPropertyChanging(eventArg);");
+                sb.AppendLine("				if (eventArg.Cancel) return;");
+                sb.AppendLine("				_" + column.CamelName + " = eventArg.Value;");
+                sb.AppendLine("				this.OnPropertyChanged(new PropertyChangedEventArgs(\"" + column.PascalName + "\"));");
+                sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
             }
@@ -708,6 +716,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                             sb.AppendLine("			}");
                             sb.AppendLine("			set { _" + targetTable.PascalName + "List = value; }");
                             sb.AppendLine("		}");
+                            sb.AppendLine("		/// <summary />");
                             sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + targetTable.PascalName + "> _" + targetTable.PascalName + "List { get; set; }");
                             sb.AppendLine();
 
@@ -737,6 +746,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("			}");
                         sb.AppendLine("			set { _" + relation.PascalRoleName + childTable.PascalName + "List = value; }");
                         sb.AppendLine("		}");
+                        sb.AppendLine("		/// <summary />");
                         sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> _" + relation.PascalRoleName + childTable.PascalName + "List { get; set; }");
                         sb.AppendLine();
 
@@ -832,12 +842,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		#endregion");
             sb.AppendLine();
 
-            //TODO: Implement this!!
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public event PropertyChangedEventHandler PropertyChanged;");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public event PropertyChangingEventHandler PropertyChanging;");
-            sb.AppendLine();
+            ////TODO: Implement this!!
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		public event PropertyChangedEventHandler PropertyChanged;");
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		public event PropertyChangingEventHandler PropertyChanging;");
+            //sb.AppendLine();
         }
 
         private void AppendPropertyEventDeclarations(Column column, string codeType)
@@ -1713,23 +1723,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             }
             else
             {
-                //sb.AppendLine("				var eventArg = new nHydrate.EFCore.EventArgs.ChangingEventArgs<" + codeType + ">(value, \"" + columnName + "\");");
-                //if (_model.EnableCustomChangeEvents)
-                //    sb.AppendLine("				On" + columnName + "Changing(eventArg);");
-                //else
-                //    sb.AppendLine("				//On" + columnName + "Changing(eventArg);");
-                //sb.AppendLine("				if (eventArg.Cancel) return;");
-                //sb.AppendLine("				ReportPropertyChanging(\"" + columnName + "\");");
-                //sb.AppendLine("				this.OnPropertyChanging(\"" + columnName + "\");");
-                //sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = eventArg.Value;");
-                //sb.AppendLine("				ReportPropertyChanged(\"" + columnName + "\");");
-                //sb.AppendLine("				this.OnPropertyChanged(\"" + columnName + "\");");
-                //if (_model.EnableCustomChangeEvents)
-                //    sb.AppendLine("				On" + columnName + "Changed(eventArg);");
-                //else
-                //    sb.AppendLine("				//On" + columnName + "Changed(eventArg);");
-                
-                sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = value;");
+                sb.AppendLine("				var eventArg = new nHydrate.EFCore.EventArgs.ChangingEventArgs<" + codeType + ">(value, \"" + columnName + "\");");
+                sb.AppendLine("				this.OnPropertyChanging(eventArg);");
+                sb.AppendLine("				if (eventArg.Cancel) return;");
+                sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = eventArg.Value;");
+                sb.AppendLine("				this.OnPropertyChanged(new PropertyChangedEventArgs(\"" + columnName + "\"));");
+
+                //sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = value;");
             }
 
             sb.AppendLine("			}");
@@ -1787,6 +1787,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
             sb.AppendLine("		/// <param name=\"optimizer\">The optimization object to use for running queries</param>");
+            sb.AppendLine("		/// <param name=\"startup\">The startup options</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
             sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, bool>> where, nHydrate.EFCore.DataAccess.QueryOptimizer optimizer, ContextStartup startup, string connectionString)");

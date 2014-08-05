@@ -78,5 +78,24 @@ namespace nHydrate.EFCore.DataAccess
             return string.Empty;
         }
 
+        /// <summary />
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        /// <summary />
+        public event System.ComponentModel.PropertyChangingEventHandler PropertyChanging;
+
+        /// <summary />
+        protected virtual void OnPropertyChanging(System.ComponentModel.PropertyChangingEventArgs e)
+        {
+            if (this.PropertyChanging != null)
+                this.PropertyChanging(this, e);
+        }
+
+        /// <summary />
+        protected virtual void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (this.PropertyChanged != null)
+                this.PropertyChanged(this, e);
+        }
+
     }
 }

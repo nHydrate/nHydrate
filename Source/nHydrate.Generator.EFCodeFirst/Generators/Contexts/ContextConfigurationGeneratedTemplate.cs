@@ -100,6 +100,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	/// </summary>");
             sb.AppendLine("	public partial class " + _model.ProjectName + "Configuration : System.Data.Entity.DbConfiguration");
             sb.AppendLine("	{");
+            sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public " + _model.ProjectName + "Configuration()");
             sb.AppendLine("		{");
             sb.AppendLine("		}");
