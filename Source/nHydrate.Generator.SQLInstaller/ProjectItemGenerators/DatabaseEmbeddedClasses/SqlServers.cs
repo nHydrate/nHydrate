@@ -19,6 +19,7 @@ using System.Reflection;
 using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO.Compression;
 
 namespace PROJECTNAMESPACE
 {
@@ -1282,27 +1283,70 @@ namespace PROJECTNAMESPACE
 		public static string[] ReadSQLFileSectionsFromResource(string resourceFileName, InstallSetup setup)
 		{
 			if (string.IsNullOrEmpty(resourceFileName)) return new string[] { };
-			if (!resourceFileName.ToLower().EndsWith(".sql")) return new string[] { };
 			var skipSectionsLowered = new List<string>();
 			var skipSections = setup.SkipSections.ToList();
 			if (skipSections != null)
 				skipSections.Where(x => x != null).ToList().ForEach(x => skipSectionsLowered.Add(x.ToLower()));
 
 			#region Load Full Script
-			var asm = Assembly.GetExecutingAssembly();
-			var manifestStream = asm.GetManifestResourceStream(resourceFileName);
 			var fullScript = string.Empty;
-			try
+			if (resourceFileName.ToLower().EndsWith(".sql"))
 			{
-				using (System.IO.StreamReader sr = new System.IO.StreamReader(manifestStream))
+				var asm = Assembly.GetExecutingAssembly();
+				var manifestStream = asm.GetManifestResourceStream(resourceFileName);
+				try
 				{
-					fullScript = sr.ReadToEnd();
+					using (var sr = new System.IO.StreamReader(manifestStream))
+					{
+						fullScript = sr.ReadToEnd();
+					}
+				}
+				catch { }
+				finally
+				{
+					manifestStream.Close();
 				}
 			}
-			catch { }
-			finally
+			else if (resourceFileName.ToLower().EndsWith(".zip"))
 			{
-				manifestStream.Close();
+				var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+				Directory.CreateDirectory(tempPath);
+				var zipPath = Path.Combine(tempPath, Guid.NewGuid().ToString());
+
+				var asm = Assembly.GetExecutingAssembly();
+				var manifestStream = asm.GetManifestResourceStream(resourceFileName);
+				try
+				{
+					using (var fileStream = File.Create(zipPath))
+					{
+						manifestStream.CopyTo(fileStream);
+					}
+				}
+				catch { }
+				finally
+				{
+					manifestStream.Close();
+				}
+
+				using (var archive = System.IO.Compression.ZipFile.Open(zipPath, System.IO.Compression.ZipArchiveMode.Update))
+				{
+					archive.ExtractToDirectory(tempPath);
+				}
+
+				System.Threading.Thread.Sleep(250);
+				File.Delete(zipPath);
+
+				var files = Directory.GetFiles(tempPath, "*.*").OrderBy(x => x).ToList();
+				files.ForEach(x => fullScript += (File.ReadAllText(x) + "\r\nGO\r\n"));
+				System.Threading.Thread.Sleep(250);
+				files.ForEach(x => File.Delete(x));
+				System.Threading.Thread.Sleep(250);
+				Directory.Delete(tempPath);
+
+			}
+			else
+			{
+				return new string[] { };
 			}
 			#endregion
 

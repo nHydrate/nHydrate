@@ -258,6 +258,26 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			Database.SetInitializer(new CustomDatabaseInitializer<" + _model.ProjectName + "Entities>());");
             sb.AppendLine();
 
+            #region Hierarchy Mapping
+
+            var hierarchyList = new List<Table>();
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly) && x.ParentTable != null).OrderBy(x => x.Name).ToList())
+            {
+                hierarchyList.Add(table);
+                hierarchyList.Add(table.ParentTable);
+            }
+            hierarchyList = hierarchyList.Distinct().ToList();
+
+            sb.AppendLine("			#region Hierarchy Mapping");
+            foreach (var table in hierarchyList)
+            {
+                sb.AppendLine("			modelBuilder.Entity<" + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\");");
+            }
+            sb.AppendLine("			#endregion");
+            sb.AppendLine();
+
+            #endregion
+
             #region Rename Tables
             sb.AppendLine("			#region Rename Tables");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
