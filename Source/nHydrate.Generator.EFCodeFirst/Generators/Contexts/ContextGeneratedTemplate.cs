@@ -361,7 +361,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                             else
                                 sb.AppendLine("							 .HasOptional(a => a." + relation.PascalRoleName + table.PascalName + ")");
 
-                            sb.AppendLine("							 .WithOptional()");
+                            sb.AppendLine("							 .WithOptional(x => x." + childTable.PascalName + ")");
                             sb.AppendLine("							 .WillCascadeOnDelete(false);");
                         }
                         else

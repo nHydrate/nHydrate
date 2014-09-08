@@ -61,6 +61,36 @@ namespace nHydrate.Generator.Models
 
 		#region Methods
 
+		public string GetDataRaw(Table table)
+		{
+			try
+			{
+				var name = string.Empty;
+				var description = string.Empty;
+				foreach (CellEntry cellEntry in this.CellEntries)
+				{
+					var column = cellEntry.ColumnRef.Object as Column;
+					var pk = table.PrimaryKeyColumns.FirstOrDefault<Column>() as Column;
+					if (column != null)
+					{
+						if (StringHelper.Match(column.Name, "name"))
+							name = cellEntry.Value;
+						if (StringHelper.Match(column.Name, "description"))
+							description = cellEntry.Value;
+					}
+				}
+
+				if (string.IsNullOrEmpty(name)) name = description;
+				return name;
+
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
+
+		}
+
 		public string GetCodeIdentifier(Table table)
 		{
 			try
@@ -80,7 +110,7 @@ namespace nHydrate.Generator.Models
 					}
 				}
 
-				if (string.IsNullOrEmpty(name)) name = description;
+				if (string.IsNullOrEmpty(name)) name = ValidationHelper.MakeCodeIdentifer(description);
 				return name;
 
 			}
@@ -135,9 +165,9 @@ namespace nHydrate.Generator.Models
 				}
 			}
 
-			if (string.IsNullOrEmpty(name)) name = description;
+			if (string.IsNullOrEmpty(name)) name = ValidationHelper.MakeCodeIdentifer(description);
 			if (description != null) return description;
-			else return "";
+			else return string.Empty;
 		}
 
 		#endregion

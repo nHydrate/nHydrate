@@ -216,6 +216,7 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Contexts
 							var idValue = rowEntry.GetCodeIdValue(table);
 							var identifier = rowEntry.GetCodeIdentifier(table);
 							var description = rowEntry.GetCodeDescription(table);
+							var raw = rowEntry.GetDataRaw(table);
 							if (!string.IsNullOrEmpty(description))
 							{
 								sb.AppendLine("		/// <summary>");
@@ -228,13 +229,13 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Contexts
 								sb.AppendLine("		/// <summary>");
 								sb.AppendLine("		/// Enumeration for the '" + identifier + "' item");
 								sb.AppendLine("		/// </summary>");
-								sb.AppendLine("		[Description(\"" + description + "\")]");
 							}
 
-							var key = ValidationHelper.MakeDatabaseIdentifier(identifier.Replace(" ", ""));
+							var key = ValidationHelper.MakeDatabaseIdentifier(identifier.Replace(" ", string.Empty));
 							if ((key.Length > 0) && ("0123456789".Contains(key[0])))
 								key = "_" + key;
 
+							sb.AppendLine("		[System.ComponentModel.DataAnnotations.Display(Name = \"" + raw + "\")]");
 							sb.AppendLine("		" + key + " = " + idValue + ",");
 						}
 						sb.AppendLine("	}");

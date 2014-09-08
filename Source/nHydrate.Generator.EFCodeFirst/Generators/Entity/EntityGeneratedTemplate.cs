@@ -673,7 +673,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + _currentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
-                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped]");
+                        //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped]");
                         sb.AppendLine("		public virtual " + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; set; }");
                         sb.AppendLine();
 
