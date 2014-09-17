@@ -31,171 +31,192 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-	public class RowEntry : BaseModelObject
-	{
-		#region Member Variables
+    public class RowEntry : BaseModelObject
+    {
+        #region Member Variables
 
-		protected CellEntryCollection _cellEntries = null;
+        protected CellEntryCollection _cellEntries = null;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		public RowEntry(INHydrateModelObject root)
-			: base(root)
-		{
-			_cellEntries = new CellEntryCollection(this.Root);
-		}
+        public RowEntry(INHydrateModelObject root)
+            : base(root)
+        {
+            _cellEntries = new CellEntryCollection(this.Root);
+        }
 
-		#endregion
+        #endregion
 
-		#region Property Implementations
+        #region Property Implementations
 
-		public CellEntryCollection CellEntries
-		{
-			get { return _cellEntries; }
-			set { _cellEntries = value; }
-		}
+        public CellEntryCollection CellEntries
+        {
+            get { return _cellEntries; }
+            set { _cellEntries = value; }
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public string GetDataRaw(Table table)
-		{
-			try
-			{
-				var name = string.Empty;
-				var description = string.Empty;
-				foreach (CellEntry cellEntry in this.CellEntries)
-				{
-					var column = cellEntry.ColumnRef.Object as Column;
-					var pk = table.PrimaryKeyColumns.FirstOrDefault<Column>() as Column;
-					if (column != null)
-					{
-						if (StringHelper.Match(column.Name, "name"))
-							name = cellEntry.Value;
-						if (StringHelper.Match(column.Name, "description"))
-							description = cellEntry.Value;
-					}
-				}
+        public string GetDataSort(Table table)
+        {
+            try
+            {
+                var name = string.Empty;
+                var description = string.Empty;
+                foreach (CellEntry cellEntry in this.CellEntries)
+                {
+                    var column = cellEntry.ColumnRef.Object as Column;
+                    if (column != null && column.IsIntegerType)
+                    {
+                        if (column.Name.ToLower().Contains("order") || column.Name.ToLower().Contains("sort"))
+                            return cellEntry.Value;
+                    }
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
-				if (string.IsNullOrEmpty(name)) name = description;
-				return name;
+        public string GetDataRaw(Table table)
+        {
+            try
+            {
+                var name = string.Empty;
+                var description = string.Empty;
+                foreach (CellEntry cellEntry in this.CellEntries)
+                {
+                    var column = cellEntry.ColumnRef.Object as Column;
+                    if (column != null)
+                    {
+                        if (StringHelper.Match(column.Name, "name"))
+                            name = cellEntry.Value;
+                        if (StringHelper.Match(column.Name, "description"))
+                            description = cellEntry.Value;
+                    }
+                }
 
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
+                if (string.IsNullOrEmpty(name)) name = description;
+                return name;
 
-		}
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
 
-		public string GetCodeIdentifier(Table table)
-		{
-			try
-			{
-				var name = string.Empty;
-				var description = string.Empty;
-				foreach (CellEntry cellEntry in this.CellEntries)
-				{
-					var column = cellEntry.ColumnRef.Object as Column;
-					var pk = table.PrimaryKeyColumns.FirstOrDefault<Column>() as Column;
-					if (column != null)
-					{
-						if (StringHelper.Match(column.Name, "name"))
-							name = ValidationHelper.MakeCodeIdentifer(cellEntry.Value);
-						if (StringHelper.Match(column.Name, "description"))
-							description = cellEntry.Value;
-					}
-				}
+        }
 
-				if (string.IsNullOrEmpty(name)) name = ValidationHelper.MakeCodeIdentifer(description);
-				return name;
+        public string GetCodeIdentifier(Table table)
+        {
+            try
+            {
+                var name = string.Empty;
+                var description = string.Empty;
+                foreach (CellEntry cellEntry in this.CellEntries)
+                {
+                    var column = cellEntry.ColumnRef.Object as Column;
+                    var pk = table.PrimaryKeyColumns.FirstOrDefault<Column>() as Column;
+                    if (column != null)
+                    {
+                        if (StringHelper.Match(column.Name, "name"))
+                            name = ValidationHelper.MakeCodeIdentifer(cellEntry.Value);
+                        if (StringHelper.Match(column.Name, "description"))
+                            description = cellEntry.Value;
+                    }
+                }
 
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
+                if (string.IsNullOrEmpty(name)) name = ValidationHelper.MakeCodeIdentifer(description);
+                return name;
 
-		}
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
 
-		public string GetCodeIdValue(Table table)
-		{
-			var id = string.Empty;
-			var name = string.Empty;
-			var description = string.Empty;
-			foreach (CellEntry cellEntry in this.CellEntries)
-			{
-				var column = (Column)cellEntry.ColumnRef.Object;
-				var pk = (Column)table.PrimaryKeyColumns[0];
-				if (column != null)
-				{
-					if (column.Key == pk.Key)
-						id = cellEntry.Value;
-					if (StringHelper.Match(column.Name, "name"))
-						name = ValidationHelper.MakeCodeIdentifer(cellEntry.Value);
-					if (StringHelper.Match(column.Name, "description"))
-						description = cellEntry.Value;
-				}
-			}
+        }
 
-			if (string.IsNullOrEmpty(name)) name = description;
-			return id;
-		}
+        public string GetCodeIdValue(Table table)
+        {
+            var id = string.Empty;
+            var name = string.Empty;
+            var description = string.Empty;
+            foreach (CellEntry cellEntry in this.CellEntries)
+            {
+                var column = (Column)cellEntry.ColumnRef.Object;
+                var pk = (Column)table.PrimaryKeyColumns[0];
+                if (column != null)
+                {
+                    if (column.Key == pk.Key)
+                        id = cellEntry.Value;
+                    if (StringHelper.Match(column.Name, "name"))
+                        name = ValidationHelper.MakeCodeIdentifer(cellEntry.Value);
+                    if (StringHelper.Match(column.Name, "description"))
+                        description = cellEntry.Value;
+                }
+            }
 
-		public string GetCodeDescription(Table table)
-		{
-			var id = string.Empty;
-			var name = string.Empty;
-			var description = string.Empty;
-			foreach (CellEntry cellEntry in this.CellEntries)
-			{
-				var column = (Column)cellEntry.ColumnRef.Object;
-				var pk = (Column)table.PrimaryKeyColumns[0];
-				if (column != null)
-				{
-					if (column.Key == pk.Key)
-						id = cellEntry.Value;
-					if (StringHelper.Match(column.Name, "name"))
-						name = ValidationHelper.MakeCodeIdentifer(cellEntry.Value);
-					if (StringHelper.Match(column.Name, "description"))
-						description = cellEntry.Value;
-				}
-			}
+            if (string.IsNullOrEmpty(name)) name = description;
+            return id;
+        }
 
-			if (string.IsNullOrEmpty(name)) name = ValidationHelper.MakeCodeIdentifer(description);
-			if (description != null) return description;
-			else return string.Empty;
-		}
+        public string GetCodeDescription(Table table)
+        {
+            var id = string.Empty;
+            var name = string.Empty;
+            var description = string.Empty;
+            foreach (CellEntry cellEntry in this.CellEntries)
+            {
+                var column = (Column)cellEntry.ColumnRef.Object;
+                var pk = (Column)table.PrimaryKeyColumns[0];
+                if (column != null)
+                {
+                    if (column.Key == pk.Key)
+                        id = cellEntry.Value;
+                    if (StringHelper.Match(column.Name, "name"))
+                        name = ValidationHelper.MakeCodeIdentifer(cellEntry.Value);
+                    if (StringHelper.Match(column.Name, "description"))
+                        description = cellEntry.Value;
+                }
+            }
 
-		#endregion
+            if (string.IsNullOrEmpty(name)) name = ValidationHelper.MakeCodeIdentifer(description);
+            if (description != null) return description;
+            else return string.Empty;
+        }
 
-		#region IXMLable Members
-		public override void XmlAppend(XmlNode node)
-		{
-			var oDoc = node.OwnerDocument;
+        #endregion
 
-			//XmlHelper.AddAttribute(node, "key", this.Key);
+        #region IXMLable Members
+        public override void XmlAppend(XmlNode node)
+        {
+            var oDoc = node.OwnerDocument;
 
-			var cellEntriesNode = oDoc.CreateElement("cl");
-			CellEntries.XmlAppend(cellEntriesNode);
-			node.AppendChild(cellEntriesNode);
+            //XmlHelper.AddAttribute(node, "key", this.Key);
 
-		}
+            var cellEntriesNode = oDoc.CreateElement("cl");
+            CellEntries.XmlAppend(cellEntriesNode);
+            node.AppendChild(cellEntriesNode);
 
-		public override void XmlLoad(XmlNode node)
-		{
-			_key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-			var cellEntriesNode = node.SelectSingleNode("cellEntries"); //deprecated, use "cl"
-			if (cellEntriesNode == null) cellEntriesNode = node.SelectSingleNode("cl");
-			this.CellEntries.XmlLoad(cellEntriesNode);
+        }
 
-			this.Dirty = false;
-		}
-		#endregion
+        public override void XmlLoad(XmlNode node)
+        {
+            _key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+            var cellEntriesNode = node.SelectSingleNode("cellEntries"); //deprecated, use "cl"
+            if (cellEntriesNode == null) cellEntriesNode = node.SelectSingleNode("cl");
+            this.CellEntries.XmlLoad(cellEntriesNode);
 
-	}
+            this.Dirty = false;
+        }
+        #endregion
+
+    }
 }
-
