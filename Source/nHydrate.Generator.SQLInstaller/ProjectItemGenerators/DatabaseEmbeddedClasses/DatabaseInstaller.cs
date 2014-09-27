@@ -65,7 +65,6 @@ namespace PROJECTNAMESPACE
 		private string PARAMKEYS_SHOWSQL = "showsql";
 		private string PARAMKEYS_NOTRAN = "notran";
 		private string PARAMKEYS_NONORMALIZE = "nonormalize";
-		private string PARAMKEYS_USEHASH = "usehashes";
 		#endregion
 
 		#region Constructor
@@ -108,12 +107,6 @@ namespace PROJECTNAMESPACE
 				if (commandParams.ContainsKey(PARAMKEYS_NONORMALIZE))
 				{
 					setup.Normalize = false;
-					paramUICount++;
-				}
-
-				if (commandParams.ContainsKey(PARAMKEYS_USEHASH))
-				{
-					setup.UseHashes = true;
 					paramUICount++;
 				}
 
@@ -511,7 +504,6 @@ namespace PROJECTNAMESPACE
 			this.InstallStatus = InstallStatusConstants.Upgrade;
 			this.UseTransaction = true;
 			this.Normalize = true;
-			this.UseHashes = false;
 			this.SuppressUI = false;
 		}
 
@@ -527,9 +519,6 @@ namespace PROJECTNAMESPACE
 
 		/// <summary />
 		public GeneratedVersion Version { get; set; }
-
-		/// <summary />
-		public bool UseHashes { get; set; }
 
 		/// <summary />
 		internal bool SuppressUI { get; set; }
@@ -561,6 +550,9 @@ namespace PROJECTNAMESPACE
 
 		/// <summary />
 		public bool ShowSql { get; set; }
+
+		/// <summary />
+		public bool CheckOnly { get; set; }
 
 		internal bool NewInstall
 		{

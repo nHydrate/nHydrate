@@ -1098,7 +1098,7 @@ namespace nHydrate.Generator.EFDAL.Generators.SQLHelper
             sb.AppendLine("			foreach (var fromClause in _fromLinkList)");
             sb.AppendLine("			{");
             sb.AppendLine("				sb.Append(\"[\" + fromClause.Schema + \"].[\" + fromClause.TableName + \"] AS [\" + fromClause.Alias + \"] \");");
-            sb.AppendLine("				if (optimizer.NoLocking) sb.Append(\"WITH (NOLOCK) \");");
+            sb.AppendLine("				if (optimizer.NoLocking) sb.Append(\"WITH (READUNCOMMITTED) \");");
             sb.AppendLine("				if (!string.IsNullOrEmpty(fromClause.LinkClause)) sb.Append(fromClause.LinkClause + \" \");");
             sb.AppendLine();
             sb.AppendLine("				if (index < _fromLinkList.Count - 1)");

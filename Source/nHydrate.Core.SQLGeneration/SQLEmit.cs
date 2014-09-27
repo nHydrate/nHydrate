@@ -1461,26 +1461,28 @@ namespace nHydrate.Core.SQLGeneration
             var defaultValue = column.Default + string.Empty;
             if ((column.DataType == System.Data.SqlDbType.DateTime) || (column.DataType == System.Data.SqlDbType.SmallDateTime))
             {
-                if (defaultValue.ToLower() == "getdate" || defaultValue.ToLower() == "getdate()")
+                if (defaultValue.ToLower() == "getdate" || defaultValue.ToLower() == "getdate()" ||
+                    defaultValue.ToLower() == "sysdatetime" || defaultValue.ToLower() == "sysdatetime()")
                 {
-                    tempBuilder.Append("getdate()");
+                    tempBuilder.Append("sysdatetime()");
                 }
                 else if (defaultValue.ToLower() == "getutcdate" || defaultValue.ToLower() == "getutcdate()")
                 {
                     tempBuilder.Append("getutcdate()");
                 }
-                else if (defaultValue.ToLower().StartsWith("getdate+"))
+                else if (defaultValue.ToLower().StartsWith("getdate+") || defaultValue.ToLower().StartsWith("sysdatetime+"))
                 {
-                    var t = defaultValue.Substring(8, defaultValue.Length - 8);
+                    var br = defaultValue.IndexOf("+") + 1;
+                    var t = defaultValue.Substring(br, defaultValue.Length - br);
                     var tarr = t.Split('-');
                     if (tarr.Length == 2)
                     {
                         if (tarr[1] == "day")
-                            tempBuilder.Append("DATEADD(DAY, " + tarr[0] + ", getdate())");
+                            tempBuilder.Append("DATEADD(DAY, " + tarr[0] + ", sysdatetime())");
                         else if (tarr[1] == "month")
-                            tempBuilder.Append("DATEADD(MONTH, " + tarr[0] + ", getdate())");
+                            tempBuilder.Append("DATEADD(MONTH, " + tarr[0] + ", sysdatetime())");
                         else if (tarr[1] == "year")
-                            tempBuilder.Append("DATEADD(YEAR, " + tarr[0] + ", getdate())");
+                            tempBuilder.Append("DATEADD(YEAR, " + tarr[0] + ", sysdatetime())");
                     }
                 }
             }
@@ -1607,7 +1609,8 @@ namespace nHydrate.Core.SQLGeneration
             {
                 retVal = "newsequentialid()";
             }
-            else if (StringHelper.Match(modelDefault, "getdate") || StringHelper.Match(modelDefault, "getdate()"))
+            else if (StringHelper.Match(modelDefault, "getdate") || StringHelper.Match(modelDefault, "getdate()") ||
+                StringHelper.Match(modelDefault, "sysdatetime") || StringHelper.Match(modelDefault, "sysdatetime()"))
             {
                 retVal = "GetDate()";
             }

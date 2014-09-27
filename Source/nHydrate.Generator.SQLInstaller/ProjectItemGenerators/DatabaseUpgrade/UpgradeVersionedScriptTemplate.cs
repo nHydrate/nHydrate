@@ -40,122 +40,121 @@ using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 {
-	class UpgradeVersionedTemplate : BaseDbScriptTemplate
-	{
-		private StringBuilder sb = new StringBuilder();
+    class UpgradeVersionedTemplate : BaseDbScriptTemplate
+    {
+        private StringBuilder sb = new StringBuilder();
 
-		#region Constructors
-		public UpgradeVersionedTemplate(ModelRoot model)
-			: base(model)
-		{
-		}
-		#endregion 
+        #region Constructors
+        public UpgradeVersionedTemplate(ModelRoot model)
+            : base(model)
+        {
+        }
+        #endregion
 
-		#region BaseClassTemplate overrides
-		public override string FileContent
-		{
-			get 
-			{
-				this.GenerateContent();
-				return sb.ToString();
-			}
-		}
+        #region BaseClassTemplate overrides
+        public override string FileContent
+        {
+            get
+            {
+                this.GenerateContent();
+                return sb.ToString();
+            }
+        }
 
-		public override string FileName
-		{
-			get 
-			{
-				var versionNumbers = _model.Version.Split('.');
-				var major = int.Parse(versionNumbers[0]);
-				var minor = int.Parse(versionNumbers[1]);
-				var revision = int.Parse(versionNumbers[2]);
-				var build = int.Parse(versionNumbers[3]);
-				return string.Format("{0}_{1}_{2}_{3}_{4}_UpgradeScript.sql", new object[] { major.ToString("00"), minor.ToString("00"), revision.ToString("00"), build.ToString("00"), _model.GeneratedVersion.ToString("0000") });
-			}
-		}
-		
-		#endregion
+        public override string FileName
+        {
+            get
+            {
+                var versionNumbers = _model.Version.Split('.');
+                var major = int.Parse(versionNumbers[0]);
+                var minor = int.Parse(versionNumbers[1]);
+                var revision = int.Parse(versionNumbers[2]);
+                var build = int.Parse(versionNumbers[3]);
+                return string.Format("{0}_{1}_{2}_{3}_{4}_UpgradeScript.sql", new object[] { major.ToString("00"), minor.ToString("00"), revision.ToString("00"), build.ToString("00"), _model.GeneratedVersion.ToString("0000") });
+            }
+        }
 
-		#region GenerateContent
-		private void GenerateContent()
-		{
-			try
-			{
-				sb = new StringBuilder();
-				sb.AppendLine("--Generated Upgrade For Version " + _model.Version + "." + _model.GeneratedVersion);
-				sb.AppendLine("--Generated on " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-				sb.AppendLine();
+        #endregion
 
-				//***********************************************************
-				//ATTEMPT TO GENERATE AN UPGRADE SCRIPT FROM PREVIOUS VERSION
-				//***********************************************************
+        #region GenerateContent
+        private void GenerateContent()
+        {
+            try
+            {
+                sb = new StringBuilder();
+                sb.AppendLine("--Generated Upgrade For Version " + _model.Version + "." + _model.GeneratedVersion);
+                sb.AppendLine("--Generated on " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                sb.AppendLine();
 
-				#region Generate Upgrade Script
+                //***********************************************************
+                //ATTEMPT TO GENERATE AN UPGRADE SCRIPT FROM PREVIOUS VERSION
+                //***********************************************************
 
-				//Find the previous model file if one exists
-				var fileName = this._model.GeneratorProject.FileName;
-				var prevFileName = fileName + ".sql.lastgen";
-				var fiPrev = new System.IO.FileInfo(prevFileName);
-				var fi = new System.IO.FileInfo(fileName);
+                #region Generate Upgrade Script
 
-				if (fiPrev.Exists)
-				{
-					var newFileName = string.Format(fileName, "sql.");
+                //Find the previous model file if one exists
+                var fileName = this._model.GeneratorProject.FileName;
+                var prevFileName = fileName + ".sql.lastgen";
+                var fiPrev = new System.IO.FileInfo(prevFileName);
+                var fi = new System.IO.FileInfo(fileName);
 
-					//Rename old style to new style
-					if (File.Exists(prevFileName) && !File.Exists(fileName))
-					{
-						File.Move(fileName, newFileName);
-					}
+                if (fiPrev.Exists)
+                {
+                    var newFileName = string.Format(fileName, "sql.");
 
-					fileName = newFileName;
+                    //Rename old style to new style
+                    if (File.Exists(prevFileName) && !File.Exists(fileName))
+                    {
+                        File.Move(fileName, newFileName);
+                    }
 
-					fi = new System.IO.FileInfo(fileName);
-					if (fi.Exists)
-					{
-						var newFile = fileName + ".converting";
-						if (File.Exists(newFile))
-						{
-							File.Delete(newFile);
-							System.Threading.Thread.Sleep(250);
-						}
-						File.Copy(fileName, newFile);
-						var fileText = File.ReadAllText(newFile);
-						fileText = fileText.Replace("Widgetsphere.Generator.", "nHydrate.Generator.");
-						fileText = fileText.Replace("WidgetsphereGeneratorProject", "nHydrateGeneratorProject");
-						File.WriteAllText(newFile, fileText);
-						System.Threading.Thread.Sleep(500);
+                    fileName = newFileName;
 
-						//Load the previous model
-						var generator = nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper.OpenModel(prevFileName);
-						var oldRoot = generator.Model as ModelRoot;
-						sb.Append(SqlHelper.GetModelDifferenceSql(oldRoot, _model));
+                    fi = new System.IO.FileInfo(fileName);
+                    if (fi.Exists)
+                    {
+                        var newFile = fileName + ".converting";
+                        if (File.Exists(newFile))
+                        {
+                            File.Delete(newFile);
+                            System.Threading.Thread.Sleep(250);
+                        }
+                        File.Copy(fileName, newFile);
+                        var fileText = File.ReadAllText(newFile);
+                        fileText = fileText.Replace("Widgetsphere.Generator.", "nHydrate.Generator.");
+                        fileText = fileText.Replace("WidgetsphereGeneratorProject", "nHydrateGeneratorProject");
+                        File.WriteAllText(newFile, fileText);
+                        System.Threading.Thread.Sleep(500);
 
-						if (File.Exists(newFile))
-							File.Delete(newFile);
+                        //Load the previous model
+                        var generator = nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper.OpenModel(prevFileName);
+                        var oldRoot = generator.Model as ModelRoot;
+                        sb.Append(SqlHelper.GetModelDifferenceSql(oldRoot, _model));
 
-						//Copy the current LASTGEN file to BACKUP
-						//fi.CopyTo(fileName + ".bak", true);
-					}
-				}
+                        if (File.Exists(newFile))
+                            File.Delete(newFile);
 
-				//Just in case it was there, but there is already a new file name, just remove it
-				if (File.Exists(prevFileName))
-					File.Delete(prevFileName);
+                        //Copy the current LASTGEN file to BACKUP
+                        //fi.CopyTo(fileName + ".bak", true);
+                    }
+                }
 
-				//Save this version on top of the old version
-				var currentFile = new System.IO.FileInfo(this._model.GeneratorProject.FileName);
-				currentFile.CopyTo(prevFileName, true);
+                //Just in case it was there, but there is already a new file name, just remove it
+                if (File.Exists(prevFileName))
+                    File.Delete(prevFileName);
 
-				#endregion
+                //Save this version on top of the old version
+                var currentFile = new System.IO.FileInfo(this._model.GeneratorProject.FileName);
+                currentFile.CopyTo(prevFileName, true);
 
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
-		#endregion
-	}
+                #endregion
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        #endregion
+    }
 }
-

@@ -39,9 +39,7 @@ namespace PROJECTNAMESPACE
 		[DllImport("odbc32.dll")]
 		private static extern short SQLFreeHandle(short hType, IntPtr handle);
 		[DllImport("odbc32.dll", CharSet = CharSet.Ansi)]
-		private static extern short SQLBrowseConnect(IntPtr hconn, StringBuilder inString,
-			short inStringLength, StringBuilder outString, short outStringLength,
-			out short outLengthNeeded);
+		private static extern short SQLBrowseConnect(IntPtr hconn, StringBuilder inString, short inStringLength, StringBuilder outString, short outStringLength, out short outLengthNeeded);
 
 		private const short SQL_HANDLE_ENV = 1;
 		private const short SQL_HANDLE_DBC = 2;
@@ -369,42 +367,42 @@ namespace PROJECTNAMESPACE
 		#endregion
 
 		#region database table operations
-		internal static void RemoveTable(string connectString, string tableName)
-		{
-			var conn = new System.Data.SqlClient.SqlConnection();
-			try
-			{
-				conn.ConnectionString = connectString;
-				conn.Open();
-				SqlCommand cmdCreateDb = new SqlCommand();
-				if (GetTableNamesAsArrayList(connectString).Contains(tableName))
-				{
-					cmdCreateDb.CommandText = SqlRemoveTable(tableName);
-				}
-				else
-				{
-					return;
-				}
-				cmdCreateDb.CommandType = System.Data.CommandType.Text;
-				cmdCreateDb.Connection = conn;
-				cmdCreateDb.ExecuteNonQuery();
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-			finally
-			{
-				if (conn != null)
-					conn.Close();
-			}
-		}
+		//internal static void RemoveTable(string connectString, string tableName)
+		//{
+		//    var conn = new System.Data.SqlClient.SqlConnection();
+		//    try
+		//    {
+		//        conn.ConnectionString = connectString;
+		//        conn.Open();
+		//        SqlCommand cmdCreateDb = new SqlCommand();
+		//        if (GetTableNamesAsArrayList(connectString).Contains(tableName))
+		//        {
+		//            cmdCreateDb.CommandText = SqlRemoveTable(tableName);
+		//        }
+		//        else
+		//        {
+		//            return;
+		//        }
+		//        cmdCreateDb.CommandType = System.Data.CommandType.Text;
+		//        cmdCreateDb.Connection = conn;
+		//        cmdCreateDb.ExecuteNonQuery();
+		//    }
+		//    catch (Exception ex)
+		//    {
+		//        throw ex;
+		//    }
+		//    finally
+		//    {
+		//        if (conn != null)
+		//            conn.Close();
+		//    }
+		//}
 
-		internal static string[] GetTables(string connectString)
-		{
-			ArrayList databaseTables = GetTableNamesAsArrayList(connectString);
-			return (string[])databaseTables.ToArray(typeof(string));
-		}
+		//internal static string[] GetTables(string connectString)
+		//{
+		//    ArrayList databaseTables = GetTableNamesAsArrayList(connectString);
+		//    return (string[])databaseTables.ToArray(typeof(string));
+		//}
 
 		internal static ArrayList GetTableNamesAsArrayList(string connectString)
 		{
@@ -976,7 +974,7 @@ namespace PROJECTNAMESPACE
 
 			if (current != null)
 			{
-				if (current.Hash != hashValue || !setup.UseHashes)
+				if (current.Hash != hashValue)
 				{
 					runScript = true;
 					current.ModifiedDate = DateTime.Now;
@@ -1000,7 +998,7 @@ namespace PROJECTNAMESPACE
 			}
 			#endregion
 
-			if (runScript)
+			if (runScript && !setup.CheckOnly)
 			{
 				foreach (var sql in scripts)
 				{
@@ -1084,24 +1082,27 @@ namespace PROJECTNAMESPACE
 			command.CommandTimeout = Math.Max(300, connection.ConnectionTimeout);
 			try
 			{
-				if (setup.ShowSql && !string.IsNullOrEmpty(sql))
+				if (!setup.CheckOnly)
 				{
-					var debugText = "[" + DateTime.UtcNow.ToString() + "]\r\n";
-					const int MAX_SQL = 500;
-					var sqlLength = Math.Min(sql.Length, MAX_SQL);
-					debugText += sql.Substring(0, sqlLength);
-					if (sqlLength == MAX_SQL) debugText += "...";
-					debugText += "\r\n\r\n";
-					Console.WriteLine(debugText);
+					if (setup.ShowSql && !string.IsNullOrEmpty(sql))
+					{
+						var debugText = "[" + DateTime.UtcNow.ToString() + "]\r\n";
+						const int MAX_SQL = 500;
+						var sqlLength = Math.Min(sql.Length, MAX_SQL);
+						debugText += sql.Substring(0, sqlLength);
+						if (sqlLength == MAX_SQL) debugText += "...";
+						debugText += "\r\n\r\n";
+						Console.WriteLine(debugText);
+					}
+
+					_timer.Restart();
+					command.ExecuteNonQuery();
+					_timer.Stop();
+					//System.Diagnostics.Debug.WriteLine("Elapsed: " + _timer.ElapsedMilliseconds + " / " + sql.Split('\n').First()); //Alert user of what is running
+
+					if (successOrderScripts != null && isBody)
+						successOrderScripts.Add(key);
 				}
-
-				_timer.Restart();
-				command.ExecuteNonQuery();
-				_timer.Stop();
-				//System.Diagnostics.Debug.WriteLine("Elapsed: " + _timer.ElapsedMilliseconds + " / " + sql.Split('\n').First()); //Alert user of what is running
-
-				if (successOrderScripts != null && isBody)
-					successOrderScripts.Add(key);
 			}
 			catch (System.Data.SqlClient.SqlException sqlexp)
 			{
@@ -1761,8 +1762,11 @@ namespace PROJECTNAMESPACE
 			get { return _hash; }
 			set
 			{
-				_hash = value;
-				this.Changed = true;
+				if (_hash != value)
+				{
+					_hash = value;
+					this.Changed = true;
+				}
 			}
 		}
 

@@ -48,7 +48,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
         {
             get { return 1; }
         }
-        
+
         public override void Generate()
         {
             var template = new UpgradeUnversionedScriptTemplate(_model);
@@ -64,4 +64,3 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
     }
 }
-

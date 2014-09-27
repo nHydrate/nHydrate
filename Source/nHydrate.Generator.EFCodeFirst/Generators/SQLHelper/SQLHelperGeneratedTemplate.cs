@@ -585,7 +585,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             var fieldName = _model.Database.ModifiedByColumnName;
             sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[" + fieldName + "] = NULL\\r\\n\";");
             fieldName = _model.Database.ModifiedDateColumnName;
-            sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[" + fieldName + "] = getdate()\\r\\n\";");
+            sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[" + fieldName + "] = sysdatetime()\\r\\n\";");
             sb.AppendLine("					sql += parser.GetFromClause(new nHydrate.EFCore.DataAccess.QueryOptimizer()) + \"\\r\\n\";");
             sb.AppendLine("					sql += parser.GetWhereClause();");
             sb.AppendLine("					sql += \";select @@rowcount\";");
@@ -1098,7 +1098,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("			foreach (var fromClause in _fromLinkList)");
             sb.AppendLine("			{");
             sb.AppendLine("				sb.Append(\"[\" + fromClause.Schema + \"].[\" + fromClause.TableName + \"] AS [\" + fromClause.Alias + \"] \");");
-            sb.AppendLine("				if (optimizer.NoLocking) sb.Append(\"WITH (NOLOCK) \");");
+            sb.AppendLine("				if (optimizer.NoLocking) sb.Append(\"WITH (READUNCOMMITTED) \");");
             sb.AppendLine("				if (!string.IsNullOrEmpty(fromClause.LinkClause)) sb.Append(fromClause.LinkClause + \" \");");
             sb.AppendLine();
             sb.AppendLine("				if (index < _fromLinkList.Count - 1)");

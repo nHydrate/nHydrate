@@ -215,7 +215,8 @@ namespace nHydrate.Dsl
             var userValue = this.Default + string.Empty;
             if ((this.DataType == DataTypeConstants.DateTime) || (this.DataType == DataTypeConstants.SmallDateTime))
             {
-                if (StringHelper.Match(userValue, "getdate", true) || StringHelper.Match(userValue, "getdate()", true))
+                if (StringHelper.Match(userValue, "getdate", true) || StringHelper.Match(userValue, "getdate()", true) ||
+                    StringHelper.Match(userValue, "sysdatetime", true) || StringHelper.Match(userValue, "sysdatetime()", true))
                 {
                     defaultValue = String.Format("DateTime.Now", this.PascalName);
                 }
@@ -223,9 +224,10 @@ namespace nHydrate.Dsl
                 {
                     defaultValue = String.Format("DateTime.UtcNow", this.PascalName);
                 }
-                else if (userValue.ToLower().StartsWith("getdate+"))
+                else if (userValue.ToLower().StartsWith("getdate+") || userValue.ToLower().StartsWith("sysdatetime+"))
                 {
-                    var t = userValue.Substring(8, userValue.Length - 8);
+                    var br = userValue.IndexOf("+") + 1;
+                    var t = userValue.Substring(br, userValue.Length - br);
                     var tarr = t.Split('-');
                     if (tarr.Length == 2)
                     {

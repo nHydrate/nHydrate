@@ -2232,7 +2232,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("						var noLock = string.Empty;");
             foreach (var table in tableList)
             {
-                sb.AppendLine("						noLock = (optimizer.NoLocking ? \"WITH (NOLOCK) \" : string.Empty);");
+                sb.AppendLine("						noLock = (optimizer.NoLocking ? \"WITH (READUNCOMMITTED) \" : string.Empty);");
                 sb.Append("						sql += \"DELETE [" + table.DatabaseName + "] FROM [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] \" + noLock + \"INNER JOIN #t ON ");
 
                 ii = 0;
