@@ -61,10 +61,11 @@ namespace PROJECTNAMESPACE
 		private string PARAMKEYS_SCRIPTFILE = "scriptfile";
 		private string PARAMKEYS_SCRIPTFILEACTION = "scriptfileaction";
 		private string PARAMKEYS_DBVERSION = "dbversion";
-		private string PARAMKEYS_VERSIONWARN = "versioningwarnings";
+		private string PARAMKEYS_VERSIONWARN = "acceptwarnings";
 		private string PARAMKEYS_SHOWSQL = "showsql";
 		private string PARAMKEYS_NOTRAN = "notran";
-		private string PARAMKEYS_NONORMALIZE = "nonormalize";
+		private string PARAMKEYS_NORMALIZE = "normalize";
+		private string PARAMKEYS_CHECKONLY = "checkonly";
 		#endregion
 
 		#region Constructor
@@ -104,21 +105,41 @@ namespace PROJECTNAMESPACE
 					paramUICount++;
 				}
 
-				if (commandParams.ContainsKey(PARAMKEYS_NONORMALIZE))
+				if (commandParams.ContainsKey(PARAMKEYS_NORMALIZE))
 				{
-					setup.Normalize = false;
+					setup.Normalize = true;
+					paramUICount++;
+				}
+
+				if (commandParams.ContainsKey(PARAMKEYS_CHECKONLY))
+				{
+					setup.CheckOnly = true;
 					paramUICount++;
 				}
 
 				if (commandParams.ContainsKey(PARAMKEYS_VERSIONWARN))
 				{
-					if (commandParams[PARAMKEYS_VERSIONWARN].ToLower() == "accept")
+					if (commandParams[PARAMKEYS_VERSIONWARN].ToLower() == "all")
 					{
-						setup.AcceptVersionWarnings = true;
+						setup.AcceptVersionWarningsChangedScripts = true;
+						setup.AcceptVersionWarningsNewScripts = true;
+					}
+					else if (commandParams[PARAMKEYS_VERSIONWARN].ToLower() == "none")
+					{
+						setup.AcceptVersionWarningsChangedScripts = false;
+						setup.AcceptVersionWarningsNewScripts = false;
+					}
+					else if (commandParams[PARAMKEYS_VERSIONWARN].ToLower() == "new")
+					{
+						setup.AcceptVersionWarningsNewScripts = true;
+					}
+					else if (commandParams[PARAMKEYS_VERSIONWARN].ToLower() == "changed")
+					{
+						setup.AcceptVersionWarningsChangedScripts = true;
 					}
 					else
 					{
-						throw new Exception("The /versioningwarnings parameter must be set to 'accept'.");
+						throw new Exception("The /" + PARAMKEYS_VERSIONWARN + " parameter must be set to 'all, none, new, or changed'.");
 					}
 					paramUICount++;
 				}
@@ -563,7 +584,11 @@ namespace PROJECTNAMESPACE
 		public InstallStatusConstants InstallStatus { get; set; }
 
 		/// <summary />
-		public bool AcceptVersionWarnings { get; set; }
+		/// <summary />
+		public bool AcceptVersionWarningsChangedScripts { get; set; }
+
+		/// <summary />
+		public bool AcceptVersionWarningsNewScripts { get; set; }
 	}
 
 }

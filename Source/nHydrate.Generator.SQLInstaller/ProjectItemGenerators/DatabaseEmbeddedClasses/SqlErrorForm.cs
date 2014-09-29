@@ -36,15 +36,11 @@ namespace PROJECTNAMESPACE
 				this.panel3.Visible = false;
 				this.panel1.Dock = DockStyle.Fill;
 				this.panel1.BringToFront();
+				UpgradeInstaller.LogError(exception.InnerException, "[ERROR]\r\n" + exception.ToString());
 				if (exception.InnerException != null)
-				{
-					UpgradeInstaller.LogError(exception.InnerException, "[ERROR]\r\n" + exception.ToString());
 					txtError.Text = exception.InnerException.ToString();
-				}
 				else
-				{
-					txtError.Text = "(Unknown)";
-				}
+					txtError.Text = exception.ToString();
 				cmdSkip.Visible = false;
 			}
 			catch (Exception ex)

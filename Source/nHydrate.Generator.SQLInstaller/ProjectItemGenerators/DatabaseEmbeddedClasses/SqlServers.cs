@@ -345,7 +345,7 @@ namespace PROJECTNAMESPACE
 				cmdCreateDb.CommandText = "CREATE DATABASE [" + setup.NewDatabaseName + "]" + collate;
 				cmdCreateDb.CommandType = System.Data.CommandType.Text;
 				cmdCreateDb.Connection = conn;
-				cmdCreateDb.ExecuteNonQuery();
+				SqlServers.ExecuteCommand(cmdCreateDb);
 
 				var sb = new StringBuilder();
 				sb.AppendLine("declare @databasename nvarchar(500)");
@@ -354,7 +354,7 @@ namespace PROJECTNAMESPACE
 				sb.AppendLine("set @databasename = (select [name] from master.sys.master_files where database_id = (select top 1 [dbid] from master.sys.sysdatabases where name = '" + setup.NewDatabaseName + "' and [type] = 1))");
 				sb.AppendLine("exec('ALTER DATABASE [" + setup.NewDatabaseName + "] MODIFY FILE (NAME = [' + @databasename + '],  MAXSIZE = UNLIMITED, FILEGROWTH = 10MB)')");
 				cmdCreateDb.CommandText = sb.ToString();
-				cmdCreateDb.ExecuteNonQuery();
+				SqlServers.ExecuteCommand(cmdCreateDb);
 			}
 			catch { throw; }
 			finally
@@ -367,42 +367,6 @@ namespace PROJECTNAMESPACE
 		#endregion
 
 		#region database table operations
-		//internal static void RemoveTable(string connectString, string tableName)
-		//{
-		//    var conn = new System.Data.SqlClient.SqlConnection();
-		//    try
-		//    {
-		//        conn.ConnectionString = connectString;
-		//        conn.Open();
-		//        SqlCommand cmdCreateDb = new SqlCommand();
-		//        if (GetTableNamesAsArrayList(connectString).Contains(tableName))
-		//        {
-		//            cmdCreateDb.CommandText = SqlRemoveTable(tableName);
-		//        }
-		//        else
-		//        {
-		//            return;
-		//        }
-		//        cmdCreateDb.CommandType = System.Data.CommandType.Text;
-		//        cmdCreateDb.Connection = conn;
-		//        cmdCreateDb.ExecuteNonQuery();
-		//    }
-		//    catch (Exception ex)
-		//    {
-		//        throw ex;
-		//    }
-		//    finally
-		//    {
-		//        if (conn != null)
-		//            conn.Close();
-		//    }
-		//}
-
-		//internal static string[] GetTables(string connectString)
-		//{
-		//    ArrayList databaseTables = GetTableNamesAsArrayList(connectString);
-		//    return (string[])databaseTables.ToArray(typeof(string));
-		//}
 
 		internal static ArrayList GetTableNamesAsArrayList(string connectString)
 		{
@@ -604,7 +568,7 @@ namespace PROJECTNAMESPACE
 					cmdGetExtProp.CommandText = "SELECT value FROM ::fn_listextendedproperty('', '', '', '', '', '', '')";
 					cmdGetExtProp.CommandType = System.Data.CommandType.Text;
 					cmdGetExtProp.Connection = conn;
-					cmdGetExtProp.ExecuteNonQuery();
+					SqlServers.ExecuteCommand(cmdGetExtProp);
 					extendedPropertyEnabled = true;
 				}
 				catch (Exception ex)
@@ -634,7 +598,7 @@ namespace PROJECTNAMESPACE
 					cmdGetExtProp.CommandText = String.Format("EXEC sp_dropextendedproperty '{0}'", new object[] { propertyName });
 					cmdGetExtProp.CommandType = System.Data.CommandType.Text;
 					cmdGetExtProp.Connection = conn;
-					cmdGetExtProp.ExecuteNonQuery();
+					SqlServers.ExecuteCommand(cmdGetExtProp);
 				}
 				catch (Exception ex)
 				{
@@ -702,7 +666,7 @@ namespace PROJECTNAMESPACE
 					cmdGetExtProp.CommandText = String.Format("EXEC sp_updateextendedproperty {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", new object[] { property, propertyValue, userName, userValue, tableName, tableValue, columnName, columnValue });
 					cmdGetExtProp.CommandType = System.Data.CommandType.Text;
 					cmdGetExtProp.Connection = conn;
-					cmdGetExtProp.ExecuteNonQuery();
+					SqlServers.ExecuteCommand(cmdGetExtProp);
 				}
 				catch (Exception ex)
 				{
@@ -770,7 +734,7 @@ namespace PROJECTNAMESPACE
 					cmdGetExtProp.CommandText = String.Format("EXEC sp_addextendedproperty {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", new object[] { property, propertyValue, userName, userValue, tableName, tableValue, columnName, columnValue });
 					cmdGetExtProp.CommandType = System.Data.CommandType.Text;
 					cmdGetExtProp.Connection = conn;
-					cmdGetExtProp.ExecuteNonQuery();
+					SqlServers.ExecuteCommand(cmdGetExtProp);
 				}
 				catch (Exception ex)
 				{
@@ -1065,10 +1029,13 @@ namespace PROJECTNAMESPACE
 			{
 				try
 				{
-					var dropCommand = new System.Data.SqlClient.SqlCommand(dropSQL, connection);
-					dropCommand.Transaction = transaction;
-					dropCommand.CommandTimeout = 300;
-					dropCommand.ExecuteNonQuery();
+					if (!setup.CheckOnly)
+					{
+						var dropCommand = new System.Data.SqlClient.SqlCommand(dropSQL, connection);
+						dropCommand.Transaction = transaction;
+						dropCommand.CommandTimeout = 300;
+						SqlServers.ExecuteCommand(dropCommand);
+					}
 				}
 				catch (Exception ex)
 				{
@@ -1096,7 +1063,7 @@ namespace PROJECTNAMESPACE
 					}
 
 					_timer.Restart();
-					command.ExecuteNonQuery();
+					SqlServers.ExecuteCommand(command);
 					_timer.Stop();
 					//System.Diagnostics.Debug.WriteLine("Elapsed: " + _timer.ElapsedMilliseconds + " / " + sql.Split('\n').First()); //Alert user of what is running
 
@@ -1534,6 +1501,11 @@ namespace PROJECTNAMESPACE
 		}
 		#endregion
 
+		internal static void ExecuteCommand(SqlCommand command)
+		{
+			command.ExecuteNonQuery();
+		}
+
 	}
 
 	#region HistoryItem
@@ -1663,7 +1635,7 @@ namespace PROJECTNAMESPACE
 				conn.ConnectionString = connectionString;
 				conn.Open();
 				var command = new SqlCommand(GetVersionUpdateScript(), conn);
-				command.ExecuteNonQuery();
+				SqlServers.ExecuteCommand(command);
 				return true;
 			}
 			catch (Exception ex)
@@ -1867,7 +1839,7 @@ namespace PROJECTNAMESPACE
 																						 "[ModelKey] [uniqueidentifier] NOT NULL)", conn))
 				{
 					command3.Transaction = transaction;
-					command3.ExecuteNonQuery();
+					SqlServers.ExecuteCommand(command3);
 				}
 
 				//Add columns if missing
@@ -1878,7 +1850,7 @@ namespace PROJECTNAMESPACE
 					using (var command3 = new SqlCommand(sql.ToString(), conn))
 					{
 						command3.Transaction = transaction;
-						command3.ExecuteNonQuery();
+						SqlServers.ExecuteCommand(command3);
 					}
 				}
 
@@ -1888,7 +1860,7 @@ namespace PROJECTNAMESPACE
 					using (var command3 = new SqlCommand(sql.ToString(), conn))
 					{
 						command3.Transaction = transaction;
-						command3.ExecuteNonQuery();
+						SqlServers.ExecuteCommand(command3);
 					}
 				}
 
@@ -1896,9 +1868,9 @@ namespace PROJECTNAMESPACE
 				foreach (var item in list.Where(x => x.Changed))
 				{
 					var command = new SqlCommand("if exists(select * from [__nhydrateobjects] where [id] = @id) " +
-																			 "update [__nhydrateobjects] set [name] = @name, [type] = @type, [schema] = @schema, [CreatedDate] = @CreatedDate, [ModifiedDate] = @ModifiedDate, [Hash] = @Hash, [ModelKey] = @ModelKey, [Status] = @Status where [id] = @id " +
-																			 "else " +
-																			 "insert into [__nhydrateobjects] ([id], [name], [type], [schema], [CreatedDate], [ModifiedDate], [Hash], [ModelKey], [Status]) values (@id, @name, @type, @schema, @CreatedDate, @ModifiedDate, @Hash, @ModelKey, @Status)", conn);
+													 "update [__nhydrateobjects] set [name] = @name, [type] = @type, [schema] = @schema, [CreatedDate] = @CreatedDate, [ModifiedDate] = @ModifiedDate, [Hash] = @Hash, [ModelKey] = @ModelKey, [Status] = @Status where [id] = @id " +
+													 "else " +
+													 "insert into [__nhydrateobjects] ([id], [name], [type], [schema], [CreatedDate], [ModifiedDate], [Hash], [ModelKey], [Status]) values (@id, @name, @type, @schema, @CreatedDate, @ModifiedDate, @Hash, @ModelKey, @Status)", conn);
 					command.Transaction = transaction;
 					command.Parameters.Add(new SqlParameter() { DbType = DbType.Guid, Value = (item.id == Guid.Empty ? System.DBNull.Value : (object)item.id), ParameterName = "@id", IsNullable = true });
 					command.Parameters.Add(new SqlParameter() { DbType = DbType.Int64, Value = item.rowid, ParameterName = "@rowid", IsNullable = false });
@@ -1910,7 +1882,7 @@ namespace PROJECTNAMESPACE
 					command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.Hash, ParameterName = "@Hash", IsNullable = false });
 					command.Parameters.Add(new SqlParameter() { DbType = DbType.Guid, Value = item.ModelKey, ParameterName = "@ModelKey", IsNullable = false });
 					command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.Status, ParameterName = "@Status", IsNullable = true });
-					command.ExecuteNonQuery();
+					SqlServers.ExecuteCommand(command);
 				}
 
 			}

@@ -347,7 +347,12 @@ namespace PROJECTNAMESPACE
 
 				#region Verify Upgrade Scripts
 
-				if (settings.WasLegacy) setup.AcceptVersionWarnings = true; //Do not show prompts for old scripts, since there is no way to verify
+				//Do not show prompts for old scripts, since there is no way to verify
+				if (settings.WasLegacy)
+				{
+					setup.AcceptVersionWarningsChangedScripts = true;
+					setup.AcceptVersionWarningsNewScripts = true;
+				}
 				if (setup.InstallStatus == InstallStatusConstants.Upgrade)
 				{
 					//Test Upgrades for missed scripts
@@ -364,12 +369,11 @@ namespace PROJECTNAMESPACE
 							if ((new GeneratedVersion(settings.dbVersion.Split('.'))) > fileVersion)
 							{
 								//script is in installer but never run on database
-								if (!setup.AcceptVersionWarnings)
+								if (!setup.AcceptVersionWarningsNewScripts && !setup.CheckOnly)
 								{
 									if (MessageBox.Show("The script '" + fileName + "' is part of the install but has never been applied to the database. The script version is lower than the database version so it will never be applied. Do you wish to proceed with the install?", "Script never applied", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
 										throw new ScriptDifferenceException("The script '" + fileName + "' has never been applied to the database and never will due to its version.");
 								}
-
 								_databaseItems.Add(new nHydrateDbObject()
 								{
 									name = item.Key,
@@ -379,19 +383,17 @@ namespace PROJECTNAMESPACE
 									Status = "skipped:upgrade",
 									Changed = true,
 								});
-
 								UpgradeInstaller.LogInfo("The script '" + fileName + "' has never been applied to the database and never will due to its version.");
 							}
 						}
 						else if (di.Hash != hashValue)
 						{
 							//Said script is in installer and was run but the installer version is different than what was run
-							if (!setup.AcceptVersionWarnings)
+							if (!setup.AcceptVersionWarningsChangedScripts && !setup.CheckOnly)
 							{
 								if (MessageBox.Show("The script '" + fileName + "' was previously run on the database, but the current script is not the same. Do you wish to proceed with the install?", "Script has changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
 									throw new ScriptDifferenceException("The script '" + fileName + "' is different than the one run on the database.");
 							}
-
 							di.Hash = hashValue;
 							di.Status = "versiondiff:upgrade";
 							di.Changed = true;
@@ -418,7 +420,6 @@ namespace PROJECTNAMESPACE
 							Status = "skipped:create",
 							Changed = true,
 						});
-
 						UpgradeInstaller.LogError(null, "The script '" + fileName + "' has never been applied to the database and never will due to its version.");
 					}
 				}
@@ -465,29 +466,45 @@ namespace PROJECTNAMESPACE
 
 				#endregion
 
-				nHydrateDbObject.Save(setup.ConnectionString, MODELKEY, _databaseItems, _transaction);
+				if (!setup.CheckOnly)
+					nHydrateDbObject.Save(setup.ConnectionString, MODELKEY, _databaseItems, _transaction);
 
 				//Do not commit if external transaction
-				if (_transaction != null)
+				if (_transaction != null && !setup.CheckOnly)
 					_transaction.Commit();
+				else if (_transaction != null && setup.CheckOnly)
+					_transaction.Rollback();
 
-				settings.dbVersion = _upgradeToVersion.ToString(".");
-				settings.LastUpdate = DateTime.Now;
-				settings.ModelKey = new Guid(MODELKEY);
-				if (!settings.History.Any(x => x.Version == _upgradeToVersion.ToString(".")))
+				if (setup.CheckOnly)
 				{
-					settings.History.Add(new HistoryItem()
+					var sb = new StringBuilder();
+					_newItems.ForEach(x => sb.AppendLine("New script: " + x));
+					_databaseItems.OrderBy(x => x.name).Where(x => x.Changed && !_newItems.Contains(x.name)).ToList().ForEach(x => sb.AppendLine("Changed script: " + x.name + " (" + x.Status + ")"));
+					if (!string.IsNullOrEmpty(sb.ToString()))
 					{
-						Version = _upgradeToVersion.ToString("."),
-						PublishDate = DateTime.Now
-					});
+						throw new Exception(sb.ToString());
+					}
 				}
-				settings.Save(setup.ConnectionString);
+				else
+				{
+					settings.dbVersion = _upgradeToVersion.ToString(".");
+					settings.LastUpdate = DateTime.Now;
+					settings.ModelKey = new Guid(MODELKEY);
+					if (!settings.History.Any(x => x.Version == _upgradeToVersion.ToString(".")))
+					{
+						settings.History.Add(new HistoryItem()
+						{
+							Version = _upgradeToVersion.ToString("."),
+							PublishDate = DateTime.Now
+						});
+					}
+					settings.Save(setup.ConnectionString);
 
-				SqlServers.DeleteExtendedProperty(setup.ConnectionString, "dbVersion");
-				SqlServers.DeleteExtendedProperty(setup.ConnectionString, "LastUpdate");
-				SqlServers.DeleteExtendedProperty(setup.ConnectionString, "ModelKey");
-				SqlServers.DeleteExtendedProperty(setup.ConnectionString, "History");
+					SqlServers.DeleteExtendedProperty(setup.ConnectionString, "dbVersion");
+					SqlServers.DeleteExtendedProperty(setup.ConnectionString, "LastUpdate");
+					SqlServers.DeleteExtendedProperty(setup.ConnectionString, "ModelKey");
+					SqlServers.DeleteExtendedProperty(setup.ConnectionString, "History");
+				}
 
 				timer.Stop();
 				LogInfo("Installation Complete, Model: " + MODELKEY + ", Elapsed time: " + timer.ElapsedMilliseconds);
@@ -498,18 +515,24 @@ namespace PROJECTNAMESPACE
 			}
 			catch (InvalidSQLException ex)
 			{
-				var F = new SqlErrorForm();
-				F.Setup(ex, false);
-				F.ShowDialog();
+				if (!setup.CheckOnly)
+				{
+					var F = new SqlErrorForm();
+					F.Setup(ex, false);
+					F.ShowDialog();
+				}
 				if (_transaction == null)
 					_transaction.Rollback();
 				throw ex;
 			}
 			catch (Exception ex)
 			{
-				var F = new SqlErrorForm();
-				F.SetupGeneric(ex);
-				F.ShowDialog();
+				if (!setup.CheckOnly)
+				{
+					var F = new SqlErrorForm();
+					F.SetupGeneric(ex);
+					F.ShowDialog();
+				}
 				//System.Windows.Forms.MessageBox.Show(ex.Message, "Error!", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
 				if (_transaction == null)
 					_transaction.Rollback();
@@ -684,8 +707,6 @@ namespace PROJECTNAMESPACE
 			//if (_previousVersion.Equals(_upgradeToVersion))
 			//	return;
 
-			if (!setup.Normalize && setup.IsUpgrade) return;
-
 			try
 			{
 				//Run the create schema
@@ -694,7 +715,8 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == ern.FullName);
 					if (hashItem == null) _newItems.Add(ern.FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup))
+					//If Normalize is true then always run normalize script
+					if (setup.Normalize || hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
@@ -843,14 +865,10 @@ namespace PROJECTNAMESPACE
 			alluserDefinedScripts = alluserDefinedScripts.Concat(GetUserDefinedScripts(MAIN_FOLDER + "Views.User_Defined", setup)).ToDictionary(x => x.Key, x => x.Value);
 			alluserDefinedScripts = alluserDefinedScripts.Concat(GetUserDefinedScripts(MAIN_FOLDER + "Functions.User_Defined", setup)).ToDictionary(x => x.Key, x => x.Value);
 
-			//If Create or upgrade with normalize then install model objects
-			if (setup.Normalize || !setup.IsUpgrade)
-			{
-				//Model (managed)
-				alluserDefinedScripts = alluserDefinedScripts.Concat(ParseInternalScripts(GetUserDefinedScripts(MAIN_FOLDER + "Stored_Procedures.Model", setup))).ToDictionary(x => x.Key, x => x.Value);
-				alluserDefinedScripts = alluserDefinedScripts.Concat(ParseInternalScripts(GetUserDefinedScripts(MAIN_FOLDER + "Views.Model", setup))).ToDictionary(x => x.Key, x => x.Value);
-				alluserDefinedScripts = alluserDefinedScripts.Concat(ParseInternalScripts(GetUserDefinedScripts(MAIN_FOLDER + "Functions.Model", setup))).ToDictionary(x => x.Key, x => x.Value);
-			}
+			//Model (managed)
+			alluserDefinedScripts = alluserDefinedScripts.Concat(ParseInternalScripts(GetUserDefinedScripts(MAIN_FOLDER + "Stored_Procedures.Model", setup))).ToDictionary(x => x.Key, x => x.Value);
+			alluserDefinedScripts = alluserDefinedScripts.Concat(ParseInternalScripts(GetUserDefinedScripts(MAIN_FOLDER + "Views.Model", setup))).ToDictionary(x => x.Key, x => x.Value);
+			alluserDefinedScripts = alluserDefinedScripts.Concat(ParseInternalScripts(GetUserDefinedScripts(MAIN_FOLDER + "Functions.Model", setup))).ToDictionary(x => x.Key, x => x.Value);
 
 			if (sb == null)
 			{

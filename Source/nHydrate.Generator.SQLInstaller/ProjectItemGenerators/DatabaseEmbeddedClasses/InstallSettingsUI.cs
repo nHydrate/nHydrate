@@ -18,14 +18,15 @@
 
 		public void LoadUI(InstallSetup setup)
 		{
-			chkIgnoreWarnings.Checked = setup.AcceptVersionWarnings;
+			chkIgnoreWarnings.Checked = setup.AcceptVersionWarningsChangedScripts && setup.AcceptVersionWarningsNewScripts;
 			chkSkipNormalize.Checked = !setup.Normalize;
 			chkUseTransaction.Checked = setup.UseTransaction;
 		}
 
 		public void SaveUI(InstallSetup setup)
 		{
-			setup.AcceptVersionWarnings = chkIgnoreWarnings.Checked;
+			setup.AcceptVersionWarningsChangedScripts = chkIgnoreWarnings.Checked;
+			setup.AcceptVersionWarningsNewScripts = chkIgnoreWarnings.Checked;
 			setup.Normalize = !chkSkipNormalize.Checked;
 			setup.UseTransaction = chkUseTransaction.Checked;
 		}
