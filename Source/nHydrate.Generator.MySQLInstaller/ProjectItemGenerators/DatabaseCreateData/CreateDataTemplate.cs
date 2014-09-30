@@ -35,67 +35,67 @@ using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.MySQLInstaller.ProjectItemGenerators.DatabaseSchema
 {
-	class CreateDataTemplate : BaseDbScriptTemplate
-	{
-		private StringBuilder sb = new StringBuilder();
+    class CreateDataTemplate : BaseDbScriptTemplate
+    {
+        private StringBuilder sb = new StringBuilder();
 
-		#region Constructors
-		public CreateDataTemplate(ModelRoot model)
-			: base(model)
-		{
-		}
-		#endregion
+        #region Constructors
+        public CreateDataTemplate(ModelRoot model)
+            : base(model)
+        {
+        }
+        #endregion
 
-		#region BaseClassTemplate overrides
-		public override string FileContent
-		{
-			get
-			{
-				try
-				{
-					GenerateContent();
-					return sb.ToString();
+        #region BaseClassTemplate overrides
+        public override string FileContent
+        {
+            get
+            {
+                try
+                {
+                    GenerateContent();
+                    return sb.ToString();
 
-				}
-				catch (Exception ex)
-				{
-					throw;
-				}
-			}
-		}
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
 
-		public override string FileName
-		{
-			get
-			{
-				return string.Format("CreateData.sql");
-			}
-		}
-		#endregion
+        public override string FileName
+        {
+            get
+            {
+                return string.Format("CreateData.sql");
+            }
+        }
+        #endregion
 
-		#region GenerateContent
-		private void GenerateContent()
-		{
-			try
-			{
-				sb.AppendLine("#DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
-				sb.AppendLine("#Static Data For Version " + _model.Version);
-				sb.AppendLine();
+        #region GenerateContent
+        private void GenerateContent()
+        {
+            try
+            {
+                sb.AppendLine("#DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
+                sb.AppendLine("#Static ");
+                sb.AppendLine();
 
-				#region Add Static Data
-				foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
-				{
-					sb.Append(nHydrate.Core.SQLGeneration.MySqlEmit.GetSqlInsertStaticData(table));
-				}
-				#endregion
+                #region Add Static Data
+                foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+                {
+                    sb.Append(nHydrate.Core.SQLGeneration.MySqlEmit.GetSqlInsertStaticData(table));
+                }
+                #endregion
 
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }
