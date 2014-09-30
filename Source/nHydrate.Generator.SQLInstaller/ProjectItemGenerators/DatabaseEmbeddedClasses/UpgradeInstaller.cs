@@ -716,7 +716,7 @@ namespace PROJECTNAMESPACE
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == ern.FullName);
 					if (hashItem == null) _newItems.Add(ern.FullName);
 					//If Normalize is true then always run normalize script
-					if (setup.Normalize || hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup))
+					if (setup.Normalize && (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));

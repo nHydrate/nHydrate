@@ -35,119 +35,119 @@ using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 {
-	public class CreateAuditTriggerTemplate : BaseDbScriptTemplate
-	{
-		private StringBuilder sb = new StringBuilder();
+    public class CreateAuditTriggerTemplate : BaseDbScriptTemplate
+    {
+        private StringBuilder sb = new StringBuilder();
 
-		#region Constructors
-		public CreateAuditTriggerTemplate(ModelRoot model)
-			: base(model)
-		{
-		}
-		#endregion
+        #region Constructors
+        public CreateAuditTriggerTemplate(ModelRoot model)
+            : base(model)
+        {
+        }
+        #endregion
 
-		#region BaseClassTemplate overrides
-		public override string FileContent
-		{
-			get
-			{
-				GenerateContent();
-				return sb.ToString();
-			}
-		}
+        #region BaseClassTemplate overrides
+        public override string FileContent
+        {
+            get
+            {
+                GenerateContent();
+                return sb.ToString();
+            }
+        }
 
-		public override string FileName
-		{
-			get
-			{
-				return string.Format("CreateSchemaAuditTriggers.sql");
-			}
-		}
-		#endregion
+        public override string FileName
+        {
+            get
+            {
+                return string.Format("CreateSchemaAuditTriggers.sql");
+            }
+        }
+        #endregion
 
-		#region GenerateContent
-		private void GenerateContent()
-		{
-			try
-			{
-				sb = new StringBuilder();
-				sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
-				sb.AppendLine("--Audit Triggers For Version " + _model.Version);
-				sb.AppendLine();
-				this.AppendAuditTriggers();
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
+        #region GenerateContent
+        private void GenerateContent()
+        {
+            try
+            {
+                sb = new StringBuilder();
+                sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
+                sb.AppendLine("--Audit Triggers");
+                sb.AppendLine();
+                this.AppendAuditTriggers();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
-		private void AppendAuditTriggers()
-		{
-			sb.AppendLine("--##SECTION BEGIN [AUDIT TRIGGERS]");
-			sb.AppendLine();
-			foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
-			{
-				sb.AppendLine("--DROP ANY AUDIT TRIGGERS FOR [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
-				sb.AppendLine("if exists(select * from sysobjects where name = '__TR_" + table.DatabaseName + "__INSERT' AND xtype = 'TR')");
-				sb.AppendLine("DROP TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__INSERT]");
-				sb.AppendLine("GO");
-				sb.AppendLine("if exists(select * from sysobjects where name = '__TR_" + table.DatabaseName + "__UPDATE' AND xtype = 'TR')");
-				sb.AppendLine("DROP TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__UPDATE]");
-				sb.AppendLine("GO");
-				sb.AppendLine("if exists(select * from sysobjects where name = '__TR_" + table.DatabaseName + "__DELETE' AND xtype = 'TR')");
-				sb.AppendLine("DROP TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__DELETE]");
-				sb.AppendLine("GO");
-				sb.AppendLine();
+        private void AppendAuditTriggers()
+        {
+            sb.AppendLine("--##SECTION BEGIN [AUDIT TRIGGERS]");
+            sb.AppendLine();
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            {
+                sb.AppendLine("--DROP ANY AUDIT TRIGGERS FOR [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
+                sb.AppendLine("if exists(select * from sysobjects where name = '__TR_" + table.DatabaseName + "__INSERT' AND xtype = 'TR')");
+                sb.AppendLine("DROP TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__INSERT]");
+                sb.AppendLine("GO");
+                sb.AppendLine("if exists(select * from sysobjects where name = '__TR_" + table.DatabaseName + "__UPDATE' AND xtype = 'TR')");
+                sb.AppendLine("DROP TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__UPDATE]");
+                sb.AppendLine("GO");
+                sb.AppendLine("if exists(select * from sysobjects where name = '__TR_" + table.DatabaseName + "__DELETE' AND xtype = 'TR')");
+                sb.AppendLine("DROP TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__DELETE]");
+                sb.AppendLine("GO");
+                sb.AppendLine();
 
-				if (table.AllowAuditTracking)
-				{
-					var columnList = table.GetColumns();
-					var columnText = string.Empty;
-					foreach (var column in table.GetColumns())
-					{
-						if (column.Generated && !(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
-							columnText += "[" + column.DatabaseName + "],";
-					}
+                if (table.AllowAuditTracking)
+                {
+                    var columnList = table.GetColumns();
+                    var columnText = string.Empty;
+                    foreach (var column in table.GetColumns())
+                    {
+                        if (column.Generated && !(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
+                            columnText += "[" + column.DatabaseName + "],";
+                    }
 
-					if (table.AllowModifiedAudit)
-						columnText += "[" + _model.Database.ModifiedByDatabaseName + "],";
-					var columnValues = columnText;
-					columnText += "[__insertdate]";
-					columnValues += _model.GetSQLDefaultDate();
+                    if (table.AllowModifiedAudit)
+                        columnText += "[" + _model.Database.ModifiedByDatabaseName + "],";
+                    var columnValues = columnText;
+                    columnText += "[__insertdate]";
+                    columnValues += _model.GetSQLDefaultDate();
 
-					sb.AppendLine("--CREATE TRIGGER INSERT FOR [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
-					sb.AppendLine("CREATE TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__INSERT]");
-					sb.AppendLine("ON [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
-					sb.AppendLine("FOR INSERT AS");
-					sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[__AUDIT__" + table.DatabaseName + "] ([__action]," + columnText + ")");
-					sb.AppendLine("SELECT 1, " + columnValues + " FROM [inserted]");
-					sb.AppendLine("GO");
-					sb.AppendLine();
-					sb.AppendLine("--CREATE TRIGGER UPDATE FOR [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
-					sb.AppendLine("CREATE TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__UPDATE]");
-					sb.AppendLine("ON [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
-					sb.AppendLine("FOR UPDATE AS");
-					sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[__AUDIT__" + table.DatabaseName + "] ([__action]," + columnText + ")");
-					sb.AppendLine("SELECT 2, " + columnValues + " FROM [inserted]");
-					sb.AppendLine("GO");
-					sb.AppendLine();
-					sb.AppendLine("--CREATE TRIGGER DELETE FOR [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
-					sb.AppendLine("CREATE TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__DELETE]");
-					sb.AppendLine("ON [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
-					sb.AppendLine("FOR DELETE AS");
-					sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[__AUDIT__" + table.DatabaseName + "] ([__action]," + columnText + ")");
-					sb.AppendLine("SELECT 3, " + columnValues + " FROM [deleted]");
-					sb.AppendLine("GO");
-					sb.AppendLine();
-				}
+                    sb.AppendLine("--CREATE TRIGGER INSERT FOR [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
+                    sb.AppendLine("CREATE TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__INSERT]");
+                    sb.AppendLine("ON [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
+                    sb.AppendLine("FOR INSERT AS");
+                    sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[__AUDIT__" + table.DatabaseName + "] ([__action]," + columnText + ")");
+                    sb.AppendLine("SELECT 1, " + columnValues + " FROM [inserted]");
+                    sb.AppendLine("GO");
+                    sb.AppendLine();
+                    sb.AppendLine("--CREATE TRIGGER UPDATE FOR [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
+                    sb.AppendLine("CREATE TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__UPDATE]");
+                    sb.AppendLine("ON [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
+                    sb.AppendLine("FOR UPDATE AS");
+                    sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[__AUDIT__" + table.DatabaseName + "] ([__action]," + columnText + ")");
+                    sb.AppendLine("SELECT 2, " + columnValues + " FROM [inserted]");
+                    sb.AppendLine("GO");
+                    sb.AppendLine();
+                    sb.AppendLine("--CREATE TRIGGER DELETE FOR [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
+                    sb.AppendLine("CREATE TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__DELETE]");
+                    sb.AppendLine("ON [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
+                    sb.AppendLine("FOR DELETE AS");
+                    sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[__AUDIT__" + table.DatabaseName + "] ([__action]," + columnText + ")");
+                    sb.AppendLine("SELECT 3, " + columnValues + " FROM [deleted]");
+                    sb.AppendLine("GO");
+                    sb.AppendLine();
+                }
 
-			}
+            }
 
-			sb.AppendLine("--##SECTION END [AUDIT TRIGGERS]");
-			sb.AppendLine();
+            sb.AppendLine("--##SECTION END [AUDIT TRIGGERS]");
+            sb.AppendLine();
 
-		}
-		#endregion
-	}
+        }
+        #endregion
+    }
 }

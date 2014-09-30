@@ -107,7 +107,12 @@ namespace PROJECTNAMESPACE
 
 				if (commandParams.ContainsKey(PARAMKEYS_NORMALIZE))
 				{
-					setup.Normalize = true;
+					if (commandParams[PARAMKEYS_NORMALIZE].ToLower() == "true" || commandParams[PARAMKEYS_NORMALIZE].ToLower() == "1" || commandParams[PARAMKEYS_NORMALIZE].ToLower() == string.Empty)
+						setup.Normalize = true;
+					else if (commandParams[PARAMKEYS_NORMALIZE].ToLower() == "false" || commandParams[PARAMKEYS_NORMALIZE].ToLower() == "0")
+						setup.Normalize = false;
+					else
+						throw new Exception("The /" + PARAMKEYS_NORMALIZE + " parameter must be set to 'true or false'.");
 					paramUICount++;
 				}
 
