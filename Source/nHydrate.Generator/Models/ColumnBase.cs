@@ -718,6 +718,7 @@ namespace nHydrate.Generator.Models
             else if (this.DataType == System.Data.SqlDbType.Binary ||
                      this.DataType == System.Data.SqlDbType.Char ||
                      this.DataType == System.Data.SqlDbType.Decimal ||
+                     this.DataType == System.Data.SqlDbType.DateTime2 ||
                      this.DataType == System.Data.SqlDbType.NChar ||
                      this.DataType == System.Data.SqlDbType.NVarChar ||
                      this.DataType == System.Data.SqlDbType.VarBinary ||
@@ -725,6 +726,8 @@ namespace nHydrate.Generator.Models
             {
                 if (this.DataType == System.Data.SqlDbType.Decimal)
                     retval += " (" + this.Length + ", " + this.Scale + ")";
+                else if (this.DataType == System.Data.SqlDbType.DateTime2)
+                    retval += " (" + this.Length + ")";
                 else
                     retval += " (" + this.GetLengthString() + ")";
             }
@@ -740,6 +743,7 @@ namespace nHydrate.Generator.Models
             if (this.DataType == System.Data.SqlDbType.Binary ||
                 this.DataType == System.Data.SqlDbType.Char ||
                 this.DataType == System.Data.SqlDbType.Decimal ||
+                this.DataType == System.Data.SqlDbType.DateTime2 ||
                 this.DataType == System.Data.SqlDbType.NChar ||
                 this.DataType == System.Data.SqlDbType.NVarChar ||
                 this.DataType == System.Data.SqlDbType.VarBinary ||
@@ -747,6 +751,8 @@ namespace nHydrate.Generator.Models
             {
                 if (this.DataType == System.Data.SqlDbType.Decimal)
                     return this.Length + " (scale:" + this.Scale + ")";
+                else if (this.DataType == System.Data.SqlDbType.DateTime2)
+                    return this.Length.ToString();
                 else
                     return this.GetLengthString();
             }
@@ -1127,8 +1133,6 @@ namespace nHydrate.Generator.Models
                     return 1;
                 case System.Data.SqlDbType.DateTime:
                     return 8;
-                case System.Data.SqlDbType.DateTime2:
-                    return 8;
                 case System.Data.SqlDbType.Date:
                     return 3;
                 case System.Data.SqlDbType.Time:
@@ -1214,6 +1218,10 @@ namespace nHydrate.Generator.Models
                 case System.Data.SqlDbType.Char:
                 case System.Data.SqlDbType.NChar:
                     size = 10;
+                    break;
+
+                case System.Data.SqlDbType.DateTime2:
+                    size = 7;
                     break;
 
             }

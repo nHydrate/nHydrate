@@ -32,191 +32,184 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-	public class RowEntryCollection : BaseModelCollection
-	{
-		#region Member Variables
+    public class RowEntryCollection : BaseModelCollection
+    {
+        #region Member Variables
 
-		protected ArrayList internalList = null;
-		protected INHydrateModelObject _parent = null;
+        protected ArrayList internalList = null;
+        protected INHydrateModelObject _parent = null;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		public RowEntryCollection(INHydrateModelObject root)
-			: base(root)
-		{
-			internalList = new ArrayList();
-		}
+        public RowEntryCollection(INHydrateModelObject root)
+            : base(root)
+        {
+            internalList = new ArrayList();
+        }
 
-		#endregion
+        #endregion
 
-		#region Property Imeplementations
+        #region Property Imeplementations
 
-		[Browsable(false)]
-		public INHydrateModelObject Parent
-		{
-			get { return _parent; }
-		}
+        [Browsable(false)]
+        public INHydrateModelObject Parent
+        {
+            get { return _parent; }
+        }
 
-		#endregion
+        #endregion
 
-		#region IXMLable Members
+        #region IXMLable Members
 
-		public override void XmlAppend(XmlNode node)
-		{
-			var oDoc = node.OwnerDocument;
+        public override void XmlAppend(XmlNode node)
+        {
+            var oDoc = node.OwnerDocument;
 
-			//XmlHelper.AddAttribute(node, "key", this.Key);
+            //XmlHelper.AddAttribute(node, "key", this.Key);
 
-			foreach (RowEntry rowEntry in internalList)
-			{
-				var rowEntryNode = oDoc.CreateElement("r"); 
-				rowEntry.XmlAppend(rowEntryNode);
-				node.AppendChild(rowEntryNode);
-			}
+            foreach (RowEntry rowEntry in internalList)
+            {
+                var rowEntryNode = oDoc.CreateElement("r");
+                rowEntry.XmlAppend(rowEntryNode);
+                node.AppendChild(rowEntryNode);
+            }
 
-		}
+        }
 
-		public override void XmlLoad(XmlNode node)
-		{
-			_key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+        public override void XmlLoad(XmlNode node)
+        {
+            _key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
 
-			var rowEntryNodes = node.SelectNodes("rowEntry"); //deprecated, use "r"
-			if (rowEntryNodes.Count == 0) rowEntryNodes = node.SelectNodes("r");
-			foreach(XmlNode rowEntryNode in rowEntryNodes)
-			{
-				var newRowEntry = new RowEntry(this.Root);
-				newRowEntry.XmlLoad(rowEntryNode);
-				this.Add(newRowEntry);
-			}
+            var rowEntryNodes = node.SelectNodes("rowEntry"); //deprecated, use "r"
+            if (rowEntryNodes.Count == 0) rowEntryNodes = node.SelectNodes("r");
+            foreach (XmlNode rowEntryNode in rowEntryNodes)
+            {
+                var newRowEntry = new RowEntry(this.Root);
+                newRowEntry.XmlLoad(rowEntryNode);
+                this.Add(newRowEntry);
+            }
 
-			this.Dirty = false;
-		}
+            this.Dirty = false;
+        }
 
-		#endregion
+        #endregion
 
-		#region IList Members
+        #region IList Members
 
-		public bool IsReadOnly
-		{
-			get
-			{
-				return internalList.IsReadOnly;
-			}
-		}
+        public bool IsReadOnly
+        {
+            get
+            {
+                return internalList.IsReadOnly;
+            }
+        }
 
-		public RowEntry this[int index]
-		{
-			get
-			{
-				return (RowEntry)internalList[index];
-			}
-			set
-			{
-				internalList[index] = value;
-			}
-		}
+        public RowEntry this[int index]
+        {
+            get { return (RowEntry)internalList[index]; }
+            set { internalList[index] = value; }
+        }
 
-		public void RemoveAt(int index)
-		{
-			internalList.RemoveAt(index);
-		}
+        public void RemoveAt(int index)
+        {
+            internalList.RemoveAt(index);
+        }
 
-		public void Insert(int index, RowEntry value)
-		{
-			internalList.Insert(index, value);
-		}
+        public void Insert(int index, RowEntry value)
+        {
+            internalList.Insert(index, value);
+        }
 
-		public void Remove(RowEntry value)
-		{
-			internalList.Remove(value);
-		}
+        public void Remove(RowEntry value)
+        {
+            internalList.Remove(value);
+        }
 
-		public bool Contains(RowEntry value)
-		{
-			return internalList.Contains(value);
-		}
+        public bool Contains(RowEntry value)
+        {
+            return internalList.Contains(value);
+        }
 
-		public override void Clear()
-		{
-			internalList.Clear();
-		}
+        public override void Clear()
+        {
+            internalList.Clear();
+        }
 
-		public int IndexOf(RowEntry value)
-		{
-			return internalList.IndexOf(value);
-		}
+        public int IndexOf(RowEntry value)
+        {
+            return internalList.IndexOf(value);
+        }
 
-		public override void AddRange(ICollection list)
-		{
-			internalList.AddRange(list);
-		}
+        public override void AddRange(ICollection list)
+        {
+            internalList.AddRange(list);
+        }
 
-		public int Add(RowEntry value)
-		{
-			return internalList.Add(value);
-		}
+        public int Add(RowEntry value)
+        {
+            return internalList.Add(value);
+        }
 
-		public RowEntry Add()
-		{
-			var newItem = new RowEntry(this.Root);
-			this.Add(newItem);
-			return newItem;
-		}
+        public RowEntry Add()
+        {
+            var newItem = new RowEntry(this.Root);
+            this.Add(newItem);
+            return newItem;
+        }
 
-		public bool IsFixedSize
-		{
-			get
-			{
-				return internalList.IsFixedSize;
-			}
-		}
+        public bool IsFixedSize
+        {
+            get
+            {
+                return internalList.IsFixedSize;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region ICollection Members
+        #region ICollection Members
 
-		public override bool IsSynchronized
-		{
-			get
-			{
-				return internalList.IsSynchronized;
-			}
-		}
+        public override bool IsSynchronized
+        {
+            get
+            {
+                return internalList.IsSynchronized;
+            }
+        }
 
-		public override int Count
-		{
-			get
-			{
-				return internalList.Count;
-			}
-		}
+        public override int Count
+        {
+            get
+            {
+                return internalList.Count;
+            }
+        }
 
-		public override void CopyTo(Array array, int index)
-		{
-			internalList.CopyTo(array, index);
-		}
+        public override void CopyTo(Array array, int index)
+        {
+            internalList.CopyTo(array, index);
+        }
 
-		public override object SyncRoot
-		{
-			get
-			{
-				return internalList.SyncRoot;
-			}
-		}
+        public override object SyncRoot
+        {
+            get
+            {
+                return internalList.SyncRoot;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		public override IEnumerator GetEnumerator()
-		{
-			return internalList.GetEnumerator();
-		}
+        public override IEnumerator GetEnumerator()
+        {
+            return internalList.GetEnumerator();
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }
-

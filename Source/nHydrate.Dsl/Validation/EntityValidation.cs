@@ -985,6 +985,18 @@ namespace nHydrate.Dsl
 
                 #endregion
 
+                #region DateTime 2008+
+
+                if (this.nHydrateModel.SQLServerType != DatabaseTypeConstants.SQL2005)
+                {
+                    foreach (var field in this.FieldList.Where(x => x.DataType == DataTypeConstants.DateTime).ToList())
+                    {
+                        context.LogWarning(string.Format(ValidationHelper.ErrorTextDateTimeDeprecated, field.Name), string.Empty, this);
+                    }
+                }
+
+                #endregion
+
             }
             catch (Exception ex)
             {

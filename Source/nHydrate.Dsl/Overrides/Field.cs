@@ -1090,6 +1090,26 @@ namespace nHydrate.Dsl
             }
         }
 
+        partial class DataTypePropertyHandler
+        {
+            protected override void OnValueChanged(FieldBase element, DataTypeConstants oldValue, DataTypeConstants newValue)
+            {
+                try
+                {
+                    base.OnValueChanged(element, oldValue, newValue);
+
+                    if (!element.Entity.nHydrateModel.IsLoading)
+                    {
+                        element.Length = newValue.GetDefaultSize(element.Length);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
+
     }
 
 }

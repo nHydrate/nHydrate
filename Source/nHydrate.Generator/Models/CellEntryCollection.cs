@@ -32,198 +32,198 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-	public class CellEntryCollection : BaseModelCollection, IEnumerable<CellEntry>
-	{
-		#region Member Variables
+    public class CellEntryCollection : BaseModelCollection, IEnumerable<CellEntry>
+    {
+        #region Member Variables
 
-		protected List<CellEntry> _internalList;
+        protected List<CellEntry> _internalList;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		public CellEntryCollection(INHydrateModelObject root)
-			: base(root)
-		{
-			_internalList = new List<CellEntry>();
-		}
+        public CellEntryCollection(INHydrateModelObject root)
+            : base(root)
+        {
+            _internalList = new List<CellEntry>();
+        }
 
-		#endregion
+        #endregion
 
-		#region Property Implementations
+        #region Property Implementations
 
-		#endregion
+        #endregion
 
-		#region IXMLable Members
-		public override void XmlAppend(XmlNode node)
-		{
-			var oDoc = node.OwnerDocument;
+        #region IXMLable Members
+        public override void XmlAppend(XmlNode node)
+        {
+            var oDoc = node.OwnerDocument;
 
-			//XmlHelper.AddAttribute(node, "key", this.Key);
+            //XmlHelper.AddAttribute(node, "key", this.Key);
 
-			foreach (var cellEntry in _internalList)
-			{
-				var cellEntryNode = oDoc.CreateElement("ce");
-				cellEntry.XmlAppend(cellEntryNode);
-				node.AppendChild(cellEntryNode);
-			}
+            foreach (var cellEntry in _internalList)
+            {
+                var cellEntryNode = oDoc.CreateElement("ce");
+                cellEntry.XmlAppend(cellEntryNode);
+                node.AppendChild(cellEntryNode);
+            }
 
-		}
+        }
 
-		public override void XmlLoad(XmlNode node)
-		{
-			_key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-			var cellEntryNodes = node.SelectNodes("cellEntry"); //deprecated, use "ce"
-			if (cellEntryNodes.Count == 0) cellEntryNodes = node.SelectNodes("ce");
-			foreach (XmlNode cellEntryNode in cellEntryNodes)
-			{
-				var newCellEntry = new CellEntry(this.Root);
-				newCellEntry.XmlLoad(cellEntryNode);
-				this.Add(newCellEntry);
-			}
-			this.Dirty = false;
+        public override void XmlLoad(XmlNode node)
+        {
+            _key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+            var cellEntryNodes = node.SelectNodes("cellEntry"); //deprecated, use "ce"
+            if (cellEntryNodes.Count == 0) cellEntryNodes = node.SelectNodes("ce");
+            foreach (XmlNode cellEntryNode in cellEntryNodes)
+            {
+                var newCellEntry = new CellEntry(this.Root);
+                newCellEntry.XmlLoad(cellEntryNode);
+                this.Add(newCellEntry);
+            }
+            this.Dirty = false;
 
-		}
-		#endregion
+        }
+        #endregion
 
-		#region IList Members
+        #region IList Members
 
-		public bool IsReadOnly
-		{
-			get { return false; }
-		}
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
 
-		public CellEntry this[int index]
-		{
-			get { return (CellEntry)_internalList[index]; }
-			set { _internalList[index] = value; }
-		}
+        public CellEntry this[int index]
+        {
+            get { return (CellEntry)_internalList[index]; }
+            set { _internalList[index] = value; }
+        }
 
-		public CellEntry this[string columnName]
-		{
-			get
-			{
-				foreach (var item in _internalList)
-				{
-					var c = (Column)item.ColumnRef.Object;
-					if (string.Compare(c.Name, columnName, 0) == 0)
-					{
-						return item;
-					}
-				}
-				return null;
-			}
-		}
+        public CellEntry this[string columnName]
+        {
+            get
+            {
+                foreach (var item in _internalList)
+                {
+                    var c = (Column)item.ColumnRef.Object;
+                    if (string.Compare(c.Name, columnName, 0) == 0)
+                    {
+                        return item;
+                    }
+                }
+                return null;
+            }
+        }
 
-		public void RemoveAt(int index)
-		{
-			_internalList.RemoveAt(index);
-		}
+        public void RemoveAt(int index)
+        {
+            _internalList.RemoveAt(index);
+        }
 
-		public void Insert(int index, CellEntry value)
-		{
-			_internalList.Insert(index, value);
-		}
+        public void Insert(int index, CellEntry value)
+        {
+            _internalList.Insert(index, value);
+        }
 
-		public void Remove(CellEntry value)
-		{
-			_internalList.Remove(value);
-		}
+        public void Remove(CellEntry value)
+        {
+            _internalList.Remove(value);
+        }
 
-		public bool Contains(CellEntry value)
-		{
-			return _internalList.Contains(value);
-		}
+        public bool Contains(CellEntry value)
+        {
+            return _internalList.Contains(value);
+        }
 
-		public bool Contains(string columnName)
-		{
-			foreach (var item in _internalList)
-			{
-				var c = (Column)item.ColumnRef.Object;
-				if (string.Compare(c.Name, columnName, 0) == 0)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
+        public bool Contains(string columnName)
+        {
+            foreach (var item in _internalList)
+            {
+                var c = (Column)item.ColumnRef.Object;
+                if (string.Compare(c.Name, columnName, 0) == 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
-		public override void Clear()
-		{
-			_internalList.Clear();
-		}
+        public override void Clear()
+        {
+            _internalList.Clear();
+        }
 
-		public int IndexOf(CellEntry value)
-		{
-			return _internalList.IndexOf(value);
-		}
+        public int IndexOf(CellEntry value)
+        {
+            return _internalList.IndexOf(value);
+        }
 
-		public override void AddRange(ICollection list)
-		{
-			foreach (CellEntry element in list)
-				_internalList.Add(element);
-		}
+        public override void AddRange(ICollection list)
+        {
+            foreach (CellEntry element in list)
+                _internalList.Add(element);
+        }
 
-		public void Add(CellEntry value)
-		{
-			_internalList.Add(value);
-		}
+        public void Add(CellEntry value)
+        {
+            _internalList.Add(value);
+        }
 
-		public CellEntry Add()
-		{
-			var newItem = new CellEntry(this.Root);
-			this.Add(newItem);
-			return newItem;
-		}
+        public CellEntry Add()
+        {
+            var newItem = new CellEntry(this.Root);
+            this.Add(newItem);
+            return newItem;
+        }
 
-		public bool IsFixedSize
-		{
-			get { return false; }
-		}
+        public bool IsFixedSize
+        {
+            get { return false; }
+        }
 
-		#endregion
+        #endregion
 
-		#region ICollection Members
+        #region ICollection Members
 
-		public override bool IsSynchronized
-		{
-			get { return false; }
-		}
+        public override bool IsSynchronized
+        {
+            get { return false; }
+        }
 
-		public override int Count
-		{
-			get { return _internalList.Count; }
-		}
+        public override int Count
+        {
+            get { return _internalList.Count; }
+        }
 
-		public override void CopyTo(Array array, int index)
-		{
-			_internalList.CopyTo((CellEntry[])array, index);
-		}
+        public override void CopyTo(Array array, int index)
+        {
+            _internalList.CopyTo((CellEntry[])array, index);
+        }
 
-		public override object SyncRoot
-		{
-			get { return _internalList; }
-		}
+        public override object SyncRoot
+        {
+            get { return _internalList; }
+        }
 
-		#endregion
+        #endregion
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		public override IEnumerator GetEnumerator()
-		{
-			return _internalList.GetEnumerator();
-		}
+        public override IEnumerator GetEnumerator()
+        {
+            return _internalList.GetEnumerator();
+        }
 
-		#endregion
+        #endregion
 
-		#region IEnumerable<CellEntry> Members
+        #region IEnumerable<CellEntry> Members
 
-		IEnumerator<CellEntry> IEnumerable<CellEntry>.GetEnumerator()
-		{
-			return _internalList.GetEnumerator();
-		}
+        IEnumerator<CellEntry> IEnumerable<CellEntry>.GetEnumerator()
+        {
+            return _internalList.GetEnumerator();
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }

@@ -572,6 +572,21 @@ namespace nHydrate.Generator.SQLInstaller
 
                     #endregion
 
+                    #region Static Data
+
+                    //For right now just emit NEW if different.
+                    //TODO: Generate difference scripts for delete and change too.
+                    var oldStaticScript = SQLEmit.GetSqlInsertStaticData(oldT);
+                    var newStaticScript = SQLEmit.GetSqlInsertStaticData(newT);
+                    if (oldStaticScript != newStaticScript)
+                    {
+                        sb.AppendLine(newStaticScript);
+                        sb.AppendLine("GO");
+                        sb.AppendLine();
+                    }
+
+                    #endregion
+
                     //TODO - Check hash porperties and if changed recompile tenant view
 
                 }

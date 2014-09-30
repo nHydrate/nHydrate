@@ -70,13 +70,14 @@ namespace nHydrate.Core.SQLGeneration
             if (table.TypedTable == TypedTableConstants.EnumOnly)
                 return string.Empty;
 
+            var dateTimeString = (model.SQLServerType == nHydrate.Generator.Common.GeneratorFramework.SQLServerTypeConstants.SQL2005) ? "[DateTime]" : "[DateTime2]";
             var sb = new StringBuilder();
             var tableName = "__AUDIT__" + Globals.GetTableDatabaseName(model, table);
             sb.AppendLine("if not exists(select * from sysobjects where name = '" + tableName + "' and xtype = 'U')");
             sb.AppendLine("CREATE TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] (");
             sb.AppendLine("\t[__rowid] [INT] NOT NULL IDENTITY,");
             sb.AppendLine("\t[__action] [INT] NOT NULL,");
-            sb.AppendLine("\t[__insertdate] [DateTime] CONSTRAINT [DF__" + table.DatabaseName + "__AUDIT] DEFAULT " + model.GetSQLDefaultDate() + " NOT NULL,");
+            sb.AppendLine("\t[__insertdate] " + dateTimeString + " CONSTRAINT [DF__" + table.DatabaseName + "__AUDIT] DEFAULT " + model.GetSQLDefaultDate() + " NOT NULL,");
             if (table.AllowCreateAudit || table.AllowModifiedAudit)
                 sb.AppendLine("\t[" + model.Database.ModifiedByDatabaseName + "] [Varchar] (50) NULL,");
 
@@ -168,6 +169,7 @@ namespace nHydrate.Core.SQLGeneration
 
             sb.AppendLine("if exists(select * from sys.objects where name = '" + tName + "' and type = 'U') AND not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + column.DatabaseName + "' and o.name = '" + tName + "')");
             sb.AppendLine("ALTER TABLE [" + column.ParentTable.GetSQLSchema() + "].[" + tName + "] ADD " + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true));
+
             //if (!column.AllowNull)
             //{
             //  sb.AppendLine();
@@ -1561,7 +1563,7 @@ namespace nHydrate.Core.SQLGeneration
             if (table.AllowTimestamp)
             {
                 sb.AppendLine(",");
-                sb.AppendLine("\t[" + model.Database.TimestampColumnName + "] [timestamp] NOT NULL");
+                sb.AppendLine("\t[" + model.Database.TimestampColumnName + "] [ROWVERSION] NOT NULL");
             }
         }
 
@@ -1578,11 +1580,12 @@ namespace nHydrate.Core.SQLGeneration
         {
             if (table.AllowCreateAudit)
             {
+                var dateTimeString = (model.SQLServerType == nHydrate.Generator.Common.GeneratorFramework.SQLServerTypeConstants.SQL2005) ? "[DateTime]" : "[DateTime2]";
                 var defaultName = "DF__" + table.DatabaseName + "_" + model.Database.CreatedDateColumnName;
                 defaultName = defaultName.ToUpper();
                 sb.AppendLine(",");
                 sb.AppendLine("\t[" + model.Database.CreatedByColumnName + "] [Varchar] (50) NULL,");
-                sb.Append("\t[" + model.Database.CreatedDateColumnName + "] [DateTime] CONSTRAINT [" + defaultName + "] DEFAULT " + model.GetSQLDefaultDate() + " NULL");
+                sb.Append("\t[" + model.Database.CreatedDateColumnName + "] " + dateTimeString + " CONSTRAINT [" + defaultName + "] DEFAULT " + model.GetSQLDefaultDate() + " NULL");
             }
         }
 
@@ -1590,11 +1593,12 @@ namespace nHydrate.Core.SQLGeneration
         {
             if (table.AllowModifiedAudit)
             {
+                var dateTimeString = (model.SQLServerType == nHydrate.Generator.Common.GeneratorFramework.SQLServerTypeConstants.SQL2005) ? "[DateTime]" : "[DateTime2]";
                 var defaultName = "DF__" + table.DatabaseName + "_" + model.Database.ModifiedDateColumnName;
                 defaultName = defaultName.ToUpper();
                 sb.AppendLine(",");
                 sb.AppendLine("\t[" + model.Database.ModifiedByColumnName + "] [Varchar] (50) NULL,");
-                sb.Append("\t[" + model.Database.ModifiedDateColumnName + "] [DateTime] CONSTRAINT [" + defaultName + "] DEFAULT " + model.GetSQLDefaultDate() + " NULL");
+                sb.Append("\t[" + model.Database.ModifiedDateColumnName + "] " + dateTimeString + " CONSTRAINT [" + defaultName + "] DEFAULT " + model.GetSQLDefaultDate() + " NULL");
             }
         }
 

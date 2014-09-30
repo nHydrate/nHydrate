@@ -218,5 +218,10 @@ namespace nHydrate.Generator.Models
         }
         #endregion
 
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
     }
 }
