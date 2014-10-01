@@ -1878,7 +1878,7 @@ namespace PROJECTNAMESPACE
 					command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.type, ParameterName = "@type", IsNullable = false });
 					command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = (item.schema == null ? System.DBNull.Value : (object)item.schema), ParameterName = "@schema", IsNullable = true });
 					command.Parameters.Add(new SqlParameter() { DbType = DbType.DateTime, Value = item.CreatedDate, ParameterName = "@CreatedDate", IsNullable = false });
-					command.Parameters.Add(new SqlParameter() { DbType = DbType.DateTime, Value = item.ModifiedDate, ParameterName = "@ModifiedDate", IsNullable = false });
+					command.Parameters.Add(new SqlParameter() { DbType = DbType.DateTime, Value = DateTime.Now, ParameterName = "@ModifiedDate", IsNullable = false });
 					command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.Hash, ParameterName = "@Hash", IsNullable = false });
 					command.Parameters.Add(new SqlParameter() { DbType = DbType.Guid, Value = item.ModelKey, ParameterName = "@ModelKey", IsNullable = false });
 					command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.Status, ParameterName = "@Status", IsNullable = true });

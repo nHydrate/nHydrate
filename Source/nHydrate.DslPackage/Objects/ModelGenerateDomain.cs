@@ -146,6 +146,14 @@ namespace nHydrate.DslPackage.Objects
             nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper genHelper,
             List<string> generateModuleList)
         {
+
+            var cacheFile = new nHydrate.Generator.Common.ModelCacheFile(genList.First());
+            if (cacheFile.ModelerVersion > System.Reflection.Assembly.GetExecutingAssembly().GetName().Version)
+            {
+                if (MessageBox.Show("This model schema was last generated with a newer modeler version (" + cacheFile.ModelerVersion + "). Your current version is " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ". Generating with an older modeler may cause many files to change unexpectedly. Do you wish to proceed with the generation?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                    return false;
+            }
+
             //Show generator list
             var allModules = model.Modules.Select(x => x.Name).ToList();
             if (!model.UseModules) allModules.Clear();
@@ -243,6 +251,7 @@ namespace nHydrate.DslPackage.Objects
 
                     //Save local copy of last generated version
                     cacheFile.GeneratedVersion = generatedVersion;
+                    cacheFile.ModelerVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
                     cacheFile.Save();
 
                     this.ErrorList = genHelper.GetErrorList().ToList();

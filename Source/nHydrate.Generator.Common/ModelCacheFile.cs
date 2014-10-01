@@ -32,178 +32,191 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Common
 {
-	[Serializable]
-	public class ModelCacheFile
-	{
-		#region Class Members
+    [Serializable]
+    public class ModelCacheFile
+    {
+        #region Class Members
 
-		private readonly List<string> _excludeList = new List<string>();
-		private int _generatedVersion = 0;
-		private readonly List<string> _generatedModuleList = new List<string>();
-		private string _modelFileName = string.Empty;
+        private readonly List<string> _excludeList = new List<string>();
+        private int _generatedVersion = 0;
+        private readonly List<string> _generatedModuleList = new List<string>();
+        private string _modelFileName = string.Empty;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		public ModelCacheFile(IGenerator root)
-		{
-			if (root == null)
-				throw new Exception("The root element cannot be null");
+        private ModelCacheFile()
+        {
+            this.IncludeGenVersion = true;
+            this.ModelerVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        }
 
-			this.IncludeGenVersion = true;
+        public ModelCacheFile(IGenerator root)
+            : this()
+        {
+            if (root == null)
+                throw new Exception("The root element cannot be null");
 
-			_modelFileName = root.FileName;
-			this.Load();
-		}
+            _modelFileName = root.FileName;
+            this.Load();
+        }
 
-		public ModelCacheFile(string modelFileName)
-		{
-			this.IncludeGenVersion = true;
+        public ModelCacheFile(string modelFileName)
+            : this()
+        {
+            _modelFileName = modelFileName;
+            this.Load();
+        }
 
-			_modelFileName = modelFileName;
-			this.Load();
-		}
+        #endregion
 
-		#endregion
+        #region Properties
 
-		#region Properties
+        public bool IncludeGenVersion { get; set; }
 
-		public bool IncludeGenVersion { get; set; }
+        public List<string> ExcludeList
+        {
+            get { return _excludeList; }
+        }
 
-		public List<string> ExcludeList
-		{
-			get { return _excludeList; }
-		}
+        public List<string> GeneratedModuleList
+        {
+            get { return _generatedModuleList; }
+        }
 
-		public List<string> GeneratedModuleList
-		{
-			get { return _generatedModuleList; }
-		}
+        public int GeneratedVersion
+        {
+            get { return _generatedVersion; }
+            set { _generatedVersion = value; }
+        }
 
-		public int GeneratedVersion
-		{
-			get { return _generatedVersion; }
-			set { _generatedVersion = value; }
-		}
+        public Version ModelerVersion { get; set; }
 
-		public string FileName
-		{
-			get
-			{
-				var fileName = _modelFileName;
+        public string FileName
+        {
+            get
+            {
+                var fileName = _modelFileName;
 
-				//if the file has never been saved, then there is no filename
-				if (string.IsNullOrEmpty(fileName)) return string.Empty;
+                //if the file has never been saved, then there is no filename
+                if (string.IsNullOrEmpty(fileName)) return string.Empty;
 
-				var fi = new System.IO.FileInfo(fileName);
-				if (fi.Exists)
-				{
-					//Get file name
-					var name = fi.Name + ".info";
-					fileName = System.IO.Path.Combine(fi.DirectoryName, name);
-					return fileName;
-				}
-				else return string.Empty;
-			}
-		}
+                var fi = new System.IO.FileInfo(fileName);
+                if (fi.Exists)
+                {
+                    //Get file name
+                    var name = fi.Name + ".info";
+                    fileName = System.IO.Path.Combine(fi.DirectoryName, name);
+                    return fileName;
+                }
+                else return string.Empty;
+            }
+        }
 
-		public string TableFacadeSettings { get; set; }
-		public string CodeFacadeSettings { get; set; }
-		public int LastLoadTime { get; set; }
+        public string TableFacadeSettings { get; set; }
+        public string CodeFacadeSettings { get; set; }
+        public int LastLoadTime { get; set; }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public bool FileExists()
-		{
-			return File.Exists(this.FileName);
-		}
+        public bool FileExists()
+        {
+            return File.Exists(this.FileName);
+        }
 
-		public void Save()
-		{
-			if (this.FileName == string.Empty) return;
-			var document = new XmlDocument();
-			document.LoadXml("<configuration></configuration>");
+        public void Save()
+        {
+            if (this.FileName == string.Empty) return;
+            var document = new XmlDocument();
+            document.LoadXml("<configuration></configuration>");
 
-			if (this.IncludeGenVersion)
-			{
-				//Save GeneratedVersion
-				XmlHelper.AddAttribute(document.DocumentElement, "GeneratedVersion", this.GeneratedVersion.ToString());
-			}
+            if (this.IncludeGenVersion)
+            {
+                //Save GeneratedVersion
+                XmlHelper.AddAttribute(document.DocumentElement, "GeneratedVersion", this.GeneratedVersion.ToString());
+            }
 
-			//Save ExcludeList
-			var exludeListNode = XmlHelper.AddElement(document.DocumentElement, "excludeList");
-			foreach (var key in this.ExcludeList)
-			{
-				XmlHelper.AddElement((XmlElement)exludeListNode, "item", key);
-			}
+            XmlHelper.AddAttribute(document.DocumentElement, "ModelerVersion", this.ModelerVersion.ToString());
 
-			//Save GeneratedModuleList
-			var generatedModuleListNode = XmlHelper.AddElement(document.DocumentElement, "generatedModuleList");
-			foreach (var key in this.GeneratedModuleList)
-			{
-				XmlHelper.AddElement((XmlElement)generatedModuleListNode, "item", key);
-			}
+            //Save ExcludeList
+            var exludeListNode = XmlHelper.AddElement(document.DocumentElement, "excludeList");
+            foreach (var key in this.ExcludeList)
+            {
+                XmlHelper.AddElement((XmlElement)exludeListNode, "item", key);
+            }
 
-			//Table facacde
-			var tFacadeNode = XmlHelper.AddElement(document.DocumentElement, "tableFacadeSettings", this.TableFacadeSettings);
+            //Save GeneratedModuleList
+            var generatedModuleListNode = XmlHelper.AddElement(document.DocumentElement, "generatedModuleList");
+            foreach (var key in this.GeneratedModuleList)
+            {
+                XmlHelper.AddElement((XmlElement)generatedModuleListNode, "item", key);
+            }
 
-			//Column facacde
-			var cFacadeNode = XmlHelper.AddElement(document.DocumentElement, "columnFacadeSettings", this.CodeFacadeSettings);
+            //Table facacde
+            var tFacadeNode = XmlHelper.AddElement(document.DocumentElement, "tableFacadeSettings", this.TableFacadeSettings);
 
-			XmlHelper.AddElement(document.DocumentElement, "lastLoadTime", this.LastLoadTime.ToString());
+            //Column facacde
+            var cFacadeNode = XmlHelper.AddElement(document.DocumentElement, "columnFacadeSettings", this.CodeFacadeSettings);
 
-			document.Save(this.FileName);
-		}
+            XmlHelper.AddElement(document.DocumentElement, "lastLoadTime", this.LastLoadTime.ToString());
 
-		public void Load()
-		{
-			var document = new XmlDocument();
-			if (!File.Exists(this.FileName)) return;
-			try
-			{
-				document.Load(this.FileName);
-			}
-			catch (Exception ex)
-			{
-				//Not a valid XML file
-				return;
-			}
+            document.Save(this.FileName);
+        }
 
-			//Get GeneratedVersion
-			_generatedVersion = int.Parse(XmlHelper.GetAttributeValue(document.DocumentElement, "GeneratedVersion", _generatedVersion.ToString()));
+        public void Load()
+        {
+            var document = new XmlDocument();
+            if (!File.Exists(this.FileName)) return;
+            try
+            {
+                document.Load(this.FileName);
+            }
+            catch (Exception ex)
+            {
+                //Not a valid XML file
+                return;
+            }
 
-			//Get ExcludeList
-			this.ExcludeList.Clear();
-			XmlNode exludeListNode = XmlHelper.GetElement(document.DocumentElement, "excludeList");
-			if (exludeListNode != null)
-			{
-				foreach (XmlNode node in exludeListNode.ChildNodes)
-				{
-					this.ExcludeList.Add(node.InnerText);
-				}
-			}
+            //Get GeneratedVersion
+            _generatedVersion = int.Parse(XmlHelper.GetAttributeValue(document.DocumentElement, "GeneratedVersion", _generatedVersion.ToString()));
 
-			//Get ExcludeList
-			this.GeneratedModuleList.Clear();
-			XmlNode generatedModuleListNode = XmlHelper.GetElement(document.DocumentElement, "generatedModuleList");
-			if (generatedModuleListNode != null)
-			{
-				foreach (XmlNode node in generatedModuleListNode.ChildNodes)
-				{
-					this.GeneratedModuleList.Add(node.InnerText);
-				}
-			}
+            Version v;
+            if (Version.TryParse(XmlHelper.GetAttributeValue(document.DocumentElement, "ModelerVersion", this.ModelerVersion.ToString()), out v))
+                this.ModelerVersion = v;
 
-			this.TableFacadeSettings = XmlHelper.GetNodeValue(document.DocumentElement, "tableFacadeSettings", string.Empty);
-			this.CodeFacadeSettings = XmlHelper.GetNodeValue(document.DocumentElement, "columnFacadeSettings", string.Empty);
-			this.LastLoadTime = int.Parse(XmlHelper.GetNodeValue(document.DocumentElement, "lastLoadTime", this.LastLoadTime.ToString()));
-			XmlHelper.AddElement(document.DocumentElement, "lastLoadTime", this.LastLoadTime.ToString());
-		}
 
-		#endregion
+            //Get ExcludeList
+            this.ExcludeList.Clear();
+            XmlNode exludeListNode = XmlHelper.GetElement(document.DocumentElement, "excludeList");
+            if (exludeListNode != null)
+            {
+                foreach (XmlNode node in exludeListNode.ChildNodes)
+                {
+                    this.ExcludeList.Add(node.InnerText);
+                }
+            }
 
-	}
+            //Get ExcludeList
+            this.GeneratedModuleList.Clear();
+            XmlNode generatedModuleListNode = XmlHelper.GetElement(document.DocumentElement, "generatedModuleList");
+            if (generatedModuleListNode != null)
+            {
+                foreach (XmlNode node in generatedModuleListNode.ChildNodes)
+                {
+                    this.GeneratedModuleList.Add(node.InnerText);
+                }
+            }
+
+            this.TableFacadeSettings = XmlHelper.GetNodeValue(document.DocumentElement, "tableFacadeSettings", string.Empty);
+            this.CodeFacadeSettings = XmlHelper.GetNodeValue(document.DocumentElement, "columnFacadeSettings", string.Empty);
+            this.LastLoadTime = int.Parse(XmlHelper.GetNodeValue(document.DocumentElement, "lastLoadTime", this.LastLoadTime.ToString()));
+            XmlHelper.AddElement(document.DocumentElement, "lastLoadTime", this.LastLoadTime.ToString());
+        }
+
+        #endregion
+
+    }
 }

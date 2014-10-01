@@ -219,9 +219,9 @@ namespace PROJECTNAMESPACE
 			foreach (var item in upgradeInstaller._databaseItems.Where(x => x.Changed))
 			{
 				var sql = "if exists(select * from [__nhydrateobjects] where [id] = '" + item.id + "') " +
-							 "update [__nhydrateobjects] set [name] = '" + item.name + "', [type] = '" + item.type + "', [schema] = '" + item.schema + "', [CreatedDate] = '" + item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss") + "', [ModifiedDate] = '" + item.ModifiedDate.ToString("yyyy-MM-dd HH:mm:ss") + "', [Hash] = '" + item.Hash + "', [ModelKey] = '" + item.ModelKey + "', [Status] = '" + item.Status + "' where [id] = '" + item.id + "' " +
+							 "update [__nhydrateobjects] set [name] = '" + item.name + "', [type] = '" + item.type + "', [schema] = '" + item.schema + "', [CreatedDate] = '" + item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss") + "', [ModifiedDate] = '" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', [Hash] = '" + item.Hash + "', [ModelKey] = '" + item.ModelKey + "', [Status] = '" + item.Status + "' where [id] = '" + item.id + "' " +
 							 "else " +
-							 "insert into [__nhydrateobjects] ([id], [name], [type], [schema], [CreatedDate], [ModifiedDate], [Hash], [ModelKey], [Status]) values ('" + item.id + "', '" + item.name + "', '" + item.type + "', '" + item.schema + "', '" + item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss") + "', '" + item.ModifiedDate.ToString("yyyy-MM-dd HH:mm:ss") + "', '" + item.Hash + "', '" + item.ModelKey + "', '" + item.Status + "')";
+							 "insert into [__nhydrateobjects] ([id], [name], [type], [schema], [CreatedDate], [ModifiedDate], [Hash], [ModelKey], [Status]) values ('" + item.id + "', '" + item.name + "', '" + item.type + "', '" + item.schema + "', '" + item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss") + "', '" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', '" + item.Hash + "', '" + item.ModelKey + "', '" + item.Status + "')";
 				sb.AppendLine(sql);
 			}
 			sb.AppendLine("GO");
@@ -862,14 +862,14 @@ namespace PROJECTNAMESPACE
 			var successOrderScripts = new List<Guid>();
 
 			//User-defined (Manually Added)
-			var alluserDefinedScripts = GetUserDefinedScripts(MAIN_FOLDER + "Stored_Procedures.User_Defined", setup);
+			Dictionary<string, List<string>> alluserDefinedScripts = GetUserDefinedScripts(MAIN_FOLDER + "Stored_Procedures.User_Defined", setup);
 			alluserDefinedScripts = alluserDefinedScripts.Concat(GetUserDefinedScripts(MAIN_FOLDER + "Views.User_Defined", setup)).ToDictionary(x => x.Key, x => x.Value);
 			alluserDefinedScripts = alluserDefinedScripts.Concat(GetUserDefinedScripts(MAIN_FOLDER + "Functions.User_Defined", setup)).ToDictionary(x => x.Key, x => x.Value);
 
 			//Model (managed)
-			alluserDefinedScripts = alluserDefinedScripts.Concat(ParseInternalScripts(GetUserDefinedScripts(MAIN_FOLDER + "Stored_Procedures.Model", setup))).ToDictionary(x => x.Key, x => x.Value);
-			alluserDefinedScripts = alluserDefinedScripts.Concat(ParseInternalScripts(GetUserDefinedScripts(MAIN_FOLDER + "Views.Model", setup))).ToDictionary(x => x.Key, x => x.Value);
-			alluserDefinedScripts = alluserDefinedScripts.Concat(ParseInternalScripts(GetUserDefinedScripts(MAIN_FOLDER + "Functions.Model", setup))).ToDictionary(x => x.Key, x => x.Value);
+			alluserDefinedScripts = alluserDefinedScripts.Concat(ProcessInternalScripts(MAIN_FOLDER + "Stored_Procedures.Model", setup)).ToDictionary(x => x.Key, x => x.Value);
+			alluserDefinedScripts = alluserDefinedScripts.Concat(ProcessInternalScripts(MAIN_FOLDER + "Views.Model", setup)).ToDictionary(x => x.Key, x => x.Value);
+			alluserDefinedScripts = alluserDefinedScripts.Concat(ProcessInternalScripts(MAIN_FOLDER + "Functions.Model", setup)).ToDictionary(x => x.Key, x => x.Value);
 
 			if (sb == null)
 			{
@@ -959,6 +959,26 @@ namespace PROJECTNAMESPACE
 
 		}
 
+		private Dictionary<string, List<string>> ProcessInternalScripts(string scriptFolder, InstallSetup setup)
+		{
+			try
+			{
+				//Get each file from the folder
+				var retval = new Dictionary<string, List<string>>();
+				var scriptList = GetUserDefinedScripts(scriptFolder, setup);
+				foreach (var script in scriptList)
+				{
+					retval = retval.Concat(ParseInternalScripts(scriptList)).ToDictionary(x => x.Key, x => x.Value);
+				}
+				return retval;
+
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
+		}
+		
 		private Dictionary<string, List<string>> ParseInternalScripts(Dictionary<string, List<string>> list)
 		{
 			var retval = new Dictionary<string, List<string>>();
@@ -1223,57 +1243,15 @@ namespace PROJECTNAMESPACE
 			{
 				var scriptItem = allScripts[key];
 
-				#region Load script hashes
-
-				var runScript = false;
-				var current = _databaseItems.FirstOrDefault(x => x.name.ToLower() == key.ToLower());
-				var groupScripts = allScripts.Where(x => x.Key == key).ToList();
-				var v = string.Join("\r\nGO\r\n", groupScripts.SelectMany(x => x.Value).Select(x => x).ToList());
-				var hashValue = v.CalculateMD5Hash();
-
-				if (current != null)
+				foreach (var sql in scriptItem)
 				{
-					if (current.Hash != hashValue)
-					{
-						runScript = true;
-						current.ModifiedDate = DateTime.Now;
-					}
-
-					if (!newHashList.ContainsKey(current))
-						newHashList.Add(current, hashValue);
-				}
-				else
-				{
-					runScript = true;
-					current = new nHydrateDbObject()
-					{
-						name = key,
-						Hash = hashValue,
-						ModelKey = new Guid(UpgradeInstaller.MODELKEY),
-						type = "FILE",
-						Changed = true,
-					};
-				}
-
-				//Add this item to list if it is new
-				if (!_databaseItems.Any(x => x.name.ToLower() == key.ToLower()))
-					_databaseItems.Add(current);
-
-				#endregion
-
-				if (runScript)
-				{
-					foreach (var sql in scriptItem)
-					{
-						SqlServers.ExecuteSQL(_connection, _transaction, sql, setup, failedScripts, successOrderScripts);
-					}
+					SqlServers.ExecuteSQL(_connection, _transaction, sql, setup, failedScripts, successOrderScripts);
 				}
 
 			}
 
 			foreach (var k in newHashList.Keys)
 				_databaseItems.FirstOrDefault(x => x == k).Hash = newHashList[k];
-
 		}
 
 		private void ReinstallStoredProceduresUserDefined(List<KeyValuePair<Guid, string>> failedScripts, List<Guid> successOrderScripts, InstallSetup setup)
