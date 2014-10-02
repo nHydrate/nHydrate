@@ -389,6 +389,7 @@
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Versioning.txt" />
     <EmbeddedResource Include="Design\Forms\OutputTargetForm.resx">
       <DependentUpon>OutputTargetForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -480,8 +480,10 @@ namespace nHydrate.Generator.SQLInstaller
                     #region Primary Key Changed
 
                     //If the primary key changed, then generate a commented script that marks where the user can manually intervene
-                    var newPKHash = string.Join("|", newT.PrimaryKeyColumns.OrderBy(x => x.Name).Select(x => x.Name.ToLower()).ToArray());
-                    var oldPKHash = string.Join("|", oldT.PrimaryKeyColumns.OrderBy(x => x.Name).Select(x => x.Name.ToLower()).ToArray());
+                    var newPKINdex = newT.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
+                    var oldPKINdex = oldT.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
+                    var newPKHash = newPKINdex.CorePropertiesHash;
+                    var oldPKHash = oldPKINdex.CorePropertiesHash;
                     if (newPKHash != oldPKHash)
                     {
                         sb.AppendLine("--GENERATION NOTE **");

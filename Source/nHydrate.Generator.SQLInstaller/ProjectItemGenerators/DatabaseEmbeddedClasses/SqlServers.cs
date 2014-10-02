@@ -932,7 +932,7 @@ namespace PROJECTNAMESPACE
 			System.Diagnostics.Debug.WriteLine(System.DateTime.Now.ToString("HH:mm:ss.ff") + " - Run embedded file: " + resourceFileName);
 
 			#region Load script hashes
-			var runScript = false;
+			var runScript = !setup.UseHash;
 			var current = _databaseItems.FirstOrDefault(x => x.name.ToLower() == resourceFileName.ToLower());
 			var hashValue = string.Join("\r\nGO\r\n", ReadSQLFileSectionsFromResource(resourceFileName, setup)).CalculateMD5Hash();
 

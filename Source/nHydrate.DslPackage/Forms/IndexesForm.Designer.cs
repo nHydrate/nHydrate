@@ -1,33 +1,33 @@
 ﻿namespace nHydrate.DslPackage.Forms
 {
-	partial class IndexesForm
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class IndexesForm
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IndexesForm));
             this.cmdClose = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -168,18 +168,18 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-		private System.Windows.Forms.Button cmdClose;
-		private System.Windows.Forms.Panel panel3;
-		private System.Windows.Forms.PictureBox pictureBox1;
-		private System.Windows.Forms.Label lblLine100;
-		private System.Windows.Forms.Label lblHeader;
-		private System.Windows.Forms.ListView lvwItem;
-		private System.Windows.Forms.Button cmdEdit;
-		private System.Windows.Forms.Label label1;
-		private nHydrate.Generator.Common.Forms.CueTextBox txtFilter;
-	}
+        private System.Windows.Forms.Button cmdClose;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label lblLine100;
+        private System.Windows.Forms.Label lblHeader;
+        private System.Windows.Forms.ListView lvwItem;
+        private System.Windows.Forms.Button cmdEdit;
+        private System.Windows.Forms.Label label1;
+        private nHydrate.Generator.Common.Forms.CueTextBox txtFilter;
+    }
 }

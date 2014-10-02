@@ -1117,11 +1117,16 @@ namespace nHydrate.Core.SQLGeneration
                     sb.AppendLine();
                 }
 
-                sb.AppendLine("--INDEX FOR TABLE [" + table.DatabaseName + "] COLUMNS:" + string.Join(", ", columnList.Select(x => "[" + x.Value.DatabaseName + "]")));
-                sb.AppendLine("if not exists(select * from sys.indexes where name = '" + indexName + "')");
-                sb.Append("CREATE " + (index.IsUnique ? "UNIQUE " : string.Empty) + (index.Clustered ? "CLUSTERED " : "NONCLUSTERED ") + "INDEX [" + indexName + "] ON [" + table.GetSQLSchema() + "].[" + tableName + "] (");
-                sb.Append(string.Join(",", columnList.Select(x => "[" + x.Value.DatabaseName + "] " + (x.Key.Ascending ? "ASC" : "DESC"))));
-                sb.AppendLine(")");
+                //Do not create unique index for PK (it is already unique)
+                if (!index.PrimaryKey)
+                {
+                    sb.AppendLine("--INDEX FOR TABLE [" + table.DatabaseName + "] COLUMNS:" + string.Join(", ", columnList.Select(x => "[" + x.Value.DatabaseName + "]")));
+                    sb.AppendLine("if not exists(select * from sys.indexes where name = '" + indexName + "')");
+                    sb.Append("CREATE " + (index.IsUnique ? "UNIQUE " : string.Empty) + (index.Clustered ? "CLUSTERED " : "NONCLUSTERED ") + "INDEX [" + indexName + "] ON [" + table.GetSQLSchema() + "].[" + tableName + "] (");
+                    sb.Append(string.Join(",", columnList.Select(x => "[" + x.Value.DatabaseName + "] " + (x.Key.Ascending ? "ASC" : "DESC"))));
+                    sb.AppendLine(")");
+                }
+
             }
 
             return sb.ToString();

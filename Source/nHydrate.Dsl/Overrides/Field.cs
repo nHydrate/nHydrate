@@ -1098,9 +1098,12 @@ namespace nHydrate.Dsl
                 {
                     base.OnValueChanged(element, oldValue, newValue);
 
-                    if (!element.Entity.nHydrateModel.IsLoading)
+                    if (element.Entity != null && element.Entity.nHydrateModel != null)
                     {
-                        element.Length = newValue.GetDefaultSize(element.Length);
+                        if (!element.Entity.nHydrateModel.IsLoading)
+                        {
+                            element.Length = newValue.GetDefaultSize(element.Length);
+                        }
                     }
                 }
                 catch (Exception ex)

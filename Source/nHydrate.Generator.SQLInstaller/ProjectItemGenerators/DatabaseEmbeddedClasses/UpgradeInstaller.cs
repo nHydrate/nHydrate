@@ -609,7 +609,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
 					if (hashItem == null) _newItems.Add(scripts[file].FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
@@ -623,7 +623,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
 					if (hashItem == null) _newItems.Add(scripts[file].FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
@@ -637,7 +637,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
 					if (hashItem == null) _newItems.Add(scripts[file].FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
@@ -652,7 +652,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
 					if (hashItem == null) _newItems.Add(scripts[file].FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
@@ -682,7 +682,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == ern.FullName);
 					if (hashItem == null) _newItems.Add(ern.FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
@@ -707,7 +707,7 @@ namespace PROJECTNAMESPACE
 			//if (_previousVersion.Equals(_upgradeToVersion))
 			//	return;
 
-			if (!setup.Normalize) return;
+			if (setup.SkipNormalize) return;
 
 			try
 			{
@@ -717,7 +717,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == ern.FullName);
 					if (hashItem == null) _newItems.Add(ern.FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
@@ -730,7 +730,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == ern.FullName);
 					if (hashItem == null) _newItems.Add(ern.FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
@@ -746,7 +746,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == ern.FullName);
 					if (hashItem == null) _newItems.Add(ern.FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
@@ -759,7 +759,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == ern.FullName);
 					if (hashItem == null) _newItems.Add(ern.FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
@@ -792,7 +792,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
 					if (hashItem == null) _newItems.Add(scripts[file].FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
@@ -806,7 +806,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
 					if (hashItem == null) _newItems.Add(scripts[file].FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
@@ -820,7 +820,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
 					if (hashItem == null) _newItems.Add(scripts[file].FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
@@ -835,7 +835,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
 					if (hashItem == null) _newItems.Add(scripts[file].FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
@@ -906,7 +906,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
 					if (hashItem == null) _newItems.Add(scripts[file].FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
@@ -920,7 +920,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
 					if (hashItem == null) _newItems.Add(scripts[file].FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
@@ -934,7 +934,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
 					if (hashItem == null) _newItems.Add(scripts[file].FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
@@ -949,7 +949,7 @@ namespace PROJECTNAMESPACE
 				{
 					var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
 					if (hashItem == null) _newItems.Add(scripts[file].FullName);
-					if (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup))
+					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
 					{
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
@@ -1094,7 +1094,7 @@ namespace PROJECTNAMESPACE
 					{
 						var hashItem = _databaseItems.FirstOrDefault(x => x.name == ern.FullName);
 						if (hashItem == null) _newItems.Add(ern.FullName);
-						if (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup))
+						if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
 						{
 							if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, failedScripts, _databaseItems, setup);
 							else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
@@ -1146,7 +1146,7 @@ namespace PROJECTNAMESPACE
 							#endregion
 
 							var hashValue = GetFileHash(ern.FullName, setup);
-							if (current != null && current.Hash == hashValue)
+							if (setup.UseHash && current != null && current.Hash == hashValue)
 							{
 								//Skip item
 							}

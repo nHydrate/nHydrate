@@ -63,8 +63,9 @@ namespace PROJECTNAMESPACE
 		private string PARAMKEYS_DBVERSION = "dbversion";
 		private string PARAMKEYS_VERSIONWARN = "acceptwarnings";
 		private string PARAMKEYS_SHOWSQL = "showsql";
-		private string PARAMKEYS_NOTRAN = "notran";
-		private string PARAMKEYS_NORMALIZE = "normalize";
+		private string PARAMKEYS_TRAN = "tranaction";
+		private string PARAMKEYS_SKIPNORMALIZE = "skipnormalize";
+		private string PARAMKEYS_HASH = "usehash";
 		private string PARAMKEYS_CHECKONLY = "checkonly";
 		#endregion
 
@@ -95,24 +96,40 @@ namespace PROJECTNAMESPACE
 			{
 				if (commandParams.ContainsKey(PARAMKEYS_SHOWSQL))
 				{
-					setup.ShowSql = true;
-					paramUICount++;
-				}
-
-				if (commandParams.ContainsKey(PARAMKEYS_NOTRAN))
-				{
-					setup.UseTransaction = false;
-					paramUICount++;
-				}
-
-				if (commandParams.ContainsKey(PARAMKEYS_NORMALIZE))
-				{
-					if (commandParams[PARAMKEYS_NORMALIZE].ToLower() == "true" || commandParams[PARAMKEYS_NORMALIZE].ToLower() == "1" || commandParams[PARAMKEYS_NORMALIZE].ToLower() == string.Empty)
-						setup.Normalize = true;
-					else if (commandParams[PARAMKEYS_NORMALIZE].ToLower() == "false" || commandParams[PARAMKEYS_NORMALIZE].ToLower() == "0")
-						setup.Normalize = false;
+					if (commandParams[PARAMKEYS_SHOWSQL].ToLower() == "true" || commandParams[PARAMKEYS_SHOWSQL].ToLower() == "1" || commandParams[PARAMKEYS_SHOWSQL].ToLower() == string.Empty)
+						setup.ShowSql = true;
+					else if (commandParams[PARAMKEYS_SHOWSQL].ToLower() == "false" || commandParams[PARAMKEYS_SHOWSQL].ToLower() == "0")
+						setup.ShowSql = false;
 					else
-						throw new Exception("The /" + PARAMKEYS_NORMALIZE + " parameter must be set to 'true or false'.");
+						throw new Exception("The /" + PARAMKEYS_SHOWSQL + " parameter must be set to 'true or false'.");
+					paramUICount++;
+				}
+
+				if (commandParams.ContainsKey(PARAMKEYS_TRAN))
+				{
+					if (commandParams[PARAMKEYS_TRAN].ToLower() == "true" || commandParams[PARAMKEYS_TRAN].ToLower() == "1" || commandParams[PARAMKEYS_TRAN].ToLower() == string.Empty)
+						setup.UseTransaction = true;
+					else if (commandParams[PARAMKEYS_TRAN].ToLower() == "false" || commandParams[PARAMKEYS_TRAN].ToLower() == "0")
+						setup.UseTransaction = false;
+					else
+						throw new Exception("The /" + PARAMKEYS_TRAN + " parameter must be set to 'true or false'.");
+					paramUICount++;
+				}
+
+				if (commandParams.ContainsKey(PARAMKEYS_SKIPNORMALIZE))
+				{
+					setup.SkipNormalize = true;
+					paramUICount++;
+				}
+
+				if (commandParams.ContainsKey(PARAMKEYS_HASH))
+				{
+					if (commandParams[PARAMKEYS_HASH].ToLower() == "true" || commandParams[PARAMKEYS_HASH].ToLower() == "1" || commandParams[PARAMKEYS_HASH].ToLower() == string.Empty)
+						setup.UseHash = true;
+					else if (commandParams[PARAMKEYS_HASH].ToLower() == "false" || commandParams[PARAMKEYS_HASH].ToLower() == "0")
+						setup.UseHash = false;
+					else
+						throw new Exception("The /" + PARAMKEYS_HASH + " parameter must be set to 'true or false'.");
 					paramUICount++;
 				}
 
@@ -529,7 +546,8 @@ namespace PROJECTNAMESPACE
 			this.SkipSections = new List<string>();
 			this.InstallStatus = InstallStatusConstants.Upgrade;
 			this.UseTransaction = true;
-			this.Normalize = true;
+			this.UseHash = true;
+			this.SkipNormalize = false;
 			this.SuppressUI = false;
 		}
 
@@ -558,10 +576,13 @@ namespace PROJECTNAMESPACE
 		}
 
 		/// <summary />
+		public bool UseHash { get; set; }
+		
+		/// <summary />
 		public bool UseTransaction { get; set; }
 
 		/// <summary />
-		public bool Normalize { get; set; }
+		public bool SkipNormalize { get; set; }
 
 		/// <summary>
 		/// The transaction to use for this action. If null, one will be created.
