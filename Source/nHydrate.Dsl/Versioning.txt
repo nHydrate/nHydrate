@@ -1,0 +1,7 @@
+﻿To version this product:
+
+1. Open the DSL and version it.
+2. Change version in nHydrate.Dsl\Properties\AssemblyInfoGeneratorCommon.cs
+3. Dsl project: run custom tool on generated folder
+4. Dslpackage project: run custom tool on generated folder
+5. Run custom tool on file nHydrate.DslPackage\source.extension.tt
