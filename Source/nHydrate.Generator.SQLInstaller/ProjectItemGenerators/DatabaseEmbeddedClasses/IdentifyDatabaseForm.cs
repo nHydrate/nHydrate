@@ -149,6 +149,11 @@ namespace PROJECTNAMESPACE
 
 		private void buttonConnectionTestConnection_Click(object sender, System.EventArgs e)
 		{
+			if (string.IsNullOrEmpty(cboConnectionDatabaseName.Text))
+			{
+				MessageBox.Show("The database name must be specified.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				return;
+			}
 			var connectString = SqlServers.BuildConnectionString(optConnectionIntegratedSecurity.Checked, cboConnectionDatabaseName.Text, cboConnectionServerName.Text, txtConnectionUserName.Text, txtConnectionPassword.Text);
 			var valid = SqlServers.TestConnectionString(connectString);
 			if (valid)
