@@ -103,6 +103,7 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Text;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ";");
+            sb.AppendLine("using System.Data.Objects.DataClasses;");
             sb.AppendLine();
         }
 

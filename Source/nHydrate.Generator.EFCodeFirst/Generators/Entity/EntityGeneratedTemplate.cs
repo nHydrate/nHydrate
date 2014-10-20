@@ -611,6 +611,49 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 //sb.AppendLine("			set { _" + column.CamelName + " = value; }");
                 sb.AppendLine("			set");
                 sb.AppendLine("			{");
+
+                #region Validation
+                //Error Check for field size
+                if (ModelHelper.IsTextType(column.DataType))
+                {
+                    sb.Append("				if ((value != null) && (value.Length > GetMaxLength(FieldNameConstants." + column.PascalName + ")))");
+                    sb.AppendLine(" throw new Exception(string.Format(GlobalValues.ERROR_DATA_TOO_BIG, value, \"" + _currentTable.PascalName + "." + column.PascalName + "\", GetMaxLength(FieldNameConstants." + column.PascalName + ")));");
+                }
+                else if (column.DataType == System.Data.SqlDbType.DateTime)
+                {
+                    //Error check date value
+                    sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value < GlobalValues.MIN_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(\"yyyy-MM-dd HH:mm:ss\") + \") cannot be less than \" + GlobalValues.MIN_DATETIME.ToString());");
+                    sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value > GlobalValues.MAX_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(\"yyyy-MM-dd HH:mm:ss\") + \") cannot be greater than \" + GlobalValues.MAX_DATETIME.ToString());");
+                }
+
+                //If this column is related to a type table then add additional validation
+                if (typeTable != null)
+                {
+                    if (column.AllowNull)
+                        sb.AppendLine("				if (value != null) {");
+
+                    sb.AppendLine("				//Error check the wrapped enumeration");
+                    sb.AppendLine("				switch(value)");
+                    sb.AppendLine("				{");
+                    foreach (RowEntry rowEntry in typeTable.StaticData)
+                    {
+                        var idValue = rowEntry.GetCodeIdValue(typeTable);
+                        sb.AppendLine("					case " + idValue + ":");
+                    }
+                    sb.AppendLine("						break;");
+                    sb.AppendLine("					default: throw new Exception(string.Format(GlobalValues.ERROR_INVALID_ENUM, value.ToString(), \"" + _currentTable.PascalName + "." + column.PascalName + "\"));");
+                    sb.AppendLine("				}");
+
+                    if (column.AllowNull)
+                        sb.AppendLine("				}");
+
+                    sb.AppendLine();
+                }
+
+                //Do not process the setter if the value is NOT changing
+                sb.AppendLine("				if (value == _" + column.CamelName + ") return;");
+                #endregion
+
                 sb.AppendLine("				var eventArg = new nHydrate.EFCore.EventArgs.ChangingEventArgs<" + column.GetCodeType() + ">(value, \"" + column.PascalName + "\");");
                 sb.AppendLine("				this.OnPropertyChanging(eventArg);");
                 sb.AppendLine("				if (eventArg.Cancel) return;");
