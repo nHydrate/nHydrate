@@ -100,7 +100,6 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Contexts
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
             sb.AppendLine("using System.Data.Objects;");
-            sb.AppendLine("using System.Data.Objects.DataClasses;");
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Runtime.Serialization;");
             sb.AppendLine("using System.Collections.Generic;");
