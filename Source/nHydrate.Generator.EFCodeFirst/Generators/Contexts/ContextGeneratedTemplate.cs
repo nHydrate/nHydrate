@@ -142,70 +142,71 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	}");
             sb.AppendLine();
 
+            if (_model.Database.Tables.Any(x => x.IsTenant))
+            {
+                #region Admin Context
 
-            #region Admin Context
+                sb.AppendLine("	#region Admin Entity Context");
+                sb.AppendLine();
+                sb.AppendLine("	/// <summary>");
+                sb.AppendLine("	/// The object context for the schema tied to this generated model.");
+                sb.AppendLine("	/// </summary>");
+                sb.AppendLine("	[DataContract]");
+                sb.AppendLine("	[Serializable]");
+                sb.AppendLine("	public partial class " + _model.ProjectName + "AdminEntities : " + _model.ProjectName + "Entities");
+                sb.AppendLine("	{");
 
-            sb.AppendLine("	#region Admin Entity Context");
-            sb.AppendLine();
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// The object context for the schema tied to this generated model.");
-            sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	[DataContract]");
-            sb.AppendLine("	[Serializable]");
-            sb.AppendLine("	public partial class " + _model.ProjectName + "AdminEntities : " + _model.ProjectName + "Entities");
-            sb.AppendLine("	{");
+                #region Constructors
+                sb.AppendLine("		#region Constructors");
+                sb.AppendLine();
 
-            #region Constructors
-            sb.AppendLine("		#region Constructors");
-            sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Initializes a new " + _model.ProjectName + "AdminEntities object using the connection string found in the '" + _model.ProjectName + "AdminEntities' section of the application configuration file.");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		public " + _model.ProjectName + "AdminEntities() :");
+                sb.AppendLine("			base(new EFDAL.ContextStartup(null, true, 30, true))");
+                sb.AppendLine("		{");
+                sb.AppendLine("		}");
+                sb.AppendLine();
 
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Initializes a new " + _model.ProjectName + "AdminEntities object using the connection string found in the '" + _model.ProjectName + "AdminEntities' section of the application configuration file.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + _model.ProjectName + "AdminEntities() :");
-            sb.AppendLine("			base(new EFDAL.ContextStartup(null, true, 30, true))");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Initialize a new " + _model.ProjectName + "AdminEntities object with an audit modifier.");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		public " + _model.ProjectName + "AdminEntities(ContextStartup contextStartup) :");
+                sb.AppendLine("			base(contextStartup.AsAdmin())");
+                sb.AppendLine("		{");
+                sb.AppendLine("		}");
+                sb.AppendLine();
 
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Initialize a new " + _model.ProjectName + "AdminEntities object with an audit modifier.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + _model.ProjectName + "AdminEntities(ContextStartup contextStartup) :");
-            sb.AppendLine("			base(contextStartup.AsAdmin())");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Initialize a new " + _model.ProjectName + "AdminEntities object with an audit modifier.");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		public " + _model.ProjectName + "AdminEntities(ContextStartup contextStartup, string connectionString) :");
+                sb.AppendLine("			base(contextStartup.AsAdmin(), Util.ConvertNormalCS2EF(connectionString, contextStartup.AsAdmin()))");
+                sb.AppendLine("		{");
+                sb.AppendLine("		}");
+                sb.AppendLine();
 
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Initialize a new " + _model.ProjectName + "AdminEntities object with an audit modifier.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + _model.ProjectName + "AdminEntities(ContextStartup contextStartup, string connectionString) :");
-            sb.AppendLine("			base(contextStartup.AsAdmin(), Util.ConvertNormalCS2EF(connectionString, contextStartup.AsAdmin()))");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Initialize a new " + _model.ProjectName + "AdminEntities object.");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		public " + _model.ProjectName + "AdminEntities(string connectionString) :");
+                sb.AppendLine("			base(new EFDAL.ContextStartup(null, true, 30, true), connectionString)");
+                sb.AppendLine("		{");
+                sb.AppendLine("		}");
+                sb.AppendLine();
 
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Initialize a new " + _model.ProjectName + "AdminEntities object.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + _model.ProjectName + "AdminEntities(string connectionString) :");
-            sb.AppendLine("			base(new EFDAL.ContextStartup(null, true, 30, true), connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+                sb.AppendLine("		#endregion");
+                sb.AppendLine();
+                #endregion
 
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-            #endregion
+                sb.AppendLine("	}");
+                sb.AppendLine();
+                sb.AppendLine("	#endregion");
+                sb.AppendLine();
 
-            sb.AppendLine("	}");
-            sb.AppendLine();
-            sb.AppendLine("	#endregion");
-            sb.AppendLine();
-
-            #endregion
-
+                #endregion
+            }
 
             sb.AppendLine("	#region Entity Context");
             sb.AppendLine();
