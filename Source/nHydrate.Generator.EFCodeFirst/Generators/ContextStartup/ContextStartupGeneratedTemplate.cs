@@ -80,7 +80,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextStartup
                 sb.AppendLine("	/// This object holds the modifer information for audits on an ObjectContext");
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
-                sb.AppendLine("	public partial class ContextStartup");
+                sb.AppendLine("	public partial class ContextStartup : ICloneable");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Creates a new instance of the ContextStartup object");
@@ -113,7 +113,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextStartup
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Creates a new instance of the ContextStartup object");
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		public ContextStartup(string modifier, bool allowLazyLoading, int commandTimeout, bool isAdmin) :");
+                sb.AppendLine("		protected internal ContextStartup(string modifier, bool allowLazyLoading, int commandTimeout, bool isAdmin) :");
                 sb.AppendLine("			this(modifier, allowLazyLoading)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			this.CommandTimeout = commandTimeout;");
@@ -157,12 +157,18 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextStartup
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Determines the connection string is for an admin user that can see all tenant based data");
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		public virtual bool IsAdmin { get; protected internal set; }");
+                sb.AppendLine("		protected internal virtual bool IsAdmin { get; set; }");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Determines the database platform that the context instance will target");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		public DatabasePlatformConstants CurrentPlatform { get; private set; }");
+                sb.AppendLine();
+                sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		public object Clone()");
+                sb.AppendLine("		{");
+                sb.AppendLine("			return (ContextStartup)this.MemberwiseClone();");
+                sb.AppendLine("		}");
                 sb.AppendLine();
                 sb.AppendLine("	}");
                 sb.AppendLine();
