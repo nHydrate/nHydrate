@@ -280,13 +280,28 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             #region Rename Tables
             sb.AppendLine("			#region Rename Tables");
+            sb.AppendLine("			if (_contextStartup.IsAdmin)");
+            sb.AppendLine("			{");
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            {
+                if (table.DatabaseName != table.PascalName)
+                    sb.AppendLine("				modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\");");
+            }
+            sb.AppendLine("			}");
+            sb.AppendLine("			else");
+            sb.AppendLine("			{");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 if (table.IsTenant)
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + _model.TenantPrefix + "_" + table.DatabaseName + "\");");
+                {
+                    sb.AppendLine("				modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + _model.TenantPrefix + "_" + table.DatabaseName + "\");");
+                }
                 else if (table.DatabaseName != table.PascalName)
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\");");
+                {
+                    sb.AppendLine("				modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\");");
+                }
             }
+            sb.AppendLine("			}");
             sb.AppendLine("			#endregion");
             sb.AppendLine();
             #endregion
@@ -453,6 +468,21 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// <returns>The number of objects in an System.Data.Entity.EntityState.Added, System.Data.Entity.EntityState.Modified, or System.Data.Entity.EntityState.Deleted state when System.Data.Objects.ObjectContext.SaveChanges() was called.</returns>");
             sb.AppendLine("		public override int SaveChanges()");
             sb.AppendLine("		{");
+            sb.AppendLine("			//Get the added list");
+            sb.AppendLine("			var addedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added);");
+            sb.AppendLine();
+            sb.AppendLine("			if (_contextStartup.IsAdmin)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				foreach (var item in addedList)");
+            sb.AppendLine("				{");
+            foreach (var table in _model.Database.Tables.Where(x => x.IsTenant).OrderBy(x => x.Name).ToList())
+            {
+                sb.AppendLine("					if (item.Entity is "+ this.GetLocalNamespace() +".Entity." + table.Name + ")");
+                sb.AppendLine("						throw new Exception(\"You cannot add items to the tenant table \"" + table.Name + "\" in Admin mode.\");");
+            }
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine();
             sb.AppendLine("			//Process deleted list");
             sb.AppendLine("			var deletedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Deleted);");
             sb.AppendLine("			foreach (var item in deletedList)");
@@ -521,7 +551,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             sb.AppendLine("			var markedTime = " + (_model.UseUTCTime ? "System.DateTime.UtcNow" : "System.DateTime.Now") + ";");
             sb.AppendLine("			//Process added list");
-            sb.AppendLine("			var addedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added);");
             sb.AppendLine("			foreach (var item in addedList)");
             sb.AppendLine("			{");
             sb.AppendLine("				var entity = item.Entity as nHydrate.EFCore.DataAccess.IAuditable;");

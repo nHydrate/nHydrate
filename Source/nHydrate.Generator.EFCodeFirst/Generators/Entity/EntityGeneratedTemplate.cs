@@ -145,10 +145,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("	[System.Data.Linq.Mapping.Table(Name = \"" + _currentTable.PascalName + "\")]");
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
 
-            if (_currentTable.IsTenant)
-                sb.AppendLine("	[EdmEntityTypeAttribute(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _model.TenantPrefix + "_" + _currentTable.PascalName + "\")]");
-            else
-                sb.AppendLine("	[EdmEntityTypeAttribute(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _currentTable.PascalName + "\")]");
+            //if (_currentTable.IsTenant)
+            //    sb.AppendLine("	[EdmEntityTypeAttribute(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _model.TenantPrefix + "_" + _currentTable.PascalName + "\")]");
+            //else
+            //    sb.AppendLine("	[EdmEntityTypeAttribute(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _currentTable.PascalName + "\")]");
 
             sb.AppendLine("	[nHydrate.EFCore.Attributes.FieldNameConstantsAttribute(typeof(" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ".FieldNameConstants))]");
             sb.AppendLine("	[System.ComponentModel.DataAnnotations.MetadataType(typeof(" + this.InterfaceAssemblyNamespace + ".Entity.Metadata." + _currentTable.PascalName + "Metadata))]");
@@ -1910,7 +1910,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             }
 
             sb.AppendLine("						sql += \";select @@rowcount\";");
-            sb.AppendLine("						if (startup.IsAdmin) sql = LinqSQLParser.RemapTenantToAdminSql(sql);");
             sb.AppendLine("						sql = \"set ansi_nulls off;\" + sql;");
             sb.AppendLine("						cmd.CommandText = sql;");
             sb.AppendLine("						dc.Connection.Open();");

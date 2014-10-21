@@ -589,7 +589,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("					sql += parser.GetFromClause(new nHydrate.EFCore.DataAccess.QueryOptimizer()) + \"\\r\\n\";");
             sb.AppendLine("					sql += parser.GetWhereClause();");
             sb.AppendLine("					sql += \";select @@rowcount\";");
-            sb.AppendLine("					if (startup.IsAdmin) sql = LinqSQLParser.RemapTenantToAdminSql(sql);");
             sb.AppendLine("					sql = \"set ansi_nulls off;\" + sql;");
             sb.AppendLine("					cmd.CommandText = sql;");
             sb.AppendLine("					if (newValue == null) cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"newValue\", System.DBNull.Value));");
@@ -611,7 +610,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	internal partial class LinqSQLParser");
             sb.AppendLine("	{");
-            sb.AppendLine();
             sb.AppendLine("		internal enum ObjectTypeConstants");
             sb.AppendLine("		{");
             sb.AppendLine("			Table,");
@@ -686,20 +684,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
-            sb.AppendLine("		#region RemapTenantToAdminSql");
-            sb.AppendLine();
-            sb.AppendLine("		internal static string RemapTenantToAdminSql(string sql)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			if (string.IsNullOrEmpty(sql)) return sql;");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.IsTenant).ToList())
-            {
-                sb.AppendLine("			sql = sql.Replace(\"[" + _model.TenantPrefix + "_" + table.DatabaseName + "]\", \"[" + table.DatabaseName + "]\");");
-            }
-            sb.AppendLine("			return sql;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-
             sb.AppendLine("		#region RemapParentChild");
             sb.AppendLine();
             sb.AppendLine("		private void RemapParentChild()");
