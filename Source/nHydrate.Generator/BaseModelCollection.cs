@@ -28,53 +28,52 @@ using System.Collections;
 
 namespace nHydrate.Generator.Common.GeneratorFramework
 {
-	public abstract class BaseModelCollection : BaseModelObject, ICollection, IEnumerable
-	{
-		public BaseModelCollection(INHydrateModelObject root)
-			: base(root)
-		{
-		}
+    public abstract class BaseModelCollection : BaseModelObject, ICollection, IEnumerable
+    {
+        public BaseModelCollection(INHydrateModelObject root)
+            : base(root)
+        {
+        }
 
-		#region Methods
+        #region Methods
 
-		public virtual Array Find(string key)
-		{
-			try
-			{
-				var retval = new ArrayList();
-				foreach (INHydrateModelObject element in this)
-				{
-					if (string.Compare(element.Key, key, true) == 0)
-						retval.Add(element);
-				}
-				return retval.ToArray();
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
+        public virtual Array Find(string key)
+        {
+            try
+            {
+                var retval = new ArrayList();
+                foreach (INHydrateModelObject element in this)
+                {
+                    if (string.Compare(element.Key, key, true) == 0)
+                        retval.Add(element);
+                }
+                return retval.ToArray();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
-		public abstract void Clear();
-		public abstract void AddRange(ICollection list);
+        public abstract void Clear();
+        public abstract void AddRange(ICollection list);
 
-		#endregion
+        #endregion
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		public abstract IEnumerator GetEnumerator();
+        public abstract IEnumerator GetEnumerator();
 
-		#endregion
+        #endregion
 
-		#region ICollection Members
+        #region ICollection Members
 
-		public abstract int Count { get;}
-		public abstract void CopyTo(Array array, int index);
-		public abstract object SyncRoot { get;}
-		public abstract bool IsSynchronized { get;}
+        public abstract int Count { get; }
+        public abstract void CopyTo(Array array, int index);
+        public abstract object SyncRoot { get; }
+        public abstract bool IsSynchronized { get; }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }
-

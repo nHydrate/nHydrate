@@ -1710,7 +1710,18 @@ namespace PROJECTNAMESPACE
 		public bool Changed { get; set; }
 		public long rowid { get; set; }
 		public Guid id { get; set; }
-		public string name { get; set; }
+
+		private string _name = "";
+		public string name
+		{
+			get { return _name; }
+			set
+			{
+				_name = value;
+				this.Changed = true;
+			}
+		}
+
 		public string type { get; set; }
 		public string schema { get; set; }
 		public DateTime CreatedDate { get; set; }

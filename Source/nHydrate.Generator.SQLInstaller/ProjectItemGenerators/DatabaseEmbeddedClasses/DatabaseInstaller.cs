@@ -41,6 +41,7 @@ using System.Configuration.Install;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Text;
 
 namespace PROJECTNAMESPACE
 {
@@ -57,6 +58,7 @@ namespace PROJECTNAMESPACE
 		private string[] PARAMKEYS_MASTERDB = new string[] { "master", "masterdb" };
 		private string[] PARAMKEYS_APPDB = new string[] { "applicationdb", "connectionstring" };
 		private string[] PARAMKEYS_NEWNAME = new string[] { "newdb", "newdatabase", "dbname" };
+		private string[] PARAMKEYS_HELP = new string[] { "showhelp" };
 		private string PARAMKEYS_SCRIPT = "script";
 		private string PARAMKEYS_SCRIPTFILE = "scriptfile";
 		private string PARAMKEYS_SCRIPTFILEACTION = "scriptfileaction";
@@ -67,6 +69,7 @@ namespace PROJECTNAMESPACE
 		private string PARAMKEYS_SKIPNORMALIZE = "skipnormalize";
 		private string PARAMKEYS_HASH = "usehash";
 		private string PARAMKEYS_CHECKONLY = "checkonly";
+		private string PARAMKEYS_QUIET = "quiet";
 		#endregion
 
 		#region Constructor
@@ -139,6 +142,12 @@ namespace PROJECTNAMESPACE
 					paramUICount++;
 				}
 
+				if (commandParams.ContainsKey(PARAMKEYS_QUIET))
+				{
+					setup.SuppressUI = true;
+					paramUICount++;
+				}
+
 				if (commandParams.ContainsKey(PARAMKEYS_VERSIONWARN))
 				{
 					if (commandParams[PARAMKEYS_VERSIONWARN].ToLower() == "all")
@@ -166,10 +175,16 @@ namespace PROJECTNAMESPACE
 					paramUICount++;
 				}
 
+				if (GetSetting(commandParams, PARAMKEYS_HELP, false))
+				{
+					ShowHelp();
+					return;
+				}
+
 				//Try to drop database
 				if (commandParams.Any(x => PARAMKEYS_DROP.Contains(x.Key)))
 				{
-					var masterConnectionString = GetMasterDbConnectionString(commandParams);
+					var masterConnectionString = GetSetting(commandParams, PARAMKEYS_MASTERDB, string.Empty);
 					var dbname = commandParams.Where(x => PARAMKEYS_NEWNAME.Contains(x.Key)).Select(x => x.Value).FirstOrDefault();
 					if (commandParams.Count == 3 && !string.IsNullOrEmpty(masterConnectionString))
 					{
@@ -181,9 +196,9 @@ namespace PROJECTNAMESPACE
 					throw new Exception("Invalid drop database configuration.");
 				}
 
-				setup.ConnectionString = GetAppDbString(commandParams);
-				setup.MasterConnectionString = GetMasterDbConnectionString(commandParams);
-				if (GetUpgradeDbSetting(commandParams, setup.IsUpgrade))
+				setup.ConnectionString = GetSetting(commandParams, PARAMKEYS_APPDB, string.Empty);
+				setup.MasterConnectionString = GetSetting(commandParams, PARAMKEYS_MASTERDB, string.Empty);
+				if (GetSetting(commandParams, PARAMKEYS_UPGRADE, setup.IsUpgrade))
 					setup.InstallStatus = InstallStatusConstants.Upgrade;
 				if (commandParams.Any(x => PARAMKEYS_CREATE.Contains(x.Key)))
 					setup.InstallStatus = InstallStatusConstants.Create;
@@ -216,11 +231,10 @@ namespace PROJECTNAMESPACE
 
 					var dumpFile = commandParams[PARAMKEYS_SCRIPTFILE];
 					if (!IsValidFileName(dumpFile))
-						throw new Exception("The '" + PARAMKEYS_SCRIPTFILE + "' is not valid.");
+						throw new Exception("The '" + PARAMKEYS_SCRIPTFILE + "' parameter is not valid.");
 
 					var fileCreate = true;
-					if (commandParams.ContainsKey(PARAMKEYS_SCRIPTFILEACTION) &&
-							(commandParams[PARAMKEYS_SCRIPTFILEACTION] + string.Empty) == "append")
+					if (commandParams.ContainsKey(PARAMKEYS_SCRIPTFILEACTION) && (commandParams[PARAMKEYS_SCRIPTFILEACTION] + string.Empty) == "append")
 						fileCreate = false;
 
 					if (File.Exists(dumpFile) && fileCreate)
@@ -232,22 +246,31 @@ namespace PROJECTNAMESPACE
 					switch (scriptAction)
 					{
 						case "versioned":
-							if (!commandParams.ContainsKey(PARAMKEYS_DBVERSION))
-								throw new Exception("Generation of versioned scripts requires a '" + PARAMKEYS_DBVERSION + "' parameter.");
+							if (commandParams.ContainsKey(PARAMKEYS_DBVERSION))
+							{
+								if (!GeneratedVersion.IsValid(commandParams[PARAMKEYS_DBVERSION]))
+									throw new Exception("The '" + PARAMKEYS_DBVERSION + "' parameter is not valid.");
 
-							if (!GeneratedVersion.IsValid(commandParams[PARAMKEYS_DBVERSION]))
-								throw new Exception("The '" + PARAMKEYS_DBVERSION + "' parameter is not valid.");
+								setup.Version = new GeneratedVersion(commandParams[PARAMKEYS_DBVERSION]);
+							}
+							else
+							{
+								if (string.IsNullOrEmpty(setup.ConnectionString))
+									throw new Exception("Generation of versioned scripts requires a '" + PARAMKEYS_DBVERSION + "' parameter or valid connection string.");
+								else
+								{
+									var s = new nHydrateSetting();
+									s.Load(setup.ConnectionString);
+									setup.Version = new GeneratedVersion(s.dbVersion);
+								}
+							}
 
 							Console.WriteLine("Generate Script Started");
 							setup.InstallStatus = InstallStatusConstants.Upgrade;
-							setup.Version = new GeneratedVersion(commandParams[PARAMKEYS_DBVERSION]);
 							File.AppendAllText(dumpFile, UpgradeInstaller.GetScript(setup));
 							Console.WriteLine("Generated Create Script");
 							break;
 						case "unversioned":
-							if (commandParams.ContainsKey(PARAMKEYS_DBVERSION))
-								throw new Exception("Generation of unversioned scripts cannot use a '" + PARAMKEYS_DBVERSION + "' parameter.");
-
 							Console.WriteLine("Generate Script Started");
 							setup.InstallStatus = InstallStatusConstants.Upgrade;
 							setup.Version = UpgradeInstaller._def_Version;
@@ -267,7 +290,7 @@ namespace PROJECTNAMESPACE
 				}
 
 				//If we processed all parameters and they were UI then we need to show UI
-				if (paramUICount < commandParams.Count)
+				if ((paramUICount < commandParams.Count) || setup.SuppressUI)
 				{
 					setup.NewDatabaseName = commandParams.Where(x => PARAMKEYS_NEWNAME.Contains(x.Key)).Select(x => x.Value).FirstOrDefault();
 					Install(setup);
@@ -342,7 +365,26 @@ namespace PROJECTNAMESPACE
 					throw new Exception("The connection string does not reference a valid database.");
 			}
 
-			UpgradeInstaller.UpgradeDatabase(setup);
+			try
+			{
+				UpgradeInstaller.UpgradeDatabase(setup);
+			}
+			catch (InvalidSQLException ex)
+			{
+				var sb = new StringBuilder();
+				sb.AppendLine();
+				sb.AppendLine("BEGIN ERROR SQL");
+				sb.AppendLine(ex.SQL);
+				sb.AppendLine("END ERROR SQL");
+				sb.AppendLine();
+				Console.WriteLine(sb.ToString());
+				UpgradeInstaller.LogError(ex, sb.ToString());
+				throw;
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
 		}
 
 		/// <summary>
@@ -411,10 +453,10 @@ namespace PROJECTNAMESPACE
 
 		#region Helpers
 
-		private bool GetUpgradeDbSetting(Dictionary<string, string> commandParams, bool defaultValue)
+		private bool GetSetting(Dictionary<string, string> commandParams, string[] keys, bool defaultValue)
 		{
-			bool retVal = defaultValue;
-			foreach (string s in PARAMKEYS_UPGRADE)
+			var retVal = defaultValue;
+			foreach (string s in keys)
 			{
 				if (commandParams.ContainsKey(s))
 				{
@@ -425,24 +467,10 @@ namespace PROJECTNAMESPACE
 			return retVal;
 		}
 
-		private string GetMasterDbConnectionString(Dictionary<string, string> commandParams)
+		private string GetSetting(Dictionary<string, string> commandParams, string[] keys, string defaultValue)
 		{
-			string retVal = string.Empty;
-			foreach (string s in PARAMKEYS_MASTERDB)
-			{
-				if (commandParams.ContainsKey(s))
-				{
-					retVal = commandParams[s];
-					break;
-				}
-			}
-			return retVal;
-		}
-
-		private string GetAppDbString(Dictionary<string, string> commandParams)
-		{
-			string retVal = string.Empty;
-			foreach (string s in PARAMKEYS_APPDB)
+			var retVal = defaultValue;
+			foreach (string s in keys)
 			{
 				if (commandParams.ContainsKey(s))
 				{
@@ -519,6 +547,60 @@ namespace PROJECTNAMESPACE
 
 		#endregion
 
+		#region ShowHelp
+
+		public static void ShowHelp()
+		{
+			//Create Help dialog
+			var sb = new StringBuilder();
+			sb.AppendLine("Creates or updates a Sql Server database");
+			sb.AppendLine();
+			sb.AppendLine("InstallUtil.exe PROJECTNAMESPACE.dll [/upgrade] [/create] [/master:connectionstring] [/connectionstring:connectionstring] [/newdb:name] [/showsql:true|false] [/tranaction:true|false] [/skipnormalize] [/scriptfile:filename] [/scriptfileaction:append] [/checkonly] [/usehash] [/acceptwarnings:all|none|new|changed]");
+			sb.AppendLine();
+			sb.AppendLine("Providing no parameters will display the default UI.");
+			sb.AppendLine();
+			sb.AppendLine("/upgrade");
+			sb.AppendLine("Specifies that this is an update database operation");
+			sb.AppendLine();
+			sb.AppendLine("/create");
+			sb.AppendLine("Specifies that this is a create database operation");
+			sb.AppendLine();
+			sb.AppendLine("/master:\"connectionstring\"");
+			sb.AppendLine("Specifies the master connection string. This is only required for create database.");
+			sb.AppendLine();
+			sb.AppendLine("/connectionstring:\"connectionstring\"");
+			sb.AppendLine("/Specifies the connection string to the upgrade database");
+			sb.AppendLine();
+			sb.AppendLine("newdb:name");
+			sb.AppendLine("When creating a new database, this is the name of the newly created database.");
+			sb.AppendLine();
+			sb.AppendLine("/showsql:[true|false]");
+			sb.AppendLine("Displays each SQL statement in the console window as its executed. Default is false.");
+			sb.AppendLine();
+			sb.AppendLine("/tranaction:[true|false]");
+			sb.AppendLine("Specifies whether to use a database transaction. Outside of a transaction there is no rollback functionality if an error occurs! Default is true.");
+			sb.AppendLine();
+			sb.AppendLine("/skipnormalize");
+			sb.AppendLine("Specifies whether to skip the normalization script. The normalization script is used to ensure that the database has the correct schema.");
+			sb.AppendLine();
+			sb.AppendLine("/scriptfile:filename");
+			sb.AppendLine("Specifies that a script be created and written to the specified file.");
+			sb.AppendLine();
+			sb.AppendLine("/scriptfileaction:append");
+			sb.AppendLine("Optionally you can specify to append the script to an existing file. If this parameter is omitted, the file will first be deleted if it exists.");
+			sb.AppendLine();
+			sb.AppendLine("/usehash:[true|false]");
+			sb.AppendLine("Specifies that only scripts that have changed will be applied to the database . Default is true.");
+			sb.AppendLine();
+			sb.AppendLine("/checkonly");
+			sb.AppendLine("Specifies check mode and that no scripts will be run against the database. If any changes have occurred, an exception is thrown with the change list.");
+			sb.AppendLine();
+
+			MessageBox.Show(sb.ToString(), "Help", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+
+		#endregion
+
 		internal InstallSettings Settings { get; private set; }
 
 		/// <summary>
@@ -536,6 +618,8 @@ namespace PROJECTNAMESPACE
 		/// <summary />
 		Upgrade
 	}
+
+	#region InstallSetup
 
 	/// <summary />
 	public class InstallSetup
@@ -616,6 +700,8 @@ namespace PROJECTNAMESPACE
 		/// <summary />
 		public bool AcceptVersionWarningsNewScripts { get; set; }
 	}
+
+	#endregion
 
 }
 #pragma warning restore 0168

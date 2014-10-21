@@ -544,23 +544,6 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                         if (ModelHelper.IsTextType(column.DataType))
                         {
                             sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperInternal((string)newValue, fixLength, GetMaxLength(field));");
-                            #region old code
-                            //sb.AppendLine("				if (newValue == null)");
-                            //sb.AppendLine("				{");
-                            //sb.AppendLine("					this." + column.PascalName + " = null;");
-                            //sb.AppendLine("				}");
-                            //sb.AppendLine("				else");
-                            //sb.AppendLine("				{");
-                            //sb.AppendLine("					string v = newValue.ToString();");
-                            //sb.AppendLine("					if (fixLength)");
-                            //sb.AppendLine("					{");
-                            //sb.AppendLine("						int fieldLength = GetMaxLength(FieldNameConstants." + column.PascalName + ");");
-                            //sb.AppendLine("						if ((fieldLength > 0) && (v.Length > fieldLength)) v = v.Substring(0, fieldLength);");
-                            //sb.AppendLine("					}");
-                            //sb.AppendLine("					this." + column.PascalName + " = v;");
-                            //sb.AppendLine("				}");
-                            //sb.AppendLine("				return;");
-                            #endregion
                         }
                         else if (column.DataType == System.Data.SqlDbType.Float)
                         {

@@ -647,8 +647,26 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				}");
             sb.AppendLine("			}");
             sb.AppendLine();
-
-            sb.AppendLine("			return base.SaveChanges();");
+            sb.AppendLine("			try");
+            sb.AppendLine("			{");
+            sb.AppendLine("				return base.SaveChanges();");
+            sb.AppendLine("			}");
+            sb.AppendLine("			catch (System.Data.Entity.Validation.DbEntityValidationException ex)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var sb = new System.Text.StringBuilder();");
+            sb.AppendLine("				foreach (var error in ex.EntityValidationErrors)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					foreach (var validationError in error.ValidationErrors)");
+            sb.AppendLine("					{");
+            sb.AppendLine("						sb.AppendLine(validationError.PropertyName + \": \" + validationError.ErrorMessage);");
+            sb.AppendLine("					}");
+            sb.AppendLine("				}");
+            sb.AppendLine("				throw new System.Data.Entity.Validation.DbEntityValidationException(sb.ToString(), ex.EntityValidationErrors);");
+            sb.AppendLine("			}");
+            sb.AppendLine("			catch (Exception ex)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				throw;");
+            sb.AppendLine("			}");
             sb.AppendLine("		}");
             sb.AppendLine("		private Random _rnd = new Random();"); //Used for MySql
             sb.AppendLine();

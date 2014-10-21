@@ -632,6 +632,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine();
 
             #region SequentialId
+
+            sb.AppendLine("	#region SequentialIdGenerator");
+            sb.AppendLine();
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// Generates Sequential Guid values that can be used for Sql Server UniqueIdentifiers to improve performance.");
             sb.AppendLine("	/// </summary>");
@@ -731,8 +734,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			return result;");
             sb.AppendLine("		}");
             sb.AppendLine("	}");
+            sb.AppendLine();
+            sb.AppendLine("	#endregion");
+            sb.AppendLine();
             #endregion
 
+            sb.AppendLine();
             sb.AppendLine("	#endregion");
             sb.AppendLine();
         }

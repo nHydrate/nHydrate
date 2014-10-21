@@ -116,7 +116,6 @@ namespace nHydrate.Generator.Common
 
         public string TableFacadeSettings { get; set; }
         public string CodeFacadeSettings { get; set; }
-        public int LastLoadTime { get; set; }
 
         #endregion
 
@@ -160,8 +159,6 @@ namespace nHydrate.Generator.Common
 
             //Column facacde
             var cFacadeNode = XmlHelper.AddElement(document.DocumentElement, "columnFacadeSettings", this.CodeFacadeSettings);
-
-            XmlHelper.AddElement(document.DocumentElement, "lastLoadTime", this.LastLoadTime.ToString());
 
             document.Save(this.FileName);
         }
@@ -212,8 +209,6 @@ namespace nHydrate.Generator.Common
 
             this.TableFacadeSettings = XmlHelper.GetNodeValue(document.DocumentElement, "tableFacadeSettings", string.Empty);
             this.CodeFacadeSettings = XmlHelper.GetNodeValue(document.DocumentElement, "columnFacadeSettings", string.Empty);
-            this.LastLoadTime = int.Parse(XmlHelper.GetNodeValue(document.DocumentElement, "lastLoadTime", this.LastLoadTime.ToString()));
-            XmlHelper.AddElement(document.DocumentElement, "lastLoadTime", this.LastLoadTime.ToString());
         }
 
         #endregion

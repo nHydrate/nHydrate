@@ -144,7 +144,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("	[Serializable]");
             sb.AppendLine("	[System.Data.Linq.Mapping.Table(Name = \"" + _currentTable.PascalName + "\")]");
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
-            
+
             if (_currentTable.IsTenant)
                 sb.AppendLine("	[EdmEntityTypeAttribute(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _model.TenantPrefix + "_" + _currentTable.PascalName + "\")]");
             else
@@ -652,6 +652,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
                 //Do not process the setter if the value is NOT changing
                 sb.AppendLine("				if (value == _" + column.CamelName + ") return;");
+
                 #endregion
 
                 sb.AppendLine("				var eventArg = new nHydrate.EFCore.EventArgs.ChangingEventArgs<" + column.GetCodeType() + ">(value, \"" + column.PascalName + "\");");

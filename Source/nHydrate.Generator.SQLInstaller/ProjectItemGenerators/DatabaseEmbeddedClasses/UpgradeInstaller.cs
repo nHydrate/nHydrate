@@ -82,6 +82,10 @@ namespace PROJECTNAMESPACE
 				upgradeInstaller.Initialize();
 				upgradeInstaller.RunUpgrade(setup);
 			}
+			catch (InvalidSQLException ex)
+			{
+				throw;
+			}
 			catch (Exception ex)
 			{
 				throw;
@@ -124,7 +128,7 @@ namespace PROJECTNAMESPACE
 			//Verify that this is the proper database for this model, if there is a previous key
 			if (settings.ModelKey != Guid.Empty)
 			{
-				if (settings.ModelKey != new Guid(MODELKEY))
+				if (settings.ModelKey != new Guid(MODELKEY) && !_setup.SuppressUI)
 				{
 					if (System.Windows.Forms.MessageBox.Show("The database being updated was created against a different model. This may cause database versioning issues if you continue.\n\nDo you wish to continue?", "Continue?", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning) != System.Windows.Forms.DialogResult.Yes)
 					{
@@ -157,10 +161,10 @@ namespace PROJECTNAMESPACE
 
 		public static string GetScript(InstallSetup setup)
 		{
-			var tempss = new List<string>();
+			var tempsSections = new List<string>();
 			if (setup.InstallStatus == InstallStatusConstants.Create)
 			{
-				tempss.AddRange(setup.SkipSections);
+				tempsSections.AddRange(setup.SkipSections);
 				setup.SkipSections.Add("FIELD CREATE");
 				setup.SkipSections.Add("AUDIT TRAIL CREATE");
 				setup.SkipSections.Add("AUDIT TRAIL REMOVE");
@@ -249,7 +253,7 @@ namespace PROJECTNAMESPACE
 				if (setup.InstallStatus == InstallStatusConstants.Create)
 				{
 					setup.SkipSections.Clear();
-					setup.SkipSections.AddRange(tempss);
+					setup.SkipSections.AddRange(tempsSections);
 				}
 			}
 		}
@@ -339,7 +343,7 @@ namespace PROJECTNAMESPACE
 				if (!string.IsNullOrEmpty(settings.dbVersion))
 					currentDbVersion = new GeneratedVersion(settings.dbVersion.Split('.'));
 
-				if (currentDbVersion > _upgradeToVersion)
+				if (currentDbVersion > _upgradeToVersion && !_setup.SuppressUI)
 				{
 					System.Windows.Forms.MessageBox.Show("The current database version (" + currentDbVersion.ToString() + ") is greater than the current library (" + _upgradeToVersion.ToString() + "). The upgrade will not proceed.", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
 					return;
@@ -363,6 +367,13 @@ namespace PROJECTNAMESPACE
 						var hashValue = string.Join("\r\nGO\r\n", SqlServers.ReadSQLFileSectionsFromResource(item.Key, setup)).CalculateMD5Hash();
 						var fileName = item.Key.Substring(item.Key.IndexOf(UPGRADE_GENERATED_FOLDER) + UPGRADE_GENERATED_FOLDER.Length, item.Key.Length - (item.Key.IndexOf(UPGRADE_GENERATED_FOLDER) + UPGRADE_GENERATED_FOLDER.Length));
 						var di = _databaseItems.FirstOrDefault(x => x.name == item.Key);
+
+						if (di == null) //Just in case the version name is formatted differently
+						{
+							di = _databaseItems.FirstOrDefault(x => (new GeneratedVersion(x.name)).ToString() == (new GeneratedVersion(item.Key)).ToString());
+							if (di != null) di.name = item.Key;
+						}
+
 						if (di == null)
 						{
 							var fileVersion = new GeneratedVersion(fileName);
@@ -371,8 +382,15 @@ namespace PROJECTNAMESPACE
 								//script is in installer but never run on database
 								if (!setup.AcceptVersionWarningsNewScripts && !setup.CheckOnly)
 								{
-									if (MessageBox.Show("The script '" + fileName + "' is part of the install but has never been applied to the database. The script version is lower than the database version so it will never be applied. Do you wish to proceed with the install?", "Script never applied", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+									if (!_setup.SuppressUI)
+									{
+										if (MessageBox.Show("The script '" + fileName + "' is part of the install but has never been applied to the database. The script version is lower than the database version so it will never be applied. Do you wish to proceed with the install?", "Script never applied", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+											throw new ScriptDifferenceException("The script '" + fileName + "' has never been applied to the database and never will due to its version.");
+									}
+									else
+									{
 										throw new ScriptDifferenceException("The script '" + fileName + "' has never been applied to the database and never will due to its version.");
+									}
 								}
 								_databaseItems.Add(new nHydrateDbObject()
 								{
@@ -391,8 +409,15 @@ namespace PROJECTNAMESPACE
 							//Said script is in installer and was run but the installer version is different than what was run
 							if (!setup.AcceptVersionWarningsChangedScripts && !setup.CheckOnly)
 							{
-								if (MessageBox.Show("The script '" + fileName + "' was previously run on the database, but the current script is not the same. Do you wish to proceed with the install?", "Script has changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+								if (!_setup.SuppressUI)
+								{
+									if (MessageBox.Show("The script '" + fileName + "' was previously run on the database, but the current script is not the same. Do you wish to proceed with the install?", "Script has changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+										throw new ScriptDifferenceException("The script '" + fileName + "' is different than the one run on the database.");
+								}
+								else
+								{
 									throw new ScriptDifferenceException("The script '" + fileName + "' is different than the one run on the database.");
+								}
 							}
 							di.Hash = hashValue;
 							di.Status = "versiondiff:upgrade";
@@ -515,25 +540,25 @@ namespace PROJECTNAMESPACE
 			}
 			catch (InvalidSQLException ex)
 			{
-				if (!setup.CheckOnly)
+				if (!setup.CheckOnly && !setup.SuppressUI)
 				{
 					var F = new SqlErrorForm();
 					F.Setup(ex, false);
 					F.ShowDialog();
+					
 				}
 				if (_transaction == null)
 					_transaction.Rollback();
-				throw ex;
+				throw;
 			}
 			catch (Exception ex)
 			{
-				if (!setup.CheckOnly)
+				if (!setup.CheckOnly && !setup.SuppressUI)
 				{
 					var F = new SqlErrorForm();
 					F.SetupGeneric(ex);
 					F.ShowDialog();
 				}
-				//System.Windows.Forms.MessageBox.Show(ex.Message, "Error!", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
 				if (_transaction == null)
 					_transaction.Rollback();
 				throw;
@@ -1102,7 +1127,7 @@ namespace PROJECTNAMESPACE
 					}
 					catch
 					{
-						System.Windows.Forms.MessageBox.Show("Sp Fail: " + ern.FullName);
+						//System.Windows.Forms.MessageBox.Show("Sp Fail: " + ern.FullName);
 						throw;
 					}
 				}
@@ -1174,7 +1199,7 @@ namespace PROJECTNAMESPACE
 					}
 					catch
 					{
-						System.Windows.Forms.MessageBox.Show("Sp Fail: " + ern.FullName);
+						//System.Windows.Forms.MessageBox.Show("Sp Fail: " + ern.FullName);
 						throw;
 					}
 				}
@@ -1269,7 +1294,7 @@ namespace PROJECTNAMESPACE
 					}
 					catch
 					{
-						System.Windows.Forms.MessageBox.Show("Sp Fail: " + ern.FullName);
+						//System.Windows.Forms.MessageBox.Show("Sp Fail: " + ern.FullName);
 						throw;
 					}
 				}
@@ -1295,7 +1320,7 @@ namespace PROJECTNAMESPACE
 					}
 					catch
 					{
-						System.Windows.Forms.MessageBox.Show("Function Fail: " + ern.FullName);
+						//System.Windows.Forms.MessageBox.Show("Function Fail: " + ern.FullName);
 						throw;
 					}
 				}
@@ -1321,7 +1346,7 @@ namespace PROJECTNAMESPACE
 					}
 					catch
 					{
-						System.Windows.Forms.MessageBox.Show("Sp Fail: " + ern.FullName);
+						//System.Windows.Forms.MessageBox.Show("Sp Fail: " + ern.FullName);
 						throw;
 					}
 				}
@@ -1483,11 +1508,8 @@ namespace PROJECTNAMESPACE
 		{
 			try
 			{
-				var fileName = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
-																		Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetExecutingAssembly().Location) + ".errorlog.txt");
-
+				var fileName = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetExecutingAssembly().Location) + ".errorlog.txt");
 				var text = string.Empty;
-
 				if (exception != null)
 					text += exception.ToString() + "\r\n\r\n";
 

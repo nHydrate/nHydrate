@@ -1172,6 +1172,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
 
             #region GlobalValues
 
+            sb.AppendLine("	#region GlobalValues");
+            sb.AppendLine();
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	internal static class GlobalValues");
             sb.AppendLine("	{");
@@ -1508,11 +1510,15 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
 
             sb.AppendLine("	}");
             sb.AppendLine();
+            sb.AppendLine("	#endregion");
+            sb.AppendLine();
 
             #endregion
 
             #region Extensions
 
+            sb.AppendLine("	#region Extensions");
+            sb.AppendLine();
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	internal static class Extensions");
             sb.AppendLine("	{");
@@ -1541,6 +1547,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("		}");
             sb.AppendLine("	}");
             sb.AppendLine();
+            sb.AppendLine("	#endregion");
 
             #endregion
 
