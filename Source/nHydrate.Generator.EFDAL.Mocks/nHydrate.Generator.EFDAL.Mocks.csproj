@@ -77,20 +77,6 @@
     <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
       <Link>Properties\AssemblyInfoGeneratorCommon.cs</Link>
     </Compile>
-    <Compile Include="Generators\ActionTypes\ActionTypesExtenderGenerator.cs" />
-    <Compile Include="Generators\ActionTypes\ActionTypesExtenderTemplate.cs" />
-    <Compile Include="Generators\ActionTypes\ActionTypesGeneratedGenerator.cs" />
-    <Compile Include="Generators\ActionTypes\ActionTypesGeneratedTemplate.cs" />
-    <Compile Include="Generators\AuditEntity\AuditEntityExtenderGenerator.cs" />
-    <Compile Include="Generators\AuditEntity\AuditEntityExtenderTemplate.cs" />
-    <Compile Include="Generators\AuditEntity\AuditEntityGeneratedGenerator.cs" />
-    <Compile Include="Generators\AuditEntity\AuditEntityGeneratedTemplate.cs" />
-    <Compile Include="Generators\ComplexTypes\ComplexTypesExtenderGenerator.cs" />
-    <Compile Include="Generators\ComplexTypes\ComplexTypesSPExtenderTemplate.cs" />
-    <Compile Include="Generators\ComplexTypes\ComplexTypesGeneratedGenerator.cs" />
-    <Compile Include="Generators\ComplexTypes\ComplexTypesSPGeneratedTemplate.cs" />
-    <Compile Include="Generators\ComplexTypes\ComplexTypesFuncExtenderTemplate.cs" />
-    <Compile Include="Generators\ComplexTypes\ComplexTypesFuncGeneratedTemplate.cs" />
     <Compile Include="Generators\ContextExtensions\ContextExtensionsExtenderGenerator.cs" />
     <Compile Include="Generators\ContextExtensions\ContextExtensionsExtenderTemplate.cs" />
     <Compile Include="Generators\ContextExtensions\ContextExtensionsGeneratedGenerator.cs" />
@@ -105,18 +91,6 @@
     <Compile Include="Generators\IncludeTreeLINQ\IncludeTreeLINQExtenderTemplate.cs" />
     <Compile Include="Generators\IncludeTreeLINQ\IncludeTreeLINQGeneratedGenerator.cs" />
     <Compile Include="Generators\IncludeTreeLINQ\IncludeTreeLINQGeneratedTemplate.cs" />
-    <Compile Include="Generators\ViewEntity\ViewEntityExtenderGenerator.cs" />
-    <Compile Include="Generators\ViewEntity\ViewEntityExtenderTemplate.cs" />
-    <Compile Include="Generators\ViewEntity\ViewEntityGeneratedGenerator.cs" />
-    <Compile Include="Generators\ViewEntity\ViewEntityGeneratedTemplate.cs" />
-    <Compile Include="Generators\EntityPrimaryKey\EntityPrimaryKeyExtenderGenerator.cs" />
-    <Compile Include="Generators\EntityPrimaryKey\EntityPrimaryKeyExtenderTemplate.cs" />
-    <Compile Include="Generators\EntityPrimaryKey\EntityPrimaryKeyGenerator.cs" />
-    <Compile Include="Generators\EntityPrimaryKey\EntityPrimaryKeyTemplate.cs" />
-    <Compile Include="Generators\Entity\EntityExtenderGenerator.cs" />
-    <Compile Include="Generators\Entity\EntityExtenderTemplate.cs" />
-    <Compile Include="Generators\Entity\EntityGeneratedGenerator.cs" />
-    <Compile Include="Generators\Entity\EntityGeneratedTemplate.cs" />
     <Compile Include="Generators\MockObjectSet\MockObjectSetExtenderGenerator.cs" />
     <Compile Include="Generators\MockObjectSet\MockObjectSetExtenderTemplate.cs" />
     <Compile Include="Generators\MockObjectSet\MockObjectSetGeneratedGenerator.cs" />

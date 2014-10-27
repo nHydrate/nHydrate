@@ -29,40 +29,39 @@ using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.EFDAL.Mocks.Generators.SQLHelper
 {
-	[GeneratorItem("SQLHelperExtender", typeof(EFDALMockProjectGenerator))]
-	class SQLHelperExtenderGenerator : BaseClassGenerator
-	{
-		#region Class Members
+    [GeneratorItem("SQLHelperExtender", typeof(EFDALMockProjectGenerator))]
+    public class SQLHelperExtenderGenerator : BaseClassGenerator
+    {
+        #region Class Members
 
-		private const string RELATIVE_OUTPUT_LOCATION = @"\";
+        private const string RELATIVE_OUTPUT_LOCATION = @"\";
 
-		#endregion
+        #endregion
 
-		#region Overrides
+        #region Overrides
 
-		public override int FileCount
-		{
-			get { return 1; }
-		}
+        public override int FileCount
+        {
+            get { return 1; }
+        }
 
-		public override void Generate()
-		{
-			var template = new SQLHelperExtenderTemplate(_model);
-			var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
-			var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false);
-			OnProjectItemGenerated(this, eventArgs);
+        public override void Generate()
+        {
+            var template = new SQLHelperExtenderTemplate(_model);
+            var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
+            var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false);
+            OnProjectItemGenerated(this, eventArgs);
 
-			var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
-			OnGenerationComplete(this, gcEventArgs);
-		}
+            var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
+            OnGenerationComplete(this, gcEventArgs);
+        }
 
-		public override string LocalNamespaceExtension
-		{
-			get { return EFDALMockProjectGenerator.NamespaceExtension; }
-		}
+        public override string LocalNamespaceExtension
+        {
+            get { return EFDALMockProjectGenerator.NamespaceExtension; }
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }
-

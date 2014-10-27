@@ -29,71 +29,71 @@ using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator.EFDAL.Mocks.Generators.SQLHelper
 {
-	class SQLHelperExtenderTemplate : EFDALMockBaseTemplate
-	{
-		private readonly StringBuilder sb = new StringBuilder();
+    public class SQLHelperExtenderTemplate : EFDALMockBaseTemplate
+    {
+        private readonly StringBuilder sb = new StringBuilder();
 
-		#region Constructors
+        #region Constructors
 
-		public SQLHelperExtenderTemplate(ModelRoot model)
-			: base(model)
-		{
-		}
+        public SQLHelperExtenderTemplate(ModelRoot model)
+            : base(model)
+        {
+        }
 
-		#endregion
+        #endregion
 
-		#region Overrides
-		public override string FileContent
-		{
-			get
-			{
-				this.GenerateContent();
-				return sb.ToString();
-			}
-		}
+        #region Overrides
+        public override string FileContent
+        {
+            get
+            {
+                this.GenerateContent();
+                return sb.ToString();
+            }
+        }
 
-		public override string FileName
-		{
-			get { return "UtilityHelper.cs"; }
-		}
+        public override string FileName
+        {
+            get { return "UtilityHelper.cs"; }
+        }
 
-		#endregion
+        #endregion
 
-		#region GenerateContent
+        #region GenerateContent
 
-		private void GenerateContent()
-		{
-			try
-			{
-				nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
-				this.AppendUsingStatements();
-				sb.AppendLine("namespace " + this.GetLocalNamespace());
-				sb.AppendLine("{");
-				this.AppendClass();
-				sb.AppendLine("}");
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
+        private void GenerateContent()
+        {
+            try
+            {
+                nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
+                this.AppendUsingStatements();
+                sb.AppendLine("namespace " + this.GetLocalNamespace());
+                sb.AppendLine("{");
+                this.AppendClass();
+                sb.AppendLine("}");
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region namespace / objects
+        #region namespace / objects
 
-		public void AppendUsingStatements()
-		{
-		}
+        public void AppendUsingStatements()
+        {
+        }
 
-		public void AppendClass()
-		{
-			sb.AppendLine("	internal partial class LinqSQLParser");
-			sb.AppendLine("	{");
-			sb.AppendLine("	}");
-		}
+        public void AppendClass()
+        {
+            sb.AppendLine("	internal partial class LinqSQLParser");
+            sb.AppendLine("	{");
+            sb.AppendLine("	}");
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }

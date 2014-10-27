@@ -52,6 +52,12 @@
       <Link>Properties\AssemblyInfoGeneratorCommon.cs</Link>
     </Compile>
     <Compile Include="EFDALCodeFirstProjectItemGenerator.cs" />
+    <Compile Include="Generators\ComplexTypes\ComplexTypesExtenderGenerator.cs" />
+    <Compile Include="Generators\ComplexTypes\ComplexTypesFuncExtenderTemplate.cs" />
+    <Compile Include="Generators\ComplexTypes\ComplexTypesFuncGeneratedTemplate.cs" />
+    <Compile Include="Generators\ComplexTypes\ComplexTypesGeneratedGenerator.cs" />
+    <Compile Include="Generators\ComplexTypes\ComplexTypesSPExtenderTemplate.cs" />
+    <Compile Include="Generators\ComplexTypes\ComplexTypesSPGeneratedTemplate.cs" />
     <Compile Include="Generators\ContextExtensions\ContextExtensionsExtenderGenerator.cs" />
     <Compile Include="Generators\ContextExtensions\ContextExtensionsExtenderTemplate.cs" />
     <Compile Include="Generators\ContextExtensions\ContextExtensionsGeneratedGenerator.cs" />

@@ -136,7 +136,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 			sb.AppendLine("		/// <summary>");
 			sb.AppendLine("		/// ");
 			sb.AppendLine("		/// </summary>");
-			sb.AppendLine("		new " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants Field { get; }");
+			sb.AppendLine("		new " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants Field { get; }");
 			sb.AppendLine("	}");
 			sb.AppendLine();
 			sb.AppendLine("	/// <summary>");
@@ -144,9 +144,9 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 			sb.AppendLine("	/// </summary>");
 			sb.AppendLine("	/// <typeparam name=\"T\"></typeparam>");
 			sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
-			sb.AppendLine("	public class " + _item.PascalName + "AuditResultFieldCompare<T> : nHydrate.EFCore.DataAccess.AuditResultFieldCompare<T, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants>, I" + _item.PascalName + "AuditResultFieldCompare");
+			sb.AppendLine("	public class " + _item.PascalName + "AuditResultFieldCompare<T> : nHydrate.EFCore.DataAccess.AuditResultFieldCompare<T, " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants>, I" + _item.PascalName + "AuditResultFieldCompare");
 			sb.AppendLine("	{");
-			sb.AppendLine("		internal " + _item.PascalName + "AuditResultFieldCompare(T value1, T value2, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, System.Type dataType)");
+			sb.AppendLine("		internal " + _item.PascalName + "AuditResultFieldCompare(T value1, T value2, " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants field, System.Type dataType)");
 			sb.AppendLine("			: base(value1, value2, field, dataType)");
 			sb.AppendLine("		{");
 			sb.AppendLine("		}");
@@ -527,20 +527,20 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 					if (column.IsBinaryType) //Binary is a difference comparison
 					{
 						sb.AppendLine("			if (item1." + column.PascalName + " == null ^ item2." + column.PascalName + " == null)");
-						sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ", item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
+						sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ", item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
 						sb.AppendLine("			if (item1." + column.PascalName + " != null && item2." + column.PascalName + " != null && !item1." + column.PascalName + ".SequenceEqual(item2." + column.PascalName + "))");
-						sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ", item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
+						sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ", item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
 					}
 					else
 					{
 						sb.AppendLine("			if (item1." + column.PascalName + " != item2." + column.PascalName + ")");
 
 						if (column.PrimaryKey)
-							sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">((" + column.GetCodeType(false) + ")item1." + column.PascalName + ", (" + column.GetCodeType(false) + ")item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
+							sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">((" + column.GetCodeType(false) + ")item1." + column.PascalName + ", (" + column.GetCodeType(false) + ")item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
 						else if (column.IsTextType || column.IsBinaryType)
-							sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ", item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
+							sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ", item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
 						else
-							sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ".GetValueOrDefault(), item2." + column.PascalName + ".GetValueOrDefault(), " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
+							sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ".GetValueOrDefault(), item2." + column.PascalName + ".GetValueOrDefault(), " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
 					}
 				}
 			}

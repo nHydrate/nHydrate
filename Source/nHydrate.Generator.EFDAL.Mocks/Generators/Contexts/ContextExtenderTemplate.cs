@@ -29,61 +29,61 @@ using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator.EFDAL.Mocks.Generators.Contexts
 {
-	public class ContextExtenderTemplate : EFDALMockBaseTemplate
-	{
-		private readonly StringBuilder sb = new StringBuilder();
+    public class ContextExtenderTemplate : EFDALMockBaseTemplate
+    {
+        private readonly StringBuilder sb = new StringBuilder();
 
-		public ContextExtenderTemplate(ModelRoot model)
-			: base(model)
-		{
-		}
+        public ContextExtenderTemplate(ModelRoot model)
+            : base(model)
+        {
+        }
 
-		#region BaseClassTemplate overrides
-		public override string FileName
-		{
-			get { return string.Format("{0}Entities.cs", _model.ProjectName); }
-		}
+        #region BaseClassTemplate overrides
+        public override string FileName
+        {
+            get { return string.Format("{0}Entities.cs", _model.ProjectName); }
+        }
 
-		public override string FileContent
-		{
-			get
-			{
-				try
-				{
-					GenerateContent();
-					return sb.ToString();
-				}
-				catch (Exception ex)
-				{
-					throw;
-				}
-			}
-		}
+        public override string FileContent
+        {
+            get
+            {
+                try
+                {
+                    GenerateContent();
+                    return sb.ToString();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region GenerateContent
+        #region GenerateContent
 
-		public void GenerateContent()
-		{
-			try
-			{
-				nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
-				sb.AppendLine("namespace " + this.GetLocalNamespace());
-				sb.AppendLine("{");
-				sb.AppendLine("	partial class " + _model.ProjectName + "Entities");
-				sb.AppendLine("	{");
-				sb.AppendLine("	}");
-				sb.AppendLine("}");
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
+        public void GenerateContent()
+        {
+            try
+            {
+                nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
+                sb.AppendLine("namespace " + this.GetLocalNamespace());
+                sb.AppendLine("{");
+                sb.AppendLine("	partial class " + _model.ProjectName + "Entities");
+                sb.AppendLine("	{");
+                sb.AppendLine("	}");
+                sb.AppendLine("}");
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }

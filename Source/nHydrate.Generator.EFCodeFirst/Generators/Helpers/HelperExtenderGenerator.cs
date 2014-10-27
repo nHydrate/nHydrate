@@ -27,7 +27,7 @@ using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.EFCodeFirst;
 
-namespace nHydrate.Generator.EFDAL.Generators.Helpers
+namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
 {
     [GeneratorItem("HelperExtenderGenerator", typeof(EFCodeFirstProjectGenerator))]
     public class HelperExtenderGenerator : EFCodeFirstProjectItemGenerator

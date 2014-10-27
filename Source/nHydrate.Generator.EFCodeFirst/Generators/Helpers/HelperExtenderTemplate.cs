@@ -28,7 +28,7 @@ using System.Text;
 using nHydrate.Generator.EFCodeFirst;
 using nHydrate.Generator.Models;
 
-namespace nHydrate.Generator.EFDAL.Generators.Helpers
+namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
 {
     public class HelperExtenderTemplate : EFCodeFirstBaseTemplate
     {

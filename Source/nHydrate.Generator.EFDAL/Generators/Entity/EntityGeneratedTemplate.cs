@@ -36,23 +36,23 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
     public class EntityGeneratedTemplate : EFDALBaseTemplate
     {
         private StringBuilder sb = new StringBuilder();
-        private readonly Table _currentTable;
+        private readonly Table _item;
 
         public EntityGeneratedTemplate(ModelRoot model, Table currentTable)
             : base(model)
         {
-            _currentTable = currentTable;
+            _item = currentTable;
         }
 
         #region BaseClassTemplate overrides
         public override string FileName
         {
-            get { return string.Format("{0}.Generated.cs", _currentTable.PascalName); }
+            get { return string.Format("{0}.Generated.cs", _item.PascalName); }
         }
 
         public string ParentItemName
         {
-            get { return string.Format("{0}.cs", _currentTable.PascalName); }
+            get { return string.Format("{0}.cs", _item.PascalName); }
         }
 
         public override string FileContent
@@ -118,100 +118,100 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
         private void AppendEntityClass()
         {
-            var doubleDerivedClassName = _currentTable.PascalName;
-            if (_currentTable.GeneratesDoubleDerived)
+            var doubleDerivedClassName = _item.PascalName;
+            if (_item.GeneratesDoubleDerived)
             {
-                doubleDerivedClassName = _currentTable.PascalName + "Base";
+                doubleDerivedClassName = _item.PascalName + "Base";
 
                 sb.AppendLine("	/// <summary>");
-                sb.AppendLine("	/// The collection to hold '" + _currentTable.PascalName + "' entities");
-                if (!string.IsNullOrEmpty(_currentTable.Description))
-                    StringHelper.LineBreakCode(sb, _currentTable.Description, "	/// ");
+                sb.AppendLine("	/// The collection to hold '" + _item.PascalName + "' entities");
+                if (!string.IsNullOrEmpty(_item.Description))
+                    StringHelper.LineBreakCode(sb, _item.Description, "	/// ");
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
-                if (_currentTable.IsAbstract)
-                    sb.AppendLine("	public abstract partial class " + _currentTable.PascalName + " : " + doubleDerivedClassName);
+                if (_item.IsAbstract)
+                    sb.AppendLine("	public abstract partial class " + _item.PascalName + " : " + doubleDerivedClassName);
                 else
-                    sb.AppendLine("	public partial class " + _currentTable.PascalName + " : " + doubleDerivedClassName);
+                    sb.AppendLine("	public partial class " + _item.PascalName + " : " + doubleDerivedClassName);
                 sb.AppendLine("	{");
                 sb.AppendLine("	}");
                 sb.AppendLine();
             }
 
             sb.AppendLine("	/// <summary>");
-            if (_currentTable.GeneratesDoubleDerived)
+            if (_item.GeneratesDoubleDerived)
             {
-                sb.AppendLine("	/// Double-derived base class for " + _currentTable.PascalName);
+                sb.AppendLine("	/// Double-derived base class for " + _item.PascalName);
             }
             else
             {
-                sb.AppendLine("	/// The collection to hold '" + _currentTable.PascalName + "' entities");
-                if (!string.IsNullOrEmpty(_currentTable.Description))
+                sb.AppendLine("	/// The collection to hold '" + _item.PascalName + "' entities");
+                if (!string.IsNullOrEmpty(_item.Description))
                 {
-                    StringHelper.LineBreakCode(sb, _currentTable.Description, "	/// ");
+                    StringHelper.LineBreakCode(sb, _item.Description, "	/// ");
                 }
             }
             sb.AppendLine("	/// </summary>");
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
-            sb.AppendLine("	[EdmEntityTypeAttribute(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _currentTable.PascalName + "\")]");
+            sb.AppendLine("	[EdmEntityTypeAttribute(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _item.PascalName + "\")]");
             sb.AppendLine("	[Serializable]");
             sb.AppendLine("	[DataContractAttribute(IsReference = true)]");
-            sb.AppendLine("	[nHydrate.EFCore.Attributes.FieldNameConstantsAttribute(typeof(" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ".FieldNameConstants))]");
-            sb.AppendLine("	[System.ComponentModel.DataAnnotations.MetadataType(typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity.Metadata." + _currentTable.PascalName + "Metadata))]");
+            sb.AppendLine("	[nHydrate.EFCore.Attributes.FieldNameConstantsAttribute(typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants))]");
+            sb.AppendLine("	[System.ComponentModel.DataAnnotations.MetadataType(typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity.Metadata." + _item.PascalName + "Metadata))]");
 
             //Add known types for all descendants
-            foreach (var table in _currentTable.GetTablesInheritedFromHierarchy().Where(x => x.Generated).OrderBy(x => x.PascalName))
+            foreach (var table in _item.GetTablesInheritedFromHierarchy().Where(x => x.Generated).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("	[KnownType(typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "))]");
             }
 
-            if (!string.IsNullOrEmpty(_currentTable.Description))
+            if (!string.IsNullOrEmpty(_item.Description))
             {
-                sb.AppendLine("	[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(_currentTable.Description) + "\")]");
+                sb.AppendLine("	[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\")]");
             }
 
-            if (_currentTable.Immutable)
+            if (_item.Immutable)
                 sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
 
-            sb.AppendLine("	[nHydrate.EFCore.Attributes.EntityMetadata(\"" + _currentTable.PascalName + "\", " + _currentTable.AllowAuditTracking.ToString().ToLower() + ", " + _currentTable.AllowCreateAudit.ToString().ToLower() + ", " + _currentTable.AllowModifiedAudit.ToString().ToLower() + ", " + _currentTable.AllowTimestamp.ToString().ToLower() + ", \"" + StringHelper.ConvertTextToSingleLineCodeString(_currentTable.Description) + "\", " + _currentTable.EnforcePrimaryKey.ToString().ToLower() + ", " + _currentTable.Immutable.ToString().ToLower() + ", " + (_currentTable.TypedTable != TypedTableConstants.None).ToString().ToLower() + ", \"" + _currentTable.GetSQLSchema() + "\")]");
+            sb.AppendLine("	[nHydrate.EFCore.Attributes.EntityMetadata(\"" + _item.PascalName + "\", " + _item.AllowAuditTracking.ToString().ToLower() + ", " + _item.AllowCreateAudit.ToString().ToLower() + ", " + _item.AllowModifiedAudit.ToString().ToLower() + ", " + _item.AllowTimestamp.ToString().ToLower() + ", \"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\", " + _item.EnforcePrimaryKey.ToString().ToLower() + ", " + _item.Immutable.ToString().ToLower() + ", " + (_item.TypedTable != TypedTableConstants.None).ToString().ToLower() + ", \"" + _item.GetSQLSchema() + "\")]");
 
             //Auditing
-            if (_currentTable.AllowAuditTracking)
-                sb.AppendLine("	[nHydrate.EFCore.Attributes.EntityHistory(typeof(" + this.GetLocalNamespace() + ".Audit." + _currentTable.PascalName + "Audit))]");
+            if (_item.AllowAuditTracking)
+                sb.AppendLine("	[nHydrate.EFCore.Attributes.EntityHistory(typeof(" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit))]");
 
             var boInterface = "nHydrate.EFCore.DataAccess.IBusinessObject";
-            if (_currentTable.Immutable) boInterface = "nHydrate.EFCore.DataAccess.IReadOnlyBusinessObject";
+            if (_item.Immutable) boInterface = "nHydrate.EFCore.DataAccess.IReadOnlyBusinessObject";
             boInterface += ", " + this.GetLocalNamespace() + ".IEntityWithContext";
             boInterface += ", " + "System.ComponentModel.IDataErrorInfo";
 
-            foreach (var meta in _currentTable.MetaData)
+            foreach (var meta in _item.MetaData)
             {
                 sb.AppendLine("	[nHydrate.EFCore.Attributes.CustomMetadata(Key = \"" + StringHelper.ConvertTextToSingleLineCodeString(meta.Key) + "\", Value = \"" + meta.Value.Replace("\"", "\\\"") + "\")]");
             }
 
-            if (_currentTable.IsAbstract)
+            if (_item.IsAbstract)
             {
-                if (_currentTable.ParentTable == null)
-                    sb.Append("	public abstract partial class " + doubleDerivedClassName + " : nHydrate.EFCore.DataAccess.NHEntityObject, " + boInterface + ", " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + ", System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + ">");
+                if (_item.ParentTable == null)
+                    sb.Append("	public abstract partial class " + doubleDerivedClassName + " : nHydrate.EFCore.DataAccess.NHEntityObject, " + boInterface + ", " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ", System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ">");
                 else
-                    sb.Append("	public abstract partial class " + doubleDerivedClassName + " : " + this.GetLocalNamespace() + ".Entity." + _currentTable.ParentTable.PascalName + ", " + boInterface + ", " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + ", System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + ">");
+                    sb.Append("	public abstract partial class " + doubleDerivedClassName + " : " + this.GetLocalNamespace() + ".Entity." + _item.ParentTable.PascalName + ", " + boInterface + ", " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ", System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ">");
             }
             else //NON-Abstract
             {
-                if (_currentTable.ParentTable == null)
-                    sb.Append("	public " + (_currentTable.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : nHydrate.EFCore.DataAccess.NHEntityObject, " + boInterface + ", " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + ", System.ICloneable, System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + ">");
+                if (_item.ParentTable == null)
+                    sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : nHydrate.EFCore.DataAccess.NHEntityObject, " + boInterface + ", " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ", System.ICloneable, System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ">");
                 else
-                    sb.Append("	public " + (_currentTable.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : " + this.GetLocalNamespace() + ".Entity." + _currentTable.ParentTable.PascalName + ", " + boInterface + ", " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + ", System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + ">");
+                    sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : " + this.GetLocalNamespace() + ".Entity." + _item.ParentTable.PascalName + ", " + boInterface + ", " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ", System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ">");
             }
 
-            if (_currentTable.AllowCreateAudit || _currentTable.AllowModifiedAudit || _currentTable.AllowTimestamp)
+            if (_item.AllowCreateAudit || _item.AllowModifiedAudit || _item.AllowTimestamp)
             {
                 sb.Append(", nHydrate.EFCore.DataAccess.IAuditable");
             }
             sb.AppendLine();
 
             sb.AppendLine("	{");
-            this.AppendedFieldEnum();
+            //this.AppendedFieldEnum();
             this.AppendConstructors(doubleDerivedClassName);
             this.AppendProperties();
             this.AppendGenerateEvents();
@@ -239,7 +239,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
         private void AppendConstructors(string tableName)
         {
             var scope = "public";
-            if (_currentTable.Immutable)
+            if (_item.Immutable)
                 scope = "protected internal";
 
             sb.AppendLine("		#region Constructors");
@@ -259,17 +259,17 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		}");
             sb.AppendLine();
             
-            if (_currentTable.PrimaryKeyColumns.Count == _currentTable.GetBasePKColumnList().Count(x => x.Identity == IdentityTypeConstants.None))
+            if (_item.PrimaryKeyColumns.Count == _item.GetBasePKColumnList().Count(x => x.Identity == IdentityTypeConstants.None))
             {
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Initializes a new instance of the " + this.GetLocalNamespace() + ".Entity." + tableName + " class with a defined primary key");
                 sb.AppendLine("		/// </summary>");
                 sb.Append("		" + scope + " " + tableName + "(");
                 var index = 0;
-                foreach (var pkColumn in _currentTable.PrimaryKeyColumns.OrderBy(x => x.PascalName))
+                foreach (var pkColumn in _item.PrimaryKeyColumns.OrderBy(x => x.PascalName))
                 {
                     sb.Append(pkColumn.GetCodeType() + " " + pkColumn.CamelName);
-                    if (index < _currentTable.PrimaryKeyColumns.Count - 1)
+                    if (index < _item.PrimaryKeyColumns.Count - 1)
                         sb.Append(", ");
                     index++;
                 }
@@ -278,7 +278,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
                 sb.Append(this.SetInitialValues("this"));
 
-                foreach (var pkColumn in _currentTable.PrimaryKeyColumns.OrderBy(x => x.PascalName))
+                foreach (var pkColumn in _item.PrimaryKeyColumns.OrderBy(x => x.PascalName))
                 {
                     sb.AppendLine("			_" + pkColumn.CamelName + " = " + pkColumn.CamelName + ";");
                 }
@@ -295,17 +295,17 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
         private string SetInitialValues(string propertyObjectPrefix)
         {
             //TODO - Audit Trail not implemented
-            var setOriginalGuid = String.Format("\t\t\t" + propertyObjectPrefix + "._{0} = System.Guid.NewGuid();", _currentTable.PrimaryKeyColumns.First().CamelName);
+            var setOriginalGuid = String.Format("\t\t\t" + propertyObjectPrefix + "._{0} = System.Guid.NewGuid();", _item.PrimaryKeyColumns.First().CamelName);
 
             var returnVal = new StringBuilder();
-            if (_currentTable.PrimaryKeyColumns.Count == 1 && ((Column)_currentTable.PrimaryKeyColumns.First()).DataType == System.Data.SqlDbType.UniqueIdentifier)
+            if (_item.PrimaryKeyColumns.Count == 1 && ((Column)_item.PrimaryKeyColumns.First()).DataType == System.Data.SqlDbType.UniqueIdentifier)
             {
-                if (_currentTable.PrimaryKeyColumns.First().DataType == System.Data.SqlDbType.UniqueIdentifier)
+                if (_item.PrimaryKeyColumns.First().DataType == System.Data.SqlDbType.UniqueIdentifier)
                     returnVal.AppendLine(setOriginalGuid);
             }
 
             //DEFAULT PROPERTIES START
-            foreach (var column in _currentTable.GeneratedColumns.Where(x => x.DataType != System.Data.SqlDbType.Timestamp).ToList())
+            foreach (var column in _item.GeneratedColumns.Where(x => x.DataType != System.Data.SqlDbType.Timestamp).ToList())
             {
                 if ((column.Default != null) && (!string.IsNullOrEmpty(column.Default)))
                 {
@@ -329,7 +329,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// Determines if this object is part of a collection or is detached");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		[System.ComponentModel.Browsable(false)]");
-            sb.AppendLine(_currentTable.ParentTable == null ? "		public virtual bool IsParented" : "		public override bool IsParented");
+            sb.AppendLine(_item.ParentTable == null ? "		public virtual bool IsParented" : "		public override bool IsParented");
             sb.AppendLine("		{");
             sb.AppendLine("			get { return (this.EntityState != System.Data.EntityState.Detached); }");
             sb.AppendLine("		}");
@@ -340,17 +340,17 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
         private void AppendClone()
         {
-            if (_currentTable.IsAbstract)
+            if (_item.IsAbstract)
                 return;
 
             string modifieraux;
-            if (_currentTable.ParentTable == null)
+            if (_item.ParentTable == null)
             {
                 modifieraux = "virtual";
             }
             else 
             {
-                if (_currentTable.ParentTable.IsAbstract)
+                if (_item.ParentTable.IsAbstract)
                     modifieraux = "virtual";
                 else
                     modifieraux = "new";
@@ -363,7 +363,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public " + modifieraux + " object Clone()");
             sb.AppendLine("		{");
-            sb.AppendLine("			return " + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ".Clone(this);");
+            sb.AppendLine("			return " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".Clone(this);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -372,8 +372,8 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public " + modifieraux + " object CloneAsNew()");
             sb.AppendLine("		{");
-            sb.AppendLine("			var item = " + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ".Clone(this);");
-            foreach (var pk in _currentTable.GeneratedColumns.Where(x => x.Identity == IdentityTypeConstants.Database && x.IsNumericType))
+            sb.AppendLine("			var item = " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".Clone(this);");
+            foreach (var pk in _item.GeneratedColumns.Where(x => x.Identity == IdentityTypeConstants.Database && x.IsNumericType))
             {
                 sb.AppendLine("			item._" + pk.CamelName + " = 0;");
             }
@@ -385,21 +385,21 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Creates a shallow copy of this object");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static " + _currentTable.PascalName + " Clone(" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + " item)");
+            sb.AppendLine("		public static " + _item.PascalName + " Clone(" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + " item)");
             sb.AppendLine("		{");
-            sb.AppendLine("			var newItem = new " + _currentTable.PascalName + "();");
-            foreach (var column in _currentTable.GetColumnsFullHierarchy().Where(x => x.Generated).OrderBy(x => x.Name))
+            sb.AppendLine("			var newItem = new " + _item.PascalName + "();");
+            foreach (var column in _item.GetColumnsFullHierarchy().Where(x => x.Generated).OrderBy(x => x.Name))
             {
                 sb.AppendLine("			newItem." + column.PascalName + " = item." + column.PascalName + ";");
             }
 
-            if (_currentTable.AllowCreateAudit)
+            if (_item.AllowCreateAudit)
             {
                 sb.AppendLine("			newItem." + _model.Database.CreatedDateColumnName + " = item." + _model.Database.CreatedDateColumnName + ";");
                 sb.AppendLine("			newItem." + _model.Database.CreatedByColumnName + " = item." + _model.Database.CreatedByColumnName + ";");
             }
 
-            if (_currentTable.AllowModifiedAudit)
+            if (_item.AllowModifiedAudit)
             {
                 sb.AppendLine("			newItem." + _model.Database.ModifiedDateColumnName + " = item." + _model.Database.ModifiedDateColumnName + ";");
                 sb.AppendLine("			newItem." + _model.Database.ModifiedByColumnName + " = item." + _model.Database.ModifiedByColumnName + ";");
@@ -423,7 +423,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <param name=\"item\">The object to compare</param>");
             sb.AppendLine("		public override bool IsEquivalent(nHydrate.EFCore.DataAccess.INHEntityObject item)");
             sb.AppendLine("		{");
-            sb.AppendLine("			return ((System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + ">)this).Equals(item as " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + ");");
+            sb.AppendLine("			return ((System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ">)this).Equals(item as " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ");");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
@@ -437,7 +437,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the value of one of this object's properties.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public object GetValue(FieldNameConstants field)");
+            sb.AppendLine("		public object GetValue(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants field)");
             sb.AppendLine("		{");
             sb.AppendLine("			return GetValue(field, null);");
             sb.AppendLine("		}");
@@ -445,38 +445,38 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the value of one of this object's properties.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public object GetValue(FieldNameConstants field, object defaultValue)");
+            sb.AppendLine("		public object GetValue(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants field, object defaultValue)");
             sb.AppendLine("		{");
-            var allColumns = _currentTable.GetColumnsFullHierarchy(true).Where(x => x.Generated).ToList();
+            var allColumns = _item.GetColumnsFullHierarchy(true).Where(x => x.Generated).ToList();
             foreach (var column in allColumns.OrderBy(x => x.Name))
             {
                 var relationParentTable = (Table)column.ParentTableRef.Object;
                 var childColumnList = relationParentTable.AllRelationships.FindByChildColumn(column);
-                sb.AppendLine("			if (field == FieldNameConstants." + column.PascalName + ")");
+                sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ")");
                 if (column.AllowNull)
                     sb.AppendLine("				return ((this." + column.PascalName + " == null) ? defaultValue : this." + column.PascalName + ");");
                 else
                     sb.AppendLine("				return this." + column.PascalName + ";");
             }
 
-            if (_currentTable.AllowCreateAudit)
+            if (_item.AllowCreateAudit)
             {
-                sb.AppendLine("			if (field == FieldNameConstants." + _model.Database.CreatedByPascalName + ")");
+                sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + _model.Database.CreatedByPascalName + ")");
                 sb.AppendLine("				return ((this." + _model.Database.CreatedByPascalName + " == null) ? defaultValue : this." + _model.Database.CreatedByPascalName + ");");
-                sb.AppendLine("			if (field == FieldNameConstants." + _model.Database.CreatedDatePascalName + ")");
+                sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + _model.Database.CreatedDatePascalName + ")");
                 sb.AppendLine("				return ((this." + _model.Database.CreatedDatePascalName + " == null) ? defaultValue : this." + _model.Database.CreatedDatePascalName + ");");
             }
 
-            if (_currentTable.AllowModifiedAudit)
+            if (_item.AllowModifiedAudit)
             {
-                sb.AppendLine("			if (field == FieldNameConstants." + _model.Database.ModifiedByPascalName + ")");
+                sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + _model.Database.ModifiedByPascalName + ")");
                 sb.AppendLine("				return ((this." + _model.Database.ModifiedByPascalName + " == null) ? defaultValue : this." + _model.Database.ModifiedByPascalName + ");");
-                sb.AppendLine("			if (field == FieldNameConstants." + _model.Database.ModifiedDatePascalName + ")");
+                sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + _model.Database.ModifiedDatePascalName + ")");
                 sb.AppendLine("				return ((this." + _model.Database.ModifiedDatePascalName + " == null) ? defaultValue : this." + _model.Database.ModifiedDatePascalName + ");");
             }
 
             //Now do the primary keys
-            foreach (var dbColumn in _currentTable.PrimaryKeyColumns.OrderBy(x => x.Name))
+            foreach (var dbColumn in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
             {
                 //TODO
             }
@@ -491,7 +491,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
         private void AppendRegionSetValue()
         {
-            if (_currentTable.Immutable)
+            if (_item.Immutable)
                 return;
 
             sb.AppendLine("		#region SetValue");
@@ -501,7 +501,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"field\">The field to set</param>");
             sb.AppendLine("		/// <param name=\"newValue\">The new value to assign to the field</param>");
-            sb.AppendLine("		public virtual void SetValue(FieldNameConstants field, object newValue)");
+            sb.AppendLine("		public virtual void SetValue(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants field, object newValue)");
             sb.AppendLine("		{");
             sb.AppendLine("			SetValue(field, newValue, false);");
             sb.AppendLine("		}");
@@ -512,10 +512,10 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <param name=\"field\">The field to set</param>");
             sb.AppendLine("		/// <param name=\"newValue\">The new value to assign to the field</param>");
             sb.AppendLine("		/// <param name=\"fixLength\">Determines if the length should be truncated if too long. When false, an error will be raised if data is too large to be assigned to the field.</param>");
-            sb.AppendLine("		public virtual void SetValue(FieldNameConstants field, object newValue, bool fixLength)");
+            sb.AppendLine("		public virtual void SetValue(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants field, object newValue, bool fixLength)");
             sb.AppendLine("		{");
 
-            var allColumns = _currentTable.GetColumnsFullHierarchy(true).Where(x => x.Generated).ToList();
+            var allColumns = _item.GetColumnsFullHierarchy(true).Where(x => x.Generated).ToList();
             var count = 0;
             foreach (var column in allColumns.OrderBy(x => x.Name))
             {
@@ -525,7 +525,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     if (count == 0) sb.Append("			");
                     else sb.Append("			else ");
 
-                    sb.AppendLine("if (field == FieldNameConstants." + column.PascalName + ")");
+                    sb.AppendLine("if (field == " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ")");
                     sb.AppendLine("			{");
                     if (column.PrimaryKey)
                     {
@@ -672,110 +672,110 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine();
         }
 
-        private void AppendedFieldEnum()
-        {
-            var imageColumnList = _currentTable.GetColumnsByType(System.Data.SqlDbType.Image).OrderBy(x => x.Name).ToList();
-            if (imageColumnList.Count != 0)
-            {
-                sb.AppendLine("		#region FieldImageConstants Enumeration");
-                sb.AppendLine();
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// An enumeration of this object's image type fields");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		public enum FieldImageConstants");
-                sb.AppendLine("		{");
-                foreach (var column in imageColumnList)
-                {
-                    sb.AppendLine("			/// <summary>");
-                    sb.AppendLine("			/// Field mapping for the image parameter '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
-                    sb.AppendLine("			/// </summary>");
-                    sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the image parameter '" + column.PascalName + "' property\")]");
-                    sb.AppendLine("			" + column.PascalName + ",");
-                }
-                sb.AppendLine("		}");
-                sb.AppendLine();
-                sb.AppendLine("		#endregion");
-                sb.AppendLine();
-            }
+        //private void AppendedFieldEnum()
+        //{
+        //    var imageColumnList = _currentTable.GetColumnsByType(System.Data.SqlDbType.Image).OrderBy(x => x.Name).ToList();
+        //    if (imageColumnList.Count != 0)
+        //    {
+        //        sb.AppendLine("		#region FieldImageConstants Enumeration");
+        //        sb.AppendLine();
+        //        sb.AppendLine("		/// <summary>");
+        //        sb.AppendLine("		/// An enumeration of this object's image type fields");
+        //        sb.AppendLine("		/// </summary>");
+        //        sb.AppendLine("		public enum FieldImageConstants");
+        //        sb.AppendLine("		{");
+        //        foreach (var column in imageColumnList)
+        //        {
+        //            sb.AppendLine("			/// <summary>");
+        //            sb.AppendLine("			/// Field mapping for the image parameter '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
+        //            sb.AppendLine("			/// </summary>");
+        //            sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the image parameter '" + column.PascalName + "' property\")]");
+        //            sb.AppendLine("			" + column.PascalName + ",");
+        //        }
+        //        sb.AppendLine("		}");
+        //        sb.AppendLine();
+        //        sb.AppendLine("		#endregion");
+        //        sb.AppendLine();
+        //    }
 
-            sb.AppendLine("		#region FieldNameConstants Enumeration");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Enumeration to define each property that maps to a database field for the '" + _currentTable.PascalName + "' table.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + (_currentTable.ParentTable == null ? "" : "new ") + "enum FieldNameConstants");
-            sb.AppendLine("		{");
-            foreach (var column in _currentTable.GeneratedColumnsFullHierarchy)
-            {
-                sb.AppendLine("			/// <summary>");
-                sb.AppendLine("			/// Field mapping for the '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
-                sb.AppendLine("			/// </summary>");
+        //    sb.AppendLine("		#region FieldNameConstants Enumeration");
+        //    sb.AppendLine();
+        //    sb.AppendLine("		/// <summary>");
+        //    sb.AppendLine("		/// Enumeration to define each property that maps to a database field for the '" + _currentTable.PascalName + "' table.");
+        //    sb.AppendLine("		/// </summary>");
+        //    sb.AppendLine("		public " + (_currentTable.ParentTable == null ? "" : "new ") + "enum FieldNameConstants");
+        //    sb.AppendLine("		{");
+        //    foreach (var column in _currentTable.GeneratedColumnsFullHierarchy)
+        //    {
+        //        sb.AppendLine("			/// <summary>");
+        //        sb.AppendLine("			/// Field mapping for the '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
+        //        sb.AppendLine("			/// </summary>");
 
-                if (column.PrimaryKey)
-                {
-                    sb.AppendLine("			[nHydrate.EFCore.Attributes.PrimaryKeyAttribute()]");
-                }
+        //        if (column.PrimaryKey)
+        //        {
+        //            sb.AppendLine("			[nHydrate.EFCore.Attributes.PrimaryKeyAttribute()]");
+        //        }
 
-                if (column.PrimaryKey || _currentTable.Immutable)
-                {
-                    sb.AppendLine("			[System.ComponentModel.ReadOnlyAttribute(true)]");
-                }
+        //        if (column.PrimaryKey || _currentTable.Immutable)
+        //        {
+        //            sb.AppendLine("			[System.ComponentModel.ReadOnlyAttribute(true)]");
+        //        }
 
-                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + column.PascalName + "' property\")]");
-                sb.AppendLine("			" + column.PascalName + ",");
-            }
+        //        sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + column.PascalName + "' property\")]");
+        //        sb.AppendLine("			" + column.PascalName + ",");
+        //    }
 
-            if (_currentTable.AllowCreateAudit)
-            {
-                sb.AppendLine("			/// <summary>");
-                sb.AppendLine("			/// Field mapping for the '" + _model.Database.CreatedByPascalName + "' property");
-                sb.AppendLine("			/// </summary>");
-                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedByPascalName + "' property\")]");
-                sb.AppendLine("			" + _model.Database.CreatedByPascalName + ",");
-                sb.AppendLine("			/// <summary>");
-                sb.AppendLine("			/// Field mapping for the '" + _model.Database.CreatedDatePascalName + "' property");
-                sb.AppendLine("			/// </summary>");
-                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedDatePascalName + "' property\")]");
-                sb.AppendLine("			" + _model.Database.CreatedDatePascalName + ",");
-            }
+        //    if (_currentTable.AllowCreateAudit)
+        //    {
+        //        sb.AppendLine("			/// <summary>");
+        //        sb.AppendLine("			/// Field mapping for the '" + _model.Database.CreatedByPascalName + "' property");
+        //        sb.AppendLine("			/// </summary>");
+        //        sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedByPascalName + "' property\")]");
+        //        sb.AppendLine("			" + _model.Database.CreatedByPascalName + ",");
+        //        sb.AppendLine("			/// <summary>");
+        //        sb.AppendLine("			/// Field mapping for the '" + _model.Database.CreatedDatePascalName + "' property");
+        //        sb.AppendLine("			/// </summary>");
+        //        sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedDatePascalName + "' property\")]");
+        //        sb.AppendLine("			" + _model.Database.CreatedDatePascalName + ",");
+        //    }
 
-            if (_currentTable.AllowModifiedAudit)
-            {
-                sb.AppendLine("			/// <summary>");
-                sb.AppendLine("			/// Field mapping for the '" + _model.Database.ModifiedByPascalName + "' property");
-                sb.AppendLine("			/// </summary>");
-                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedByPascalName + "' property\")]");
-                sb.AppendLine("			" + _model.Database.ModifiedByPascalName + ",");
-                sb.AppendLine("			/// <summary>");
-                sb.AppendLine("			/// Field mapping for the '" + _model.Database.ModifiedDatePascalName + "' property");
-                sb.AppendLine("			/// </summary>");
-                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedDatePascalName + "' property\")]");
-                sb.AppendLine("			" + _model.Database.ModifiedDatePascalName + ",");
-            }
+        //    if (_currentTable.AllowModifiedAudit)
+        //    {
+        //        sb.AppendLine("			/// <summary>");
+        //        sb.AppendLine("			/// Field mapping for the '" + _model.Database.ModifiedByPascalName + "' property");
+        //        sb.AppendLine("			/// </summary>");
+        //        sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedByPascalName + "' property\")]");
+        //        sb.AppendLine("			" + _model.Database.ModifiedByPascalName + ",");
+        //        sb.AppendLine("			/// <summary>");
+        //        sb.AppendLine("			/// Field mapping for the '" + _model.Database.ModifiedDatePascalName + "' property");
+        //        sb.AppendLine("			/// </summary>");
+        //        sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedDatePascalName + "' property\")]");
+        //        sb.AppendLine("			" + _model.Database.ModifiedDatePascalName + ",");
+        //    }
 
-            sb.AppendLine("		}");
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-        }
+        //    sb.AppendLine("		}");
+        //    sb.AppendLine("		#endregion");
+        //    sb.AppendLine();
+        //}
 
         private void AppendAuditClass()
         {
-            var soubleDerivedClassName = _currentTable.PascalName;
-            if (_currentTable.GeneratesDoubleDerived)
+            var soubleDerivedClassName = _item.PascalName;
+            if (_item.GeneratesDoubleDerived)
             {
-                soubleDerivedClassName = _currentTable.PascalName + "Base";
+                soubleDerivedClassName = _item.PascalName + "Base";
             }
 
             var interfaceSettings = string.Empty;
-            if (_currentTable.AllowCreateAudit) interfaceSettings += "nHydrate.EFCore.DataAccess.ICreatedAudit, ";
-            if (_currentTable.AllowModifiedAudit) interfaceSettings += "nHydrate.EFCore.DataAccess.IModifiedAudit, ";
-            if (_currentTable.AllowTimestamp) interfaceSettings += "nHydrate.EFCore.DataAccess.IConcurrencyAudit, ";
+            if (_item.AllowCreateAudit) interfaceSettings += "nHydrate.EFCore.DataAccess.ICreatedAudit, ";
+            if (_item.AllowModifiedAudit) interfaceSettings += "nHydrate.EFCore.DataAccess.IModifiedAudit, ";
+            if (_item.AllowTimestamp) interfaceSettings += "nHydrate.EFCore.DataAccess.IConcurrencyAudit, ";
             if (interfaceSettings.EndsWith(", ")) interfaceSettings = interfaceSettings.Substring(0, interfaceSettings.Length - 2);
 
             sb.AppendLine("	partial class " + soubleDerivedClassName + (string.IsNullOrEmpty(interfaceSettings) ? "" : " : " + interfaceSettings));
             sb.AppendLine("	{");
 
-            if (_currentTable.AllowCreateAudit)
+            if (_item.AllowCreateAudit)
             {
                 sb.AppendLine("		#region ICreatedAudit Members");
                 sb.AppendLine();
@@ -793,7 +793,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                 sb.AppendLine();
             }
 
-            if (_currentTable.AllowModifiedAudit)
+            if (_item.AllowModifiedAudit)
             {
                 sb.AppendLine("		#region IModifiedAudit Members");
                 sb.AppendLine();
@@ -811,7 +811,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                 sb.AppendLine();
             }
 
-            if (_currentTable.AllowTimestamp)
+            if (_item.AllowTimestamp)
             {
                 sb.AppendLine("		#region IConcurrencyAudit Members");
                 sb.AppendLine();
@@ -833,15 +833,15 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		#region Properties");
             sb.AppendLine();
 
-            foreach (var column in _currentTable.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
             {
                 //Add new fake property for typed enumerations
                 string pascalRoleName;
                 Table typeTable = null;
-                if (_currentTable.IsColumnRelatedToTypeTable(column, out pascalRoleName) || (column.PrimaryKey && _currentTable.TypedTable != TypedTableConstants.None))
+                if (_item.IsColumnRelatedToTypeTable(column, out pascalRoleName) || (column.PrimaryKey && _item.TypedTable != TypedTableConstants.None))
                 {
-                    typeTable = _currentTable.GetRelatedTypeTableByColumn(column, out pascalRoleName);
-                    if (typeTable == null) typeTable = _currentTable;
+                    typeTable = _item.GetRelatedTypeTableByColumn(column, out pascalRoleName);
+                    if (typeTable == null) typeTable = _item;
                     if (typeTable != null)
                     {
                         var nullSuffix = string.Empty;
@@ -862,7 +862,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     }
                 }
 
-                if (column.PrimaryKey && _currentTable.ParentTable != null)
+                if (column.PrimaryKey && _item.ParentTable != null)
                 {
                     //PK in descendant, do not process
                 }
@@ -948,7 +948,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     {
                         sb.AppendLine("		/// This property has an additional enumeration wrapper property " + pascalRoleName + typeTable.PascalName + "Value. Use it as a strongly-typed property.");
                     }
-                    else if (column.PrimaryKey && _currentTable.TypedTable != TypedTableConstants.None)
+                    else if (column.PrimaryKey && _item.TypedTable != TypedTableConstants.None)
                     {
                         sb.AppendLine("		/// This property has an additional enumeration wrapper property " + pascalRoleName + typeTable.PascalName + "Value. Use it as a strongly-typed property.");
                     }
@@ -975,7 +975,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     if (column.PrimaryKey)
                         sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
 
-                    if (column.PrimaryKey || _currentTable.Immutable || column.ComputedColumn || column.IsReadOnly)
+                    if (column.PrimaryKey || _item.Immutable || column.ComputedColumn || column.IsReadOnly)
                         sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
 
                     if (!string.IsNullOrEmpty(column.Description))
@@ -993,15 +993,15 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
                     //OLD CODE - we tried to hide the setter but serialization hates this
                     //sb.AppendLine("			" + (column.PrimaryKey || _currentTable.Immutable ? "protected " : "") + "set");
-                    sb.AppendLine("			" + (_currentTable.Immutable ? "protected " : "") + "set");
+                    sb.AppendLine("			" + (_item.Immutable ? "protected " : "") + "set");
                     //sb.AppendLine("			set");
                     sb.AppendLine("			{");
 
                     //Error Check for field size
                     if (ModelHelper.IsTextType(column.DataType))
                     {
-                        sb.Append("				if ((value != null) && (value.Length > GetMaxLength(FieldNameConstants." + column.PascalName + ")))");
-                        sb.AppendLine(" throw new Exception(string.Format(GlobalValues.ERROR_DATA_TOO_BIG, value, \"" + _currentTable.PascalName + "." + column.PascalName + "\", GetMaxLength(FieldNameConstants." + column.PascalName + ")));");
+                        sb.Append("				if ((value != null) && (value.Length > GetMaxLength(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ")))");
+                        sb.AppendLine(" throw new Exception(string.Format(GlobalValues.ERROR_DATA_TOO_BIG, value, \"" + _item.PascalName + "." + column.PascalName + "\", GetMaxLength(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ")));");
                     }
                     else if (column.DataType == System.Data.SqlDbType.DateTime)
                     {
@@ -1025,7 +1025,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                             sb.AppendLine("					case " + idValue + ":");
                         }
                         sb.AppendLine("						break;");
-                        sb.AppendLine("					default: throw new Exception(string.Format(GlobalValues.ERROR_INVALID_ENUM, value.ToString(), \"" + _currentTable.PascalName + "." + column.PascalName + "\"));");
+                        sb.AppendLine("					default: throw new Exception(string.Format(GlobalValues.ERROR_INVALID_ENUM, value.ToString(), \"" + _item.PascalName + "." + column.PascalName + "\"));");
                         sb.AppendLine("				}");
 
                         if (column.AllowNull)
@@ -1037,7 +1037,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     //Do not process the setter if the value is NOT changing
                     sb.AppendLine("				if (value == _" + column.CamelName + ") return;");
 
-                    if (_currentTable.Immutable || column.IsReadOnly)
+                    if (_item.Immutable || column.IsReadOnly)
                     {
                         sb.AppendLine("				_" + column.CamelName + " = value;");
                     }
@@ -1091,13 +1091,13 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             }
 
             //Audit Fields
-            if (_currentTable.ParentTable == null)
+            if (_item.ParentTable == null)
             {
-                if (_currentTable.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedByPascalName, "string", "The audit field for the 'Created By' parameter.", "public");
-                if (_currentTable.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedDatePascalName, "DateTime?", "The audit field for the 'Created Date' parameter.", "public");
-                if (_currentTable.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedByPascalName, "string", "The audit field for the 'Modified By' parameter.", "public");
-                if (_currentTable.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedDatePascalName, "DateTime?", "The audit field for the 'Modified Date' parameter.", "public");
-                if (_currentTable.AllowTimestamp) GenerateAuditField(_model.Database.TimestampPascalName, "byte[]", "The audit field for the 'Timestamp' parameter.", "public");
+                if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedByPascalName, "string", "The audit field for the 'Created By' parameter.", "public");
+                if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedDatePascalName, "DateTime?", "The audit field for the 'Created Date' parameter.", "public");
+                if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedByPascalName, "string", "The audit field for the 'Modified By' parameter.", "public");
+                if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedDatePascalName, "DateTime?", "The audit field for the 'Modified Date' parameter.", "public");
+                if (_item.AllowTimestamp) GenerateAuditField(_model.Database.TimestampPascalName, "byte[]", "The audit field for the 'Timestamp' parameter.", "public");
             }
 
             sb.AppendLine("		#endregion");
@@ -1109,9 +1109,9 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		#region Property Holders");
             sb.AppendLine();
 
-            foreach (var column in _currentTable.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
             {
-                if (column.PrimaryKey && _currentTable.ParentTable != null)
+                if (column.PrimaryKey && _item.ParentTable != null)
                 {
                     //PK in descendant, do not process
                 }
@@ -1124,13 +1124,13 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             }
 
             //Audit Fields
-            if (_currentTable.ParentTable == null)
+            if (_item.ParentTable == null)
             {
-                if (_currentTable.AllowCreateAudit) this.AppendPropertyEventDeclarations(_model.Database.CreatedByPascalName, "string");
-                if (_currentTable.AllowCreateAudit) this.AppendPropertyEventDeclarations(_model.Database.CreatedDatePascalName, "DateTime?");
-                if (_currentTable.AllowModifiedAudit) this.AppendPropertyEventDeclarations(_model.Database.ModifiedByPascalName, "string");
-                if (_currentTable.AllowModifiedAudit) this.AppendPropertyEventDeclarations(_model.Database.ModifiedDatePascalName, "DateTime?");
-                if (_currentTable.AllowTimestamp) this.AppendPropertyEventDeclarations(_model.Database.TimestampPascalName, "byte[]");
+                if (_item.AllowCreateAudit) this.AppendPropertyEventDeclarations(_model.Database.CreatedByPascalName, "string");
+                if (_item.AllowCreateAudit) this.AppendPropertyEventDeclarations(_model.Database.CreatedDatePascalName, "DateTime?");
+                if (_item.AllowModifiedAudit) this.AppendPropertyEventDeclarations(_model.Database.ModifiedByPascalName, "string");
+                if (_item.AllowModifiedAudit) this.AppendPropertyEventDeclarations(_model.Database.ModifiedDatePascalName, "DateTime?");
+                if (_item.AllowTimestamp) this.AppendPropertyEventDeclarations(_model.Database.TimestampPascalName, "byte[]");
             }
 
             sb.AppendLine();
@@ -1193,14 +1193,14 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the maximum size of the field value.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static int GetMaxLength(FieldNameConstants field)");
+            sb.AppendLine("		public static int GetMaxLength(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants field)");
             sb.AppendLine("		{");
             sb.AppendLine("			switch (field)");
             sb.AppendLine("			{");
-            foreach (var column in _currentTable.GetColumnsFullHierarchy().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumnsFullHierarchy().Where(x => x.Generated).OrderBy(x => x.Name))
             {
-                sb.AppendLine("				case FieldNameConstants." + column.PascalName + ":");
-                if (_currentTable.GeneratedColumns.Contains(column))
+                sb.AppendLine("				case " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ":");
+                if (_item.GeneratedColumns.Contains(column))
                 {
                     //This is an actual column in this table
                     switch (column.DataType)
@@ -1234,7 +1234,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                 else
                 {
                     //This is an inherited column so check the base
-                    sb.AppendLine("					return " + _currentTable.ParentTable.PascalName + ".GetMaxLength(" + _currentTable.ParentTable.PascalName + ".FieldNameConstants." + column.PascalName + ");");
+                    sb.AppendLine("					return " + _item.ParentTable.PascalName + ".GetMaxLength(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.ParentTable.PascalName + "FieldNameConstants." + column.PascalName + ");");
                 }
             }
             sb.AppendLine("			}");
@@ -1243,7 +1243,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine();
             sb.AppendLine("		int nHydrate.EFCore.DataAccess.IReadOnlyBusinessObject.GetMaxLength(Enum field)");
             sb.AppendLine("		{");
-            sb.AppendLine("			return GetMaxLength((FieldNameConstants)field);");
+            sb.AppendLine("			return GetMaxLength((" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants)field);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
@@ -1253,7 +1253,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine();
             sb.AppendLine("		System.Type nHydrate.EFCore.DataAccess.IReadOnlyBusinessObject.GetFieldNameConstants()");
             sb.AppendLine("		{");
-            sb.AppendLine("			return typeof(FieldNameConstants);");
+            sb.AppendLine("			return typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
@@ -1265,16 +1265,16 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the system type of a field on this object");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static System.Type GetFieldType(FieldNameConstants field)");
+            sb.AppendLine("		public static System.Type GetFieldType(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants field)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if (field.GetType() != typeof(FieldNameConstants))");
-            sb.AppendLine("				throw new Exception(\"The '\" + field.GetType().ReflectedType.ToString() + \".FieldNameConstants' value is not valid. The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ".FieldNameConstants'.\");");
+            sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants))");
+            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants'.\");");
             sb.AppendLine();
-            sb.AppendLine("			switch ((FieldNameConstants)field)");
+            sb.AppendLine("			switch ((" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants)field)");
             sb.AppendLine("			{");
-            foreach (var column in _currentTable.GeneratedColumnsFullHierarchy)
+            foreach (var column in _item.GeneratedColumnsFullHierarchy)
             {
-                sb.AppendLine("				case FieldNameConstants." + column.PascalName + ": return typeof(" + column.GetCodeType() + ");");
+                sb.AppendLine("				case " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ": return typeof(" + column.GetCodeType() + ");");
             }
             sb.AppendLine("			}");
             sb.AppendLine("			return null;");
@@ -1282,10 +1282,10 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine();
             sb.AppendLine("		System.Type nHydrate.EFCore.DataAccess.IReadOnlyBusinessObject.GetFieldType(Enum field)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if (field.GetType() != typeof(FieldNameConstants))");
-            sb.AppendLine("				throw new Exception(\"The '\" + field.GetType().ReflectedType.ToString() + \".FieldNameConstants' value is not valid. The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ".FieldNameConstants'.\");");
+            sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants))");
+            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants'.\");");
             sb.AppendLine();
-            sb.AppendLine("			return GetFieldType((" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ".FieldNameConstants)field);");
+            sb.AppendLine("			return GetFieldType((" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants)field);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
@@ -1301,19 +1301,19 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine();
             sb.AppendLine("		object nHydrate.EFCore.DataAccess.IReadOnlyBusinessObject.GetValue(System.Enum field, object defaultValue)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if (field.GetType() != typeof(FieldNameConstants))");
-            sb.AppendLine("				throw new Exception(\"The '\" + field.GetType().ReflectedType.ToString() + \".FieldNameConstants' value is not valid. The field parameter must be of type '\" + this.GetType().ToString() + \".FieldNameConstants'.\");");
-            sb.AppendLine("			return this.GetValue((FieldNameConstants)field, defaultValue);");
+            sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants))");
+            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants'.\");");
+            sb.AppendLine("			return this.GetValue((" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants)field, defaultValue);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            if (!_currentTable.Immutable)
+            if (!_item.Immutable)
             {
                 sb.AppendLine("		void nHydrate.EFCore.DataAccess.IBusinessObject.SetValue(System.Enum field, object newValue)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			if (field.GetType() != typeof(FieldNameConstants))");
-                sb.AppendLine("				throw new Exception(\"The '\" + field.GetType().ReflectedType.ToString() + \".FieldNameConstants' value is not valid. The field parameter must be of type '\" + this.GetType().ToString() + \".FieldNameConstants'.\");");
-                sb.AppendLine("			this.SetValue((FieldNameConstants)field, newValue);");
+                sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants))");
+                sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants'.\");");
+                sb.AppendLine("			this.SetValue((" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants)field, newValue);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
             }
@@ -1322,7 +1322,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine();
 
             //If this is not derived then add the Primary key stuff
-            if (_currentTable.ParentTable == null)
+            if (_item.ParentTable == null)
             {
                 sb.AppendLine("		#region PrimaryKey");
                 sb.AppendLine();
@@ -1392,7 +1392,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("			{");
 
             //Cannot hide setter but gut the thing so cannot make changes
-            if (_currentTable.Immutable)
+            if (_item.Immutable)
             {
                 sb.AppendLine("				//Setter is left for deserialization but should never be used");
             }
@@ -1431,14 +1431,14 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine();
 
             {
-                var relationList = _currentTable.GetViewRelations().Where(x => x.IsValidEFRelation).AsEnumerable();
+                var relationList = _item.GetViewRelations().Where(x => x.IsValidEFRelation).AsEnumerable();
                 foreach (var relation in relationList)
                 {
                     var childTable = relation.ChildView;
 
-                    sb.AppendLine("		#region I" + _currentTable.PascalName + " Interface");
+                    sb.AppendLine("		#region I" + _item.PascalName + " Interface");
                     sb.AppendLine();
-                    sb.AppendLine("		System.Collections.Generic.ICollection<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + childTable.PascalName + "> " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + "." + relation.PascalRoleName + childTable.PascalName + "List");
+                    sb.AppendLine("		System.Collections.Generic.ICollection<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + childTable.PascalName + "> " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + "." + relation.PascalRoleName + childTable.PascalName + "List");
                     sb.AppendLine("		{");
                     sb.AppendLine("			get { return (System.Collections.Generic.ICollection<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + childTable.PascalName + ">)(System.Collections.Generic.ICollection<" + childTable.PascalName + ">)this." + relation.PascalRoleName + childTable.PascalName + "List; }");
                     sb.AppendLine("		}");
@@ -1449,13 +1449,13 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     sb.AppendLine("		/// </summary>");
                     sb.AppendLine("		[XmlIgnoreAttribute()]");
                     sb.AppendLine("		[SoapIgnoreAttribute()]");
-                    sb.AppendLine("		[EdmRelationshipNavigationPropertyAttribute(\"" + this.GetLocalNamespace() + ".Entity" + "\", \"FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _currentTable.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "List\")]");
+                    sb.AppendLine("		[EdmRelationshipNavigationPropertyAttribute(\"" + this.GetLocalNamespace() + ".Entity" + "\", \"FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _item.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "List\")]");
                     sb.AppendLine("		public virtual EntityCollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + relation.PascalRoleName + childTable.PascalName + "List");
                     sb.AppendLine("		{");
                     sb.AppendLine("			get");
                     sb.AppendLine("			{");
                     sb.AppendLine("				//Eager load");
-                    sb.AppendLine("				var retval = ((System.Data.Objects.DataClasses.IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(\"" + this.GetLocalNamespace() + ".Entity.FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _currentTable.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "List\");");
+                    sb.AppendLine("				var retval = ((System.Data.Objects.DataClasses.IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(\"" + this.GetLocalNamespace() + ".Entity.FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _item.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "List\");");
                     sb.AppendLine("				if (!retval.IsLoaded  && this.EntityState != System.Data.EntityState.Added && this.EntityState != System.Data.EntityState.Detached)");
                     sb.AppendLine("				{");
                     sb.AppendLine("					retval.Load();");
@@ -1470,7 +1470,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
             #region Parent Relations
             {
-                var relationList = _currentTable.GetRelations().Where(x => x.IsValidEFRelation);
+                var relationList = _item.GetRelations().Where(x => x.IsValidEFRelation);
                 foreach (var relation in relationList)
                 {
                     var parentTable = relation.ParentTable;
@@ -1553,7 +1553,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                         sb.AppendLine();
 
                         //Implement the EF Interfaces
-                        sb.AppendLine("		#region I" + _currentTable.PascalName + " Interface");
+                        sb.AppendLine("		#region I" + _item.PascalName + " Interface");
                         sb.AppendLine();
                         sb.AppendLine("		" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + childTable.PascalName + " " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + parentTable.PascalName + "." + relation.PascalRoleName + childTable.PascalName);
                         sb.AppendLine("		{");
@@ -1576,7 +1576,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                             Relation otherRelation = null;
                             var relation1 = associativeRelations.First();
                             var relation2 = associativeRelations.Last();
-                            if (_currentTable == ((Table)relation1.ParentTableRef.Object)) targetRelation = relation2;
+                            if (_item == ((Table)relation1.ParentTableRef.Object)) targetRelation = relation2;
                             else targetRelation = relation1;
                             if (targetRelation == relation2) otherRelation = relation1;
                             else otherRelation = relation2;
@@ -1585,7 +1585,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                             if (targetTable.Generated)
                             {
                                 sb.AppendLine("		/// <summary>");
-                                sb.AppendLine("		/// The back navigation definition for walking [" + _currentTable.PascalName + "]->[" + targetTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? string.Empty : " (role: '" + otherRelation.PascalRoleName + "')") + "]");
+                                sb.AppendLine("		/// The back navigation definition for walking [" + _item.PascalName + "]->[" + targetTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? string.Empty : " (role: '" + otherRelation.PascalRoleName + "')") + "]");
                                 sb.AppendLine("		/// Relationship Links: ");
 
                                 #region Show all relation keys
@@ -1615,9 +1615,9 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                                 sb.AppendLine();
 
                                 //Implement the EF Interfaces
-                                sb.AppendLine("		#region I" + _currentTable.PascalName + " Interface");
+                                sb.AppendLine("		#region I" + _item.PascalName + " Interface");
                                 sb.AppendLine();
-                                sb.AppendLine("		System.Collections.Generic.ICollection<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + targetTable.PascalName + "> " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + "." + otherRelation.PascalRoleName + targetTable.PascalName + "List");
+                                sb.AppendLine("		System.Collections.Generic.ICollection<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + targetTable.PascalName + "> " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + "." + otherRelation.PascalRoleName + targetTable.PascalName + "List");
                                 sb.AppendLine("		{");
                                 sb.AppendLine("			get { return (System.Collections.Generic.ICollection<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + targetTable.PascalName + ">)(System.Collections.Generic.ICollection<" + targetTable.PascalName + ">)this." + otherRelation.PascalRoleName + targetTable.PascalName + "List; }");
                                 sb.AppendLine("		}");
@@ -1630,7 +1630,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     }
 
                     //Process relations where Current Table is the parent
-                    else if (parentTable == _currentTable && parentTable.Generated && childTable.Generated && !childTable.AssociativeTable && (childTable.TypedTable != TypedTableConstants.EnumOnly))
+                    else if (parentTable == _item && parentTable.Generated && childTable.Generated && !childTable.AssociativeTable && (childTable.TypedTable != TypedTableConstants.EnumOnly))
                     {
                         var listPropertyScope = "public";
                         if (relation.IsOneToOne) listPropertyScope = "protected"; //1:1 relation on non-PK field so we will fake it and make a single property
@@ -1649,13 +1649,13 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[XmlIgnoreAttribute()]");
                         sb.AppendLine("		[SoapIgnoreAttribute()]");
-                        sb.AppendLine("		[EdmRelationshipNavigationPropertyAttribute(\"" + this.GetLocalNamespace() + ".Entity" + "\", \"FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _currentTable.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "List\")]");
+                        sb.AppendLine("		[EdmRelationshipNavigationPropertyAttribute(\"" + this.GetLocalNamespace() + ".Entity" + "\", \"FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _item.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "List\")]");
                         sb.AppendLine("		" + listPropertyScope + " virtual EntityCollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + relation.PascalRoleName + childTable.PascalName + "List");
                         sb.AppendLine("		{");
                         sb.AppendLine("			get");
                         sb.AppendLine("			{");
                         sb.AppendLine("				//Eager load");
-                        sb.AppendLine("				var retval = ((System.Data.Objects.DataClasses.IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(\"" + this.GetLocalNamespace() + ".Entity.FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _currentTable.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "List\");");
+                        sb.AppendLine("				var retval = ((System.Data.Objects.DataClasses.IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(\"" + this.GetLocalNamespace() + ".Entity.FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _item.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "List\");");
                         sb.AppendLine("				if (!retval.IsLoaded  && this.EntityState != System.Data.EntityState.Added && this.EntityState != System.Data.EntityState.Detached)");
                         sb.AppendLine("				{");
                         sb.AppendLine("					retval.Load();");
@@ -1687,9 +1687,9 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                             sb.AppendLine();
 
                             //Implement the EF Interfaces
-                            sb.AppendLine("		#region I" + _currentTable.PascalName + " Interface");
+                            sb.AppendLine("		#region I" + _item.PascalName + " Interface");
                             sb.AppendLine();
-                            sb.AppendLine("		" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + childTable.PascalName + " " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + "." + relation.PascalRoleName + childTable.PascalName);
+                            sb.AppendLine("		" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + childTable.PascalName + " " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + "." + relation.PascalRoleName + childTable.PascalName);
                             sb.AppendLine("		{");
                             sb.AppendLine("			get { return this." + relation.PascalRoleName + childTable.PascalName + "; }");
                             sb.AppendLine("			set { ; }");
@@ -1702,9 +1702,9 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                         else if (childTable.TypedTable != TypedTableConstants.EnumOnly)
                         {
                             //Implement the EF Interfaces
-                            sb.AppendLine("		#region I" + _currentTable.PascalName + " Interface");
+                            sb.AppendLine("		#region I" + _item.PascalName + " Interface");
                             sb.AppendLine();
-                            sb.AppendLine("		System.Collections.Generic.ICollection<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + childTable.PascalName + "> " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + "." + relation.PascalRoleName + childTable.PascalName + "List");
+                            sb.AppendLine("		System.Collections.Generic.ICollection<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + childTable.PascalName + "> " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + "." + relation.PascalRoleName + childTable.PascalName + "List");
                             sb.AppendLine("		{");
                             sb.AppendLine("			get { return (System.Collections.Generic.ICollection<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + childTable.PascalName + ">)(System.Collections.Generic.ICollection<" + childTable.PascalName + ">)this." + relation.PascalRoleName + childTable.PascalName + "List; }");
                             sb.AppendLine("		}");
@@ -1722,7 +1722,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
             #region Child Relations
             {
-                var relationList = _currentTable.GetRelationsWhereChild().Where(x => x.IsValidEFRelation).AsEnumerable();
+                var relationList = _item.GetRelationsWhereChild().Where(x => x.IsValidEFRelation).AsEnumerable();
                 foreach (var relation in relationList)
                 {
                     var parentTable = (Table)relation.ParentTableRef.Object;
@@ -1761,7 +1761,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     }
 
                     //Process relations where Current Table is the child
-                    else if (childTable == _currentTable &&
+                    else if (childTable == _item &&
                         parentTable.Generated &&
                         childTable.Generated &&
                         (parentTable.TypedTable != TypedTableConstants.EnumOnly) &&
@@ -1814,7 +1814,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                         sb.AppendLine();
 
                         //Implement the EF Interfaces
-                        sb.AppendLine("		#region I" + _currentTable.PascalName + " Interface");
+                        sb.AppendLine("		#region I" + _item.PascalName + " Interface");
                         sb.AppendLine();
                         sb.AppendLine("		" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + parentTable.PascalName + " " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + childTable.PascalName + "." + relation.PascalRoleName + parentTable.PascalName);
                         sb.AppendLine("		{");
@@ -1837,27 +1837,27 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
         private void AppendAuditQuery()
         {
-            if (!_currentTable.AllowAuditTracking) return;
+            if (!_item.AllowAuditTracking) return;
 
             sb.AppendLine("		#region GetAuditRecords");
             sb.AppendLine();
 
             var modifier = "virtual";
-            if (_currentTable.GetTableHierarchy().Count(x => x != _currentTable && x.AllowAuditTracking) != 0)
+            if (_item.GetTableHierarchy().Count(x => x != _item && x.AllowAuditTracking) != 0)
                 modifier = "new";
 
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Return audit records for this entity");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <returns>A set of audit records for the current record based on primary key</returns>");
-            sb.AppendLine("		public " + modifier + " IEnumerable<" + this.GetLocalNamespace() + ".Interfaces.Audit.I" + _currentTable.PascalName + "Audit> GetAuditRecords()");
+            sb.AppendLine("		public " + modifier + " IEnumerable<" + this.GetLocalNamespace() + ".Interfaces.Audit.I" + _item.PascalName + "Audit> GetAuditRecords()");
             sb.AppendLine("		{");
 
             sb.AppendLine("			if (this._internalContext == null)");
             sb.AppendLine("				throw new Exception(\"The entity is not attached to a valid context. Audit records cannot be loaded.\");");
-            sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _currentTable.PascalName + "Audit.GetAuditRecords(");
+            sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit.GetAuditRecords(");
 
-            foreach (var column in _currentTable.PrimaryKeyColumns)
+            foreach (var column in _item.PrimaryKeyColumns)
             {
                 sb.Append("this." + column.PascalName + ", ");
             }
@@ -1872,14 +1872,14 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <param name=\"pageOffset\">The page offset needed for pagination starting from page 1</param>");
             sb.AppendLine("		/// <param name=\"recordsPerPage\">The number of records to be returned on a page.</param>");
             sb.AppendLine("		/// <returns>A set of audit records for the current record based on primary key</returns>");
-            sb.AppendLine("		public " + modifier + " nHydrate.EFCore.DataAccess.AuditPaging<" + this.GetLocalNamespace() + ".Interfaces.Audit.I" + _currentTable.PascalName + "Audit> GetAuditRecords(int pageOffset, int recordsPerPage)");
+            sb.AppendLine("		public " + modifier + " nHydrate.EFCore.DataAccess.AuditPaging<" + this.GetLocalNamespace() + ".Interfaces.Audit.I" + _item.PascalName + "Audit> GetAuditRecords(int pageOffset, int recordsPerPage)");
             sb.AppendLine("		{");
 
             sb.AppendLine("			if (this._internalContext == null)");
             sb.AppendLine("				throw new Exception(\"The entity is not attached to a valid context. Audit records cannot be loaded.\");");
-            sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _currentTable.PascalName + "Audit.GetAuditRecords(pageOffset, recordsPerPage, null, null, ");
+            sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit.GetAuditRecords(pageOffset, recordsPerPage, null, null, ");
 
-            foreach (var column in _currentTable.PrimaryKeyColumns)
+            foreach (var column in _item.PrimaryKeyColumns)
             {
                 sb.Append("this." + column.PascalName + ", ");
             }
@@ -1896,14 +1896,14 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <param name=\"startDate\">The starting date used when searching for records.</param>");
             sb.AppendLine("		/// <param name=\"endDate\">The ending date used when searching for records.</param>");
             sb.AppendLine("		/// <returns>A set of audit records for the current record based on primary key</returns>");
-            sb.AppendLine("		public " + modifier + " nHydrate.EFCore.DataAccess.AuditPaging<" + this.GetLocalNamespace() + ".Interfaces.Audit.I" + _currentTable.PascalName + "Audit> GetAuditRecords(int pageOffset, int recordsPerPage, DateTime? startDate, DateTime? endDate)");
+            sb.AppendLine("		public " + modifier + " nHydrate.EFCore.DataAccess.AuditPaging<" + this.GetLocalNamespace() + ".Interfaces.Audit.I" + _item.PascalName + "Audit> GetAuditRecords(int pageOffset, int recordsPerPage, DateTime? startDate, DateTime? endDate)");
             sb.AppendLine("		{");
 
             sb.AppendLine("			if (this._internalContext == null)");
             sb.AppendLine("				throw new Exception(\"The entity is not attached to a valid context. Audit records cannot be loaded.\");");
-            sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _currentTable.PascalName + "Audit.GetAuditRecords(pageOffset, recordsPerPage, startDate, endDate, ");
+            sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit.GetAuditRecords(pageOffset, recordsPerPage, startDate, endDate, ");
 
-            foreach (var column in _currentTable.PrimaryKeyColumns)
+            foreach (var column in _item.PrimaryKeyColumns)
             {
                 sb.Append("this." + column.PascalName + ", ");
             }
@@ -1921,10 +1921,10 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		#region Static SQL Methods");
             sb.AppendLine();
 
-            var allColumns = _currentTable.GetColumnsFullHierarchy(true).Where(x => x.Generated).ToList();
+            var allColumns = _item.GetColumnsFullHierarchy(true).Where(x => x.Generated).ToList();
 
             #region GetFieldAliasFromFieldNameSqlMapping
-            sb.AppendLine("		internal " + (_currentTable.ParentTable == null ? "" : "new ") + "static string GetFieldAliasFromFieldNameSqlMapping(string alias)");
+            sb.AppendLine("		internal " + (_item.ParentTable == null ? "" : "new ") + "static string GetFieldAliasFromFieldNameSqlMapping(string alias)");
             sb.AppendLine("		{");
             sb.AppendLine("			alias = alias.Replace(\"[\", string.Empty).Replace(\"]\", string.Empty);");
             sb.AppendLine("			switch (alias.ToLower())");
@@ -1933,17 +1933,17 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             {
                 sb.AppendLine("				case \"" + column.DatabaseName.ToLower() + "\": return \"" + column.PascalName.ToLower() + "\";");
             }
-            if (_currentTable.AllowCreateAudit)
+            if (_item.AllowCreateAudit)
             {
                 sb.AppendLine("				case \"" + _model.Database.CreatedDateColumnName.ToLower() + "\": return \"" + _model.Database.CreatedDatePascalName.ToLower() + "\";");
                 sb.AppendLine("				case \"" + _model.Database.CreatedByColumnName.ToLower() + "\": return \"" + _model.Database.CreatedByPascalName.ToLower() + "\";");
             }
-            if (_currentTable.AllowModifiedAudit)
+            if (_item.AllowModifiedAudit)
             {
                 sb.AppendLine("				case \"" + _model.Database.ModifiedDateColumnName.ToLower() + "\": return \"" + _model.Database.ModifiedDatePascalName.ToLower() + "\";");
                 sb.AppendLine("				case \"" + _model.Database.ModifiedByColumnName.ToLower() + "\": return \"" + _model.Database.ModifiedByPascalName.ToLower() + "\";");
             }
-            if (_currentTable.AllowTimestamp)
+            if (_item.AllowTimestamp)
             {
                 sb.AppendLine("				case \"" + _model.Database.TimestampColumnName.ToLower() + "\": return \"" + _model.Database.TimestampPascalName.ToLower() + "\";");
             }
@@ -1954,7 +1954,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             #endregion
 
             #region GetTableFromFieldAliasSqlMapping
-            sb.AppendLine("		internal " + (_currentTable.ParentTable == null ? "" : "new ") + "static string GetTableFromFieldAliasSqlMapping(string alias)");
+            sb.AppendLine("		internal " + (_item.ParentTable == null ? "" : "new ") + "static string GetTableFromFieldAliasSqlMapping(string alias)");
             sb.AppendLine("		{");
             sb.AppendLine("			switch (alias.ToLower())");
             sb.AppendLine("			{");
@@ -1968,21 +1968,21 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     sb.AppendLine("				case \"" + column.PascalName.ToLower() + "\": return \"" + table.DatabaseName + "\";");
             }
 
-            var tableName = _currentTable.DatabaseName;
-            if (_currentTable.IsTenant)
-                tableName = _model.TenantPrefix + "_" + _currentTable.DatabaseName;
+            var tableName = _item.DatabaseName;
+            if (_item.IsTenant)
+                tableName = _model.TenantPrefix + "_" + _item.DatabaseName;
 
-            if (_currentTable.AllowCreateAudit)
+            if (_item.AllowCreateAudit)
             {
                 sb.AppendLine("				case \"" + _model.Database.CreatedByPascalName.ToLower() + "\": return \"" + tableName + "\";");
                 sb.AppendLine("				case \"" + _model.Database.CreatedDatePascalName.ToLower() + "\": return \"" + tableName + "\";");
             }
-            if (_currentTable.AllowModifiedAudit)
+            if (_item.AllowModifiedAudit)
             {
                 sb.AppendLine("				case \"" + _model.Database.ModifiedByPascalName.ToLower() + "\": return \"" + tableName + "\";");
                 sb.AppendLine("				case \"" + _model.Database.ModifiedDatePascalName.ToLower() + "\": return \"" + tableName + "\";");
             }
-            if (_currentTable.AllowTimestamp)
+            if (_item.AllowTimestamp)
             {
                 sb.AppendLine("				case \"" + _model.Database.TimestampPascalName.ToLower() + "\": return \"" + tableName + "\";");
             }
@@ -1994,7 +1994,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             #endregion
 
             #region GetTableFromFieldNameSqlMapping
-            sb.AppendLine("		internal " + (_currentTable.ParentTable == null ? "" : "new ") + "static string GetTableFromFieldNameSqlMapping(string field)");
+            sb.AppendLine("		internal " + (_item.ParentTable == null ? "" : "new ") + "static string GetTableFromFieldNameSqlMapping(string field)");
             sb.AppendLine("		{");
             sb.AppendLine("			switch (field.ToLower())");
             sb.AppendLine("			{");
@@ -2008,17 +2008,17 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     sb.AppendLine("				case \"" + column.DatabaseName.ToLower() + "\": return \"" + table.DatabaseName + "\";");
             }
 
-            if (_currentTable.AllowCreateAudit)
+            if (_item.AllowCreateAudit)
             {
                 sb.AppendLine("				case \"" + _model.Database.CreatedByColumnName.ToLower() + "\": return \"" + tableName + "\";");
                 sb.AppendLine("				case \"" + _model.Database.CreatedDateColumnName.ToLower() + "\": return \"" + tableName + "\";");
             }
-            if (_currentTable.AllowModifiedAudit)
+            if (_item.AllowModifiedAudit)
             {
                 sb.AppendLine("				case \"" + _model.Database.ModifiedByColumnName.ToLower() + "\": return \"" + tableName + "\";");
                 sb.AppendLine("				case \"" + _model.Database.ModifiedDateColumnName.ToLower() + "\": return \"" + tableName + "\";");
             }
-            if (_currentTable.AllowTimestamp)
+            if (_item.AllowTimestamp)
             {
                 sb.AppendLine("				case \"" + _model.Database.TimestampColumnName.ToLower() + "\": return \"" + tableName + "\";");
             }
@@ -2030,31 +2030,31 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             #endregion
 
             #region GetRemappedLinqSql
-            sb.AppendLine("		internal " + (_currentTable.ParentTable == null ? "" : "new ") + "static string GetRemappedLinqSql(string sql, string parentAlias, LinqSQLFromClauseCollection childTables)");
+            sb.AppendLine("		internal " + (_item.ParentTable == null ? "" : "new ") + "static string GetRemappedLinqSql(string sql, string parentAlias, LinqSQLFromClauseCollection childTables)");
             sb.AppendLine("		{");
             foreach (var column in allColumns.OrderBy(x => x.Name))
             {
                 //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + column.DatabaseName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + ((Table)column.ParentTableRef.Object).DatabaseName + "\") + \"].[" + column.DatabaseName.ToLower() + "]\");");
                 sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + column.DatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + ((Table)column.ParentTableRef.Object).DatabaseName + "\") + \"].[" + column.DatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
             }
-            if (_currentTable.AllowCreateAudit)
+            if (_item.AllowCreateAudit)
             {
                 //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.CreatedByPascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _currentTable.DatabaseName + "\") + \"].[" + _model.Database.CreatedByPascalName.ToLower() + "]\");");
                 //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.CreatedDatePascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _currentTable.DatabaseName + "\") + \"].[" + _model.Database.CreatedDatePascalName.ToLower() + "]\");");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.CreatedByPascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _currentTable.DatabaseName + "\") + \"].[" + _model.Database.CreatedByPascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.CreatedDatePascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _currentTable.DatabaseName + "\") + \"].[" + _model.Database.CreatedDatePascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
+                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.CreatedByPascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.CreatedByPascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
+                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.CreatedDatePascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.CreatedDatePascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
             }
-            if (_currentTable.AllowModifiedAudit)
+            if (_item.AllowModifiedAudit)
             {
                 //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.ModifiedByPascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _currentTable.DatabaseName + "\") + \"].[" + _model.Database.ModifiedByPascalName.ToLower() + "]\");");
                 //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.ModifiedDatePascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _currentTable.DatabaseName + "\") + \"].[" + _model.Database.ModifiedDatePascalName.ToLower() + "]\");");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.ModifiedByPascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _currentTable.DatabaseName + "\") + \"].[" + _model.Database.ModifiedByPascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.ModifiedDatePascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _currentTable.DatabaseName + "\") + \"].[" + _model.Database.ModifiedDatePascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
+                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.ModifiedByPascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.ModifiedByPascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
+                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.ModifiedDatePascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.ModifiedDatePascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
             }
-            if (_currentTable.AllowTimestamp)
+            if (_item.AllowTimestamp)
             {
                 //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.TimestampPascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _currentTable.DatabaseName + "\") + \"].[" + _model.Database.TimestampPascalName.ToLower() + "]\");");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.TimestampPascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _currentTable.DatabaseName + "\") + \"].[" + _model.Database.TimestampPascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
+                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.TimestampPascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.TimestampPascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
             }
 
             sb.AppendLine("			return sql;");
@@ -2108,7 +2108,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
         private void AppendDeleteDataScaler()
         {
-            if (_currentTable.Immutable) return;
+            if (_item.Immutable) return;
 
             sb.AppendLine("		#region DeleteData");
             sb.AppendLine();
@@ -2117,7 +2117,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, bool>> where)");
+            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where)");
             sb.AppendLine("		{");
             sb.AppendLine("			return DeleteData(where, new nHydrate.EFCore.DataAccess.QueryOptimizer(), new ContextStartup(null), " + this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
             sb.AppendLine("		}");
@@ -2129,7 +2129,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
             sb.AppendLine("		/// <param name=\"optimizer\">The optimization object to use for running queries</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, bool>> where, nHydrate.EFCore.DataAccess.QueryOptimizer optimizer)");
+            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, nHydrate.EFCore.DataAccess.QueryOptimizer optimizer)");
             sb.AppendLine("		{");
             sb.AppendLine("			return DeleteData(where, optimizer, new ContextStartup(null), " + this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
             sb.AppendLine("		}");
@@ -2141,7 +2141,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, bool>> where, string connectionString)");
+            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			return DeleteData(where, new nHydrate.EFCore.DataAccess.QueryOptimizer(), new ContextStartup(null), connectionString);");
             sb.AppendLine("		}");
@@ -2154,7 +2154,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <param name=\"optimizer\">The optimization object to use for running queries</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, bool>> where, nHydrate.EFCore.DataAccess.QueryOptimizer optimizer, ContextStartup startup, string connectionString)");
+            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, nHydrate.EFCore.DataAccess.QueryOptimizer optimizer, ContextStartup startup, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			if (optimizer == null)");
             sb.AppendLine("				optimizer = new nHydrate.EFCore.DataAccess.QueryOptimizer();");
@@ -2164,8 +2164,8 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("			{");
             sb.AppendLine("				using (var dc = new DataContext(connection))");
             sb.AppendLine("				{");
-            sb.AppendLine("					var template = dc.GetTable<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query>();");
-            sb.AppendLine("					using (var cmd = nHydrate.EFCore.DataAccess.BusinessEntityQuery.GetCommand<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query>(dc, template, where))");
+            sb.AppendLine("					var template = dc.GetTable<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query>();");
+            sb.AppendLine("					using (var cmd = nHydrate.EFCore.DataAccess.BusinessEntityQuery.GetCommand<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query>(dc, template, where))");
             sb.AppendLine("					{");
             sb.AppendLine("						if (startup.CommandTimeout != null && startup.CommandTimeout > 0) cmd.CommandTimeout = startup.CommandTimeout.Value;");
             sb.AppendLine("						else cmd.CommandTimeout = 30;");
@@ -2174,10 +2174,10 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.Append("						var sql = \"CREATE TABLE #t (");
 
             var ii = 0;
-            foreach (var column in _currentTable.PrimaryKeyColumns.OrderBy(x => x.Name))
+            foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
             {
                 sb.Append("[" + column.DatabaseName + "] " + column.DatabaseType);
-                if (ii < _currentTable.PrimaryKeyColumns.Count - 1) sb.Append(", ");
+                if (ii < _item.PrimaryKeyColumns.Count - 1) sb.Append(", ");
                 ii++;
             }
 
@@ -2185,10 +2185,10 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.Append("						sql += \"INSERT INTO #t (");
             
             ii = 0;
-            foreach (var column in _currentTable.PrimaryKeyColumns.OrderBy(x => x.Name))
+            foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
             {
                 sb.Append("[" + column.DatabaseName + "]");
-                if (ii < _currentTable.PrimaryKeyColumns.Count - 1) sb.Append(", ");
+                if (ii < _item.PrimaryKeyColumns.Count - 1) sb.Append(", ");
                 ii++;
             }
 
@@ -2197,10 +2197,10 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.Append("						sql += \"SELECT ");
 
             ii = 0;
-            foreach (var column in _currentTable.PrimaryKeyColumns.OrderBy(x => x.Name))
+            foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
             {
                 sb.Append("[t0].[" + column.DatabaseName + "]");
-                if (ii < _currentTable.PrimaryKeyColumns.Count - 1)
+                if (ii < _item.PrimaryKeyColumns.Count - 1)
                     sb.Append(", ");
                 ii++;
             }
@@ -2210,7 +2210,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("						sql += \"\\r\\n\";");
             sb.AppendLine();
 
-            var tableList = new List<Table>(_currentTable.GetTableHierarchy());
+            var tableList = new List<Table>(_item.GetTableHierarchy());
             tableList.Reverse();
             sb.AppendLine("						var noLock = string.Empty;");
             foreach (var table in tableList)
@@ -2219,10 +2219,10 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                 sb.Append("						sql += \"DELETE [" + table.DatabaseName + "] FROM [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] \" + noLock + \"INNER JOIN #t ON ");
 
                 ii = 0;
-                foreach (var column in _currentTable.PrimaryKeyColumns.OrderBy(x => x.Name))
+                foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
                 {
                     sb.Append("[" + table.GetSQLSchema() + "].[" + table.DatabaseName + "].[" + column.DatabaseName + "] = #t.[" + column.DatabaseName + "]");
-                    if (ii < _currentTable.PrimaryKeyColumns.Count - 1)
+                    if (ii < _item.PrimaryKeyColumns.Count - 1)
                         sb.Append(" AND ");
                     ii++;
                 }
@@ -2251,7 +2251,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
         private void AppendUpdateDataScaler()
         {
-            if (_currentTable.Immutable) return;
+            if (_item.Immutable) return;
 
             sb.AppendLine("		#region UpdateData");
             sb.AppendLine();
@@ -2269,8 +2269,8 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             typeList.Add("Guid");
             //typeList.Add("byte[]");
 
-            var tableList = new List<Table>(_currentTable.GetTableHierarchy());
-            tableList.Remove(_currentTable);
+            var tableList = new List<Table>(_item.GetTableHierarchy());
+            tableList.Remove(_item);
             var columnList = new Dictionary<string, Column>();
 
             //Need the columns in order from base UP
@@ -2284,7 +2284,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             }
 
             //Add primary Keys
-            foreach (var c in _currentTable.PrimaryKeyColumns.OrderBy(x => x.Name))
+            foreach (var c in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
             {
                 if (columnList.ContainsKey(c.DatabaseName.ToLower()))
                     columnList.Remove(c.DatabaseName.ToLower());
@@ -2305,9 +2305,9 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                 sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
                 sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
                 sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, bool>> where, " + typeName + " newValue)");
+                sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + typeName + " newValue)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ", " + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _currentTable.DatabaseName + "\", GetDatabaseFieldName, " + _currentTable.AllowModifiedAudit.ToString().ToLower() + ");");
+                sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
                 sb.AppendLine("		}");
                 sb.AppendLine();
 
@@ -2321,9 +2321,9 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
                     sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
                     sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, bool>> where, " + nullTypeName + " newValue)");
+                    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + nullTypeName + " newValue)");
                     sb.AppendLine("		{");
-                    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ", " + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _currentTable.DatabaseName + "\", GetDatabaseFieldName, " + _currentTable.AllowModifiedAudit.ToString().ToLower() + ");");
+                    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
                     sb.AppendLine("		}");
                     sb.AppendLine();
                 }
@@ -2341,9 +2341,9 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                 sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
                 sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
                 sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, bool>> where, " + typeName + " newValue, string connectionString)");
+                sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + typeName + " newValue, string connectionString)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ", " + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _currentTable.DatabaseName + "\", GetDatabaseFieldName, " + _currentTable.AllowModifiedAudit.ToString().ToLower() + ", connectionString);");
+                sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
 
@@ -2359,9 +2359,9 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     sb.AppendLine("		/// <param name=\"startup\">A configuration object</param>");
                     sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
                     sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, bool>> where, " + typeName + " newValue, ContextStartup startup, string connectionString)");
+                    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + typeName + " newValue, ContextStartup startup, string connectionString)");
                     sb.AppendLine("		{");
-                    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ", " + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _currentTable.DatabaseName + "\", GetDatabaseFieldName, " + _currentTable.AllowModifiedAudit.ToString().ToLower() + ", startup, connectionString);");
+                    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup, connectionString);");
                     sb.AppendLine("		}");
                     sb.AppendLine();
                 }
@@ -2377,9 +2377,9 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
                     sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
                     sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, bool>> where, " + nullTypeName + " newValue, string connectionString)");
+                    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + nullTypeName + " newValue, string connectionString)");
                     sb.AppendLine("		{");
-                    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ", " + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _currentTable.DatabaseName + "\", GetDatabaseFieldName, " + _currentTable.AllowModifiedAudit.ToString().ToLower() + ", connectionString);");
+                    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString);");
                     sb.AppendLine("		}");
                     sb.AppendLine();
 
@@ -2395,9 +2395,9 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                         sb.AppendLine("		/// <param name=\"startup\">A configuration object</param>");
                         sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
                         sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                        sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, bool>> where, " + nullTypeName + " newValue, ContextStartup startup, string connectionString)");
+                        sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + nullTypeName + " newValue, ContextStartup startup, string connectionString)");
                         sb.AppendLine("		{");
-                        sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ", " + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _currentTable.DatabaseName + "\", GetDatabaseFieldName, " + _currentTable.AllowModifiedAudit.ToString().ToLower() + ", startup, connectionString);");
+                        sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup, connectionString);");
                         sb.AppendLine("		}");
                         sb.AppendLine();
                     }
@@ -2417,9 +2417,9 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                 sb.AppendLine("		/// <param name=\"connection\">An open database connection</param>");
                 sb.AppendLine("		/// <param name=\"transaction\">The database connection transaction</param>");
                 sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, bool>> where, " + typeName + " newValue, System.Data.IDbConnection connection, System.Data.Common.DbTransaction transaction)");
+                sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + typeName + " newValue, System.Data.IDbConnection connection, System.Data.Common.DbTransaction transaction)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ", " + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _currentTable.DatabaseName + "\", GetDatabaseFieldName, " + _currentTable.AllowModifiedAudit.ToString().ToLower() + ", null, connection, transaction);");
+                sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", null, connection, transaction);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
 
@@ -2435,9 +2435,9 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     sb.AppendLine("		/// <param name=\"connection\">An open database connection</param>");
                     sb.AppendLine("		/// <param name=\"transaction\">The database connection transaction</param>");
                     sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, bool>> where, " + nullTypeName + " newValue, System.Data.IDbConnection connection, System.Data.Common.DbTransaction transaction)");
+                    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + nullTypeName + " newValue, System.Data.IDbConnection connection, System.Data.Common.DbTransaction transaction)");
                     sb.AppendLine("		{");
-                    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ", " + this.GetLocalNamespace() + "." + _currentTable.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _currentTable.DatabaseName + "\", GetDatabaseFieldName, " + _currentTable.AllowModifiedAudit.ToString().ToLower() + ", null, connection, transaction);");
+                    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", null, connection, transaction);");
                     sb.AppendLine("		}");
                     sb.AppendLine();
                 }
@@ -2458,7 +2458,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Returns the actual database name of the specified field.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		internal static string GetDatabaseFieldName(" + _currentTable.PascalName + ".FieldNameConstants field)");
+            sb.AppendLine("		internal static string GetDatabaseFieldName(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants field)");
             sb.AppendLine("		{");
             sb.AppendLine("			return GetDatabaseFieldName(field.ToString());");
             sb.AppendLine("		}");
@@ -2466,29 +2466,29 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Returns the actual database name of the specified field.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		internal " + (_currentTable.ParentTable == null ? "" : "new ") + "static string GetDatabaseFieldName(string field)");
+            sb.AppendLine("		internal " + (_item.ParentTable == null ? "" : "new ") + "static string GetDatabaseFieldName(string field)");
             sb.AppendLine("		{");
             sb.AppendLine("			switch (field)");
             sb.AppendLine("			{");
-            foreach (var column in _currentTable.GeneratedColumns)
+            foreach (var column in _item.GeneratedColumns)
             {
                 if (column.Generated)
                     sb.AppendLine("				case \"" + column.PascalName + "\": return \"" + column.Name + "\";");
             }
 
-            if (_currentTable.AllowCreateAudit)
+            if (_item.AllowCreateAudit)
             {
                 sb.AppendLine("				case \"" + _model.Database.CreatedByPascalName + "\": return \"" + _model.Database.CreatedByColumnName + "\";");
                 sb.AppendLine("				case \"" + _model.Database.CreatedDatePascalName + "\": return \"" + _model.Database.CreatedDateColumnName + "\";");
             }
 
-            if (_currentTable.AllowModifiedAudit)
+            if (_item.AllowModifiedAudit)
             {
                 sb.AppendLine("				case \"" + _model.Database.ModifiedByPascalName + "\": return \"" + _model.Database.ModifiedByColumnName + "\";");
                 sb.AppendLine("				case \"" + _model.Database.ModifiedDatePascalName + "\": return \"" + _model.Database.ModifiedDateColumnName + "\";");
             }
 
-            if (_currentTable.AllowTimestamp)
+            if (_item.AllowTimestamp)
             {
                 sb.AppendLine("				case \"" + _model.Database.TimestampPascalName + "\": return \"" + _model.Database.TimestampColumnName + "\";");
             }
@@ -2518,13 +2518,13 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
         private void AppendIAuditable()
         {
-            if (!_currentTable.AllowCreateAudit && !_currentTable.AllowModifiedAudit && !_currentTable.AllowTimestamp)
+            if (!_item.AllowCreateAudit && !_item.AllowModifiedAudit && !_item.AllowTimestamp)
                 return;
 
             sb.AppendLine("		#region Auditing");
             sb.AppendLine("		string nHydrate.EFCore.DataAccess.IAuditable.CreatedBy");
             sb.AppendLine("		{");
-            if (_currentTable.AllowCreateAudit)
+            if (_item.AllowCreateAudit)
                 sb.AppendLine("			get { return this." + _model.Database.CreatedByPascalName + "; }");
             else
                 sb.AppendLine("			get { return null; }");
@@ -2532,7 +2532,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine();
             sb.AppendLine("		System.DateTime? nHydrate.EFCore.DataAccess.IAuditable.CreatedDate");
             sb.AppendLine("		{");
-            if (_currentTable.AllowCreateAudit)
+            if (_item.AllowCreateAudit)
                 sb.AppendLine("			get { return this." + _model.Database.CreatedDatePascalName + "; }");
             else
                 sb.AppendLine("			get { return null; }");
@@ -2540,22 +2540,22 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine();
             sb.AppendLine("		bool nHydrate.EFCore.DataAccess.IAuditable.IsCreateAuditImplemented");
             sb.AppendLine("		{");
-            sb.AppendLine("			get { return " + (_currentTable.AllowCreateAudit ? "true" : "false") + "; }");
+            sb.AppendLine("			get { return " + (_item.AllowCreateAudit ? "true" : "false") + "; }");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		bool nHydrate.EFCore.DataAccess.IAuditable.IsModifyAuditImplemented");
             sb.AppendLine("		{");
-            sb.AppendLine("			get { return " + (_currentTable.AllowModifiedAudit ? "true" : "false") + "; }");
+            sb.AppendLine("			get { return " + (_item.AllowModifiedAudit ? "true" : "false") + "; }");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		bool nHydrate.EFCore.DataAccess.IAuditable.IsTimestampAuditImplemented");
             sb.AppendLine("		{");
-            sb.AppendLine("			get { return " + (_currentTable.AllowTimestamp ? "true" : "false") + "; }");
+            sb.AppendLine("			get { return " + (_item.AllowTimestamp ? "true" : "false") + "; }");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		string nHydrate.EFCore.DataAccess.IAuditable.ModifiedBy");
             sb.AppendLine("		{");
-            if (_currentTable.AllowModifiedAudit)
+            if (_item.AllowModifiedAudit)
                 sb.AppendLine("			get { return this." + _model.Database.ModifiedByPascalName + "; }");
             else
                 sb.AppendLine("			get { return null; }");
@@ -2563,7 +2563,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine();
             sb.AppendLine("		System.DateTime? nHydrate.EFCore.DataAccess.IAuditable.ModifiedDate");
             sb.AppendLine("		{");
-            if (_currentTable.AllowModifiedAudit)
+            if (_item.AllowModifiedAudit)
                 sb.AppendLine("			get { return this." + _model.Database.ModifiedDatePascalName + "; }");
             else
                 sb.AppendLine("			get { return null; }");
@@ -2571,7 +2571,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine();
             sb.AppendLine("		byte[] nHydrate.EFCore.DataAccess.IAuditable.TimeStamp");
             sb.AppendLine("		{");
-            if (_currentTable.AllowTimestamp)
+            if (_item.AllowTimestamp)
                 sb.AppendLine("			get { return this." + _model.Database.TimestampPascalName + "; }");
             else
                 sb.AppendLine("			get { return new byte[0]; }");
@@ -2579,12 +2579,12 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine();
 
             var auditMethodModifier = "virtual";
-            if (_currentTable.ParentTable!=null)
+            if (_item.ParentTable!=null)
                 auditMethodModifier = "override";
 
             sb.AppendLine("		internal " + auditMethodModifier + " void ResetModifiedBy(string modifier)");
             sb.AppendLine("		{");
-            if (_currentTable.AllowModifiedAudit)
+            if (_item.AllowModifiedAudit)
             {
                 sb.AppendLine("			if (this." + _model.Database.ModifiedByPascalName + " != modifier)");
                 sb.AppendLine("				this." + _model.Database.ModifiedByPascalName + " = modifier;");
@@ -2593,7 +2593,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine();
             sb.AppendLine("		internal " + auditMethodModifier + " void ResetCreatedBy(string modifier)");
             sb.AppendLine("		{");
-            if (_currentTable.AllowCreateAudit)
+            if (_item.AllowCreateAudit)
             {
                 sb.AppendLine("			if (this." + _model.Database.CreatedByPascalName + " != modifier)");
                 sb.AppendLine("				this." + _model.Database.CreatedByPascalName + " = modifier;");
@@ -2697,13 +2697,13 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// Creates and returns a metadata object for an entity type");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <returns>A metadata object for the entity types in this assembly</returns>");
-            sb.AppendLine("		public " + (_currentTable.ParentTable == null ? string.Empty : "new ") + "static " + this.GetLocalNamespace() + ".Interfaces.Entity.Metadata." + _currentTable.PascalName + "Metadata GetMetadata()");
+            sb.AppendLine("		public " + (_item.ParentTable == null ? string.Empty : "new ") + "static " + this.GetLocalNamespace() + ".Interfaces.Entity.Metadata." + _item.PascalName + "Metadata GetMetadata()");
             sb.AppendLine("		{");
-            sb.AppendLine("			var a = typeof(" + _currentTable.PascalName + ").GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true).FirstOrDefault();");
+            sb.AppendLine("			var a = typeof(" + _item.PascalName + ").GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true).FirstOrDefault();");
             sb.AppendLine("			if (a == null) return null;");
             sb.AppendLine("			var t = ((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)a).MetadataClassType;");
             sb.AppendLine("			if (t == null) return null;");
-            sb.AppendLine("			return Activator.CreateInstance(t) as " + this.DefaultNamespace + ".EFDAL.Interfaces.IMetadata as " + this.GetLocalNamespace() + ".Interfaces.Entity.Metadata." + _currentTable.PascalName + "Metadata;");
+            sb.AppendLine("			return Activator.CreateInstance(t) as " + this.DefaultNamespace + ".EFDAL.Interfaces.IMetadata as " + this.GetLocalNamespace() + ".Interfaces.Entity.Metadata." + _item.PascalName + "Metadata;");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -2716,26 +2716,26 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		#region Equals");
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Compares two objects of '"+ _currentTable.PascalName +"' type and determines if all properties match");
+            sb.AppendLine("		/// Compares two objects of '"+ _item.PascalName +"' type and determines if all properties match");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <returns>True if all properties match, false otherwise</returns>");
-            sb.AppendLine("		bool System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + ">.Equals(" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _currentTable.PascalName + " other)");
+            sb.AppendLine("		bool System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ">.Equals(" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + " other)");
             sb.AppendLine("		{");
             sb.AppendLine("			return this.Equals(other);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Compares two objects of '" + _currentTable.PascalName + "' type and determines if all properties match");
+            sb.AppendLine("		/// Compares two objects of '" + _item.PascalName + "' type and determines if all properties match");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <returns>True if all properties match, false otherwise</returns>");
             sb.AppendLine("		public override bool Equals(object obj)");
             sb.AppendLine("		{");
-            sb.AppendLine("			var other = obj as " + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ";");
+            sb.AppendLine("			var other = obj as " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ";");
             sb.AppendLine("			if (other == null) return false;");
             sb.AppendLine("			return (");
 
-            var allColumns = _currentTable.GetColumnsFullHierarchy(true).Where(x => x.Generated).OrderBy(x => x.Name).ToList();
+            var allColumns = _item.GetColumnsFullHierarchy(true).Where(x => x.Generated).OrderBy(x => x.Name).ToList();
             var index = 0;
             foreach (var column in allColumns)
             {
@@ -2787,7 +2787,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
             //Validate all required fields
             {
-                var cList = _currentTable.GeneratedColumns.Where(x => !x.AllowNull && x.IsTextType).ToList();
+                var cList = _item.GeneratedColumns.Where(x => !x.AllowNull && x.IsTextType).ToList();
                 if (cList.Count > 0)
                 {
                     sb.AppendLine("					switch (columnName.ToLower())");
@@ -2808,7 +2808,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
             //Validate all regular expression fields
             {
-                var cList = _currentTable.GeneratedColumns.Where(x => !string.IsNullOrEmpty(x.ValidationExpression) && x.IsTextType).ToList();
+                var cList = _item.GeneratedColumns.Where(x => !string.IsNullOrEmpty(x.ValidationExpression) && x.IsTextType).ToList();
                 if (cList.Count > 0)
                 {
                     sb.AppendLine("					switch (columnName.ToLower())");

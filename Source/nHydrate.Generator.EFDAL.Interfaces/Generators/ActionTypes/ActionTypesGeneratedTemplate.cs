@@ -31,73 +31,73 @@ using nHydrate.Generator.EFDAL.Interfaces;
 
 namespace nHydrate.Generator.EFDAL.Generators.ActionTypes
 {
-	public class ActionTypesGeneratedTemplate : EFDALInterfaceBaseTemplate
-	{
-		private readonly StringBuilder sb = new StringBuilder();
-		private readonly CustomStoredProcedure _storedProc = null;
+    public class ActionTypesGeneratedTemplate : EFDALInterfaceBaseTemplate
+    {
+        private readonly StringBuilder sb = new StringBuilder();
+        private readonly CustomStoredProcedure _storedProc = null;
 
-		public ActionTypesGeneratedTemplate(ModelRoot model, CustomStoredProcedure storedProcedure)
-			: base(model)
-		{
-			_storedProc = storedProcedure;
-		}
+        public ActionTypesGeneratedTemplate(ModelRoot model, CustomStoredProcedure storedProcedure)
+            : base(model)
+        {
+            _storedProc = storedProcedure;
+        }
 
-		#region BaseClassTemplate overrides
-		public override string FileName
-		{
-			get { return "I" + _storedProc.PascalName + ".Generated.cs"; }
-		}
+        #region BaseClassTemplate overrides
+        public override string FileName
+        {
+            get { return "I" + _storedProc.PascalName + ".Generated.cs"; }
+        }
 
-		public string ParentItemName
-		{
-			get { return "I" + _storedProc.PascalName + ".cs"; }
-		}
+        public string ParentItemName
+        {
+            get { return "I" + _storedProc.PascalName + ".cs"; }
+        }
 
-		public override string FileContent
-		{
-			get
-			{
-				GenerateContent();
-				return sb.ToString();
-			}
-		}
-		#endregion
+        public override string FileContent
+        {
+            get
+            {
+                GenerateContent();
+                return sb.ToString();
+            }
+        }
+        #endregion
 
-		#region GenerateContent
+        #region GenerateContent
 
-		private void GenerateContent()
-		{
-			try
-			{
-				nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
-				nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
-				this.AppendUsingStatements();
-				sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Action");
-				sb.AppendLine("{");
+        private void GenerateContent()
+        {
+            try
+            {
+                nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
+                nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
+                this.AppendUsingStatements();
+                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Action");
+                sb.AppendLine("{");
 
-				sb.AppendLine("	/// <summary>");
-				sb.AppendLine("	/// The interface for an action based on a stored procedure");
-				sb.AppendLine("	/// </summary>");
-				sb.AppendLine("	public partial interface I" + _storedProc.PascalName);
-				sb.AppendLine("	{");
-				sb.AppendLine("	}");
+                sb.AppendLine("	/// <summary>");
+                sb.AppendLine("	/// The interface for an action based on a stored procedure");
+                sb.AppendLine("	/// </summary>");
+                sb.AppendLine("	public partial interface I" + _storedProc.PascalName);
+                sb.AppendLine("	{");
+                sb.AppendLine("	}");
 
-				sb.AppendLine("}");
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
+                sb.AppendLine("}");
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
-		private void AppendUsingStatements()
-		{
-			sb.AppendLine("using System;");
-			sb.AppendLine("using System.Linq;");
-			sb.AppendLine();
-		}
+        private void AppendUsingStatements()
+        {
+            sb.AppendLine("using System;");
+            sb.AppendLine("using System.Linq;");
+            sb.AppendLine();
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }

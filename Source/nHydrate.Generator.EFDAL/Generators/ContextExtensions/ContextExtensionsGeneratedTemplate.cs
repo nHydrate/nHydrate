@@ -162,8 +162,8 @@ namespace nHydrate.Generator.EFDAL.Generators.ContextExtensions
             sb.AppendLine("		{");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants)");
-                sb.AppendLine("				return " + GetLocalNamespace() + ".Entity." + table.PascalName + ".GetFieldType((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants)field);");
+                sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants)");
+                sb.AppendLine("				return " + GetLocalNamespace() + ".Entity." + table.PascalName + ".GetFieldType((" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants)field);");
             }
             sb.AppendLine("			throw new Exception(\"Unknown field type!\");");
             sb.AppendLine("		}");
@@ -238,7 +238,7 @@ namespace nHydrate.Generator.EFDAL.Generators.ContextExtensions
                 sb.AppendLine("			var arr = b.Split('.');");
                 sb.AppendLine("			if (arr.Length != 2) throw new System.Exception(\"Invalid selector\");");
                 sb.AppendLine("			var tn = arr.Last();");
-                sb.AppendLine("			var te = (" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants)Enum.Parse(typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants), tn, true);");
+                sb.AppendLine("			var te = (" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants)Enum.Parse(typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants), tn, true);");
                 sb.AppendLine("			return item.GetValue<T>(te, default(T));");
                 sb.AppendLine("		}");
                 sb.AppendLine();
@@ -258,7 +258,7 @@ namespace nHydrate.Generator.EFDAL.Generators.ContextExtensions
                 sb.AppendLine("			var arr = b.Split('.');");
                 sb.AppendLine("			if (arr.Length != 2) throw new System.Exception(\"Invalid selector\");");
                 sb.AppendLine("			var tn = arr.Last();");
-                sb.AppendLine("			var te = (" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants)Enum.Parse(typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants), tn, true);");
+                sb.AppendLine("			var te = (" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants)Enum.Parse(typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants), tn, true);");
                 sb.AppendLine("			return item.GetValue<T>(te, defaultValue);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
@@ -271,7 +271,7 @@ namespace nHydrate.Generator.EFDAL.Generators.ContextExtensions
                 sb.AppendLine("		/// <param name=\"item\">The item from which to pull the value.</param>");
                 sb.AppendLine("		/// <param name=\"field\">The field value to retrieve</param>");
                 sb.AppendLine("		/// <returns></returns>");
-                sb.AppendLine("		public static T GetValue<T>(this " + this.GetLocalNamespace() + ".Entity." + table.PascalName + " item, " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants field)");
+                sb.AppendLine("		public static T GetValue<T>(this " + this.GetLocalNamespace() + ".Entity." + table.PascalName + " item, " + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants field)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			return item.GetValue<T>(field, default(T));");
                 sb.AppendLine("		}");
@@ -286,7 +286,7 @@ namespace nHydrate.Generator.EFDAL.Generators.ContextExtensions
                 sb.AppendLine("		/// <param name=\"field\">The field value to retrieve</param>");
                 sb.AppendLine("		/// <param name=\"defaultValue\">The default value to return if the specified value is NULL</param>");
                 sb.AppendLine("		/// <returns></returns>");
-                sb.AppendLine("		public static T GetValue<T>(this " + this.GetLocalNamespace() + ".Entity." + table.PascalName + " item, " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants field, T defaultValue)");
+                sb.AppendLine("		public static T GetValue<T>(this " + this.GetLocalNamespace() + ".Entity." + table.PascalName + " item, " + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants field, T defaultValue)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			var valid = false;");
                 sb.AppendLine("			if (typeof(T) == typeof(bool)) valid = true;");
@@ -386,7 +386,7 @@ namespace nHydrate.Generator.EFDAL.Generators.ContextExtensions
                 sb.AppendLine("			var arr = b.Split('.');");
                 sb.AppendLine("			if (arr.Length != 2) throw new System.Exception(\"Invalid selector\");");
                 sb.AppendLine("			var tn = arr.Last();");
-                sb.AppendLine("			var te = (" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants)Enum.Parse(typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants), tn, true);");
+                sb.AppendLine("			var te = (" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants)Enum.Parse(typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants), tn, true);");
                 sb.AppendLine("			item.SetValue(te, newValue);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
@@ -396,178 +396,178 @@ namespace nHydrate.Generator.EFDAL.Generators.ContextExtensions
             #endregion
 
             #region GetPagedResults
-            sb.AppendLine("		#region GetPagedResults");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
-            {
-                var listObjectType = "ObjectSet";
-                if (table.ParentTable != null)
-                    listObjectType = "ObjectQuery";
+            //sb.AppendLine("		#region GetPagedResults");
+            //foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            //{
+            //    var listObjectType = "ObjectSet";
+            //    if (table.ParentTable != null)
+            //        listObjectType = "ObjectQuery";
 
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Pulls a paged set of data based on the paging criteria");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <param name=\"item\">The " + listObjectType + " from which to pull data</param>");
-                sb.AppendLine("		/// <param name=\"orderBy\">The sort order of this data set</param>");
-                sb.AppendLine("		/// <param name=\"paging\">The paging object that controls how data is selected. It will contain additional paging information on output.</param>");
-                sb.AppendLine("		public static IEnumerable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> GetPagedResults<TKey>(");
-                sb.AppendLine("			this System.Data.Objects." + listObjectType + "<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item,");
-                sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", TKey>> orderBy,");
-                sb.AppendLine("			nHydrate.EFCore.DataAccess.Paging paging)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			return item.GetPagedResults(x => true, orderBy, true, paging);");
-                sb.AppendLine("		}");
-                sb.AppendLine();
+            //    sb.AppendLine("		/// <summary>");
+            //    sb.AppendLine("		/// Pulls a paged set of data based on the paging criteria");
+            //    sb.AppendLine("		/// </summary>");
+            //    sb.AppendLine("		/// <param name=\"item\">The " + listObjectType + " from which to pull data</param>");
+            //    sb.AppendLine("		/// <param name=\"orderBy\">The sort order of this data set</param>");
+            //    sb.AppendLine("		/// <param name=\"paging\">The paging object that controls how data is selected. It will contain additional paging information on output.</param>");
+            //    sb.AppendLine("		public static IEnumerable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> GetPagedResults<TKey>(");
+            //    sb.AppendLine("			this System.Data.Objects." + listObjectType + "<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item,");
+            //    sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", TKey>> orderBy,");
+            //    sb.AppendLine("			nHydrate.EFCore.DataAccess.Paging paging)");
+            //    sb.AppendLine("		{");
+            //    sb.AppendLine("			return item.GetPagedResults(x => true, orderBy, true, paging);");
+            //    sb.AppendLine("		}");
+            //    sb.AppendLine();
 
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Pulls a paged set of data based on the paging criteria");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <param name=\"item\">The " + listObjectType + " from which to pull data</param>");
-                sb.AppendLine("		/// <param name=\"where\">The filter by which to pull data</param>");
-                sb.AppendLine("		/// <param name=\"orderBy\">The sort order of this data set</param>");
-                sb.AppendLine("		/// <param name=\"paging\">The paging object that controls how data is selected. It will contain additional paging information on output.</param>");
-                sb.AppendLine("		public static IEnumerable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> GetPagedResults<TKey>(");
-                sb.AppendLine("			this System.Data.Objects." + listObjectType + "<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item,");
-                sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", bool>> where,");
-                sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", TKey>> orderBy,");
-                sb.AppendLine("			nHydrate.EFCore.DataAccess.Paging paging)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			return item.GetPagedResults(where, orderBy, true, paging);");
-                sb.AppendLine("		}");
-                sb.AppendLine();
+            //    sb.AppendLine("		/// <summary>");
+            //    sb.AppendLine("		/// Pulls a paged set of data based on the paging criteria");
+            //    sb.AppendLine("		/// </summary>");
+            //    sb.AppendLine("		/// <param name=\"item\">The " + listObjectType + " from which to pull data</param>");
+            //    sb.AppendLine("		/// <param name=\"where\">The filter by which to pull data</param>");
+            //    sb.AppendLine("		/// <param name=\"orderBy\">The sort order of this data set</param>");
+            //    sb.AppendLine("		/// <param name=\"paging\">The paging object that controls how data is selected. It will contain additional paging information on output.</param>");
+            //    sb.AppendLine("		public static IEnumerable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> GetPagedResults<TKey>(");
+            //    sb.AppendLine("			this System.Data.Objects." + listObjectType + "<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item,");
+            //    sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", bool>> where,");
+            //    sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", TKey>> orderBy,");
+            //    sb.AppendLine("			nHydrate.EFCore.DataAccess.Paging paging)");
+            //    sb.AppendLine("		{");
+            //    sb.AppendLine("			return item.GetPagedResults(where, orderBy, true, paging);");
+            //    sb.AppendLine("		}");
+            //    sb.AppendLine();
 
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Pulls a paged set of data based on the paging criteria");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <param name=\"item\">The " + listObjectType + " from which to pull data</param>");
-                sb.AppendLine("		/// <param name=\"orderBy\">The sort order of this data set</param>");
-                sb.AppendLine("		/// <param name=\"orderAscending\">The direction of sort</param>");
-                sb.AppendLine("		/// <param name=\"paging\">The paging object that controls how data is selected. It will contain additional paging information on output.</param>");
-                sb.AppendLine("		public static IEnumerable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> GetPagedResults<TKey>(");
-                sb.AppendLine("			this System.Data.Objects." + listObjectType + "<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item,");
-                sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", TKey>> orderBy,");
-                sb.AppendLine("			bool orderAscending,");
-                sb.AppendLine("			nHydrate.EFCore.DataAccess.Paging paging)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			return item.GetPagedResults(x => true, orderBy, orderAscending, paging);");
-                sb.AppendLine("		}");
-                sb.AppendLine();
+            //    sb.AppendLine("		/// <summary>");
+            //    sb.AppendLine("		/// Pulls a paged set of data based on the paging criteria");
+            //    sb.AppendLine("		/// </summary>");
+            //    sb.AppendLine("		/// <param name=\"item\">The " + listObjectType + " from which to pull data</param>");
+            //    sb.AppendLine("		/// <param name=\"orderBy\">The sort order of this data set</param>");
+            //    sb.AppendLine("		/// <param name=\"orderAscending\">The direction of sort</param>");
+            //    sb.AppendLine("		/// <param name=\"paging\">The paging object that controls how data is selected. It will contain additional paging information on output.</param>");
+            //    sb.AppendLine("		public static IEnumerable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> GetPagedResults<TKey>(");
+            //    sb.AppendLine("			this System.Data.Objects." + listObjectType + "<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item,");
+            //    sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", TKey>> orderBy,");
+            //    sb.AppendLine("			bool orderAscending,");
+            //    sb.AppendLine("			nHydrate.EFCore.DataAccess.Paging paging)");
+            //    sb.AppendLine("		{");
+            //    sb.AppendLine("			return item.GetPagedResults(x => true, orderBy, orderAscending, paging);");
+            //    sb.AppendLine("		}");
+            //    sb.AppendLine();
 
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Pulls a paged set of data based on the paging criteria");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <param name=\"item\">The " + listObjectType + " from which to pull data</param>");
-                sb.AppendLine("		/// <param name=\"where\">The filter by which to pull data</param>");
-                sb.AppendLine("		/// <param name=\"orderBy\">The sort order of this data set</param>");
-                sb.AppendLine("		/// <param name=\"orderAscending\">The direction of sort</param>");
-                sb.AppendLine("		/// <param name=\"paging\">The paging object that controls how data is selected. It will contain additional paging information on output.</param>");
-                sb.AppendLine("		public static IEnumerable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> GetPagedResults<TKey>(");
-                sb.AppendLine("			this System.Data.Objects." + listObjectType + "<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item,");
-                sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", bool>> where,");
-                sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", TKey>> orderBy,");
-                sb.AppendLine("			bool orderAscending,");
-                sb.AppendLine("			nHydrate.EFCore.DataAccess.Paging paging)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			if (item == null) return null;");
-                sb.AppendLine("			if (where == null) return null;");
-                sb.AppendLine("			if (orderBy == null) return null;");
-                sb.AppendLine("			var index = paging.PageIndex;");
-                sb.AppendLine("			var rpp = paging.RecordsperPage;");
-                sb.AppendLine("			if (index < 1) index = 1;");
-                sb.AppendLine("			if (rpp < 1) rpp = 1;");
-                sb.AppendLine();
-                sb.AppendLine("			paging.RecordCount = item.Count(where);");
-                sb.AppendLine("			paging.PageCount = paging.RecordCount / rpp;");
-                sb.AppendLine("			if ((paging.RecordCount % rpp) != 0) paging.PageCount++;");
-                sb.AppendLine();
-                sb.AppendLine("			var q = item.Where(where);");
-                sb.AppendLine();
-                sb.AppendLine("			if (orderAscending)");
-                sb.AppendLine("				q = q.OrderBy(orderBy);");
-                sb.AppendLine("			else");
-                sb.AppendLine("				q = q.OrderByDescending(orderBy);");
-                sb.AppendLine();
-                sb.AppendLine("			return q.Skip((index - 1) * rpp)");
-                sb.AppendLine("							.Take(rpp)");
-                sb.AppendLine("							.ToList();");
-                sb.AppendLine();
-                sb.AppendLine("		}");
-                sb.AppendLine();
+            //    sb.AppendLine("		/// <summary>");
+            //    sb.AppendLine("		/// Pulls a paged set of data based on the paging criteria");
+            //    sb.AppendLine("		/// </summary>");
+            //    sb.AppendLine("		/// <param name=\"item\">The " + listObjectType + " from which to pull data</param>");
+            //    sb.AppendLine("		/// <param name=\"where\">The filter by which to pull data</param>");
+            //    sb.AppendLine("		/// <param name=\"orderBy\">The sort order of this data set</param>");
+            //    sb.AppendLine("		/// <param name=\"orderAscending\">The direction of sort</param>");
+            //    sb.AppendLine("		/// <param name=\"paging\">The paging object that controls how data is selected. It will contain additional paging information on output.</param>");
+            //    sb.AppendLine("		public static IEnumerable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> GetPagedResults<TKey>(");
+            //    sb.AppendLine("			this System.Data.Objects." + listObjectType + "<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item,");
+            //    sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", bool>> where,");
+            //    sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", TKey>> orderBy,");
+            //    sb.AppendLine("			bool orderAscending,");
+            //    sb.AppendLine("			nHydrate.EFCore.DataAccess.Paging paging)");
+            //    sb.AppendLine("		{");
+            //    sb.AppendLine("			if (item == null) return null;");
+            //    sb.AppendLine("			if (where == null) return null;");
+            //    sb.AppendLine("			if (orderBy == null) return null;");
+            //    sb.AppendLine("			var index = paging.PageIndex;");
+            //    sb.AppendLine("			var rpp = paging.RecordsperPage;");
+            //    sb.AppendLine("			if (index < 1) index = 1;");
+            //    sb.AppendLine("			if (rpp < 1) rpp = 1;");
+            //    sb.AppendLine();
+            //    sb.AppendLine("			paging.RecordCount = item.Count(where);");
+            //    sb.AppendLine("			paging.PageCount = paging.RecordCount / rpp;");
+            //    sb.AppendLine("			if ((paging.RecordCount % rpp) != 0) paging.PageCount++;");
+            //    sb.AppendLine();
+            //    sb.AppendLine("			var q = item.Where(where);");
+            //    sb.AppendLine();
+            //    sb.AppendLine("			if (orderAscending)");
+            //    sb.AppendLine("				q = q.OrderBy(orderBy);");
+            //    sb.AppendLine("			else");
+            //    sb.AppendLine("				q = q.OrderByDescending(orderBy);");
+            //    sb.AppendLine();
+            //    sb.AppendLine("			return q.Skip((index - 1) * rpp)");
+            //    sb.AppendLine("							.Take(rpp)");
+            //    sb.AppendLine("							.ToList();");
+            //    sb.AppendLine();
+            //    sb.AppendLine("		}");
+            //    sb.AppendLine();
 
-                //Overload for passing in FieldNameConstants for multiple-item order by clause
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Pulls a paged set of data based on the paging criteria");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <param name=\"item\">The " + listObjectType + " from which to pull data</param>");
-                sb.AppendLine("		/// <param name=\"where\">The filter by which to pull data</param>");
-                sb.AppendLine("		/// <param name=\"orderByList\">The sort order of this data set</param>");
-                sb.AppendLine("		/// <param name=\"paging\">The paging object that controls how data is selected. It will contain additional paging information on output.</param>");
-                sb.AppendLine("		public static IEnumerable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> GetPagedResults(");
-                sb.AppendLine("			this System.Data.Objects." + listObjectType + "<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item,");
-                sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", bool>> where,");
-                sb.AppendLine("			IEnumerable<nHydrate.EFCore.DataAccess.OrderedWrapper<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants>> orderByList,");
-                sb.AppendLine("			nHydrate.EFCore.DataAccess.Paging paging)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			var index = paging.PageIndex;");
-                sb.AppendLine("			var rpp = paging.RecordsperPage;");
-                sb.AppendLine("			if (index < 1) index = 1;");
-                sb.AppendLine("			if (rpp < 1) rpp = 1;");
-                sb.AppendLine();
-                sb.AppendLine("			paging.RecordCount = item.Count(where);");
-                sb.AppendLine("			paging.PageCount = paging.RecordCount / rpp;");
-                sb.AppendLine("			if ((paging.RecordCount % rpp) != 0) paging.PageCount++;");
-                sb.AppendLine();
-                sb.AppendLine("			var q = item.Where(where);");
-                sb.AppendLine();
-                sb.AppendLine("			foreach (var ob in orderByList)");
-                sb.AppendLine("			{");
-                sb.AppendLine("				switch (ob.Field)");
-                sb.AppendLine("				{");
+            //    //Overload for passing in FieldNameConstants for multiple-item order by clause
+            //    sb.AppendLine("		/// <summary>");
+            //    sb.AppendLine("		/// Pulls a paged set of data based on the paging criteria");
+            //    sb.AppendLine("		/// </summary>");
+            //    sb.AppendLine("		/// <param name=\"item\">The " + listObjectType + " from which to pull data</param>");
+            //    sb.AppendLine("		/// <param name=\"where\">The filter by which to pull data</param>");
+            //    sb.AppendLine("		/// <param name=\"orderByList\">The sort order of this data set</param>");
+            //    sb.AppendLine("		/// <param name=\"paging\">The paging object that controls how data is selected. It will contain additional paging information on output.</param>");
+            //    sb.AppendLine("		public static IEnumerable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> GetPagedResults(");
+            //    sb.AppendLine("			this System.Data.Objects." + listObjectType + "<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item,");
+            //    sb.AppendLine("			System.Linq.Expressions.Expression<Func<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", bool>> where,");
+            //    sb.AppendLine("			IEnumerable<nHydrate.EFCore.DataAccess.OrderedWrapper<" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants>> orderByList,");
+            //    sb.AppendLine("			nHydrate.EFCore.DataAccess.Paging paging)");
+            //    sb.AppendLine("		{");
+            //    sb.AppendLine("			var index = paging.PageIndex;");
+            //    sb.AppendLine("			var rpp = paging.RecordsperPage;");
+            //    sb.AppendLine("			if (index < 1) index = 1;");
+            //    sb.AppendLine("			if (rpp < 1) rpp = 1;");
+            //    sb.AppendLine();
+            //    sb.AppendLine("			paging.RecordCount = item.Count(where);");
+            //    sb.AppendLine("			paging.PageCount = paging.RecordCount / rpp;");
+            //    sb.AppendLine("			if ((paging.RecordCount % rpp) != 0) paging.PageCount++;");
+            //    sb.AppendLine();
+            //    sb.AppendLine("			var q = item.Where(where);");
+            //    sb.AppendLine();
+            //    sb.AppendLine("			foreach (var ob in orderByList)");
+            //    sb.AppendLine("			{");
+            //    sb.AppendLine("				switch (ob.Field)");
+            //    sb.AppendLine("				{");
 
-                foreach (var column in table.GeneratedColumns)
-                {
-                    sb.AppendLine("					case Entity." + table.PascalName + ".FieldNameConstants." + column.PascalName + ":");
-                    sb.AppendLine("						if (ob.Ascending) q = q.OrderBy(x => x." + column.PascalName + ");");
-                    sb.AppendLine("						else q = q.OrderByDescending(x => x." + column.PascalName + ");");
-                    sb.AppendLine("						break;");
-                }
+            //    foreach (var column in table.GeneratedColumns)
+            //    {
+            //        sb.AppendLine("					case " + this.DefaultNamespace + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants." + column.PascalName + ":");
+            //        sb.AppendLine("						if (ob.Ascending) q = q.OrderBy(x => x." + column.PascalName + ");");
+            //        sb.AppendLine("						else q = q.OrderByDescending(x => x." + column.PascalName + ");");
+            //        sb.AppendLine("						break;");
+            //    }
 
-                if (table.AllowCreateAudit)
-                {
-                    sb.AppendLine("					case Entity." + table.PascalName + ".FieldNameConstants." + _model.Database.CreatedDatePascalName + ":");
-                    sb.AppendLine("						if (ob.Ascending) q = q.OrderBy(x => x." + _model.Database.CreatedDatePascalName + ");");
-                    sb.AppendLine("						else q = q.OrderByDescending(x => x." + _model.Database.CreatedDatePascalName + ");");
-                    sb.AppendLine("						break;");
-                    sb.AppendLine("					case Entity." + table.PascalName + ".FieldNameConstants." + _model.Database.CreatedByPascalName + ":");
-                    sb.AppendLine("						if (ob.Ascending) q = q.OrderBy(x => x." + _model.Database.CreatedByPascalName + ");");
-                    sb.AppendLine("						else q = q.OrderByDescending(x => x." + _model.Database.CreatedByPascalName + ");");
-                    sb.AppendLine("						break;");
-                }
+            //    if (table.AllowCreateAudit)
+            //    {
+            //        sb.AppendLine("					case " + this.DefaultNamespace + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants." + _model.Database.CreatedDatePascalName + ":");
+            //        sb.AppendLine("						if (ob.Ascending) q = q.OrderBy(x => x." + _model.Database.CreatedDatePascalName + ");");
+            //        sb.AppendLine("						else q = q.OrderByDescending(x => x." + _model.Database.CreatedDatePascalName + ");");
+            //        sb.AppendLine("						break;");
+            //        sb.AppendLine("					case " + this.DefaultNamespace + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants." + _model.Database.CreatedByPascalName + ":");
+            //        sb.AppendLine("						if (ob.Ascending) q = q.OrderBy(x => x." + _model.Database.CreatedByPascalName + ");");
+            //        sb.AppendLine("						else q = q.OrderByDescending(x => x." + _model.Database.CreatedByPascalName + ");");
+            //        sb.AppendLine("						break;");
+            //    }
 
-                if (table.AllowModifiedAudit)
-                {
-                    sb.AppendLine("					case Entity." + table.PascalName + ".FieldNameConstants." + _model.Database.ModifiedDatePascalName + ":");
-                    sb.AppendLine("						if (ob.Ascending) q = q.OrderBy(x => x." + _model.Database.ModifiedDatePascalName + ");");
-                    sb.AppendLine("						else q = q.OrderByDescending(x => x." + _model.Database.ModifiedDatePascalName + ");");
-                    sb.AppendLine("						break;");
-                    sb.AppendLine("					case Entity." + table.PascalName + ".FieldNameConstants." + _model.Database.ModifiedByPascalName + ":");
-                    sb.AppendLine("						if (ob.Ascending) q = q.OrderBy(x => x." + _model.Database.ModifiedByPascalName + ");");
-                    sb.AppendLine("						else q = q.OrderByDescending(x => x." + _model.Database.ModifiedByPascalName + ");");
-                    sb.AppendLine("						break;");
-                }
+            //    if (table.AllowModifiedAudit)
+            //    {
+            //        sb.AppendLine("					case " + this.DefaultNamespace + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants." + _model.Database.ModifiedDatePascalName + ":");
+            //        sb.AppendLine("						if (ob.Ascending) q = q.OrderBy(x => x." + _model.Database.ModifiedDatePascalName + ");");
+            //        sb.AppendLine("						else q = q.OrderByDescending(x => x." + _model.Database.ModifiedDatePascalName + ");");
+            //        sb.AppendLine("						break;");
+            //        sb.AppendLine("					case " + this.DefaultNamespace + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants." + _model.Database.ModifiedByPascalName + ":");
+            //        sb.AppendLine("						if (ob.Ascending) q = q.OrderBy(x => x." + _model.Database.ModifiedByPascalName + ");");
+            //        sb.AppendLine("						else q = q.OrderByDescending(x => x." + _model.Database.ModifiedByPascalName + ");");
+            //        sb.AppendLine("						break;");
+            //    }
 
-                sb.AppendLine("				}");
-                sb.AppendLine("			}");
-                sb.AppendLine();
-                sb.AppendLine("			return q.Skip((index - 1) * rpp)");
-                sb.AppendLine("							.Take(rpp)");
-                sb.AppendLine("							.ToList();");
-                sb.AppendLine();
-                sb.AppendLine("		}");
-                sb.AppendLine();
+            //    sb.AppendLine("				}");
+            //    sb.AppendLine("			}");
+            //    sb.AppendLine();
+            //    sb.AppendLine("			return q.Skip((index - 1) * rpp)");
+            //    sb.AppendLine("							.Take(rpp)");
+            //    sb.AppendLine("							.ToList();");
+            //    sb.AppendLine();
+            //    sb.AppendLine("		}");
+            //    sb.AppendLine();
 
-            }
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
+            //}
+            //sb.AppendLine("		#endregion");
+            //sb.AppendLine();
             #endregion
 
             #region ObservableCollection

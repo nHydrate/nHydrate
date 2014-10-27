@@ -1270,7 +1270,7 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
             sb.AppendLine("		{");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants) return " + this.GetLocalNamespace() + ".EntityMappingConstants." + table.PascalName + ";");
+                sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants) return " + this.GetLocalNamespace() + ".EntityMappingConstants." + table.PascalName + ";");
             }
             sb.AppendLine("			throw new Exception(\"Unknown field type!\");");
             sb.AppendLine("		}");

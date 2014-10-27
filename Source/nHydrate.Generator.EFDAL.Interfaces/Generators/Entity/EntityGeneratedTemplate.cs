@@ -82,6 +82,7 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
                 this.AppendUsingStatements();
                 sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
                 sb.AppendLine("{");
+                this.AppendedFieldEnum();
                 this.AppendEntityClass();
                 sb.AppendLine("}");
                 sb.AppendLine();
@@ -133,7 +134,6 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
             //}
 
             sb.AppendLine();
-
             sb.AppendLine("	{");
             this.AppendProperties();
             this.AppendNavigationProperties();
@@ -454,6 +454,93 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
             sb.AppendLine("		#endregion");
             sb.AppendLine();
 
+        }
+
+        private void AppendedFieldEnum()
+        {
+            var imageColumnList = _currentTable.GetColumnsByType(System.Data.SqlDbType.Image).OrderBy(x => x.Name).ToList();
+            if (imageColumnList.Count != 0)
+            {
+                sb.AppendLine("	#region " + _currentTable.PascalName + "FieldImageConstants Enumeration");
+                sb.AppendLine();
+                sb.AppendLine("	/// <summary>");
+                sb.AppendLine("	/// An enumeration of this object's image type fields");
+                sb.AppendLine("	/// </summary>");
+                sb.AppendLine("	public enum " + _currentTable.PascalName + "FieldImageConstants");
+                sb.AppendLine("	{");
+                foreach (var column in imageColumnList)
+                {
+                    sb.AppendLine("		/// <summary>");
+                    sb.AppendLine("		/// Field mapping for the image parameter '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
+                    sb.AppendLine("		/// </summary>");
+                    sb.AppendLine("		[System.ComponentModel.Description(\"Field mapping for the image parameter '" + column.PascalName + "' property\")]");
+                    sb.AppendLine("		" + column.PascalName + ",");
+                }
+                sb.AppendLine("	}");
+                sb.AppendLine();
+                sb.AppendLine("	#endregion");
+                sb.AppendLine();
+            }
+
+            sb.AppendLine("	#region " + _currentTable.PascalName + "FieldNameConstants Enumeration");
+            sb.AppendLine();
+            sb.AppendLine("	/// <summary>");
+            sb.AppendLine("	/// Enumeration to define each property that maps to a database field for the '" + _currentTable.PascalName + "' table.");
+            sb.AppendLine("	/// </summary>");
+            sb.AppendLine("	public " + (_currentTable.ParentTable == null ? "" : "new ") + "enum " + _currentTable.PascalName + "FieldNameConstants");
+            sb.AppendLine("	{");
+            foreach (var column in _currentTable.GeneratedColumnsFullHierarchy)
+            {
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Field mapping for the '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
+                sb.AppendLine("		/// </summary>");
+
+                if (column.PrimaryKey)
+                {
+                    //sb.AppendLine("		[nHydrate.EFCore.Attributes.PrimaryKeyAttribute()]");
+                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key]");
+                }
+
+                if (column.PrimaryKey || _currentTable.Immutable)
+                {
+                    sb.AppendLine("		[System.ComponentModel.ReadOnlyAttribute(true)]");
+                }
+
+                sb.AppendLine("		[System.ComponentModel.Description(\"Field mapping for the '" + column.PascalName + "' property\")]");
+                sb.AppendLine("		" + column.PascalName + ",");
+            }
+
+            if (_currentTable.AllowCreateAudit)
+            {
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Field mapping for the '" + _model.Database.CreatedByPascalName + "' property");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedByPascalName + "' property\")]");
+                sb.AppendLine("		" + _model.Database.CreatedByPascalName + ",");
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Field mapping for the '" + _model.Database.CreatedDatePascalName + "' property");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedDatePascalName + "' property\")]");
+                sb.AppendLine("		" + _model.Database.CreatedDatePascalName + ",");
+            }
+
+            if (_currentTable.AllowModifiedAudit)
+            {
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Field mapping for the '" + _model.Database.ModifiedByPascalName + "' property");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedByPascalName + "' property\")]");
+                sb.AppendLine("		" + _model.Database.ModifiedByPascalName + ",");
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Field mapping for the '" + _model.Database.ModifiedDatePascalName + "' property");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedDatePascalName + "' property\")]");
+                sb.AppendLine("		" + _model.Database.ModifiedDatePascalName + ",");
+            }
+
+            sb.AppendLine("	}");
+            sb.AppendLine("	#endregion");
+            sb.AppendLine();
         }
 
         #region MetaData

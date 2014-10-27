@@ -127,6 +127,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("using System.Data.Entity.ModelConfiguration;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
             sb.AppendLine("using nHydrate.EFCore.Exceptions;");
+            sb.AppendLine("using System.Data.Entity.Core.Objects;");
             sb.AppendLine();
         }
 
@@ -1118,7 +1119,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             foreach (var storedProcedure in _model.Database.CustomStoredProcedures.Where(x => x.Generated && x.GeneratedColumns.Count > 0).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// ");
+                sb.AppendLine("		/// " + storedProcedure.Description);
                 sb.AppendLine("		/// </summary>");
                 sb.Append("		public IEnumerable<" + storedProcedure.PascalName + "> " + storedProcedure.PascalName + "(");
                 var parameterList = storedProcedure.GetParameters().Where(x => x.Generated).ToList();
@@ -1150,7 +1151,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     }
                 }
 
-                sb.Append("			var retval = base.ExecuteFunction<" + storedProcedure.PascalName + ">(\"" + storedProcedure.GetDatabaseObjectName() + "\"");
+                sb.Append("			var retval = this.ObjectContext.ExecuteFunction<" + storedProcedure.PascalName + ">(\"" + storedProcedure.GetDatabaseObjectName() + "\"");
 
                 if (parameterList.Count > 0)
                 {
@@ -1209,7 +1210,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     else
                         sb.AppendLine("			parameters.Add(new ObjectParameter(\"" + param.PascalName + "\", " + param.CamelName + "));");
                 }
-                sb.AppendLine("			base.ExecuteFunction(\"" + storedProcedure.PascalName + "\", parameters.ToArray());");
+                sb.AppendLine("			this.ObjectContext.ExecuteFunction(\"" + storedProcedure.PascalName + "\", parameters.ToArray());");
 
                 {
                     var index = 0;
@@ -1268,7 +1269,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     }
                 }
 
-                sb.Append("			var retval = base.ExecuteFunction<" + function.PascalName + ">(\"" + function.PascalName + "_SPWrapper\"");
+                sb.Append("			var retval = this.ObjectContext.ExecuteFunction<" + function.PascalName + ">(\"" + function.PascalName + "_SPWrapper\"");
 
                 if (parameterList.Count > 0)
                 {
@@ -1333,7 +1334,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		{");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants) return " + this.GetLocalNamespace() + ".EntityMappingConstants." + table.PascalName + ";");
+                sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants) return " + this.GetLocalNamespace() + ".EntityMappingConstants." + table.PascalName + ";");
             }
             sb.AppendLine("			throw new Exception(\"Unknown field type!\");");
             sb.AppendLine("		}");

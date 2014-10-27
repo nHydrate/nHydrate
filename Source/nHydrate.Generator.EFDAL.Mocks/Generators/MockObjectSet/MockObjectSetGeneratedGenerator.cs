@@ -29,39 +29,38 @@ using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.EFDAL.Mocks.Generators.MockObjectSets
 {
-	[GeneratorItem("MockObjectSetGeneratedGenerator", typeof(MockObjectSetExtenderGenerator))]
-	public class MockObjectSetGeneratedGenerator : BaseClassGenerator
-	{
-		#region Class Members
+    [GeneratorItem("MockObjectSetGeneratedGenerator", typeof(MockObjectSetExtenderGenerator))]
+    public class MockObjectSetGeneratedGenerator : BaseClassGenerator
+    {
+        #region Class Members
 
-		private const string RELATIVE_OUTPUT_LOCATION = @"\";
+        private const string RELATIVE_OUTPUT_LOCATION = @"\";
 
-		#endregion
+        #endregion
 
-		#region Overrides
+        #region Overrides
 
-		public override int FileCount
-		{
-			get { return 1; }
-		}
+        public override int FileCount
+        {
+            get { return 1; }
+        }
 
-		public override void Generate()
-		{
-			var template = new MockObjectSetGeneratedTemplate(_model);
-			var fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;
-			var eventArgs = new ProjectItemGeneratedEventArgs(template.FileName, template.FileContent, ProjectName, fullParentName, this, true);
-			OnProjectItemGenerated(this, eventArgs);
-			var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
-			OnGenerationComplete(this, gcEventArgs);
-		}
+        public override void Generate()
+        {
+            var template = new MockObjectSetGeneratedTemplate(_model);
+            var fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;
+            var eventArgs = new ProjectItemGeneratedEventArgs(template.FileName, template.FileContent, ProjectName, fullParentName, this, true);
+            OnProjectItemGenerated(this, eventArgs);
+            var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
+            OnGenerationComplete(this, gcEventArgs);
+        }
 
-		public override string LocalNamespaceExtension
-		{
-			get { return EFDALMockProjectGenerator.NamespaceExtension; }
-		}
+        public override string LocalNamespaceExtension
+        {
+            get { return EFDALMockProjectGenerator.NamespaceExtension; }
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }
-
