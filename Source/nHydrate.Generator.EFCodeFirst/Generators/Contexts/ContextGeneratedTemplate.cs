@@ -226,6 +226,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		protected ContextStartup _contextStartup = new ContextStartup(null);");
             sb.AppendLine();
 
+            sb.AppendLine("		private static Dictionary<string, SequentialIdGenerator> _sequentialIdGeneratorCache = new Dictionary<string, SequentialIdGenerator>();");
+            sb.AppendLine("		private static object _seqCacheLock = new object();");
+            sb.AppendLine();
+
             #region Constructors
             sb.AppendLine("		#region Constructors");
             sb.AppendLine();
@@ -530,6 +534,41 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             #endregion
 
+            #region SequentialID functionality
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		public static void ResetSequentialGuid(EntityMappingConstants entity, string key, Guid seed)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if (string.IsNullOrEmpty(key))");
+            sb.AppendLine("				throw new Exception(\"Invalid key\");");
+            sb.AppendLine();
+            sb.AppendLine("			lock (_seqCacheLock)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var k = entity.ToString() + \"|\" + key;");
+            sb.AppendLine("				if (!_sequentialIdGeneratorCache.ContainsKey(k))");
+            sb.AppendLine("					_sequentialIdGeneratorCache.Add(k, new SequentialIdGenerator(seed));");
+            sb.AppendLine("				else");
+            sb.AppendLine("					_sequentialIdGeneratorCache[k].LastValue = seed;");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		public static Guid GetNextSequentialGuid(EntityMappingConstants entity, string key)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if (string.IsNullOrEmpty(key))");
+            sb.AppendLine("				throw new Exception(\"Invalid key\");");
+            sb.AppendLine();
+            sb.AppendLine("			lock (_seqCacheLock)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var k = entity.ToString() + \"|\" + key;");
+            sb.AppendLine("				if (!_sequentialIdGeneratorCache.ContainsKey(k))");
+            sb.AppendLine("					ResetSequentialGuid(entity, key, Guid.NewGuid());");
+            sb.AppendLine("				return _sequentialIdGeneratorCache[k].NewId();");
+            sb.AppendLine("			}");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            #endregion
+
             #region Auditing
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Persists all updates to the data source and resets change tracking in the object context.");
@@ -546,7 +585,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				{");
             foreach (var table in _model.Database.Tables.Where(x => x.IsTenant).OrderBy(x => x.Name).ToList())
             {
-                sb.AppendLine("					if (item.Entity is "+ this.GetLocalNamespace() +".Entity." + table.Name + ")");
+                sb.AppendLine("					if (item.Entity is " + this.GetLocalNamespace() + ".Entity." + table.Name + ")");
                 sb.AppendLine("						throw new Exception(\"You cannot add items to the tenant table '" + table.Name + "' in Admin mode.\");");
             }
             sb.AppendLine("				}");
