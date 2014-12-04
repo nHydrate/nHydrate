@@ -143,7 +143,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine("	[System.Data.Linq.Mapping.Table(Name = \"" + _currentTable.PascalName + "\")]");
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	[System.Data.Objects.DataClasses.EdmEntityType(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _currentTable.PascalName + "\")]");
-            sb.AppendLine("	[nHydrate.EFCore.Attributes.FieldNameConstantsAttribute(typeof(" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ".FieldNameConstants))]");
+            sb.AppendLine("	[nHydrate.EFCore.Attributes.FieldNameConstantsAttribute(typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _currentTable.PascalName + "FieldNameConstants))]");
 
             if (!string.IsNullOrEmpty(_currentTable.Description))
             {

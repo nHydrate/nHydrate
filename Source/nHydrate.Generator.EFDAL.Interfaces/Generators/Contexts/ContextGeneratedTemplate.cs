@@ -111,19 +111,14 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Contexts
         {
             sb.AppendLine("	#region Entity Context");
             sb.AppendLine();
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// There are no comments for " + _model.ProjectName + "Entities in the schema.");
-            sb.AppendLine("	/// </summary>");
+            sb.AppendLine("	/// <summary />");
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	public partial interface I" + _model.ProjectName + "Entities : System.IDisposable");
             sb.AppendLine("	{");
 
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// There are no comments for " + table.PascalName + " in the schema.");
-                sb.AppendLine("		/// </summary>");
-
+                sb.AppendLine("		/// <summary />");
                 if (table.ParentTable != null)
                 {
                     sb.AppendLine("		IObjectSet<" + this.GetLocalNamespace() + ".Entity.I" + table.PascalName + "> " + table.PascalName + " { get ; }");

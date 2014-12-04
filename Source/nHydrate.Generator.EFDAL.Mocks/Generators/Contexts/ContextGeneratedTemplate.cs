@@ -74,9 +74,7 @@ namespace nHydrate.Generator.EFDAL.Mocks.Generators.Contexts
                 AppendTableMapping();
                 sb.AppendLine("	#region Entity Context");
                 sb.AppendLine();
-                sb.AppendLine("	/// <summary>");
-                sb.AppendLine("	/// There are no comments for " + _model.ProjectName + "Entities in the schema.");
-                sb.AppendLine("	/// </summary>");
+                sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
                 sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : " + this.DefaultNamespace + ".EFDAL.Interfaces" + ".I" + _model.ProjectName + "Entities, System.IDisposable, nHydrate.EFCore.DataAccess.IContext");
                 sb.AppendLine("	{");
