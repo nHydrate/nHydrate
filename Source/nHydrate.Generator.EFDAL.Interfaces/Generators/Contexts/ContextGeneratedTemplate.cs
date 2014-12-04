@@ -141,9 +141,7 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Contexts
 
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName)) // && !x.IsTypeTable
             {
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Adds an object to the object context.");
-                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		void AddItem(" + this.GetLocalNamespace() + ".Entity.I" + table.PascalName + " entity);");
                 sb.AppendLine();
             }
@@ -157,9 +155,7 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Contexts
 
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName)) // && !x.IsTypeTable
             {
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Adds an object to the object context.");
-                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		void DeleteItem(" + this.GetLocalNamespace() + ".Entity.I" + table.PascalName + " entity);");
                 sb.AppendLine();
             }

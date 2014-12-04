@@ -91,7 +91,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// An object based on a stored procedure");
                 sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	[EdmComplexTypeAttribute(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity\", Name = \"" + _item.PascalName + "\")]");
+                //sb.AppendLine("	[System.Data.Objects.DataClasses.EdmComplexTypeAttribute(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity\", Name = \"" + _item.PascalName + "\")]");
                 sb.AppendLine("	[DataContractAttribute(IsReference = true)]");
                 sb.AppendLine("	[Serializable]");
                 sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
@@ -118,14 +118,15 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
         {
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
-            sb.AppendLine("using System.Data.Objects;");
-            sb.AppendLine("using System.Data.Objects.DataClasses;");
+            //sb.AppendLine("using System.Data.Objects;");
+            //sb.AppendLine("using System.Data.Objects.DataClasses;");
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Runtime.Serialization;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
             sb.AppendLine("using System.Linq.Expressions;");
             sb.AppendLine("using nHydrate.EFCore.DataAccess;");
+            //sb.AppendLine("using System.Data.Entity.Core.Objects.DataClasses;");
             sb.AppendLine();
         }
 
@@ -187,7 +188,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// ");
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		[EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]");
+                sb.AppendLine("		[System.Data.Entity.Core.Objects.DataClasses.EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]");
                 sb.AppendLine("		[DataMemberAttribute()]");
                 sb.AppendLine("		public " + column.GetCodeType() + " " + column.PascalName);
                 sb.AppendLine("		{");
@@ -198,9 +199,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
                 //sb.AppendLine("				ReportPropertyChanging(\"" + column.PascalName + "\");");
 
                 if (column.IsTextType || column.IsBinaryType || column.DataType == System.Data.SqlDbType.Timestamp)
-                    sb.AppendLine("				_" + column.CamelName + " = StructuralObject.SetValidValue(value, true);");
+                    sb.AppendLine("				_" + column.CamelName + " = System.Data.Objects.DataClasses.StructuralObject.SetValidValue(value, true);");
                 else
-                    sb.AppendLine("				_" + column.CamelName + " = StructuralObject.SetValidValue(value);");
+                    sb.AppendLine("				_" + column.CamelName + " = System.Data.Objects.DataClasses.StructuralObject.SetValidValue(value);");
 
                 //sb.AppendLine("				ReportPropertyChanged(\"" + column.PascalName + "\");");
                 //sb.AppendLine("				On" + column.PascalName + "Changed();");

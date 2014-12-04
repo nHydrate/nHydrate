@@ -1026,6 +1026,11 @@ namespace nHydrate.Core.SQLGeneration
             {
                 //There is NOT a returned table defined. This is a straight select
                 sb.AppendLine("TABLE");
+                sb.AppendLine("AS");
+                sb.AppendLine("RETURN");
+                sb.AppendLine("(");
+                sb.AppendLine(function.SQL);
+                sb.AppendLine(")");
             }
             else if (function.IsTable && !string.IsNullOrEmpty(function.ReturnVariable))
             {
@@ -1039,17 +1044,24 @@ namespace nHydrate.Core.SQLGeneration
                     if (columnList.IndexOf(column) < columnList.Count - 1) sb.Append(", ");
                 }
                 sb.AppendLine(")");
+                sb.AppendLine("AS");
+                sb.AppendLine();
+                sb.AppendLine("BEGIN");
+                sb.AppendLine(function.SQL);
+                sb.AppendLine("END");
             }
             else
             {
                 var column = function.Columns.First().Object as FunctionColumn;
                 sb.AppendLine(column.DatabaseType.ToLower());
+                sb.AppendLine(")");
+                sb.AppendLine("AS");
+                sb.AppendLine();
+                sb.AppendLine("BEGIN");
+                sb.AppendLine(function.SQL);
+                sb.AppendLine("END");
             }
-            sb.AppendLine("AS");
-            sb.AppendLine();
-            sb.AppendLine("BEGIN");
-            sb.AppendLine(function.SQL);
-            sb.AppendLine("END");
+
             sb.AppendLine();
             if (isInternal)
             {

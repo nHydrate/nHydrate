@@ -110,7 +110,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine("using System.Data.Entity;");
             sb.AppendLine("using System.Data.Entity.ModelConfiguration;");
             sb.AppendLine("using System.ComponentModel.DataAnnotations;");
-            sb.AppendLine("using System.Data.Entity.Core.Objects.DataClasses;");
+            //sb.AppendLine("using System.Data.Entity.Core.Objects.DataClasses;");
             sb.AppendLine();
         }
 
@@ -142,7 +142,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine("	[Serializable]");
             sb.AppendLine("	[System.Data.Linq.Mapping.Table(Name = \"" + _currentTable.PascalName + "\")]");
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
-            sb.AppendLine("	[EdmEntityTypeAttribute(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _currentTable.PascalName + "\")]");
+            sb.AppendLine("	[System.Data.Objects.DataClasses.EdmEntityType(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _currentTable.PascalName + "\")]");
             sb.AppendLine("	[nHydrate.EFCore.Attributes.FieldNameConstantsAttribute(typeof(" + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ".FieldNameConstants))]");
 
             if (!string.IsNullOrEmpty(_currentTable.Description))

@@ -421,45 +421,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine();
             #endregion
 
-            #region Purge
-            sb.AppendLine("		#region Purge");
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Marks all objects in the list for deletion");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <typeparam name=\"T\"></typeparam>");
-            sb.AppendLine("		/// <param name=\"list\">The list of objects to remove</param>");
-            sb.AppendLine("		/// <param name=\"context\">The context in which the calling object exists");
-            sb.AppendLine("		/// </param>");
-            sb.AppendLine("		public static void Purge<T>(this System.Data.Objects.DataClasses.EntityCollection<T> list, " + GetLocalNamespace() + "." + _model.ProjectName + "Entities context)");
-            sb.AppendLine("			where T : nHydrate.EFCore.DataAccess.NHEntityObject");
-            sb.AppendLine("		{");
-
-            var fieldList = _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.TypedTable != TypedTableConstants.EnumOnly).ToList();
-            if (fieldList.Count > 0)
-            {
-                sb.AppendLine("			foreach(var item in list.ToList())");
-                sb.AppendLine("			{");
-
-                var index = 0;
-                foreach (var table in fieldList)
-                {
-                    sb.AppendLine("				" + (index > 0 ? "else " : string.Empty) + "if (item is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")");
-                    sb.AppendLine("					context.DeleteItem(item as " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ");");
-                    index++;
-                }
-                sb.AppendLine("				else");
-                sb.AppendLine("					throw new Exception(\"Unknown type\");");
-                sb.AppendLine("			}");
-            }
-            else
-            {
-                sb.AppendLine("			throw new Exception(\"Unknown type\");");
-            }
-            sb.AppendLine("		}");
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-            #endregion
-
             sb.AppendLine("	}");
             sb.AppendLine();
 

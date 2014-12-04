@@ -109,7 +109,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("using System.Data.Linq;");
             sb.AppendLine("using System.Data.Entity.ModelConfiguration;");
             sb.AppendLine("using System.ComponentModel.DataAnnotations;");
-            sb.AppendLine("using System.Data.Entity.Core.Objects.DataClasses;");
+            //sb.AppendLine("using System.Data.Entity.Core.Objects.DataClasses;");
             sb.AppendLine();
         }
 
@@ -565,7 +565,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("		[System.ComponentModel.Browsable(" + column.IsBrowsable.ToString().ToLower() + ")]");
                 if (!string.IsNullOrEmpty(column.Category))
                     sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
-                sb.AppendLine("		[EdmScalarPropertyAttribute(EntityKeyProperty = " + (column.PrimaryKey ? "true" : "false") + ", IsNullable = " + (column.AllowNull ? "true" : "false") + ")]");
+                sb.AppendLine("		[System.Data.Entity.Core.Objects.DataClasses.EdmScalarPropertyAttribute(EntityKeyProperty = " + (column.PrimaryKey ? "true" : "false") + ", IsNullable = " + (column.AllowNull ? "true" : "false") + ")]");
                 sb.AppendLine("		[System.ComponentModel.DisplayName(\"" + column.GetFriendlyName() + "\")]");
 
                 if (column.UIDataType != System.ComponentModel.DataAnnotations.DataType.Custom)
@@ -1721,7 +1721,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("		/// </summary>");
             }
             sb.AppendLine("		[System.ComponentModel.Browsable(false)]");
-            sb.AppendLine("		[EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]");
+            sb.AppendLine("		[System.Data.Entity.Core.Objects.DataClasses.EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]");
             sb.AppendLine("		[DataMemberAttribute()]");
             sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
 

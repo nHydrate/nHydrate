@@ -501,10 +501,29 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 }
             }
 
-            #endregion
-
+            sb.AppendLine();
             sb.AppendLine("			#endregion");
             sb.AppendLine();
+
+            #endregion
+
+            #region Functions
+            sb.AppendLine("			#region Functions");
+            sb.AppendLine();
+            if (_model.Database.Functions.Any(x => x.Generated))
+            {
+                sb.AppendLine("			modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<TestXEntities>(\"dbo\"));");
+            }
+
+            foreach (var table in _model.Database.Functions.Where(x => x.Generated).OrderBy(x => x.Name))
+            {
+                sb.AppendLine("			modelBuilder.ComplexType<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">();");
+            }
+
+            sb.AppendLine();
+            sb.AppendLine("			#endregion");
+            sb.AppendLine();
+            #endregion
 
             #region Primary Keys
             sb.AppendLine("			#region Primary Keys");
@@ -521,6 +540,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 }
                 sb.AppendLine(" });");
             }
+
+            sb.AppendLine();
             sb.AppendLine("			#endregion");
             sb.AppendLine();
             #endregion
@@ -1239,7 +1260,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// ");
                 sb.AppendLine("		/// </summary>");
-                sb.Append("		public IEnumerable<" + function.PascalName + "> " + function.PascalName + "(");
+                sb.AppendLine("		[DbFunction(\"" + _model.ProjectName + "Entities\", \"" + function.PascalName + "\")]");
+                sb.Append("		public virtual IQueryable<" + function.PascalName + "> " + function.PascalName + "(");
                 var parameterList = function.GetParameters().Where(x => x.Generated).ToList();
                 foreach (var parameter in parameterList)
                 {
@@ -1269,20 +1291,22 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     }
                 }
 
-                sb.Append("			var retval = this.ObjectContext.ExecuteFunction<" + function.PascalName + ">(\"" + function.PascalName + "_SPWrapper\"");
+                //sb.Append("			var retval = this.ObjectContext.ExecuteFunction<" + function.PascalName + ">(\"" + function.PascalName + "_SPWrapper\"");
 
-                if (parameterList.Count > 0)
-                {
-                    sb.Append(", ");
-                    foreach (var parameter in parameterList)
-                    {
-                        sb.Append(parameter.CamelName + "Parameter");
-                        if (parameterList.IndexOf(parameter) < parameterList.Count() - 1)
-                            sb.Append(", ");
-                    }
-                }
+                //if (parameterList.Count > 0)
+                //{
+                //    sb.Append(", ");
+                //    foreach (var parameter in parameterList)
+                //    {
+                //        sb.Append(parameter.CamelName + "Parameter");
+                //        if (parameterList.IndexOf(parameter) < parameterList.Count() - 1)
+                //            sb.Append(", ");
+                //    }
+                //}
 
-                sb.AppendLine(").ToList();");
+                //sb.AppendLine(").ToList();");
+
+                sb.AppendLine("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.CreateQuery<" + function.PascalName + ">(\"[" + _model.ProjectName + "Entities].[" + function.PascalName + "](" + string.Join(", ", parameterList.Select(x => "@" + x.PascalName)) + ")\", " + string.Join(", ", parameterList.Select(x => x.CamelName + "Parameter")) + ");");
 
                 //Add code here to handle output parameters
                 foreach (var parameter in parameterList.Where(x => x.IsOutputParameter))

@@ -23,1929 +23,1929 @@ using System.IO.Compression;
 
 namespace PROJECTNAMESPACE
 {
-	internal class SqlServers
-	{
-		#region Class Members
-
-		private static System.Diagnostics.Stopwatch _timer = new System.Diagnostics.Stopwatch();
-
-		#endregion
-
-		#region database discovery
-		[DllImport("odbc32.dll")]
-		private static extern short SQLAllocHandle(short hType, IntPtr inputHandle, out IntPtr outputHandle);
-		[DllImport("odbc32.dll")]
-		private static extern short SQLSetEnvAttr(IntPtr henv, int attribute, IntPtr valuePtr, int strLength);
-		[DllImport("odbc32.dll")]
-		private static extern short SQLFreeHandle(short hType, IntPtr handle);
-		[DllImport("odbc32.dll", CharSet = CharSet.Ansi)]
-		private static extern short SQLBrowseConnect(IntPtr hconn, StringBuilder inString, short inStringLength, StringBuilder outString, short outStringLength, out short outLengthNeeded);
-
-		private const short SQL_HANDLE_ENV = 1;
-		private const short SQL_HANDLE_DBC = 2;
-		private const int SQL_ATTR_ODBC_VERSION = 200;
-		private const int SQL_OV_ODBC3 = 3;
-		private const short SQL_SUCCESS = 0;
-
-		private const short SQL_NEED_DATA = 99;
-		private const short DEFAULT_RESULT_SIZE = 1024;
-		private const string SQL_DRIVER_STR = "DRIVER=SQL SERVER";
-
-		//public enum SQLServerTypeConstants
-		//{
-		//  SQL2005 = 0,
-		//  SQL2008 = 1,
-		//  SQLAzure = 2,
-		//}
-
-		//public static SQLServerTypeConstants DatabaseVersion = SQLServerTypeConstants.DATABASETYPE;
-
-		private SqlServers()
-		{
-		}
-
-		private static List<string> _serverList = new List<string>();
-		internal static string[] GetServers()
-		{
-			if (_serverList.Count == 0)
-			{
-				string[] retval = null;
-
-				var txt = string.Empty;
-				var henv = IntPtr.Zero;
-				var hconn = IntPtr.Zero;
-				var inString = new StringBuilder(SQL_DRIVER_STR);
-				var outString = new StringBuilder(DEFAULT_RESULT_SIZE);
-				var inStringLength = (short)inString.Length;
-				var lenNeeded = (short)0;
-
-				try
-				{
-					if (SQL_SUCCESS == SQLAllocHandle(SQL_HANDLE_ENV, henv, out henv))
-					{
-						if (SQL_SUCCESS == SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (IntPtr)SQL_OV_ODBC3, 0))
-						{
-							if (SQL_SUCCESS == SQLAllocHandle(SQL_HANDLE_DBC, henv, out hconn))
-							{
-								if (SQL_NEED_DATA == SQLBrowseConnect(hconn, inString, inStringLength, outString,
-									DEFAULT_RESULT_SIZE, out lenNeeded))
-								{
-									if (DEFAULT_RESULT_SIZE < lenNeeded)
-									{
-										outString.Capacity = lenNeeded;
-										if (SQL_NEED_DATA != SQLBrowseConnect(hconn, inString, inStringLength, outString,
-											lenNeeded, out lenNeeded))
-										{
-											throw new ApplicationException("Unabled to aquire SQL Servers from ODBC driver.");
-										}
-									}
-									txt = outString.ToString();
-									int start = txt.IndexOf("{") + 1;
-									int len = txt.IndexOf("}") - start;
-									if ((start > 0) && (len > 0))
-									{
-										txt = txt.Substring(start, len);
-									}
-									else
-									{
-										txt = string.Empty;
-									}
-								}
-							}
-						}
-					}
-				}
-				catch (Exception ex)
-				{
-					throw ex;
-				}
-				finally
-				{
-					if (hconn != IntPtr.Zero)
-					{
-						SQLFreeHandle(SQL_HANDLE_DBC, hconn);
-					}
-					if (henv != IntPtr.Zero)
-					{
-						SQLFreeHandle(SQL_HANDLE_ENV, hconn);
-					}
-				}
-
-				if (txt.Length > 0)
-				{
-					retval = txt.Split(",".ToCharArray());
-				}
-
-				_serverList.AddRange(retval);
-			}
-			return _serverList.ToArray();
-		}
-
-		internal static bool TestConnectionString(string connectString)
-		{
-			//Connection should be fast
-			var sb = new SqlConnectionStringBuilder(connectString);
-			sb.ConnectTimeout = 15;
-			connectString = sb.ToString();
-
-			var valid = false;
-			var conn = new System.Data.SqlClient.SqlConnection();
-			try
-			{
-				conn.ConnectionString = connectString;
-				conn.Open();
-				valid = true;
-			}
-			catch (Exception ex)
-			{
-				System.Diagnostics.Debug.WriteLine(ex.ToString());
-				valid = false;
-			}
-			finally
-			{
-				conn.Close();
-			}
-			return valid;
-		}
-
-		internal static List<HistoryItem> GetHistory(string connectionString)
-		{
-			var retval = new List<HistoryItem>();
-			var settings = new nHydrateSetting();
-			if (CanUseExtendedProperty(connectionString))
-			{
-				var historyRow = SqlServers.SelectExtendedProperty(connectionString, "History", string.Empty, string.Empty, string.Empty);
-				settings.LoadHistory(historyRow);
-				if (settings.History.Count > 0)
-					return settings.History;
-			}
-
-			if (settings.History.Count == 0)
-			{
-				settings = new nHydrateSetting();
-				settings.Load(connectionString);
-			}
-			return settings.History;
-
-		}
-
-		internal static string BuildConnectionString(bool integratedSecurity, string databaseName, string serverName, string userName, string password)
-		{
-			var connStr = new StringBuilder();
-			var sb = new SqlConnectionStringBuilder();
-			sb.IntegratedSecurity = integratedSecurity;
-			sb.InitialCatalog = databaseName;
-			sb.DataSource = serverName;
-			sb.ConnectTimeout = 604800;
-			if (!integratedSecurity)
-			{
-				sb.UserID = userName;
-				sb.Password = password;
-			}
-			return sb.ToString();
-		}
-
-		internal static string[] GetDatabaseNames(string connectString)
-		{
-			var databaseNames = new ArrayList();
-			var conn = new System.Data.SqlClient.SqlConnection();
-			SqlDataReader databaseReader = null;
-			SqlDataReader existsReader = null;
-
-			try
-			{
-				conn.ConnectionString = connectString;
-				conn.Open();
-
-				var cmdDatabases = new SqlCommand();
-				cmdDatabases.CommandText = "use [master] select name from sysdatabases";
-				cmdDatabases.CommandType = System.Data.CommandType.Text;
-				cmdDatabases.Connection = conn;
-				databaseReader = cmdDatabases.ExecuteReader();
-				while (databaseReader.Read())
-				{
-					databaseNames.Add(databaseReader["name"]);
-				}
-			}
-			catch (Exception ex)
-			{
-				System.Diagnostics.Debug.WriteLine(ex.ToString());
-				databaseNames.Clear();
-			}
-			finally
-			{
-				if (databaseReader != null)
-					databaseReader.Close();
-				if (conn != null)
-					conn.Close();
-			}
-
-			var itemsToRemove = new ArrayList();
-			foreach (string dbName in databaseNames)
-			{
-				try
-				{
-					conn.Open();
-					var cmdUserExist = new SqlCommand();
-					cmdUserExist.CommandText = "use [" + dbName + "] select case when Permissions()&254=254 then 1 else 0 end as hasAccess";
-					cmdUserExist.CommandType = System.Data.CommandType.Text;
-					cmdUserExist.Connection = conn;
-					existsReader = cmdUserExist.ExecuteReader();
-					if (existsReader.Read())
-					{
-						try
-						{
-							if (int.Parse(existsReader["hasAccess"].ToString()) == 0)
-							{
-								itemsToRemove.Add(dbName);
-							}
-						}
-						catch (Exception ex)
-						{
-							System.Diagnostics.Debug.WriteLine(ex.ToString());
-						}
-					}
-				}
-				catch (Exception ex)
-				{
-					System.Diagnostics.Debug.WriteLine(ex.ToString());
-					itemsToRemove.Add(dbName);
-				}
-				finally
-				{
-					if (existsReader != null)
-						existsReader.Close();
-					if (conn != null)
-						conn.Close();
-				}
-			}
-			foreach (string removedItem in itemsToRemove)
-			{
-				databaseNames.Remove(removedItem);
-			}
-
-			return (string[])databaseNames.ToArray(typeof(string));
-		}
-
-		internal static bool HasCreatePermissions(string connectString)
-		{
-			var returnVal = false;
-			var conn = new System.Data.SqlClient.SqlConnection();
-			SqlDataReader existsReader = null;
-			try
-			{
-				conn.ConnectionString = connectString;
-				conn.Open();
-				var cmdUserExist = new SqlCommand();
-				cmdUserExist.CommandText = "use [master] select case when Permissions()&1=1 then 1 else 0 end as hasAccess";
-				cmdUserExist.CommandType = System.Data.CommandType.Text;
-				cmdUserExist.Connection = conn;
-				existsReader = cmdUserExist.ExecuteReader();
-				if (existsReader.Read())
-				{
-					try
-					{
-						if (int.Parse(existsReader["hasAccess"].ToString()) == 1)
-						{
-							returnVal = true;
-						}
-					}
-					catch (Exception ex)
-					{
-						System.Diagnostics.Debug.WriteLine(ex.ToString());
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				System.Diagnostics.Debug.WriteLine(ex.ToString());
-			}
-			finally
-			{
-				if (existsReader != null)
-					existsReader.Close();
-				if (conn != null)
-					conn.Close();
-			}
-			return returnVal;
-		}
-		#endregion
-
-		#region create database
-		internal static void CreateDatabase(InstallSetup setup)
-		{
-			var conn = new System.Data.SqlClient.SqlConnection();
-			try
-			{
-				conn.ConnectionString = setup.MasterConnectionString;
-				conn.Open();
-				var cmdCreateDb = new SqlCommand();
-				var collate = string.Empty;
-				if (!string.IsNullOrEmpty(collate)) collate = " COLLATE " + collate;
-				cmdCreateDb.CommandText = "CREATE DATABASE [" + setup.NewDatabaseName + "]" + collate;
-				cmdCreateDb.CommandType = System.Data.CommandType.Text;
-				cmdCreateDb.Connection = conn;
-				SqlServers.ExecuteCommand(cmdCreateDb);
-
-				var sb = new StringBuilder();
-				sb.AppendLine("declare @databasename nvarchar(500)");
-				sb.AppendLine("set @databasename = (select [name] from master.sys.master_files where database_id = (select top 1 [dbid] from master.sys.sysdatabases where name = '" + setup.NewDatabaseName + "' and [type] = 0))");
-				sb.AppendLine("exec('ALTER DATABASE [" + setup.NewDatabaseName + "] MODIFY FILE (NAME = [' + @databasename + '],  MAXSIZE = UNLIMITED, FILEGROWTH = 10MB)')");
-				sb.AppendLine("set @databasename = (select [name] from master.sys.master_files where database_id = (select top 1 [dbid] from master.sys.sysdatabases where name = '" + setup.NewDatabaseName + "' and [type] = 1))");
-				sb.AppendLine("exec('ALTER DATABASE [" + setup.NewDatabaseName + "] MODIFY FILE (NAME = [' + @databasename + '],  MAXSIZE = UNLIMITED, FILEGROWTH = 10MB)')");
-				cmdCreateDb.CommandText = sb.ToString();
-				SqlServers.ExecuteCommand(cmdCreateDb);
-			}
-			catch { throw; }
-			finally
-			{
-				if (conn != null)
-					conn.Close();
-				System.Threading.Thread.Sleep(1000);
-			}
-		}
-		#endregion
-
-		#region database table operations
-
-		internal static ArrayList GetTableNamesAsArrayList(string connectString)
-		{
-			ArrayList databaseTables = new ArrayList();
-			SqlDataReader tableReader = null;
-			var conn = new System.Data.SqlClient.SqlConnection();
-			try
-			{
-				conn.ConnectionString = connectString;
-				conn.Open();
-				SqlCommand cmdCreateDb = new SqlCommand();
-				cmdCreateDb.CommandText = "select name from sysobjects where xtype = 'U' and name <> 'dtproperties'";
-				cmdCreateDb.CommandType = System.Data.CommandType.Text;
-				cmdCreateDb.Connection = conn;
-				tableReader = cmdCreateDb.ExecuteReader();
-				while (tableReader.Read())
-				{
-					databaseTables.Add(tableReader.GetString(0));
-				}
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-			finally
-			{
-				if (tableReader != null)
-					tableReader.Close();
-				if (conn != null)
-					conn.Close();
-			}
-			return databaseTables;
-		}
-		#endregion
-
-		#region database column operations
-		internal static DataSet GetTableColumns(string connectString, string tableName)
-		{
-			var conn = new SqlConnection();
-			var cmd = new SqlCommand();
-			DataSet tableColumns = new DataSet();
-			SqlDataAdapter da = new SqlDataAdapter();
-
-			try
-			{
-				conn.ConnectionString = connectString;
-				cmd.CommandText = GetSqlColumnsForTable(tableName);
-				cmd.CommandType = System.Data.CommandType.Text;
-				cmd.Connection = conn;
-				da.SelectCommand = cmd;
-				da.Fill(tableColumns);
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-			finally
-			{
-				if (conn != null)
-					conn.Close();
-			}
-			return tableColumns;
-		}
-
-		public static bool HasLength(System.Data.SqlDbType dataType)
-		{
-			if (dataType == System.Data.SqlDbType.BigInt)
-				return false;
-			else if (dataType == System.Data.SqlDbType.Bit)
-				return false;
-			else if (dataType == System.Data.SqlDbType.DateTime)
-				return false;
-			else if (dataType == System.Data.SqlDbType.Decimal)
-				return false;
-			else if (dataType == System.Data.SqlDbType.Float)
-				return false;
-			else if (dataType == System.Data.SqlDbType.Image)
-				return false;
-			else if (dataType == System.Data.SqlDbType.Int)
-				return false;
-			else if (dataType == System.Data.SqlDbType.Money)
-				return false;
-			else if (dataType == System.Data.SqlDbType.Real)
-				return false;
-			else if (dataType == System.Data.SqlDbType.SmallDateTime)
-				return false;
-			else if (dataType == System.Data.SqlDbType.SmallInt)
-				return false;
-			else if (dataType == System.Data.SqlDbType.SmallMoney)
-				return false;
-			else if (dataType == System.Data.SqlDbType.Timestamp)
-				return false;
-			else if (dataType == System.Data.SqlDbType.TinyInt)
-				return false;
-			else if (dataType == System.Data.SqlDbType.UniqueIdentifier)
-				return false;
-			else
-				return true;
-		}
-
-		#endregion
-
-		#region extended property helpers
-		internal static void UpdateDatabaseMetaProperty(string connectionString, string propertyName, string propertyValue)
-		{
-			var conn = new System.Data.SqlClient.SqlConnection();
-			try
-			{
-				var settings = new nHydrateSetting();
-				settings.Load(connectionString);
-				switch (propertyName)
-				{
-					case "dbVersion":
-						settings.dbVersion = propertyValue;
-						break;
-					case "LastUpdate":
-						settings.LastUpdate = DateTime.Parse(propertyValue);
-						break;
-					case "ModelKey":
-						settings.ModelKey = new Guid(propertyValue);
-						break;
-					case "History":
-						settings.LoadHistory(propertyValue);
-						break;
-					default:
-						throw new Exception("No property found!");
-				}
-				settings.Save(connectionString);
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-			finally
-			{
-				if (conn != null)
-					conn.Close();
-			}
-
-			//We no longer use extended properties
-			if (CanUseExtendedProperty(connectionString))
-			{
-				if (ExtendedPropertyExists(connectionString, propertyName, string.Empty, string.Empty, string.Empty))
-				{
-					//UpdateExtendedProperty(connectionString, propertyName, propertyValue, string.Empty, string.Empty, string.Empty);
-					DeleteExtendedProperty(connectionString, propertyName);
-				}
-				else
-				{
-					//InsertExtendedPropery(connectionString, propertyName, propertyValue, string.Empty, string.Empty, string.Empty);
-				}
-			}
-
-		}
-
-		internal static string GetDatabaseMetaProperty(string connectionString, string propertyName)
-		{
-			if (CanUseExtendedProperty(connectionString))
-			{
-				return SelectExtendedProperty(connectionString, propertyName, string.Empty, string.Empty, string.Empty);
-			}
-			else
-			{
-				var settings = new nHydrateSetting();
-				settings.Load(connectionString);
-				switch (propertyName)
-				{
-					case "dbVersion":
-						return settings.dbVersion;
-					case "LastUpdate":
-						return settings.LastUpdate.ToString("yyyy-MM-dd HH:mm:ss");
-					case "ModelKey":
-						return settings.ModelKey.ToString();
-					case "History":
-						return settings.ToHistoryString();
-					default:
-						throw new Exception("No property found!");
-				}
-			}
-		}
-		#endregion
-
-		#region extended property private
-		private static bool? extendedPropertyEnabled = null;
-
-		/// <summary>
-		/// Determines if we can use extended properties, Azure does NOT allow them
-		/// </summary>
-		private static bool CanUseExtendedProperty(string connectionString)
-		{
-			if (extendedPropertyEnabled == null)
-			{
-				var conn = new System.Data.SqlClient.SqlConnection();
-				try
-				{
-					conn.ConnectionString = connectionString;
-					conn.Open();
-					SqlCommand cmdGetExtProp = new SqlCommand();
-					cmdGetExtProp.CommandText = "SELECT value FROM ::fn_listextendedproperty('', '', '', '', '', '', '')";
-					cmdGetExtProp.CommandType = System.Data.CommandType.Text;
-					cmdGetExtProp.Connection = conn;
-					SqlServers.ExecuteCommand(cmdGetExtProp);
-					extendedPropertyEnabled = true;
-				}
-				catch (Exception ex)
-				{
-					extendedPropertyEnabled = false;
-				}
-				finally
-				{
-					if (conn != null)
-						conn.Close();
-				}
-			}
-			return extendedPropertyEnabled.Value;
-		}
-
-		internal static void DeleteExtendedProperty(string connectionString, string propertyName)
-		{
-			//If the database supports extended properties then use them no matter what
-			if (CanUseExtendedProperty(connectionString) && ExtendedPropertyExists(connectionString, propertyName, string.Empty, string.Empty, string.Empty))
-			{
-				var conn = new System.Data.SqlClient.SqlConnection();
-				try
-				{
-					conn.ConnectionString = connectionString;
-					conn.Open();
-					SqlCommand cmdGetExtProp = new SqlCommand();
-					cmdGetExtProp.CommandText = String.Format("EXEC sp_dropextendedproperty '{0}'", new object[] { propertyName });
-					cmdGetExtProp.CommandType = System.Data.CommandType.Text;
-					cmdGetExtProp.Connection = conn;
-					SqlServers.ExecuteCommand(cmdGetExtProp);
-				}
-				catch (Exception ex)
-				{
-					throw ex;
-				}
-				finally
-				{
-					if (conn != null)
-						conn.Close();
-				}
-			}
-		}
-
-		private static void UpdateExtendedProperty(string connectionString, string property, string propertyValue, string user, string table, string column)
-		{
-			//If the database supports extended properties then use them no matter what
-			if (CanUseExtendedProperty(connectionString))
-			{
-				string userName = string.Empty;
-				string userValue = string.Empty;
-				string tableName = string.Empty;
-				string tableValue = string.Empty;
-				string columnName = string.Empty;
-				string columnValue = string.Empty;
-
-				property = "'" + property + "'";
-				propertyValue = "'" + propertyValue + "'";
-				if (user == string.Empty)
-				{
-					userName = "NULL";
-					userValue = "NULL";
-				}
-				else
-				{
-					userName = "'user'";
-					userValue = "'" + user + "'";
-				}
-				if (table == string.Empty)
-				{
-					tableName = "NULL";
-					tableValue = "NULL";
-				}
-				else
-				{
-					tableName = "'table'";
-					tableValue = "'" + table + "'";
-				}
-				if (column == string.Empty)
-				{
-					columnName = "NULL";
-					columnValue = "NULL";
-				}
-				else
-				{
-					columnName = "'column'";
-					columnValue = "'" + column + "'";
-				}
-
-				var conn = new System.Data.SqlClient.SqlConnection();
-				try
-				{
-					conn.ConnectionString = connectionString;
-					conn.Open();
-					SqlCommand cmdGetExtProp = new SqlCommand();
-					cmdGetExtProp.CommandText = String.Format("EXEC sp_updateextendedproperty {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", new object[] { property, propertyValue, userName, userValue, tableName, tableValue, columnName, columnValue });
-					cmdGetExtProp.CommandType = System.Data.CommandType.Text;
-					cmdGetExtProp.Connection = conn;
-					SqlServers.ExecuteCommand(cmdGetExtProp);
-				}
-				catch (Exception ex)
-				{
-					throw ex;
-				}
-				finally
-				{
-					if (conn != null)
-						conn.Close();
-				}
-			}
-		}
-
-		private static void InsertExtendedPropery(string connectionString, string property, string propertyValue, string user, string table, string column)
-		{
-			//If the database supports extended properties then use them no matter what
-			if (CanUseExtendedProperty(connectionString))
-			{
-				string userName = string.Empty;
-				string userValue = string.Empty;
-				string tableName = string.Empty;
-				string tableValue = string.Empty;
-				string columnName = string.Empty;
-				string columnValue = string.Empty;
-
-				property = "'" + property + "'";
-				propertyValue = "'" + propertyValue + "'";
-				if (user == string.Empty)
-				{
-					userName = "NULL";
-					userValue = "NULL";
-				}
-				else
-				{
-					userName = "'user'";
-					userValue = "'" + user + "'";
-				}
-				if (table == string.Empty)
-				{
-					tableName = "NULL";
-					tableValue = "NULL";
-				}
-				else
-				{
-					tableName = "'table'";
-					tableValue = "'" + table + "'";
-				}
-				if (column == string.Empty)
-				{
-					columnName = "NULL";
-					columnValue = "NULL";
-				}
-				else
-				{
-					columnName = "'column'";
-					columnValue = "'" + column + "'";
-				}
-
-				var conn = new System.Data.SqlClient.SqlConnection();
-				try
-				{
-					conn.ConnectionString = connectionString;
-					conn.Open();
-					SqlCommand cmdGetExtProp = new SqlCommand();
-					cmdGetExtProp.CommandText = String.Format("EXEC sp_addextendedproperty {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", new object[] { property, propertyValue, userName, userValue, tableName, tableValue, columnName, columnValue });
-					cmdGetExtProp.CommandType = System.Data.CommandType.Text;
-					cmdGetExtProp.Connection = conn;
-					SqlServers.ExecuteCommand(cmdGetExtProp);
-				}
-				catch (Exception ex)
-				{
-					throw ex;
-				}
-				finally
-				{
-					if (conn != null)
-						conn.Close();
-				}
-			}
-
-		}
-
-		//SELECT value FROM ::fn_listextendedproperty('companyName', NULL, NULL, NULL, NULL, NULL, NULL)
-		internal static string SelectExtendedProperty(string connectionString, string property, string user, string table, string column)
-		{
-			string returnVal = string.Empty;
-			string userName = string.Empty;
-			string userValue = string.Empty;
-			string tableName = string.Empty;
-			string tableValue = string.Empty;
-			string columnName = string.Empty;
-			string columnValue = string.Empty;
-
-			property = "'" + property + "'";
-			if (user == string.Empty)
-			{
-				userName = "NULL";
-				userValue = "NULL";
-			}
-			else
-			{
-				userName = "'user'";
-				userValue = "'" + user + "'";
-			}
-			if (table == string.Empty)
-			{
-				tableName = "NULL";
-				tableValue = "NULL";
-			}
-			else
-			{
-				tableName = "'table'";
-				tableValue = "'" + table + "'";
-			}
-			if (column == string.Empty)
-			{
-				columnName = "NULL";
-				columnValue = "NULL";
-			}
-			else
-			{
-				columnName = "'column'";
-				columnValue = "'" + column + "'";
-			}
-
-			var conn = new System.Data.SqlClient.SqlConnection();
-			System.Data.SqlClient.SqlDataReader externalReader = null;
-			try
-			{
-				conn.ConnectionString = connectionString;
-				conn.Open();
-				SqlCommand cmdGetExtProp = new SqlCommand();
-				cmdGetExtProp.CommandText = String.Format("SELECT value FROM ::fn_listextendedproperty({0}, {1}, {2}, {3}, {4}, {5}, {6})", new object[] { property, userName, userValue, tableName, tableValue, columnName, columnValue });
-				cmdGetExtProp.CommandType = System.Data.CommandType.Text;
-				cmdGetExtProp.Connection = conn;
-				externalReader = cmdGetExtProp.ExecuteReader();
-				if (externalReader.Read())
-				{
-					if (externalReader[0] != System.DBNull.Value)
-					{
-						returnVal = externalReader.GetString(0);
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-			finally
-			{
-				if (externalReader != null)
-					externalReader.Close();
-				if (conn != null)
-					conn.Close();
-			}
-			return returnVal;
-		}
-
-		private static bool ExtendedPropertyExists(string connectionString, string property, string user, string table, string column)
-		{
-			var retval = false;
-			if (CanUseExtendedProperty(connectionString))
-			{
-				string userName = string.Empty;
-				string userValue = string.Empty;
-				string tableName = string.Empty;
-				string tableValue = string.Empty;
-				string columnName = string.Empty;
-				string columnValue = string.Empty;
-
-				property = "'" + property + "'";
-				if (user == string.Empty)
-				{
-					userName = "NULL";
-					userValue = "NULL";
-				}
-				else
-				{
-					userName = "'user'";
-					userValue = "'" + user + "'";
-				}
-				if (table == string.Empty)
-				{
-					tableName = "NULL";
-					tableValue = "NULL";
-				}
-				else
-				{
-					tableName = "'table'";
-					tableValue = "'" + table + "'";
-				}
-				if (column == string.Empty)
-				{
-					columnName = "NULL";
-					columnValue = "NULL";
-				}
-				else
-				{
-					columnName = "'column'";
-					columnValue = "'" + column + "'";
-				}
-
-				var conn = new System.Data.SqlClient.SqlConnection();
-				System.Data.SqlClient.SqlDataReader externalReader = null;
-				try
-				{
-					conn.ConnectionString = connectionString;
-					conn.Open();
-					SqlCommand command = new SqlCommand();
-					command.CommandText = String.Format("SELECT value FROM ::fn_listextendedproperty({0}, {1}, {2}, {3}, {4}, {5}, {6})", new object[] { property, userName, userValue, tableName, tableValue, columnName, columnValue });
-					command.CommandType = System.Data.CommandType.Text;
-					command.Connection = conn;
-					externalReader = command.ExecuteReader();
-					if (externalReader.Read())
-					{
-						retval = true;
-					}
-				}
-				catch (Exception ex)
-				{
-					throw ex;
-				}
-				finally
-				{
-					if (externalReader != null)
-						externalReader.Close();
-					if (conn != null)
-						conn.Close();
-				}
-			}
-			return retval;
-		}
-		#endregion
-
-		#region private sql statement builders
-
-		public static List<string> GetEmbeddedScripts(string resourceFileName, InstallSetup setup)
-		{
-			var retval = new List<string>();
-			var tempFolder = string.Empty;
-			var scripts = ReadSQLFileSectionsFromResource(resourceFileName, setup);
-			foreach (var sql in scripts)
-			{
-				retval.Add(sql);
-			}
-			return retval;
-		}
-
-		public static void RunEmbeddedFile(SqlConnection connection, SqlTransaction transaction, string resourceFileName, List<nHydrateDbObject> _databaseItems, InstallSetup setup)
-		{
-			RunEmbeddedFile(connection, transaction, resourceFileName, null, _databaseItems, setup);
-		}
-
-		public static void RunEmbeddedFile(SqlConnection connection, SqlTransaction transaction, string resourceFileName, List<KeyValuePair<Guid, string>> failedScripts, List<nHydrateDbObject> _databaseItems, InstallSetup setup)
-		{
-			RunEmbeddedFile(connection, transaction, resourceFileName, failedScripts, null, _databaseItems, setup);
-		}
-
-		public static void RunEmbeddedFile(SqlConnection connection, SqlTransaction transaction, string resourceFileName, List<KeyValuePair<Guid, string>> failedScripts, List<Guid> successOrderScripts, List<nHydrateDbObject> _databaseItems, InstallSetup setup)
-		{
-			var tempFolder = string.Empty;
-			var scripts = ReadSQLFileSectionsFromResource(resourceFileName, setup);
-			System.Diagnostics.Debug.WriteLine(System.DateTime.Now.ToString("HH:mm:ss.ff") + " - Run embedded file: " + resourceFileName);
-
-			#region Load script hashes
-			var runScript = !setup.UseHash;
-			var current = _databaseItems.FirstOrDefault(x => x.name.ToLower() == resourceFileName.ToLower());
-			var hashValue = string.Join("\r\nGO\r\n", ReadSQLFileSectionsFromResource(resourceFileName, setup)).CalculateMD5Hash();
-
-			if (current != null)
-			{
-				if (current.Hash != hashValue)
-				{
-					runScript = true;
-					current.ModifiedDate = DateTime.Now;
-					current.Hash = hashValue;
-					current.Status = "applied";
-				}
-			}
-			else
-			{
-				runScript = true;
-				current = new nHydrateDbObject()
-				{
-					name = resourceFileName,
-					Hash = hashValue,
-					ModelKey = new Guid(UpgradeInstaller.MODELKEY),
-					type = "FILE",
-					Status = "applied",
-					Changed = true,
-				};
-				_databaseItems.Add(current);
-			}
-			#endregion
-
-			if (runScript && !setup.CheckOnly)
-			{
-				foreach (var sql in scripts)
-				{
-					ExecuteSQL(connection, transaction, sql, setup, failedScripts, successOrderScripts);
-				}
-			}
-		}
-
-		internal static void ExecuteSQL(SqlConnection connection, SqlTransaction transaction, string sql, InstallSetup setup)
-		{
-			ExecuteSQL(connection, transaction, sql, setup, null);
-		}
-
-		internal static void ExecuteSQL(SqlConnection connection, SqlTransaction transaction, string sql, InstallSetup setup, List<KeyValuePair<Guid, string>> failedScripts)
-		{
-			ExecuteSQL(connection, transaction, sql, setup, failedScripts, null);
-		}
-
-		internal static void ExecuteSQL(SqlConnection connection, SqlTransaction transaction, string sql, InstallSetup setup, List<KeyValuePair<Guid, string>> failedScripts, List<Guid> successOrderScripts)
-		{
-			if (sql.StartsWith("--##METHODCALL"))
-			{
-				CallMethod(sql, connection, transaction);
-				return;
-			}
-
-			var originalSQL = sql.Trim();
-			sql = originalSQL;
-			if (string.IsNullOrEmpty(sql)) return;
-
-			#region Get Script Key
-			var isBody = false;
-			var lines = sql.Split(new char[] { '\n' }, StringSplitOptions.None).ToList();
-			var key = Guid.NewGuid();
-			var l = lines.FirstOrDefault(x => x.StartsWith("--MODELID: "));
-			if (l != null)
-			{
-				lines.Remove(l);
-				l = l.Replace("--MODELID:", string.Empty).Trim();
-				sql = string.Join("\n", lines.ToArray()); //Remove the model key from the SQL before run
-				//if (!Guid.TryParse(l, out key)) key = Guid.NewGuid();
-			}
-			else
-			{
-				l = lines.FirstOrDefault(x => x.StartsWith("--MODELID,BODY: "));
-				if (l != null)
-				{
-					lines.Remove(l);
-					l = l.Replace("--MODELID,BODY:", string.Empty).Trim();
-					sql = string.Join("\n", lines.ToArray()); //Remove the model key from the SQL before run
-					if (!Guid.TryParse(l, out key)) key = Guid.NewGuid();
-					else isBody = true;
-				}
-			}
-			#endregion
-			if (string.IsNullOrEmpty(sql)) return;
-
-			#region Try to remove objects before creation
-			var dropObjectName = string.Empty;
-			var dropSQL = GetSQLDropScript(sql);
-
-			//Add a bit of convenience for dropping DB objects before creation
-			if (!string.IsNullOrEmpty(dropSQL))
-			{
-				try
-				{
-					if (!setup.CheckOnly)
-					{
-						var dropCommand = new System.Data.SqlClient.SqlCommand(dropSQL, connection);
-						dropCommand.Transaction = transaction;
-						dropCommand.CommandTimeout = 300;
-						SqlServers.ExecuteCommand(dropCommand);
-					}
-				}
-				catch (Exception ex)
-				{
-					//Ignore. The scripts should not need this. It has been added for convenience
-				}
-			}
-			#endregion
-
-			var command = new System.Data.SqlClient.SqlCommand(sql, connection);
-			command.Transaction = transaction;
-			command.CommandTimeout = Math.Max(300, connection.ConnectionTimeout);
-			try
-			{
-				if (!setup.CheckOnly)
-				{
-					if (setup.ShowSql && !string.IsNullOrEmpty(sql))
-					{
-						var debugText = "[" + DateTime.UtcNow.ToString() + "]\r\n";
-						const int MAX_SQL = 500;
-						var sqlLength = Math.Min(sql.Length, MAX_SQL);
-						debugText += sql.Substring(0, sqlLength);
-						if (sqlLength == MAX_SQL) debugText += "...";
-						debugText += "\r\n\r\n";
-						Console.WriteLine(debugText);
-					}
-
-					_timer.Restart();
-					SqlServers.ExecuteCommand(command);
-					_timer.Stop();
-					//System.Diagnostics.Debug.WriteLine("Elapsed: " + _timer.ElapsedMilliseconds + " / " + sql.Split('\n').First()); //Alert user of what is running
-
-					if (successOrderScripts != null && isBody)
-						successOrderScripts.Add(key);
-				}
-			}
-			catch (System.Data.SqlClient.SqlException sqlexp)
-			{
-				if ((sqlexp.Number == 1779) && sql.StartsWith("--PRIMARY KEY FOR TABLE"))
-				{
-					//Ignore this error
-					return;
-				}
-				else if ((sqlexp.Number == 1781) && sql.StartsWith("--DEFAULTS FOR TABLE"))
-				{
-					//Ignore this error
-					return;
-				}
-				else if (failedScripts != null)
-				{
-					//Ignore this error, we will re-process it
-					failedScripts.Add(new KeyValuePair<Guid, string>(key, originalSQL));
-					return;
-				}
-				else
-				{
-					if (setup.SuppressUI)
-						throw new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql };
-					else if (!SkipScriptPrompt(new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql }))
-						throw new HandledSQLException(sqlexp.Message, sqlexp);
-				}
-			}
-			catch (Exception ex) { throw; }
-		}
-
-		private static bool SkipScriptPrompt(InvalidSQLException ex)
-		{
-			var F = new SqlErrorForm();
-			F.Setup(ex, true);
-			return (F.ShowDialog() == System.Windows.Forms.DialogResult.OK);
-		}
-
-		private static void CallMethod(string text, SqlConnection connection, SqlTransaction transaction)
-		{
-			var cleaned = string.Empty;
-			try
-			{
-				cleaned = text
-					.Replace("--##METHODCALL", string.Empty)
-					.Replace("[", string.Empty)
-					.Replace("]", string.Empty)
-					.Trim();
-
-				var arr = cleaned.Split('.');
-				var methodName = arr.Last();
-				var typeName = string.Join(".", arr.Take(arr.Length - 1));
-
-				Type type = Type.GetType(typeName);
-				if (type.GetMethod(methodName) == null)
-					throw new Exception("Method: '" + methodName + "' not implemented");
-
-				type.GetMethod(methodName).Invoke(null, new object[] { connection, transaction });
-
-			}
-			catch (Exception ex)
-			{
-				throw new Exception("The external method call '" + cleaned + "' failed.", ex);
-			}
-		}
-
-		/// <summary>
-		/// Try to strip a name of a database object from a create script
-		/// </summary>
-		private static string GetSQLDropScript(string sql)
-		{
-			try
-			{
-				//Strip out comments
-				var regexObj = new System.Text.RegularExpressions.Regex(@"/\*(?>(?:(?!\*/|/\*).)*)(?>(?:/\*(?>(?:(?!\*/|/\*).)*)\*/(?>(?:(?!\*/|/\*).)*))*).*?\*/|--.*?\r?[\n]", System.Text.RegularExpressions.RegexOptions.Singleline);
-				var matchResult = regexObj.Match(sql);
-				while (matchResult.Success)
-				{
-					sql = sql.Remove(matchResult.Index, matchResult.Length).Insert(matchResult.Index, new string(' ', matchResult.Length));
-					matchResult = matchResult.NextMatch();
-				}
-
-				var dropObjectName = SQLStripObjectName(sql, "CREATE PROCEDURE");
-				if (!string.IsNullOrEmpty(dropObjectName))
-					return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type = 'P')" + Environment.NewLine + "drop procedure " + dropObjectName;
-
-				dropObjectName = SQLStripObjectName(sql, "CREATE PROC");
-				if (!string.IsNullOrEmpty(dropObjectName))
-					return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type = 'P')" + Environment.NewLine + "drop procedure " + dropObjectName;
-
-				dropObjectName = SQLStripObjectName(sql, "CREATE FUNCTION");
-				if (!string.IsNullOrEmpty(dropObjectName))
-					return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type in('FN','IF','TF'))" + Environment.NewLine + "drop function " + dropObjectName;
-
-				dropObjectName = SQLStripObjectName(sql, "CREATE VIEW");
-				if (!string.IsNullOrEmpty(dropObjectName))
-					return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type = 'V')" + Environment.NewLine + "drop view " + dropObjectName;
-
-				return null;
-			}
-			catch (Exception ex)
-			{
-				return null;
-			}
-		}
-
-		private static string SQLStripObjectName(string sql, string objectHeader)
-		{
-			var t = sql;
-
-			//Normalize line endings
-			t = t.Replace("\r\n", "\n");
-			t = t.Replace("\r", "\n");
-
-			//Find the database object type up to the name like CREATE PROC [schema].[name]
-			objectHeader = objectHeader.Replace(" ", @"[\s\n]");
-			var pattern = objectHeader + @"[\s\(\n]";
-			var regexObj = new System.Text.RegularExpressions.Regex(pattern, System.Text.RegularExpressions.RegexOptions.Multiline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-			var matchResult = regexObj.Match(t);
-			var dropObjectName = string.Empty;
-			if (matchResult.Success)
-			{
-				t = t.Substring(matchResult.Index + matchResult.Length, t.Length - (matchResult.Index + matchResult.Length));
-
-				//Search for [schema].[name]
-				pattern = @"\[.*\].\[.*\]";
-				regexObj = new System.Text.RegularExpressions.Regex(pattern, System.Text.RegularExpressions.RegexOptions.Multiline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-				matchResult = regexObj.Match(t);
-				if (matchResult.Success)
-				{
-					dropObjectName = matchResult.Value;
-				}
-				else
-				{
-					//Search for [name]
-					pattern = @"\[.*\][\s\(\n]";
-					regexObj = new System.Text.RegularExpressions.Regex(pattern, System.Text.RegularExpressions.RegexOptions.Multiline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-					matchResult = regexObj.Match(t);
-					if (matchResult.Success)
-					{
-						dropObjectName = matchResult.Value;
-					}
-					else
-					{
-						//Search for "name" or "schema.name" with no braces
-						pattern = @".*[\s\(\n]";
-						regexObj = new System.Text.RegularExpressions.Regex(pattern, System.Text.RegularExpressions.RegexOptions.Multiline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-						matchResult = regexObj.Match(t);
-						if (matchResult.Success)
-						{
-							dropObjectName = matchResult.Value;
-						}
-					}
-				}
-			}
-			return dropObjectName.Trim();
-		}
-
-		public static string GetEmbeddedResource(string resourceFileName)
-		{
-			var retval = string.Empty;
-			var sb = new StringBuilder();
-			var asm = Assembly.GetExecutingAssembly();
-			var manifestStream = asm.GetManifestResourceStream(resourceFileName);
-			try
-			{
-				using (var sr = new System.IO.StreamReader(manifestStream))
-				{
-					retval = sr.ReadToEnd();
-				}
-			}
-			catch { }
-			finally
-			{
-				manifestStream.Close();
-			}
-			return retval;
-		}
-
-		public static string[] ReadSQLFileSectionsFromResource(string resourceFileName, InstallSetup setup)
-		{
-			if (string.IsNullOrEmpty(resourceFileName)) return new string[] { };
-			var skipSectionsLowered = new List<string>();
-			var skipSections = setup.SkipSections.ToList();
-			if (skipSections != null)
-				skipSections.Where(x => x != null).ToList().ForEach(x => skipSectionsLowered.Add(x.ToLower()));
-
-			#region Load Full Script
-			var fullScript = string.Empty;
-			if (resourceFileName.ToLower().EndsWith(".sql"))
-			{
-				var asm = Assembly.GetExecutingAssembly();
-				var manifestStream = asm.GetManifestResourceStream(resourceFileName);
-				try
-				{
-					using (var sr = new System.IO.StreamReader(manifestStream))
-					{
-						fullScript = sr.ReadToEnd();
-					}
-				}
-				catch { }
-				finally
-				{
-					manifestStream.Close();
-				}
-			}
-			else if (resourceFileName.ToLower().EndsWith(".zip"))
-			{
-				var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-				Directory.CreateDirectory(tempPath);
-				var zipPath = Path.Combine(tempPath, Guid.NewGuid().ToString());
-
-				var asm = Assembly.GetExecutingAssembly();
-				var manifestStream = asm.GetManifestResourceStream(resourceFileName);
-				try
-				{
-					using (var fileStream = File.Create(zipPath))
-					{
-						manifestStream.CopyTo(fileStream);
-					}
-				}
-				catch { }
-				finally
-				{
-					manifestStream.Close();
-				}
-
-				using (var archive = System.IO.Compression.ZipFile.Open(zipPath, System.IO.Compression.ZipArchiveMode.Update))
-				{
-					archive.ExtractToDirectory(tempPath);
-				}
-
-				System.Threading.Thread.Sleep(250);
-				File.Delete(zipPath);
-
-				var files = Directory.GetFiles(tempPath, "*.*").OrderBy(x => x).ToList();
-				files.ForEach(x => fullScript += (File.ReadAllText(x) + "\r\nGO\r\n"));
-				System.Threading.Thread.Sleep(250);
-				files.ForEach(x => File.Delete(x));
-				System.Threading.Thread.Sleep(250);
-				Directory.Delete(tempPath);
-
-			}
-			else
-			{
-				return new string[] { };
-			}
-			#endregion
-
-			var retval = new ArrayList();
-			var sb = new StringBuilder();
-			var allLines = fullScript.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
-			var skippingQueue = new List<string>();
-			foreach (var lineText in allLines)
-			{
-				//If we are currently NOT skipping script then process the SQL
-				//Check to determine if this is a skip section start
-				if (lineText.ToUpper().StartsWith("--##SECTION BEGIN ["))
-				{
-					var sectionName = GetSkipSectionName(lineText).ToLower();
-					if (skipSectionsLowered.Contains(sectionName))
-					{
-						//We are now skipping script
-						skippingQueue.Add(sectionName);
-					}
-				}
-				else if (lineText.ToUpper().StartsWith("--##SECTION END ["))
-				{
-					if (skippingQueue.Count > 0)
-					{
-						var sectionName = GetSkipSectionName(lineText).ToLower();
-						if (skippingQueue.Last().ToLower() == sectionName)
-						{
-							//We are now skipping script
-							skippingQueue.RemoveAt(0);
-						}
-					}
-					else
-					{
-						//Do Nothing
-					}
-				}
-				else if (skippingQueue.Count == 0)
-				{
-					if (lineText.ToUpper().Trim() == "GO")
-					{
-						var s = sb.ToString();
-						s = s.Trim();
-						retval.Add(s);
-						sb = new StringBuilder();
-					}
-					else if (lineText.ToUpper().StartsWith("--##METHODCALL"))
-					{
-						retval.Add(lineText);
-						sb = new StringBuilder();
-					}
-					else
-					{
-						var s = lineText;
-						if (s.EndsWith("\r")) s = lineText.Substring(0, lineText.Length - 1);
-						sb.AppendLine(s);
-					}
-				}
-
-			}
-			//Last string
-			if (!string.IsNullOrEmpty(sb.ToString()))
-				retval.Add(sb.ToString());
-
-			return (string[])retval.ToArray(typeof(string));
-		}
-
-		private static string GetSqlForTableExtendedPropertyLikeCount(string tableName, string likeString)
-		{
-			var sb = new StringBuilder();
-			sb.Append(" SELECT ");
-			sb.Append("	count(*) ");
-			sb.Append(" from ");
-			sb.Append("	sysobjects so ");
-			sb.Append(" inner join sysproperties sp on so.id = sp.id ");
-			sb.Append(" where ");
-			sb.Append(" so.name='" + tableName + "' AND ");
-			sb.Append(" sp.name like '" + likeString + "' ");
-			return sb.ToString();
-		}
-
-		private static string GetSqlColumnsForTable(string tableName)
-		{
-			var sb = new StringBuilder();
-			sb.AppendLine("SELECT DISTINCT");
-			sb.AppendLine("	colorder,");
-			sb.AppendLine("	syscolumns.name,");
-			sb.AppendLine("	case when primaryKey.xtype ='PK' then 'true' else 'false' end as isPrimaryKey, ");
-			sb.AppendLine("	case when fk.fkey is null then 'false' else 'true' end as isForeignKey,");
-			sb.AppendLine("	systypes.name as datatype,");
-			sb.AppendLine("	syscolumns.length,");
-			sb.AppendLine("	case when syscolumns.isnullable = 0 then 'false' else 'true' end as allowNull,");
-			sb.AppendLine("	case when syscomments.text is null then '' else SUBSTRING ( syscomments.text , 2 , len(syscomments.text)-2 ) end as defaultValue,");
-			sb.AppendLine("	case when syscolumns.autoval is null then 'false' else 'true' end as isIdentity");
-			sb.AppendLine("FROM");
-			sb.AppendLine("	sysobjects");
-			sb.AppendLine("	inner join syscolumns on syscolumns.id = sysobjects.id");
-			sb.AppendLine("	inner join systypes on systypes.xtype = syscolumns.xtype");
-			sb.AppendLine("	left outer join sysindexkeys on sysindexkeys.id = syscolumns.id AND sysindexkeys.colid = syscolumns.colid");
-			sb.AppendLine("	left outer join sys.indexes pk on  pk.id = sysindexkeys.id AND pk.indid = sysindexkeys.indid");
-			sb.AppendLine("	left outer join sysobjects primaryKey on pk.name = primaryKey.name");
-			sb.AppendLine("	left outer join sysforeignkeys fk on fk.fkeyid = syscolumns.id AND fk.fkey = syscolumns.colorder");
-			sb.AppendLine("	left outer join sys.default_constraints ON syscolumns.cdefault = sys.default_constraints.parent_column_id ");
-			sb.AppendLine("WHERE");
-			sb.AppendLine("	sysobjects.name = '" + tableName + "' AND systypes.name <> 'sysname' order by [colorder]\n");
-			return sb.ToString();
-		}
-
-		private static string GetSqlForRelationships(string tableName)
-		{
-			var sb = new StringBuilder();
-			sb.Append("SELECT DISTINCT parent.name as Parent, child.name as Child, ");
-			sb.Append("case when parent.name = '").Append(tableName).Append("' then 'parent' else 'child' end as rolePlayed, ");
-			sb.Append("relation.name as constraintName, ");
-			sb.Append("roleNameProvider.value as roleName ");
-			sb.Append("FROM sysforeignkeys inner join sysobjects relation on constid = relation.id ");
-			sb.Append("inner join sysobjects child on fkeyid = child.id inner join sysobjects parent on rkeyid = parent.id ");
-			sb.Append("inner join sysproperties roleNameProvider on roleNameProvider.id = relation.id ");
-			sb.Append("WHERE parent.name = '" + tableName + "' OR child.name='" + tableName + "'");
-			return sb.ToString();
-		}
-
-		private static string GetSqlForForeignKeys(string parentTable, string childTable, string constraintName)
-		{
-			var sb = new StringBuilder();
-			sb.Append(" DECLARE @FKeys TABLE ");
-			sb.Append(" ( ");
-			sb.Append(" parentTable [Varchar] (100) NOT NULL, ");
-			sb.Append(" 	childTable [Varchar] (100) NOT NULL, ");
-			sb.Append(" 	childColumn [Varchar] (100) NOT NULL, ");
-			sb.Append(" 	constid int NOT NULL, ");
-			sb.Append(" 	keyno smallint NOT NULL ");
-			sb.Append(" ) ");
-			sb.Append(" DECLARE @PKeys TABLE ");
-			sb.Append(" ( ");
-			sb.Append(" parentTable [Varchar] (100) NOT NULL, ");
-			sb.Append(" childTable [Varchar] (100) NOT NULL, ");
-			sb.Append(" parentColumn [Varchar] (100) NOT NULL, ");
-			sb.Append(" constid int NOT NULL, ");
-			sb.Append(" 	keyno smallint NOT NULL ");
-			sb.Append(" ) ");
-			sb.Append(" INSERT INTO @FKeys ");
-			sb.Append(" SELECT DISTINCT ");
-			sb.Append(" parent.name parentTable, ");
-			sb.Append(" child.name childTable, ");
-			sb.Append(" syscolumns.name as childColumn, ");
-			sb.Append(" sysforeignkeys.constid, ");
-			sb.Append(" sysforeignkeys.keyno ");
-			sb.Append(" FROM ");
-			sb.Append(" sysforeignkeys ");
-			sb.Append(" inner join sysobjects child on fkeyid = child.id ");
-			sb.Append(" inner join sysobjects parent on rkeyid = parent.id ");
-			sb.Append(" inner join syscolumns on syscolumns.id = sysforeignkeys.fkeyid AND syscolumns.colorder = sysforeignkeys.fkey ");
-			sb.Append(" INSERT INTO @PKeys ");
-			sb.Append(" SELECT ");
-			sb.Append(" parent.name parentTable, ");
-			sb.Append(" child.name childTable, ");
-			sb.Append(" syscolumns.name as parentColumn, ");
-			sb.Append(" sysforeignkeys.constid, ");
-			sb.Append(" sysforeignkeys.keyno ");
-			sb.Append(" FROM ");
-			sb.Append(" sysforeignkeys inner join sysobjects child on fkeyid = child.id ");
-			sb.Append(" inner join sysobjects parent on rkeyid = parent.id ");
-			sb.Append(" inner join syscolumns on syscolumns.id = sysforeignkeys.rkeyid AND syscolumns.colorder = sysforeignkeys.rkey ");
-			sb.Append(" SELECT p.parentTable ,p.parentColumn, f.childTable, f.ChildColumn , so.name as roleName FROM @FKeys f INNER JOIN @PKeys p on f.constid=p.constID and f.keyno=p.keyno INNER JOIN sysobjects so on so.id = p.constid ");
-			sb.Append("WHERE f.parentTable = '" + parentTable + "' AND f.childTable = '" + childTable + "'");
-			sb.Append(" AND so.name = '" + constraintName + "'");
-			sb.Append(" order by p.constid ");
-			return sb.ToString();
-		}
-
-		private static string SqlRemoveTable(string tableName)
-		{
-			var sb = new StringBuilder();
-			sb.Append("DROP TABLE [" + tableName + "];\n");
-			return sb.ToString();
-		}
-
-		private static string GetSkipSectionName(string text)
-		{
-			text = text.Replace("--##SECTION BEGIN [", string.Empty);
-			text = text.Replace("--##SECTION END [", string.Empty);
-			text = text.Replace("]", string.Empty);
-			return text.Trim();
-		}
-		#endregion
-
-		internal static void ExecuteCommand(SqlCommand command)
-		{
-			command.ExecuteNonQuery();
-		}
-
-	}
-
-	#region HistoryItem
-
-	internal class HistoryItem
-	{
-		public DateTime PublishDate { get; set; }
-		public string Version { get; set; }
-	}
-
-	#endregion
-
-	#region nHydrateSetting
-
-	internal class nHydrateSetting
-	{
-		internal nHydrateSetting()
-		{
-			this.History = new List<HistoryItem>();
-			this.IsLoaded = false;
-			this.dbVersion = UpgradeInstaller._def_Version.ToString();
-			this.LastUpdate = new DateTime(1980, 1, 1);
-		}
-
-		public bool IsLoaded { get; private set; }
-		public bool WasLegacy { get; private set; }
-
-		public void Load(string connectionString)
-		{
-			var conn = new System.Data.SqlClient.SqlConnection();
-			try
-			{
-				conn.ConnectionString = connectionString;
-				conn.Open();
-
-				var da = new SqlDataAdapter("select * from sys.tables where name = '__nhydrateschema'", conn);
-				var ds = new DataSet();
-				da.Fill(ds);
-				if (ds.Tables[0].Rows.Count > 0)
-				{
-					da = new SqlDataAdapter("SELECT * FROM __nhydrateschema where [ModelKey] = '" + UpgradeInstaller.MODELKEY + "'", conn);
-					ds = new DataSet();
-					da.Fill(ds);
-					var t = ds.Tables[0];
-					if (t.Rows.Count > 0)
-					{
-						this.dbVersion = (string)t.Rows[0]["dbVersion"];
-						this.LastUpdate = (DateTime)t.Rows[0]["LastUpdate"];
-						this.ModelKey = (Guid)t.Rows[0]["ModelKey"];
-						this.LoadHistory((string)t.Rows[0]["History"]);
-						this.IsLoaded = true;
-					}
-
-					//There is an nHydrate table so empty or not we are finished
-					return;
-				}
-
-				try
-				{
-					this.dbVersion = SqlServers.SelectExtendedProperty(connectionString, "dbVersion", string.Empty, string.Empty, string.Empty);
-				}
-				catch { }
-
-				try
-				{
-					this.LastUpdate = DateTime.ParseExact(SqlServers.SelectExtendedProperty(connectionString, "LastUpdate", string.Empty, string.Empty, string.Empty), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-				}
-				catch { }
-
-				try
-				{
-					this.ModelKey = new Guid(SqlServers.SelectExtendedProperty(connectionString, "ModelKey", string.Empty, string.Empty, string.Empty));
-					if (this.ModelKey != Guid.Empty)
-						this.WasLegacy = true;
-				}
-				catch { }
-
-				try
-				{
-					this.LoadHistory(SqlServers.SelectExtendedProperty(connectionString, "History", string.Empty, string.Empty, string.Empty));
-				}
-				catch { }
-
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-			finally
-			{
-				if (conn != null)
-					conn.Close();
-			}
-		}
-
-		public string GetVersionUpdateScript()
-		{
-			var sb = new StringBuilder();
-
-			sb.AppendLine("if not exists(select * from sys.objects where [name] = '__nhydrateschema' and [type] = 'U')");
-			sb.AppendLine("BEGIN");
-			sb.AppendLine("CREATE TABLE [__nhydrateschema] (");
-			sb.AppendLine("[dbVersion] [varchar] (50) NOT NULL,");
-			sb.AppendLine("[LastUpdate] [datetime] NOT NULL,");
-			sb.AppendLine("[ModelKey] [uniqueidentifier] NOT NULL,");
-			sb.AppendLine("[History] [nvarchar](max) NOT NULL");
-			sb.AppendLine(")");
-			sb.AppendLine("if not exists(select * from sys.objects where [name] = '__pk__nhydrateschema' and [type] = 'PK')");
-			sb.AppendLine("ALTER TABLE [__nhydrateschema] WITH NOCHECK ADD CONSTRAINT [__pk__nhydrateschema] PRIMARY KEY CLUSTERED ([ModelKey])");
-			sb.AppendLine("END");
-			sb.AppendLine();
-
-			sb.AppendLine("--ADD/UPDATE THE VERSION METADATA FOR THIS MODEL");
-			sb.AppendLine("if exists(select * from [__nhydrateschema] where [ModelKey] = '" + this.ModelKey.ToString() + "')");
-			sb.AppendLine("UPDATE [__nhydrateschema] SET [dbVersion]='" + this.dbVersion + "', [LastUpdate]='" + this.LastUpdate.ToString("yyyyMMdd HH:mm:ss") + "', [History]='" + this.ToHistoryString() + "' WHERE [ModelKey] = '" + this.ModelKey.ToString() + "'");
-			sb.AppendLine("ELSE");
-			sb.AppendLine("INSERT INTO [__nhydrateschema] ([dbVersion], [LastUpdate], [ModelKey], [History]) VALUES ('" + this.dbVersion + "', '" + this.LastUpdate.ToString("yyyyMMdd HH:mm:ss") + "', '" + this.ModelKey.ToString() + "', '" + this.ToHistoryString() + "')");
-			sb.AppendLine();
-			return sb.ToString();
-		}
-
-		public bool Save(string connectionString)
-		{
-			var conn = new System.Data.SqlClient.SqlConnection();
-			try
-			{
-				conn.ConnectionString = connectionString;
-				conn.Open();
-				var command = new SqlCommand(GetVersionUpdateScript(), conn);
-				SqlServers.ExecuteCommand(command);
-				return true;
-			}
-			catch (Exception ex)
-			{
-				return false;
-				throw;
-			}
-			finally
-			{
-				if (conn != null)
-					conn.Close();
-			}
-
-		}
-
-		public string dbVersion { get; set; }
-		public List<HistoryItem> History { get; private set; }
-		public DateTime LastUpdate { get; set; }
-		public Guid ModelKey { get; set; }
-
-		public void LoadHistory(string text)
-		{
-			this.History.Clear();
-			if (!string.IsNullOrEmpty(text))
-			{
-				foreach (string dataRow in text.Split('^'))
-				{
-					string[] data = dataRow.Split('|');
-					if (data.Length == 2)
-					{
-						try
-						{
-							this.History.Add(new HistoryItem() { PublishDate = DateTime.ParseExact(data[0], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), Version = data[1] });
-						}
-						catch { }
-					}
-				}
-			}
-		}
-
-		public string ToHistoryString()
-		{
-			var sb = new StringBuilder();
-			foreach (var o in this.History)
-			{
-				sb.Append(o.PublishDate.ToString("yyyy-MM-dd HH:mm:ss") + "|" + o.Version + "^");
-			}
-			var s = sb.ToString();
-			if (s.Length > 0) s = s.TrimEnd(new char[] { '^' });
-			return s;
-		}
-	}
-
-	#endregion
-
-	#region nHydrateDbObject
-
-	internal class nHydrateDbObject
-	{
-		public nHydrateDbObject()
-		{
-			this.rowid = 0;
-			this.id = Guid.NewGuid();
-			this.CreatedDate = DateTime.Now;
-			this.ModifiedDate = DateTime.Now;
-			this.schema = null;
-			this.ModelKey = Guid.Empty;
-			this.Hash = null;
-			this.Status = "none";
-		}
-
-		public bool Changed { get; set; }
-		public long rowid { get; set; }
-		public Guid id { get; set; }
-
-		private string _name = "";
-		public string name
-		{
-			get { return _name; }
-			set
-			{
-				_name = value;
-				this.Changed = true;
-			}
-		}
-
-		public string type { get; set; }
-		public string schema { get; set; }
-		public DateTime CreatedDate { get; set; }
-		public string Status { get; set; }
-		public Guid ModelKey { get; set; }
-
-		private DateTime _modifiedDate;
-		public DateTime ModifiedDate
-		{
-			get { return _modifiedDate; }
-			set
-			{
-				_modifiedDate = value;
-				this.Changed = true;
-			}
-		}
-
-		private string _hash = null;
-		public string Hash
-		{
-			get { return _hash; }
-			set
-			{
-				if (_hash != value)
-				{
-					_hash = value;
-					this.Changed = true;
-				}
-			}
-		}
-
-		public override string ToString()
-		{
-			return this.name + " / " + this.Hash;
-		}
-
-		public static List<nHydrateDbObject> Load(string connectionString, string modelKey, System.Data.SqlClient.SqlTransaction transaction)
-		{
-			var retval = new List<nHydrateDbObject>();
-			System.Data.SqlClient.SqlConnection conn = null;
-			if (transaction == null)
-			{
-				conn = new System.Data.SqlClient.SqlConnection(connectionString);
-				conn.Open();
-			}
-			else
-			{
-				conn = transaction.Connection;
-			}
-
-			try
-			{
-				var command2 = new SqlCommand("select * from sys.tables where name = '__nhydrateobjects'", conn);
-				command2.Transaction = transaction;
-				var da = new SqlDataAdapter(command2);
-				var ds = new DataSet();
-				da.Fill(ds);
-				if (ds.Tables[0].Rows.Count > 0)
-				{
-					var command = new SqlCommand("SELECT * FROM __nhydrateobjects where [ModelKey] = '" + modelKey + "'", conn);
-					command.Transaction = transaction;
-					da = new SqlDataAdapter(command);
-					ds = new DataSet();
-					da.Fill(ds);
-					var t = ds.Tables[0];
-					foreach (DataRow row in t.Rows)
-					{
-						var newItem = new nHydrateDbObject();
-						newItem.rowid = (long)row["rowid"];
-						if (row["id"] != System.DBNull.Value)
-							newItem.id = (Guid)row["id"];
-						newItem.name = (string)row["name"];
-						newItem.ModelKey = (Guid)row["ModelKey"];
-						newItem.type = (string)row["type"];
-						if (row["schema"] != System.DBNull.Value)
-							newItem.schema = (string)row["schema"];
-						newItem.CreatedDate = (DateTime)row["CreatedDate"];
-						newItem.ModifiedDate = (DateTime)row["ModifiedDate"];
-						if (row["Hash"] != System.DBNull.Value)
-							newItem.Hash = (string)row["Hash"];
-						if (t.Columns.Contains("status") && row["status"] != System.DBNull.Value)
-							newItem.Status = (string)row["status"];
-						newItem.Changed = false;
-						retval.Add(newItem);
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-			finally
-			{
-				if (transaction == null && conn != null)
-					conn.Close();
-			}
-			return retval;
-		}
-
-		public static void Save(string connectionString, string modelKey, IEnumerable<nHydrateDbObject> list, System.Data.SqlClient.SqlTransaction transaction)
-		{
-			System.Data.SqlClient.SqlConnection conn = null;
-			if (transaction == null)
-			{
-				conn = new System.Data.SqlClient.SqlConnection(connectionString);
-				conn.Open();
-			}
-			else
-			{
-				conn = transaction.Connection;
-			}
-			try
-			{
-				//Create the table if need be
-				using (var command3 = new SqlCommand("if not exists(select * from sys.objects where name = '__nhydrateobjects'and type = 'U')" + Environment.NewLine +
-																						 "CREATE TABLE [dbo].[__nhydrateobjects]" +
-																						 "([rowid] [bigint] IDENTITY(1,1) NOT NULL," +
-																						 "[id] [uniqueidentifier] NULL," +
-																						 "[name] [varchar](500) NOT NULL," +
-																						 "[type] [varchar](10) NOT NULL," +
-																						 "[schema] [varchar](500) NULL," +
-																						 "[CreatedDate] [datetime] NOT NULL," +
-																						 "[ModifiedDate] [datetime] NOT NULL," +
-																						 "[Hash] [varchar](32) NULL," +
-																						 "[Status] [varchar](500) NULL," +
-																						 "[ModelKey] [uniqueidentifier] NOT NULL)", conn))
-				{
-					command3.Transaction = transaction;
-					SqlServers.ExecuteCommand(command3);
-				}
-
-				//Add columns if missing
-				{
-					var sql = new StringBuilder();
-					sql.AppendLine("if exists(select * from sys.objects where name = '__nhydrateobjects' and type = 'U') AND not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = 'status' and o.name = '__nhydrateobjects')");
-					sql.AppendLine("ALTER TABLE [dbo].[__nhydrateobjects] ADD [status] [Varchar] (500) NULL");
-					using (var command3 = new SqlCommand(sql.ToString(), conn))
-					{
-						command3.Transaction = transaction;
-						SqlServers.ExecuteCommand(command3);
-					}
-				}
-
-				{
-					var sql = new StringBuilder();
-					sql.AppendLine("delete from [__nhydrateobjects] where [id] IS NULL and ModelKey = '" + UpgradeInstaller.MODELKEY + "'");
-					using (var command3 = new SqlCommand(sql.ToString(), conn))
-					{
-						command3.Transaction = transaction;
-						SqlServers.ExecuteCommand(command3);
-					}
-				}
-
-				//Save items to the table
-				foreach (var item in list.Where(x => x.Changed))
-				{
-					var command = new SqlCommand("if exists(select * from [__nhydrateobjects] where [id] = @id) " +
-													 "update [__nhydrateobjects] set [name] = @name, [type] = @type, [schema] = @schema, [CreatedDate] = @CreatedDate, [ModifiedDate] = @ModifiedDate, [Hash] = @Hash, [ModelKey] = @ModelKey, [Status] = @Status where [id] = @id " +
-													 "else " +
-													 "insert into [__nhydrateobjects] ([id], [name], [type], [schema], [CreatedDate], [ModifiedDate], [Hash], [ModelKey], [Status]) values (@id, @name, @type, @schema, @CreatedDate, @ModifiedDate, @Hash, @ModelKey, @Status)", conn);
-					command.Transaction = transaction;
-					command.Parameters.Add(new SqlParameter() { DbType = DbType.Guid, Value = (item.id == Guid.Empty ? System.DBNull.Value : (object)item.id), ParameterName = "@id", IsNullable = true });
-					command.Parameters.Add(new SqlParameter() { DbType = DbType.Int64, Value = item.rowid, ParameterName = "@rowid", IsNullable = false });
-					command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.name, ParameterName = "@name", IsNullable = false });
-					command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.type, ParameterName = "@type", IsNullable = false });
-					command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = (item.schema == null ? System.DBNull.Value : (object)item.schema), ParameterName = "@schema", IsNullable = true });
-					command.Parameters.Add(new SqlParameter() { DbType = DbType.DateTime, Value = item.CreatedDate, ParameterName = "@CreatedDate", IsNullable = false });
-					command.Parameters.Add(new SqlParameter() { DbType = DbType.DateTime, Value = DateTime.Now, ParameterName = "@ModifiedDate", IsNullable = false });
-					command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.Hash, ParameterName = "@Hash", IsNullable = false });
-					command.Parameters.Add(new SqlParameter() { DbType = DbType.Guid, Value = item.ModelKey, ParameterName = "@ModelKey", IsNullable = false });
-					command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.Status, ParameterName = "@Status", IsNullable = true });
-					SqlServers.ExecuteCommand(command);
-				}
-
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-			finally
-			{
-				if (transaction == null && conn != null)
-					conn.Close();
-			}
-		}
-
-	}
-
-	#endregion
-
-	#region InvalidSQLException
-
-	internal class InvalidSQLException : System.Exception
-	{
-		public InvalidSQLException() : base() { }
-		public InvalidSQLException(string message) : base(message) { }
-		public InvalidSQLException(string message, Exception innerException) : base(message, innerException) { }
-
-		public string SQL { get; set; }
-	}
-
-	#endregion
-
-	#region HandledSQLException
-
-	internal class HandledSQLException : System.Exception
-	{
-		public HandledSQLException() : base() { }
-		public HandledSQLException(string message) : base(message) { }
-		public HandledSQLException(string message, Exception innerException) : base(message, innerException) { }
-	}
-
-	#endregion
-
-	#region ScriptDifferenceException
-
-	internal class ScriptDifferenceException : System.Exception
-	{
-		public ScriptDifferenceException() : base() { }
-		public ScriptDifferenceException(string message) : base(message) { }
-		public ScriptDifferenceException(string message, Exception innerException) : base(message, innerException) { }
-	}
-
-	#endregion
+    internal class SqlServers
+    {
+        #region Class Members
+
+        private static System.Diagnostics.Stopwatch _timer = new System.Diagnostics.Stopwatch();
+
+        #endregion
+
+        #region database discovery
+        [DllImport("odbc32.dll")]
+        private static extern short SQLAllocHandle(short hType, IntPtr inputHandle, out IntPtr outputHandle);
+        [DllImport("odbc32.dll")]
+        private static extern short SQLSetEnvAttr(IntPtr henv, int attribute, IntPtr valuePtr, int strLength);
+        [DllImport("odbc32.dll")]
+        private static extern short SQLFreeHandle(short hType, IntPtr handle);
+        [DllImport("odbc32.dll", CharSet = CharSet.Ansi)]
+        private static extern short SQLBrowseConnect(IntPtr hconn, StringBuilder inString, short inStringLength, StringBuilder outString, short outStringLength, out short outLengthNeeded);
+
+        private const short SQL_HANDLE_ENV = 1;
+        private const short SQL_HANDLE_DBC = 2;
+        private const int SQL_ATTR_ODBC_VERSION = 200;
+        private const int SQL_OV_ODBC3 = 3;
+        private const short SQL_SUCCESS = 0;
+
+        private const short SQL_NEED_DATA = 99;
+        private const short DEFAULT_RESULT_SIZE = 1024;
+        private const string SQL_DRIVER_STR = "DRIVER=SQL SERVER";
+
+        //public enum SQLServerTypeConstants
+        //{
+        //  SQL2005 = 0,
+        //  SQL2008 = 1,
+        //  SQLAzure = 2,
+        //}
+
+        //public static SQLServerTypeConstants DatabaseVersion = SQLServerTypeConstants.DATABASETYPE;
+
+        private SqlServers()
+        {
+        }
+
+        private static List<string> _serverList = new List<string>();
+        internal static string[] GetServers()
+        {
+            if (_serverList.Count == 0)
+            {
+                string[] retval = null;
+
+                var txt = string.Empty;
+                var henv = IntPtr.Zero;
+                var hconn = IntPtr.Zero;
+                var inString = new StringBuilder(SQL_DRIVER_STR);
+                var outString = new StringBuilder(DEFAULT_RESULT_SIZE);
+                var inStringLength = (short)inString.Length;
+                var lenNeeded = (short)0;
+
+                try
+                {
+                    if (SQL_SUCCESS == SQLAllocHandle(SQL_HANDLE_ENV, henv, out henv))
+                    {
+                        if (SQL_SUCCESS == SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (IntPtr)SQL_OV_ODBC3, 0))
+                        {
+                            if (SQL_SUCCESS == SQLAllocHandle(SQL_HANDLE_DBC, henv, out hconn))
+                            {
+                                if (SQL_NEED_DATA == SQLBrowseConnect(hconn, inString, inStringLength, outString,
+                                    DEFAULT_RESULT_SIZE, out lenNeeded))
+                                {
+                                    if (DEFAULT_RESULT_SIZE < lenNeeded)
+                                    {
+                                        outString.Capacity = lenNeeded;
+                                        if (SQL_NEED_DATA != SQLBrowseConnect(hconn, inString, inStringLength, outString,
+                                            lenNeeded, out lenNeeded))
+                                        {
+                                            throw new ApplicationException("Unabled to aquire SQL Servers from ODBC driver.");
+                                        }
+                                    }
+                                    txt = outString.ToString();
+                                    int start = txt.IndexOf("{") + 1;
+                                    int len = txt.IndexOf("}") - start;
+                                    if ((start > 0) && (len > 0))
+                                    {
+                                        txt = txt.Substring(start, len);
+                                    }
+                                    else
+                                    {
+                                        txt = string.Empty;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    if (hconn != IntPtr.Zero)
+                    {
+                        SQLFreeHandle(SQL_HANDLE_DBC, hconn);
+                    }
+                    if (henv != IntPtr.Zero)
+                    {
+                        SQLFreeHandle(SQL_HANDLE_ENV, hconn);
+                    }
+                }
+
+                if (txt.Length > 0)
+                {
+                    retval = txt.Split(",".ToCharArray());
+                }
+
+                _serverList.AddRange(retval);
+            }
+            return _serverList.ToArray();
+        }
+
+        internal static bool TestConnectionString(string connectString)
+        {
+            //Connection should be fast
+            var sb = new SqlConnectionStringBuilder(connectString);
+            sb.ConnectTimeout = 15;
+            connectString = sb.ToString();
+
+            var valid = false;
+            var conn = new System.Data.SqlClient.SqlConnection();
+            try
+            {
+                conn.ConnectionString = connectString;
+                conn.Open();
+                valid = true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                valid = false;
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return valid;
+        }
+
+        internal static List<HistoryItem> GetHistory(string connectionString)
+        {
+            var retval = new List<HistoryItem>();
+            var settings = new nHydrateSetting();
+            if (CanUseExtendedProperty(connectionString))
+            {
+                var historyRow = SqlServers.SelectExtendedProperty(connectionString, "History", string.Empty, string.Empty, string.Empty);
+                settings.LoadHistory(historyRow);
+                if (settings.History.Count > 0)
+                    return settings.History;
+            }
+
+            if (settings.History.Count == 0)
+            {
+                settings = new nHydrateSetting();
+                settings.Load(connectionString);
+            }
+            return settings.History;
+
+        }
+
+        internal static string BuildConnectionString(bool integratedSecurity, string databaseName, string serverName, string userName, string password)
+        {
+            var connStr = new StringBuilder();
+            var sb = new SqlConnectionStringBuilder();
+            sb.IntegratedSecurity = integratedSecurity;
+            sb.InitialCatalog = databaseName;
+            sb.DataSource = serverName;
+            sb.ConnectTimeout = 604800;
+            if (!integratedSecurity)
+            {
+                sb.UserID = userName;
+                sb.Password = password;
+            }
+            return sb.ToString();
+        }
+
+        internal static string[] GetDatabaseNames(string connectString)
+        {
+            var databaseNames = new ArrayList();
+            var conn = new System.Data.SqlClient.SqlConnection();
+            SqlDataReader databaseReader = null;
+            SqlDataReader existsReader = null;
+
+            try
+            {
+                conn.ConnectionString = connectString;
+                conn.Open();
+
+                var cmdDatabases = new SqlCommand();
+                cmdDatabases.CommandText = "use [master] select name from sysdatabases";
+                cmdDatabases.CommandType = System.Data.CommandType.Text;
+                cmdDatabases.Connection = conn;
+                databaseReader = cmdDatabases.ExecuteReader();
+                while (databaseReader.Read())
+                {
+                    databaseNames.Add(databaseReader["name"]);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                databaseNames.Clear();
+            }
+            finally
+            {
+                if (databaseReader != null)
+                    databaseReader.Close();
+                if (conn != null)
+                    conn.Close();
+            }
+
+            var itemsToRemove = new ArrayList();
+            foreach (string dbName in databaseNames)
+            {
+                try
+                {
+                    conn.Open();
+                    var cmdUserExist = new SqlCommand();
+                    cmdUserExist.CommandText = "use [" + dbName + "] select case when Permissions()&254=254 then 1 else 0 end as hasAccess";
+                    cmdUserExist.CommandType = System.Data.CommandType.Text;
+                    cmdUserExist.Connection = conn;
+                    existsReader = cmdUserExist.ExecuteReader();
+                    if (existsReader.Read())
+                    {
+                        try
+                        {
+                            if (int.Parse(existsReader["hasAccess"].ToString()) == 0)
+                            {
+                                itemsToRemove.Add(dbName);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(ex.ToString());
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.ToString());
+                    itemsToRemove.Add(dbName);
+                }
+                finally
+                {
+                    if (existsReader != null)
+                        existsReader.Close();
+                    if (conn != null)
+                        conn.Close();
+                }
+            }
+            foreach (string removedItem in itemsToRemove)
+            {
+                databaseNames.Remove(removedItem);
+            }
+
+            return (string[])databaseNames.ToArray(typeof(string));
+        }
+
+        internal static bool HasCreatePermissions(string connectString)
+        {
+            var returnVal = false;
+            var conn = new System.Data.SqlClient.SqlConnection();
+            SqlDataReader existsReader = null;
+            try
+            {
+                conn.ConnectionString = connectString;
+                conn.Open();
+                var cmdUserExist = new SqlCommand();
+                cmdUserExist.CommandText = "use [master] select case when Permissions()&1=1 then 1 else 0 end as hasAccess";
+                cmdUserExist.CommandType = System.Data.CommandType.Text;
+                cmdUserExist.Connection = conn;
+                existsReader = cmdUserExist.ExecuteReader();
+                if (existsReader.Read())
+                {
+                    try
+                    {
+                        if (int.Parse(existsReader["hasAccess"].ToString()) == 1)
+                        {
+                            returnVal = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex.ToString());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                if (existsReader != null)
+                    existsReader.Close();
+                if (conn != null)
+                    conn.Close();
+            }
+            return returnVal;
+        }
+        #endregion
+
+        #region create database
+        internal static void CreateDatabase(InstallSetup setup)
+        {
+            var conn = new System.Data.SqlClient.SqlConnection();
+            try
+            {
+                conn.ConnectionString = setup.MasterConnectionString;
+                conn.Open();
+                var cmdCreateDb = new SqlCommand();
+                var collate = string.Empty;
+                if (!string.IsNullOrEmpty(collate)) collate = " COLLATE " + collate;
+                cmdCreateDb.CommandText = "CREATE DATABASE [" + setup.NewDatabaseName + "]" + collate;
+                cmdCreateDb.CommandType = System.Data.CommandType.Text;
+                cmdCreateDb.Connection = conn;
+                SqlServers.ExecuteCommand(cmdCreateDb);
+
+                var sb = new StringBuilder();
+                sb.AppendLine("declare @databasename nvarchar(500)");
+                sb.AppendLine("set @databasename = (select [name] from master.sys.master_files where database_id = (select top 1 [dbid] from master.sys.sysdatabases where name = '" + setup.NewDatabaseName + "' and [type] = 0))");
+                sb.AppendLine("exec('ALTER DATABASE [" + setup.NewDatabaseName + "] MODIFY FILE (NAME = [' + @databasename + '],  MAXSIZE = UNLIMITED, FILEGROWTH = 10MB)')");
+                sb.AppendLine("set @databasename = (select [name] from master.sys.master_files where database_id = (select top 1 [dbid] from master.sys.sysdatabases where name = '" + setup.NewDatabaseName + "' and [type] = 1))");
+                sb.AppendLine("exec('ALTER DATABASE [" + setup.NewDatabaseName + "] MODIFY FILE (NAME = [' + @databasename + '],  MAXSIZE = UNLIMITED, FILEGROWTH = 10MB)')");
+                cmdCreateDb.CommandText = sb.ToString();
+                SqlServers.ExecuteCommand(cmdCreateDb);
+            }
+            catch { throw; }
+            finally
+            {
+                if (conn != null)
+                    conn.Close();
+                System.Threading.Thread.Sleep(1000);
+            }
+        }
+        #endregion
+
+        #region database table operations
+
+        internal static ArrayList GetTableNamesAsArrayList(string connectString)
+        {
+            ArrayList databaseTables = new ArrayList();
+            SqlDataReader tableReader = null;
+            var conn = new System.Data.SqlClient.SqlConnection();
+            try
+            {
+                conn.ConnectionString = connectString;
+                conn.Open();
+                SqlCommand cmdCreateDb = new SqlCommand();
+                cmdCreateDb.CommandText = "select name from sysobjects where xtype = 'U' and name <> 'dtproperties'";
+                cmdCreateDb.CommandType = System.Data.CommandType.Text;
+                cmdCreateDb.Connection = conn;
+                tableReader = cmdCreateDb.ExecuteReader();
+                while (tableReader.Read())
+                {
+                    databaseTables.Add(tableReader.GetString(0));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (tableReader != null)
+                    tableReader.Close();
+                if (conn != null)
+                    conn.Close();
+            }
+            return databaseTables;
+        }
+        #endregion
+
+        #region database column operations
+        internal static DataSet GetTableColumns(string connectString, string tableName)
+        {
+            var conn = new SqlConnection();
+            var cmd = new SqlCommand();
+            DataSet tableColumns = new DataSet();
+            SqlDataAdapter da = new SqlDataAdapter();
+
+            try
+            {
+                conn.ConnectionString = connectString;
+                cmd.CommandText = GetSqlColumnsForTable(tableName);
+                cmd.CommandType = System.Data.CommandType.Text;
+                cmd.Connection = conn;
+                da.SelectCommand = cmd;
+                da.Fill(tableColumns);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn != null)
+                    conn.Close();
+            }
+            return tableColumns;
+        }
+
+        public static bool HasLength(System.Data.SqlDbType dataType)
+        {
+            if (dataType == System.Data.SqlDbType.BigInt)
+                return false;
+            else if (dataType == System.Data.SqlDbType.Bit)
+                return false;
+            else if (dataType == System.Data.SqlDbType.DateTime)
+                return false;
+            else if (dataType == System.Data.SqlDbType.Decimal)
+                return false;
+            else if (dataType == System.Data.SqlDbType.Float)
+                return false;
+            else if (dataType == System.Data.SqlDbType.Image)
+                return false;
+            else if (dataType == System.Data.SqlDbType.Int)
+                return false;
+            else if (dataType == System.Data.SqlDbType.Money)
+                return false;
+            else if (dataType == System.Data.SqlDbType.Real)
+                return false;
+            else if (dataType == System.Data.SqlDbType.SmallDateTime)
+                return false;
+            else if (dataType == System.Data.SqlDbType.SmallInt)
+                return false;
+            else if (dataType == System.Data.SqlDbType.SmallMoney)
+                return false;
+            else if (dataType == System.Data.SqlDbType.Timestamp)
+                return false;
+            else if (dataType == System.Data.SqlDbType.TinyInt)
+                return false;
+            else if (dataType == System.Data.SqlDbType.UniqueIdentifier)
+                return false;
+            else
+                return true;
+        }
+
+        #endregion
+
+        #region extended property helpers
+        internal static void UpdateDatabaseMetaProperty(string connectionString, string propertyName, string propertyValue)
+        {
+            var conn = new System.Data.SqlClient.SqlConnection();
+            try
+            {
+                var settings = new nHydrateSetting();
+                settings.Load(connectionString);
+                switch (propertyName)
+                {
+                    case "dbVersion":
+                        settings.dbVersion = propertyValue;
+                        break;
+                    case "LastUpdate":
+                        settings.LastUpdate = DateTime.Parse(propertyValue);
+                        break;
+                    case "ModelKey":
+                        settings.ModelKey = new Guid(propertyValue);
+                        break;
+                    case "History":
+                        settings.LoadHistory(propertyValue);
+                        break;
+                    default:
+                        throw new Exception("No property found!");
+                }
+                settings.Save(connectionString);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                if (conn != null)
+                    conn.Close();
+            }
+
+            //We no longer use extended properties
+            if (CanUseExtendedProperty(connectionString))
+            {
+                if (ExtendedPropertyExists(connectionString, propertyName, string.Empty, string.Empty, string.Empty))
+                {
+                    //UpdateExtendedProperty(connectionString, propertyName, propertyValue, string.Empty, string.Empty, string.Empty);
+                    DeleteExtendedProperty(connectionString, propertyName);
+                }
+                else
+                {
+                    //InsertExtendedPropery(connectionString, propertyName, propertyValue, string.Empty, string.Empty, string.Empty);
+                }
+            }
+
+        }
+
+        internal static string GetDatabaseMetaProperty(string connectionString, string propertyName)
+        {
+            if (CanUseExtendedProperty(connectionString))
+            {
+                return SelectExtendedProperty(connectionString, propertyName, string.Empty, string.Empty, string.Empty);
+            }
+            else
+            {
+                var settings = new nHydrateSetting();
+                settings.Load(connectionString);
+                switch (propertyName)
+                {
+                    case "dbVersion":
+                        return settings.dbVersion;
+                    case "LastUpdate":
+                        return settings.LastUpdate.ToString("yyyy-MM-dd HH:mm:ss");
+                    case "ModelKey":
+                        return settings.ModelKey.ToString();
+                    case "History":
+                        return settings.ToHistoryString();
+                    default:
+                        throw new Exception("No property found!");
+                }
+            }
+        }
+        #endregion
+
+        #region extended property private
+        private static bool? extendedPropertyEnabled = null;
+
+        /// <summary>
+        /// Determines if we can use extended properties, Azure does NOT allow them
+        /// </summary>
+        private static bool CanUseExtendedProperty(string connectionString)
+        {
+            if (extendedPropertyEnabled == null)
+            {
+                var conn = new System.Data.SqlClient.SqlConnection();
+                try
+                {
+                    conn.ConnectionString = connectionString;
+                    conn.Open();
+                    SqlCommand cmdGetExtProp = new SqlCommand();
+                    cmdGetExtProp.CommandText = "SELECT value FROM ::fn_listextendedproperty('', '', '', '', '', '', '')";
+                    cmdGetExtProp.CommandType = System.Data.CommandType.Text;
+                    cmdGetExtProp.Connection = conn;
+                    SqlServers.ExecuteCommand(cmdGetExtProp);
+                    extendedPropertyEnabled = true;
+                }
+                catch (Exception ex)
+                {
+                    extendedPropertyEnabled = false;
+                }
+                finally
+                {
+                    if (conn != null)
+                        conn.Close();
+                }
+            }
+            return extendedPropertyEnabled.Value;
+        }
+
+        internal static void DeleteExtendedProperty(string connectionString, string propertyName)
+        {
+            //If the database supports extended properties then use them no matter what
+            if (CanUseExtendedProperty(connectionString) && ExtendedPropertyExists(connectionString, propertyName, string.Empty, string.Empty, string.Empty))
+            {
+                var conn = new System.Data.SqlClient.SqlConnection();
+                try
+                {
+                    conn.ConnectionString = connectionString;
+                    conn.Open();
+                    SqlCommand cmdGetExtProp = new SqlCommand();
+                    cmdGetExtProp.CommandText = String.Format("EXEC sp_dropextendedproperty '{0}'", new object[] { propertyName });
+                    cmdGetExtProp.CommandType = System.Data.CommandType.Text;
+                    cmdGetExtProp.Connection = conn;
+                    SqlServers.ExecuteCommand(cmdGetExtProp);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    if (conn != null)
+                        conn.Close();
+                }
+            }
+        }
+
+        private static void UpdateExtendedProperty(string connectionString, string property, string propertyValue, string user, string table, string column)
+        {
+            //If the database supports extended properties then use them no matter what
+            if (CanUseExtendedProperty(connectionString))
+            {
+                string userName = string.Empty;
+                string userValue = string.Empty;
+                string tableName = string.Empty;
+                string tableValue = string.Empty;
+                string columnName = string.Empty;
+                string columnValue = string.Empty;
+
+                property = "'" + property + "'";
+                propertyValue = "'" + propertyValue + "'";
+                if (user == string.Empty)
+                {
+                    userName = "NULL";
+                    userValue = "NULL";
+                }
+                else
+                {
+                    userName = "'user'";
+                    userValue = "'" + user + "'";
+                }
+                if (table == string.Empty)
+                {
+                    tableName = "NULL";
+                    tableValue = "NULL";
+                }
+                else
+                {
+                    tableName = "'table'";
+                    tableValue = "'" + table + "'";
+                }
+                if (column == string.Empty)
+                {
+                    columnName = "NULL";
+                    columnValue = "NULL";
+                }
+                else
+                {
+                    columnName = "'column'";
+                    columnValue = "'" + column + "'";
+                }
+
+                var conn = new System.Data.SqlClient.SqlConnection();
+                try
+                {
+                    conn.ConnectionString = connectionString;
+                    conn.Open();
+                    SqlCommand cmdGetExtProp = new SqlCommand();
+                    cmdGetExtProp.CommandText = String.Format("EXEC sp_updateextendedproperty {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", new object[] { property, propertyValue, userName, userValue, tableName, tableValue, columnName, columnValue });
+                    cmdGetExtProp.CommandType = System.Data.CommandType.Text;
+                    cmdGetExtProp.Connection = conn;
+                    SqlServers.ExecuteCommand(cmdGetExtProp);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    if (conn != null)
+                        conn.Close();
+                }
+            }
+        }
+
+        private static void InsertExtendedPropery(string connectionString, string property, string propertyValue, string user, string table, string column)
+        {
+            //If the database supports extended properties then use them no matter what
+            if (CanUseExtendedProperty(connectionString))
+            {
+                string userName = string.Empty;
+                string userValue = string.Empty;
+                string tableName = string.Empty;
+                string tableValue = string.Empty;
+                string columnName = string.Empty;
+                string columnValue = string.Empty;
+
+                property = "'" + property + "'";
+                propertyValue = "'" + propertyValue + "'";
+                if (user == string.Empty)
+                {
+                    userName = "NULL";
+                    userValue = "NULL";
+                }
+                else
+                {
+                    userName = "'user'";
+                    userValue = "'" + user + "'";
+                }
+                if (table == string.Empty)
+                {
+                    tableName = "NULL";
+                    tableValue = "NULL";
+                }
+                else
+                {
+                    tableName = "'table'";
+                    tableValue = "'" + table + "'";
+                }
+                if (column == string.Empty)
+                {
+                    columnName = "NULL";
+                    columnValue = "NULL";
+                }
+                else
+                {
+                    columnName = "'column'";
+                    columnValue = "'" + column + "'";
+                }
+
+                var conn = new System.Data.SqlClient.SqlConnection();
+                try
+                {
+                    conn.ConnectionString = connectionString;
+                    conn.Open();
+                    SqlCommand cmdGetExtProp = new SqlCommand();
+                    cmdGetExtProp.CommandText = String.Format("EXEC sp_addextendedproperty {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", new object[] { property, propertyValue, userName, userValue, tableName, tableValue, columnName, columnValue });
+                    cmdGetExtProp.CommandType = System.Data.CommandType.Text;
+                    cmdGetExtProp.Connection = conn;
+                    SqlServers.ExecuteCommand(cmdGetExtProp);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    if (conn != null)
+                        conn.Close();
+                }
+            }
+
+        }
+
+        //SELECT value FROM ::fn_listextendedproperty('companyName', NULL, NULL, NULL, NULL, NULL, NULL)
+        internal static string SelectExtendedProperty(string connectionString, string property, string user, string table, string column)
+        {
+            string returnVal = string.Empty;
+            string userName = string.Empty;
+            string userValue = string.Empty;
+            string tableName = string.Empty;
+            string tableValue = string.Empty;
+            string columnName = string.Empty;
+            string columnValue = string.Empty;
+
+            property = "'" + property + "'";
+            if (user == string.Empty)
+            {
+                userName = "NULL";
+                userValue = "NULL";
+            }
+            else
+            {
+                userName = "'user'";
+                userValue = "'" + user + "'";
+            }
+            if (table == string.Empty)
+            {
+                tableName = "NULL";
+                tableValue = "NULL";
+            }
+            else
+            {
+                tableName = "'table'";
+                tableValue = "'" + table + "'";
+            }
+            if (column == string.Empty)
+            {
+                columnName = "NULL";
+                columnValue = "NULL";
+            }
+            else
+            {
+                columnName = "'column'";
+                columnValue = "'" + column + "'";
+            }
+
+            var conn = new System.Data.SqlClient.SqlConnection();
+            System.Data.SqlClient.SqlDataReader externalReader = null;
+            try
+            {
+                conn.ConnectionString = connectionString;
+                conn.Open();
+                SqlCommand cmdGetExtProp = new SqlCommand();
+                cmdGetExtProp.CommandText = String.Format("SELECT value FROM ::fn_listextendedproperty({0}, {1}, {2}, {3}, {4}, {5}, {6})", new object[] { property, userName, userValue, tableName, tableValue, columnName, columnValue });
+                cmdGetExtProp.CommandType = System.Data.CommandType.Text;
+                cmdGetExtProp.Connection = conn;
+                externalReader = cmdGetExtProp.ExecuteReader();
+                if (externalReader.Read())
+                {
+                    if (externalReader[0] != System.DBNull.Value)
+                    {
+                        returnVal = externalReader.GetString(0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (externalReader != null)
+                    externalReader.Close();
+                if (conn != null)
+                    conn.Close();
+            }
+            return returnVal;
+        }
+
+        private static bool ExtendedPropertyExists(string connectionString, string property, string user, string table, string column)
+        {
+            var retval = false;
+            if (CanUseExtendedProperty(connectionString))
+            {
+                string userName = string.Empty;
+                string userValue = string.Empty;
+                string tableName = string.Empty;
+                string tableValue = string.Empty;
+                string columnName = string.Empty;
+                string columnValue = string.Empty;
+
+                property = "'" + property + "'";
+                if (user == string.Empty)
+                {
+                    userName = "NULL";
+                    userValue = "NULL";
+                }
+                else
+                {
+                    userName = "'user'";
+                    userValue = "'" + user + "'";
+                }
+                if (table == string.Empty)
+                {
+                    tableName = "NULL";
+                    tableValue = "NULL";
+                }
+                else
+                {
+                    tableName = "'table'";
+                    tableValue = "'" + table + "'";
+                }
+                if (column == string.Empty)
+                {
+                    columnName = "NULL";
+                    columnValue = "NULL";
+                }
+                else
+                {
+                    columnName = "'column'";
+                    columnValue = "'" + column + "'";
+                }
+
+                var conn = new System.Data.SqlClient.SqlConnection();
+                System.Data.SqlClient.SqlDataReader externalReader = null;
+                try
+                {
+                    conn.ConnectionString = connectionString;
+                    conn.Open();
+                    SqlCommand command = new SqlCommand();
+                    command.CommandText = String.Format("SELECT value FROM ::fn_listextendedproperty({0}, {1}, {2}, {3}, {4}, {5}, {6})", new object[] { property, userName, userValue, tableName, tableValue, columnName, columnValue });
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.Connection = conn;
+                    externalReader = command.ExecuteReader();
+                    if (externalReader.Read())
+                    {
+                        retval = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    if (externalReader != null)
+                        externalReader.Close();
+                    if (conn != null)
+                        conn.Close();
+                }
+            }
+            return retval;
+        }
+        #endregion
+
+        #region private sql statement builders
+
+        public static List<string> GetEmbeddedScripts(string resourceFileName, InstallSetup setup)
+        {
+            var retval = new List<string>();
+            var tempFolder = string.Empty;
+            var scripts = ReadSQLFileSectionsFromResource(resourceFileName, setup);
+            foreach (var sql in scripts)
+            {
+                retval.Add(sql);
+            }
+            return retval;
+        }
+
+        public static void RunEmbeddedFile(SqlConnection connection, SqlTransaction transaction, string resourceFileName, List<nHydrateDbObject> _databaseItems, InstallSetup setup)
+        {
+            RunEmbeddedFile(connection, transaction, resourceFileName, null, _databaseItems, setup);
+        }
+
+        public static void RunEmbeddedFile(SqlConnection connection, SqlTransaction transaction, string resourceFileName, List<KeyValuePair<Guid, string>> failedScripts, List<nHydrateDbObject> _databaseItems, InstallSetup setup)
+        {
+            RunEmbeddedFile(connection, transaction, resourceFileName, failedScripts, null, _databaseItems, setup);
+        }
+
+        public static void RunEmbeddedFile(SqlConnection connection, SqlTransaction transaction, string resourceFileName, List<KeyValuePair<Guid, string>> failedScripts, List<Guid> successOrderScripts, List<nHydrateDbObject> _databaseItems, InstallSetup setup)
+        {
+            var tempFolder = string.Empty;
+            var scripts = ReadSQLFileSectionsFromResource(resourceFileName, setup);
+            System.Diagnostics.Debug.WriteLine(System.DateTime.Now.ToString("HH:mm:ss.ff") + " - Run embedded file: " + resourceFileName);
+
+            #region Load script hashes
+            var runScript = !setup.UseHash;
+            var current = _databaseItems.FirstOrDefault(x => x.name.ToLower() == resourceFileName.ToLower());
+            var hashValue = string.Join("\r\nGO\r\n", ReadSQLFileSectionsFromResource(resourceFileName, setup)).CalculateMD5Hash();
+
+            if (current != null)
+            {
+                if (current.Hash != hashValue)
+                {
+                    runScript = true;
+                    current.ModifiedDate = DateTime.Now;
+                    current.Hash = hashValue;
+                    current.Status = "applied";
+                }
+            }
+            else
+            {
+                runScript = true;
+                current = new nHydrateDbObject()
+                {
+                    name = resourceFileName,
+                    Hash = hashValue,
+                    ModelKey = new Guid(UpgradeInstaller.MODELKEY),
+                    type = "FILE",
+                    Status = "applied",
+                    Changed = true,
+                };
+                _databaseItems.Add(current);
+            }
+            #endregion
+
+            if (runScript && !setup.CheckOnly)
+            {
+                foreach (var sql in scripts)
+                {
+                    ExecuteSQL(connection, transaction, sql, setup, failedScripts, successOrderScripts);
+                }
+            }
+        }
+
+        internal static void ExecuteSQL(SqlConnection connection, SqlTransaction transaction, string sql, InstallSetup setup)
+        {
+            ExecuteSQL(connection, transaction, sql, setup, null);
+        }
+
+        internal static void ExecuteSQL(SqlConnection connection, SqlTransaction transaction, string sql, InstallSetup setup, List<KeyValuePair<Guid, string>> failedScripts)
+        {
+            ExecuteSQL(connection, transaction, sql, setup, failedScripts, null);
+        }
+
+        internal static void ExecuteSQL(SqlConnection connection, SqlTransaction transaction, string sql, InstallSetup setup, List<KeyValuePair<Guid, string>> failedScripts, List<Guid> successOrderScripts)
+        {
+            if (sql.StartsWith("--##METHODCALL"))
+            {
+                CallMethod(sql, connection, transaction);
+                return;
+            }
+
+            var originalSQL = sql.Trim();
+            sql = originalSQL;
+            if (string.IsNullOrEmpty(sql)) return;
+
+            #region Get Script Key
+            var isBody = false;
+            var lines = sql.Split(new char[] { '\n' }, StringSplitOptions.None).ToList();
+            var key = Guid.NewGuid();
+            var l = lines.FirstOrDefault(x => x.StartsWith("--MODELID: "));
+            if (l != null)
+            {
+                lines.Remove(l);
+                l = l.Replace("--MODELID:", string.Empty).Trim();
+                sql = string.Join("\n", lines.ToArray()); //Remove the model key from the SQL before run
+                //if (!Guid.TryParse(l, out key)) key = Guid.NewGuid();
+            }
+            else
+            {
+                l = lines.FirstOrDefault(x => x.StartsWith("--MODELID,BODY: "));
+                if (l != null)
+                {
+                    lines.Remove(l);
+                    l = l.Replace("--MODELID,BODY:", string.Empty).Trim();
+                    sql = string.Join("\n", lines.ToArray()); //Remove the model key from the SQL before run
+                    if (!Guid.TryParse(l, out key)) key = Guid.NewGuid();
+                    else isBody = true;
+                }
+            }
+            #endregion
+            if (string.IsNullOrEmpty(sql)) return;
+
+            #region Try to remove objects before creation
+            var dropObjectName = string.Empty;
+            var dropSQL = GetSQLDropScript(sql);
+
+            //Add a bit of convenience for dropping DB objects before creation
+            if (!string.IsNullOrEmpty(dropSQL))
+            {
+                try
+                {
+                    if (!setup.CheckOnly)
+                    {
+                        var dropCommand = new System.Data.SqlClient.SqlCommand(dropSQL, connection);
+                        dropCommand.Transaction = transaction;
+                        dropCommand.CommandTimeout = 300;
+                        SqlServers.ExecuteCommand(dropCommand);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //Ignore. The scripts should not need this. It has been added for convenience
+                }
+            }
+            #endregion
+
+            var command = new System.Data.SqlClient.SqlCommand(sql, connection);
+            command.Transaction = transaction;
+            command.CommandTimeout = Math.Max(300, connection.ConnectionTimeout);
+            try
+            {
+                if (!setup.CheckOnly)
+                {
+                    if (setup.ShowSql && !string.IsNullOrEmpty(sql))
+                    {
+                        var debugText = "[" + DateTime.UtcNow.ToString() + "]\r\n";
+                        const int MAX_SQL = 500;
+                        var sqlLength = Math.Min(sql.Length, MAX_SQL);
+                        debugText += sql.Substring(0, sqlLength);
+                        if (sqlLength == MAX_SQL) debugText += "...";
+                        debugText += "\r\n\r\n";
+                        Console.WriteLine(debugText);
+                    }
+
+                    _timer.Restart();
+                    SqlServers.ExecuteCommand(command);
+                    _timer.Stop();
+                    //System.Diagnostics.Debug.WriteLine("Elapsed: " + _timer.ElapsedMilliseconds + " / " + sql.Split('\n').First()); //Alert user of what is running
+
+                    if (successOrderScripts != null && isBody)
+                        successOrderScripts.Add(key);
+                }
+            }
+            catch (System.Data.SqlClient.SqlException sqlexp)
+            {
+                if ((sqlexp.Number == 1779) && sql.StartsWith("--PRIMARY KEY FOR TABLE"))
+                {
+                    //Ignore this error
+                    return;
+                }
+                else if ((sqlexp.Number == 1781) && sql.StartsWith("--DEFAULTS FOR TABLE"))
+                {
+                    //Ignore this error
+                    return;
+                }
+                else if (failedScripts != null)
+                {
+                    //Ignore this error, we will re-process it
+                    failedScripts.Add(new KeyValuePair<Guid, string>(key, originalSQL));
+                    return;
+                }
+                else
+                {
+                    if (setup.SuppressUI)
+                        throw new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql };
+                    else if (!SkipScriptPrompt(new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql }))
+                        throw new HandledSQLException(sqlexp.Message, sqlexp);
+                }
+            }
+            catch (Exception ex) { throw; }
+        }
+
+        private static bool SkipScriptPrompt(InvalidSQLException ex)
+        {
+            var F = new SqlErrorForm();
+            F.Setup(ex, true);
+            return (F.ShowDialog() == System.Windows.Forms.DialogResult.OK);
+        }
+
+        private static void CallMethod(string text, SqlConnection connection, SqlTransaction transaction)
+        {
+            var cleaned = string.Empty;
+            try
+            {
+                cleaned = text
+                    .Replace("--##METHODCALL", string.Empty)
+                    .Replace("[", string.Empty)
+                    .Replace("]", string.Empty)
+                    .Trim();
+
+                var arr = cleaned.Split('.');
+                var methodName = arr.Last();
+                var typeName = string.Join(".", arr.Take(arr.Length - 1));
+
+                Type type = Type.GetType(typeName);
+                if (type.GetMethod(methodName) == null)
+                    throw new Exception("Method: '" + methodName + "' not implemented");
+
+                type.GetMethod(methodName).Invoke(null, new object[] { connection, transaction });
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("The external method call '" + cleaned + "' failed.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Try to strip a name of a database object from a create script
+        /// </summary>
+        private static string GetSQLDropScript(string sql)
+        {
+            try
+            {
+                //Strip out comments
+                var regexObj = new System.Text.RegularExpressions.Regex(@"/\*(?>(?:(?!\*/|/\*).)*)(?>(?:/\*(?>(?:(?!\*/|/\*).)*)\*/(?>(?:(?!\*/|/\*).)*))*).*?\*/|--.*?\r?[\n]", System.Text.RegularExpressions.RegexOptions.Singleline);
+                var matchResult = regexObj.Match(sql);
+                while (matchResult.Success)
+                {
+                    sql = sql.Remove(matchResult.Index, matchResult.Length).Insert(matchResult.Index, new string(' ', matchResult.Length));
+                    matchResult = matchResult.NextMatch();
+                }
+
+                var dropObjectName = SQLStripObjectName(sql, "CREATE PROCEDURE");
+                if (!string.IsNullOrEmpty(dropObjectName))
+                    return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type = 'P')" + Environment.NewLine + "drop procedure " + dropObjectName;
+
+                dropObjectName = SQLStripObjectName(sql, "CREATE PROC");
+                if (!string.IsNullOrEmpty(dropObjectName))
+                    return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type = 'P')" + Environment.NewLine + "drop procedure " + dropObjectName;
+
+                dropObjectName = SQLStripObjectName(sql, "CREATE FUNCTION");
+                if (!string.IsNullOrEmpty(dropObjectName))
+                    return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type in('FN','IF','TF'))" + Environment.NewLine + "drop function " + dropObjectName;
+
+                dropObjectName = SQLStripObjectName(sql, "CREATE VIEW");
+                if (!string.IsNullOrEmpty(dropObjectName))
+                    return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type = 'V')" + Environment.NewLine + "drop view " + dropObjectName;
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        private static string SQLStripObjectName(string sql, string objectHeader)
+        {
+            var t = sql;
+
+            //Normalize line endings
+            t = t.Replace("\r\n", "\n");
+            t = t.Replace("\r", "\n");
+
+            //Find the database object type up to the name like CREATE PROC [schema].[name]
+            objectHeader = objectHeader.Replace(" ", @"[\s\n]");
+            var pattern = objectHeader + @"[\s\(\n]";
+            var regexObj = new System.Text.RegularExpressions.Regex(pattern, System.Text.RegularExpressions.RegexOptions.Multiline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var matchResult = regexObj.Match(t);
+            var dropObjectName = string.Empty;
+            if (matchResult.Success)
+            {
+                t = t.Substring(matchResult.Index + matchResult.Length, t.Length - (matchResult.Index + matchResult.Length));
+
+                //Search for [schema].[name]
+                pattern = @"\[.*\].\[.*\]";
+                regexObj = new System.Text.RegularExpressions.Regex(pattern, System.Text.RegularExpressions.RegexOptions.Multiline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                matchResult = regexObj.Match(t);
+                if (matchResult.Success)
+                {
+                    dropObjectName = matchResult.Value;
+                }
+                else
+                {
+                    //Search for [name]
+                    pattern = @"\[.*\][\s\(\n]";
+                    regexObj = new System.Text.RegularExpressions.Regex(pattern, System.Text.RegularExpressions.RegexOptions.Multiline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                    matchResult = regexObj.Match(t);
+                    if (matchResult.Success)
+                    {
+                        dropObjectName = matchResult.Value;
+                    }
+                    else
+                    {
+                        //Search for "name" or "schema.name" with no braces
+                        pattern = @".*[\s\(\n]";
+                        regexObj = new System.Text.RegularExpressions.Regex(pattern, System.Text.RegularExpressions.RegexOptions.Multiline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                        matchResult = regexObj.Match(t);
+                        if (matchResult.Success)
+                        {
+                            dropObjectName = matchResult.Value;
+                        }
+                    }
+                }
+            }
+            return dropObjectName.Trim();
+        }
+
+        public static string GetEmbeddedResource(string resourceFileName)
+        {
+            var retval = string.Empty;
+            var sb = new StringBuilder();
+            var asm = Assembly.GetExecutingAssembly();
+            var manifestStream = asm.GetManifestResourceStream(resourceFileName);
+            try
+            {
+                using (var sr = new System.IO.StreamReader(manifestStream))
+                {
+                    retval = sr.ReadToEnd();
+                }
+            }
+            catch { }
+            finally
+            {
+                manifestStream.Close();
+            }
+            return retval;
+        }
+
+        public static string[] ReadSQLFileSectionsFromResource(string resourceFileName, InstallSetup setup)
+        {
+            if (string.IsNullOrEmpty(resourceFileName)) return new string[] { };
+            var skipSectionsLowered = new List<string>();
+            var skipSections = setup.SkipSections.ToList();
+            if (skipSections != null)
+                skipSections.Where(x => x != null).ToList().ForEach(x => skipSectionsLowered.Add(x.ToLower()));
+
+            #region Load Full Script
+            var fullScript = string.Empty;
+            if (resourceFileName.ToLower().EndsWith(".sql"))
+            {
+                var asm = Assembly.GetExecutingAssembly();
+                var manifestStream = asm.GetManifestResourceStream(resourceFileName);
+                try
+                {
+                    using (var sr = new System.IO.StreamReader(manifestStream))
+                    {
+                        fullScript = sr.ReadToEnd();
+                    }
+                }
+                catch { }
+                finally
+                {
+                    manifestStream.Close();
+                }
+            }
+            else if (resourceFileName.ToLower().EndsWith(".zip"))
+            {
+                var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
+                var zipPath = Path.Combine(tempPath, Guid.NewGuid().ToString());
+
+                var asm = Assembly.GetExecutingAssembly();
+                var manifestStream = asm.GetManifestResourceStream(resourceFileName);
+                try
+                {
+                    using (var fileStream = File.Create(zipPath))
+                    {
+                        manifestStream.CopyTo(fileStream);
+                    }
+                }
+                catch { }
+                finally
+                {
+                    manifestStream.Close();
+                }
+
+                using (var archive = System.IO.Compression.ZipFile.Open(zipPath, System.IO.Compression.ZipArchiveMode.Update))
+                {
+                    archive.ExtractToDirectory(tempPath);
+                }
+
+                System.Threading.Thread.Sleep(250);
+                File.Delete(zipPath);
+
+                var files = Directory.GetFiles(tempPath, "*.*").OrderBy(x => x).ToList();
+                files.ForEach(x => fullScript += (File.ReadAllText(x) + "\r\nGO\r\n"));
+                System.Threading.Thread.Sleep(250);
+                files.ForEach(x => File.Delete(x));
+                System.Threading.Thread.Sleep(250);
+                Directory.Delete(tempPath);
+
+            }
+            else
+            {
+                return new string[] { };
+            }
+            #endregion
+
+            var retval = new ArrayList();
+            var sb = new StringBuilder();
+            var allLines = fullScript.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
+            var skippingQueue = new List<string>();
+            foreach (var lineText in allLines)
+            {
+                //If we are currently NOT skipping script then process the SQL
+                //Check to determine if this is a skip section start
+                if (lineText.ToUpper().StartsWith("--##SECTION BEGIN ["))
+                {
+                    var sectionName = GetSkipSectionName(lineText).ToLower();
+                    if (skipSectionsLowered.Contains(sectionName))
+                    {
+                        //We are now skipping script
+                        skippingQueue.Add(sectionName);
+                    }
+                }
+                else if (lineText.ToUpper().StartsWith("--##SECTION END ["))
+                {
+                    if (skippingQueue.Count > 0)
+                    {
+                        var sectionName = GetSkipSectionName(lineText).ToLower();
+                        if (skippingQueue.Last().ToLower() == sectionName)
+                        {
+                            //We are now skipping script
+                            skippingQueue.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        //Do Nothing
+                    }
+                }
+                else if (skippingQueue.Count == 0)
+                {
+                    if (lineText.ToUpper().Trim() == "GO")
+                    {
+                        var s = sb.ToString();
+                        s = s.Trim();
+                        retval.Add(s);
+                        sb = new StringBuilder();
+                    }
+                    else if (lineText.ToUpper().StartsWith("--##METHODCALL"))
+                    {
+                        retval.Add(lineText);
+                        sb = new StringBuilder();
+                    }
+                    else
+                    {
+                        var s = lineText;
+                        if (s.EndsWith("\r")) s = lineText.Substring(0, lineText.Length - 1);
+                        sb.AppendLine(s);
+                    }
+                }
+
+            }
+            //Last string
+            if (!string.IsNullOrEmpty(sb.ToString()))
+                retval.Add(sb.ToString());
+
+            return (string[])retval.ToArray(typeof(string));
+        }
+
+        private static string GetSqlForTableExtendedPropertyLikeCount(string tableName, string likeString)
+        {
+            var sb = new StringBuilder();
+            sb.Append(" SELECT ");
+            sb.Append("	count(*) ");
+            sb.Append(" from ");
+            sb.Append("	sysobjects so ");
+            sb.Append(" inner join sysproperties sp on so.id = sp.id ");
+            sb.Append(" where ");
+            sb.Append(" so.name='" + tableName + "' AND ");
+            sb.Append(" sp.name like '" + likeString + "' ");
+            return sb.ToString();
+        }
+
+        private static string GetSqlColumnsForTable(string tableName)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("SELECT DISTINCT");
+            sb.AppendLine("	colorder,");
+            sb.AppendLine("	syscolumns.name,");
+            sb.AppendLine("	case when primaryKey.xtype ='PK' then 'true' else 'false' end as isPrimaryKey, ");
+            sb.AppendLine("	case when fk.fkey is null then 'false' else 'true' end as isForeignKey,");
+            sb.AppendLine("	systypes.name as datatype,");
+            sb.AppendLine("	syscolumns.length,");
+            sb.AppendLine("	case when syscolumns.isnullable = 0 then 'false' else 'true' end as allowNull,");
+            sb.AppendLine("	case when syscomments.text is null then '' else SUBSTRING ( syscomments.text , 2 , len(syscomments.text)-2 ) end as defaultValue,");
+            sb.AppendLine("	case when syscolumns.autoval is null then 'false' else 'true' end as isIdentity");
+            sb.AppendLine("FROM");
+            sb.AppendLine("	sysobjects");
+            sb.AppendLine("	inner join syscolumns on syscolumns.id = sysobjects.id");
+            sb.AppendLine("	inner join systypes on systypes.xtype = syscolumns.xtype");
+            sb.AppendLine("	left outer join sysindexkeys on sysindexkeys.id = syscolumns.id AND sysindexkeys.colid = syscolumns.colid");
+            sb.AppendLine("	left outer join sys.indexes pk on  pk.id = sysindexkeys.id AND pk.indid = sysindexkeys.indid");
+            sb.AppendLine("	left outer join sysobjects primaryKey on pk.name = primaryKey.name");
+            sb.AppendLine("	left outer join sysforeignkeys fk on fk.fkeyid = syscolumns.id AND fk.fkey = syscolumns.colorder");
+            sb.AppendLine("	left outer join sys.default_constraints ON syscolumns.cdefault = sys.default_constraints.parent_column_id ");
+            sb.AppendLine("WHERE");
+            sb.AppendLine("	sysobjects.name = '" + tableName + "' AND systypes.name <> 'sysname' order by [colorder]\n");
+            return sb.ToString();
+        }
+
+        private static string GetSqlForRelationships(string tableName)
+        {
+            var sb = new StringBuilder();
+            sb.Append("SELECT DISTINCT parent.name as Parent, child.name as Child, ");
+            sb.Append("case when parent.name = '").Append(tableName).Append("' then 'parent' else 'child' end as rolePlayed, ");
+            sb.Append("relation.name as constraintName, ");
+            sb.Append("roleNameProvider.value as roleName ");
+            sb.Append("FROM sysforeignkeys inner join sysobjects relation on constid = relation.id ");
+            sb.Append("inner join sysobjects child on fkeyid = child.id inner join sysobjects parent on rkeyid = parent.id ");
+            sb.Append("inner join sysproperties roleNameProvider on roleNameProvider.id = relation.id ");
+            sb.Append("WHERE parent.name = '" + tableName + "' OR child.name='" + tableName + "'");
+            return sb.ToString();
+        }
+
+        private static string GetSqlForForeignKeys(string parentTable, string childTable, string constraintName)
+        {
+            var sb = new StringBuilder();
+            sb.Append(" DECLARE @FKeys TABLE ");
+            sb.Append(" ( ");
+            sb.Append(" parentTable [Varchar] (100) NOT NULL, ");
+            sb.Append(" 	childTable [Varchar] (100) NOT NULL, ");
+            sb.Append(" 	childColumn [Varchar] (100) NOT NULL, ");
+            sb.Append(" 	constid int NOT NULL, ");
+            sb.Append(" 	keyno smallint NOT NULL ");
+            sb.Append(" ) ");
+            sb.Append(" DECLARE @PKeys TABLE ");
+            sb.Append(" ( ");
+            sb.Append(" parentTable [Varchar] (100) NOT NULL, ");
+            sb.Append(" childTable [Varchar] (100) NOT NULL, ");
+            sb.Append(" parentColumn [Varchar] (100) NOT NULL, ");
+            sb.Append(" constid int NOT NULL, ");
+            sb.Append(" 	keyno smallint NOT NULL ");
+            sb.Append(" ) ");
+            sb.Append(" INSERT INTO @FKeys ");
+            sb.Append(" SELECT DISTINCT ");
+            sb.Append(" parent.name parentTable, ");
+            sb.Append(" child.name childTable, ");
+            sb.Append(" syscolumns.name as childColumn, ");
+            sb.Append(" sysforeignkeys.constid, ");
+            sb.Append(" sysforeignkeys.keyno ");
+            sb.Append(" FROM ");
+            sb.Append(" sysforeignkeys ");
+            sb.Append(" inner join sysobjects child on fkeyid = child.id ");
+            sb.Append(" inner join sysobjects parent on rkeyid = parent.id ");
+            sb.Append(" inner join syscolumns on syscolumns.id = sysforeignkeys.fkeyid AND syscolumns.colorder = sysforeignkeys.fkey ");
+            sb.Append(" INSERT INTO @PKeys ");
+            sb.Append(" SELECT ");
+            sb.Append(" parent.name parentTable, ");
+            sb.Append(" child.name childTable, ");
+            sb.Append(" syscolumns.name as parentColumn, ");
+            sb.Append(" sysforeignkeys.constid, ");
+            sb.Append(" sysforeignkeys.keyno ");
+            sb.Append(" FROM ");
+            sb.Append(" sysforeignkeys inner join sysobjects child on fkeyid = child.id ");
+            sb.Append(" inner join sysobjects parent on rkeyid = parent.id ");
+            sb.Append(" inner join syscolumns on syscolumns.id = sysforeignkeys.rkeyid AND syscolumns.colorder = sysforeignkeys.rkey ");
+            sb.Append(" SELECT p.parentTable ,p.parentColumn, f.childTable, f.ChildColumn , so.name as roleName FROM @FKeys f INNER JOIN @PKeys p on f.constid=p.constID and f.keyno=p.keyno INNER JOIN sysobjects so on so.id = p.constid ");
+            sb.Append("WHERE f.parentTable = '" + parentTable + "' AND f.childTable = '" + childTable + "'");
+            sb.Append(" AND so.name = '" + constraintName + "'");
+            sb.Append(" order by p.constid ");
+            return sb.ToString();
+        }
+
+        private static string SqlRemoveTable(string tableName)
+        {
+            var sb = new StringBuilder();
+            sb.Append("DROP TABLE [" + tableName + "];\n");
+            return sb.ToString();
+        }
+
+        private static string GetSkipSectionName(string text)
+        {
+            text = text.Replace("--##SECTION BEGIN [", string.Empty);
+            text = text.Replace("--##SECTION END [", string.Empty);
+            text = text.Replace("]", string.Empty);
+            return text.Trim();
+        }
+        #endregion
+
+        internal static void ExecuteCommand(SqlCommand command)
+        {
+            command.ExecuteNonQuery();
+        }
+
+    }
+
+    #region HistoryItem
+
+    internal class HistoryItem
+    {
+        public DateTime PublishDate { get; set; }
+        public string Version { get; set; }
+    }
+
+    #endregion
+
+    #region nHydrateSetting
+
+    internal class nHydrateSetting
+    {
+        internal nHydrateSetting()
+        {
+            this.History = new List<HistoryItem>();
+            this.IsLoaded = false;
+            this.dbVersion = UpgradeInstaller._def_Version.ToString();
+            this.LastUpdate = new DateTime(1980, 1, 1);
+        }
+
+        public bool IsLoaded { get; private set; }
+        public bool WasLegacy { get; private set; }
+
+        public void Load(string connectionString)
+        {
+            var conn = new System.Data.SqlClient.SqlConnection();
+            try
+            {
+                conn.ConnectionString = connectionString;
+                conn.Open();
+
+                var da = new SqlDataAdapter("select * from sys.tables where name = '__nhydrateschema'", conn);
+                var ds = new DataSet();
+                da.Fill(ds);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    da = new SqlDataAdapter("SELECT * FROM __nhydrateschema where [ModelKey] = '" + UpgradeInstaller.MODELKEY + "'", conn);
+                    ds = new DataSet();
+                    da.Fill(ds);
+                    var t = ds.Tables[0];
+                    if (t.Rows.Count > 0)
+                    {
+                        this.dbVersion = (string)t.Rows[0]["dbVersion"];
+                        this.LastUpdate = (DateTime)t.Rows[0]["LastUpdate"];
+                        this.ModelKey = (Guid)t.Rows[0]["ModelKey"];
+                        this.LoadHistory((string)t.Rows[0]["History"]);
+                        this.IsLoaded = true;
+                    }
+
+                    //There is an nHydrate table so empty or not we are finished
+                    return;
+                }
+
+                try
+                {
+                    this.dbVersion = SqlServers.SelectExtendedProperty(connectionString, "dbVersion", string.Empty, string.Empty, string.Empty);
+                }
+                catch { }
+
+                try
+                {
+                    this.LastUpdate = DateTime.ParseExact(SqlServers.SelectExtendedProperty(connectionString, "LastUpdate", string.Empty, string.Empty, string.Empty), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                }
+                catch { }
+
+                try
+                {
+                    this.ModelKey = new Guid(SqlServers.SelectExtendedProperty(connectionString, "ModelKey", string.Empty, string.Empty, string.Empty));
+                    if (this.ModelKey != Guid.Empty)
+                        this.WasLegacy = true;
+                }
+                catch { }
+
+                try
+                {
+                    this.LoadHistory(SqlServers.SelectExtendedProperty(connectionString, "History", string.Empty, string.Empty, string.Empty));
+                }
+                catch { }
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                if (conn != null)
+                    conn.Close();
+            }
+        }
+
+        public string GetVersionUpdateScript()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine("if not exists(select * from sys.objects where [name] = '__nhydrateschema' and [type] = 'U')");
+            sb.AppendLine("BEGIN");
+            sb.AppendLine("CREATE TABLE [__nhydrateschema] (");
+            sb.AppendLine("[dbVersion] [varchar] (50) NOT NULL,");
+            sb.AppendLine("[LastUpdate] [datetime] NOT NULL,");
+            sb.AppendLine("[ModelKey] [uniqueidentifier] NOT NULL,");
+            sb.AppendLine("[History] [nvarchar](max) NOT NULL");
+            sb.AppendLine(")");
+            sb.AppendLine("if not exists(select * from sys.objects where [name] = '__pk__nhydrateschema' and [type] = 'PK')");
+            sb.AppendLine("ALTER TABLE [__nhydrateschema] WITH NOCHECK ADD CONSTRAINT [__pk__nhydrateschema] PRIMARY KEY CLUSTERED ([ModelKey])");
+            sb.AppendLine("END");
+            sb.AppendLine();
+
+            sb.AppendLine("--ADD/UPDATE THE VERSION METADATA FOR THIS MODEL");
+            sb.AppendLine("if exists(select * from [__nhydrateschema] where [ModelKey] = '" + this.ModelKey.ToString() + "')");
+            sb.AppendLine("UPDATE [__nhydrateschema] SET [dbVersion]='" + this.dbVersion + "', [LastUpdate]='" + this.LastUpdate.ToString("yyyyMMdd HH:mm:ss") + "', [History]='" + this.ToHistoryString() + "' WHERE [ModelKey] = '" + this.ModelKey.ToString() + "'");
+            sb.AppendLine("ELSE");
+            sb.AppendLine("INSERT INTO [__nhydrateschema] ([dbVersion], [LastUpdate], [ModelKey], [History]) VALUES ('" + this.dbVersion + "', '" + this.LastUpdate.ToString("yyyyMMdd HH:mm:ss") + "', '" + this.ModelKey.ToString() + "', '" + this.ToHistoryString() + "')");
+            sb.AppendLine();
+            return sb.ToString();
+        }
+
+        public bool Save(string connectionString)
+        {
+            var conn = new System.Data.SqlClient.SqlConnection();
+            try
+            {
+                conn.ConnectionString = connectionString;
+                conn.Open();
+                var command = new SqlCommand(GetVersionUpdateScript(), conn);
+                SqlServers.ExecuteCommand(command);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+                throw;
+            }
+            finally
+            {
+                if (conn != null)
+                    conn.Close();
+            }
+
+        }
+
+        public string dbVersion { get; set; }
+        public List<HistoryItem> History { get; private set; }
+        public DateTime LastUpdate { get; set; }
+        public Guid ModelKey { get; set; }
+
+        public void LoadHistory(string text)
+        {
+            this.History.Clear();
+            if (!string.IsNullOrEmpty(text))
+            {
+                foreach (string dataRow in text.Split('^'))
+                {
+                    string[] data = dataRow.Split('|');
+                    if (data.Length == 2)
+                    {
+                        try
+                        {
+                            this.History.Add(new HistoryItem() { PublishDate = DateTime.ParseExact(data[0], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), Version = data[1] });
+                        }
+                        catch { }
+                    }
+                }
+            }
+        }
+
+        public string ToHistoryString()
+        {
+            var sb = new StringBuilder();
+            foreach (var o in this.History)
+            {
+                sb.Append(o.PublishDate.ToString("yyyy-MM-dd HH:mm:ss") + "|" + o.Version + "^");
+            }
+            var s = sb.ToString();
+            if (s.Length > 0) s = s.TrimEnd(new char[] { '^' });
+            return s;
+        }
+    }
+
+    #endregion
+
+    #region nHydrateDbObject
+
+    internal class nHydrateDbObject
+    {
+        public nHydrateDbObject()
+        {
+            this.rowid = 0;
+            this.id = Guid.NewGuid();
+            this.CreatedDate = DateTime.Now;
+            this.ModifiedDate = DateTime.Now;
+            this.schema = null;
+            this.ModelKey = Guid.Empty;
+            this.Hash = null;
+            this.Status = "none";
+        }
+
+        public bool Changed { get; set; }
+        public long rowid { get; set; }
+        public Guid id { get; set; }
+
+        private string _name = "";
+        public string name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                this.Changed = true;
+            }
+        }
+
+        public string type { get; set; }
+        public string schema { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string Status { get; set; }
+        public Guid ModelKey { get; set; }
+
+        private DateTime _modifiedDate;
+        public DateTime ModifiedDate
+        {
+            get { return _modifiedDate; }
+            set
+            {
+                _modifiedDate = value;
+                this.Changed = true;
+            }
+        }
+
+        private string _hash = null;
+        public string Hash
+        {
+            get { return _hash; }
+            set
+            {
+                if (_hash != value)
+                {
+                    _hash = value;
+                    this.Changed = true;
+                }
+            }
+        }
+
+        public override string ToString()
+        {
+            return this.name + " / " + this.Hash;
+        }
+
+        public static List<nHydrateDbObject> Load(string connectionString, string modelKey, System.Data.SqlClient.SqlTransaction transaction)
+        {
+            var retval = new List<nHydrateDbObject>();
+            System.Data.SqlClient.SqlConnection conn = null;
+            if (transaction == null)
+            {
+                conn = new System.Data.SqlClient.SqlConnection(connectionString);
+                conn.Open();
+            }
+            else
+            {
+                conn = transaction.Connection;
+            }
+
+            try
+            {
+                var command2 = new SqlCommand("select * from sys.tables where name = '__nhydrateobjects'", conn);
+                command2.Transaction = transaction;
+                var da = new SqlDataAdapter(command2);
+                var ds = new DataSet();
+                da.Fill(ds);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    var command = new SqlCommand("SELECT * FROM __nhydrateobjects where [ModelKey] = '" + modelKey + "'", conn);
+                    command.Transaction = transaction;
+                    da = new SqlDataAdapter(command);
+                    ds = new DataSet();
+                    da.Fill(ds);
+                    var t = ds.Tables[0];
+                    foreach (DataRow row in t.Rows)
+                    {
+                        var newItem = new nHydrateDbObject();
+                        newItem.rowid = (long)row["rowid"];
+                        if (row["id"] != System.DBNull.Value)
+                            newItem.id = (Guid)row["id"];
+                        newItem.name = (string)row["name"];
+                        newItem.ModelKey = (Guid)row["ModelKey"];
+                        newItem.type = (string)row["type"];
+                        if (row["schema"] != System.DBNull.Value)
+                            newItem.schema = (string)row["schema"];
+                        newItem.CreatedDate = (DateTime)row["CreatedDate"];
+                        newItem.ModifiedDate = (DateTime)row["ModifiedDate"];
+                        if (row["Hash"] != System.DBNull.Value)
+                            newItem.Hash = (string)row["Hash"];
+                        if (t.Columns.Contains("status") && row["status"] != System.DBNull.Value)
+                            newItem.Status = (string)row["status"];
+                        newItem.Changed = false;
+                        retval.Add(newItem);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                if (transaction == null && conn != null)
+                    conn.Close();
+            }
+            return retval;
+        }
+
+        public static void Save(string connectionString, string modelKey, IEnumerable<nHydrateDbObject> list, System.Data.SqlClient.SqlTransaction transaction)
+        {
+            System.Data.SqlClient.SqlConnection conn = null;
+            if (transaction == null)
+            {
+                conn = new System.Data.SqlClient.SqlConnection(connectionString);
+                conn.Open();
+            }
+            else
+            {
+                conn = transaction.Connection;
+            }
+            try
+            {
+                //Create the table if need be
+                using (var command3 = new SqlCommand("if not exists(select * from sys.objects where name = '__nhydrateobjects'and type = 'U')" + Environment.NewLine +
+                                                                                         "CREATE TABLE [dbo].[__nhydrateobjects]" +
+                                                                                         "([rowid] [bigint] IDENTITY(1,1) NOT NULL," +
+                                                                                         "[id] [uniqueidentifier] NULL," +
+                                                                                         "[name] [varchar](500) NOT NULL," +
+                                                                                         "[type] [varchar](10) NOT NULL," +
+                                                                                         "[schema] [varchar](500) NULL," +
+                                                                                         "[CreatedDate] [datetime] NOT NULL," +
+                                                                                         "[ModifiedDate] [datetime] NOT NULL," +
+                                                                                         "[Hash] [varchar](32) NULL," +
+                                                                                         "[Status] [varchar](500) NULL," +
+                                                                                         "[ModelKey] [uniqueidentifier] NOT NULL)", conn))
+                {
+                    command3.Transaction = transaction;
+                    SqlServers.ExecuteCommand(command3);
+                }
+
+                //Add columns if missing
+                {
+                    var sql = new StringBuilder();
+                    sql.AppendLine("if exists(select * from sys.objects where name = '__nhydrateobjects' and type = 'U') AND not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = 'status' and o.name = '__nhydrateobjects')");
+                    sql.AppendLine("ALTER TABLE [dbo].[__nhydrateobjects] ADD [status] [Varchar] (500) NULL");
+                    using (var command3 = new SqlCommand(sql.ToString(), conn))
+                    {
+                        command3.Transaction = transaction;
+                        SqlServers.ExecuteCommand(command3);
+                    }
+                }
+
+                {
+                    var sql = new StringBuilder();
+                    sql.AppendLine("delete from [__nhydrateobjects] where [id] IS NULL and ModelKey = '" + UpgradeInstaller.MODELKEY + "'");
+                    using (var command3 = new SqlCommand(sql.ToString(), conn))
+                    {
+                        command3.Transaction = transaction;
+                        SqlServers.ExecuteCommand(command3);
+                    }
+                }
+
+                //Save items to the table
+                foreach (var item in list.Where(x => x.Changed))
+                {
+                    var command = new SqlCommand("if exists(select * from [__nhydrateobjects] where [id] = @id) " +
+                                                     "update [__nhydrateobjects] set [name] = @name, [type] = @type, [schema] = @schema, [CreatedDate] = @CreatedDate, [ModifiedDate] = @ModifiedDate, [Hash] = @Hash, [ModelKey] = @ModelKey, [Status] = @Status where [id] = @id " +
+                                                     "else " +
+                                                     "insert into [__nhydrateobjects] ([id], [name], [type], [schema], [CreatedDate], [ModifiedDate], [Hash], [ModelKey], [Status]) values (@id, @name, @type, @schema, @CreatedDate, @ModifiedDate, @Hash, @ModelKey, @Status)", conn);
+                    command.Transaction = transaction;
+                    command.Parameters.Add(new SqlParameter() { DbType = DbType.Guid, Value = (item.id == Guid.Empty ? System.DBNull.Value : (object)item.id), ParameterName = "@id", IsNullable = true });
+                    command.Parameters.Add(new SqlParameter() { DbType = DbType.Int64, Value = item.rowid, ParameterName = "@rowid", IsNullable = false });
+                    command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.name, ParameterName = "@name", IsNullable = false });
+                    command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.type, ParameterName = "@type", IsNullable = false });
+                    command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = (item.schema == null ? System.DBNull.Value : (object)item.schema), ParameterName = "@schema", IsNullable = true });
+                    command.Parameters.Add(new SqlParameter() { DbType = DbType.DateTime, Value = item.CreatedDate, ParameterName = "@CreatedDate", IsNullable = false });
+                    command.Parameters.Add(new SqlParameter() { DbType = DbType.DateTime, Value = DateTime.Now, ParameterName = "@ModifiedDate", IsNullable = false });
+                    command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.Hash, ParameterName = "@Hash", IsNullable = false });
+                    command.Parameters.Add(new SqlParameter() { DbType = DbType.Guid, Value = item.ModelKey, ParameterName = "@ModelKey", IsNullable = false });
+                    command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.Status, ParameterName = "@Status", IsNullable = true });
+                    SqlServers.ExecuteCommand(command);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                if (transaction == null && conn != null)
+                    conn.Close();
+            }
+        }
+
+    }
+
+    #endregion
+
+    #region InvalidSQLException
+
+    internal class InvalidSQLException : System.Exception
+    {
+        public InvalidSQLException() : base() { }
+        public InvalidSQLException(string message) : base(message) { }
+        public InvalidSQLException(string message, Exception innerException) : base(message, innerException) { }
+
+        public string SQL { get; set; }
+    }
+
+    #endregion
+
+    #region HandledSQLException
+
+    internal class HandledSQLException : System.Exception
+    {
+        public HandledSQLException() : base() { }
+        public HandledSQLException(string message) : base(message) { }
+        public HandledSQLException(string message, Exception innerException) : base(message, innerException) { }
+    }
+
+    #endregion
+
+    #region ScriptDifferenceException
+
+    internal class ScriptDifferenceException : System.Exception
+    {
+        public ScriptDifferenceException() : base() { }
+        public ScriptDifferenceException(string message) : base(message) { }
+        public ScriptDifferenceException(string message, Exception innerException) : base(message, innerException) { }
+    }
+
+    #endregion
 
 }
 #pragma warning restore 0168

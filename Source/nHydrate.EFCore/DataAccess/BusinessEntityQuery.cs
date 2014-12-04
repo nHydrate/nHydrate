@@ -31,54 +31,53 @@ using System.Linq.Expressions;
 
 namespace nHydrate.EFCore.DataAccess
 {
-	public class BusinessEntityQuery
-	{
-		/// <summary>
-		/// Gets the DbCommand from the Dynamic Query but Ensures that CAS Rules are taken to consideration
-		/// </summary>
-		/// <typeparam name="TEntity">The Type of Entity</typeparam>
-		/// <param name="dataContext">Linq Data Context</param>
-		/// <param name="template">Table </param>
-		/// <param name="where">The Dynamic Linq</param>
-		/// <returns></returns>
-		public static DbCommand GetCommand<TEntity>(
-				DataContext dataContext,
-				Table<TEntity> template,
-				Expression<Func<TEntity, bool>> where)
-				where TEntity : class
-		{
-			//FileIOPermission permission = new FileIOPermission(PermissionState.Unrestricted);
-			//permission.AllFiles = FileIOPermissionAccess.Write;
-			//permission.Deny();
+    public class BusinessEntityQuery
+    {
+        /// <summary>
+        /// Gets the DbCommand from the Dynamic Query but Ensures that CAS Rules are taken to consideration
+        /// </summary>
+        /// <typeparam name="TEntity">The Type of Entity</typeparam>
+        /// <param name="dataContext">Linq Data Context</param>
+        /// <param name="template">Table </param>
+        /// <param name="where">The Dynamic Linq</param>
+        /// <returns></returns>
+        public static DbCommand GetCommand<TEntity>(
+                DataContext dataContext,
+                Table<TEntity> template,
+                Expression<Func<TEntity, bool>> where)
+                where TEntity : class
+        {
+            //FileIOPermission permission = new FileIOPermission(PermissionState.Unrestricted);
+            //permission.AllFiles = FileIOPermissionAccess.Write;
+            //permission.Deny();
 
-			return dataContext.GetCommand(template
-					.Where(where)
-					.Select(x => x));
-		}
+            return dataContext.GetCommand(template
+                    .Where(where)
+                    .Select(x => x));
+        }
 
-		/// <summary>
-		/// Gets the DbCommand from the Dynamic Query but Ensures that CAS Rules are taken to consideration
-		/// </summary>
-		/// <typeparam name="TEntity">The Type of Entity</typeparam>
-		/// <param name="dataContext">Linq Data Context</param>
-		/// <param name="template">Table </param>
-		/// <param name="where">The Dynamic Linq</param>
-		/// <returns></returns>
-		public static DbCommand GetCommand<TEntity, TResult>(
-				DataContext dataContext,
-				Table<TEntity> template,
-				Expression<Func<TEntity, TResult>> select,
-				Expression<Func<TEntity, bool>> where)
-				where TEntity : class
-		{
-			//FileIOPermission permission = new FileIOPermission(PermissionState.Unrestricted);
-			//permission.AllFiles = FileIOPermissionAccess.Write;
-			//permission.Deny();
+        /// <summary>
+        /// Gets the DbCommand from the Dynamic Query but Ensures that CAS Rules are taken to consideration
+        /// </summary>
+        /// <typeparam name="TEntity">The Type of Entity</typeparam>
+        /// <param name="dataContext">Linq Data Context</param>
+        /// <param name="template">Table </param>
+        /// <param name="where">The Dynamic Linq</param>
+        /// <returns></returns>
+        public static DbCommand GetCommand<TEntity, TResult>(
+                DataContext dataContext,
+                Table<TEntity> template,
+                Expression<Func<TEntity, TResult>> select,
+                Expression<Func<TEntity, bool>> where)
+                where TEntity : class
+        {
+            //FileIOPermission permission = new FileIOPermission(PermissionState.Unrestricted);
+            //permission.AllFiles = FileIOPermissionAccess.Write;
+            //permission.Deny();
 
-			return dataContext.GetCommand(template
-					.Where(where)
-					.Select(select));
-		}
-	}
+            return dataContext.GetCommand(template
+                    .Where(where)
+                    .Select(select));
+        }
+    }
 }
-
