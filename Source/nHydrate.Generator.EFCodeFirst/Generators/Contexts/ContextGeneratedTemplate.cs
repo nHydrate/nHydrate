@@ -393,7 +393,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     {
                         sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
                         sb.Append(".Property(d => d." + column.PascalName + ")");
-                        if (!column.AllowNull) sb.Append(".IsRequired()");
+                        if (!column.AllowNull)
+                            sb.Append(".IsRequired()");
+                        if (column.PrimaryKey && column.IsIntegerType && column.Identity != IdentityTypeConstants.Database)
+                            sb.Append(".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)");
+
                         if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
                         if (column.DatabaseName != column.PascalName) sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
                         sb.AppendLine(";");

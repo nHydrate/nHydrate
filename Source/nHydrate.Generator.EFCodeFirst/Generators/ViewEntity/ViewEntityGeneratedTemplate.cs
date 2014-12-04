@@ -156,7 +156,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine();
 
             sb.AppendLine("	{");
-            this.AppendedFieldEnum();
+            //this.AppendedFieldEnum();
             this.AppendProperties();
             this.AppendIEquatable();
             this.AppendIsEquivalent();
@@ -165,53 +165,53 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine();
         }
 
-        private void AppendedFieldEnum()
-        {
-            var imageColumnList = _currentTable.GetColumnsByType(System.Data.SqlDbType.Image).OrderBy(x => x.Name).ToList();
-            if (imageColumnList.Count != 0)
-            {
-                sb.AppendLine("		#region FieldImageConstants Enumeration");
-                sb.AppendLine();
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// An enumeration of this object's image type fields");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		public enum FieldImageConstants");
-                sb.AppendLine("		{");
-                foreach (var column in imageColumnList)
-                {
-                    sb.AppendLine("			/// <summary>");
-                    sb.AppendLine("			/// Field mapping for the image parameter '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
-                    sb.AppendLine("			/// </summary>");
-                    sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the image parameter '" + column.PascalName + "' property\")]");
-                    sb.AppendLine("			" + column.PascalName + ",");
-                }
-                sb.AppendLine("		}");
-                sb.AppendLine();
-                sb.AppendLine("		#endregion");
-                sb.AppendLine();
-            }
+        //private void AppendedFieldEnum()
+        //{
+        //    var imageColumnList = _currentTable.GetColumnsByType(System.Data.SqlDbType.Image).OrderBy(x => x.Name).ToList();
+        //    if (imageColumnList.Count != 0)
+        //    {
+        //        sb.AppendLine("		#region FieldImageConstants Enumeration");
+        //        sb.AppendLine();
+        //        sb.AppendLine("		/// <summary>");
+        //        sb.AppendLine("		/// An enumeration of this object's image type fields");
+        //        sb.AppendLine("		/// </summary>");
+        //        sb.AppendLine("		public enum FieldImageConstants");
+        //        sb.AppendLine("		{");
+        //        foreach (var column in imageColumnList)
+        //        {
+        //            sb.AppendLine("			/// <summary>");
+        //            sb.AppendLine("			/// Field mapping for the image parameter '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
+        //            sb.AppendLine("			/// </summary>");
+        //            sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the image parameter '" + column.PascalName + "' property\")]");
+        //            sb.AppendLine("			" + column.PascalName + ",");
+        //        }
+        //        sb.AppendLine("		}");
+        //        sb.AppendLine();
+        //        sb.AppendLine("		#endregion");
+        //        sb.AppendLine();
+        //    }
 
-            sb.AppendLine("		#region FieldNameConstants Enumeration");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Enumeration to define each property that maps to a database field for the '" + _currentTable.PascalName + "' table.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public enum FieldNameConstants");
-            sb.AppendLine("		{");
-            foreach (var column in _currentTable.GeneratedColumns)
-            {
-                sb.AppendLine("			/// <summary>");
-                sb.AppendLine("			/// Field mapping for the '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
-                sb.AppendLine("			/// </summary>");
-                sb.AppendLine("			[System.ComponentModel.ReadOnlyAttribute(true)]");
-                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + column.PascalName + "' property\")]");
-                sb.AppendLine("			" + column.PascalName + ",");
-            }
+        //    sb.AppendLine("		#region FieldNameConstants Enumeration");
+        //    sb.AppendLine();
+        //    sb.AppendLine("		/// <summary>");
+        //    sb.AppendLine("		/// Enumeration to define each property that maps to a database field for the '" + _currentTable.PascalName + "' table.");
+        //    sb.AppendLine("		/// </summary>");
+        //    sb.AppendLine("		public enum FieldNameConstants");
+        //    sb.AppendLine("		{");
+        //    foreach (var column in _currentTable.GeneratedColumns)
+        //    {
+        //        sb.AppendLine("			/// <summary>");
+        //        sb.AppendLine("			/// Field mapping for the '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
+        //        sb.AppendLine("			/// </summary>");
+        //        sb.AppendLine("			[System.ComponentModel.ReadOnlyAttribute(true)]");
+        //        sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + column.PascalName + "' property\")]");
+        //        sb.AppendLine("			" + column.PascalName + ",");
+        //    }
 
-            sb.AppendLine("		}");
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-        }
+        //    sb.AppendLine("		}");
+        //    sb.AppendLine("		#endregion");
+        //    sb.AppendLine();
+        //}
 
         private void AppendConstructors()
         {
