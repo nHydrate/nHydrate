@@ -987,7 +987,7 @@ namespace nHydrate.Core.SQLGeneration
             if (parameterList.Count > 0)
             {
                 sb.AppendLine("(");
-                sb.Append(BuildFunctionParameterList(function));
+                sb.Append(BuildFunctionParameterList(function.GetGeneratedParametersDatabaseOrder()));
                 sb.AppendLine(")");
             }
 
@@ -1017,7 +1017,7 @@ namespace nHydrate.Core.SQLGeneration
 
             sb.AppendLine("(");
             if (function.Parameters.Count > 0)
-                sb.Append(BuildFunctionParameterList(function));
+                sb.Append(BuildFunctionParameterList(function.GetGeneratedParametersDatabaseOrder()));
             sb.AppendLine(")");
 
             sb.Append("RETURNS ");
@@ -1335,6 +1335,42 @@ namespace nHydrate.Core.SQLGeneration
             }
             return sb.ToString();
         }
+
+        public static string GetSQLCreateTableSecurityFunction(Table table, bool isInternal)
+        {
+            var function = table.Security;
+
+            var sb = new StringBuilder();
+            sb.AppendLine("if exists(select * from sys.objects where name = '" + function.Name + "' and type in('FN','IF','TF'))");
+            sb.AppendLine("drop function [" + table.GetSQLSchema() + "].[" + function.Name + "]");
+            if (isInternal)
+            {
+                sb.AppendLine("--MODELID: " + function.Key);
+            }
+            sb.AppendLine("GO");
+            sb.AppendLine();
+            sb.AppendLine("CREATE FUNCTION [" + table.GetSQLSchema() + "].[" + function.Name + "]");
+
+            sb.AppendLine("(");
+            if (function.Parameters.Count > 0)
+                sb.Append(BuildFunctionParameterList(function.GetParameters()));
+            sb.AppendLine(")");
+
+            sb.AppendLine("RETURNS TABLE AS RETURN (");
+            sb.AppendLine(function.SQL);
+            sb.AppendLine(")");
+            sb.AppendLine();
+
+            if (isInternal)
+            {
+                sb.AppendLine("--MODELID,BODY: " + function.Key);
+            }
+            sb.AppendLine("GO");
+            sb.AppendLine();
+
+            return sb.ToString();
+        }
+
 
         #region Private Methods
 
@@ -1672,10 +1708,9 @@ namespace nHydrate.Core.SQLGeneration
             return output.ToString();
         }
 
-        private static string BuildFunctionParameterList(Function function)
+        private static string BuildFunctionParameterList(IEnumerable<Parameter> parameterList)
         {
             var output = new StringBuilder();
-            var parameterList = function.GetGeneratedParametersDatabaseOrder();
 
             var ii = 0;
             foreach (var parameter in parameterList)
@@ -1690,7 +1725,7 @@ namespace nHydrate.Core.SQLGeneration
                     parameter.DatabaseType.ToLower() +
                     (parameter.GetPredefinedSize() == -1 ? "(" + parameter.GetLengthString() + ") " : string.Empty) + (parameter.IsOutputParameter ? " out " : " = " + defaultValue));
 
-                if (ii != parameterList.Count)
+                if (ii != parameterList.Count())
                     output.Append(",");
                 output.AppendLine();
             }

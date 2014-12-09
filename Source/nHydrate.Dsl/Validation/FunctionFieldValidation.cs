@@ -31,66 +31,65 @@ using Microsoft.VisualStudio.Modeling.Validation;
 
 namespace nHydrate.Dsl
 {
-	[ValidationState(ValidationState.Enabled)]
-	partial class FunctionField
-	{
-		#region Dirty
-		[System.ComponentModel.Browsable(false)]
-		internal bool IsDirty
-		{
-			get { return _isDirty; }
-			set { _isDirty = value; }
-		}
-		private bool _isDirty = false;
-		#endregion
+    [ValidationState(ValidationState.Enabled)]
+    partial class FunctionField
+    {
+        #region Dirty
+        [System.ComponentModel.Browsable(false)]
+        internal bool IsDirty
+        {
+            get { return _isDirty; }
+            set { _isDirty = value; }
+        }
+        private bool _isDirty = false;
+        #endregion
 
-		[ValidationMethod(ValidationCategories.Open | ValidationCategories.Save | ValidationCategories.Menu | ValidationCategories.Custom | ValidationCategories.Load)]
-		public void Validate(ValidationContext context)
-		{
-			var timer = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
-			try
-			{
-				if (!this.IsGenerated) return;
-				//if (!this.IsDirty) return;
+        [ValidationMethod(ValidationCategories.Open | ValidationCategories.Save | ValidationCategories.Menu | ValidationCategories.Custom | ValidationCategories.Load)]
+        public void Validate(ValidationContext context)
+        {
+            var timer = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
+            try
+            {
+                if (!this.IsGenerated) return;
+                //if (!this.IsDirty) return;
 
-				#region Check valid name
-				if (!ValidationHelper.ValidDatabaseIdenitifer(this.DatabaseName))
-					context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifierFuncField, this.Name, this.Function.Name), string.Empty, this);
-				else if (!ValidationHelper.ValidCodeIdentifier(this.PascalName))
-					context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifierFuncField, this.Name, this.Function.Name), string.Empty, this);
-				#endregion
+                #region Check valid name
+                if (!ValidationHelper.ValidDatabaseIdenitifer(this.DatabaseName))
+                    context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifierFuncField, this.Name, this.Function.Name), string.Empty, this);
+                else if (!ValidationHelper.ValidCodeIdentifier(this.PascalName))
+                    context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifierFuncField, this.Name, this.Function.Name), string.Empty, this);
+                #endregion
 
-				#region Validate max lengths
+                #region Validate max lengths
 
-				var validatedLength = this.DataType.ValidateDataTypeMax(this.Length);
-				if (validatedLength != this.Length)
-				{
-					context.LogError(string.Format(ValidationHelper.ErrorTextColumnMaxLengthViolation, this.Function.Name + "." + this.Name, validatedLength, this.DataType.ToString()), string.Empty, this);
-				}
+                var validatedLength = this.DataType.ValidateDataTypeMax(this.Length);
+                if (validatedLength != this.Length)
+                {
+                    context.LogError(string.Format(ValidationHelper.ErrorTextColumnMaxLengthViolation, this.Function.Name + "." + this.Name, validatedLength, this.DataType.ToString()), string.Empty, this);
+                }
 
-				#endregion
+                #endregion
 
-				#region MySQL
-				if ((this.Function.nHydrateModel.SupportedPlatforms & DatabasePlatformConstants.MySQL) == DatabasePlatformConstants.MySQL)
-				{
-					if (!ValidationHelper.MySQLSupportedDatatype(this.DataType))
-					{
-						context.LogError(string.Format(ValidationHelper.ErrorTextMySQLDatatypeField, this.DataType.ToString(), this.Function.Name + "." + this.Name), string.Empty, this);
-					}
-				}
-				#endregion
+                #region MySQL
+                if ((this.Function.nHydrateModel.SupportedPlatforms & DatabasePlatformConstants.MySQL) == DatabasePlatformConstants.MySQL)
+                {
+                    if (!ValidationHelper.MySQLSupportedDatatype(this.DataType))
+                    {
+                        context.LogError(string.Format(ValidationHelper.ErrorTextMySQLDatatypeField, this.DataType.ToString(), this.Function.Name + "." + this.Name), string.Empty, this);
+                    }
+                }
+                #endregion
 
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-			finally
-			{
-				nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer, "Stored Procedure Parameter Validate - Main");
-			}
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer, "Stored Procedure Parameter Validate - Main");
+            }
 
-		}
-	}
+        }
+    }
 }
-

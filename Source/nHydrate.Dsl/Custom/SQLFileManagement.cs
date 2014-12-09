@@ -152,6 +152,43 @@ namespace nHydrate.Dsl.Custom
                 }
                 #endregion
 
+                #region Security
+
+                if (item.SecurityFunction != null)
+                {
+                    var secNode = XmlHelper.AddElement(document.DocumentElement, "security") as XmlElement;
+
+                    XmlHelper.AddAttribute(secNode, "id", item.SecurityFunction.Id);
+                    XmlHelper.AddAttribute(secNode, "name", item.SecurityFunction.Name);
+
+                    var ff = Path.Combine(folder, item.Name + ".security.sql");
+                    WriteFileIfNeedBe(ff, item.SecurityFunction.SQL, generatedFileList);
+
+                    //Parameters
+                    var secParamNodes = XmlHelper.AddElement(secNode, "parameterset") as XmlElement;
+                    XmlHelper.AddLineBreak((XmlElement)secParamNodes);
+                    foreach (var parameter in item.SecurityFunction.SecurityFunctionParameters.OrderBy(x => x.Name))
+                    {
+                        var parameterNode = XmlHelper.AddElement(secParamNodes, "field");
+
+                        XmlHelper.AddLineBreak((XmlElement)parameterNode);
+                        XmlHelper.AddCData((XmlElement)parameterNode, "summary", parameter.Summary);
+                        XmlHelper.AddLineBreak((XmlElement)parameterNode);
+
+                        XmlHelper.AddAttribute(parameterNode, "id", parameter.Id);
+                        XmlHelper.AddAttribute(parameterNode, "name", parameter.Name);
+                        XmlHelper.AddAttribute(parameterNode, "nullable", parameter.Nullable);
+                        XmlHelper.AddAttribute(parameterNode, "datatype", parameter.DataType.ToString());
+                        XmlHelper.AddAttribute(parameterNode, "codefacade", parameter.CodeFacade);
+                        XmlHelper.AddAttribute(parameterNode, "default", parameter.Default);
+                        XmlHelper.AddAttribute(parameterNode, "isgenerated", parameter.IsGenerated);
+                        XmlHelper.AddAttribute(parameterNode, "length", parameter.Length);
+                        XmlHelper.AddAttribute(parameterNode, "scale", parameter.Scale);
+                    }
+                }
+
+                #endregion
+
                 XmlHelper.AddLineBreak(document.DocumentElement);
                 var f = Path.Combine(folder, item.Name + ".configuration.xml");
                 WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
@@ -1003,6 +1040,58 @@ namespace nHydrate.Dsl.Custom
                     }
                     if (item.Fields.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
                         item.nHydrateModel.IsDirty = true;
+                }
+
+                #endregion
+
+                #region Security
+
+                var secNode = document.DocumentElement.SelectSingleNode("//security");
+                if (secNode != null)
+                {
+                    item.SecurityFunction = new SecurityFunction(item.Partition);
+                    item.SecurityFunction.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
+                    item.SecurityFunction.Name = XmlHelper.GetAttributeValue(secNode, "name", item.Name);
+                    item.SecurityFunction.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
+
+                    var ff = Path.Combine(folder, item.Name + ".security.sql");
+                    if (File.Exists(ff))
+                        item.SecurityFunction.SQL = File.ReadAllText(ff);
+
+                    //Parameters
+                    var parametersNodes = secNode.SelectSingleNode("//parameterset");
+                    if (parametersNodes != null)
+                    {
+                        var nameList = new List<string>();
+                        foreach (XmlNode n in parametersNodes.ChildNodes)
+                        {
+                            var subItemID = XmlHelper.GetAttributeValue(n, "id", Guid.Empty);
+                            var parameter = item.SecurityFunction.SecurityFunctionParameters.FirstOrDefault(x => x.Id == subItemID);
+                            if (parameter == null)
+                            {
+                                parameter = new SecurityFunctionParameter(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, XmlHelper.GetAttributeValue(n, "id", Guid.NewGuid())) });
+                                item.SecurityFunction.SecurityFunctionParameters.Add(parameter);
+                            }
+
+                            parameter.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
+                            parameter.CodeFacade = XmlHelper.GetAttributeValue(n, "codefacade", parameter.CodeFacade);
+                            parameter.Name = XmlHelper.GetAttributeValue(n, "name", parameter.Name);
+                            nameList.Add(parameter.Name.ToLower());
+                            parameter.Nullable = XmlHelper.GetAttributeValue(n, "nullable", parameter.Nullable);
+                            var dtv = XmlHelper.GetAttributeValue(n, "datatype", parameter.DataType.ToString());
+                            DataTypeConstants dt;
+                            if (Enum.TryParse<DataTypeConstants>(dtv, true, out dt))
+                                parameter.DataType = dt;
+                            parameter.Default = XmlHelper.GetAttributeValue(n, "default", parameter.Default);
+                            parameter.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", parameter.IsGenerated);
+                            parameter.Length = XmlHelper.GetAttributeValue(n, "length", parameter.Length);
+                            parameter.Scale = XmlHelper.GetAttributeValue(n, "scale", parameter.Scale);
+                            parameter.Summary = XmlHelper.GetNodeValue(n, "summary", parameter.Summary);
+                            parameter.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
+                        }
+                        if (item.SecurityFunction.SecurityFunctionParameters.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
+                            item.nHydrateModel.IsDirty = true;
+                    }
                 }
 
                 #endregion

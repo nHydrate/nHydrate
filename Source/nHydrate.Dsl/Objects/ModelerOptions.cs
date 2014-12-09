@@ -30,17 +30,16 @@ using System.Text;
 
 namespace nHydrate.Dsl
 {
-	public class ModelerOptions
-	{
-		public void Load()
-		{
-		}
+    public class ModelerOptions
+    {
+        public void Load()
+        {
+        }
 
-		public void Save()
-		{
-		}
+        public void Save()
+        {
+        }
 
-		public bool IsRegistered { get; set; }
-	}
+        public bool IsRegistered { get; set; }
+    }
 }
-

@@ -530,6 +530,39 @@ namespace nHydrate.DslPackage.Objects
                         newTable.MetaData.Add(new nHydrate.Generator.Models.MetadataItem() { Key = md.Key, Value = md.Value });
                     }
 
+                    if (entity.SecurityFunction != null)
+                    {
+                        newTable.Security.ResetKey(entity.SecurityFunction.Id.ToString());
+                        newTable.Security.Name = entity.SecurityFunction.Name;
+                        newTable.Security.SQL = entity.SecurityFunction.SQL;
+
+                        //Just in case these are ordered get all sort-ordered parameters first then take on all unordred alphabetized parmameters
+                        var orderedParameters = entity.SecurityFunction.SecurityFunctionParameters.Where(x => x.SortOrder > 0).OrderBy(x => x.SortOrder).ToList();
+                        orderedParameters.AddRange(entity.SecurityFunction.SecurityFunctionParameters.Where(x => x.SortOrder == 0).OrderBy(x => x.Name).ToList());
+                        foreach (var parameter in orderedParameters)
+                        {
+                            var newParameter = root.Database.FunctionParameters.Add();
+                            newParameter.ResetKey(parameter.Id.ToString());
+                            newParameter.ResetId(HashString(newParameter.Key));
+                            newParameter.ParentTableRef = newTable.CreateRef(newTable.Key);
+                            newParameter.AllowNull = parameter.Nullable;
+                            newParameter.CodeFacade = parameter.CodeFacade;
+                            newParameter.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), parameter.DataType.ToString());
+                            newParameter.Default = parameter.Default;
+                            newParameter.Description = parameter.Summary;
+                            newParameter.Generated = parameter.IsGenerated;
+                            newParameter.Length = parameter.Length;
+                            newParameter.Name = parameter.Name;
+                            newParameter.Scale = parameter.Scale;
+                            newParameter.SortOrder = parameter.SortOrder;
+
+                            var r = newParameter.CreateRef(newParameter.Key);
+                            r.RefType = nHydrate.Generator.Models.ReferenceType.FunctionParameter;
+                            newTable.Security.Parameters.Add(r);
+                        }
+
+                    }
+
                     #endregion
 
                     #region Load the fields for this entity

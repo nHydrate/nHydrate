@@ -693,6 +693,18 @@
     <value>Database</value>
     <comment>Category for DomainProperty &apos;IsTenant&apos; on DomainClass &apos;Entity&apos;</comment>
   </data>
+  <data name="nHydrate.Dsl.Entity/Security.Description" xml:space="preserve">
+    <value>Determines if this table has secured access</value>
+    <comment>Description for DomainProperty &apos;Security&apos; on DomainClass &apos;Entity&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.Entity/Security.DisplayName" xml:space="preserve">
+    <value>Security</value>
+    <comment>DisplayName for DomainProperty &apos;Security&apos; on DomainClass &apos;Entity&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.Entity/Security.Category" xml:space="preserve">
+    <value>Security</value>
+    <comment>Category for DomainProperty &apos;Security&apos; on DomainClass &apos;Entity&apos;</comment>
+  </data>
   <data name="nHydrate.Dsl.Field.Description" xml:space="preserve">
     <value>This is a field in a database table</value>
     <comment>Description for DomainClass &apos;Field&apos;</comment>
@@ -2585,6 +2597,162 @@
     <value>Module Id</value>
     <comment>DisplayName for DomainProperty &apos;ModuleId&apos; on DomainClass &apos;IndexModule&apos;</comment>
   </data>
+  <data name="nHydrate.Dsl.SecurityFunction.Description" xml:space="preserve">
+    <value>Description for nHydrate.Dsl.SecurityFunction</value>
+    <comment>Description for DomainClass &apos;SecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunction.DisplayName" xml:space="preserve">
+    <value>Security Function</value>
+    <comment>DisplayName for DomainClass &apos;SecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunction/SQL.Description" xml:space="preserve">
+    <value>Determines SQL statement used to create the database stored procedure object</value>
+    <comment>Description for DomainProperty &apos;SQL&apos; on DomainClass &apos;SecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunction/SQL.DisplayName" xml:space="preserve">
+    <value>SQL</value>
+    <comment>DisplayName for DomainProperty &apos;SQL&apos; on DomainClass &apos;SecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunction/SQL.Category" xml:space="preserve">
+    <value>Definition</value>
+    <comment>Category for DomainProperty &apos;SQL&apos; on DomainClass &apos;SecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunction/Name.Description" xml:space="preserve">
+    <value>Determines the name of this object</value>
+    <comment>Description for DomainProperty &apos;Name&apos; on DomainClass &apos;SecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunction/Name.DisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>DisplayName for DomainProperty &apos;Name&apos; on DomainClass &apos;SecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunction/Name.Category" xml:space="preserve">
+    <value>Definition</value>
+    <comment>Category for DomainProperty &apos;Name&apos; on DomainClass &apos;SecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter.Description" xml:space="preserve">
+    <value>Description for nHydrate.Dsl.SecurityFunctionParameter</value>
+    <comment>Description for DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter.DisplayName" xml:space="preserve">
+    <value>Security Function Parameter</value>
+    <comment>DisplayName for DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Name.Description" xml:space="preserve">
+    <value>Determines the name of this object</value>
+    <comment>Description for DomainProperty &apos;Name&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Name.DisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>DisplayName for DomainProperty &apos;Name&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Name.Category" xml:space="preserve">
+    <value>Definition</value>
+    <comment>Category for DomainProperty &apos;Name&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Nullable.Description" xml:space="preserve">
+    <value>Determines if this item allows null values</value>
+    <comment>Description for DomainProperty &apos;Nullable&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Nullable.DisplayName" xml:space="preserve">
+    <value>Nullable</value>
+    <comment>DisplayName for DomainProperty &apos;Nullable&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Nullable.Category" xml:space="preserve">
+    <value>Definition</value>
+    <comment>Category for DomainProperty &apos;Nullable&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/DataType.Description" xml:space="preserve">
+    <value>Determines the data type of this field</value>
+    <comment>Description for DomainProperty &apos;DataType&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/DataType.DisplayName" xml:space="preserve">
+    <value>Datatype</value>
+    <comment>DisplayName for DomainProperty &apos;DataType&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/DataType.Category" xml:space="preserve">
+    <value>Definition</value>
+    <comment>Category for DomainProperty &apos;DataType&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Summary.Description" xml:space="preserve">
+    <value>Determines the summary of this object</value>
+    <comment>Description for DomainProperty &apos;Summary&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Summary.DisplayName" xml:space="preserve">
+    <value>Summary</value>
+    <comment>DisplayName for DomainProperty &apos;Summary&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Summary.Category" xml:space="preserve">
+    <value>Documentation</value>
+    <comment>Category for DomainProperty &apos;Summary&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Default.Description" xml:space="preserve">
+    <value>Determines the default value of this object</value>
+    <comment>Description for DomainProperty &apos;Default&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Default.DisplayName" xml:space="preserve">
+    <value>Default</value>
+    <comment>DisplayName for DomainProperty &apos;Default&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Default.Category" xml:space="preserve">
+    <value>Definition</value>
+    <comment>Category for DomainProperty &apos;Default&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/IsGenerated.Description" xml:space="preserve">
+    <value>Determines if this item is used when generating</value>
+    <comment>Description for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/IsGenerated.DisplayName" xml:space="preserve">
+    <value>Is Generated</value>
+    <comment>DisplayName for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/IsGenerated.Category" xml:space="preserve">
+    <value>Definition</value>
+    <comment>Category for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Length.Description" xml:space="preserve">
+    <value>Determines the size of this field in bytes</value>
+    <comment>Description for DomainProperty &apos;Length&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Length.DisplayName" xml:space="preserve">
+    <value>Length</value>
+    <comment>DisplayName for DomainProperty &apos;Length&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Length.Category" xml:space="preserve">
+    <value>Definition</value>
+    <comment>Category for DomainProperty &apos;Length&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Scale.Description" xml:space="preserve">
+    <value>Determines the scale of some data types</value>
+    <comment>Description for DomainProperty &apos;Scale&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Scale.DisplayName" xml:space="preserve">
+    <value>Scale</value>
+    <comment>DisplayName for DomainProperty &apos;Scale&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/Scale.Category" xml:space="preserve">
+    <value>Definition</value>
+    <comment>Category for DomainProperty &apos;Scale&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/SortOrder.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for DomainProperty &apos;SortOrder&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/SortOrder.DisplayName" xml:space="preserve">
+    <value>Sort Order</value>
+    <comment>DisplayName for DomainProperty &apos;SortOrder&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/CodeFacade.Description" xml:space="preserve">
+    <value>Determines the object name used in the API. If this property is blank the &apos;Name&apos; property is used in the API. This property can be used to mask the database identifier.</value>
+    <comment>Description for DomainProperty &apos;CodeFacade&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/CodeFacade.DisplayName" xml:space="preserve">
+    <value>Code Facade</value>
+    <comment>DisplayName for DomainProperty &apos;CodeFacade&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionParameter/CodeFacade.Category" xml:space="preserve">
+    <value>Code</value>
+    <comment>Category for DomainProperty &apos;CodeFacade&apos; on DomainClass &apos;SecurityFunctionParameter&apos;</comment>
+  </data>
   <data name="nHydrate.Dsl.nHydrateModelHasEntities.Description" xml:space="preserve">
     <value></value>
     <comment>Description for DomainClass &apos;nHydrateModelHasEntities&apos;</comment>
@@ -3716,6 +3884,74 @@
   <data name="nHydrate.Dsl.nHydrateModelHasIndexModules/IndexModule.PropertyDisplayName" xml:space="preserve">
     <value>NHydrate Model</value>
     <comment>PropertyDisplayName for DomainRole &apos;IndexModule&apos; on DomainRelationship &apos;nHydrateModelHasIndexModules&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EntityHasSecurityFunction.Description" xml:space="preserve">
+    <value>Description for nHydrate.Dsl.EntityHasSecurityFunction</value>
+    <comment>Description for DomainClass &apos;EntityHasSecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EntityHasSecurityFunction.DisplayName" xml:space="preserve">
+    <value>Entity Has Security Function</value>
+    <comment>DisplayName for DomainClass &apos;EntityHasSecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EntityHasSecurityFunction/Entity.Description" xml:space="preserve">
+    <value>Description for nHydrate.Dsl.EntityHasSecurityFunction.Entity</value>
+    <comment>Description for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasSecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EntityHasSecurityFunction/Entity.DisplayName" xml:space="preserve">
+    <value>Entity</value>
+    <comment>DisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasSecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EntityHasSecurityFunction/Entity.Category" xml:space="preserve">
+    <value>Security</value>
+    <comment>Category for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasSecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EntityHasSecurityFunction/Entity.PropertyDisplayName" xml:space="preserve">
+    <value>Security Function</value>
+    <comment>PropertyDisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasSecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EntityHasSecurityFunction/SecurityFunction.Description" xml:space="preserve">
+    <value>Description for nHydrate.Dsl.EntityHasSecurityFunction.SecurityFunction</value>
+    <comment>Description for DomainRole &apos;SecurityFunction&apos; on DomainRelationship &apos;EntityHasSecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EntityHasSecurityFunction/SecurityFunction.DisplayName" xml:space="preserve">
+    <value>Security Function</value>
+    <comment>DisplayName for DomainRole &apos;SecurityFunction&apos; on DomainRelationship &apos;EntityHasSecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EntityHasSecurityFunction/SecurityFunction.PropertyDisplayName" xml:space="preserve">
+    <value>Entity</value>
+    <comment>PropertyDisplayName for DomainRole &apos;SecurityFunction&apos; on DomainRelationship &apos;EntityHasSecurityFunction&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.Description" xml:space="preserve">
+    <value>Description for nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters</value>
+    <comment>Description for DomainClass &apos;SecurityFunctionHasSecurityFunctionParameters&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.DisplayName" xml:space="preserve">
+    <value>Security Function Has Security Function Parameters</value>
+    <comment>DisplayName for DomainClass &apos;SecurityFunctionHasSecurityFunctionParameters&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters/SecurityFunction.Description" xml:space="preserve">
+    <value>Description for nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.SecurityFunction</value>
+    <comment>Description for DomainRole &apos;SecurityFunction&apos; on DomainRelationship &apos;SecurityFunctionHasSecurityFunctionParameters&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters/SecurityFunction.DisplayName" xml:space="preserve">
+    <value>Security Function</value>
+    <comment>DisplayName for DomainRole &apos;SecurityFunction&apos; on DomainRelationship &apos;SecurityFunctionHasSecurityFunctionParameters&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters/SecurityFunction.PropertyDisplayName" xml:space="preserve">
+    <value>Security Function Parameters</value>
+    <comment>PropertyDisplayName for DomainRole &apos;SecurityFunction&apos; on DomainRelationship &apos;SecurityFunctionHasSecurityFunctionParameters&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters/SecurityFunctionParameter.Description" xml:space="preserve">
+    <value>Description for nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.SecurityFunctionParameter</value>
+    <comment>Description for DomainRole &apos;SecurityFunctionParameter&apos; on DomainRelationship &apos;SecurityFunctionHasSecurityFunctionParameters&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters/SecurityFunctionParameter.DisplayName" xml:space="preserve">
+    <value>Security Function Parameter</value>
+    <comment>DisplayName for DomainRole &apos;SecurityFunctionParameter&apos; on DomainRelationship &apos;SecurityFunctionHasSecurityFunctionParameters&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters/SecurityFunctionParameter.PropertyDisplayName" xml:space="preserve">
+    <value>Security Function</value>
+    <comment>PropertyDisplayName for DomainRole &apos;SecurityFunctionParameter&apos; on DomainRelationship &apos;SecurityFunctionHasSecurityFunctionParameters&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.DataTypeConstants/BigInt.DisplayName" xml:space="preserve">
     <value>BigInt</value>

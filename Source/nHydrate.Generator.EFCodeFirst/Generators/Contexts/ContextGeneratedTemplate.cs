@@ -518,9 +518,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #region Functions
             sb.AppendLine("			#region Functions");
             sb.AppendLine();
-            if (_model.Database.Functions.Any(x => x.Generated))
+            if (_model.Database.Functions.Any(x => x.Generated) || _model.Database.Tables.Any(x => x.Security.IsValid()))
             {
-                sb.AppendLine("			modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<TestXEntities>(\"dbo\"));");
+                sb.AppendLine("			//You must add the NUGET package 'CodeFirstStoreFunctions' for this functionality");
+                sb.AppendLine("			modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<" + _model.ProjectName + "Entities>(\"dbo\"));");
             }
 
             foreach (var table in _model.Database.Functions.Where(x => x.Generated).OrderBy(x => x.Name))
@@ -840,10 +841,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
+                var hasSecurity = table.Security.IsValid();
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Entity set for " + table.PascalName);
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		public DbSet<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> " + table.PascalName + " { get; set; }");
+                sb.AppendLine("		" + (hasSecurity ? "protected internal" : "public") + " DbSet<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> " + table.PascalName + " { get; set; }");
                 sb.AppendLine();
             }
 
@@ -1334,22 +1336,61 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     }
                 }
 
-                //sb.Append("			var retval = this.ObjectContext.ExecuteFunction<" + function.PascalName + ">(\"" + function.PascalName + "_SPWrapper\"");
-
-                //if (parameterList.Count > 0)
-                //{
-                //    sb.Append(", ");
-                //    foreach (var parameter in parameterList)
-                //    {
-                //        sb.Append(parameter.CamelName + "Parameter");
-                //        if (parameterList.IndexOf(parameter) < parameterList.Count() - 1)
-                //            sb.Append(", ");
-                //    }
-                //}
-
-                //sb.AppendLine(").ToList();");
-
                 sb.AppendLine("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.CreateQuery<" + function.PascalName + ">(\"[" + _model.ProjectName + "Entities].[" + function.PascalName + "](" + string.Join(", ", parameterList.Select(x => "@" + x.PascalName)) + ")\", " + string.Join(", ", parameterList.Select(x => x.CamelName + "Parameter")) + ");");
+
+                //Add code here to handle output parameters
+                foreach (var parameter in parameterList.Where(x => x.IsOutputParameter))
+                {
+                    sb.AppendLine("			" + parameter.CamelName + " = (" + parameter.GetCodeType() + ")" + parameter.CamelName + "Parameter.Value;");
+                }
+
+                sb.AppendLine("			return retval;");
+
+                sb.AppendLine("		}");
+                sb.AppendLine();
+            }
+
+            #endregion
+
+            #region Table Security
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.Security.IsValid()).OrderBy(x => x.PascalName).ToList())
+            {
+                var function = table.Security;
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Security function for '" + table.PascalName + "' entity");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		[DbFunction(\"" + _model.ProjectName + "Entities\", \"" + function.Name + "\")]");
+                sb.Append("		public virtual IQueryable<" + table.PascalName + "> " + function.Name + "(");
+                var parameterList = function.GetParameters().Where(x => x.Generated).ToList();
+                foreach (var parameter in parameterList)
+                {
+                    if (parameter.IsOutputParameter) sb.Append("out ");
+                    sb.Append(parameter.GetCodeType() + " " + parameter.CamelName);
+                    if (parameterList.IndexOf(parameter) < parameterList.Count() - 1)
+                        sb.Append(", ");
+                }
+                sb.AppendLine(")");
+                sb.AppendLine("		{");
+
+                foreach (var parameter in parameterList)
+                {
+                    if (parameter.IsOutputParameter)
+                    {
+                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + "));");
+                    }
+                    else if (parameter.AllowNull)
+                    {
+                        sb.AppendLine("			ObjectParameter " + parameter.CamelName + "Parameter = null;");
+                        sb.AppendLine("			if (" + parameter.CamelName + " != null) { " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + "); }");
+                        sb.AppendLine("			else { " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + ")); }");
+                    }
+                    else
+                    {
+                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + ");");
+                    }
+                }
+
+                sb.AppendLine("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.CreateQuery<" + table.PascalName + ">(\"[" + _model.ProjectName + "Entities].[" + function.Name + "](" + string.Join(", ", parameterList.Select(x => "@" + x.PascalName)) + ")\", " + string.Join(", ", parameterList.Select(x => x.CamelName + "Parameter")) + ");");
 
                 //Add code here to handle output parameters
                 foreach (var parameter in parameterList.Where(x => x.IsOutputParameter))

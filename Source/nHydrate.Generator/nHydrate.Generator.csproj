@@ -211,6 +211,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Models\ColumnBase.cs" />
+    <Compile Include="Models\SecurityFunction.cs" />
     <Compile Include="Models\ViewColumnRelationship.cs" />
     <Compile Include="Models\ViewColumnRelationshipCollection.cs" />
     <Compile Include="Models\ViewRelation.cs" />

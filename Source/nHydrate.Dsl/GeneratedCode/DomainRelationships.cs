@@ -8647,3 +8647,521 @@ namespace nHydrate.Dsl
 		#endregion
 	}
 }
+namespace nHydrate.Dsl
+{
+	/// <summary>
+	/// DomainRelationship EntityHasSecurityFunction
+	/// Description for nHydrate.Dsl.EntityHasSecurityFunction
+	/// </summary>
+	[DslDesign::DisplayNameResource("nHydrate.Dsl.EntityHasSecurityFunction.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+	[DslDesign::DescriptionResource("nHydrate.Dsl.EntityHasSecurityFunction.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+	[DslModeling::DomainModelOwner(typeof(global::nHydrate.Dsl.nHydrateDomainModel))]
+	[global::System.CLSCompliant(true)]
+	[DslModeling::DomainRelationship(IsEmbedding=true)]
+	[DslModeling::DomainObjectId("daa3bb78-a012-4074-b164-446cdf4e7c63")]
+	public partial class EntityHasSecurityFunction : DslModeling::ElementLink, System.ComponentModel.INotifyPropertyChanged
+	{
+		#region INotifyPropertyChanged
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+		protected virtual void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (this.PropertyChanged != null)
+				this.PropertyChanged(this, e);
+		}
+		#endregion
+	
+		#region Constructors, domain class Id
+		
+		/// <summary>
+		/// EntityHasSecurityFunction domain class Id.
+		/// </summary>
+		public static readonly new global::System.Guid DomainClassId = new global::System.Guid(0xdaa3bb78, 0xa012, 0x4074, 0xb1, 0x64, 0x44, 0x6c, 0xdf, 0x4e, 0x7c, 0x63);
+	
+				
+		/// <summary>
+		/// Constructor
+		/// Creates a EntityHasSecurityFunction link in the same Partition as the given Entity
+		/// </summary>
+		/// <param name="source">Entity to use as the source of the relationship.</param>
+		/// <param name="target">SecurityFunction to use as the target of the relationship.</param>
+		public EntityHasSecurityFunction(Entity source, SecurityFunction target)
+			: base((source != null ? source.Partition : null), new DslModeling::RoleAssignment[]{new DslModeling::RoleAssignment(EntityHasSecurityFunction.EntityDomainRoleId, source), new DslModeling::RoleAssignment(EntityHasSecurityFunction.SecurityFunctionDomainRoleId, target)}, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="store">Store where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		public EntityHasSecurityFunction(DslModeling::Store store, params DslModeling::RoleAssignment[] roleAssignments)
+			: base(store != null ? store.DefaultPartitionForClass(DomainClassId) : null, roleAssignments, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="store">Store where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
+		public EntityHasSecurityFunction(DslModeling::Store store, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(store != null ? store.DefaultPartitionForClass(DomainClassId) : null, roleAssignments, propertyAssignments)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="partition">Partition where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		public EntityHasSecurityFunction(DslModeling::Partition partition, params DslModeling::RoleAssignment[] roleAssignments)
+			: base(partition, roleAssignments, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="partition">Partition where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
+		public EntityHasSecurityFunction(DslModeling::Partition partition, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(partition, roleAssignments, propertyAssignments)
+		{
+		}
+		#endregion
+		#region Entity domain role code
+		
+		/// <summary>
+		/// Entity domain role Id.
+		/// </summary>
+		public static readonly global::System.Guid EntityDomainRoleId = new global::System.Guid(0x43c74558, 0x2e05, 0x4067, 0xba, 0xd8, 0x9d, 0xd6, 0x5e, 0xdd, 0xee, 0xaf);
+		
+		/// <summary>
+		/// DomainRole Entity
+		/// Description for nHydrate.Dsl.EntityHasSecurityFunction.Entity
+		/// </summary>
+		[DslDesign::DisplayNameResource("nHydrate.Dsl.EntityHasSecurityFunction/Entity.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::CategoryResource("nHydrate.Dsl.EntityHasSecurityFunction/Entity.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("nHydrate.Dsl.EntityHasSecurityFunction/Entity.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Source, PropertyName = "SecurityFunction", PropertyDisplayNameKey="nHydrate.Dsl.EntityHasSecurityFunction/Entity.PropertyDisplayName",  PropagatesCopy = DslModeling::PropagatesCopyOption.PropagatesCopyToLinkAndOppositeRolePlayer, Multiplicity = DslModeling::Multiplicity.ZeroOne)]
+		[DslModeling::DomainObjectId("43c74558-2e05-4067-bad8-9dd65eddeeaf")]
+		public virtual Entity Entity
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return (Entity)DslModeling::DomainRoleInfo.GetRolePlayer(this, EntityDomainRoleId);
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetRolePlayer(this, EntityDomainRoleId, value);
+			}
+		}
+				
+		#endregion
+		#region Static methods to access Entity of a SecurityFunction
+		/// <summary>
+		/// Gets Entity.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static Entity GetEntity(SecurityFunction element)
+		{
+			return DslModeling::DomainRoleInfo.GetLinkedElement(element, SecurityFunctionDomainRoleId) as Entity;
+		}
+		
+		/// <summary>
+		/// Sets Entity.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static void SetEntity(SecurityFunction element, Entity newEntity)
+		{
+			DslModeling::DomainRoleInfo.SetLinkedElement(element, SecurityFunctionDomainRoleId, newEntity);
+		}
+		#endregion
+		#region SecurityFunction domain role code
+		
+		/// <summary>
+		/// SecurityFunction domain role Id.
+		/// </summary>
+		public static readonly global::System.Guid SecurityFunctionDomainRoleId = new global::System.Guid(0x96cc7081, 0xdfc6, 0x4acc, 0xac, 0x93, 0x67, 0xc5, 0xcd, 0xe7, 0x91, 0xdf);
+		
+		/// <summary>
+		/// DomainRole SecurityFunction
+		/// Description for nHydrate.Dsl.EntityHasSecurityFunction.SecurityFunction
+		/// </summary>
+		[DslDesign::DisplayNameResource("nHydrate.Dsl.EntityHasSecurityFunction/SecurityFunction.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("nHydrate.Dsl.EntityHasSecurityFunction/SecurityFunction.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Target, PropertyName = "Entity", PropertyDisplayNameKey="nHydrate.Dsl.EntityHasSecurityFunction/SecurityFunction.PropertyDisplayName", PropagatesDelete = true,  PropagatesCopy = DslModeling::PropagatesCopyOption.DoNotPropagateCopy, Multiplicity = DslModeling::Multiplicity.One)]
+		[DslModeling::DomainObjectId("96cc7081-dfc6-4acc-ac93-67c5cde791df")]
+		public virtual SecurityFunction SecurityFunction
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return (SecurityFunction)DslModeling::DomainRoleInfo.GetRolePlayer(this, SecurityFunctionDomainRoleId);
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetRolePlayer(this, SecurityFunctionDomainRoleId, value);
+			}
+		}
+				
+		#endregion
+		#region Static methods to access SecurityFunction of a Entity
+		/// <summary>
+		/// Gets SecurityFunction.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static SecurityFunction GetSecurityFunction(Entity element)
+		{
+			return DslModeling::DomainRoleInfo.GetLinkedElement(element, EntityDomainRoleId) as SecurityFunction;
+		}
+		
+		/// <summary>
+		/// Sets SecurityFunction.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static void SetSecurityFunction(Entity element, SecurityFunction newSecurityFunction)
+		{
+			DslModeling::DomainRoleInfo.SetLinkedElement(element, EntityDomainRoleId, newSecurityFunction);
+		}
+		#endregion
+		#region Entity link accessor
+		/// <summary>
+		/// Get the EntityHasSecurityFunction link to a Entity.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::nHydrate.Dsl.EntityHasSecurityFunction GetLinkToSecurityFunction (global::nHydrate.Dsl.Entity entityInstance)
+		{
+			global::System.Collections.Generic.IList<global::nHydrate.Dsl.EntityHasSecurityFunction> links = DslModeling::DomainRoleInfo.GetElementLinks<global::nHydrate.Dsl.EntityHasSecurityFunction>(entityInstance, global::nHydrate.Dsl.EntityHasSecurityFunction.EntityDomainRoleId);
+			global::System.Diagnostics.Debug.Assert(links.Count <= 1, "Multiplicity of Entity not obeyed.");
+			if ( links.Count == 0 )
+			{
+				return null;
+			}
+			else
+			{
+				return links[0];
+			}
+		}
+		#endregion
+		#region SecurityFunction link accessor
+		/// <summary>
+		/// Get the EntityHasSecurityFunction link to a SecurityFunction.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::nHydrate.Dsl.EntityHasSecurityFunction GetLinkToEntity (global::nHydrate.Dsl.SecurityFunction securityFunctionInstance)
+		{
+			global::System.Collections.Generic.IList<global::nHydrate.Dsl.EntityHasSecurityFunction> links = DslModeling::DomainRoleInfo.GetElementLinks<global::nHydrate.Dsl.EntityHasSecurityFunction>(securityFunctionInstance, global::nHydrate.Dsl.EntityHasSecurityFunction.SecurityFunctionDomainRoleId);
+			global::System.Diagnostics.Debug.Assert(links.Count <= 1, "Multiplicity of SecurityFunction not obeyed.");
+			if ( links.Count == 0 )
+			{
+				return null;
+			}
+			else
+			{
+				return links[0];
+			}
+		}
+		#endregion
+		#region EntityHasSecurityFunction instance accessors
+		
+		/// <summary>
+		/// Get any EntityHasSecurityFunction links between a given Entity and a SecurityFunction.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::nHydrate.Dsl.EntityHasSecurityFunction> GetLinks( global::nHydrate.Dsl.Entity source, global::nHydrate.Dsl.SecurityFunction target )
+		{
+			global::System.Collections.Generic.List<global::nHydrate.Dsl.EntityHasSecurityFunction> outLinks = new global::System.Collections.Generic.List<global::nHydrate.Dsl.EntityHasSecurityFunction>();
+			global::System.Collections.Generic.IList<global::nHydrate.Dsl.EntityHasSecurityFunction> links = DslModeling::DomainRoleInfo.GetElementLinks<global::nHydrate.Dsl.EntityHasSecurityFunction>(source, global::nHydrate.Dsl.EntityHasSecurityFunction.EntityDomainRoleId);
+			foreach ( global::nHydrate.Dsl.EntityHasSecurityFunction link in links )
+			{
+				if ( target.Equals(link.SecurityFunction) )
+				{
+					outLinks.Add(link);
+				}
+			}
+			return outLinks.AsReadOnly();
+		}
+		/// <summary>
+		/// Get the one EntityHasSecurityFunction link between a given Entityand a SecurityFunction.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::nHydrate.Dsl.EntityHasSecurityFunction GetLink( global::nHydrate.Dsl.Entity source, global::nHydrate.Dsl.SecurityFunction target )
+		{
+			global::System.Collections.Generic.IList<global::nHydrate.Dsl.EntityHasSecurityFunction> links = DslModeling::DomainRoleInfo.GetElementLinks<global::nHydrate.Dsl.EntityHasSecurityFunction>(source, global::nHydrate.Dsl.EntityHasSecurityFunction.EntityDomainRoleId);
+			foreach ( global::nHydrate.Dsl.EntityHasSecurityFunction link in links )
+			{
+				if ( target.Equals(link.SecurityFunction) )
+				{
+					return link;
+				}
+			}
+			return null;
+		}
+		
+		#endregion
+	}
+}
+namespace nHydrate.Dsl
+{
+	/// <summary>
+	/// DomainRelationship SecurityFunctionHasSecurityFunctionParameters
+	/// Description for nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters
+	/// </summary>
+	[DslDesign::DisplayNameResource("nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+	[DslDesign::DescriptionResource("nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+	[DslModeling::DomainModelOwner(typeof(global::nHydrate.Dsl.nHydrateDomainModel))]
+	[global::System.CLSCompliant(true)]
+	[DslModeling::DomainRelationship(IsEmbedding=true)]
+	[DslModeling::DomainObjectId("a49d2dab-f2d3-44cd-9573-468fa8928e4e")]
+	public partial class SecurityFunctionHasSecurityFunctionParameters : DslModeling::ElementLink, System.ComponentModel.INotifyPropertyChanged
+	{
+		#region INotifyPropertyChanged
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+		protected virtual void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (this.PropertyChanged != null)
+				this.PropertyChanged(this, e);
+		}
+		#endregion
+	
+		#region Constructors, domain class Id
+		
+		/// <summary>
+		/// SecurityFunctionHasSecurityFunctionParameters domain class Id.
+		/// </summary>
+		public static readonly new global::System.Guid DomainClassId = new global::System.Guid(0xa49d2dab, 0xf2d3, 0x44cd, 0x95, 0x73, 0x46, 0x8f, 0xa8, 0x92, 0x8e, 0x4e);
+	
+				
+		/// <summary>
+		/// Constructor
+		/// Creates a SecurityFunctionHasSecurityFunctionParameters link in the same Partition as the given SecurityFunction
+		/// </summary>
+		/// <param name="source">SecurityFunction to use as the source of the relationship.</param>
+		/// <param name="target">SecurityFunctionParameter to use as the target of the relationship.</param>
+		public SecurityFunctionHasSecurityFunctionParameters(SecurityFunction source, SecurityFunctionParameter target)
+			: base((source != null ? source.Partition : null), new DslModeling::RoleAssignment[]{new DslModeling::RoleAssignment(SecurityFunctionHasSecurityFunctionParameters.SecurityFunctionDomainRoleId, source), new DslModeling::RoleAssignment(SecurityFunctionHasSecurityFunctionParameters.SecurityFunctionParameterDomainRoleId, target)}, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="store">Store where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		public SecurityFunctionHasSecurityFunctionParameters(DslModeling::Store store, params DslModeling::RoleAssignment[] roleAssignments)
+			: base(store != null ? store.DefaultPartitionForClass(DomainClassId) : null, roleAssignments, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="store">Store where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
+		public SecurityFunctionHasSecurityFunctionParameters(DslModeling::Store store, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(store != null ? store.DefaultPartitionForClass(DomainClassId) : null, roleAssignments, propertyAssignments)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="partition">Partition where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		public SecurityFunctionHasSecurityFunctionParameters(DslModeling::Partition partition, params DslModeling::RoleAssignment[] roleAssignments)
+			: base(partition, roleAssignments, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="partition">Partition where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
+		public SecurityFunctionHasSecurityFunctionParameters(DslModeling::Partition partition, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(partition, roleAssignments, propertyAssignments)
+		{
+		}
+		#endregion
+		#region SecurityFunction domain role code
+		
+		/// <summary>
+		/// SecurityFunction domain role Id.
+		/// </summary>
+		public static readonly global::System.Guid SecurityFunctionDomainRoleId = new global::System.Guid(0x43336824, 0x46a7, 0x4b78, 0x99, 0x5a, 0xbd, 0xd2, 0x57, 0xc2, 0x26, 0x03);
+		
+		/// <summary>
+		/// DomainRole SecurityFunction
+		/// Description for
+		/// nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.SecurityFunction
+		/// </summary>
+		[DslDesign::DisplayNameResource("nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters/SecurityFunction.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters/SecurityFunction.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Source, PropertyName = "SecurityFunctionParameters", PropertyDisplayNameKey="nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters/SecurityFunction.PropertyDisplayName",  PropagatesCopy = DslModeling::PropagatesCopyOption.PropagatesCopyToLinkAndOppositeRolePlayer, Multiplicity = DslModeling::Multiplicity.ZeroMany)]
+		[DslModeling::DomainObjectId("43336824-46a7-4b78-995a-bdd257c22603")]
+		public virtual SecurityFunction SecurityFunction
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return (SecurityFunction)DslModeling::DomainRoleInfo.GetRolePlayer(this, SecurityFunctionDomainRoleId);
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetRolePlayer(this, SecurityFunctionDomainRoleId, value);
+			}
+		}
+				
+		#endregion
+		#region Static methods to access SecurityFunction of a SecurityFunctionParameter
+		/// <summary>
+		/// Gets SecurityFunction.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static SecurityFunction GetSecurityFunction(SecurityFunctionParameter element)
+		{
+			return DslModeling::DomainRoleInfo.GetLinkedElement(element, SecurityFunctionParameterDomainRoleId) as SecurityFunction;
+		}
+		
+		/// <summary>
+		/// Sets SecurityFunction.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static void SetSecurityFunction(SecurityFunctionParameter element, SecurityFunction newSecurityFunction)
+		{
+			DslModeling::DomainRoleInfo.SetLinkedElement(element, SecurityFunctionParameterDomainRoleId, newSecurityFunction);
+		}
+		#endregion
+		#region SecurityFunctionParameter domain role code
+		
+		/// <summary>
+		/// SecurityFunctionParameter domain role Id.
+		/// </summary>
+		public static readonly global::System.Guid SecurityFunctionParameterDomainRoleId = new global::System.Guid(0x20c53308, 0x6b36, 0x494f, 0x9e, 0xba, 0xff, 0x83, 0xa9, 0xa7, 0x42, 0x18);
+		
+		/// <summary>
+		/// DomainRole SecurityFunctionParameter
+		/// Description for
+		/// nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.SecurityFunctionParameter
+		/// </summary>
+		[DslDesign::DisplayNameResource("nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters/SecurityFunctionParameter.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters/SecurityFunctionParameter.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Target, PropertyName = "SecurityFunction", PropertyDisplayNameKey="nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters/SecurityFunctionParameter.PropertyDisplayName", PropagatesDelete = true,  PropagatesCopy = DslModeling::PropagatesCopyOption.DoNotPropagateCopy, Multiplicity = DslModeling::Multiplicity.One)]
+		[DslModeling::DomainObjectId("20c53308-6b36-494f-9eba-ff83a9a74218")]
+		public virtual SecurityFunctionParameter SecurityFunctionParameter
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return (SecurityFunctionParameter)DslModeling::DomainRoleInfo.GetRolePlayer(this, SecurityFunctionParameterDomainRoleId);
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetRolePlayer(this, SecurityFunctionParameterDomainRoleId, value);
+			}
+		}
+				
+		#endregion
+		#region Static methods to access SecurityFunctionParameters of a SecurityFunction
+		/// <summary>
+		/// Gets a list of SecurityFunctionParameters.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static DslModeling::LinkedElementCollection<SecurityFunctionParameter> GetSecurityFunctionParameters(SecurityFunction element)
+		{
+			return GetRoleCollection<DslModeling::LinkedElementCollection<SecurityFunctionParameter>, SecurityFunctionParameter>(element, SecurityFunctionDomainRoleId);
+		}
+		#endregion
+		#region SecurityFunction link accessor
+		/// <summary>
+		/// Get the list of SecurityFunctionHasSecurityFunctionParameters links to a SecurityFunction.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters> GetLinksToSecurityFunctionParameters ( global::nHydrate.Dsl.SecurityFunction securityFunctionInstance )
+		{
+			return DslModeling::DomainRoleInfo.GetElementLinks<global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters>(securityFunctionInstance, global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.SecurityFunctionDomainRoleId);
+		}
+		#endregion
+		#region SecurityFunctionParameter link accessor
+		/// <summary>
+		/// Get the SecurityFunctionHasSecurityFunctionParameters link to a SecurityFunctionParameter.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters GetLinkToSecurityFunction (global::nHydrate.Dsl.SecurityFunctionParameter securityFunctionParameterInstance)
+		{
+			global::System.Collections.Generic.IList<global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters> links = DslModeling::DomainRoleInfo.GetElementLinks<global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters>(securityFunctionParameterInstance, global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.SecurityFunctionParameterDomainRoleId);
+			global::System.Diagnostics.Debug.Assert(links.Count <= 1, "Multiplicity of SecurityFunctionParameter not obeyed.");
+			if ( links.Count == 0 )
+			{
+				return null;
+			}
+			else
+			{
+				return links[0];
+			}
+		}
+		#endregion
+		#region SecurityFunctionHasSecurityFunctionParameters instance accessors
+		
+		/// <summary>
+		/// Get any SecurityFunctionHasSecurityFunctionParameters links between a given SecurityFunction and a SecurityFunctionParameter.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters> GetLinks( global::nHydrate.Dsl.SecurityFunction source, global::nHydrate.Dsl.SecurityFunctionParameter target )
+		{
+			global::System.Collections.Generic.List<global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters> outLinks = new global::System.Collections.Generic.List<global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters>();
+			global::System.Collections.Generic.IList<global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters> links = DslModeling::DomainRoleInfo.GetElementLinks<global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters>(source, global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.SecurityFunctionDomainRoleId);
+			foreach ( global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters link in links )
+			{
+				if ( target.Equals(link.SecurityFunctionParameter) )
+				{
+					outLinks.Add(link);
+				}
+			}
+			return outLinks.AsReadOnly();
+		}
+		/// <summary>
+		/// Get the one SecurityFunctionHasSecurityFunctionParameters link between a given SecurityFunctionand a SecurityFunctionParameter.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters GetLink( global::nHydrate.Dsl.SecurityFunction source, global::nHydrate.Dsl.SecurityFunctionParameter target )
+		{
+			global::System.Collections.Generic.IList<global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters> links = DslModeling::DomainRoleInfo.GetElementLinks<global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters>(source, global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.SecurityFunctionDomainRoleId);
+			foreach ( global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters link in links )
+			{
+				if ( target.Equals(link.SecurityFunctionParameter) )
+				{
+					return link;
+				}
+			}
+			return null;
+		}
+		
+		#endregion
+	}
+}

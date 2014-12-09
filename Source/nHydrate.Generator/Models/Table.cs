@@ -111,6 +111,7 @@ namespace nHydrate.Generator.Models
         private bool _isAbstract = _def_isAbstract;
         private bool _generatesDoubleDerived = _def_generatesDoubleDerived;
         private bool _isTenant = _def_isTenant;
+        private SecurityFunction _security;
 
         #endregion
 
@@ -123,6 +124,7 @@ namespace nHydrate.Generator.Models
 
             _compositeList = new TableCompositeCollection(root, this);
             _componentList = new TableComponentCollection(root, this);
+            _security = new SecurityFunction(root, this);
 
             _staticData = new RowEntryCollection(this.Root);
             _columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
@@ -782,6 +784,12 @@ namespace nHydrate.Generator.Models
                          select x).ToArray().Length != 0);
 
             }
+        }
+
+        [Browsable(false)]
+        public SecurityFunction Security
+        {
+            get { return _security; }
         }
 
         #endregion
@@ -1727,6 +1735,10 @@ namespace nHydrate.Generator.Models
                     node.AppendChild(metadataNode);
                 }
 
+                var securityNode = oDoc.CreateElement("security");
+                this.Security.XmlAppend(securityNode);
+                node.AppendChild(securityNode);
+
             }
             catch (Exception ex)
             {
@@ -1809,6 +1821,10 @@ namespace nHydrate.Generator.Models
                 var metadataNode = node.SelectSingleNode("metadata");
                 if (metadataNode != null)
                     this.MetaData.XmlLoad(metadataNode);
+
+                var securityNode = node.SelectSingleNode("security");
+                if (securityNode != null)
+                    this.Security.XmlLoad(securityNode);
 
                 this.Dirty = false;
             }

@@ -30,6 +30,7 @@ using System.Text;
 using nHydrate.Generator.Common.Util;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
 using DslDesign = global::Microsoft.VisualStudio.Modeling.Design;
+using System.ComponentModel;
 
 namespace nHydrate.Dsl
 {
@@ -471,5 +472,32 @@ namespace nHydrate.Dsl
             }
         }
 
+        string GetSecurityValue()
+        {
+            return (this.SecurityFunction != null) ? "(Has Security)" : "";
+        }
+
+        void SetSecurityValue(string v)
+        {
+        }
+
+    }
+
+    [RefreshProperties(RefreshProperties.All)]
+    partial class SecurityFunction
+    {
+        public override string ToString()
+        {
+            return this.Name;
+        }
+    }
+
+    [RefreshProperties(RefreshProperties.All)]
+    partial class SecurityFunctionParameter
+    {
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 }

@@ -91,6 +91,8 @@ namespace nHydrate.Dsl
 				typeof(IndexColumn),
 				typeof(ModelMetadata),
 				typeof(IndexModule),
+				typeof(SecurityFunction),
+				typeof(SecurityFunctionParameter),
 				typeof(nHydrateModelHasEntities),
 				typeof(EntityHasEntities),
 				typeof(EntityHasFields),
@@ -122,6 +124,8 @@ namespace nHydrate.Dsl
 				typeof(nHydrateModelHasModelMetadata),
 				typeof(EntityHasViews),
 				typeof(nHydrateModelHasIndexModules),
+				typeof(EntityHasSecurityFunction),
+				typeof(SecurityFunctionHasSecurityFunctionParameters),
 				typeof(nHydrateDiagram),
 				typeof(EntityAssociationConnector),
 				typeof(EntityInheritanceConnector),
@@ -197,6 +201,7 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(Entity), "GeneratesDoubleDerived", Entity.GeneratesDoubleDerivedDomainPropertyId, typeof(Entity.GeneratesDoubleDerivedPropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "TypedEntity", Entity.TypedEntityDomainPropertyId, typeof(Entity.TypedEntityPropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "IsTenant", Entity.IsTenantDomainPropertyId, typeof(Entity.IsTenantPropertyHandler)),
+				new DomainMemberInfo(typeof(Entity), "Security", Entity.SecurityDomainPropertyId, typeof(Entity.SecurityPropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "Name", Field.NameDomainPropertyId, typeof(Field.NamePropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "FriendlyName", Field.FriendlyNameDomainPropertyId, typeof(Field.FriendlyNamePropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "Nullable", Field.NullableDomainPropertyId, typeof(Field.NullablePropertyHandler)),
@@ -348,6 +353,18 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(ModelMetadata), "Value", ModelMetadata.ValueDomainPropertyId, typeof(ModelMetadata.ValuePropertyHandler)),
 				new DomainMemberInfo(typeof(IndexModule), "IndexID", IndexModule.IndexIDDomainPropertyId, typeof(IndexModule.IndexIDPropertyHandler)),
 				new DomainMemberInfo(typeof(IndexModule), "ModuleId", IndexModule.ModuleIdDomainPropertyId, typeof(IndexModule.ModuleIdPropertyHandler)),
+				new DomainMemberInfo(typeof(SecurityFunction), "SQL", SecurityFunction.SQLDomainPropertyId, typeof(SecurityFunction.SQLPropertyHandler)),
+				new DomainMemberInfo(typeof(SecurityFunction), "Name", SecurityFunction.NameDomainPropertyId, typeof(SecurityFunction.NamePropertyHandler)),
+				new DomainMemberInfo(typeof(SecurityFunctionParameter), "Name", SecurityFunctionParameter.NameDomainPropertyId, typeof(SecurityFunctionParameter.NamePropertyHandler)),
+				new DomainMemberInfo(typeof(SecurityFunctionParameter), "Nullable", SecurityFunctionParameter.NullableDomainPropertyId, typeof(SecurityFunctionParameter.NullablePropertyHandler)),
+				new DomainMemberInfo(typeof(SecurityFunctionParameter), "DataType", SecurityFunctionParameter.DataTypeDomainPropertyId, typeof(SecurityFunctionParameter.DataTypePropertyHandler)),
+				new DomainMemberInfo(typeof(SecurityFunctionParameter), "Summary", SecurityFunctionParameter.SummaryDomainPropertyId, typeof(SecurityFunctionParameter.SummaryPropertyHandler)),
+				new DomainMemberInfo(typeof(SecurityFunctionParameter), "Default", SecurityFunctionParameter.DefaultDomainPropertyId, typeof(SecurityFunctionParameter.DefaultPropertyHandler)),
+				new DomainMemberInfo(typeof(SecurityFunctionParameter), "IsGenerated", SecurityFunctionParameter.IsGeneratedDomainPropertyId, typeof(SecurityFunctionParameter.IsGeneratedPropertyHandler)),
+				new DomainMemberInfo(typeof(SecurityFunctionParameter), "Length", SecurityFunctionParameter.LengthDomainPropertyId, typeof(SecurityFunctionParameter.LengthPropertyHandler)),
+				new DomainMemberInfo(typeof(SecurityFunctionParameter), "Scale", SecurityFunctionParameter.ScaleDomainPropertyId, typeof(SecurityFunctionParameter.ScalePropertyHandler)),
+				new DomainMemberInfo(typeof(SecurityFunctionParameter), "SortOrder", SecurityFunctionParameter.SortOrderDomainPropertyId, typeof(SecurityFunctionParameter.SortOrderPropertyHandler)),
+				new DomainMemberInfo(typeof(SecurityFunctionParameter), "CodeFacade", SecurityFunctionParameter.CodeFacadeDomainPropertyId, typeof(SecurityFunctionParameter.CodeFacadePropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasEntities), "Multiplicity", EntityHasEntities.MultiplicityDomainPropertyId, typeof(EntityHasEntities.MultiplicityPropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasEntities), "RoleName", EntityHasEntities.RoleNameDomainPropertyId, typeof(EntityHasEntities.RoleNamePropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasEntities), "IsEnforced", EntityHasEntities.IsEnforcedDomainPropertyId, typeof(EntityHasEntities.IsEnforcedPropertyHandler)),
@@ -439,6 +456,10 @@ namespace nHydrate.Dsl
 				new DomainRolePlayerInfo(typeof(EntityHasViews), "ChildView", EntityHasViews.ChildViewDomainRoleId),
 				new DomainRolePlayerInfo(typeof(nHydrateModelHasIndexModules), "nHydrateModel", nHydrateModelHasIndexModules.nHydrateModelDomainRoleId),
 				new DomainRolePlayerInfo(typeof(nHydrateModelHasIndexModules), "IndexModule", nHydrateModelHasIndexModules.IndexModuleDomainRoleId),
+				new DomainRolePlayerInfo(typeof(EntityHasSecurityFunction), "Entity", EntityHasSecurityFunction.EntityDomainRoleId),
+				new DomainRolePlayerInfo(typeof(EntityHasSecurityFunction), "SecurityFunction", EntityHasSecurityFunction.SecurityFunctionDomainRoleId),
+				new DomainRolePlayerInfo(typeof(SecurityFunctionHasSecurityFunctionParameters), "SecurityFunction", SecurityFunctionHasSecurityFunctionParameters.SecurityFunctionDomainRoleId),
+				new DomainRolePlayerInfo(typeof(SecurityFunctionHasSecurityFunctionParameters), "SecurityFunctionParameter", SecurityFunctionHasSecurityFunctionParameters.SecurityFunctionParameterDomainRoleId),
 			};
 		}
 		#endregion
@@ -460,7 +481,7 @@ namespace nHydrate.Dsl
 	
 			if (createElementMap == null)
 			{
-				createElementMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(34);
+				createElementMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(36);
 				createElementMap.Add(typeof(nHydrateModel), 0);
 				createElementMap.Add(typeof(Entity), 1);
 				createElementMap.Add(typeof(Field), 2);
@@ -485,16 +506,18 @@ namespace nHydrate.Dsl
 				createElementMap.Add(typeof(IndexColumn), 21);
 				createElementMap.Add(typeof(ModelMetadata), 22);
 				createElementMap.Add(typeof(IndexModule), 23);
-				createElementMap.Add(typeof(nHydrateDiagram), 24);
-				createElementMap.Add(typeof(EntityAssociationConnector), 25);
-				createElementMap.Add(typeof(EntityInheritanceConnector), 26);
-				createElementMap.Add(typeof(EntityCompositeConnector), 27);
-				createElementMap.Add(typeof(EntityViewAssociationConnector), 28);
-				createElementMap.Add(typeof(EntityShape), 29);
-				createElementMap.Add(typeof(StoredProcedureShape), 30);
-				createElementMap.Add(typeof(ViewShape), 31);
-				createElementMap.Add(typeof(EntityCompositeShape), 32);
-				createElementMap.Add(typeof(FunctionShape), 33);
+				createElementMap.Add(typeof(SecurityFunction), 24);
+				createElementMap.Add(typeof(SecurityFunctionParameter), 25);
+				createElementMap.Add(typeof(nHydrateDiagram), 26);
+				createElementMap.Add(typeof(EntityAssociationConnector), 27);
+				createElementMap.Add(typeof(EntityInheritanceConnector), 28);
+				createElementMap.Add(typeof(EntityCompositeConnector), 29);
+				createElementMap.Add(typeof(EntityViewAssociationConnector), 30);
+				createElementMap.Add(typeof(EntityShape), 31);
+				createElementMap.Add(typeof(StoredProcedureShape), 32);
+				createElementMap.Add(typeof(ViewShape), 33);
+				createElementMap.Add(typeof(EntityCompositeShape), 34);
+				createElementMap.Add(typeof(FunctionShape), 35);
 			}
 			int index;
 			if (!createElementMap.TryGetValue(elementType, out index))
@@ -550,28 +573,30 @@ namespace nHydrate.Dsl
 				case 21: return new IndexColumn(partition, propertyAssignments);
 				case 22: return new ModelMetadata(partition, propertyAssignments);
 				case 23: return new IndexModule(partition, propertyAssignments);
+				case 24: return new SecurityFunction(partition, propertyAssignments);
+				case 25: return new SecurityFunctionParameter(partition, propertyAssignments);
 				// A constructor was not generated for nHydrateDiagram because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 24: return new nHydrateDiagram(partition, propertyAssignments);
+				case 26: return new nHydrateDiagram(partition, propertyAssignments);
 				// A constructor was not generated for EntityAssociationConnector because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 25: return new EntityAssociationConnector(partition, propertyAssignments);
+				case 27: return new EntityAssociationConnector(partition, propertyAssignments);
 				// A constructor was not generated for EntityInheritanceConnector because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 26: return new EntityInheritanceConnector(partition, propertyAssignments);
-				case 27: return new EntityCompositeConnector(partition, propertyAssignments);
-				case 28: return new EntityViewAssociationConnector(partition, propertyAssignments);
+				case 28: return new EntityInheritanceConnector(partition, propertyAssignments);
+				case 29: return new EntityCompositeConnector(partition, propertyAssignments);
+				case 30: return new EntityViewAssociationConnector(partition, propertyAssignments);
 				// A constructor was not generated for EntityShape because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 29: return new EntityShape(partition, propertyAssignments);
+				case 31: return new EntityShape(partition, propertyAssignments);
 				// A constructor was not generated for StoredProcedureShape because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 30: return new StoredProcedureShape(partition, propertyAssignments);
-				case 31: return new ViewShape(partition, propertyAssignments);
-				case 32: return new EntityCompositeShape(partition, propertyAssignments);
+				case 32: return new StoredProcedureShape(partition, propertyAssignments);
+				case 33: return new ViewShape(partition, propertyAssignments);
+				case 34: return new EntityCompositeShape(partition, propertyAssignments);
 				// A constructor was not generated for FunctionShape because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 33: return new FunctionShape(partition, propertyAssignments);
+				case 35: return new FunctionShape(partition, propertyAssignments);
 				default: return null;
 			}
 		}
@@ -594,7 +619,7 @@ namespace nHydrate.Dsl
 	
 			if (createElementLinkMap == null)
 			{
-				createElementLinkMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(31);
+				createElementLinkMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(33);
 				createElementLinkMap.Add(typeof(nHydrateModelHasEntities), 0);
 				createElementLinkMap.Add(typeof(EntityHasEntities), 1);
 				createElementLinkMap.Add(typeof(EntityHasFields), 2);
@@ -626,6 +651,8 @@ namespace nHydrate.Dsl
 				createElementLinkMap.Add(typeof(nHydrateModelHasModelMetadata), 28);
 				createElementLinkMap.Add(typeof(EntityHasViews), 29);
 				createElementLinkMap.Add(typeof(nHydrateModelHasIndexModules), 30);
+				createElementLinkMap.Add(typeof(EntityHasSecurityFunction), 31);
+				createElementLinkMap.Add(typeof(SecurityFunctionHasSecurityFunctionParameters), 32);
 			}
 			int index;
 			if (!createElementLinkMap.TryGetValue(elementLinkType, out index))
@@ -677,6 +704,8 @@ namespace nHydrate.Dsl
 				// set to true. Please provide the constructor below.
 				case 29: return new EntityHasViews(partition, roleAssignments, propertyAssignments);
 				case 30: return new nHydrateModelHasIndexModules(partition, roleAssignments, propertyAssignments);
+				case 31: return new EntityHasSecurityFunction(partition, roleAssignments, propertyAssignments);
+				case 32: return new SecurityFunctionHasSecurityFunctionParameters(partition, roleAssignments, propertyAssignments);
 				default: return null;
 			}
 		}
@@ -880,6 +909,8 @@ namespace nHydrate.Dsl
 			DomainRoles.Add(global::nHydrate.Dsl.IndexHasIndexColumns.IndexColumnDomainRoleId, true);
 			DomainRoles.Add(global::nHydrate.Dsl.nHydrateModelHasModelMetadata.ModelMetadataDomainRoleId, true);
 			DomainRoles.Add(global::nHydrate.Dsl.nHydrateModelHasIndexModules.IndexModuleDomainRoleId, true);
+			DomainRoles.Add(global::nHydrate.Dsl.EntityHasSecurityFunction.SecurityFunctionDomainRoleId, true);
+			DomainRoles.Add(global::nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.SecurityFunctionParameterDomainRoleId, true);
 			#endregion
 		}
 		/// <summary>
