@@ -1336,20 +1336,21 @@ namespace nHydrate.Core.SQLGeneration
             return sb.ToString();
         }
 
-        public static string GetSQLCreateTableSecurityFunction(Table table, bool isInternal)
+        public static string GetSQLCreateTableSecurityFunction(Table table, ModelRoot model, bool isInternal)
         {
             var function = table.Security;
 
             var sb = new StringBuilder();
-            sb.AppendLine("if exists(select * from sys.objects where name = '" + function.Name + "' and type in('FN','IF','TF'))");
-            sb.AppendLine("drop function [" + table.GetSQLSchema() + "].[" + function.Name + "]");
+            var objectName = ValidationHelper.MakeDatabaseIdentifier("__security__" + table.Name + "_" + function.Name);
+            sb.AppendLine("if exists(select * from sys.objects where name = '" + objectName + "' and type in('FN','IF','TF'))");
+            sb.AppendLine("drop function [" + table.GetSQLSchema() + "].[" + objectName + "]");
             if (isInternal)
             {
                 sb.AppendLine("--MODELID: " + function.Key);
             }
             sb.AppendLine("GO");
             sb.AppendLine();
-            sb.AppendLine("CREATE FUNCTION [" + table.GetSQLSchema() + "].[" + function.Name + "]");
+            sb.AppendLine("CREATE FUNCTION [" + table.GetSQLSchema() + "].[" + objectName + "]");
 
             sb.AppendLine("(");
             if (function.Parameters.Count > 0)
@@ -1357,9 +1358,41 @@ namespace nHydrate.Core.SQLGeneration
             sb.AppendLine(")");
 
             sb.AppendLine("RETURNS TABLE AS RETURN (");
+
+            var realColumns = table.GetColumns().Select(x => x.DatabaseName).ToList();
+            var facadeColumns = table.GetColumns().Select(x => x.GetCodeFacade()).ToList();
+            if (table.AllowCreateAudit)
+            {
+                realColumns.Add(model.Database.CreatedByColumnName);
+                realColumns.Add(model.Database.CreatedDateColumnName);
+                facadeColumns.Add(model.Database.CreatedByColumnName);
+                facadeColumns.Add(model.Database.CreatedDateColumnName);
+            }
+            if (table.AllowModifiedAudit)
+            {
+                realColumns.Add(model.Database.ModifiedByColumnName);
+                realColumns.Add(model.Database.ModifiedDateColumnName);
+                facadeColumns.Add(model.Database.ModifiedByColumnName);
+                facadeColumns.Add(model.Database.ModifiedDateColumnName);
+            }
+            if (table.AllowTimestamp)
+            {
+                realColumns.Add(model.Database.TimestampColumnName);
+                facadeColumns.Add(model.Database.TimestampColumnName);
+            }
+
+            var ql = new List<string>();
+            for (var ii = 0; ii < realColumns.Count; ii++)
+            {
+                ql.Add("[" + realColumns[ii] + "] AS [" + facadeColumns[ii] + "]");
+            }
+
+            sb.AppendLine("WITH Z AS (");
             sb.AppendLine(function.SQL);
             sb.AppendLine(")");
-            sb.AppendLine();
+            sb.AppendLine("select " + string.Join(",", ql) + " from Z");
+
+            sb.AppendLine(")");
 
             if (isInternal)
             {

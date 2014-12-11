@@ -1288,7 +1288,7 @@ namespace nHydrate.Generator.Models
 
         public string GetCodeFacade()
         {
-            if (this.CodeFacade == "")
+            if (string.IsNullOrEmpty(this.CodeFacade))
                 return this.Name;
             else
                 return this.CodeFacade;
