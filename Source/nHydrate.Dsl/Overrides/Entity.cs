@@ -488,7 +488,7 @@ namespace nHydrate.Dsl
     {
         public override string ToString()
         {
-            return this.Name;
+            return this.SQL;
         }
     }
 

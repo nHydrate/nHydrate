@@ -159,7 +159,6 @@ namespace nHydrate.Dsl.Custom
                     var secNode = XmlHelper.AddElement(document.DocumentElement, "security") as XmlElement;
 
                     XmlHelper.AddAttribute(secNode, "id", item.SecurityFunction.Id);
-                    XmlHelper.AddAttribute(secNode, "name", item.SecurityFunction.Name);
 
                     var ff = Path.Combine(folder, item.Name + ".security.sql");
                     WriteFileIfNeedBe(ff, item.SecurityFunction.SQL, generatedFileList);
@@ -175,7 +174,7 @@ namespace nHydrate.Dsl.Custom
                         XmlHelper.AddCData((XmlElement)parameterNode, "summary", parameter.Summary);
                         XmlHelper.AddLineBreak((XmlElement)parameterNode);
 
-                        XmlHelper.AddAttribute(parameterNode, "id", parameter.Id);
+                        //XmlHelper.AddAttribute(parameterNode, "id", parameter.Id);
                         XmlHelper.AddAttribute(parameterNode, "name", parameter.Name);
                         XmlHelper.AddAttribute(parameterNode, "nullable", parameter.Nullable);
                         XmlHelper.AddAttribute(parameterNode, "datatype", parameter.DataType.ToString());
@@ -1049,9 +1048,10 @@ namespace nHydrate.Dsl.Custom
                 var secNode = document.DocumentElement.SelectSingleNode("//security");
                 if (secNode != null)
                 {
-                    item.SecurityFunction = new SecurityFunction(item.Partition);
+                    var secItemID = XmlHelper.GetAttributeValue(secNode, "id", Guid.Empty);
+                    var secFunction = new SecurityFunction(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, XmlHelper.GetAttributeValue(secNode, "id", Guid.NewGuid())) });
+                    item.SecurityFunction = secFunction;
                     item.SecurityFunction.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
-                    item.SecurityFunction.Name = XmlHelper.GetAttributeValue(secNode, "name", item.Name);
                     item.SecurityFunction.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
 
                     var ff = Path.Combine(folder, item.Name + ".security.sql");

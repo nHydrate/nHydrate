@@ -24314,23 +24314,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// Name
-			if (!serializationContext.Result.Failed)
-			{
-				string attribName = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "name");
-				if (attribName != null)
-				{
-					global::System.String valueOfName;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribName, out valueOfName))
-					{
-						instanceOfSecurityFunction.Name = valueOfName;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "name", typeof(global::System.String), attribName);
-					}
-				}
-			}
 		}
 	
 		/// <summary>
@@ -24852,17 +24835,6 @@ namespace nHydrate.Dsl
 				{
 					if (!string.IsNullOrEmpty(propValue))
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "sQL", propValue);
-	
-				}
-			}
-			// Name
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.String propValue = instanceOfSecurityFunction.Name;
-				if (!serializationContext.Result.Failed)
-				{
-					if (!string.IsNullOrEmpty(propValue))
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "name", propValue);
 	
 				}
 			}

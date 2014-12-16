@@ -1341,7 +1341,7 @@ namespace nHydrate.Core.SQLGeneration
             var function = table.Security;
 
             var sb = new StringBuilder();
-            var objectName = ValidationHelper.MakeDatabaseIdentifier("__security__" + table.Name + "_" + function.Name);
+            var objectName = ValidationHelper.MakeDatabaseIdentifier("__security__" + table.Name);
             sb.AppendLine("if exists(select * from sys.objects where name = '" + objectName + "' and type in('FN','IF','TF'))");
             sb.AppendLine("drop function [" + table.GetSQLSchema() + "].[" + objectName + "]");
             if (isInternal)

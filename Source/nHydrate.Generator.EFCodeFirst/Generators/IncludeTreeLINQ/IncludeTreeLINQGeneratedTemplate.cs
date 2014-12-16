@@ -161,6 +161,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.IncludeTreeLINQ
 
                             if (childTable.Generated &&
                                 parentTable.Generated &&
+                                !childTable.Security.IsValid() && //do not gen for items covered with a security method
                                 !childTable.IsInheritedFrom(parentTable) &&
                                 (!allTables.Contains(childTable)))
                             {

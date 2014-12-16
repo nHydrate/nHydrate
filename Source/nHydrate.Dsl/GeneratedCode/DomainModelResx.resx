@@ -2617,18 +2617,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;SQL&apos; on DomainClass &apos;SecurityFunction&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.SecurityFunction/Name.Description" xml:space="preserve">
-    <value>Determines the name of this object</value>
-    <comment>Description for DomainProperty &apos;Name&apos; on DomainClass &apos;SecurityFunction&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.SecurityFunction/Name.DisplayName" xml:space="preserve">
-    <value>Name</value>
-    <comment>DisplayName for DomainProperty &apos;Name&apos; on DomainClass &apos;SecurityFunction&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.SecurityFunction/Name.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;Name&apos; on DomainClass &apos;SecurityFunction&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.SecurityFunctionParameter.Description" xml:space="preserve">
     <value>Description for nHydrate.Dsl.SecurityFunctionParameter</value>
     <comment>Description for DomainClass &apos;SecurityFunctionParameter&apos;</comment>

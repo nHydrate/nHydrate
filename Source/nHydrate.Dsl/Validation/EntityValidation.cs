@@ -1002,7 +1002,6 @@ namespace nHydrate.Dsl
                 if (this.SecurityFunction != null)
                 {
                     var isValid = true;
-                    if (!ValidationHelper.ValidEntityName(this.SecurityFunction.Name)) isValid = false;
                     if (string.IsNullOrEmpty(this.SecurityFunction.SQL)) isValid = false;
                     foreach (var p in this.SecurityFunction.SecurityFunctionParameters)
                     {

@@ -533,7 +533,6 @@ namespace nHydrate.DslPackage.Objects
                     if (entity.SecurityFunction != null)
                     {
                         newTable.Security.ResetKey(entity.SecurityFunction.Id.ToString());
-                        newTable.Security.Name = entity.SecurityFunction.Name;
                         newTable.Security.SQL = entity.SecurityFunction.SQL;
 
                         //Just in case these are ordered get all sort-ordered parameters first then take on all unordred alphabetized parmameters

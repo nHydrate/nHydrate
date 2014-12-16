@@ -77,20 +77,12 @@
     <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
       <Link>Properties\AssemblyInfoGeneratorCommon.cs</Link>
     </Compile>
-    <Compile Include="Generators\ContextExtensions\ContextExtensionsExtenderGenerator.cs" />
-    <Compile Include="Generators\ContextExtensions\ContextExtensionsExtenderTemplate.cs" />
-    <Compile Include="Generators\ContextExtensions\ContextExtensionsGeneratedGenerator.cs" />
-    <Compile Include="Generators\ContextExtensions\ContextExtensionsGeneratedTemplate.cs" />
     <Compile Include="Generators\Contexts\ContextExtenderGenerator.cs" />
     <Compile Include="Generators\Contexts\ContextExtenderTemplate.cs" />
     <Compile Include="Generators\Contexts\ContextGeneratedGenerator.cs" />
     <Compile Include="Generators\Contexts\ContextGeneratedTemplate.cs" />
     <Compile Include="EFDALMockProjectGenerator.cs" />
     <Compile Include="EFDALMockBaseTemplate.cs" />
-    <Compile Include="Generators\IncludeTreeLINQ\IncludeTreeLINQExtenderGenerator.cs" />
-    <Compile Include="Generators\IncludeTreeLINQ\IncludeTreeLINQExtenderTemplate.cs" />
-    <Compile Include="Generators\IncludeTreeLINQ\IncludeTreeLINQGeneratedGenerator.cs" />
-    <Compile Include="Generators\IncludeTreeLINQ\IncludeTreeLINQGeneratedTemplate.cs" />
     <Compile Include="Generators\MockObjectSet\MockObjectSetExtenderGenerator.cs" />
     <Compile Include="Generators\MockObjectSet\MockObjectSetExtenderTemplate.cs" />
     <Compile Include="Generators\MockObjectSet\MockObjectSetGeneratedGenerator.cs" />

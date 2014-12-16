@@ -38,8 +38,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.txtSQL = new FastColoredTextBoxNS.FastColoredTextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtName = new System.Windows.Forms.TextBox();
             this.lstParameter = new System.Windows.Forms.ListBox();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -48,8 +46,8 @@
             this.cmdParameterAdd = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.panel3 = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -163,26 +161,8 @@
             this.txtSQL.Location = new System.Drawing.Point(0, 25);
             this.txtSQL.Name = "txtSQL";
             this.txtSQL.RightBracket = ')';
-            this.txtSQL.Size = new System.Drawing.Size(507, 203);
+            this.txtSQL.Size = new System.Drawing.Size(507, 216);
             this.txtSQL.TabIndex = 73;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 72);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 13);
-            this.label2.TabIndex = 74;
-            this.label2.Text = "Name:";
-            // 
-            // txtName
-            // 
-            this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtName.Location = new System.Drawing.Point(56, 72);
-            this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(466, 20);
-            this.txtName.TabIndex = 75;
             // 
             // lstParameter
             // 
@@ -190,7 +170,7 @@
             this.lstParameter.FormattingEnabled = true;
             this.lstParameter.Location = new System.Drawing.Point(0, 21);
             this.lstParameter.Name = "lstParameter";
-            this.lstParameter.Size = new System.Drawing.Size(233, 171);
+            this.lstParameter.Size = new System.Drawing.Size(233, 185);
             this.lstParameter.TabIndex = 76;
             // 
             // propertyGrid1
@@ -198,7 +178,7 @@
             this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(270, 225);
+            this.propertyGrid1.Size = new System.Drawing.Size(270, 239);
             this.propertyGrid1.TabIndex = 77;
             // 
             // splitContainer1
@@ -216,7 +196,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.propertyGrid1);
-            this.splitContainer1.Size = new System.Drawing.Size(507, 225);
+            this.splitContainer1.Size = new System.Drawing.Size(507, 239);
             this.splitContainer1.SplitterDistance = 233;
             this.splitContainer1.TabIndex = 78;
             // 
@@ -225,7 +205,7 @@
             this.panel4.Controls.Add(this.cmdParameterDelete);
             this.panel4.Controls.Add(this.cmdParameterAdd);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(0, 192);
+            this.panel4.Location = new System.Drawing.Point(0, 206);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(233, 33);
             this.panel4.TabIndex = 78;
@@ -273,20 +253,9 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer1);
-            this.splitContainer2.Size = new System.Drawing.Size(507, 457);
-            this.splitContainer2.SplitterDistance = 228;
+            this.splitContainer2.Size = new System.Drawing.Size(507, 484);
+            this.splitContainer2.SplitterDistance = 241;
             this.splitContainer2.TabIndex = 79;
-            // 
-            // panel3
-            // 
-            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel3.Controls.Add(this.splitContainer2);
-            this.panel3.Location = new System.Drawing.Point(15, 98);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(507, 457);
-            this.panel3.TabIndex = 80;
             // 
             // label4
             // 
@@ -298,14 +267,23 @@
             this.label4.Text = "SQL: This must result in a set of rows from the parent entity";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // panel3
+            // 
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3.Controls.Add(this.splitContainer2);
+            this.panel3.Location = new System.Drawing.Point(15, 71);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(507, 484);
+            this.panel3.TabIndex = 80;
+            // 
             // SecurityFunctionForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(534, 597);
             this.Controls.Add(this.panel3);
-            this.Controls.Add(this.txtName);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.MaximizeBox = false;
@@ -330,7 +308,6 @@
             this.splitContainer2.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
 		}
 
@@ -344,8 +321,6 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.PictureBox pictureBox1;
         private FastColoredTextBoxNS.FastColoredTextBox txtSQL;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txtName;
         private System.Windows.Forms.ListBox lstParameter;
         private System.Windows.Forms.PropertyGrid propertyGrid1;
         private System.Windows.Forms.SplitContainer splitContainer1;

@@ -691,11 +691,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 {
                     var parentTable = (Table)relation.ParentTableRef.Object;
                     var childTable = (Table)relation.ChildTableRef.Object;
+                    var isPublic = true;
+                    var scope = "public";
+                    if (childTable.Security.IsValid())
+                    {
+                        scope = "protected internal";
+                        isPublic = false;
+                    }
 
                     //If not both generated then do not process this code block
                     if (!parentTable.Generated || !childTable.Generated)
                     {
                         //Do Nothing
+                        //One or both is not generated or there is a security function on the child so no gen
                     }
 
                     //inheritance relationship
@@ -718,16 +726,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped]");
-                        sb.AppendLine("		public virtual " + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; set; }");
+                        sb.AppendLine("		" + scope + " virtual " + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; set; }");
                         sb.AppendLine();
 
-                        //Add interface map
-                        sb.AppendLine("		" + this.InterfaceAssemblyNamespace + ".Entity.I" + childTable.PascalName + " " + this.InterfaceAssemblyNamespace + ".Entity.I" + _item.PascalName + "." + relation.PascalRoleName + childTable.PascalName + "");
-                        sb.AppendLine("		{");
-                        sb.AppendLine("			get { return this." + relation.PascalRoleName + childTable.PascalName + "; }");
-                        sb.AppendLine("			set { this." + relation.PascalRoleName + childTable.PascalName + " = (" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ")value; }");
-                        sb.AppendLine("		}");
-                        sb.AppendLine();
+                        if (isPublic)
+                        {
+                            //Add interface map
+                            sb.AppendLine("		" + this.InterfaceAssemblyNamespace + ".Entity.I" + childTable.PascalName + " " + this.InterfaceAssemblyNamespace + ".Entity.I" + _item.PascalName + "." + relation.PascalRoleName + childTable.PascalName + "");
+                            sb.AppendLine("		{");
+                            sb.AppendLine("			get { return this." + relation.PascalRoleName + childTable.PascalName + "; }");
+                            sb.AppendLine("			set { this." + relation.PascalRoleName + childTable.PascalName + " = (" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ")value; }");
+                            sb.AppendLine("		}");
+                            sb.AppendLine();
+                        }
                     }
 
                     //Process the associative tables
@@ -750,8 +761,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                             sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + targetTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? "" : " (role: '" + otherRelation.PascalRoleName + "')"));
                             sb.AppendLine("		/// </summary>");
                             sb.AppendLine("		[DataMember]");
-                            //sb.AppendLine("		public virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + targetTable.PascalName + "> " + targetTable.PascalName + "List { get; set; }");
-                            sb.AppendLine("		public virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + targetTable.PascalName + "> " + targetTable.PascalName + "List");
+                            sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + targetTable.PascalName + "> " + targetTable.PascalName + "List");
                             sb.AppendLine("		{");
                             sb.AppendLine("			get");
                             sb.AppendLine("			{");
@@ -764,12 +774,15 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                             sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + targetTable.PascalName + "> _" + targetTable.PascalName + "List { get; set; }");
                             sb.AppendLine();
 
-                            //Interface implementation
-                            sb.AppendLine("		ICollection<" + this.InterfaceAssemblyNamespace + ".Entity.I" + targetTable.PascalName + "> " + this.InterfaceAssemblyNamespace + ".Entity.I" + _item.PascalName + "." + relation.PascalRoleName + targetTable.PascalName + "List");
-                            sb.AppendLine("		{");
-                            sb.AppendLine("			get { return this." + relation.PascalRoleName + targetTable.PascalName + "List.Cast<" + this.InterfaceAssemblyNamespace + ".Entity.I" + targetTable.PascalName + ">().ToList(); }");
-                            sb.AppendLine("		}");
-                            sb.AppendLine();
+                            if (isPublic)
+                            {
+                                //Interface implementation
+                                sb.AppendLine("		ICollection<" + this.InterfaceAssemblyNamespace + ".Entity.I" + targetTable.PascalName + "> " + this.InterfaceAssemblyNamespace + ".Entity.I" + _item.PascalName + "." + relation.PascalRoleName + targetTable.PascalName + "List");
+                                sb.AppendLine("		{");
+                                sb.AppendLine("			get { return this." + relation.PascalRoleName + targetTable.PascalName + "List.Cast<" + this.InterfaceAssemblyNamespace + ".Entity.I" + targetTable.PascalName + ">().ToList(); }");
+                                sb.AppendLine("		}");
+                                sb.AppendLine();
+                            }
                         }
                     }
 
@@ -780,8 +793,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
-                        //sb.AppendLine("		public virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + relation.PascalRoleName + childTable.PascalName + "List { get; set; }");
-                        sb.AppendLine("		public virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + relation.PascalRoleName + childTable.PascalName + "List");
+                        sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + relation.PascalRoleName + childTable.PascalName + "List");
                         sb.AppendLine("		{");
                         sb.AppendLine("			get");
                         sb.AppendLine("			{");
@@ -794,12 +806,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> _" + relation.PascalRoleName + childTable.PascalName + "List { get; set; }");
                         sb.AppendLine();
 
-                        //Interface implementation
-                        sb.AppendLine("		ICollection<" + this.InterfaceAssemblyNamespace + ".Entity.I" + childTable.PascalName + "> " + this.InterfaceAssemblyNamespace + ".Entity.I" + _item.PascalName + "." + relation.PascalRoleName + childTable.PascalName + "List");
-                        sb.AppendLine("		{");
-                        sb.AppendLine("			get { return this." + relation.PascalRoleName + childTable.PascalName + "List.Cast<" + this.InterfaceAssemblyNamespace + ".Entity.I" + childTable.PascalName + ">().ToList(); }");
-                        sb.AppendLine("		}");
-                        sb.AppendLine();
+                        if (isPublic)
+                        {
+                            //Interface implementation
+                            sb.AppendLine("		ICollection<" + this.InterfaceAssemblyNamespace + ".Entity.I" + childTable.PascalName + "> " + this.InterfaceAssemblyNamespace + ".Entity.I" + _item.PascalName + "." + relation.PascalRoleName + childTable.PascalName + "List");
+                            sb.AppendLine("		{");
+                            sb.AppendLine("			get { return this." + relation.PascalRoleName + childTable.PascalName + "List.Cast<" + this.InterfaceAssemblyNamespace + ".Entity.I" + childTable.PascalName + ">().ToList(); }");
+                            sb.AppendLine("		}");
+                            sb.AppendLine();
+                        }
+
                     }
                 }
             }

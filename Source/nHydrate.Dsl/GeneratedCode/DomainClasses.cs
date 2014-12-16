@@ -22078,7 +22078,6 @@ namespace nHydrate.Dsl
 	[DslDesign::DescriptionResource("nHydrate.Dsl.SecurityFunction.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 	[DslModeling::DomainModelOwner(typeof(global::nHydrate.Dsl.nHydrateDomainModel))]
 	[global::System.CLSCompliant(true)]
-	[global::System.Diagnostics.DebuggerDisplay("{GetType().Name,nq} (Name = {namePropertyStorage})")]
 	[DslModeling::DomainObjectId("1e5bf9d9-6c1b-44eb-a238-0b88d669b189")]
 	public partial class SecurityFunction : DslModeling::ModelElement, System.ComponentModel.INotifyPropertyChanged
 	{
@@ -22202,98 +22201,6 @@ namespace nHydrate.Dsl
 				{
 					ValueChanging(element, oldValue, newValue);
 					element.sQLPropertyStorage = newValue;
-					ValueChanged(element, oldValue, newValue);
-					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("SecurityFunction"));
-				}
-			}
-		}
-		
-		#endregion
-		#region Name domain property code
-		
-		/// <summary>
-		/// Name domain property Id.
-		/// </summary>
-		public static readonly global::System.Guid NameDomainPropertyId = new global::System.Guid(0x76af6de6, 0xcbc7, 0x469d, 0x90, 0x25, 0x68, 0x25, 0x35, 0xf9, 0xfe, 0x54);
-		
-		/// <summary>
-		/// Storage for Name
-		/// </summary>
-		private global::System.String namePropertyStorage = string.Empty;
-		
-		/// <summary>
-		/// Gets or sets the value of Name domain property.
-		/// Determines the name of this object
-		/// </summary>
-		[DslDesign::DisplayNameResource("nHydrate.Dsl.SecurityFunction/Name.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslDesign::CategoryResource("nHydrate.Dsl.SecurityFunction/Name.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslDesign::DescriptionResource("nHydrate.Dsl.SecurityFunction/Name.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslModeling::ElementName]
-		[DslModeling::DomainObjectId("76af6de6-cbc7-469d-9025-682535f9fe54")]
-		public virtual global::System.String Name
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return namePropertyStorage;
-			}
-			[global::System.Diagnostics.DebuggerStepThrough]
-			set
-			{
-				NamePropertyHandler.Instance.SetValue(this, value);
-			}
-		}
-		/// <summary>
-		/// Value handler for the SecurityFunction.Name domain property.
-		/// </summary>
-		internal sealed partial class NamePropertyHandler : DslModeling::DomainPropertyValueHandler<SecurityFunction, global::System.String>
-		{
-			private NamePropertyHandler() { }
-		
-			/// <summary>
-			/// Gets the singleton instance of the SecurityFunction.Name domain property value handler.
-			/// </summary>
-			public static readonly NamePropertyHandler Instance = new NamePropertyHandler();
-		
-			/// <summary>
-			/// Gets the Id of the SecurityFunction.Name domain property.
-			/// </summary>
-			public sealed override global::System.Guid DomainPropertyId
-			{
-				[global::System.Diagnostics.DebuggerStepThrough]
-				get
-				{
-					return NameDomainPropertyId;
-				}
-			}
-			
-			/// <summary>
-			/// Gets a strongly-typed value of the property on specified element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <returns>Property value.</returns>
-			public override sealed global::System.String GetValue(SecurityFunction element)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-				return element.Name;
-				//return element.GetValue<global::System.String>("Name", element.namePropertyStorage);
-				//return element.namePropertyStorage; //ORIGINAL CODE
-			}
-		
-			/// <summary>
-			/// Sets property value on an element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <param name="newValue">New property value.</param>
-			public override sealed void SetValue(SecurityFunction element, global::System.String newValue)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-		
-				global::System.String oldValue = GetValue(element);
-				if (newValue != oldValue)
-				{
-					ValueChanging(element, oldValue, newValue);
-					element.namePropertyStorage = newValue;
 					ValueChanged(element, oldValue, newValue);
 					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("SecurityFunction"));
 				}

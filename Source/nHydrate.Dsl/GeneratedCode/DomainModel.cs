@@ -354,7 +354,6 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(IndexModule), "IndexID", IndexModule.IndexIDDomainPropertyId, typeof(IndexModule.IndexIDPropertyHandler)),
 				new DomainMemberInfo(typeof(IndexModule), "ModuleId", IndexModule.ModuleIdDomainPropertyId, typeof(IndexModule.ModuleIdPropertyHandler)),
 				new DomainMemberInfo(typeof(SecurityFunction), "SQL", SecurityFunction.SQLDomainPropertyId, typeof(SecurityFunction.SQLPropertyHandler)),
-				new DomainMemberInfo(typeof(SecurityFunction), "Name", SecurityFunction.NameDomainPropertyId, typeof(SecurityFunction.NamePropertyHandler)),
 				new DomainMemberInfo(typeof(SecurityFunctionParameter), "Name", SecurityFunctionParameter.NameDomainPropertyId, typeof(SecurityFunctionParameter.NamePropertyHandler)),
 				new DomainMemberInfo(typeof(SecurityFunctionParameter), "Nullable", SecurityFunctionParameter.NullableDomainPropertyId, typeof(SecurityFunctionParameter.NullablePropertyHandler)),
 				new DomainMemberInfo(typeof(SecurityFunctionParameter), "DataType", SecurityFunctionParameter.DataTypeDomainPropertyId, typeof(SecurityFunctionParameter.DataTypePropertyHandler)),

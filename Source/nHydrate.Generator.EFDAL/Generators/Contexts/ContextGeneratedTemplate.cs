@@ -696,7 +696,7 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Returns the globally configured connection string for this context type");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static string GetConnectionString()");
+            sb.AppendLine("		internal static string GetConnectionString()");
             sb.AppendLine("		{");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
@@ -739,7 +739,7 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
             sb.AppendLine("		#region I" + _model.ProjectName + " Members");
             sb.AppendLine();
 
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Security.IsValid() && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		System.Data.Objects.IObjectSet<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + table.PascalName + "> " + this.GetLocalNamespace() + ".Interfaces.I" + _model.ProjectName + "Entities." + table.PascalName);
                 sb.AppendLine("		{");

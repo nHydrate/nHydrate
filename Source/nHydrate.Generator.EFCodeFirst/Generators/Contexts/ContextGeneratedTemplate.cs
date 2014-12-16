@@ -331,6 +331,17 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			Database.SetInitializer(new CustomDatabaseInitializer<" + _model.ProjectName + "Entities>());");
             sb.AppendLine();
 
+            //For entities with security functions we need to manually set the 
+            sb.AppendLine("			//Manually set the entities that have a security function because their DbSet<> is protected and not set");
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            {
+                if (table.Security.IsValid())
+                {
+                    sb.AppendLine("			this." + table.PascalName + "__INTERNAL = Set<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">();");
+                }
+            }
+            sb.AppendLine();
+
             #region Hierarchy Mapping
 
             var hierarchyList = new List<Table>();
@@ -842,10 +853,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 var hasSecurity = table.Security.IsValid();
+                var name = table.PascalName;
+                if (hasSecurity) name += "__INTERNAL";
+
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Entity set for " + table.PascalName);
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		" + (hasSecurity ? "protected internal" : "public") + " DbSet<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> " + table.PascalName + " { get; set; }");
+                sb.AppendLine("		" + (hasSecurity ? "protected internal" : "public") + " DbSet<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> " + name + " { get; set; }");
                 sb.AppendLine();
             }
 
@@ -1055,19 +1069,36 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		#region DeleteItem Methods");
             sb.AppendLine();
 
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Deletes an entity from the context");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"entity\">The entity to delete</param>");
+            sb.AppendLine("		public virtual void DeleteItem(nHydrate.EFCore.DataAccess.IBusinessObject entity)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if (entity == null) return;");
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable).OrderBy(x => x.PascalName))
+            {
+                var name = table.GetAbsoluteBaseTable().PascalName;
+                if (table.Security.IsValid()) name += "__INTERNAL";
+                sb.AppendLine("			if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") this." + name + ".Remove(entity as " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ");");
+            }
+            sb.AppendLine("			throw new Exception(\"Unknown entity type\");");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
             #region Tables
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Deletes an entity of type '" + table.PascalName + "'");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <param name=\"entity\">The entity to delete</param>");
-                sb.AppendLine("		public virtual void DeleteItem(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " entity)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			if (entity == null) return;");
-                sb.AppendLine("			this." + table.GetAbsoluteBaseTable().PascalName + ".Remove(entity);");
-                sb.AppendLine("		}");
-                sb.AppendLine();
+                //sb.AppendLine("		/// <summary>");
+                //sb.AppendLine("		/// Deletes an entity of type '" + table.PascalName + "'");
+                //sb.AppendLine("		/// </summary>");
+                //sb.AppendLine("		/// <param name=\"entity\">The entity to delete</param>");
+                //sb.AppendLine("		public virtual void DeleteItem(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " entity)");
+                //sb.AppendLine("		{");
+                //sb.AppendLine("			if (entity == null) return;");
+                //sb.AppendLine("			this." + table.GetAbsoluteBaseTable().PascalName + ".Remove(entity);");
+                //sb.AppendLine("		}");
+                //sb.AppendLine();
 
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Deletes an entity of type '" + table.PascalName + "'");
@@ -1143,7 +1174,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Returns the globally configured connection string for this context type");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static string GetConnectionString()");
+            sb.AppendLine("		internal static string GetConnectionString()");
             sb.AppendLine("		{");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
@@ -1177,11 +1208,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		#region I" + _model.ProjectName + " Members");
             sb.AppendLine();
 
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.Security.IsValid() && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("		System.Data.Objects.IObjectSet<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + table.PascalName + "> " + this.GetLocalNamespace() + ".Interfaces.I" + _model.ProjectName + "Entities." + table.PascalName);
+                sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + table.PascalName + "> " + this.GetLocalNamespace() + ".Interfaces.I" + _model.ProjectName + "Entities." + table.PascalName);
                 sb.AppendLine("		{");
-                sb.AppendLine("			get { return (System.Data.Objects.IObjectSet<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + table.PascalName + ">)this." + table.PascalName + "; }");
+                sb.AppendLine("			get { return (IQueryable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + table.PascalName + ">)this." + table.PascalName + "; }");
                 sb.AppendLine("		}");
                 sb.AppendLine();
             }
@@ -1361,13 +1392,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.Security.IsValid()).OrderBy(x => x.PascalName).ToList())
             {
                 var function = table.Security;
-                var objectName = ValidationHelper.MakeDatabaseIdentifier("__security__" + table.Name + "_" + function.Name);
+                var objectName = ValidationHelper.MakeDatabaseIdentifier("__security__" + table.Name);
 
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Security function for '" + table.PascalName + "' entity");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		[DbFunction(\"" + _model.ProjectName + "Entities\", \"" + objectName + "\")]");
-                sb.Append("		public virtual IQueryable<" + table.PascalName + "> " + function.Name + "(");
+                sb.Append("		public virtual IQueryable<" + table.PascalName + "> " + table.PascalName + "(");
                 var parameterList = function.GetParameters().Where(x => x.Generated).ToList();
                 foreach (var parameter in parameterList)
                 {

@@ -109,6 +109,7 @@ namespace nHydrate.Generator.EFDAL.Mocks.Generators.Contexts
         {
             #region SequentialID functionality
 
+            sb.AppendLine("		#region SequentialGuid Stuff");
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public static void ResetSequentialGuid(EntityMappingConstants entity, string key, Guid seed)");
             sb.AppendLine("		{");
@@ -140,7 +141,113 @@ namespace nHydrate.Generator.EFDAL.Mocks.Generators.Contexts
             sb.AppendLine("				return _sequentialIdGeneratorCache[k].NewId();");
             sb.AppendLine("			}");
             sb.AppendLine("		}");
+            sb.AppendLine("		#endregion");
             sb.AppendLine();
+
+            #region Internal Helper Class SequentialIdGenerator
+            sb.AppendLine("		#region SequentialIdGenerator");
+            sb.AppendLine("	/// <summary>");
+            sb.AppendLine("	/// Generates Sequential Guid values that can be used for Sql Server UniqueIdentifiers to improve performance.");
+            sb.AppendLine("	/// </summary>");
+            sb.AppendLine("	internal class SequentialIdGenerator");
+            sb.AppendLine("	{");
+            sb.AppendLine("		private readonly object _lock;");
+            sb.AppendLine("		private Guid _lastGuid;");
+            sb.AppendLine("		// 3 - the least significant byte in Guid ByteArray [for SQL Server ORDER BY clause]");
+            sb.AppendLine("		// 10 - the most significant byte in Guid ByteArray [for SQL Server ORDERY BY clause]");
+            sb.AppendLine("		private static readonly int[] SqlOrderMap = new int[] { 3, 2, 1, 0, 5, 4, 7, 6, 9, 8, 15, 14, 13, 12, 11, 10 };");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Creates a new SequentialId class to generate sequential GUID values.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public SequentialIdGenerator() : this(Guid.NewGuid()) { }");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Creates a new SequentialId class to generate sequential GUID values.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"seed\">Starting seed value.</param>");
+            sb.AppendLine("		/// <remarks>You can save the last generated value <see cref=\"LastValue\"/> and then ");
+            sb.AppendLine("		/// use this as the new seed value to pick up where you left off.</remarks>");
+            sb.AppendLine("		public SequentialIdGenerator(Guid seed)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			_lock = new object();");
+            sb.AppendLine("			_lastGuid = seed;");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Last generated guid value.  If no values have been generated, this will be the seed value.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public Guid LastValue");
+            sb.AppendLine("		{");
+            sb.AppendLine("			get {");
+            sb.AppendLine("				lock (_lock)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					return _lastGuid;");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine("			set");
+            sb.AppendLine("			{");
+            sb.AppendLine("				lock (_lock)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					_lastGuid = value;");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Generate a new sequential id.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <returns>New sequential id value.</returns>");
+            sb.AppendLine("		public Guid NewId()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			Guid newId;");
+            sb.AppendLine("			lock (_lock)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var guidBytes = _lastGuid.ToByteArray();");
+            sb.AppendLine("				ReorderToSqlOrder(ref guidBytes);");
+            sb.AppendLine("				newId = new Guid(guidBytes);");
+            sb.AppendLine("				_lastGuid = newId;");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+            sb.AppendLine("			return newId;");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		private static void ReorderToSqlOrder(ref byte[] bytes)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			foreach (var bytesIndex in SqlOrderMap)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				bytes[bytesIndex]++;");
+            sb.AppendLine("				if (bytes[bytesIndex] != 0)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					break;");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// IComparer.Compare compatible method to order Guid values the same way as MS Sql Server.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"x\">The first guid to compare</param>");
+            sb.AppendLine("		/// <param name=\"y\">The second guid to compare</param>");
+            sb.AppendLine("		/// <returns><see cref=\"System.Collections.IComparer.Compare\"/></returns>");
+            sb.AppendLine("		public static int SqlCompare(Guid x, Guid y)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			var result = 0;");
+            sb.AppendLine("			var index = SqlOrderMap.Length - 1;");
+            sb.AppendLine("			var xBytes = x.ToByteArray();");
+            sb.AppendLine("			var yBytes = y.ToByteArray();");
+            sb.AppendLine();
+            sb.AppendLine("			while (result == 0 && index >= 0)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				result = xBytes[SqlOrderMap[index]].CompareTo(yBytes[SqlOrderMap[index]]);");
+            sb.AppendLine("				index--;");
+            sb.AppendLine("			}");
+            sb.AppendLine("			return result;");
+            sb.AppendLine("		}");
+            sb.AppendLine("		}");
+            sb.AppendLine("	#endregion");
+            sb.AppendLine();
+            #endregion
 
             #endregion
         }
@@ -245,6 +352,10 @@ namespace nHydrate.Generator.EFDAL.Mocks.Generators.Contexts
                 sb.AppendLine("			set { _" + table.PascalName + " = value as MockObjectSet<" + this.InterfaceProjectNamespace + ".Entity.I" + table.PascalName + ">; }");
                 sb.AppendLine("		}");
                 sb.AppendLine("		private MockObjectSet<" + this.InterfaceProjectNamespace + ".Entity.I" + table.PascalName + "> _" + table.PascalName + ";");
+                sb.AppendLine("		IQueryable<" + this.InterfaceProjectNamespace + ".Entity.I" + table.PascalName + "> " + this.InterfaceProjectNamespace + ".I" + _model.ProjectName + "Entities." + table.PascalName + "");
+                sb.AppendLine("		{");
+                sb.AppendLine("			get { return this." + table.PascalName + "; }");
+                sb.AppendLine("		}");
                 sb.AppendLine();
             }
         }

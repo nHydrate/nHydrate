@@ -108,7 +108,6 @@ namespace nHydrate.Dsl.Design.Forms
                 _transaction = _entity.nHydrateModel.Store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString());
 
                 if (_entity.SecurityFunction == null) _entity.SecurityFunction = new SecurityFunction(_entity.Partition);
-                txtName.Text = _entity.SecurityFunction.Name;
                 txtSQL.Text = _entity.SecurityFunction.SQL;
 
                 foreach (var p in this.Entity.SecurityFunction.SecurityFunctionParameters)
@@ -125,7 +124,6 @@ namespace nHydrate.Dsl.Design.Forms
 
             //Validation
             var isValid = true;
-            if (!ValidationHelper.ValidEntityName(txtName.Text)) isValid = false;
             if (string.IsNullOrEmpty(txtSQL.Text)) isValid = false;
             foreach(var p in _entity.SecurityFunction.SecurityFunctionParameters)
             {
@@ -138,7 +136,6 @@ namespace nHydrate.Dsl.Design.Forms
                 return;
             }
 
-            _entity.SecurityFunction.Name = txtName.Text;
             _entity.SecurityFunction.SQL = txtSQL.Text;
 
             _transaction.Commit();

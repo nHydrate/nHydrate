@@ -1666,11 +1666,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="76af6de6-cbc7-469d-9025-682535f9fe54" Description="Determines the name of this object" Name="Name" DisplayName="Name" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
       </Properties>
       <ElementMergeDirectives>
         <ElementMergeDirective>
@@ -3646,9 +3641,6 @@
         <ElementData>
           <XmlPropertyData XmlName="sQL">
             <DomainPropertyMoniker Name="SecurityFunction/SQL" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="name">
-            <DomainPropertyMoniker Name="SecurityFunction/Name" />
           </XmlPropertyData>
           <XmlRelationshipData UseFullForm="true" RoleElementName="securityFunctionParameters">
             <DomainRelationshipMoniker Name="SecurityFunctionHasSecurityFunctionParameters" />

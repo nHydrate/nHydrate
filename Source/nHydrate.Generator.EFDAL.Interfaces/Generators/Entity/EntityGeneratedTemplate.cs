@@ -285,9 +285,10 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
                 var childTable = relation.ChildTable;
 
                 //If not both generated then do not process this code block
-                if (!parentTable.Generated || !childTable.Generated)
+                if (!parentTable.Generated || !childTable.Generated || childTable.Security.IsValid())
                 {
                     //Do Nothing
+                    //If either is NOT generated or child has a security function on it, do not gen
                 }
 
                 //inheritance relationship

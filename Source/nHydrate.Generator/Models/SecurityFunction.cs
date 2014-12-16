@@ -64,7 +64,6 @@ namespace nHydrate.Generator.Models
         #region Properties
 
         public string SQL { get; set; }
-        public string Name { get; set; }
 
         [
         Browsable(false),
@@ -101,7 +100,7 @@ namespace nHydrate.Generator.Models
 
         public bool IsValid()
         {
-            return (!string.IsNullOrEmpty(this.SQL) && !string.IsNullOrEmpty(this.Name));
+            return (!string.IsNullOrEmpty(this.SQL));
         }
 
         #region IXMLable Members
@@ -113,7 +112,6 @@ namespace nHydrate.Generator.Models
                 var oDoc = node.OwnerDocument;
 
                 XmlHelper.AddAttribute(node, "key", this.Key);
-                XmlHelper.AddAttribute(node, "name", this.Name);
                 XmlHelper.AddAttribute(node, "sql", this.SQL);
 
                 var parametersNode = oDoc.CreateElement("parameters");
@@ -132,7 +130,6 @@ namespace nHydrate.Generator.Models
             try
             {
                 _key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                this.Name = XmlHelper.GetAttributeValue(node, "name", string.Empty);
                 this.SQL= XmlHelper.GetAttributeValue(node, "sql", string.Empty);
 
                 var parametersNode = node.SelectSingleNode("parameters");

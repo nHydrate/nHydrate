@@ -119,16 +119,16 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Contexts
             sb.AppendLine("		int SaveChanges();");
             sb.AppendLine();
 
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Security.IsValid() && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary />");
                 if (table.ParentTable != null)
                 {
-                    sb.AppendLine("		IObjectSet<" + this.GetLocalNamespace() + ".Entity.I" + table.PascalName + "> " + table.PascalName + " { get ; }");
+                    sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity.I" + table.PascalName + "> " + table.PascalName + " { get ; }");
                 }
                 else
                 {
-                    sb.AppendLine("		IObjectSet<" + this.GetLocalNamespace() + ".Entity.I" + table.PascalName + "> " + table.PascalName + " { get ; }");
+                    sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity.I" + table.PascalName + "> " + table.PascalName + " { get ; }");
                 }
                 sb.AppendLine();
             }
