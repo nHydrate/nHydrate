@@ -38,23 +38,23 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
     public class ViewEntityGeneratedTemplate : EFCodeFirstBaseTemplate
     {
         private StringBuilder sb = new StringBuilder();
-        private CustomView _currentTable;
+        private CustomView _item;
 
         public ViewEntityGeneratedTemplate(ModelRoot model, CustomView currentTable)
             : base(model)
         {
-            _currentTable = currentTable;
+            _item = currentTable;
         }
 
         #region BaseClassTemplate overrides
         public override string FileName
         {
-            get { return string.Format("{0}.Generated.cs", _currentTable.PascalName); }
+            get { return string.Format("{0}.Generated.cs", _item.PascalName); }
         }
 
         public string ParentItemName
         {
-            get { return string.Format("{0}.cs", _currentTable.PascalName); }
+            get { return string.Format("{0}.cs", _item.PascalName); }
         }
 
         public override string FileContent
@@ -114,46 +114,93 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine();
         }
 
+        private void AppendedFieldEnum()
+        {
+            var imageColumnList = _item.GetColumnsByType(System.Data.SqlDbType.Image).OrderBy(x => x.Name).ToList();
+            if (imageColumnList.Count != 0)
+            {
+                sb.AppendLine("	#region FieldImageConstants Enumeration");
+                sb.AppendLine();
+                sb.AppendLine("	/// <summary>");
+                sb.AppendLine("	/// An enumeration of this object's image type fields");
+                sb.AppendLine("	/// </summary>");
+                sb.AppendLine("	public enum FieldImageConstants");
+                sb.AppendLine("	{");
+                foreach (var column in imageColumnList)
+                {
+                    sb.AppendLine("		/// <summary>");
+                    sb.AppendLine("		/// Field mapping for the image parameter '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
+                    sb.AppendLine("		/// </summary>");
+                    sb.AppendLine("		[System.ComponentModel.Description(\"Field mapping for the image parameter '" + column.PascalName + "' property\")]");
+                    sb.AppendLine("		" + column.PascalName + ",");
+                }
+                sb.AppendLine("	}");
+                sb.AppendLine();
+                sb.AppendLine("	#endregion");
+                sb.AppendLine();
+            }
+
+            sb.AppendLine("		#region FieldNameConstants Enumeration");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Enumeration to define each property that maps to a database field for the '" + _item.PascalName + "' table.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public enum FieldNameConstants");
+            sb.AppendLine("		{");
+            foreach (var column in _item.GeneratedColumns)
+            {
+                sb.AppendLine("			/// <summary>");
+                sb.AppendLine("			/// Field mapping for the '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
+                sb.AppendLine("			/// </summary>");
+                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + column.PascalName + "' property\")]");
+                sb.AppendLine("			" + column.PascalName + ",");
+            }
+
+            sb.AppendLine("		}");
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
+        }
+
         private void AppendEntityClass()
         {
-            var doubleDerivedClassName = _currentTable.PascalName;
-            if (_currentTable.GeneratesDoubleDerived)
+            var doubleDerivedClassName = _item.PascalName;
+            if (_item.GeneratesDoubleDerived)
             {
-                doubleDerivedClassName = _currentTable.PascalName + "Base";
+                doubleDerivedClassName = _item.PascalName + "Base";
 
                 sb.AppendLine("	/// <summary>");
-                sb.AppendLine("	/// The collection to hold '" + _currentTable.PascalName + "' entities");
-                if (!string.IsNullOrEmpty(_currentTable.Description))
-                    StringHelper.LineBreakCode(sb, _currentTable.Description, "	/// ");
+                sb.AppendLine("	/// The collection to hold '" + _item.PascalName + "' entities");
+                if (!string.IsNullOrEmpty(_item.Description))
+                    StringHelper.LineBreakCode(sb, _item.Description, "	/// ");
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
-                sb.AppendLine("	public partial class " + _currentTable.PascalName + " : " + doubleDerivedClassName);
+                sb.AppendLine("	public partial class " + _item.PascalName + " : " + doubleDerivedClassName);
                 sb.AppendLine("	{");
                 sb.AppendLine("	}");
                 sb.AppendLine();
             }
 
             sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// The collection to hold '" + _currentTable.PascalName + "' entities");
-            if (!string.IsNullOrEmpty(_currentTable.Description))
-                sb.AppendLine("	/// " + _currentTable.Description);
+            sb.AppendLine("	/// The collection to hold '" + _item.PascalName + "' entities");
+            if (!string.IsNullOrEmpty(_item.Description))
+                sb.AppendLine("	/// " + _item.Description);
             sb.AppendLine("	/// </summary>");
             sb.AppendLine("	[DataContract]");
             sb.AppendLine("	[Serializable]");
-            //sb.AppendLine("	[System.Data.Linq.Mapping.Table(Name = \"" + _currentTable.PascalName + "\")]");
+            //sb.AppendLine("	[System.Data.Linq.Mapping.Table(Name = \"" + _item.PascalName + "\")]");
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
-            //sb.AppendLine("	[System.Data.Objects.DataClasses.EdmEntityType(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _currentTable.PascalName + "\")]");
-            sb.AppendLine("	[FieldNameConstants(typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + _currentTable.PascalName + "FieldNameConstants))]");
-            if (!string.IsNullOrEmpty(_currentTable.Description))
-                sb.AppendLine("	[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(_currentTable.Description) + "\")]");
+            //sb.AppendLine("	[System.Data.Objects.DataClasses.EdmEntityType(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _item.PascalName + "\")]");
+            sb.AppendLine("	[FieldNameConstants(typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))]");
+            if (!string.IsNullOrEmpty(_item.Description))
+                sb.AppendLine("	[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\")]");
             sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
-            sb.Append("	public " + (_currentTable.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : BaseEntity, " + this.InterfaceAssemblyNamespace + ".Entity.I" + _currentTable.PascalName + ", System.ICloneable, System.IEquatable<" + this.InterfaceAssemblyNamespace + ".Entity.I" + _currentTable.PascalName + ">");
+            sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : " + GetLocalNamespace() + ".BaseEntity, System.ICloneable");
             sb.AppendLine();
 
             sb.AppendLine("	{");
+            this.AppendedFieldEnum();
             this.AppendProperties();
             this.AppendIEquatable();
-            this.AppendIsEquivalent();
             this.AppendClone();
             sb.AppendLine("	}");
             sb.AppendLine();
@@ -164,12 +211,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine("		#region Constructors");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Initializes a new instance of the " + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + " class");
+            sb.AppendLine("		/// Initializes a new instance of the " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " class");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + _currentTable.PascalName + "()");
+            sb.AppendLine("		public " + _item.PascalName + "()");
             sb.AppendLine("		{");
-            if (_currentTable.PrimaryKeyColumns.Count == 1 && _currentTable.PrimaryKeyColumns[0].DataType == System.Data.SqlDbType.UniqueIdentifier)
-                sb.AppendLine("			this." + _currentTable.PrimaryKeyColumns[0].PascalName + " = Guid.NewGuid();");
+            if (_item.PrimaryKeyColumns.Count == 1 && _item.PrimaryKeyColumns[0].DataType == System.Data.SqlDbType.UniqueIdentifier)
+                sb.AppendLine("			this." + _item.PrimaryKeyColumns[0].PascalName + " = Guid.NewGuid();");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -183,7 +230,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine();
 
             var index = 0;
-            foreach (var column in _currentTable.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
             {
                 CustomView typeTable = null;
 
@@ -226,28 +273,17 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
         private void AppendIEquatable()
         {
             sb.AppendLine("		#region Equals");
-
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Compares two objects of '" + _currentTable.PascalName + "' type and determines if all properties match");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <returns>True if all properties match, false otherwise</returns>");
-            sb.AppendLine("		bool System.IEquatable<" + this.InterfaceAssemblyNamespace + ".Entity.I" + _currentTable.PascalName + ">.Equals(" + this.InterfaceAssemblyNamespace + ".Entity.I" + _currentTable.PascalName + " other)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return this.Equals(other);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Compares two objects of '" + _currentTable.PascalName + "' type and determines if all properties match");
+            sb.AppendLine("		/// Compares two objects of '" + _item.PascalName + "' type and determines if all properties match");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <returns>True if all properties match, false otherwise</returns>");
             sb.AppendLine("		public override bool Equals(object obj)");
             sb.AppendLine("		{");
-            sb.AppendLine("			var other = obj as " + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ";");
+            sb.AppendLine("			var other = obj as " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ";");
             sb.AppendLine("			if (other == null) return false;");
             sb.AppendLine("			return (");
 
-            var allColumns = _currentTable.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name).ToList();
+            var allColumns = _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name).ToList();
             var index = 0;
             foreach (var column in allColumns)
             {
@@ -285,7 +321,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public " + modifieraux + " object Clone()");
             sb.AppendLine("		{");
-            sb.AppendLine("			return " + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ".Clone(this);");
+            sb.AppendLine("			return " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".Clone(this);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -294,7 +330,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public " + modifieraux + " object CloneAsNew()");
             sb.AppendLine("		{");
-            sb.AppendLine("			var item = " + this.GetLocalNamespace() + ".Entity." + _currentTable.PascalName + ".Clone(this);");
+            sb.AppendLine("			var item = " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".Clone(this);");
             sb.AppendLine("			return item;");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -302,10 +338,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Creates a shallow copy of this object");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static " + _currentTable.PascalName + " Clone(" + this.InterfaceAssemblyNamespace + ".Entity.I" + _currentTable.PascalName + " item)");
+            sb.AppendLine("		public static " + _item.PascalName + " Clone(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " item)");
             sb.AppendLine("		{");
-            sb.AppendLine("			var newItem = new " + _currentTable.PascalName + "();");
-            foreach (var column in _currentTable.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            sb.AppendLine("			var newItem = new " + _item.PascalName + "();");
+            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
             {
                 sb.AppendLine("			newItem." + column.PascalName + " = item." + column.PascalName + ";");
             }
@@ -313,23 +349,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-        }
-
-        private void AppendIsEquivalent()
-        {
-            sb.AppendLine("		#region IsEquivalent");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Determines if all of the fields for the specified object exactly matches the current object.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"item\">The object to compare</param>");
-            sb.AppendLine("		public override bool IsEquivalent(INHEntityObject item)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return ((System.IEquatable<" + this.InterfaceAssemblyNamespace + ".Entity.I" + _currentTable.PascalName + ">)this).Equals(item as " + this.InterfaceAssemblyNamespace + ".Entity.I" + _currentTable.PascalName + ");");
-            sb.AppendLine("		}");
-            sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
         }

@@ -1025,9 +1025,7 @@ namespace nHydrate.Core.SQLGeneration
             if (function.IsTable && string.IsNullOrEmpty(function.ReturnVariable))
             {
                 //There is NOT a returned table defined. This is a straight select
-                sb.AppendLine("TABLE");
-                sb.AppendLine("AS");
-                sb.AppendLine("RETURN");
+                sb.AppendLine("TABLE AS RETURN");
                 sb.AppendLine("(");
                 sb.AppendLine(function.SQL);
                 sb.AppendLine(")");

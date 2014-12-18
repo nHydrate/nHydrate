@@ -80,6 +80,10 @@
     <Compile Include="Generators\Contexts\ContextGeneratedTemplate.cs" />
     <Compile Include="EFDALCodeFirstProjectGenerator.cs" />
     <Compile Include="EFDALCodeFirstBaseTemplate.cs" />
+    <Compile Include="Generators\Contexts\ContextInterfaceExtenderGenerator.cs" />
+    <Compile Include="Generators\Contexts\ContextInterfaceExtenderTemplate.cs" />
+    <Compile Include="Generators\Contexts\ContextInterfaceGeneratedGenerator.cs" />
+    <Compile Include="Generators\Contexts\ContextInterfaceGeneratedTemplate.cs" />
     <Compile Include="Generators\Entity\EntityExtenderGenerator.cs" />
     <Compile Include="Generators\Entity\EntityExtenderTemplate.cs" />
     <Compile Include="Generators\Entity\EntityGeneratedGenerator.cs" />

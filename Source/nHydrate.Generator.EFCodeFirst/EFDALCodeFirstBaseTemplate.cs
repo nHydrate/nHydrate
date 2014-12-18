@@ -42,10 +42,5 @@ namespace nHydrate.Generator.EFCodeFirst
             get { return "EFDAL"; }
         }
 
-        public virtual string InterfaceAssemblyNamespace
-        {
-            get { return nHydrateGeneratorProject.DomainProjectName(_model) + ".EFDAL.Interfaces"; }
-        }
-
     }
 }

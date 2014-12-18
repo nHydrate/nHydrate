@@ -337,8 +337,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		{");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants)");
-                sb.AppendLine("				return " + GetLocalNamespace() + ".Entity." + table.PascalName + ".GetFieldType((" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants)field);");
+                sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants)");
+                sb.AppendLine("				return " + GetLocalNamespace() + ".Entity." + table.PascalName + ".GetFieldType((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants)field);");
             }
             sb.AppendLine("			throw new Exception(\"Unknown field type!\");");
             sb.AppendLine("		}");
@@ -351,19 +351,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		#region Metadata Extension Methods");
             sb.AppendLine();
 
-            //Main one for base NHEntityObject object
+            //Main one for base IReadOnlyBusinessObject object
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Creates and returns a metadata object for an entity type");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"entity\">The source class</param>");
             sb.AppendLine("		/// <returns>A metadata object for the entity types in this assembly</returns>");
-            sb.AppendLine("		public static " + this.DefaultNamespace + ".EFDAL.Interfaces.IMetadata GetMetaData(this " + this.GetLocalNamespace() + ".INHEntityObject entity)");
+            sb.AppendLine("		public static " + this.DefaultNamespace + ".EFDAL.IMetadata GetMetaData(this " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject entity)");
             sb.AppendLine("		{");
             sb.AppendLine("			var a = entity.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true).FirstOrDefault();");
             sb.AppendLine("			if (a == null) return null;");
             sb.AppendLine("			var t = ((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)a).MetadataClassType;");
             sb.AppendLine("			if (t == null) return null;");
-            sb.AppendLine("			return Activator.CreateInstance(t) as " + this.DefaultNamespace + ".EFDAL.Interfaces.IMetadata;");
+            sb.AppendLine("			return Activator.CreateInstance(t) as " + this.DefaultNamespace + ".EFDAL.IMetadata;");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -413,7 +413,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 sb.AppendLine("			var arr = b.Split('.');");
                 sb.AppendLine("			if (arr.Length != 2) throw new System.Exception(\"Invalid selector\");");
                 sb.AppendLine("			var tn = arr.Last();");
-                sb.AppendLine("			var te = (" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants)Enum.Parse(typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants), tn, true);");
+                sb.AppendLine("			var te = (" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants)Enum.Parse(typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants), tn, true);");
                 sb.AppendLine("			return item.GetValue<T>(te, default(T));");
                 sb.AppendLine("		}");
                 sb.AppendLine();
@@ -433,7 +433,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 sb.AppendLine("			var arr = b.Split('.');");
                 sb.AppendLine("			if (arr.Length != 2) throw new System.Exception(\"Invalid selector\");");
                 sb.AppendLine("			var tn = arr.Last();");
-                sb.AppendLine("			var te = (" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants)Enum.Parse(typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants), tn, true);");
+                sb.AppendLine("			var te = (" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants)Enum.Parse(typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants), tn, true);");
                 sb.AppendLine("			return item.GetValue<T>(te, defaultValue);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
@@ -446,7 +446,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 sb.AppendLine("		/// <param name=\"item\">The item from which to pull the value.</param>");
                 sb.AppendLine("		/// <param name=\"field\">The field value to retrieve</param>");
                 sb.AppendLine("		/// <returns></returns>");
-                sb.AppendLine("		public static T GetValue<T>(this " + this.GetLocalNamespace() + ".Entity." + table.PascalName + " item, " + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants field)");
+                sb.AppendLine("		public static T GetValue<T>(this " + this.GetLocalNamespace() + ".Entity." + table.PascalName + " item, " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants field)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			return item.GetValue<T>(field, default(T));");
                 sb.AppendLine("		}");
@@ -461,7 +461,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 sb.AppendLine("		/// <param name=\"field\">The field value to retrieve</param>");
                 sb.AppendLine("		/// <param name=\"defaultValue\">The default value to return if the specified value is NULL</param>");
                 sb.AppendLine("		/// <returns></returns>");
-                sb.AppendLine("		public static T GetValue<T>(this " + this.GetLocalNamespace() + ".Entity." + table.PascalName + " item, " + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants field, T defaultValue)");
+                sb.AppendLine("		public static T GetValue<T>(this " + this.GetLocalNamespace() + ".Entity." + table.PascalName + " item, " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants field, T defaultValue)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			var valid = false;");
                 sb.AppendLine("			if (typeof(T) == typeof(bool)) valid = true;");
@@ -561,7 +561,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 sb.AppendLine("			var arr = b.Split('.');");
                 sb.AppendLine("			if (arr.Length != 2) throw new System.Exception(\"Invalid selector\");");
                 sb.AppendLine("			var tn = arr.Last();");
-                sb.AppendLine("			var te = (" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants)Enum.Parse(typeof(" + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants), tn, true);");
+                sb.AppendLine("			var te = (" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants)Enum.Parse(typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants), tn, true);");
                 sb.AppendLine("			item.SetValue(te, newValue);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
@@ -576,7 +576,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		/// Returns an observable collection that can bound to UI controls");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public static System.Collections.ObjectModel.ObservableCollection<T> AsObservable<T>(this System.Collections.Generic.IEnumerable<T> list)");
-            sb.AppendLine("			where T : " + this.GetLocalNamespace() + ".NHEntityObject");
+            sb.AppendLine("			where T : " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject");
             sb.AppendLine("		{");
             sb.AppendLine("			var retval = new System.Collections.ObjectModel.ObservableCollection<T>();");
             sb.AppendLine("			foreach (var o in list)");

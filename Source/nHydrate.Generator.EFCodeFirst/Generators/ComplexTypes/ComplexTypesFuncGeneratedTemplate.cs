@@ -94,13 +94,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
                 sb.AppendLine("	[DataContract(IsReference = true)]");
                 sb.AppendLine("	[Serializable]");
                 sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
-                sb.AppendLine("	public partial class " + doubleDerivedClassName + " : " + this.GetLocalNamespace() + ".NHComplexObject, " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject, " + GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ", System.ICloneable, System.IEquatable<" + GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ">");
+                sb.AppendLine("	public partial class " + doubleDerivedClassName + " : " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject, System.ICloneable");
                 sb.AppendLine("	{");
+                this.AppendedFieldEnum();
                 this.AppendProperties();
                 this.AppendRegionGetValue();
                 this.AppendClone();
                 this.AppendRegionGetMaxLength();
-                this.AppendIsEquivalent();
                 this.AppendIEquatable();
                 sb.AppendLine("	}");
 
@@ -128,6 +128,53 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
             sb.AppendLine();
         }
 
+        private void AppendedFieldEnum()
+        {
+            var imageColumnList = _item.GetColumnsByType(System.Data.SqlDbType.Image).OrderBy(x => x.Name).ToList();
+            if (imageColumnList.Count != 0)
+            {
+                sb.AppendLine("	#region FieldImageConstants Enumeration");
+                sb.AppendLine();
+                sb.AppendLine("	/// <summary>");
+                sb.AppendLine("	/// An enumeration of this object's image type fields");
+                sb.AppendLine("	/// </summary>");
+                sb.AppendLine("	public enum FieldImageConstants");
+                sb.AppendLine("	{");
+                foreach (var column in imageColumnList)
+                {
+                    sb.AppendLine("		/// <summary>");
+                    sb.AppendLine("		/// Field mapping for the image parameter '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
+                    sb.AppendLine("		/// </summary>");
+                    sb.AppendLine("		[System.ComponentModel.Description(\"Field mapping for the image parameter '" + column.PascalName + "' property\")]");
+                    sb.AppendLine("		" + column.PascalName + ",");
+                }
+                sb.AppendLine("	}");
+                sb.AppendLine();
+                sb.AppendLine("	#endregion");
+                sb.AppendLine();
+            }
+
+            sb.AppendLine("		#region FieldNameConstants Enumeration");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Enumeration to define each property that maps to a database field for the '" + _item.PascalName + "' table.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public enum FieldNameConstants");
+            sb.AppendLine("		{");
+            foreach (var column in _item.GeneratedColumns)
+            {
+                sb.AppendLine("			/// <summary>");
+                sb.AppendLine("			/// Field mapping for the '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
+                sb.AppendLine("			/// </summary>");
+                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + column.PascalName + "' property\")]");
+                sb.AppendLine("			" + column.PascalName + ",");
+            }
+
+            sb.AppendLine("		}");
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
+        }
+
         private void AppendProperties()
         {
             sb.AppendLine("		#region Primitive Properties");
@@ -145,10 +192,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
                 //sb.AppendLine("				On" + column.PascalName + "Changing(value);");
                 //sb.AppendLine("				ReportPropertyChanging(\"" + column.PascalName + "\");");
 
-                if (column.IsTextType || column.IsBinaryType || column.DataType == System.Data.SqlDbType.Timestamp)
-                    sb.AppendLine("				_" + column.CamelName + " = System.Data.Objects.DataClasses.StructuralObject.SetValidValue(value, true);");
-                else
-                    sb.AppendLine("				_" + column.CamelName + " = System.Data.Objects.DataClasses.StructuralObject.SetValidValue(value);");
+                //if (column.IsTextType || column.IsBinaryType || column.DataType == System.Data.SqlDbType.Timestamp)
+                //    sb.AppendLine("				_" + column.CamelName + " = System.Data.Objects.DataClasses.StructuralObject.SetValidValue(value, true);");
+                //else
+                //    sb.AppendLine("				_" + column.CamelName + " = System.Data.Objects.DataClasses.StructuralObject.SetValidValue(value);");
+                sb.AppendLine("				_" + column.CamelName + " = value;");
 
                 //sb.AppendLine("				ReportPropertyChanged(\"" + column.PascalName + "\");");
                 //sb.AppendLine("				On" + column.PascalName + "Changed();");
@@ -171,7 +219,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the value of one of this object's properties.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public object GetValue(" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants field)");
+            sb.AppendLine("		public object GetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field)");
             sb.AppendLine("		{");
             sb.AppendLine("			return GetValue(field, null);");
             sb.AppendLine("		}");
@@ -179,12 +227,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the value of one of this object's properties.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public object GetValue(" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants field, object defaultValue)");
+            sb.AppendLine("		public object GetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, object defaultValue)");
             sb.AppendLine("		{");
             var allColumns = _item.GetColumns().Where(x => x.Generated).ToList();
             foreach (var column in allColumns.OrderBy(x => x.Name))
             {
-                sb.AppendLine("			if (field == " + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ")");
+                sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")");
                 if (column.AllowNull)
                     sb.AppendLine("				return ((this." + column.PascalName + " == null) ? defaultValue : this." + column.PascalName + ");");
                 else
@@ -228,13 +276,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the maximum size of the field value.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static int GetMaxLength(" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants field)");
+            sb.AppendLine("		public static int GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field)");
             sb.AppendLine("		{");
             sb.AppendLine("			switch (field)");
             sb.AppendLine("			{");
             foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
             {
-                sb.AppendLine("				case " + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ":");
+                sb.AppendLine("				case " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ":");
                 if (_item.GeneratedColumns.Contains(column))
                 {
                     //This is an actual column in this table
@@ -269,7 +317,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
                 else
                 {
                     //This is an inherited column so check the base
-                    sb.AppendLine("					return " + _item.PascalName + ".GetMaxLength(" + _item.PascalName + "." + _item.PascalName + "" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ");");
+                    sb.AppendLine("					return " + _item.PascalName + ".GetMaxLength(" + _item.PascalName + "." + _item.PascalName + "" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ");");
                 }
             }
             sb.AppendLine("			}");
@@ -278,7 +326,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
             sb.AppendLine();
             sb.AppendLine("		int " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetMaxLength(Enum field)");
             sb.AppendLine("		{");
-            sb.AppendLine("			return GetMaxLength((" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants)field);");
+            sb.AppendLine("			return GetMaxLength((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
@@ -288,7 +336,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
             sb.AppendLine();
             sb.AppendLine("		System.Type " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetFieldNameConstants()");
             sb.AppendLine("		{");
-            sb.AppendLine("			return typeof(" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants);");
+            sb.AppendLine("			return typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
@@ -300,16 +348,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the system type of a field on this object");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static System.Type GetFieldType(" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants field)");
+            sb.AppendLine("		public static System.Type GetFieldType(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if (field.GetType() != typeof(" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants))");
-            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants'.\");");
+            sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
+            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
             sb.AppendLine();
-            sb.AppendLine("			switch ((" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants)field)");
+            sb.AppendLine("			switch ((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field)");
             sb.AppendLine("			{");
             foreach (var column in _item.GeneratedColumns)
             {
-                sb.AppendLine("				case " + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ": return typeof(" + column.GetCodeType() + ");");
+                sb.AppendLine("				case " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ": return typeof(" + column.GetCodeType() + ");");
             }
             sb.AppendLine("			}");
             sb.AppendLine("			return null;");
@@ -317,10 +365,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
             sb.AppendLine();
             sb.AppendLine("		System.Type " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetFieldType(Enum field)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if (field.GetType() != typeof(" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants))");
-            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants'.\");");
+            sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
+            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
             sb.AppendLine();
-            sb.AppendLine("			return GetFieldType((" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants)field);");
+            sb.AppendLine("			return GetFieldType((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
@@ -336,9 +384,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
             sb.AppendLine();
             sb.AppendLine("		object " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetValue(System.Enum field, object defaultValue)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if (field.GetType() != typeof(" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants))");
-            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants'.\");");
-            sb.AppendLine("			return this.GetValue((" + GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants)field, defaultValue);");
+            sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
+            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
+            sb.AppendLine("			return this.GetValue((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field, defaultValue);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -361,31 +409,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
 
         }
 
-        private void AppendIsEquivalent()
-        {
-            sb.AppendLine("		#region IsEquivalent");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Determines if all of the fields for the specified object exactly matches the current object.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"item\">The object to compare</param>");
-            sb.AppendLine("		public override bool IsEquivalent(INHEntityObject item)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return ((System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ">)this).Equals(item as " + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ");");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-        }
-
         private void AppendIEquatable()
         {
             sb.AppendLine("		#region Equals");
-            sb.AppendLine("		bool System.IEquatable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + ">.Equals(" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + _item.PascalName + " other)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return this.Equals(other);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Determines whether the specified object is equal to the current object.");

@@ -148,16 +148,16 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.EFCSDL
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// ");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		new " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants Field { get; }");
+            sb.AppendLine("		new " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants Field { get; }");
             sb.AppendLine("	}");
             sb.AppendLine();
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// A comparison class for audit comparison results");
             sb.AppendLine("	/// </summary>");
             sb.AppendLine("	/// <typeparam name=\"T\"></typeparam>");
-            sb.AppendLine("	public class " + _item.PascalName + "AuditResultFieldCompare<T> : " + this.GetLocalNamespace() + ".AuditResultFieldCompare<T, " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants>, I" + _item.PascalName + "AuditResultFieldCompare");
+            sb.AppendLine("	public class " + _item.PascalName + "AuditResultFieldCompare<T> : " + this.GetLocalNamespace() + ".AuditResultFieldCompare<T, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants>, I" + _item.PascalName + "AuditResultFieldCompare");
             sb.AppendLine("	{");
-            sb.AppendLine("		internal " + _item.PascalName + "AuditResultFieldCompare(T value1, T value2, " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants field, System.Type dataType)");
+            sb.AppendLine("		internal " + _item.PascalName + "AuditResultFieldCompare(T value1, T value2, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, System.Type dataType)");
             sb.AppendLine("			: base(value1, value2, field, dataType)");
             sb.AppendLine("		{");
             sb.AppendLine("		}");
@@ -450,7 +450,7 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.EFCSDL
                 if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
                 {
                     sb.AppendLine("			if (item1." + column.PascalName + " != item2." + column.PascalName + ")");
-                    sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ", item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
+                    sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ", item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
                 }
             }
 

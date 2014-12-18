@@ -216,7 +216,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	/// </summary>");
             sb.AppendLine("	[DataContract]");
             sb.AppendLine("	[Serializable]");
-            sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : System.Data.Entity.DbContext, " + this.GetLocalNamespace() + ".Interfaces.I" + _model.ProjectName + "Entities, IContext");
+            sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : System.Data.Entity.DbContext, " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities, IContext");
             sb.AppendLine("	{");
 
             //Create the modifier property
@@ -536,6 +536,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             }
 
             foreach (var table in _model.Database.Functions.Where(x => x.Generated).OrderBy(x => x.Name))
+            {
+                sb.AppendLine("			modelBuilder.ComplexType<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">();");
+            }
+            foreach (var table in _model.Database.CustomStoredProcedures.Where(x => x.Generated).OrderBy(x => x.Name))
             {
                 sb.AppendLine("			modelBuilder.ComplexType<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">();");
             }
@@ -1009,7 +1013,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		/// Adds an entity of type '" + table.PascalName + "' to the object context");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		/// <param name=\"entity\">The entity to add</param>");
-                sb.AppendLine("		public virtual void AddItem(" + this.DefaultNamespace + ".EFDAL.Interfaces.Entity.I" + table.PascalName + " entity)");
+                sb.AppendLine("		public virtual void AddItem(" + this.DefaultNamespace + ".EFDAL.Entity." + table.PascalName + " entity)");
                 sb.AppendLine("		{");
 
                 if (table.AllowCreateAudit || table.AllowModifiedAudit)
@@ -1104,7 +1108,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		/// Deletes an entity of type '" + table.PascalName + "'");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		/// <param name=\"entity\">The entity to delete</param>");
-                sb.AppendLine("		void " + this.DefaultNamespace + ".EFDAL.Interfaces.I" + _model.ProjectName + "Entities.DeleteItem(" + this.DefaultNamespace + ".EFDAL.Interfaces.Entity.I" + table.PascalName + " entity)");
+                sb.AppendLine("		void " + this.DefaultNamespace + ".EFDAL.I" + _model.ProjectName + "Entities.DeleteItem(" + this.DefaultNamespace + ".EFDAL.Entity." + table.PascalName + " entity)");
                 sb.AppendLine("		{");
 
                 sb.AppendLine("			if (entity == null) return;");
@@ -1210,9 +1214,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.Security.IsValid() && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + table.PascalName + "> " + this.GetLocalNamespace() + ".Interfaces.I" + _model.ProjectName + "Entities." + table.PascalName);
+                sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + table.PascalName);
                 sb.AppendLine("		{");
-                sb.AppendLine("			get { return (IQueryable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + table.PascalName + ">)this." + table.PascalName + "; }");
+                sb.AppendLine("			get { return (IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">)this." + table.PascalName + "; }");
                 sb.AppendLine("		}");
                 sb.AppendLine();
             }
@@ -1223,7 +1227,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// " + storedProcedure.Description);
                 sb.AppendLine("		/// </summary>");
-                sb.Append("		public IEnumerable<" + storedProcedure.PascalName + "> " + storedProcedure.PascalName + "(");
+                sb.Append("		public ObjectResult<" + storedProcedure.PascalName + "> " + storedProcedure.PascalName + "(");
                 var parameterList = storedProcedure.GetParameters().Where(x => x.Generated).ToList();
                 foreach (var parameter in parameterList)
                 {
@@ -1253,7 +1257,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     }
                 }
 
-                sb.Append("			var retval = this.ObjectContext.ExecuteFunction<" + storedProcedure.PascalName + ">(\"" + storedProcedure.GetDatabaseObjectName() + "\"");
+                sb.Append("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.ExecuteFunction<" + storedProcedure.PascalName + ">(\"" + storedProcedure.GetDatabaseObjectName() + "\"");
 
                 if (parameterList.Count > 0)
                 {
@@ -1266,7 +1270,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     }
                 }
 
-                sb.AppendLine(").ToList();");
+                sb.AppendLine(");");
 
                 //Add code here to handle output parameters
                 foreach (var parameter in parameterList.Where(x => x.IsOutputParameter))
@@ -1338,8 +1342,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #region Functions
             foreach (var function in _model.Database.Functions.Where(x => x.Generated && x.IsTable).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// ");
+                sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		/// " + function.Description);
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		[DbFunction(\"" + _model.ProjectName + "Entities\", \"" + function.PascalName + "\")]");
                 sb.Append("		public virtual IQueryable<" + function.PascalName + "> " + function.PascalName + "(");
@@ -1482,7 +1486,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		{");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Interfaces.Entity." + table.PascalName + "FieldNameConstants) return " + this.GetLocalNamespace() + ".EntityMappingConstants." + table.PascalName + ";");
+                sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants) return " + this.GetLocalNamespace() + ".EntityMappingConstants." + table.PascalName + ";");
             }
             sb.AppendLine("			throw new Exception(\"Unknown field type!\");");
             sb.AppendLine("		}");
@@ -1497,15 +1501,15 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the meta data object for an entity");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static " + this.DefaultNamespace + ".EFDAL.Interfaces.IMetadata GetMetaData(" + this.GetLocalNamespace() + ".EntityMappingConstants table)");
+            sb.AppendLine("		public static " + this.DefaultNamespace + ".EFDAL.IMetadata GetMetaData(" + this.GetLocalNamespace() + ".EntityMappingConstants table)");
             sb.AppendLine("		{");
             sb.AppendLine("			switch (table)");
             sb.AppendLine("			{");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 sb.Append("				case " + this.GetLocalNamespace() + ".EntityMappingConstants." + table.PascalName + ": ");
-                //sb.AppendLine("return Activator.CreateInstance(((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ").GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true).FirstOrDefault()).MetadataClassType) as " + this.GetLocalNamespace() + ".Interfaces.Entity.Metadata." + table.PascalName + "Metadata;");
-                sb.AppendLine("return new " + GetLocalNamespace() + ".Interfaces.Entity.Metadata." + table.PascalName + "Metadata();");
+                //sb.AppendLine("return Activator.CreateInstance(((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ").GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true).FirstOrDefault()).MetadataClassType) as " + this.GetLocalNamespace() + ".Entity.Metadata." + table.PascalName + "Metadata;");
+                sb.AppendLine("return new " + GetLocalNamespace() + ".Entity.Metadata." + table.PascalName + "Metadata();");
             }
             sb.AppendLine("			}");
             sb.AppendLine("			throw new Exception(\"Entity not found!\");");
