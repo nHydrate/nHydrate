@@ -120,21 +120,60 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		int SaveChanges();");
             sb.AppendLine();
 
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Security.IsValid() && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
+            #region Tables
+            foreach (var item in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary />");
-                if (table.ParentTable != null)
+                if (item.Security.IsValid())
                 {
-                    sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> " + table.PascalName + " { get ; }");
+                    var paramset = item.Security.GetParameters().Where(x => x.Generated).ToList();
+                    var paramString = string.Join(", ", paramset.Select(x => x.GetCodeType(true) + " " + x.CamelName).ToList());
+                    sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "(" + paramString + ");");
+                }
+                else if (item.ParentTable != null)
+                {
+                    sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + " { get ; }");
                 }
                 else
                 {
-                    sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> " + table.PascalName + " { get ; }");
+                    sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + " { get ; }");
                 }
                 sb.AppendLine();
             }
+            #endregion
 
-            //Add an strongly-typed extension for "AddItem" method
+            #region Views
+            foreach (var item in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.PascalName))
+            {
+                sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + " { get ; }");
+                sb.AppendLine();
+            }
+            #endregion
+
+            #region Stored Proc
+            foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.Generated).OrderBy(x => x.PascalName))
+            {
+                var paramset = item.GetParameters().Where(x => x.Generated).ToList();
+                var paramString = string.Join(", ", paramset.Select(x => x.GetCodeType(true) + " " + x.CamelName).ToList());
+                sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "(" + paramString + ");");
+                sb.AppendLine();
+            }
+            #endregion
+
+            #region Functions
+            foreach (var item in _model.Database.Functions.Where(x => x.Generated).OrderBy(x => x.PascalName))
+            {
+                var paramset = item.GetParameters().Where(x => x.Generated).ToList();
+                var paramString = string.Join(", ", paramset.Select(x => x.GetCodeType(true) + " " + x.CamelName).ToList());
+                sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "(" + paramString + ");");
+                sb.AppendLine();
+            }
+            #endregion
+
+            #region Add an strongly-typed extension for "AddItem" method
             sb.AppendLine("		#region AddItem Method");
             sb.AppendLine();
 
@@ -147,8 +186,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
+            #endregion
 
-            //Add an strongly-typed extension for "DeleteItem" method
+            #region Add an strongly-typed extension for "DeleteItem" method
             sb.AppendLine("		#region DeleteItem Methods");
             sb.AppendLine();
 
@@ -161,6 +201,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
+            #endregion
 
             sb.AppendLine("	}");
             sb.AppendLine();

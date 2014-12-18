@@ -116,15 +116,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
         {
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
-            //sb.AppendLine("using System.Data.Objects;");
-            //sb.AppendLine("using System.Data.Objects.DataClasses;");
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Runtime.Serialization;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
             sb.AppendLine("using System.Linq.Expressions;");
-            //sb.AppendLine("using nHydrate.EFCore.DataAccess;");
-            //sb.AppendLine("using System.Data.Entity.Core.Objects.DataClasses;");
             sb.AppendLine();
         }
 

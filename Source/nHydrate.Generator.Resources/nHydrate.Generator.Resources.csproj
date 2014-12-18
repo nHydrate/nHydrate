@@ -214,16 +214,12 @@
       <Link>nHydrate.Generator.EFDAL.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-      <Content Include="..\..\bin\nHydrate.Generator.EFCodeFirst.dll">
-          <Link>nHydrate.Generator.EFCodeFirst.dll</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\..\bin\nHydrate.Generator.EFDAL.Interfaces.dll">
-      <Link>nHydrate.Generator.EFDAL.Interfaces.dll</Link>
+    <Content Include="..\..\bin\nHydrate.Generator.EFCodeFirst.dll">
+      <Link>nHydrate.Generator.EFCodeFirst.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\bin\nHydrate.Generator.EFDAL.Mocks.dll">
-      <Link>nHydrate.Generator.EFDAL.Mocks.dll</Link>
+    <Content Include="..\..\bin\nHydrate.Generator.EFDAL.Interfaces.dll">
+      <Link>nHydrate.Generator.EFDAL.Interfaces.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\bin\nHydrate.Generator.MySQLInstaller.dll">
@@ -296,14 +292,6 @@
     </Content>
     <Content Include="..\..\VSADDIN\efdalinterfaces.vstemplate">
       <Link>efdalinterfaces.vstemplate</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\efdalmocks.csproj">
-      <Link>efdalmocks.csproj</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\efdalmocks.vstemplate">
-      <Link>efdalmocks.vstemplate</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\VSADDIN\iocextensions.csproj">

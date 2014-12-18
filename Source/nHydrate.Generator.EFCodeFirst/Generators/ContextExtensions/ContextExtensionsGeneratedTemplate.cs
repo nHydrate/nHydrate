@@ -357,13 +357,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"entity\">The source class</param>");
             sb.AppendLine("		/// <returns>A metadata object for the entity types in this assembly</returns>");
-            sb.AppendLine("		public static " + this.DefaultNamespace + ".EFDAL.IMetadata GetMetaData(this " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject entity)");
+            sb.AppendLine("		public static " + this.GetLocalNamespace() + ".IMetadata GetMetaData(this " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject entity)");
             sb.AppendLine("		{");
             sb.AppendLine("			var a = entity.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true).FirstOrDefault();");
             sb.AppendLine("			if (a == null) return null;");
             sb.AppendLine("			var t = ((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)a).MetadataClassType;");
             sb.AppendLine("			if (t == null) return null;");
-            sb.AppendLine("			return Activator.CreateInstance(t) as " + this.DefaultNamespace + ".EFDAL.IMetadata;");
+            sb.AppendLine("			return Activator.CreateInstance(t) as " + this.GetLocalNamespace() + ".IMetadata;");
             sb.AppendLine("		}");
             sb.AppendLine();
 

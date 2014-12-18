@@ -265,7 +265,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
                 if (column.PrimaryKey)
                 {
-                    //sb.AppendLine("			[nHydrate.EFCore.Attributes.PrimaryKey()]");
                     sb.AppendLine("			[System.ComponentModel.DataAnnotations.Key]");
                 }
 

@@ -100,7 +100,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.LINQ
             sb.AppendLine("using System.Collections;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ";");
-            //sb.AppendLine("using nHydrate.EFCore.DataAccess;");
             sb.AppendLine();
         }
 

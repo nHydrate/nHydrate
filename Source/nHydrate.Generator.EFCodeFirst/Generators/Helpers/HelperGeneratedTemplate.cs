@@ -650,7 +650,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("				/// </summary>");
                 sb.AppendLine("				/// <typeparam name=\"TEntity\">The Type of Entity</typeparam>");
                 sb.AppendLine("				/// <param name=\"dataContext\">Linq Data Context</param>");
-                sb.AppendLine("				/// <param name=\"template\">Table </param>");
+                sb.AppendLine("				/// <param name=\"template\">Table</param>");
+                sb.AppendLine("				/// <param name=\"select\">The select criteria</param>");
                 sb.AppendLine("				/// <param name=\"where\">The Dynamic Linq</param>");
                 sb.AppendLine("				/// <returns></returns>");
                 sb.AppendLine("				public static DbCommand GetCommand<TEntity, TResult>(");
@@ -794,9 +795,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine();
 
                 sb.AppendLine("	#region AuditResultFieldCompare");
-                sb.AppendLine("		/// <summary />");
+                sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public class AuditResultFieldCompare<R, E> : IAuditResultFieldCompare");
                 sb.AppendLine("	{");
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public AuditResultFieldCompare(R value1, R value2, E field, System.Type dataType)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			this.Field = field;");
