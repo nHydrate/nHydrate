@@ -101,8 +101,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("using System.Data.SqlClient;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ";");
             sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
-            sb.AppendLine("using nHydrate.EFCore.DataAccess;");
-            sb.AppendLine("using nHydrate.EFCore.Exceptions;");
+            sb.AppendLine("using " + this.GetLocalNamespace() + ".Exceptions;");
             sb.AppendLine();
         }
 
@@ -296,22 +295,22 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("	delegate string GetDatabaseFieldNameDelegate(string field);");
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	internal partial class BusinessObjectQuery<T, K, P>");
-            sb.AppendLine("		where T : class, nHydrate.EFCore.DataAccess.IBusinessObject");
-            sb.AppendLine("		where K : class, nHydrate.EFCore.DataAccess.IBusinessObjectLINQQuery");
+            sb.AppendLine("		where T : class, IBusinessObject");
+            sb.AppendLine("		where K : class, IBusinessObjectLINQQuery");
             sb.AppendLine("	{");
             sb.AppendLine("		private const int DEFAULTTIMEOUT = 30;");
             sb.AppendLine("		#region GetSum");
             sb.AppendLine("		public static double? GetSum(");
             sb.AppendLine("			Expression<Func<K, P>> select,");
             sb.AppendLine("			Expression<Func<K, bool>> where,");
-            sb.AppendLine("			nHydrate.EFCore.DataAccess.QueryOptimizer optimizer,");
+            sb.AppendLine("			QueryOptimizer optimizer,");
             sb.AppendLine("			string leafTable,");
             sb.AppendLine("			GetDatabaseFieldNameDelegate getField,");
             sb.AppendLine("			LinqSQLParser.ObjectTypeConstants objectType)");
             sb.AppendLine("		{");
             sb.AppendLine("			var dc = new DataContext(" + this.GetLocalNamespace() + ".DBHelper.GetConnection());");
             sb.AppendLine("			var template = dc.GetTable<K>();");
-            sb.AppendLine("			var cmd = nHydrate.EFCore.DataAccess.BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where);");
+            sb.AppendLine("			var cmd = BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where);");
             sb.AppendLine("			cmd.CommandTimeout = DEFAULTTIMEOUT;");
             sb.AppendLine("			var parser = LinqSQLParser.Create(cmd.CommandText, objectType);");
             sb.AppendLine("			var fieldName = parser.GetSelectClause();");
@@ -341,11 +340,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("		#region GetCount");
             sb.AppendLine("		public static P GetCount(");
             sb.AppendLine("			Expression<Func<K, bool>> where,");
-            sb.AppendLine("			nHydrate.EFCore.DataAccess.QueryOptimizer optimizer)");
+            sb.AppendLine("			QueryOptimizer optimizer)");
             sb.AppendLine("		{");
             sb.AppendLine("			var dc = new DataContext(" + this.GetLocalNamespace() + ".DBHelper.GetConnection());");
             sb.AppendLine("			var template = dc.GetTable<K>();");
-            sb.AppendLine("			var cmd = nHydrate.EFCore.DataAccess.BusinessEntityQuery.GetCommand<K>(dc, template, where);");
+            sb.AppendLine("			var cmd = BusinessEntityQuery.GetCommand<K>(dc, template, where);");
             sb.AppendLine("			cmd.CommandTimeout = DEFAULTTIMEOUT;");
             sb.AppendLine("			var parser = LinqSQLParser.Create(cmd.CommandText, LinqSQLParser.ObjectTypeConstants.Table);");
             sb.AppendLine("			cmd.CommandText = \"SELECT COUNT(*) \" + parser.GetFromClause(optimizer) + \" \" + parser.GetWhereClause() + string.Empty;");
@@ -360,7 +359,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("		public static IEnumerable<P> GetDistinct(");
             sb.AppendLine("			Expression<Func<K, P>> select,");
             sb.AppendLine("			Expression<Func<K, bool>> where,");
-            sb.AppendLine("			nHydrate.EFCore.DataAccess.QueryOptimizer optimizer,");
+            sb.AppendLine("			QueryOptimizer optimizer,");
             sb.AppendLine("			string leafTable,");
             sb.AppendLine("			GetDatabaseFieldNameDelegate getField,");
             sb.AppendLine("			LinqSQLParser.ObjectTypeConstants objectType)");
@@ -368,7 +367,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("			using (var dc = new DataContext(" + this.GetLocalNamespace() + ".DBHelper.GetConnection()))");
             sb.AppendLine("			{");
             sb.AppendLine("				var template = dc.GetTable<K>();");
-            sb.AppendLine("				var cmd = nHydrate.EFCore.DataAccess.BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where);");
+            sb.AppendLine("				var cmd = BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where);");
             sb.AppendLine("				cmd.CommandTimeout = DEFAULTTIMEOUT;");
             sb.AppendLine("				var parser = LinqSQLParser.Create(cmd.CommandText, objectType);");
             sb.AppendLine("				string fieldName = parser.GetSelectClause();");
@@ -394,7 +393,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("		public static P GetMin(");
             sb.AppendLine("			Expression<Func<K, P>> select,");
             sb.AppendLine("			Expression<Func<K, bool>> where,");
-            sb.AppendLine("			nHydrate.EFCore.DataAccess.QueryOptimizer optimizer,");
+            sb.AppendLine("			QueryOptimizer optimizer,");
             sb.AppendLine("			string leafTable,");
             sb.AppendLine("			GetDatabaseFieldNameDelegate getField,");
             sb.AppendLine("			LinqSQLParser.ObjectTypeConstants objectType)");
@@ -402,7 +401,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("			using (var dc = new DataContext(" + this.GetLocalNamespace() + ".DBHelper.GetConnection()))");
             sb.AppendLine("			{");
             sb.AppendLine("				var template = dc.GetTable<K>();");
-            sb.AppendLine("				var cmd = nHydrate.EFCore.DataAccess.BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where);");
+            sb.AppendLine("				var cmd = BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where);");
             sb.AppendLine("				cmd.CommandTimeout = DEFAULTTIMEOUT;");
             sb.AppendLine("				var parser = LinqSQLParser.Create(cmd.CommandText, objectType);");
             sb.AppendLine("				var fieldName = parser.GetSelectClause();");
@@ -424,7 +423,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("		public static P GetMax(");
             sb.AppendLine("			Expression<Func<K, P>> select,");
             sb.AppendLine("			Expression<Func<K, bool>> where,");
-            sb.AppendLine("			nHydrate.EFCore.DataAccess.QueryOptimizer optimizer,");
+            sb.AppendLine("			QueryOptimizer optimizer,");
             sb.AppendLine("			string leafTable,");
             sb.AppendLine("			GetDatabaseFieldNameDelegate getField,");
             sb.AppendLine("			LinqSQLParser.ObjectTypeConstants objectType)");
@@ -432,7 +431,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("			using (var dc = new DataContext(" + this.GetLocalNamespace() + ".DBHelper.GetConnection()))");
             sb.AppendLine("			{");
             sb.AppendLine("				var template = dc.GetTable<K>();");
-            sb.AppendLine("				var cmd = nHydrate.EFCore.DataAccess.BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where);");
+            sb.AppendLine("				var cmd = BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where);");
             sb.AppendLine("				cmd.CommandTimeout = DEFAULTTIMEOUT;");
             sb.AppendLine("				var parser = LinqSQLParser.Create(cmd.CommandText, objectType);");
             sb.AppendLine("				string fieldName = parser.GetSelectClause();");
@@ -454,7 +453,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("		public static P GetAverage(");
             sb.AppendLine("			Expression<Func<K, P>> select,");
             sb.AppendLine("			Expression<Func<K, bool>> where,");
-            sb.AppendLine("			nHydrate.EFCore.DataAccess.QueryOptimizer optimizer,");
+            sb.AppendLine("			QueryOptimizer optimizer,");
             sb.AppendLine("			string leafTable,");
             sb.AppendLine("			GetDatabaseFieldNameDelegate getField,");
             sb.AppendLine("			LinqSQLParser.ObjectTypeConstants objectType)");
@@ -462,7 +461,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("			using (var dc = new DataContext(" + this.GetLocalNamespace() + ".DBHelper.GetConnection()))");
             sb.AppendLine("			{");
             sb.AppendLine("				var template = dc.GetTable<K>();");
-            sb.AppendLine("				var cmd = nHydrate.EFCore.DataAccess.BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where);");
+            sb.AppendLine("				var cmd = BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where);");
             sb.AppendLine("				cmd.CommandTimeout = DEFAULTTIMEOUT;");
             sb.AppendLine("				var parser = LinqSQLParser.Create(cmd.CommandText, objectType);");
             sb.AppendLine("				var fieldName = parser.GetSelectClause();");
@@ -572,7 +571,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("			using (var dc = new DataContext(connection))");
             sb.AppendLine("			{");
             sb.AppendLine("				var template = dc.GetTable<K>();");
-            sb.AppendLine("				using (var cmd = nHydrate.EFCore.DataAccess.BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where))");
+            sb.AppendLine("				using (var cmd = BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where))");
             sb.AppendLine("				{");
             sb.AppendLine("					if (startup.CommandTimeout != null && startup.CommandTimeout > 0) cmd.CommandTimeout = startup.CommandTimeout.Value;");
             sb.AppendLine("					else cmd.CommandTimeout = DEFAULTTIMEOUT;");
@@ -586,7 +585,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[" + fieldName + "] = NULL\\r\\n\";");
             fieldName = _model.Database.ModifiedDateColumnName;
             sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[" + fieldName + "] = sysdatetime()\\r\\n\";");
-            sb.AppendLine("					sql += parser.GetFromClause(new nHydrate.EFCore.DataAccess.QueryOptimizer()) + \"\\r\\n\";");
+            sb.AppendLine("					sql += parser.GetFromClause(new QueryOptimizer()) + \"\\r\\n\";");
             sb.AppendLine("					sql += parser.GetWhereClause();");
             sb.AppendLine("					sql += \";select @@rowcount\";");
             sb.AppendLine("					sql = \"set ansi_nulls off;\" + sql;");
@@ -1059,7 +1058,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		public string GetFromClause(nHydrate.EFCore.DataAccess.QueryOptimizer optimizer)");
+            sb.AppendLine("		public string GetFromClause(QueryOptimizer optimizer)");
             sb.AppendLine("		{");
             sb.AppendLine("			var sb = new StringBuilder();");
             sb.AppendLine();
@@ -1198,7 +1197,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("				{");
             sb.AppendLine("					retval = double.Parse(newValue.ToString());");
             sb.AppendLine("				}");
-            sb.AppendLine("				else if (newValue is nHydrate.EFCore.DataAccess.IBusinessObject)");
+            sb.AppendLine("				else if (newValue is IBusinessObject)");
             sb.AppendLine("				{");
             sb.AppendLine("					throw new Exception(INVALID_BUSINIESSOBJECT);");
             sb.AppendLine("				}");
@@ -1225,7 +1224,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("				{");
             sb.AppendLine("					retval = double.Parse(newValue.ToString());");
             sb.AppendLine("				}");
-            sb.AppendLine("				else if (newValue is nHydrate.EFCore.DataAccess.IBusinessObject)");
+            sb.AppendLine("				else if (newValue is IBusinessObject)");
             sb.AppendLine("				{");
             sb.AppendLine("					throw new Exception(INVALID_BUSINIESSOBJECT);");
             sb.AppendLine("				}");
@@ -1252,7 +1251,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("				{");
             sb.AppendLine("					retval = DateTime.Parse(newValue.ToString());");
             sb.AppendLine("				}");
-            sb.AppendLine("				else if (newValue is nHydrate.EFCore.DataAccess.IBusinessObject)");
+            sb.AppendLine("				else if (newValue is IBusinessObject)");
             sb.AppendLine("				{");
             sb.AppendLine("					throw new Exception(INVALID_BUSINIESSOBJECT);");
             sb.AppendLine("				}");
@@ -1279,7 +1278,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("				{");
             sb.AppendLine("					retval = DateTime.Parse(newValue.ToString());");
             sb.AppendLine("				}");
-            sb.AppendLine("				else if (newValue is nHydrate.EFCore.DataAccess.IBusinessObject)");
+            sb.AppendLine("				else if (newValue is IBusinessObject)");
             sb.AppendLine("				{");
             sb.AppendLine("					throw new Exception(INVALID_BUSINIESSOBJECT);");
             sb.AppendLine("				}");
@@ -1306,7 +1305,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("				{");
             sb.AppendLine("					retval = bool.Parse(newValue.ToString());");
             sb.AppendLine("				}");
-            sb.AppendLine("				else if (newValue is nHydrate.EFCore.DataAccess.IBusinessObject)");
+            sb.AppendLine("				else if (newValue is IBusinessObject)");
             sb.AppendLine("				{");
             sb.AppendLine("					throw new Exception(INVALID_BUSINIESSOBJECT);");
             sb.AppendLine("				}");
@@ -1333,7 +1332,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("				{");
             sb.AppendLine("					retval = bool.Parse(newValue.ToString());");
             sb.AppendLine("				}");
-            sb.AppendLine("				else if (newValue is nHydrate.EFCore.DataAccess.IBusinessObject)");
+            sb.AppendLine("				else if (newValue is IBusinessObject)");
             sb.AppendLine("				{");
             sb.AppendLine("					throw new Exception(INVALID_BUSINIESSOBJECT);");
             sb.AppendLine("				}");
@@ -1361,7 +1360,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("				{");
             sb.AppendLine("					retval = int.Parse(newValue.ToString());");
             sb.AppendLine("				}");
-            sb.AppendLine("				else if (newValue is nHydrate.EFCore.DataAccess.IBusinessObject)");
+            sb.AppendLine("				else if (newValue is IBusinessObject)");
             sb.AppendLine("				{");
             sb.AppendLine("					throw new Exception(INVALID_BUSINIESSOBJECT);");
             sb.AppendLine("				}");
@@ -1388,7 +1387,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("				{");
             sb.AppendLine("					retval = int.Parse(newValue.ToString());");
             sb.AppendLine("				}");
-            sb.AppendLine("				else if (newValue is nHydrate.EFCore.DataAccess.IBusinessObject)");
+            sb.AppendLine("				else if (newValue is IBusinessObject)");
             sb.AppendLine("				{");
             sb.AppendLine("					throw new Exception(INVALID_BUSINIESSOBJECT);");
             sb.AppendLine("				}");
@@ -1416,7 +1415,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("				{");
             sb.AppendLine("					retval = long.Parse(newValue.ToString());");
             sb.AppendLine("				}");
-            sb.AppendLine("				else if (newValue is nHydrate.EFCore.DataAccess.IBusinessObject)");
+            sb.AppendLine("				else if (newValue is IBusinessObject)");
             sb.AppendLine("				{");
             sb.AppendLine("					throw new Exception(INVALID_BUSINIESSOBJECT);");
             sb.AppendLine("				}");
@@ -1443,7 +1442,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("				{");
             sb.AppendLine("					retval = long.Parse(newValue.ToString());");
             sb.AppendLine("				}");
-            sb.AppendLine("				else if (newValue is nHydrate.EFCore.DataAccess.IBusinessObject)");
+            sb.AppendLine("				else if (newValue is IBusinessObject)");
             sb.AppendLine("				{");
             sb.AppendLine("					throw new Exception(INVALID_BUSINIESSOBJECT);");
             sb.AppendLine("				}");

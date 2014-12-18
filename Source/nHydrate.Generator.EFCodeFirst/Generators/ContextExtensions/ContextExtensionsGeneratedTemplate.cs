@@ -117,8 +117,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		#region Include Extension Methods");
             sb.AppendLine();
 
-            sb.AppendLine("		private static System.Data.Entity.Infrastructure.DbQuery<T> GetInclude<T, R>(this System.Data.Entity.Infrastructure.DbQuery<T> item, Expression<Func<R, nHydrate.EFCore.DataAccess.IContextInclude>> query)");
-            sb.AppendLine("			where T : nHydrate.EFCore.DataAccess.BaseEntity");
+            sb.AppendLine("		private static System.Data.Entity.Infrastructure.DbQuery<T> GetInclude<T, R>(this System.Data.Entity.Infrastructure.DbQuery<T> item, Expression<Func<R, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
+            sb.AppendLine("			where T : BaseEntity");
             sb.AppendLine("		{");
             sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
             sb.AppendLine("			strings.RemoveAt(0);");
@@ -132,7 +132,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			return item;");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		private static IQueryable<T> GetInclude<T, R>(this IQueryable<T> item, Expression<Func<R, nHydrate.EFCore.DataAccess.IContextInclude>> query)");
+            sb.AppendLine("		private static IQueryable<T> GetInclude<T, R>(this IQueryable<T> item, Expression<Func<R, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
             sb.AppendLine("		{");
             sb.AppendLine("			var tempItem = item as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
             sb.AppendLine("			if (tempItem == null) return item;");
@@ -259,7 +259,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                     //sb.AppendLine("		/// </summary>");
                     //sb.AppendLine("		/// <param name=\"item\">Related object to return in query results</param>");
                     //sb.AppendLine("		/// <param name=\"query\">The LINQ expresssion that maps an include path</param>");
-                    //sb.AppendLine("		public static System.Data.Entity.Infrastructure.DbQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> Include(this System.Data.Entity.Infrastructure.DbQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item, Expression<Func<" + this.GetLocalNamespace() + "." + table.PascalName + "Include, nHydrate.EFCore.DataAccess.IContextInclude>> query)");
+                    //sb.AppendLine("		public static System.Data.Entity.Infrastructure.DbQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> Include(this System.Data.Entity.Infrastructure.DbQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item, Expression<Func<" + this.GetLocalNamespace() + "." + table.PascalName + "Include, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
                     //sb.AppendLine("		{");
                     //sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
                     //sb.AppendLine("			strings.RemoveAt(0);");
@@ -280,7 +280,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                     sb.AppendLine("		/// </summary>");
                     sb.AppendLine("		/// <param name=\"item\">Related object to return in query results</param>");
                     sb.AppendLine("		/// <param name=\"query\">The LINQ expresssion that maps an include path</param>");
-                    sb.AppendLine("		public static System.Data.Entity.Infrastructure.DbQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> Include(this System.Data.Entity.Infrastructure.DbQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item, Expression<Func<" + this.GetLocalNamespace() + "." + table.PascalName + "Include, nHydrate.EFCore.DataAccess.IContextInclude>> query)");
+                    sb.AppendLine("		public static System.Data.Entity.Infrastructure.DbQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> Include(this System.Data.Entity.Infrastructure.DbQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item, Expression<Func<" + this.GetLocalNamespace() + "." + table.PascalName + "Include, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
                     sb.AppendLine("		{");
                     sb.AppendLine("			return GetInclude<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", " + this.GetLocalNamespace() + "." + table.PascalName + "Include>(item, query);");
                     sb.AppendLine("		}");
@@ -292,7 +292,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                     //sb.AppendLine("		/// </summary>");
                     //sb.AppendLine("		/// <param name=\"item\">Related object to return in query results</param>");
                     //sb.AppendLine("		/// <param name=\"query\">The LINQ expresssion that maps an include path</param>");
-                    //sb.AppendLine("		public static IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> Include(this IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item, Expression<Func<" + this.GetLocalNamespace() + "." + table.PascalName + "Include, nHydrate.EFCore.DataAccess.IContextInclude>> query)");
+                    //sb.AppendLine("		public static IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> Include(this IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item, Expression<Func<" + this.GetLocalNamespace() + "." + table.PascalName + "Include, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
                     //sb.AppendLine("		{");
                     //sb.AppendLine("			var tempItem = item as System.Data.Entity.Core.Objects.ObjectQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">;");
                     //sb.AppendLine("			if (tempItem == null) return item;");
@@ -315,7 +315,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                     sb.AppendLine("		/// </summary>");
                     sb.AppendLine("		/// <param name=\"item\">Related object to return in query results</param>");
                     sb.AppendLine("		/// <param name=\"query\">The LINQ expresssion that maps an include path</param>");
-                    sb.AppendLine("		public static IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> Include(this IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item, Expression<Func<" + this.GetLocalNamespace() + "." + table.PascalName + "Include, nHydrate.EFCore.DataAccess.IContextInclude>> query)");
+                    sb.AppendLine("		public static IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> Include(this IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item, Expression<Func<" + this.GetLocalNamespace() + "." + table.PascalName + "Include, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
                     sb.AppendLine("		{");
                     sb.AppendLine("			return GetInclude<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", " + this.GetLocalNamespace() + "." + table.PascalName + "Include>(item, query);");
                     sb.AppendLine("		}");
@@ -357,7 +357,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"entity\">The source class</param>");
             sb.AppendLine("		/// <returns>A metadata object for the entity types in this assembly</returns>");
-            sb.AppendLine("		public static " + this.DefaultNamespace + ".EFDAL.Interfaces.IMetadata GetMetaData(this nHydrate.EFCore.DataAccess.INHEntityObject entity)");
+            sb.AppendLine("		public static " + this.DefaultNamespace + ".EFDAL.Interfaces.IMetadata GetMetaData(this " + this.GetLocalNamespace() + ".INHEntityObject entity)");
             sb.AppendLine("		{");
             sb.AppendLine("			var a = entity.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true).FirstOrDefault();");
             sb.AppendLine("			if (a == null) return null;");
@@ -576,7 +576,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		/// Returns an observable collection that can bound to UI controls");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public static System.Collections.ObjectModel.ObservableCollection<T> AsObservable<T>(this System.Collections.Generic.IEnumerable<T> list)");
-            sb.AppendLine("			where T : nHydrate.EFCore.DataAccess.NHEntityObject");
+            sb.AppendLine("			where T : " + this.GetLocalNamespace() + ".NHEntityObject");
             sb.AppendLine("		{");
             sb.AppendLine("			var retval = new System.Collections.ObjectModel.ObservableCollection<T>();");
             sb.AppendLine("			foreach (var o in list)");

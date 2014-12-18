@@ -35,7 +35,7 @@ using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 {
-    [GeneratorItemAttribute("ContextGeneratedGenerator", typeof(ContextExtenderGenerator))]
+    [GeneratorItem("ContextGeneratedGenerator", typeof(ContextExtenderGenerator))]
     public class ContextGeneratedGenerator : EFCodeFirstProjectItemGenerator
     {
         #region Class Members

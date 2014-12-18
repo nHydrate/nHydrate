@@ -32,7 +32,7 @@ using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.EFDAL.Interfaces
 {
-	[GeneratorProjectAttribute(
+	[GeneratorProject(
 		"EF Data Access Layer Interfaces",
 		"The interfaces for the data access layer built on top of Entity Framework",
 		"b8bd6b27-b9f2-4291-82e8-88e1295eef07",

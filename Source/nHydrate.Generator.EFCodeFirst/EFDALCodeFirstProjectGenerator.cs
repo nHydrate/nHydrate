@@ -35,7 +35,7 @@ using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.EFCodeFirst
 {
-    [GeneratorProjectAttribute(
+    [GeneratorProject(
         "EF Data Access Layer (code first)",
         "A data access layer built on top of Entity Framework v6",
         "b8bd6b27-b9f2-4291-82e8-88e1295eef05",

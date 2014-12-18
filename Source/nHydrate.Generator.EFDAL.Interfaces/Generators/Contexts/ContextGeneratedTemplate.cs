@@ -116,6 +116,7 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Contexts
             sb.AppendLine("	public partial interface I" + _model.ProjectName + "Entities : System.IDisposable");
             sb.AppendLine("	{");
 
+            sb.AppendLine("		/// <summary />");
             sb.AppendLine("		int SaveChanges();");
             sb.AppendLine();
 

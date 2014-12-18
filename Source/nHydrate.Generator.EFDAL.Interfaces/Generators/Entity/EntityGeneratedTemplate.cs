@@ -333,7 +333,7 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
                         else otherRelation = relation2;
                         var targetTable = (Table)targetRelation.ParentTableRef.Object;
 
-                        if (targetTable.Generated) // && !targetTable.IsTypeTable
+                        if (targetTable.Generated)
                         {
                             sb.AppendLine("		/// <summary>");
                             sb.AppendLine("		/// The back navigation definition for walking " + _currentTable.PascalName + "->" + otherRelation.PascalRoleName + targetTable.PascalName);
@@ -353,10 +353,10 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
                         sb.AppendLine("		/// <summary>");
                         sb.AppendLine("		/// The back navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName);
                         sb.AppendLine("		/// </summary>");
-                        sb.AppendLine("		[XmlIgnoreAttribute()]");
-                        sb.AppendLine("		[SoapIgnoreAttribute()]");
-                        sb.AppendLine("		[DataMemberAttribute()]");
-                        sb.AppendLine("		[EdmRelationshipNavigationPropertyAttribute(\"" + this.GetLocalNamespace() + ".Entity" + "\", \"FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _currentTable.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "\")]");
+                        //sb.AppendLine("		[XmlIgnore()]");
+                        //sb.AppendLine("		[SoapIgnore()]");
+                        //sb.AppendLine("		[DataMember()]");
+                        //sb.AppendLine("		[EdmRelationshipNavigationProperty(\"" + this.GetLocalNamespace() + ".Entity" + "\", \"FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _currentTable.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "\")]");
                         sb.AppendLine("		" + this.GetLocalNamespace() + ".Entity.I" + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; set; }");
                         sb.AppendLine();
                     }
@@ -365,10 +365,10 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
                         sb.AppendLine("		/// <summary>");
                         sb.AppendLine("		/// The back navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName);
                         sb.AppendLine("		/// </summary>");
-                        sb.AppendLine("		[XmlIgnoreAttribute()]");
-                        sb.AppendLine("		[SoapIgnoreAttribute()]");
-                        sb.AppendLine("		[DataMemberAttribute()]");
-                        sb.AppendLine("		[EdmRelationshipNavigationPropertyAttribute(\"" + this.GetLocalNamespace() + ".Entity" + "\", \"FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _currentTable.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "List\")]");
+                        //sb.AppendLine("		[XmlIgnore()]");
+                        //sb.AppendLine("		[SoapIgnore()]");
+                        //sb.AppendLine("		[DataMember()]");
+                        //sb.AppendLine("		[EdmRelationshipNavigationProperty(\"" + this.GetLocalNamespace() + ".Entity" + "\", \"FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _currentTable.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "List\")]");
                         sb.AppendLine("		ICollection<" + this.GetLocalNamespace() + ".Entity.I" + childTable.PascalName + "> " + relation.PascalRoleName + childTable.PascalName + "List { get; }");
                         sb.AppendLine();
                     }
@@ -440,10 +440,10 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
                     sb.AppendLine("		/// <summary>");
                     sb.AppendLine("		/// The back navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName);
                     sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		[XmlIgnoreAttribute()]");
-                    sb.AppendLine("		[SoapIgnoreAttribute()]");
-                    sb.AppendLine("		[DataMemberAttribute()]");
-                    sb.AppendLine("		[EdmRelationshipNavigationPropertyAttribute(\"" + this.GetLocalNamespace() + ".Entity" + "\", \"FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _currentTable.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "List\")]");
+                    //sb.AppendLine("		[XmlIgnore()]");
+                    //sb.AppendLine("		[SoapIgnore()]");
+                    //sb.AppendLine("		[DataMember()]");
+                    //sb.AppendLine("		[EdmRelationshipNavigationProperty(\"" + this.GetLocalNamespace() + ".Entity" + "\", \"FK_" + relation.PascalRoleName + "_" + childTable.PascalName + "_" + _currentTable.PascalName + "\", \"" + relation.PascalRoleName + childTable.PascalName + "List\")]");
                     sb.AppendLine("		ICollection<" + this.GetLocalNamespace() + ".Entity.I" + childTable.PascalName + "> " + relation.PascalRoleName + childTable.PascalName + "List { get; }");
                     sb.AppendLine();
                 }
@@ -498,13 +498,13 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
 
                 if (column.PrimaryKey)
                 {
-                    //sb.AppendLine("		[nHydrate.EFCore.Attributes.PrimaryKeyAttribute()]");
+                    //sb.AppendLine("		[nHydrate.EFCore.Attributes.PrimaryKey()]");
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key]");
                 }
 
                 if (column.PrimaryKey || _currentTable.Immutable)
                 {
-                    sb.AppendLine("		[System.ComponentModel.ReadOnlyAttribute(true)]");
+                    sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
                 }
 
                 sb.AppendLine("		[System.ComponentModel.Description(\"Field mapping for the '" + column.PascalName + "' property\")]");
@@ -628,7 +628,7 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
                 }
 
                 //Additional display properties
-                sb.Append("		[System.ComponentModel.DataAnnotations.DisplayAttribute(Description = \"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\", Name = \"" + column.GetFriendlyName() + "\", AutoGenerateField = true");
+                sb.Append("		[System.ComponentModel.DataAnnotations.Display(Description = \"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\", Name = \"" + column.GetFriendlyName() + "\", AutoGenerateField = true");
                 if (!string.IsNullOrEmpty(column.Prompt))
                     sb.Append(", Prompt = \"" + StringHelper.ConvertTextToSingleLineCodeString(column.Prompt) + "\"");
                 sb.AppendLine(")]");

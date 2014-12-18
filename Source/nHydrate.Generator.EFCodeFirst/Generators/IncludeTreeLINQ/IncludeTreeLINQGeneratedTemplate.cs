@@ -113,7 +113,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.IncludeTreeLINQ
                 sb.AppendLine("	[Serializable]");
                 sb.AppendLine("	[Table(Name = \"" + table.DatabaseName + "\")]");
                 sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
-                sb.AppendLine("	public partial class " + table.PascalName + "Include : nHydrate.EFCore.DataAccess.IContextInclude");
+                sb.AppendLine("	public partial class " + table.PascalName + "Include : " + this.GetLocalNamespace() + ".IContextInclude");
                 sb.AppendLine("	{");
 
                 //Add child relationships

@@ -126,7 +126,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("using System.Data;");
             sb.AppendLine("using System.Data.Entity.ModelConfiguration;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
-            sb.AppendLine("using nHydrate.EFCore.Exceptions;");
+            //sb.AppendLine("using nHydrate.EFCore.Exceptions;");
             sb.AppendLine("using System.Data.Entity.Core.Objects;");
             sb.AppendLine();
         }
@@ -216,7 +216,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	/// </summary>");
             sb.AppendLine("	[DataContract]");
             sb.AppendLine("	[Serializable]");
-            sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : System.Data.Entity.DbContext, " + this.GetLocalNamespace() + ".Interfaces.I" + _model.ProjectName + "Entities, nHydrate.EFCore.DataAccess.IContext");
+            sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : System.Data.Entity.DbContext, " + this.GetLocalNamespace() + ".Interfaces.I" + _model.ProjectName + "Entities, IContext");
             sb.AppendLine("	{");
 
             //Create the modifier property
@@ -632,7 +632,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			var deletedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Deleted);");
             sb.AppendLine("			foreach (var item in deletedList)");
             sb.AppendLine("			{");
-            sb.AppendLine("				var entity = item.Entity as nHydrate.EFCore.DataAccess.IAuditable;");
+            sb.AppendLine("				var entity = item.Entity as IAuditable;");
             sb.AppendLine("				if (entity != null)");
             sb.AppendLine("				{");
             sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
@@ -698,7 +698,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			//Process added list");
             sb.AppendLine("			foreach (var item in addedList)");
             sb.AppendLine("			{");
-            sb.AppendLine("				var entity = item.Entity as nHydrate.EFCore.DataAccess.IAuditable;");
+            sb.AppendLine("				var entity = item.Entity as IAuditable;");
             sb.AppendLine("				if (entity != null)");
             sb.AppendLine("				{");
             sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
@@ -764,7 +764,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			var modifiedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Modified);");
             sb.AppendLine("			foreach (var item in modifiedList)");
             sb.AppendLine("			{");
-            sb.AppendLine("				var entity = item.Entity as nHydrate.EFCore.DataAccess.IAuditable;");
+            sb.AppendLine("				var entity = item.Entity as IAuditable;");
             sb.AppendLine("				if (entity != null)");
             sb.AppendLine("				{");
 
@@ -1073,7 +1073,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// Deletes an entity from the context");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"entity\">The entity to delete</param>");
-            sb.AppendLine("		public virtual void DeleteItem(nHydrate.EFCore.DataAccess.IBusinessObject entity)");
+            sb.AppendLine("		public virtual void DeleteItem(IBusinessObject entity)");
             sb.AppendLine("		{");
             sb.AppendLine("			if (entity == null) return;");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable).OrderBy(x => x.PascalName))
@@ -1453,17 +1453,17 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #region IContext Interface
             sb.AppendLine("		#region IContext Interface");
             sb.AppendLine();
-            sb.AppendLine("		Enum nHydrate.EFCore.DataAccess.IContext.GetEntityFromField(Enum field)");
+            sb.AppendLine("		Enum IContext.GetEntityFromField(Enum field)");
             sb.AppendLine("		{");
             sb.AppendLine("			return GetEntityFromField(field);");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		object nHydrate.EFCore.DataAccess.IContext.GetMetaData(Enum entity)");
+            sb.AppendLine("		object IContext.GetMetaData(Enum entity)");
             sb.AppendLine("		{");
             sb.AppendLine("			return GetMetaData((EntityMappingConstants)entity);");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		System.Type nHydrate.EFCore.DataAccess.IContext.GetFieldType(Enum field)");
+            sb.AppendLine("		System.Type IContext.GetFieldType(Enum field)");
             sb.AppendLine("		{");
             sb.AppendLine("			return this.GetFieldType(field);");
             sb.AppendLine("		}");

@@ -549,6 +549,7 @@ namespace PROJECTNAMESPACE
 
 		#region ShowHelp
 
+		/// <summary />
 		public static void ShowHelp()
 		{
 			//Create Help dialog

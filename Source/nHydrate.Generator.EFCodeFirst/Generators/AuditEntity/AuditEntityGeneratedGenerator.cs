@@ -39,44 +39,43 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Widgetsphere.Generator.Common.GeneratorFramework;
-using Widgetsphere.Generator.Models;
-using Widgetsphere.Generator.EFCodeFirst;
-using Widgetsphere.Generator.ProjectItemGenerators;
-using Widgetsphere.Generator.Common.EventArgs;
+using nHydrate.Generator.Common.GeneratorFramework;
+using nHydrate.Generator.Common.EventArgs;
+using nHydrate.Generator.EFCodeFirst;
+using nHydrate.Generator.Models;
 
 namespace Widgetsphere.Generator.EFCodeFirst.Generators.EFCSDL
 {
-	[GeneratorItemAttribute("AuditEntityGeneratedGenerator", typeof(AuditEntityExtenderGenerator))]
-	public class AuditEntityGeneratedGenerator : EFCodeFirstProjectItemGenerator
-	{
-		#region Class Members
+    [GeneratorItem("AuditEntityGeneratedGenerator", typeof(AuditEntityExtenderGenerator))]
+    public class AuditEntityGeneratedGenerator : EFCodeFirstProjectItemGenerator
+    {
+        #region Class Members
 
-		private const string RELATIVE_OUTPUT_LOCATION = @"\Audit\";
+        private const string RELATIVE_OUTPUT_LOCATION = @"\Audit\";
 
-		#endregion
+        #endregion
 
-		#region Overrides
+        #region Overrides
 
-		public override int FileCount
-		{
-			get { return 1; }
-		}
+        public override int FileCount
+        {
+            get { return 1; }
+        }
 
-		public override void Generate()
-		{
-			foreach (Table table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.IsTypeTable && x.AllowAuditTracking).OrderBy(x => x.Name))
-			{
-				AuditEntityGeneratedTemplate template = new AuditEntityGeneratedTemplate(_model, table);
-				string fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;
-				ProjectItemGeneratedEventArgs eventArgs = new ProjectItemGeneratedEventArgs(template.FileName, template.FileContent, ProjectName, fullParentName, this, true);
-				OnProjectItemGenerated(this, eventArgs);
-			}
-			ProjectItemGenerationCompleteEventArgs gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
-			OnGenerationComplete(this, gcEventArgs);
-		}
+        public override void Generate()
+        {
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly) && x.AllowAuditTracking).OrderBy(x => x.Name))
+            {
+                var template = new AuditEntityGeneratedTemplate(_model, table);
+                var fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;
+                var eventArgs = new ProjectItemGeneratedEventArgs(template.FileName, template.FileContent, ProjectName, fullParentName, this, true);
+                OnProjectItemGenerated(this, eventArgs);
+            }
+            ProjectItemGenerationCompleteEventArgs gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
+            OnGenerationComplete(this, gcEventArgs);
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }
