@@ -482,13 +482,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + "FieldNameConstants)");
+                sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants)");
                 sb.AppendLine("			{");
-                sb.AppendLine("				switch ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "FieldNameConstants)field)");
+                sb.AppendLine("				switch ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants)field)");
                 sb.AppendLine("				{");
                 foreach (var column in table.GeneratedColumnsFullHierarchy)
                 {
-                    sb.AppendLine("					case " + this.GetLocalNamespace() + ".Entity." + table.PascalName + "FieldNameConstants." + column.PascalName + ": return typeof(" + column.GetCodeType() + ");");
+                    sb.AppendLine("					case " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants." + column.PascalName + ": return typeof(" + column.GetCodeType() + ");");
                 }
                 sb.AppendLine("				}");
                 sb.AppendLine("			}");

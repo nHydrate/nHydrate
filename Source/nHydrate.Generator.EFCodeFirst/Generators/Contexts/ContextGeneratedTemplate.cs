@@ -507,8 +507,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     var relation1 = relations.First();
                     var relation2 = relations.Last();
                     sb.AppendLine("			modelBuilder.Entity<" + relation1.ParentTable.PascalName + ">()");
-                    sb.AppendLine("				.HasMany(q => q." + relation2.ParentTable.PascalName + "List)");
-                    sb.AppendLine("				.WithMany(q => q." + relation1.ParentTable.PascalName + "List)");
+                    sb.AppendLine("				.HasMany(q => q." + relation2.PascalRoleName + relation2.ParentTable.PascalName + "List)");
+                    sb.AppendLine("				.WithMany(q => q." + relation1.PascalRoleName + relation1.ParentTable.PascalName + "List)");
                     sb.AppendLine("				.Map(q =>");
                     sb.AppendLine("			{");
                     sb.AppendLine("				q.ToTable(\"" + table.PascalName + "\");");
@@ -1083,9 +1083,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             {
                 var name = table.GetAbsoluteBaseTable().PascalName;
                 if (table.Security.IsValid()) name += "__INTERNAL";
-                sb.AppendLine("			if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") this." + name + ".Remove(entity as " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ");");
+                sb.AppendLine("			else if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") this." + name + ".Remove(entity as " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ");");
             }
-            sb.AppendLine("			throw new Exception(\"Unknown entity type\");");
+
+            sb.AppendLine("			else");
+            sb.AppendLine("				throw new Exception(\"Unknown entity type\");");
             sb.AppendLine("		}");
             sb.AppendLine();
 
