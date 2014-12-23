@@ -47,7 +47,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
         public string ParentItemName
         {
-            get { return string.Format("{0}Entities.cs", _model.ProjectName); }
+            get { return string.Format("{0}MockEntities.cs", _model.ProjectName); }
         }
 
         public override string FileContent
