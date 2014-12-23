@@ -71,7 +71,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 sb.AppendLine("namespace " + this.GetLocalNamespace());
                 sb.AppendLine("{");
-                sb.AppendLine("	partial class " + _model.ProjectName + "Entities");
+                sb.AppendLine("	partial class " + _model.ProjectName + "MockEntities");
                 sb.AppendLine("	{");
                 sb.AppendLine("	}");
                 sb.AppendLine("}");

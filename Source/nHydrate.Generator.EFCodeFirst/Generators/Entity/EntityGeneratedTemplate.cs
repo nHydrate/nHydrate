@@ -576,11 +576,15 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 //if (column.ComputedColumn)
                 //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)]");
 
+                var propertySetterScope = string.Empty;
+                if (column.ComputedColumn)
+                    propertySetterScope = "internal ";
+
                 sb.AppendLine("		public virtual " + column.GetCodeType() + " " + column.PascalName);
                 sb.AppendLine("		{");
                 sb.AppendLine("			get { return _" + column.CamelName + "; }");
                 //sb.AppendLine("			set { _" + column.CamelName + " = value; }");
-                sb.AppendLine("			set");
+                sb.AppendLine("			" + propertySetterScope + "set");
                 sb.AppendLine("			{");
 
                 #region Validation

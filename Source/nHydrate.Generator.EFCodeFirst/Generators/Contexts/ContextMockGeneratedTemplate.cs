@@ -286,6 +286,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
         private void AppendAddDelete()
         {
             #region Tables AddItem
+            sb.AppendLine("		#region AddItem");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary>");
@@ -308,9 +309,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		}");
                 sb.AppendLine();
             }
+            sb.AppendLine("		#endregion");
             #endregion
 
             #region Tables DeleteItem
+            sb.AppendLine("		#region DeleteItem");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary>");
@@ -333,8 +336,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		}");
                 sb.AppendLine();
             }
+            sb.AppendLine("		#endregion");
             #endregion
-
         }
 
         private void AppendProperties()
@@ -342,30 +345,37 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #region Tables
             foreach (var item in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
-                if (!item.Security.IsValid())
+                var hasSecurity = item.Security.IsValid();
+                var name = item.PascalName;
+                if (hasSecurity) name += "__INTERNAL";
+
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// The mock set for the '" + item.PascalName + "' entity");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		" + (hasSecurity ? "protected internal" : "public") + " MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "");
+                sb.AppendLine("		{");
+                sb.AppendLine("			get { return _" + name + " ?? (_" + name + " = new MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">()); }");
+                sb.AppendLine("			set { _" + name + " = value as MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">; }");
+                sb.AppendLine("		}");
+                sb.AppendLine("		private MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> _" + name + ";");
+                sb.AppendLine();
+
+                //Interface
+                if (hasSecurity)
                 {
-                    sb.AppendLine("		/// <summary>");
-                    sb.AppendLine("		/// The mock set for the '" + item.PascalName + "' entity");
-                    sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		public MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "");
-                    sb.AppendLine("		{");
-                    sb.AppendLine("			get { return _" + item.PascalName + " ?? (_" + item.PascalName + " = new MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">()); }");
-                    sb.AppendLine("			set { _" + item.PascalName + " = value as MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">; }");
-                    sb.AppendLine("		}");
-                    sb.AppendLine("		private MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> _" + item.PascalName + ";");
-                    sb.AppendLine();
-                    
-                    //Interface
-                    sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + item.PascalName + "");
-                    sb.AppendLine("		{");
-                    sb.AppendLine("			get { return this." + item.PascalName + "; }");
-                    sb.AppendLine("		}");
-                    sb.AppendLine();
+                    //sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + item.PascalName + "");
+                    //sb.AppendLine("		{");
+                    //sb.AppendLine("			get { return this." + item.PascalName + "; }");
+                    //sb.AppendLine("		}");
                 }
                 else
                 {
-                    //TODO
+                    sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + item.PascalName + "");
+                    sb.AppendLine("		{");
+                    sb.AppendLine("			get { return this." + name + "; }");
+                    sb.AppendLine("		}");
                 }
+                sb.AppendLine();
             }
             #endregion
 
@@ -396,24 +406,49 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #region Stored Procs
             foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.Generated && x.GeneratedColumns.Count > 0).OrderBy(x => x.PascalName))
             {
-
                 //Interface
                 var paramset = item.GetParameters().Where(x => x.Generated).ToList();
                 var paramString1 = string.Join(", ", paramset.Select(x => x.GetCodeType(true) + " " + x.CamelName).ToList());
                 var paramString2 = string.Join(", ", paramset.Select(x => x.CamelName).ToList());
+
+                sb.AppendLine("		//TODO: This is not right");
                 sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + item.PascalName + "(" + paramString1 + ")");
+                sb.AppendLine("		public IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "(" + paramString1 + ")");
                 sb.AppendLine("		{");
                 sb.AppendLine("			return (IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">)this." + item.PascalName + "(" + paramString2 + ");");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+
+                //sb.AppendLine("		/// <summary />");
+                //sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + item.PascalName + "(" + paramString1 + ")");
+                //sb.AppendLine("		{");
+                //sb.AppendLine("			return (IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">)this." + item.PascalName + "(" + paramString2 + ");");
+                //sb.AppendLine("		}");
+                //sb.AppendLine();
             }
             #endregion
 
             #region Functions
             foreach (var item in _model.Database.Functions.Where(x => x.Generated && x.IsTable).OrderBy(x => x.PascalName))
             {
-
+                sb.AppendLine("		//TODO: This is not right");
+                sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		/// " + item.Description);
+                sb.AppendLine("		/// </summary>");
+                sb.Append("		public virtual IQueryable<" + GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "(");
+                var parameterList = item.GetParameters().Where(x => x.Generated).ToList();
+                foreach (var parameter in parameterList)
+                {
+                    if (parameter.IsOutputParameter) sb.Append("out ");
+                    sb.Append(parameter.GetCodeType() + " " + parameter.CamelName);
+                    if (parameterList.IndexOf(parameter) < parameterList.Count - 1)
+                        sb.Append(", ");
+                }
+                sb.AppendLine(")");
+                sb.AppendLine("		{");
+                sb.AppendLine("			return (new List<" + GetLocalNamespace() + ".Entity." + item.PascalName + ">()).AsQueryable();");
+                sb.AppendLine("		}");
+                sb.AppendLine();
             }
             #endregion
         }

@@ -405,8 +405,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                         sb.Append(".Property(d => d." + column.PascalName + ")");
                         if (!column.AllowNull)
                             sb.Append(".IsRequired()");
+
                         if (column.PrimaryKey && column.IsIntegerType && column.Identity != IdentityTypeConstants.Database)
                             sb.Append(".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)");
+
+                        if (column.ComputedColumn)
+                            sb.Append(".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)");
 
                         if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
                         if (column.DatabaseName != column.PascalName) sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
@@ -1050,18 +1054,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine();
             }
             #endregion
-
-            ////Overload the original signature as an error
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Adds an object to the object context.");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		[Obsolete(\"This method signature is no longer used. Use the AddItem method.\", true)]");
-            //sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]");
-            //sb.AppendLine("		public new void AddObject(string entitySetName, object entity)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			throw new Exception(\"This method signature is no longer used. Use the AddItem method.\");");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
