@@ -408,9 +408,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
                         if (column.PrimaryKey && column.IsIntegerType && column.Identity != IdentityTypeConstants.Database)
                             sb.Append(".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)");
-
-                        if (column.ComputedColumn)
+                        else if (column.ComputedColumn)
                             sb.Append(".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)");
+                        else if (column.Identity == IdentityTypeConstants.Database && column.IsIntegerType)
+                            sb.Append(".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)");
 
                         if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
                         if (column.DatabaseName != column.PascalName) sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
@@ -1031,7 +1032,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 }
 
                 if (table.Security.IsValid())
-                    sb.AppendLine("			this.ObjectContext.AddObject(entity.GetType().Name, entity);");
+                    sb.AppendLine("			this.ObjectContext.AddObject(entity.GetType().Name + \"__INTERNAL\", entity);");
                 else
                     sb.AppendLine("			this." + table.PascalName + ".Add((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
 
