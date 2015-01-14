@@ -255,9 +255,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
         private void AppendUsingStatements()
         {
             sb.AppendLine("using System;");
+            sb.AppendLine("using System.Data.Entity.Core.Objects;");
             sb.AppendLine("using System.Linq;");
-            sb.AppendLine("using System.Data.Objects;");
-            sb.AppendLine("using System.Data.Objects.DataClasses;");
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Runtime.Serialization;");
             sb.AppendLine("using System.Collections.Generic;");
