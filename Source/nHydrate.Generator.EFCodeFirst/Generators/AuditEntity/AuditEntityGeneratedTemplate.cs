@@ -116,7 +116,6 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.EFCSDL
             sb.AppendLine("using System.Xml.Serialization;");
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Collections.Generic;");
-            sb.AppendLine("using System.Data.Objects;");
             sb.AppendLine("using System.Data;");
             sb.AppendLine();
         }

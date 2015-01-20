@@ -80,7 +80,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
 
                 #region Using
                 sb.AppendLine("using System;");
-                sb.AppendLine("using System.Data.Objects.DataClasses;");
                 sb.AppendLine("using System.Collections.Generic;");
                 sb.AppendLine("using System.Data;");
                 sb.AppendLine("using System.Data.SqlClient;");

@@ -87,7 +87,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
         {
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
-            sb.AppendLine("using System.Data.Objects;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
             sb.AppendLine("using System.Linq.Expressions;");
