@@ -408,8 +408,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             {
                 //Interface
                 var paramset = item.GetParameters().Where(x => x.Generated).ToList();
-                var paramString1 = string.Join(", ", paramset.Select(x => x.GetCodeType(true) + " " + x.CamelName).ToList());
-                var paramString2 = string.Join(", ", paramset.Select(x => x.CamelName).ToList());
+                var paramString1 = string.Join(", ", paramset.Select(x => (x.IsOutputParameter ? "out " : "") + x.GetCodeType(true) + " " + x.CamelName).ToList());
+                var paramString2 = string.Join(", ", paramset.Select(x => (x.IsOutputParameter ? "out " : "") + x.CamelName).ToList());
 
                 sb.AppendLine("		//TODO: This is not right");
                 sb.AppendLine("		/// <summary />");

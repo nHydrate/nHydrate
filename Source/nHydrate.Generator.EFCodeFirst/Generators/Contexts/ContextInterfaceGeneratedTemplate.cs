@@ -154,7 +154,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.Generated).OrderBy(x => x.PascalName))
             {
                 var paramset = item.GetParameters().Where(x => x.Generated).ToList();
-                var paramString = string.Join(", ", paramset.Select(x => x.GetCodeType(true) + " " + x.CamelName).ToList());
+                var paramString = string.Join(", ", paramset.Select(x => (x.IsOutputParameter ? "out " : "") + x.GetCodeType(true) + " " + x.CamelName).ToList());
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "(" + paramString + ");");
                 sb.AppendLine();
