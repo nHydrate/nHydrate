@@ -112,11 +112,9 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.EFCSDL
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
             sb.AppendLine("using System.Runtime.Serialization;");
-            sb.AppendLine("using System.Data.Objects.DataClasses;");
             sb.AppendLine("using System.Xml.Serialization;");
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Collections.Generic;");
-            sb.AppendLine("using System.Data.Objects;");
             sb.AppendLine("using System.Data;");
             sb.AppendLine();
         }
@@ -221,15 +219,15 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.EFCSDL
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public DateTime AuditDate { get; internal set; }");
 
-            if (_item.AllowModifiedAudit)
+            //if (_item.AllowModifiedAudit)
             {
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// The modifier value of the audit");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		public string ModifiedBy { get; internal set; }");
+                sb.AppendLine();
             }
 
-            sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
         }
