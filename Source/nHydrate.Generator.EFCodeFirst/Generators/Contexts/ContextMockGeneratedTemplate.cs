@@ -289,13 +289,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		#region AddItem");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.PascalName))
             {
+                var name = table.PascalName;
+                if (table.Security.IsValid()) name += "__INTERNAL";
+
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Adds an item of type '" + table.PascalName + "' to the object context.");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		/// <param name=\"entity\">The entity to add</param>");
                 sb.AppendLine("		public virtual void AddItem(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " entity)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			this." + table.PascalName + ".AddObject((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
+                sb.AppendLine("			this." + name + ".AddObject((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
 
@@ -305,7 +308,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		/// <param name=\"entity\">The entity to add</param>");
                 sb.AppendLine("		void " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities.AddItem(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " entity)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			this." + table.PascalName + ".AddObject(entity);");
+                sb.AppendLine("			this." + name + ".AddObject(entity);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
             }
@@ -316,13 +319,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		#region DeleteItem");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.PascalName))
             {
+                var name = table.PascalName;
+                if (table.Security.IsValid()) name += "__INTERNAL";
+
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Deletes an item of type '" + table.PascalName + "' to the object context.");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		/// <param name=\"entity\">The entity to Delete</param>");
                 sb.AppendLine("		public virtual void DeleteItem(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " entity)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			this." + table.PascalName + ".DeleteObject((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
+                sb.AppendLine("			this." + name + ".DeleteObject((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
 
@@ -332,7 +338,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		/// <param name=\"entity\">The entity to Delete</param>");
                 sb.AppendLine("		void " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities.DeleteItem(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " entity)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			this." + table.PascalName + ".DeleteObject(entity);");
+                sb.AppendLine("			this." + name + ".DeleteObject(entity);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
             }
@@ -352,7 +358,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// The mock set for the '" + item.PascalName + "' entity");
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		" + (hasSecurity ? "protected internal" : "public") + " MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "");
+                sb.AppendLine("		" + (hasSecurity ? "protected internal" : "public") + " MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + name);
                 sb.AppendLine("		{");
                 sb.AppendLine("			get { return _" + name + " ?? (_" + name + " = new MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">()); }");
                 sb.AppendLine("			set { _" + name + " = value as MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">; }");
@@ -363,10 +369,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 //Interface
                 if (hasSecurity)
                 {
-                    //sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + item.PascalName + "");
-                    //sb.AppendLine("		{");
-                    //sb.AppendLine("			get { return this." + item.PascalName + "; }");
-                    //sb.AppendLine("		}");
+                    var paramset = string.Join(", ", item.Security.GetParameters().ToList().Select(x => x.GetCodeType() + " " + x.CamelName).ToList());
+                    sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + item.PascalName + "(" + paramset + ")");
+                    sb.AppendLine("		{");
+                    sb.AppendLine("			return this." + item.PascalName + "__INTERNAL;");
+                    sb.AppendLine("		}");
                 }
                 else
                 {
