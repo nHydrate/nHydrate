@@ -194,6 +194,22 @@ namespace nHydrate.Generator.Models
                 return v;
         }
 
+        public string GetCodeData()
+        {
+            var column = this.ColumnRef.Object as Column;
+            var v = this.Value + string.Empty;
+
+            if (column.AllowNull && v == "(NULL)")
+                return null;
+            else if (ModelHelper.IsTextType(column.DataType) ||
+                ModelHelper.IsDateType(column.DataType) ||
+                column.DataType == System.Data.SqlDbType.UniqueIdentifier
+                )
+                return "\"" + v.Replace("\"", @"""") + "\"";
+            else
+                return v;
+        }
+
         #endregion
 
         #region IXMLable Members

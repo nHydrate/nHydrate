@@ -24,8 +24,11 @@
 // -------------------------------------------------------------------------- *
 #endregion
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
+using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
@@ -77,6 +80,71 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
                 sb.AppendLine("	public partial class " + _model.ProjectName + "MockEntities : " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities, System.IDisposable, " + this.GetLocalNamespace() + ".IContext");
                 sb.AppendLine("	{");
+                sb.AppendLine();
+
+                //Constructor
+                sb.AppendLine("		public " + _model.ProjectName + "MockEntities()");
+                sb.AppendLine("		{");
+
+                //Create objects for type tables
+                foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && x.TypedTable == TypedTableConstants.DatabaseTable).OrderBy(x => x.PascalName))
+                {
+                    #region Add values for type table
+
+                    sb.AppendLine("			//Add values for " + table.PascalName);
+
+                    foreach (var rowEntry in table.StaticData.AsEnumerable<RowEntry>())
+                    {
+                        var valueList = new List<string>();
+                        foreach (var cellEntry in rowEntry.CellEntries.ToList())
+                        {
+                            var column = cellEntry.ColumnRef.Object as Column;
+                            var sqlValue = cellEntry.GetCodeData();
+                            if (sqlValue == null) //Null is actually returned if the value can be null
+                            {
+                                if (!string.IsNullOrEmpty(column.Default))
+                                {
+                                    if (ModelHelper.IsTextType(column.DataType) || ModelHelper.IsDateType(column.DataType))
+                                        valueList.Add(column.Name + " = \"" + column.Default.Replace("\"", @"""") + "\"");
+                                    else
+                                        valueList.Add(column.Name + " = " + column.Default);
+                                }
+                                else
+                                {
+                                    valueList.Add(column.Name + " = null");
+                                }
+                            }
+                            else
+                            {
+                                if (column.DataType == SqlDbType.Bit)
+                                {
+                                    sqlValue = sqlValue.ToLower().Trim();
+                                    if (sqlValue == "true") ;
+                                    else if (sqlValue == "false") ;
+                                    else if (sqlValue != "1") sqlValue = "false"; //catch all, must be true/false
+                                    valueList.Add(column.Name + " = " + sqlValue);
+                                }
+                                else
+                                {
+                                    valueList.Add(column.Name + " = " + sqlValue);
+                                }
+                            }
+                        }
+
+                        if (table.AllowCreateAudit)
+                            valueList.Add(_model.Database.CreatedDateColumnName + " = new DateTime(2000, 1, 1)");
+                        if (table.AllowModifiedAudit)
+                            valueList.Add(_model.Database.ModifiedDateColumnName + " = new DateTime(2000, 1, 1)");
+                        if (table.AllowTimestamp)
+                            valueList.Add(_model.Database.TimestampPascalName + " = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }");
+
+                        sb.AppendLine("			this." + table.PascalName + ".Add(new Entity." + table.PascalName + " { " + string.Join(", ", valueList) + " });");
+                    }
+
+                    sb.AppendLine();
+                    #endregion
+                }
+                sb.AppendLine("		}");
                 sb.AppendLine();
 
                 sb.AppendLine("		private static Dictionary<string, SequentialIdGenerator> _sequentialIdGeneratorCache = new Dictionary<string, SequentialIdGenerator>();");
@@ -313,6 +381,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine();
             }
             sb.AppendLine("		#endregion");
+            sb.AppendLine();
             #endregion
 
             #region Tables DeleteItem
@@ -343,6 +412,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine();
             }
             sb.AppendLine("		#endregion");
+            sb.AppendLine();
             #endregion
         }
 
