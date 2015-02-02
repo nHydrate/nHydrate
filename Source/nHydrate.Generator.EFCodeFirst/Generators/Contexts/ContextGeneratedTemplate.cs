@@ -517,8 +517,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     sb.AppendLine("				.Map(q =>");
                     sb.AppendLine("			{");
                     sb.AppendLine("				q.ToTable(\"" + table.PascalName + "\");");
-                    sb.AppendLine("				q.MapLeftKey(" + string.Join(",", relation1.ParentTable.PrimaryKeyColumns.ToList().Select(x => "\"" + x.DatabaseName + "\"").ToList()) + ");");
-                    sb.AppendLine("				q.MapRightKey(" + string.Join(",", relation2.ParentTable.PrimaryKeyColumns.ToList().Select(x => "\"" + x.DatabaseName + "\"").ToList()) + ");");
+                    sb.AppendLine("				q.MapLeftKey(" + string.Join(",", relation1.ColumnRelationships.Select(x => "\"" + x.ChildColumn.DatabaseName + "\"").ToList()) + ");");
+                    sb.AppendLine("				q.MapRightKey(" + string.Join(",", relation2.ColumnRelationships.Select(x => "\"" + x.ChildColumn.DatabaseName + "\"").ToList()) + ");");
                     sb.AppendLine("			});");
                     sb.AppendLine();
                 }
