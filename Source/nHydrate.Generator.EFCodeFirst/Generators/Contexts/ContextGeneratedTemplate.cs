@@ -1433,25 +1433,30 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine(")");
                 sb.AppendLine("		{");
 
+                var paramIndex = 1;
                 foreach (var parameter in parameterList)
                 {
+                    sb.AppendLine("			var paramName" + paramIndex + " = \"X\" + Guid.NewGuid().ToString().Replace(\"-\", string.Empty);");
                     if (parameter.IsOutputParameter)
                     {
-                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + "));");
+                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(paramName" + paramIndex + ", typeof(" + parameter.GetCodeType() + "));");
                     }
                     else if (parameter.AllowNull)
                     {
                         sb.AppendLine("			ObjectParameter " + parameter.CamelName + "Parameter = null;");
-                        sb.AppendLine("			if (" + parameter.CamelName + " != null) { " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + "); }");
-                        sb.AppendLine("			else { " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + ")); }");
+                        sb.AppendLine("			if (" + parameter.CamelName + " != null) { " + parameter.CamelName + "Parameter = new ObjectParameter(paramName" + paramIndex + ", " + parameter.CamelName + "); }");
+                        sb.AppendLine("			else { " + parameter.CamelName + "Parameter = new ObjectParameter(paramName" + paramIndex + ", typeof(" + parameter.GetCodeType() + ")); }");
                     }
                     else
                     {
-                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + ");");
+                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(paramName" + paramIndex + ", " + parameter.CamelName + ");");
                     }
+                    paramIndex++;
                 }
 
-                var inputParams = string.Join(", ", (parameterList.Select(x => "@" + x.PascalName)));
+                paramIndex = 1;
+                var inputParams = string.Join(", ", (parameterList.Select(x => "@\" + paramName" + paramIndex++ + " + \"")));
+
                 var inputParamVars = string.Join(", ", (parameterList.Select(x => x.CamelName + "Parameter")));
                 sb.AppendLine("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.CreateQuery<" + item.PascalName + ">(\"[" + _model.ProjectName + "Entities].[" + objectName + "](" + inputParams + ")\"" + (string.IsNullOrEmpty(inputParamVars) ? string.Empty : ", " + inputParamVars) + ");");
 
