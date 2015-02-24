@@ -547,8 +547,12 @@ namespace PROJECTNAMESPACE
 					F.ShowDialog();
 					
 				}
-				if (_transaction == null)
-					_transaction.Rollback();
+				try
+				{
+					if (_transaction != null)
+						_transaction.Rollback();
+				}
+				catch { }
 				throw;
 			}
 			catch (Exception ex)
@@ -559,8 +563,12 @@ namespace PROJECTNAMESPACE
 					F.SetupGeneric(ex);
 					F.ShowDialog();
 				}
-				if (_transaction == null)
-					_transaction.Rollback();
+				try
+				{
+					if (_transaction != null)
+						_transaction.Rollback();
+				}
+				catch { }
 				throw;
 			}
 			finally

@@ -77,6 +77,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("{");
                 sb.AppendLine("	partial class " + _model.ProjectName + "Configuration");
                 sb.AppendLine("	{");
+                sb.AppendLine("		//Add your custom context configuration code here.");
                 sb.AppendLine("	}");
                 sb.AppendLine("}");
             }

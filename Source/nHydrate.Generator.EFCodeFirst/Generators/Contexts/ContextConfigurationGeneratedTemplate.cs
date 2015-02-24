@@ -86,11 +86,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
         private void AppendUsingStatements()
         {
-            sb.AppendLine("using System;");
-            sb.AppendLine("using System.Linq;");
-            sb.AppendLine("using System.Data.Entity;");
-            sb.AppendLine("using System.Data.Entity.SqlServer;");
-            sb.AppendLine();
         }
 
         private void AppendClass()
@@ -100,10 +95,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	/// </summary>");
             sb.AppendLine("	public partial class " + _model.ProjectName + "Configuration : System.Data.Entity.DbConfiguration");
             sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public " + _model.ProjectName + "Configuration()");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
             sb.AppendLine("	}");
             sb.AppendLine();
         }
