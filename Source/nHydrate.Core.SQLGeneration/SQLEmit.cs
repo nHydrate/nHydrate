@@ -790,7 +790,7 @@ namespace nHydrate.Core.SQLGeneration
                         foreach (var cellEntry in rowEntry.CellEntries.ToList())
                         {
                             var column = cellEntry.ColumnRef.Object as Column;
-                            var field = "[" + column.Name + "]";
+                            
 
                             var sqlValue = cellEntry.GetSQLData();
                             if (sqlValue == null) //Null is actually returned if the value can be null
@@ -799,16 +799,16 @@ namespace nHydrate.Core.SQLGeneration
                                 {
                                     if (ModelHelper.IsTextType(column.DataType) || ModelHelper.IsDateType(column.DataType))
                                     {
-                                        fieldValues.Add(field, "'" + column.Default.Replace("'", "''") + "'");
+                                        fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
                                     }
                                     else
                                     {
-                                        fieldValues.Add(field, column.Default);
+                                        fieldValues.Add(column.Name, column.Default);
                                     }
                                 }
                                 else
                                 {
-                                    fieldValues.Add(field, "NULL");
+                                    fieldValues.Add(column.Name, "NULL");
                                 }
                             }
                             else
@@ -821,7 +821,7 @@ namespace nHydrate.Core.SQLGeneration
                                     else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
                                 }
 
-                                fieldValues.Add(field, sqlValue);
+                                fieldValues.Add(column.Name, sqlValue);
                             }
                         }
 
@@ -833,7 +833,7 @@ namespace nHydrate.Core.SQLGeneration
                         var primaryKeyColumnNames = table.PrimaryKeyColumns.Select(x => x.Name);
                         foreach (var kvp in fieldValues)
                         {
-                            fieldList.Add(kvp.Key);
+                            fieldList.Add("[" + kvp.Key + "]");
                             valueList.Add(kvp.Value);
 
                             if (!primaryKeyColumnNames.Contains(kvp.Key))
@@ -862,7 +862,7 @@ namespace nHydrate.Core.SQLGeneration
                         }
 
                         sb.Append(pkWhereSb);
-                        sb.Append(") ");
+                        sb.AppendLine(") ");
                         sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] (" + fieldListString + ") values (" + valueListString + ");");
 
                         // TODO: Add this
