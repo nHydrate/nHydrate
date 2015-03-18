@@ -830,11 +830,16 @@ namespace nHydrate.Core.SQLGeneration
                         var fieldList = new List<string>();
                         var valueList = new List<string>();
                         var updateSetList = new List<string>();
+                        var primaryKeyColumnNames = table.PrimaryKeyColumns.Select(x => x.Name);
                         foreach (var kvp in fieldValues)
                         {
                             fieldList.Add(kvp.Key);
                             valueList.Add(kvp.Value);
-                            updateSetList.Add(kvp.Key + " = " + kvp.Value);
+
+                            if (!primaryKeyColumnNames.Contains(kvp.Key))
+                            {
+                                updateSetList.Add(kvp.Key + " = " + kvp.Value);
+                            }
                         }
 
                         var fieldListString = string.Join(",", fieldList);
