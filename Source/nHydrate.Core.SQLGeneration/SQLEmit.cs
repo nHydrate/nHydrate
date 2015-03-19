@@ -783,12 +783,14 @@ namespace nHydrate.Core.SQLGeneration
 
                     foreach (var rowEntry in table.StaticData.AsEnumerable<RowEntry>())
                     {
-                        var fieldList = string.Empty;
-                        var valueList = string.Empty;
+
+                        var fieldValues = new Dictionary<string, string>();
+
+                        
                         foreach (var cellEntry in rowEntry.CellEntries.ToList())
                         {
                             var column = cellEntry.ColumnRef.Object as Column;
-                            fieldList += "[" + column.Name + "],";
+                            
 
                             var sqlValue = cellEntry.GetSQLData();
                             if (sqlValue == null) //Null is actually returned if the value can be null
@@ -796,13 +798,17 @@ namespace nHydrate.Core.SQLGeneration
                                 if (!string.IsNullOrEmpty(column.Default))
                                 {
                                     if (ModelHelper.IsTextType(column.DataType) || ModelHelper.IsDateType(column.DataType))
-                                        valueList += "'" + column.Default.Replace("'", "''") + "',";
+                                    {
+                                        fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
+                                    }
                                     else
-                                        valueList += column.Default + ",";
+                                    {
+                                        fieldValues.Add(column.Name, column.Default);
+                                    }
                                 }
                                 else
                                 {
-                                    valueList += "NULL,";
+                                    fieldValues.Add(column.Name, "NULL");
                                 }
                             }
                             else
@@ -813,33 +819,55 @@ namespace nHydrate.Core.SQLGeneration
                                     if (sqlValue == "true") sqlValue = "1";
                                     else if (sqlValue == "false") sqlValue = "0";
                                     else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
-                                    valueList += sqlValue + ",";
                                 }
-                                else
-                                {
-                                    valueList += sqlValue + ",";
-                                }
+
+                                fieldValues.Add(column.Name, sqlValue);
                             }
                         }
 
-                        if (fieldList.EndsWith(","))
-                            fieldList = fieldList.Substring(0, fieldList.Length - 1);
-                        if (valueList.EndsWith(","))
-                            valueList = valueList.Substring(0, valueList.Length - 1);
+                        // this could probably be done smarter
+                        // but I am concerned about the order of the keys and values coming out right
+                        var fieldList = new List<string>();
+                        var valueList = new List<string>();
+                        var updateSetList = new List<string>();
+                        var primaryKeyColumnNames = table.PrimaryKeyColumns.Select(x => x.Name);
+                        foreach (var kvp in fieldValues)
+                        {
+                            fieldList.Add("[" + kvp.Key + "]");
+                            valueList.Add(kvp.Value);
+
+                            if (!primaryKeyColumnNames.Contains(kvp.Key))
+                            {
+                                updateSetList.Add(kvp.Key + " = " + kvp.Value);
+                            }
+                        }
+
+                        var fieldListString = string.Join(",", fieldList);
+                        var valueListString = string.Join(",", valueList);
+                        var updateSetString = string.Join(",", updateSetList);
 
                         sb.Append("if not exists(select * from [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] where ");
 
                         var ii = 0;
+
+                        var pkWhereSb = new StringBuilder();
+
                         foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
                         {
                             var pkData = rowEntry.CellEntries[column.Name].GetSQLData();
-                            sb.Append("([" + column.DatabaseName + "] = " + pkData + ")");
+                            pkWhereSb.Append("([" + column.DatabaseName + "] = " + pkData + ")");
                             if (ii < table.PrimaryKeyColumns.Count - 1)
-                                sb.Append(" AND ");
+                                pkWhereSb.Append(" AND ");
                             ii++;
                         }
-                        sb.Append(") ");
-                        sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] (" + fieldList + ") values (" + valueList + ")");
+
+                        sb.Append(pkWhereSb);
+                        sb.AppendLine(") ");
+                        sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] (" + fieldListString + ") values (" + valueListString + ");");
+
+                        // TODO: Add this
+                        sb.AppendLine("else ");
+                        sb.AppendLine("UPDATE [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] SET " + updateSetString + " WHERE " + pkWhereSb.ToString() + ";");
 
                     }
 
