@@ -125,6 +125,7 @@ namespace nHydrate.Generator.Models
             _compositeList = new TableCompositeCollection(root, this);
             _componentList = new TableComponentCollection(root, this);
             _security = new SecurityFunction(root, this);
+            _security.ResetKey(Guid.Empty.ToString());
 
             _staticData = new RowEntryCollection(this.Root);
             _columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
