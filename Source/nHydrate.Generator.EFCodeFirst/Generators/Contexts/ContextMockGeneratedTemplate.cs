@@ -99,19 +99,23 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                         foreach (var cellEntry in rowEntry.CellEntries.ToList())
                         {
                             var column = cellEntry.ColumnRef.Object as Column;
+
+                            // When mocking, need to check to see if the user defined a CodeFacade for static data
+                            var columnName = !string.IsNullOrWhiteSpace(column.CodeFacade) ? column.CodeFacade : column.Name;
+
                             var sqlValue = cellEntry.GetCodeData();
                             if (sqlValue == null) //Null is actually returned if the value can be null
                             {
                                 if (!string.IsNullOrEmpty(column.Default))
                                 {
                                     if (ModelHelper.IsTextType(column.DataType) || ModelHelper.IsDateType(column.DataType))
-                                        valueList.Add(column.Name + " = \"" + column.Default.Replace("\"", @"""") + "\"");
+                                        valueList.Add(columnName + " = \"" + column.Default.Replace("\"", @"""") + "\"");
                                     else
-                                        valueList.Add(column.Name + " = " + column.Default);
+                                        valueList.Add(columnName + " = " + column.Default);
                                 }
                                 else
                                 {
-                                    valueList.Add(column.Name + " = null");
+                                    valueList.Add(columnName + " = null");
                                 }
                             }
                             else
@@ -119,14 +123,26 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                                 if (column.DataType == SqlDbType.Bit)
                                 {
                                     sqlValue = sqlValue.ToLower().Trim();
-                                    if (sqlValue == "true") ;
-                                    else if (sqlValue == "false") ;
-                                    else if (sqlValue != "1") sqlValue = "false"; //catch all, must be true/false
-                                    valueList.Add(column.Name + " = " + sqlValue);
+
+                                    switch (sqlValue)
+                                    {
+                                        case "true":
+                                        case "1":
+                                            sqlValue = "true";
+                                            break;
+                                        
+                                        case "false":
+                                        case "0":
+                                        default:
+                                            sqlValue = "false";
+                                            break;
+                                    }
+                                    
+                                    valueList.Add(columnName + " = " + sqlValue);
                                 }
                                 else
                                 {
-                                    valueList.Add(column.Name + " = " + sqlValue);
+                                    valueList.Add(columnName + " = " + sqlValue);
                                 }
                             }
                         }
