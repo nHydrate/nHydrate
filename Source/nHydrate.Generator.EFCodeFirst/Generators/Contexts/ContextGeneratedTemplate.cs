@@ -1549,6 +1549,21 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
             #endregion
 
+            #region Extra
+            sb.AppendLine("		#region Interface Extras");
+            sb.AppendLine("		public void ReloadItem(BaseEntity entity)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			this.Entry(entity).Reload();");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		public void DetachItem(BaseEntity entity)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			this.ObjectContext.Detach(entity);");
+            sb.AppendLine("		}");
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
+            #endregion
+
             #region ObjectContext
             sb.AppendLine("		#region ObjectContext");
             sb.AppendLine();

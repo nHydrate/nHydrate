@@ -175,6 +175,25 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 AppendVersioning();
                 AppendGetEntityField();
                 AppendSeqId();
+
+                #region Extra
+                sb.AppendLine("		#region Interface Extras");
+                sb.AppendLine("		public void ReloadItem(BaseEntity entity)");
+                sb.AppendLine("		{");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		public void DetachItem(BaseEntity entity)");
+                sb.AppendLine("		{");
+                foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly && !x.Security.IsValid()).ToList())
+                {
+                    sb.AppendLine("		if (entity is EFDAL.Entity." + table.PascalName + ")");
+                    sb.AppendLine("			this." + table.PascalName + ".Remove(entity as EFDAL.Entity." + table.PascalName + ");");
+                }
+                sb.AppendLine("		}");
+                sb.AppendLine("		#endregion");
+                sb.AppendLine();
+                #endregion
+
                 sb.AppendLine("	}");
                 sb.AppendLine();
                 sb.AppendLine("	#endregion");
