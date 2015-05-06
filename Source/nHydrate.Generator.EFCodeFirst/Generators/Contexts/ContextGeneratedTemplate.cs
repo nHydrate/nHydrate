@@ -1442,7 +1442,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 var paramIndex = 1;
                 foreach (var parameter in parameterList)
                 {
-                    sb.AppendLine("			var paramName" + paramIndex + " = \"X\" + Guid.NewGuid().ToString().Replace(\"-\", string.Empty);");
+                    var pid = HashHelper.HashAlphaNumeric(parameter.Key);
+                    sb.AppendLine("			var paramName" + paramIndex + " = \"X" + pid + "\";");
                     if (parameter.IsOutputParameter)
                     {
                         sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(paramName" + paramIndex + ", typeof(" + parameter.GetCodeType() + "));");
