@@ -184,10 +184,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine();
                 sb.AppendLine("		public void DetachItem(BaseEntity entity)");
                 sb.AppendLine("		{");
-                foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly && !x.Security.IsValid()).ToList())
+                var index = 0;
+                foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly && !x.AssociativeTable && !x.Security.IsValid()).ToList())
                 {
-                    sb.AppendLine("		if (entity is EFDAL.Entity." + table.PascalName + ")");
-                    sb.AppendLine("			this." + table.PascalName + ".Remove(entity as EFDAL.Entity." + table.PascalName + ");");
+                    sb.AppendLine("			" + (index > 0 ? "else " : string.Empty) + "if (entity is EFDAL.Entity." + table.PascalName + ")");
+                    sb.AppendLine("				this." + table.PascalName + ".Remove(entity as EFDAL.Entity." + table.PascalName + ");");
+                    index++;
                 }
                 sb.AppendLine("		}");
                 sb.AppendLine("		#endregion");
