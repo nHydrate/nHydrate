@@ -851,7 +851,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				}");
             sb.AppendLine("				throw new System.Data.Entity.Validation.DbEntityValidationException(sb.ToString(), ex.EntityValidationErrors);");
             sb.AppendLine("			}");
-            sb.AppendLine("			catch (Exception ex)");
+            sb.AppendLine("			catch");
             sb.AppendLine("			{");
             sb.AppendLine("				throw;");
             sb.AppendLine("			}");

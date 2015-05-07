@@ -648,6 +648,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("				/// Gets the DbCommand from the Dynamic Query but ensures that CAS Rules are taken to consideration");
                 sb.AppendLine("				/// </summary>");
                 sb.AppendLine("				/// <typeparam name=\"TEntity\">The Type of Entity</typeparam>");
+                sb.AppendLine("				/// <typeparam name=\"TResult\"></typeparam>");
                 sb.AppendLine("				/// <param name=\"dataContext\">Linq Data Context</param>");
                 sb.AppendLine("				/// <param name=\"template\">Table</param>");
                 sb.AppendLine("				/// <param name=\"select\">The select criteria</param>");

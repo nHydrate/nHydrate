@@ -83,6 +83,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine();
 
                 //Constructor
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public " + _model.ProjectName + "MockEntities()");
                 sb.AppendLine("		{");
 
@@ -362,7 +363,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Data.Entity.Core.Objects;");
             sb.AppendLine("using System.Linq;");
-            sb.AppendLine("using System.Data.Entity.Core.Objects;");
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Runtime.Serialization;");
             sb.AppendLine("using System.Collections.Generic;");
