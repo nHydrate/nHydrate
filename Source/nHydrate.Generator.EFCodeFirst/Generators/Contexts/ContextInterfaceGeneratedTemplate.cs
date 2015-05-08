@@ -202,7 +202,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
             #endregion
 
+            sb.AppendLine("		/// <summary />");
             sb.AppendLine("		void ReloadItem(BaseEntity entity);");
+            sb.AppendLine("		/// <summary />");
             sb.AppendLine("		void DetachItem(BaseEntity entity);");
 
             sb.AppendLine("	}");

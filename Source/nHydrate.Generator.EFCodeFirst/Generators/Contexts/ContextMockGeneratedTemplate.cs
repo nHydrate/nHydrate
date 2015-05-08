@@ -179,10 +179,14 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
                 #region Extra
                 sb.AppendLine("		#region Interface Extras");
+                sb.AppendLine();
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public void ReloadItem(BaseEntity entity)");
                 sb.AppendLine("		{");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+                sb.AppendLine();
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public void DetachItem(BaseEntity entity)");
                 sb.AppendLine("		{");
                 var index = 0;
@@ -193,6 +197,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     index++;
                 }
                 sb.AppendLine("		}");
+                sb.AppendLine();
                 sb.AppendLine("		#endregion");
                 sb.AppendLine();
                 #endregion

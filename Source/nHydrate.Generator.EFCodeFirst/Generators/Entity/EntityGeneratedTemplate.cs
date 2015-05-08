@@ -468,10 +468,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                             nullSuffix = "?";
 
                         sb.AppendLine("		/// <summary>");
-
                         sb.AppendLine("		/// This property is a wrapper for the typed enumeration for the '" + column.PascalName + "' field.");
                         sb.AppendLine("		/// </summary>");
-                        sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
+                        sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                         sb.AppendLine("		public virtual " + this.GetLocalNamespace() + "." + typeTable.PascalName + "Constants" + nullSuffix + " " + pascalRoleName + typeTable.PascalName + "Value");
                         sb.AppendLine("		{");
                         sb.AppendLine("			get { return (" + this.GetLocalNamespace() + "." + typeTable.PascalName + "Constants" + nullSuffix + ")this." + column.PascalName + "; }");
@@ -485,31 +485,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 {
                     //PK in descendant, do not process
                 }
-                //else if (_item.IsColumnRelatedToTypeTable(column, out roleName))
-                //{
-                //    var typeTable = _item.GetRelatedTypeTableByColumn(column, out roleName);
-
-                //    //If this column is a type table column then generate a special property
-                //    sb.AppendLine("		/// <summary>");
-                //    if (!string.IsNullOrEmpty(column.Description))
-                //        sb.AppendLine("		/// " + column.Description + "");
-                //    else
-                //        sb.AppendLine("		/// The property that maps back to the database '" + (column.ParentTableRef.Object as Table).DatabaseName + "." + column.DatabaseName + "' field");
-                //    sb.AppendLine("		/// </summary>");
-                //    sb.AppendLine("		/// <remarks>" + column.GetIntellisenseRemarks() + "</remarks>");
-                //    sb.AppendLine("		[DataMember]");
-
-                //    if (column.IsTextType && column.Length > 0)
-                //    {
-                //        sb.AppendLine("		[StringLength(" + column.Length + ")]");
-                //    }
-
-                //    //TODO: NEXT VERSION: CODE FIRST CTP5 DOES NOT SUPPORT ENUMS SO ADD INTEGERS
-                //    //sb.AppendLine("		public virtual " + typeTable.PascalName + "Constants " + typeTable.PascalName + " { get; set; }");
-                //    sb.AppendLine("		public virtual " + column.GetCodeType() + " " + column.PascalName + " { get; set; }");
-
-                //    sb.AppendLine();
-                //}
                 else
                 {
                     sb.AppendLine("		/// <summary>");
@@ -519,125 +494,132 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     }
                     else
                         sb.AppendLine("		/// The property that maps back to the database '" + (column.ParentTableRef.Object as Table).DatabaseName + "." + column.DatabaseName + "' field.");
-                }
-                //If this field has a related convenience property then explain it
-                if (typeTable != null)
-                {
-                    sb.AppendLine("		/// This property has an additional enumeration wrapper property " + pascalRoleName + typeTable.PascalName + "Value. Use it as a strongly-typed property.");
-                }
-                else if (column.PrimaryKey && _item.TypedTable != TypedTableConstants.None)
-                {
-                    sb.AppendLine("		/// This property has an additional enumeration wrapper property " + pascalRoleName + typeTable.PascalName + "Value. Use it as a strongly-typed property.");
-                }
 
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <remarks>" + column.GetIntellisenseRemarks() + "</remarks>");
-                sb.AppendLine("		[DataMember]");
 
-                sb.AppendLine("		[System.ComponentModel.Browsable(" + column.IsBrowsable.ToString().ToLower() + ")]");
-                if (!string.IsNullOrEmpty(column.Category))
-                    sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
-                sb.AppendLine("		[System.ComponentModel.DisplayName(\"" + column.GetFriendlyName() + "\")]");
-
-                if (column.UIDataType != System.ComponentModel.DataAnnotations.DataType.Custom)
-                {
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.DataType(System.ComponentModel.DataAnnotations.DataType." + column.UIDataType.ToString() + ")]");
-                }
-
-                if (!string.IsNullOrEmpty(column.Mask))
-                {
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = @\"" + column.Mask.Replace(@"\\", @"\\\\") + "\")]");
-                }
-
-                //if (column.PrimaryKey)
-                //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
-
-                //if (column.PrimaryKey || _item.Immutable || column.ComputedColumn || column.IsReadOnly)
-                //    sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
-
-                if (!string.IsNullOrEmpty(column.Description))
-                    sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
-
-                foreach (var meta in column.MetaData)
-                {
-                    sb.AppendLine("	[CustomMetadata(Key = \"" + StringHelper.ConvertTextToSingleLineCodeString(meta.Key) + "\", Value = \"" + meta.Value.Replace("\"", "\\\"") + "\")]");
-                }
-
-                sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
-
-                //if (column.Identity == IdentityTypeConstants.Database)
-                //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]");
-
-                if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml && column.Length > 0)
-                {
-                    sb.AppendLine("		[StringLength(" + column.Length + ")]");
-                }
-
-                //if (column.ComputedColumn)
-                //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)]");
-
-                var propertySetterScope = string.Empty;
-                if (column.ComputedColumn)
-                    propertySetterScope = "internal ";
-
-                sb.AppendLine("		public virtual " + column.GetCodeType() + " " + column.PascalName);
-                sb.AppendLine("		{");
-                sb.AppendLine("			get { return _" + column.CamelName + "; }");
-                //sb.AppendLine("			set { _" + column.CamelName + " = value; }");
-                sb.AppendLine("			" + propertySetterScope + "set");
-                sb.AppendLine("			{");
-
-                #region Validation
-                //Error Check for field size
-                if (ModelHelper.IsTextType(column.DataType))
-                {
-                    sb.Append("				if ((value != null) && (value.Length > GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")))");
-                    sb.AppendLine(" throw new Exception(string.Format(GlobalValues.ERROR_DATA_TOO_BIG, value, \"" + _item.PascalName + "." + column.PascalName + "\", GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")));");
-                }
-                else if (column.DataType == System.Data.SqlDbType.DateTime)
-                {
-                    //Error check date value
-                    sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value < GlobalValues.MIN_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(\"yyyy-MM-dd HH:mm:ss\") + \") cannot be less than \" + GlobalValues.MIN_DATETIME.ToString());");
-                    sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value > GlobalValues.MAX_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(\"yyyy-MM-dd HH:mm:ss\") + \") cannot be greater than \" + GlobalValues.MAX_DATETIME.ToString());");
-                }
-
-                //If this column is related to a type table then add additional validation
-                if (typeTable != null)
-                {
-                    if (column.AllowNull)
-                        sb.AppendLine("				if (value != null) {");
-
-                    sb.AppendLine("				//Error check the wrapped enumeration");
-                    sb.AppendLine("				switch(value)");
-                    sb.AppendLine("				{");
-                    foreach (RowEntry rowEntry in typeTable.StaticData)
+                    //If this field has a related convenience property then explain it
+                    if (typeTable != null)
                     {
-                        var idValue = rowEntry.GetCodeIdValue(typeTable);
-                        sb.AppendLine("					case " + idValue + ":");
+                        sb.AppendLine("		/// This property has an additional enumeration wrapper property " + pascalRoleName + typeTable.PascalName + "Value. Use it as a strongly-typed property.");
                     }
-                    sb.AppendLine("						break;");
-                    sb.AppendLine("					default: throw new Exception(string.Format(GlobalValues.ERROR_INVALID_ENUM, value.ToString(), \"" + _item.PascalName + "." + column.PascalName + "\"));");
-                    sb.AppendLine("				}");
+                    else if (column.PrimaryKey && _item.TypedTable != TypedTableConstants.None)
+                    {
+                        sb.AppendLine("		/// This property has an additional enumeration wrapper property " + pascalRoleName + typeTable.PascalName + "Value. Use it as a strongly-typed property.");
+                    }
 
-                    if (column.AllowNull)
+                    sb.AppendLine("		/// </summary>");
+                    sb.AppendLine("		/// <remarks>" + column.GetIntellisenseRemarks() + "</remarks>");
+                    sb.AppendLine("		[DataMember]");
+
+                    sb.AppendLine("		[System.ComponentModel.Browsable(" + column.IsBrowsable.ToString().ToLower() + ")]");
+                    if (!string.IsNullOrEmpty(column.Category))
+                        sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
+                    sb.AppendLine("		[System.ComponentModel.DisplayName(\"" + column.GetFriendlyName() + "\")]");
+
+                    if (column.UIDataType != System.ComponentModel.DataAnnotations.DataType.Custom)
+                    {
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.DataType(System.ComponentModel.DataAnnotations.DataType." + column.UIDataType.ToString() + ")]");
+                    }
+
+                    if (!string.IsNullOrEmpty(column.Mask))
+                    {
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = @\"" + column.Mask.Replace(@"\\", @"\\\\") + "\")]");
+                    }
+
+                    if (column.PrimaryKey)
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
+
+                    //if (column.PrimaryKey || _item.Immutable || column.ComputedColumn || column.IsReadOnly)
+                    //    sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
+
+                    if (!string.IsNullOrEmpty(column.Description))
+                        sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
+
+                    foreach (var meta in column.MetaData)
+                    {
+                        sb.AppendLine("	[CustomMetadata(Key = \"" + StringHelper.ConvertTextToSingleLineCodeString(meta.Key) + "\", Value = \"" + meta.Value.Replace("\"", "\\\"") + "\")]");
+                    }
+
+                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
+
+                    //if (column.Identity == IdentityTypeConstants.Database)
+                    //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]");
+
+                    if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml && column.Length > 0)
+                    {
+                        sb.AppendLine("		[StringLength(" + column.Length + ")]");
+                    }
+
+                    //if (column.ComputedColumn)
+                    //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)]");
+
+                    var propertySetterScope = string.Empty;
+                    if (column.ComputedColumn)
+                        propertySetterScope = "internal ";
+
+                    var codeType = column.GetCodeType();
+                    //if (_item.IsColumnRelatedToTypeTable(column, out pascalRoleName) || (column.PrimaryKey && _item.TypedTable != TypedTableConstants.None))
+                    //{
+                    //}
+
+                    sb.AppendLine("		public virtual " + codeType + " " + column.PascalName);
+                    sb.AppendLine("		{");
+                    sb.AppendLine("			get { return _" + column.CamelName + "; }");
+                    //sb.AppendLine("			set { _" + column.CamelName + " = value; }");
+                    sb.AppendLine("			" + propertySetterScope + "set");
+                    sb.AppendLine("			{");
+
+                    #region Validation
+                    //Error Check for field size
+                    if (ModelHelper.IsTextType(column.DataType))
+                    {
+                        sb.Append("				if ((value != null) && (value.Length > GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")))");
+                        sb.AppendLine(" throw new Exception(string.Format(GlobalValues.ERROR_DATA_TOO_BIG, value, \"" + _item.PascalName + "." + column.PascalName + "\", GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")));");
+                    }
+                    else if (column.DataType == System.Data.SqlDbType.DateTime)
+                    {
+                        //Error check date value
+                        sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value < GlobalValues.MIN_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(\"yyyy-MM-dd HH:mm:ss\") + \") cannot be less than \" + GlobalValues.MIN_DATETIME.ToString());");
+                        sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value > GlobalValues.MAX_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(\"yyyy-MM-dd HH:mm:ss\") + \") cannot be greater than \" + GlobalValues.MAX_DATETIME.ToString());");
+                    }
+
+                    //If this column is related to a type table then add additional validation
+                    if (typeTable != null)
+                    {
+                        if (column.AllowNull)
+                            sb.AppendLine("				if (value != null) {");
+
+                        sb.AppendLine("				//Error check the wrapped enumeration");
+                        sb.AppendLine("				switch(value)");
+                        sb.AppendLine("				{");
+                        foreach (RowEntry rowEntry in typeTable.StaticData)
+                        {
+                            var idValue = rowEntry.GetCodeIdValue(typeTable);
+                            sb.AppendLine("					case " + idValue + ":");
+                        }
+                        sb.AppendLine("						break;");
+                        sb.AppendLine("					default: throw new Exception(string.Format(GlobalValues.ERROR_INVALID_ENUM, value.ToString(), \"" + _item.PascalName + "." + column.PascalName + "\"));");
                         sb.AppendLine("				}");
 
+                        if (column.AllowNull)
+                            sb.AppendLine("				}");
+
+                        sb.AppendLine();
+                    }
+
+                    //Do not process the setter if the value is NOT changing
+                    sb.AppendLine("				if (value == _" + column.CamelName + ") return;");
+
+                    #endregion
+
+                    sb.AppendLine("				var eventArg = new " + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + column.PascalName + "\");");
+                    sb.AppendLine("				this.OnPropertyChanging(eventArg);");
+                    sb.AppendLine("				if (eventArg.Cancel) return;");
+                    sb.AppendLine("				_" + column.CamelName + " = eventArg.Value;");
+                    sb.AppendLine("				this.OnPropertyChanged(new PropertyChangedEventArgs(\"" + column.PascalName + "\"));");
+                    sb.AppendLine("			}");
+                    sb.AppendLine("		}");
                     sb.AppendLine();
                 }
-
-                //Do not process the setter if the value is NOT changing
-                sb.AppendLine("				if (value == _" + column.CamelName + ") return;");
-
-                #endregion
-
-                sb.AppendLine("				var eventArg = new " + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + column.GetCodeType() + ">(value, \"" + column.PascalName + "\");");
-                sb.AppendLine("				this.OnPropertyChanging(eventArg);");
-                sb.AppendLine("				if (eventArg.Cancel) return;");
-                sb.AppendLine("				_" + column.CamelName + " = eventArg.Value;");
-                sb.AppendLine("				this.OnPropertyChanged(new PropertyChangedEventArgs(\"" + column.PascalName + "\"));");
-                sb.AppendLine("			}");
-                sb.AppendLine("		}");
-                sb.AppendLine();
             }
 
             //Audit Fields
@@ -700,7 +682,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
-                        //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped]");
+                        //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		" + scope + " virtual " + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; set; }");
                         sb.AppendLine();
 
@@ -813,7 +795,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
-                        //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped]");
+                        //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		public virtual " + parentTable.PascalName + " " + relation.PascalRoleName + parentTable.PascalName + " { get; set; }");
                         sb.AppendLine();
 
@@ -1577,7 +1559,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             }
             sb.AppendLine("		[System.ComponentModel.Browsable(false)]");
             sb.AppendLine("		[DataMember()]");
-            sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+            sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 
             if (isConcurrency)
                 sb.AppendLine("		[System.ComponentModel.DataAnnotations.ConcurrencyCheck()]");
@@ -2304,6 +2286,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// Metadata information for the '" + fieldName + "' parameter");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		[System.ComponentModel.DataAnnotations.Timestamp()]");
+            sb.AppendLine("		[System.ComponentModel.DataAnnotations.ConcurrencyCheck()]");
             sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
             sb.AppendLine("		public " + (_item.ParentTable == null ? string.Empty : "new ") + "object " + fieldName + ";");
             sb.AppendLine();

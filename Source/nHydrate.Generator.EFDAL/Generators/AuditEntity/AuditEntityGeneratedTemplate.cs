@@ -201,7 +201,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 				else
 					sb.AppendLine("		/// The property that maps back to the database '" + (column.ParentTableRef.Object as Table).DatabaseName + "." + column.DatabaseName + "' field");
 				sb.AppendLine("		/// </summary>");
-				sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+				sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 				sb.AppendLine("		public " + column.GetCodeType(true, true) + " " + column.PascalName + " { get; internal set; }");
 				sb.AppendLine();
 			}
@@ -209,7 +209,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 			sb.AppendLine("		/// <summary>");
 			sb.AppendLine("		/// The type of audit");
 			sb.AppendLine("		/// </summary>");
-			sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+			sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 			sb.AppendLine("		public nHydrate.EFCore.DataAccess.AuditTypeConstants AuditType { get; internal set; }");
 			sb.AppendLine();
 
@@ -223,7 +223,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 			sb.AppendLine("		/// <summary>");
 			sb.AppendLine("		/// The modifier value of the audit");
 			sb.AppendLine("		/// </summary>");
-			sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+			sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 			sb.AppendLine("		public string ModifiedBy { get; internal set; }");
 			sb.AppendLine();
 

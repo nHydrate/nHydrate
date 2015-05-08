@@ -438,7 +438,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		[DataMemberAttribute()]");
             sb.AppendLine("		[System.ComponentModel.DisplayName(\"pk\")]");
             sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
-            sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+            sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
             sb.AppendLine("		private string pk");
             sb.AppendLine("		{");
             sb.AppendLine("			get { return _pk; }");
@@ -530,7 +530,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                 sb.AppendLine("		[System.ComponentModel.DisplayName(\"" + column.GetFriendlyName() + "\")]");
 
                 sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
-                sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+                sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 
                 if (!string.IsNullOrEmpty(column.Description))
                     sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");

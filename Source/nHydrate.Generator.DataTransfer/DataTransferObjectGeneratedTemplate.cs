@@ -254,7 +254,7 @@ namespace nHydrate.Generator.DataTransfer
 							sb.AppendLine("		/// <summary>");
 							sb.AppendLine("		/// This property is a wrapper for the typed enumeration for the '" + column.PascalName + "' field.");
 							sb.AppendLine("		/// </summary>");
-							sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+							sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 							sb.AppendLine("		public virtual " + this.InterfaceProjectNamespace + "." + typeTable.PascalName + "Constants" + nullSuffix + " " + roleName + typeTable.PascalName + "Value");
 							sb.AppendLine("		{");
 							sb.AppendLine("			get { return (" + this.InterfaceProjectNamespace + "." + typeTable.PascalName + "Constants" + nullSuffix + ")this." + column.PascalName + "; }");

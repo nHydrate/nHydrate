@@ -1552,15 +1552,23 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             #region Extra
             sb.AppendLine("		#region Interface Extras");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Reloads the context object from database");
+            sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public void ReloadItem(BaseEntity entity)");
             sb.AppendLine("		{");
             sb.AppendLine("			this.Entry(entity).Reload();");
             sb.AppendLine("		}");
             sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Detaches the the object from context");
+            sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public void DetachItem(BaseEntity entity)");
             sb.AppendLine("		{");
             sb.AppendLine("			this.ObjectContext.Detach(entity);");
             sb.AppendLine("		}");
+            sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
             #endregion
@@ -1568,19 +1576,25 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #region ObjectContext
             sb.AppendLine("		#region ObjectContext");
             sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Gets the object context");
+            sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public System.Data.Entity.Core.Objects.ObjectContext ObjectContext");
             sb.AppendLine("		{");
             sb.AppendLine("			get { return ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext; }");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Accepts all changes made to objects in the object context");
+            sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public void AcceptAllChanges()");
             sb.AppendLine("		{");
             sb.AppendLine("			this.ObjectContext.AcceptAllChanges();");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Determines the timeout of the database connection");
+            sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public int? CommandTimeout");
             sb.AppendLine("		{");
             sb.AppendLine("			get { return this.ObjectContext.CommandTimeout; }");

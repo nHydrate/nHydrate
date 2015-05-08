@@ -254,7 +254,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
                 if (!string.IsNullOrEmpty(column.Description))
                     sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
 
-                sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+                sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 
                 if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml && column.Length > 0)
                 {

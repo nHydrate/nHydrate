@@ -488,7 +488,7 @@ namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// Enumeration to define each property that maps to a database field for the '" + _currentTable.PascalName + "' table.");
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	public " + (_currentTable.ParentTable == null ? "" : "new ") + "enum " + _currentTable.PascalName + "FieldNameConstants");
+            sb.AppendLine("	public enum " + _currentTable.PascalName + "FieldNameConstants");
             sb.AppendLine("	{");
             foreach (var column in _currentTable.GeneratedColumnsFullHierarchy)
             {

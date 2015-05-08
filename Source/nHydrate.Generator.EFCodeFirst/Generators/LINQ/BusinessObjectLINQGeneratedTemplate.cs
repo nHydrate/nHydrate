@@ -141,7 +141,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.LINQ
                     sb.Append("CanBeNull = " + c.AllowNull.ToString().ToLower() + ", ");
                     sb.Append("IsPrimaryKey = " + table.PrimaryKeyColumns.Contains(c).ToString().ToLower());
                     sb.AppendLine(")]");
-                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                     sb.AppendLine("		public virtual " + c.GetCodeType(true) + " " + c.PascalName + " { get; set; }");
                 }
 
@@ -151,14 +151,14 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.LINQ
                     sb.AppendLine("		/// The date of creation");
                     sb.AppendLine("		/// </summary>");
                     sb.AppendLine("		[Column(Name = \"" + _model.Database.CreatedDateColumnName + "\", DbType = \"DateTime\", CanBeNull = true)]");
-                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                     sb.AppendLine("		public virtual DateTime? " + _model.Database.CreatedDatePascalName + " { get; set; }");
 
                     sb.AppendLine("		/// <summary>");
                     sb.AppendLine("		/// The name of the creating entity");
                     sb.AppendLine("		/// </summary>");
                     sb.AppendLine("		[Column(Name = \"" + _model.Database.CreatedByColumnName + "\", DbType = \"VarChar(100)\", CanBeNull = true)]");
-                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                     sb.AppendLine("		public virtual string " + _model.Database.CreatedByPascalName + " { get; set; }");
                 }
 
@@ -174,7 +174,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.LINQ
                     sb.AppendLine("		/// The name of the last modifing entity");
                     sb.AppendLine("		/// </summary>");
                     sb.AppendLine("		[Column(Name = \"" + _model.Database.ModifiedByColumnName + "\", DbType = \"VarChar(100)\", CanBeNull = true)]");
-                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                     sb.AppendLine("		public virtual string " + _model.Database.ModifiedByPascalName + " { get; set; }");
                 }
 
@@ -184,7 +184,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.LINQ
                     sb.AppendLine("		/// This is an internal field and is not to be used.");
                     sb.AppendLine("		/// </summary>");
                     sb.AppendLine("		[Column(Name = \"" + _model.Database.TimestampColumnName + "\", DbType = \"Binary\", CanBeNull = false)]");
-                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                     sb.AppendLine("		public virtual byte[] " + _model.Database.TimestampPascalName + " { get; set; }");
                 }
 

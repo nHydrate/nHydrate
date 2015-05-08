@@ -852,7 +852,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 
                         sb.AppendLine("		/// This property is a wrapper for the typed enumeration for the '" + column.PascalName + "' field.");
                         sb.AppendLine("		/// </summary>");
-                        sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+                        sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                         sb.AppendLine("		public virtual " + GetLocalNamespace() + ".Interfaces." + typeTable.PascalName + "Constants" + nullSuffix + " " + pascalRoleName + typeTable.PascalName + "Value");
                         sb.AppendLine("		{");
                         sb.AppendLine("			get { return (" + GetLocalNamespace() + ".Interfaces." + typeTable.PascalName + "Constants" + nullSuffix + ")this." + column.PascalName + "; }");
@@ -986,7 +986,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                         sb.AppendLine("	[nHydrate.EFCore.Attributes.CustomMetadata(Key = \"" + StringHelper.ConvertTextToSingleLineCodeString(meta.Key) + "\", Value = \"" + meta.Value.Replace("\"", "\\\"") + "\")]");
                     }
 
-                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+                    sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                     sb.AppendLine("		public virtual " + column.GetCodeType() + " " + column.PascalName);
                     sb.AppendLine("		{");
                     sb.AppendLine("			get { return _" + column.CamelName + "; }");
@@ -1371,7 +1371,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		[System.ComponentModel.Browsable(false)]");
             sb.AppendLine("		[EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]");
             sb.AppendLine("		[DataMemberAttribute()]");
-            sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode]");
+            sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 
             if (isConcurrency)
                 sb.AppendLine("		[System.ComponentModel.DataAnnotations.ConcurrencyCheck()]");
@@ -2152,6 +2152,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
             sb.AppendLine("		/// <param name=\"optimizer\">The optimization object to use for running queries</param>");
+            sb.AppendLine("		/// <param name=\"startup\">The database connection configuration</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
             sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, nHydrate.EFCore.DataAccess.QueryOptimizer optimizer, ContextStartup startup, string connectionString)");
@@ -2356,7 +2357,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                     sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
                     sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
                     sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-                    sb.AppendLine("		/// <param name=\"startup\">A configuration object</param>");
+                    sb.AppendLine("		/// <param name=\"startup\">The database connection configuration</param>");
                     sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
                     sb.AppendLine("		/// <returns>The number of records affected</returns>");
                     sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + typeName + " newValue, ContextStartup startup, string connectionString)");
@@ -2392,7 +2393,7 @@ namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
                         sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
                         sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
                         sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-                        sb.AppendLine("		/// <param name=\"startup\">A configuration object</param>");
+                        sb.AppendLine("		/// <param name=\"startup\">The database connection configuration</param>");
                         sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
                         sb.AppendLine("		/// <returns>The number of records affected</returns>");
                         sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + nullTypeName + " newValue, ContextStartup startup, string connectionString)");

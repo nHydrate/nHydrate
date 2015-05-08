@@ -741,9 +741,9 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
 
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Security.IsValid() && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("		System.Data.Objects.IObjectSet<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + table.PascalName + "> " + this.GetLocalNamespace() + ".Interfaces.I" + _model.ProjectName + "Entities." + table.PascalName);
+                sb.AppendLine("		System.Linq.IQueryable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + table.PascalName + "> " + this.GetLocalNamespace() + ".Interfaces.I" + _model.ProjectName + "Entities." + table.PascalName);
                 sb.AppendLine("		{");
-                sb.AppendLine("			get { return (System.Data.Objects.IObjectSet<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + table.PascalName + ">)this." + table.PascalName + "; }");
+                sb.AppendLine("			get { return (System.Linq.IQueryable<" + this.GetLocalNamespace() + ".Interfaces.Entity.I" + table.PascalName + ">)this." + table.PascalName + "; }");
                 sb.AppendLine("		}");
                 sb.AppendLine();
             }
