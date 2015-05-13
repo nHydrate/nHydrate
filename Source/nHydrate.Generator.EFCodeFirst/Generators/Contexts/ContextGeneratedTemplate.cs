@@ -1418,7 +1418,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #endregion
 
             #region Table Security
-            foreach (var item in _model.Database.Tables.Where(x => x.Generated && x.Security.IsValid()).OrderBy(x => x.PascalName).ToList())
+            var securedTables = _model.Database.Tables.Where(x => x.Generated && x.Security.IsValid()).OrderBy(x => x.PascalName).ToList();
+            if (securedTables.Any())
+                sb.AppendLine("		private List<string> _paramList = new List<string>();");
+
+            foreach (var item in securedTables)
             {
                 var function = item.Security;
                 var objectName = ValidationHelper.MakeDatabaseIdentifier("__security__" + item.Name);
@@ -1439,11 +1443,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine(")");
                 sb.AppendLine("		{");
 
+                if (parameterList.Any())
+                    sb.AppendLine("			var index = 0;");
+
                 var paramIndex = 1;
                 foreach (var parameter in parameterList)
                 {
                     var pid = HashHelper.HashAlphaNumeric(parameter.Key);
                     sb.AppendLine("			var paramName" + paramIndex + " = \"X" + pid + "\";");
+                    sb.AppendLine("			index = 0;");
+                    sb.AppendLine("			while (_paramList.Contains(paramName1 + index)) index++;");
+                    sb.AppendLine("			paramName1 = paramName1 + index;");
+                    sb.AppendLine("			_paramList.Add(paramName1);");
+
                     if (parameter.IsOutputParameter)
                     {
                         sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(paramName" + paramIndex + ", typeof(" + parameter.GetCodeType() + "));");
