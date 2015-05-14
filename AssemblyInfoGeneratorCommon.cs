@@ -39,5 +39,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted under the maximum extent possible under law.")]
 [assembly: NeutralResourcesLanguage("en-US")]
 
-[assembly: AssemblyVersion("5.3.0.143")]
-[assembly: AssemblyFileVersion("5.3.0.143")]
+[assembly: AssemblyVersion("5.3.0.144")]
+[assembly: AssemblyFileVersion("5.3.0.144")]
