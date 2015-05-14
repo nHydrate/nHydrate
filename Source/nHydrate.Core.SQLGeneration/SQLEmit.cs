@@ -865,9 +865,9 @@ namespace nHydrate.Core.SQLGeneration
                         sb.AppendLine(") ");
                         sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] (" + fieldListString + ") values (" + valueListString + ");");
 
-                        // TODO: Add this
-                        sb.AppendLine("else ");
-                        sb.AppendLine("UPDATE [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] SET " + updateSetString + " WHERE " + pkWhereSb.ToString() + ";");
+                        // TODO: We should not do this as it overwrites existing database data
+                        //sb.AppendLine("else ");
+                        //sb.AppendLine("UPDATE [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] SET " + updateSetString + " WHERE " + pkWhereSb.ToString() + ";");
 
                     }
 
