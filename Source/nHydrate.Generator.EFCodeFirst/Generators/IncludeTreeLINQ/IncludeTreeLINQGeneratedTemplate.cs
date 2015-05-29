@@ -117,7 +117,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.IncludeTreeLINQ
                 sb.AppendLine("	{");
 
                 //Add child relationships
-                foreach (var relation in _model.Database.Relations.FindByParentTable(table, true).Where(x => x.IsGenerated))
+                foreach (var relation in _model.Database.Relations.FindByParentTable(table, true).Where(x => x.IsGenerated).ToList())
                 {
                     var parentTable = relation.ParentTableRef.Object as Table;
                     var childTable = relation.ChildTableRef.Object as Table;
@@ -181,7 +181,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.IncludeTreeLINQ
                 }
 
                 //Add parent relationships
-                foreach (var relation in _model.Database.Relations.FindByChildTable(table, true).Where(x => x.IsGenerated))
+                foreach (var relation in _model.Database.Relations.FindByChildTable(table, true).Where(x => x.IsGenerated).ToList())
                 {
                     var parentTable = (Table)relation.ParentTableRef.Object;
                     var childTable = (Table)relation.ChildTableRef.Object;

@@ -249,7 +249,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			this.CurrentPlatform = Util.GetDefinedPlatform();");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
-            sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.ObjectContext.Connection.ConnectionString));");
+            sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Database.Connection.ConnectionString));");
             sb.AppendLine("				var timeoutValue = \"30\";");
             sb.AppendLine("				if (builder.ContainsKey(\"connect timeout\"))");
             sb.AppendLine("					timeoutValue = (string) builder[\"connect timeout\"];");
@@ -302,7 +302,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			this.CurrentPlatform = Util.GetDefinedPlatform();");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
-            sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.ObjectContext.Connection.ConnectionString));");
+            sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Database.Connection.ConnectionString));");
             sb.AppendLine("				var timeoutValue = \"30\";");
             sb.AppendLine("				if (builder.ContainsKey(\"connect timeout\"))");
             sb.AppendLine("					timeoutValue = (string) builder[\"connect timeout\"];");
@@ -1593,8 +1593,14 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public System.Data.Entity.Core.Objects.ObjectContext ObjectContext");
             sb.AppendLine("		{");
-            sb.AppendLine("			get { return ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext; }");
+            sb.AppendLine("			get");
+            sb.AppendLine("			{");
+            sb.AppendLine("				if (_objectContext == null)");
+            sb.AppendLine("					_objectContext = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext;");
+            sb.AppendLine("				return _objectContext;");
+            sb.AppendLine("			}");
             sb.AppendLine("		}");
+            sb.AppendLine("		private System.Data.Entity.Core.Objects.ObjectContext _objectContext = null;");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Accepts all changes made to objects in the object context");
@@ -1609,8 +1615,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public int? CommandTimeout");
             sb.AppendLine("		{");
-            sb.AppendLine("			get { return this.ObjectContext.CommandTimeout; }");
-            sb.AppendLine("			set { this.ObjectContext.CommandTimeout = value; }");
+            sb.AppendLine("			get { return this.Database.CommandTimeout; }");
+            sb.AppendLine("			set { this.Database.CommandTimeout = value; }");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
