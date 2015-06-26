@@ -82,6 +82,26 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("	{");
                 sb.AppendLine();
 
+                //Events
+                sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs> BeforeSaveModifiedEntity;");
+                sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs e)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			if(BeforeSaveModifiedEntity != null)");
+                sb.AppendLine("			{");
+                sb.AppendLine("				BeforeSaveModifiedEntity(this, e);");
+                sb.AppendLine("			}");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs> BeforeSaveAddedEntity;");
+                sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs e)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			if(BeforeSaveAddedEntity != null)");
+                sb.AppendLine("			{");
+                sb.AppendLine("				BeforeSaveAddedEntity(this, e);");
+                sb.AppendLine("			}");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+
                 //Constructor
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public " + _model.ProjectName + "MockEntities()");

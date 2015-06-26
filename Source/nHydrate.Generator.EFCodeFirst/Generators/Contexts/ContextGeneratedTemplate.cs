@@ -229,6 +229,26 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		private static object _seqCacheLock = new object();");
             sb.AppendLine();
 
+            //Events
+            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs> BeforeSaveModifiedEntity;");
+            sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs e)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if(BeforeSaveModifiedEntity != null)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				BeforeSaveModifiedEntity(this, e);");
+            sb.AppendLine("			}");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs> BeforeSaveAddedEntity;");
+            sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs e)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if(BeforeSaveAddedEntity != null)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				BeforeSaveAddedEntity(this, e);");
+            sb.AppendLine("			}");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
             sb.AppendLine("		static " + _model.ProjectName + "Entities()");
             sb.AppendLine("		{");
             sb.AppendLine("			System.Data.Entity.DbConfiguration.SetConfiguration(new " + _model.ProjectName + "Configuration());");
@@ -708,6 +728,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			}");
             sb.AppendLine();
 
+            #region Added Items
             sb.AppendLine("			var markedTime = " + (_model.UseUTCTime ? "System.DateTime.UtcNow" : "System.DateTime.Now") + ";");
             sb.AppendLine("			//Process added list");
             sb.AppendLine("			foreach (var item in addedList)");
@@ -771,9 +792,23 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #endregion
 
             sb.AppendLine("				}");
-            sb.AppendLine("			}");
             sb.AppendLine();
 
+            //Raise added save event
+            index3 = 0;
+            sb.AppendLine("				if (BeforeSaveAddedEntity != null) {");
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable).OrderBy(x => x.PascalName))
+            {
+                sb.AppendLine("					" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") this.OnBeforeSaveAddedEntity(new EventArguments.EntityEventArgs { Entity = (IBusinessObject)item.Entity });");
+                index3++;
+            }
+            sb.AppendLine("				}");
+
+            sb.AppendLine("			}");
+            sb.AppendLine();
+            #endregion
+
+            #region Modified Items
             sb.AppendLine("			//Process modified list");
             sb.AppendLine("			var modifiedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Modified);");
             sb.AppendLine("			foreach (var item in modifiedList)");
@@ -833,8 +868,22 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             }
 
             sb.AppendLine("				}");
+            sb.AppendLine();
+
+            //Raise modified save event
+            index3 = 0;
+            sb.AppendLine("				if (BeforeSaveModifiedEntity != null) {");
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable).OrderBy(x => x.PascalName))
+            {
+                sb.AppendLine("					" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") this.OnBeforeSaveModifiedEntity(new EventArguments.EntityEventArgs { Entity = (IBusinessObject)item.Entity });");
+                index3++;
+            }
+            sb.AppendLine("				}");
+
             sb.AppendLine("			}");
             sb.AppendLine();
+            #endregion
+
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				return base.SaveChanges();");
@@ -1558,6 +1607,14 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			throw new Exception(\"Entity not found!\");");
             sb.AppendLine("		}");
             sb.AppendLine();
+
+            sb.AppendLine("		public static string GetTableName(" + this.GetLocalNamespace() + ".EntityMappingConstants entity)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			var item = GetMetaData(entity);");
+            sb.AppendLine("			if (item == null) return null;");
+            sb.AppendLine("			return item.GetTableName();");
+            sb.AppendLine("		}");
+
             sb.AppendLine("		#endregion");
             sb.AppendLine();
             #endregion

@@ -892,6 +892,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		public bool Cancel { get; set; }");
                 sb.AppendLine("	}");
+                sb.AppendLine("	public class EntityEventArgs");
+                sb.AppendLine("	{");
+                sb.AppendLine("		public IBusinessObject Entity { get; set; }");
+                sb.AppendLine("	}");
                 sb.AppendLine("}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();

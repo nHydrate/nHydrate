@@ -2168,6 +2168,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine(this.GetLocalNamespace() + ".IMetadata");
             sb.AppendLine("	{");
             this.AppendMetaDataProperties();
+            this.AppendMetaDataMethods();
             sb.AppendLine("	}");
             sb.AppendLine();
             sb.AppendLine("}");
@@ -2255,6 +2256,17 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             if (_item.AllowModifiedAudit) AppendMetaDataAuditFieldDate(_model.Database.ModifiedDatePascalName);
             if (_item.AllowTimestamp) AppendMetaDataAuditFieldTimeStamp(_model.Database.TimestampPascalName);
 
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
+        }
+
+        private void AppendMetaDataMethods()
+        {
+            sb.AppendLine("		#region Methods");
+            sb.AppendLine("		public string GetTableName()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return \"" + _item.DatabaseName + "\";");
+            sb.AppendLine("		}");
             sb.AppendLine("		#endregion");
             sb.AppendLine();
         }

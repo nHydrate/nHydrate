@@ -114,7 +114,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	public partial interface I" + _model.ProjectName + "Entities : System.IDisposable");
             sb.AppendLine("	{");
-
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs> BeforeSaveAddedEntity;");
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs> BeforeSaveModifiedEntity;");
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		int SaveChanges();");
             sb.AppendLine();
@@ -219,6 +222,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	/// <summary />");
             sb.AppendLine("	public partial interface IMetadata");
             sb.AppendLine("	{");
+            sb.AppendLine("		string GetTableName();");
             sb.AppendLine("	}");
             sb.AppendLine();
 
