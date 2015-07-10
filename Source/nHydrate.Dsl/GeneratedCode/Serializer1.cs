@@ -2732,6 +2732,23 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
+			// CopyStateInfo
+			if (!serializationContext.Result.Failed)
+			{
+				string attribCopyStateInfo = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "copyStateInfo");
+				if (attribCopyStateInfo != null)
+				{
+					global::System.String valueOfCopyStateInfo;
+					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribCopyStateInfo, out valueOfCopyStateInfo))
+					{
+						instanceOfEntity.CopyStateInfo = valueOfCopyStateInfo;
+					}
+					else
+					{	// Invalid property value, ignored.
+						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "copyStateInfo", typeof(global::System.String), attribCopyStateInfo);
+					}
+				}
+			}
 		}
 	
 		/// <summary>
@@ -3977,6 +3994,16 @@ namespace nHydrate.Dsl
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "security", propValue);
 					}
+				}
+			}
+			// CopyStateInfo
+			if (!serializationContext.Result.Failed)
+			{
+				global::System.String propValue = instanceOfEntity.CopyStateInfo;
+				if (!serializationContext.Result.Failed)
+				{
+					if (propValue != null)
+						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "copyStateInfo", propValue);
 				}
 			}
 		}

@@ -155,6 +155,11 @@ namespace nHydrate.Dsl
             ((nHydrateDiagram)this.Diagram).NotifyShapeDoubleClick(this);
         }
 
+        protected override void OnCopy(ModelElement sourceElement)
+        {
+            base.OnCopy(sourceElement);
+        }
+
         public override bool HasHighlighting
         {
             get

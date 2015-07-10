@@ -202,6 +202,7 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(Entity), "TypedEntity", Entity.TypedEntityDomainPropertyId, typeof(Entity.TypedEntityPropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "IsTenant", Entity.IsTenantDomainPropertyId, typeof(Entity.IsTenantPropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "Security", Entity.SecurityDomainPropertyId, typeof(Entity.SecurityPropertyHandler)),
+				new DomainMemberInfo(typeof(Entity), "CopyStateInfo", Entity.CopyStateInfoDomainPropertyId, typeof(Entity.CopyStateInfoPropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "Name", Field.NameDomainPropertyId, typeof(Field.NamePropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "FriendlyName", Field.FriendlyNameDomainPropertyId, typeof(Field.FriendlyNamePropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "Nullable", Field.NullableDomainPropertyId, typeof(Field.NullablePropertyHandler)),

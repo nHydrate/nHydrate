@@ -631,6 +631,8 @@
             <xsd:documentation>Determines if this table has secured access</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
+        <!-- Property: CopyStateInfo -->
+        <xsd:attribute name="copyStateInfo" type="xsd:string" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>

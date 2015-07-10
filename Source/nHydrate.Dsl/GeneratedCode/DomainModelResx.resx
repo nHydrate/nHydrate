@@ -705,6 +705,14 @@
     <value>Security</value>
     <comment>Category for DomainProperty &apos;Security&apos; on DomainClass &apos;Entity&apos;</comment>
   </data>
+  <data name="nHydrate.Dsl.Entity/CopyStateInfo.Description" xml:space="preserve">
+    <value>Description for nHydrate.Dsl.Entity.Copy State Info</value>
+    <comment>Description for DomainProperty &apos;CopyStateInfo&apos; on DomainClass &apos;Entity&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.Entity/CopyStateInfo.DisplayName" xml:space="preserve">
+    <value>Copy State Info</value>
+    <comment>DisplayName for DomainProperty &apos;CopyStateInfo&apos; on DomainClass &apos;Entity&apos;</comment>
+  </data>
   <data name="nHydrate.Dsl.Field.Description" xml:space="preserve">
     <value>This is a field in a database table</value>
     <comment>Description for DomainClass &apos;Field&apos;</comment>

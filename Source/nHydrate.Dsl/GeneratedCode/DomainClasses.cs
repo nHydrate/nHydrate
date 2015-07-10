@@ -4889,6 +4889,96 @@ namespace nHydrate.Dsl
 		}
 		
 		#endregion
+		#region CopyStateInfo domain property code
+		
+		/// <summary>
+		/// CopyStateInfo domain property Id.
+		/// </summary>
+		public static readonly global::System.Guid CopyStateInfoDomainPropertyId = new global::System.Guid(0xe3468fb2, 0x910f, 0x48e4, 0x8a, 0xd7, 0x7d, 0xbe, 0x95, 0x2c, 0x4c, 0x5b);
+		
+		/// <summary>
+		/// Gets or sets the value of CopyStateInfo domain property.
+		/// Description for nHydrate.Dsl.Entity.Copy State Info
+		/// </summary>
+		[DslDesign::DisplayNameResource("nHydrate.Dsl.Entity/CopyStateInfo.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("nHydrate.Dsl.Entity/CopyStateInfo.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[global::System.ComponentModel.Browsable(false)]
+		[DslModeling::DomainProperty(Kind = DslModeling::DomainPropertyKind.CustomStorage)]
+		[DslModeling::DomainObjectId("e3468fb2-910f-48e4-8ad7-7dbe952c4c5b")]
+		public virtual global::System.String CopyStateInfo
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return CopyStateInfoPropertyHandler.Instance.GetValue(this);
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				CopyStateInfoPropertyHandler.Instance.SetValue(this, value);
+			}
+		}
+		/// <summary>
+		/// Value handler for the Entity.CopyStateInfo domain property.
+		/// </summary>
+		internal sealed partial class CopyStateInfoPropertyHandler : DslModeling::DomainPropertyValueHandler<EntityBase, global::System.String>
+		{
+			private CopyStateInfoPropertyHandler() { }
+		
+			/// <summary>
+			/// Gets the singleton instance of the Entity.CopyStateInfo domain property value handler.
+			/// </summary>
+			public static readonly CopyStateInfoPropertyHandler Instance = new CopyStateInfoPropertyHandler();
+		
+			/// <summary>
+			/// Gets the Id of the Entity.CopyStateInfo domain property.
+			/// </summary>
+			public sealed override global::System.Guid DomainPropertyId
+			{
+				[global::System.Diagnostics.DebuggerStepThrough]
+				get
+				{
+					return CopyStateInfoDomainPropertyId;
+				}
+			}
+			
+			/// <summary>
+			/// Gets a strongly-typed value of the property on specified element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <returns>Property value.</returns>
+			public override sealed global::System.String GetValue(EntityBase element)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+				// There is no storage for CopyStateInfo because its Kind is
+				// set to CustomStorage. Please provide the GetCopyStateInfoValue()
+				// method on the domain class.
+				return element.GetCopyStateInfoValue();
+			}
+		
+			/// <summary>
+			/// Sets property value on an element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <param name="newValue">New property value.</param>
+			public override sealed void SetValue(EntityBase element, global::System.String newValue)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+		
+				global::System.String oldValue = GetValue(element);
+				if (newValue != oldValue)
+				{
+					ValueChanging(element, oldValue, newValue);
+					// There is no storage for CopyStateInfo because its Kind is
+					// set to CustomStorage. Please provide the SetCopyStateInfoValue()
+					// method on the domain class.
+					element.SetCopyStateInfoValue(newValue);
+					ValueChanged(element, oldValue, GetValue(element));
+				}
+			}
+		}
+		
+		#endregion
 		#region nHydrateModel opposite domain role accessor
 		/// <summary>
 		/// Gets or sets nHydrateModel.

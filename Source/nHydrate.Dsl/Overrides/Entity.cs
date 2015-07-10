@@ -427,7 +427,6 @@ namespace nHydrate.Dsl
             base.OnDeleting();
         }
 
-
         #region IFieldContainer Members
 
         public IEnumerable<IField> FieldList
@@ -472,13 +471,24 @@ namespace nHydrate.Dsl
             }
         }
 
-        string GetSecurityValue()
+        private string GetSecurityValue()
         {
             return (this.SecurityFunction != null) ? "(Has Security)" : "";
         }
 
-        void SetSecurityValue(string v)
+        private void SetSecurityValue(string v)
         {
+        }
+
+        private string _copyStateInfo = "";
+        private string GetCopyStateInfoValue()
+        {
+            return _copyStateInfo;
+        }
+
+        private void SetCopyStateInfoValue(string v)
+        {
+            _copyStateInfo = v;
         }
 
     }
