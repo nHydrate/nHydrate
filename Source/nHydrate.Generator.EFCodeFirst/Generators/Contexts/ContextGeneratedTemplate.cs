@@ -230,8 +230,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
 
             //Events
-            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs> BeforeSaveModifiedEntity;");
-            sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs e)");
+            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
+            sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
             sb.AppendLine("		{");
             sb.AppendLine("			if(BeforeSaveModifiedEntity != null)");
             sb.AppendLine("			{");
@@ -239,12 +239,33 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			}");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs> BeforeSaveAddedEntity;");
-            sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs e)");
+
+            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
+            sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
             sb.AppendLine("		{");
             sb.AppendLine("			if(BeforeSaveAddedEntity != null)");
             sb.AppendLine("			{");
             sb.AppendLine("				BeforeSaveAddedEntity(this, e);");
+            sb.AppendLine("			}");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveModifiedEntity;");
+            sb.AppendLine("		protected virtual void OnAfterSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if(AfterSaveModifiedEntity != null)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				AfterSaveModifiedEntity(this, e);");
+            sb.AppendLine("			}");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveAddedEntity;");
+            sb.AppendLine("		protected virtual void OnAfterSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if(AfterSaveAddedEntity != null)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				AfterSaveAddedEntity(this, e);");
             sb.AppendLine("			}");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -796,15 +817,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             //Raise added save event
             index3 = 0;
-            sb.AppendLine("				if (BeforeSaveAddedEntity != null) {");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("					" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") this.OnBeforeSaveAddedEntity(new EventArguments.EntityEventArgs { Entity = (IBusinessObject)item.Entity });");
-                index3++;
-            }
-            sb.AppendLine("				}");
 
             sb.AppendLine("			}");
+            sb.AppendLine("			this.OnBeforeSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
             sb.AppendLine();
             #endregion
 
@@ -872,21 +887,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             //Raise modified save event
             index3 = 0;
-            sb.AppendLine("				if (BeforeSaveModifiedEntity != null) {");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("					" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") this.OnBeforeSaveModifiedEntity(new EventArguments.EntityEventArgs { Entity = (IBusinessObject)item.Entity });");
-                index3++;
-            }
-            sb.AppendLine("				}");
 
             sb.AppendLine("			}");
+            sb.AppendLine("			this.OnBeforeSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
             sb.AppendLine();
             #endregion
 
+            sb.AppendLine("			var retval = 0;");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
-            sb.AppendLine("				return base.SaveChanges();");
+            sb.AppendLine("				retval = base.SaveChanges();");
             sb.AppendLine("			}");
             sb.AppendLine("			catch (System.Data.Entity.Validation.DbEntityValidationException ex)");
             sb.AppendLine("			{");
@@ -904,6 +914,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			{");
             sb.AppendLine("				throw;");
             sb.AppendLine("			}");
+            sb.AppendLine("			this.OnAfterSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
+            sb.AppendLine("			this.OnAfterSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
+            sb.AppendLine("			return retval;");
             sb.AppendLine("		}");
             sb.AppendLine("		private Random _rnd = new Random();"); //Used for MySql
             sb.AppendLine();

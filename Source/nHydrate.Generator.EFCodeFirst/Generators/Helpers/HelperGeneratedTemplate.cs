@@ -896,6 +896,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	{");
                 sb.AppendLine("		public IBusinessObject Entity { get; set; }");
                 sb.AppendLine("	}");
+                sb.AppendLine("	public class EntityListEventArgs");
+                sb.AppendLine("	{");
+                sb.AppendLine("		public IEnumerable<System.Data.Entity.Core.Objects.ObjectStateEntry> List { get; set; }");
+                sb.AppendLine("	}");
                 sb.AppendLine("}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();

@@ -83,8 +83,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine();
 
                 //Events
-                sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs> BeforeSaveModifiedEntity;");
-                sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs e)");
+                sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
+                sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			if(BeforeSaveModifiedEntity != null)");
                 sb.AppendLine("			{");
@@ -92,12 +92,33 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
-                sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs> BeforeSaveAddedEntity;");
-                sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs e)");
+
+                sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
+                sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			if(BeforeSaveAddedEntity != null)");
                 sb.AppendLine("			{");
                 sb.AppendLine("				BeforeSaveAddedEntity(this, e);");
+                sb.AppendLine("			}");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+
+                sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveModifiedEntity;");
+                sb.AppendLine("		protected virtual void OnAfterSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			if(AfterSaveModifiedEntity != null)");
+                sb.AppendLine("			{");
+                sb.AppendLine("				AfterSaveModifiedEntity(this, e);");
+                sb.AppendLine("			}");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+
+                sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveAddedEntity;");
+                sb.AppendLine("		protected virtual void OnAfterSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			if(AfterSaveAddedEntity != null)");
+                sb.AppendLine("			{");
+                sb.AppendLine("				AfterSaveAddedEntity(this, e);");
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();

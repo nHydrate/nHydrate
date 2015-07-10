@@ -115,9 +115,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	public partial interface I" + _model.ProjectName + "Entities : System.IDisposable");
             sb.AppendLine("	{");
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs> BeforeSaveAddedEntity;");
+            sb.AppendLine("		event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityEventArgs> BeforeSaveModifiedEntity;");
+            sb.AppendLine("		event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		int SaveChanges();");
             sb.AppendLine();
