@@ -461,6 +461,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                             sb.Append(".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)");
 
                         if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
+                        if (column.DataType == System.Data.SqlDbType.VarChar) sb.Append(".HasColumnType(\"VARCHAR\")");
                         if (column.DatabaseName != column.PascalName) sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
                         sb.AppendLine(";");
                     }
