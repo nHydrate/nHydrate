@@ -892,11 +892,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		public bool Cancel { get; set; }");
                 sb.AppendLine("	}");
-                sb.AppendLine("	public class EntityEventArgs");
+                sb.AppendLine("	public class EntityEventArgs : System.EventArgs");
                 sb.AppendLine("	{");
                 sb.AppendLine("		public IBusinessObject Entity { get; set; }");
                 sb.AppendLine("	}");
-                sb.AppendLine("	public class EntityListEventArgs");
+                sb.AppendLine("	public class EntityListEventArgs : System.EventArgs");
                 sb.AppendLine("	{");
                 sb.AppendLine("		public IEnumerable<System.Data.Entity.Core.Objects.ObjectStateEntry> List { get; set; }");
                 sb.AppendLine("	}");
