@@ -439,14 +439,35 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #region Create annotations for properties
             sb.AppendLine("			#region Setup Fields");
             sb.AppendLine();
+
+            //Tables
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 sb.AppendLine("			//Field setup for " + table.PascalName + " entity");
                 foreach (var column in table.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
                 {
+                    var isTypeValue = false;
+                    #region Determine if this is a type table Value field and if so ignore
+                    {
+                        string roleName;
+                        string pascalRoleName;
+                        Table typeTable = null;
+                        if (table.IsColumnRelatedToTypeTable(column, out pascalRoleName) || (column.PrimaryKey && table.TypedTable != TypedTableConstants.None))
+                        {
+                            typeTable = table.GetRelatedTypeTableByColumn(column, out pascalRoleName);
+                            if (typeTable == null) typeTable = table;
+                            if (typeTable != null)
+                            {
+                                sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Ignore(d => d." + pascalRoleName + typeTable.PascalName + "Value);");
+                                isTypeValue = true;
+                            }
+                        }
+                    }
+                    #endregion
+
                     //If this is a base table OR the column is not a PK then process it
                     //Primary key code should be emited ONLY for base tables
-                    if (table.ParentTable == null || !column.PrimaryKey)
+                    if (!isTypeValue && (table.ParentTable == null || !column.PrimaryKey))
                     {
                         sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
                         sb.Append(".Property(d => d." + column.PascalName + ")");
@@ -468,6 +489,25 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 }
                 sb.AppendLine();
             }
+
+            //Views
+            foreach (var item in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
+            {
+                sb.AppendLine("			//Field setup for " + item.PascalName + " entity");
+                foreach (var column in item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+                {
+                    sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">()");
+                    sb.Append(".Property(d => d." + column.PascalName + ")");
+                    if (!column.AllowNull)
+                        sb.Append(".IsRequired()");
+
+                    if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
+                    if (column.DatabaseName != column.PascalName) sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
+                    sb.AppendLine(";");
+                }
+                sb.AppendLine();
+            }
+
             sb.AppendLine("			#endregion");
             sb.AppendLine();
             #endregion

@@ -241,7 +241,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
                 sb.AppendLine("		/// </summary>");
                 if (column.IsPrimaryKey)
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key]");
-                sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.Column(Order = " + index + ")]");
                 sb.AppendLine("		[DataMember]");
                 sb.AppendLine("		[System.ComponentModel.Browsable(" + column.IsBrowsable.ToString().ToLower() + ")]");
                 if (!string.IsNullOrEmpty(column.Category))
@@ -256,10 +255,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
 
                 sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 
-                if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml && column.Length > 0)
-                {
-                    sb.AppendLine("		[StringLength(" + column.Length + ")]");
-                }
+                //if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml && column.Length > 0)
+                //{
+                //    sb.AppendLine("		[StringLength(" + column.Length + ")]");
+                //}
 
                 sb.AppendLine("		public virtual " + column.GetCodeType() + " " + column.PascalName + " { get; set; }");
                 sb.AppendLine();

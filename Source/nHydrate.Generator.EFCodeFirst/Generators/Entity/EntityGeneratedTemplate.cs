@@ -263,10 +263,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("			/// Field mapping for the '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
                 sb.AppendLine("			/// </summary>");
 
-                if (column.PrimaryKey)
-                {
-                    sb.AppendLine("			[System.ComponentModel.DataAnnotations.Key]");
-                }
+                //if (column.PrimaryKey)
+                //{
+                //    sb.AppendLine("			[System.ComponentModel.DataAnnotations.Key]");
+                //}
 
                 if (column.PrimaryKey || _item.Immutable)
                 {
@@ -452,7 +452,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		#region Properties");
             sb.AppendLine();
 
-            foreach (Column column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
             {
                 string roleName;
                 string pascalRoleName;
@@ -470,7 +470,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("		/// <summary>");
                         sb.AppendLine("		/// This property is a wrapper for the typed enumeration for the '" + column.PascalName + "' field.");
                         sb.AppendLine("		/// </summary>");
-                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
+                        //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                         sb.AppendLine("		public virtual " + this.GetLocalNamespace() + "." + typeTable.PascalName + "Constants" + nullSuffix + " " + pascalRoleName + typeTable.PascalName + "Value");
                         sb.AppendLine("		{");
@@ -525,8 +525,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("		[System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = @\"" + column.Mask.Replace(@"\\", @"\\\\") + "\")]");
                     }
 
-                    if (column.PrimaryKey)
-                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
+                    //if (column.PrimaryKey)
+                    //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
 
                     //if (column.PrimaryKey || _item.Immutable || column.ComputedColumn || column.IsReadOnly)
                     //    sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
@@ -544,10 +544,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     //if (column.Identity == IdentityTypeConstants.Database)
                     //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]");
 
-                    if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml && column.Length > 0)
-                    {
-                        sb.AppendLine("		[StringLength(" + column.Length + ")]");
-                    }
+                    //if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml && column.Length > 0)
+                    //{
+                    //    sb.AppendLine("		[StringLength(" + column.Length + ")]");
+                    //}
 
                     //if (column.ComputedColumn)
                     //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)]");
@@ -2188,18 +2188,18 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("		/// Metadata information for the '" + column.PascalName + "' parameter");
                 sb.AppendLine("		/// </summary>");
 
-                //If not nullable then it is required
-                if (!column.AllowNull)
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = \"'" + column.GetFriendlyName() + "' is required.\", AllowEmptyStrings = true)]");
+                ////If not nullable then it is required
+                //if (!column.AllowNull)
+                //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = \"'" + column.GetFriendlyName() + "' is required.\", AllowEmptyStrings = true)]");
 
                 if (!string.IsNullOrEmpty(column.ValidationExpression))
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.RegularExpression(@\"" + column.ValidationExpression.Replace("\"", "\"\"") + "\")]");
 
-                if (column.PrimaryKey)
-                {
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
-                }
+                //if (column.PrimaryKey)
+                //{
+                //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
+                //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
+                //}
 
                 //If PK or calculated then there is no setter (readonly)
                 if (column.PrimaryKey || column.ComputedColumn)
