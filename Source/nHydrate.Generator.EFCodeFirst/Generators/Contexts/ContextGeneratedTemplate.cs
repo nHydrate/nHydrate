@@ -467,7 +467,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
                     //If this is a base table OR the column is not a PK then process it
                     //Primary key code should be emited ONLY for base tables
-                    if (!isTypeValue && (table.ParentTable == null || !column.PrimaryKey))
+                    if (table.ParentTable == null || !column.PrimaryKey)
                     {
                         sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
                         sb.Append(".Property(d => d." + column.PascalName + ")");
