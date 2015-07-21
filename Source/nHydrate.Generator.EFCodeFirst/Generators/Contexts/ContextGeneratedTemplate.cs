@@ -471,8 +471,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     {
                         sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
                         sb.Append(".Property(d => d." + column.PascalName + ")");
-                        if (!column.AllowNull)
-                            sb.Append(".IsRequired()");
+                        if (column.AllowNull) sb.Append(".IsOptional()");
+                        else sb.Append(".IsRequired()");
 
                         if (column.PrimaryKey && column.IsIntegerType && column.Identity != IdentityTypeConstants.Database)
                             sb.Append(".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)");
@@ -487,6 +487,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                         sb.AppendLine(";");
                     }
                 }
+
+                if (table.AllowTimestamp)
+                {
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").IsConcurrencyToken(true);");
+                }
+
                 sb.AppendLine();
             }
 

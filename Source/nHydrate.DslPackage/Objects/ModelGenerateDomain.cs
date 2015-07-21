@@ -1184,7 +1184,9 @@ namespace nHydrate.DslPackage.Objects
                 {
                     progress = (_processedFileCount * 100) / _totalFileCount;
                     if (progress > 100) progress = 100;
-                    mainText = "Generating " + _processedFileCount.ToString("###,###,###,##0") + " of " + _totalFileCount.ToString("###,###,###,##0") + "...";
+
+                    var totalDisplay = Math.Max(_processedFileCount, _totalFileCount);
+                    mainText = "Generating " + _processedFileCount.ToString("###,###,###,##0") + " of " + totalDisplay.ToString("###,###,###,##0") + "...";
                     if (progress > 0)
                     {
                         var elapsedTime = DateTime.Now.Subtract(_startTime).TotalSeconds;
