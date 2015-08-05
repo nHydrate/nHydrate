@@ -584,7 +584,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             var fieldName = _model.Database.ModifiedByColumnName;
             sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[" + fieldName + "] = NULL\\r\\n\";");
             fieldName = _model.Database.ModifiedDateColumnName;
-            sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[" + fieldName + "] = sysdatetime()\\r\\n\";");
+            sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[" + fieldName + "] = " + (_model.UseUTCTime ? "sysutcdatetime" : "sysdatetime") + "()\\r\\n\";");
             sb.AppendLine("					sql += parser.GetFromClause(new QueryOptimizer()) + \"\\r\\n\";");
             sb.AppendLine("					sql += parser.GetWhereClause();");
             sb.AppendLine("					sql += \";select @@rowcount\";");
