@@ -807,6 +807,14 @@ namespace nHydrate.Dsl
                             {
                                 context.LogError(string.Format(ValidationHelper.ErrorTextEntityIndexInvalid, this.Name), string.Empty, this);
                             }
+                            else if (ic.Field != null && ic.Field.DataType == DataTypeConstants.VarChar && ((ic.Field.Length == 0) || (ic.Field.Length > 900)))
+                            {
+                                context.LogError(string.Format(ValidationHelper.ErrorTextEntityIndexInvalidLength, this.Name + "." + ic.Field.Name), string.Empty, this);
+                            }
+                            else if (ic.Field != null && ic.Field.DataType == DataTypeConstants.NVarChar && ((ic.Field.Length == 0) || (ic.Field.Length > 450)))
+                            {
+                                context.LogError(string.Format(ValidationHelper.ErrorTextEntityIndexInvalidLength, this.Name + "." + ic.Field.Name), string.Empty, this);
+                            }
                         }
                     }
                 }

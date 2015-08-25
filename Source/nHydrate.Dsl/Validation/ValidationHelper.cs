@@ -162,6 +162,7 @@ namespace nHydrate.Dsl
         public static readonly string ErrorTextColumnReadonlyNeedsDefault = "The object '{0}' is marked read-only and not nullable, so it must have a default value.";
         public static readonly string ErrorTextRelationNoFields = "The relationship '{0}' must have at least one link field.";
         public static readonly string ErrorTextEntityIndexInvalid = "One or more of the indexes for '{0}' Entity is invalid.";
+        public static readonly string ErrorTextEntityIndexInvalidLength = "The index has a field '{0}' that has an invalid length.";
         public static readonly string ErrorTextEntityIndexIsPossibleDuplicate = "The Entity '{0}' has one or more indexes that are possible duplicates. They have the same indexed columns in different order.";
         public static readonly string ErrorTextEntityIndexIsDuplicate = "The Entity '{0}' has one or more indexes that are duplicated.";
         public static readonly string ErrorTextEntityIndexMultipleClustered = "The Entity '{0}' has more than one clustered index.";
