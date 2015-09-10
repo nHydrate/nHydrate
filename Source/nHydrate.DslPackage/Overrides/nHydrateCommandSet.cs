@@ -49,10 +49,17 @@ namespace nHydrate.DslPackage
             try
             {
                 nHydrateDiagram diagram = null;
+                nHydrate.Dsl.Entity selectedEntity = null;
                 foreach (var item in this.CurrentSelection)
                 {
-                    if (diagram == null)
+                    if (diagram == null && item is nHydrateDiagram)
                         diagram = item as nHydrateDiagram;
+                    if (diagram == null && item is Microsoft.VisualStudio.Modeling.Diagrams.ShapeElement)
+                    {
+                        diagram = (item as Microsoft.VisualStudio.Modeling.Diagrams.ShapeElement).Diagram as nHydrateDiagram;
+                        if (item is EntityShape)
+                            selectedEntity = (item as EntityShape).ModelElement as nHydrate.Dsl.Entity;
+                    }
                 }
 
                 if (diagram != null)
@@ -63,9 +70,9 @@ namespace nHydrate.DslPackage
 
                 var beforeList = model.Entities.ToList();
                 base.OnMenuPaste(sender, args);
-                var afterList = model.Entities.ToList().Except(beforeList);
+                var afterList = model.Entities.ToList().Except(beforeList).ToList();
 
-                //Check indexes to make sure they are setup
+                #region Check indexes after Entity paste to make sure they are setup
                 foreach (var item in afterList)
                 {
                     try
@@ -100,6 +107,38 @@ namespace nHydrate.DslPackage
                     {
                     }
                 }
+                #endregion
+
+                #region We have pasted some fields so verify indexes
+                //THIS DOES NOT WORK. NEED TO SAVE FIELDS BEFORE/AFTER AND COMPARE
+                //if (afterList.Count == 0 && this.CurrentSelection.Count == 1 && selectedEntity != null)
+                //{
+                //    var item = selectedEntity;
+                //    using (var transaction = item.Store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
+                //    {
+                //        foreach (Field field in item.FieldList)
+                //        {
+                //            if (field.IsIndexed)
+                //            {
+                //                if (!item.Indexes.Any(x => x.FieldList.Any(z => z.Id == field.Id) && x.IndexType == IndexTypeConstants.IsIndexed))
+                //                {
+                //                    var newIndex = item.Indexes.AddNew() as nHydrate.Dsl.Index;
+                //                    newIndex.Clustered = false;
+                //                    newIndex.IsUnique = false;
+                //                    newIndex.IndexType = IndexTypeConstants.IsIndexed;
+
+                //                    var newColumn = newIndex.IndexColumns.AddNew() as IndexColumn;
+                //                    newColumn.Ascending = true;
+                //                    newColumn.FieldID = field.Id;
+                //                }
+                //            }
+                //        }
+
+                //        transaction.Commit();
+                //    }
+
+                //}
+                #endregion
 
             }
             catch (Exception ex)
