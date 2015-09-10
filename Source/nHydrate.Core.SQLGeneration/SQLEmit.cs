@@ -1158,8 +1158,14 @@ namespace nHydrate.Core.SQLGeneration
                 //Do not create unique index for PK (it is already unique)
                 if (!index.PrimaryKey)
                 {
+                    var checkSqlList = new List<string>();
+                    foreach(var c in columnList)
+                    {
+                        checkSqlList.Add("exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + c.Value.DatabaseName + "' and o.name = '" + table.DatabaseName + "')");
+                    }
+
                     sb.AppendLine("--INDEX FOR TABLE [" + table.DatabaseName + "] COLUMNS:" + string.Join(", ", columnList.Select(x => "[" + x.Value.DatabaseName + "]")));
-                    sb.AppendLine("if not exists(select * from sys.indexes where name = '" + indexName + "')");
+                    sb.AppendLine("if not exists(select * from sys.indexes where name = '" + indexName + "') and " + string.Join(" and ", checkSqlList));
                     sb.Append("CREATE " + (index.IsUnique ? "UNIQUE " : string.Empty) + (index.Clustered ? "CLUSTERED " : "NONCLUSTERED ") + "INDEX [" + indexName + "] ON [" + table.GetSQLSchema() + "].[" + tableName + "] (");
                     sb.Append(string.Join(",", columnList.Select(x => "[" + x.Value.DatabaseName + "] " + (x.Key.Ascending ? "ASC" : "DESC"))));
                     sb.AppendLine(")");
