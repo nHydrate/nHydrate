@@ -29,6 +29,13 @@
         <Edition>Pro</Edition>
       </VisualStudio>
       <VisualStudio Version="13.0">
+        <Edition>Enterprise</Edition>
+        <Edition>Ultimate</Edition>
+        <Edition>Premium</Edition>
+        <Edition>Pro</Edition>
+      </VisualStudio>
+      <VisualStudio Version="14.0">
+        <Edition>Enterprise</Edition>
         <Edition>Ultimate</Edition>
         <Edition>Premium</Edition>
         <Edition>Pro</Edition>
