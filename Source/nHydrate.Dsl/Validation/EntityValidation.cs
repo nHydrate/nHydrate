@@ -801,7 +801,7 @@ namespace nHydrate.Dsl
                     }
                     else
                     {
-                        foreach (var ic in index.IndexColumns)
+                        foreach (var ic in index.IndexColumns.Where(x => x.Field.IsGenerated).ToList())
                         {
                             if (ic.GetField() == null)
                             {
