@@ -785,13 +785,9 @@ namespace nHydrate.Core.SQLGeneration
                     {
 
                         var fieldValues = new Dictionary<string, string>();
-
-                        
                         foreach (var cellEntry in rowEntry.CellEntries.ToList())
                         {
                             var column = cellEntry.ColumnRef.Object as Column;
-                            
-
                             var sqlValue = cellEntry.GetSQLData();
                             if (sqlValue == null) //Null is actually returned if the value can be null
                             {
@@ -799,7 +795,10 @@ namespace nHydrate.Core.SQLGeneration
                                 {
                                     if (ModelHelper.IsTextType(column.DataType) || ModelHelper.IsDateType(column.DataType))
                                     {
-                                        fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
+                                        if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
+                                            fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
+                                        else
+                                            fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
                                     }
                                     else
                                     {
@@ -849,9 +848,7 @@ namespace nHydrate.Core.SQLGeneration
                         sb.Append("if not exists(select * from [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] where ");
 
                         var ii = 0;
-
                         var pkWhereSb = new StringBuilder();
-
                         foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
                         {
                             var pkData = rowEntry.CellEntries[column.Name].GetSQLData();

@@ -132,8 +132,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		private static IQueryable<T> GetInclude<T, R>(this IQueryable<T> item, Expression<Func<R, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
+            sb.AppendLine("			where T : BaseEntity");
+            sb.AppendLine("			where R : HP.Zeus.EFDAL.IContextInclude");
             sb.AppendLine("		{");
-            sb.AppendLine("			var tempItem = item as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
+            sb.AppendLine("			var tempItem = item as System.Data.Entity.Infrastructure.DbQuery<T>;");
             sb.AppendLine("			if (tempItem == null) return item;");
             sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
             sb.AppendLine("			strings.RemoveAt(0);");
