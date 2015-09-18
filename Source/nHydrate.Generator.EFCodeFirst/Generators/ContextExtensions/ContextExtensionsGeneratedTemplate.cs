@@ -118,6 +118,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
 
             sb.AppendLine("		private static System.Data.Entity.Infrastructure.DbQuery<T> GetInclude<T, R>(this System.Data.Entity.Infrastructure.DbQuery<T> item, Expression<Func<R, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
             sb.AppendLine("			where T : BaseEntity");
+            sb.AppendLine("			where R : IContextInclude");
             sb.AppendLine("		{");
             sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
             sb.AppendLine("			strings.RemoveAt(0);");
@@ -131,11 +132,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			return item;");
             sb.AppendLine("		}");
             sb.AppendLine();
+
             sb.AppendLine("		private static IQueryable<T> GetInclude<T, R>(this IQueryable<T> item, Expression<Func<R, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
             sb.AppendLine("			where T : BaseEntity");
-            sb.AppendLine("			where R : HP.Zeus.EFDAL.IContextInclude");
+            sb.AppendLine("			where R : IContextInclude");
             sb.AppendLine("		{");
-            sb.AppendLine("			var tempItem = item as System.Data.Entity.Infrastructure.DbQuery<T>;");
+            sb.AppendLine("			var tempItem = item as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
             sb.AppendLine("			if (tempItem == null) return item;");
             sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
             sb.AppendLine("			strings.RemoveAt(0);");
@@ -149,90 +151,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			return tempItem;");
             sb.AppendLine("		}");
             sb.AppendLine();
-
-            ////Add one for DbQuery
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Specifies the related objects to include in the query results.");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		/// <param name=\"item\">Related object to return in query results</param>");
-            //sb.AppendLine("		/// <param name=\"query\">The LINQ expresssion that maps an include path</param>");
-            //sb.AppendLine("		public static System.Data.Entity.Infrastructure.DbQuery<T> Include<T, R>(this System.Data.Entity.Infrastructure.DbQuery<T> item, Expression<Func<T, R>> query)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
-            //sb.AppendLine("			strings.RemoveAt(0);");
-            //sb.AppendLine("			var compoundString = string.Empty;");
-            //sb.AppendLine("			foreach (var s in strings)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				if (!string.IsNullOrEmpty(compoundString)) compoundString += \".\";");
-            //sb.AppendLine("				compoundString += s;");
-            //sb.AppendLine("				item = item.Include(compoundString);");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			return item;");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Specifies the related objects to include in the query results.");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		/// <param name=\"item\">Related object to return in query results</param>");
-            //sb.AppendLine("		/// <param name=\"query\">The LINQ expresssion that maps an include path</param>");
-            //sb.AppendLine("		public static System.Data.Entity.Infrastructure.DbQuery<T> Include<T, R>(this System.Data.Entity.Infrastructure.DbQuery<T> item, Expression<Func<T, ICollection<R>>> query)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
-            //sb.AppendLine("			strings.RemoveAt(0);");
-            //sb.AppendLine("			var compoundString = string.Empty;");
-            //sb.AppendLine("			foreach (var s in strings)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				if (!string.IsNullOrEmpty(compoundString)) compoundString += \".\";");
-            //sb.AppendLine("				compoundString += s;");
-            //sb.AppendLine("				item = item.Include(compoundString);");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			return item;");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-
-            ////Now add one for IQueryable
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Specifies the related objects to include in the query results.");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		/// <param name=\"item\">Related object to return in query results</param>");
-            //sb.AppendLine("		/// <param name=\"query\">The LINQ expresssion that maps an include path</param>");
-            //sb.AppendLine("		public static IQueryable<T> Include<T, R>(this IQueryable<T> item, Expression<Func<T, R>> query)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			var tempItem = item as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
-            //sb.AppendLine("			if (tempItem == null) return item;");
-            //sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
-            //sb.AppendLine("			strings.RemoveAt(0);");
-            //sb.AppendLine("			var compoundString = string.Empty;");
-            //sb.AppendLine("			foreach (var s in strings)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				if (!string.IsNullOrEmpty(compoundString)) compoundString += \".\";");
-            //sb.AppendLine("				compoundString += s;");
-            //sb.AppendLine("				tempItem = tempItem.Include(compoundString);");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			return tempItem;");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Specifies the related objects to include in the query results.");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		/// <param name=\"item\">Related object to return in query results</param>");
-            //sb.AppendLine("		/// <param name=\"query\">The LINQ expresssion that maps an include path</param>");
-            //sb.AppendLine("		public static IQueryable<T> Include<T, R>(this IQueryable<T> item, Expression<Func<T, ICollection<R>>> query)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			var tempItem = item as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
-            //sb.AppendLine("			if (tempItem == null) return item;");
-            //sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
-            //sb.AppendLine("			strings.RemoveAt(0);");
-            //sb.AppendLine("			var compoundString = string.Empty;");
-            //sb.AppendLine("			foreach (var s in strings)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				if (!string.IsNullOrEmpty(compoundString)) compoundString += \".\";");
-            //sb.AppendLine("				compoundString += s;");
-            //sb.AppendLine("				tempItem = tempItem.Include(compoundString);");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			return tempItem;");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
 
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
             {
@@ -254,27 +172,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 //Generate an extension if there are relations for this table
                 if (relationList.Count() != 0 && table.TypedTable != TypedTableConstants.EnumOnly)
                 {
-                    ////Add one for DbQuery
-                    //sb.AppendLine("		/// <summary>");
-                    //sb.AppendLine("		/// Specifies the related objects to include in the query results.");
-                    //sb.AppendLine("		/// </summary>");
-                    //sb.AppendLine("		/// <param name=\"item\">Related object to return in query results</param>");
-                    //sb.AppendLine("		/// <param name=\"query\">The LINQ expresssion that maps an include path</param>");
-                    //sb.AppendLine("		public static System.Data.Entity.Infrastructure.DbQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> Include(this System.Data.Entity.Infrastructure.DbQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item, Expression<Func<" + this.GetLocalNamespace() + "." + table.PascalName + "Include, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
-                    //sb.AppendLine("		{");
-                    //sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
-                    //sb.AppendLine("			strings.RemoveAt(0);");
-                    //sb.AppendLine("			var compoundString = string.Empty;");
-                    //sb.AppendLine("			foreach (var s in strings)");
-                    //sb.AppendLine("			{");
-                    //sb.AppendLine("				if (!string.IsNullOrEmpty(compoundString)) compoundString += \".\";");
-                    //sb.AppendLine("				compoundString += s;");
-                    //sb.AppendLine("				item = item.Include(compoundString);");
-                    //sb.AppendLine("			}");
-                    //sb.AppendLine("			return item;");
-                    //sb.AppendLine("		}");
-                    //sb.AppendLine();
-
                     //Add one for DbQuery
                     sb.AppendLine("		/// <summary>");
                     sb.AppendLine("		/// Specifies the related objects to include in the query results.");
@@ -286,29 +183,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                     sb.AppendLine("			return GetInclude<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", " + this.GetLocalNamespace() + "." + table.PascalName + "Include>(item, query);");
                     sb.AppendLine("		}");
                     sb.AppendLine();
-
-                    ////Now add one for IQueryable
-                    //sb.AppendLine("		/// <summary>");
-                    //sb.AppendLine("		/// Specifies the related objects to include in the query results.");
-                    //sb.AppendLine("		/// </summary>");
-                    //sb.AppendLine("		/// <param name=\"item\">Related object to return in query results</param>");
-                    //sb.AppendLine("		/// <param name=\"query\">The LINQ expresssion that maps an include path</param>");
-                    //sb.AppendLine("		public static IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> Include(this IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item, Expression<Func<" + this.GetLocalNamespace() + "." + table.PascalName + "Include, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
-                    //sb.AppendLine("		{");
-                    //sb.AppendLine("			var tempItem = item as System.Data.Entity.Core.Objects.ObjectQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">;");
-                    //sb.AppendLine("			if (tempItem == null) return item;");
-                    //sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
-                    //sb.AppendLine("			strings.RemoveAt(0);");
-                    //sb.AppendLine("			var compoundString = string.Empty;");
-                    //sb.AppendLine("			foreach (var s in strings)");
-                    //sb.AppendLine("			{");
-                    //sb.AppendLine("				if (!string.IsNullOrEmpty(compoundString)) compoundString += \".\";");
-                    //sb.AppendLine("				compoundString += s;");
-                    //sb.AppendLine("				tempItem = tempItem.Include(compoundString);");
-                    //sb.AppendLine("			}");
-                    //sb.AppendLine("			return tempItem;");
-                    //sb.AppendLine("		}");
-                    //sb.AppendLine();
 
                     //Now add one for IQueryable
                     sb.AppendLine("		/// <summary>");
