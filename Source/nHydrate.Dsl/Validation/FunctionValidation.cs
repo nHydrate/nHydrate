@@ -24,6 +24,7 @@
 // -------------------------------------------------------------------------- *
 #endregion
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -62,6 +63,8 @@ namespace nHydrate.Dsl
             var timer = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
             try
             {
+                var columnList = this.Fields.Where(x => x.IsGenerated).ToList();
+
                 #region Check valid name
                 if (!ValidationHelper.ValidDatabaseIdenitifer(this.DatabaseName))
                     context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifier, this.Name), string.Empty, this);
@@ -69,6 +72,20 @@ namespace nHydrate.Dsl
                     context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifier, this.Name), string.Empty, this);
                 else if (!ValidationHelper.ValidFieldIdentifier(this.PascalName))
                     context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifier, this.Name), string.Empty, this);
+
+                #endregion
+
+                #region Check for duplicate names
+
+                var nameList = new Hashtable();
+                foreach (var column in columnList)
+                {
+                    var name = column.Name.ToLower();
+                    if (nameList.ContainsKey(name))
+                        context.LogError(string.Format(ValidationHelper.ErrorTextDuplicateName, column.Name), string.Empty, this);
+                    else
+                        nameList.Add(name, string.Empty);
+                }
 
                 #endregion
 

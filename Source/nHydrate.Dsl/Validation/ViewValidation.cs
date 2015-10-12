@@ -62,12 +62,27 @@ namespace nHydrate.Dsl
             try
             {
                 //if (!this.IsDirty) return;
+                var columnList = this.Fields.Where(x => x.IsGenerated).ToList();
 
                 #region Check valid name
                 if (!ValidationHelper.ValidDatabaseIdenitifer(this.DatabaseName))
                     context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifier, this.Name), string.Empty, this);
                 else if (!ValidationHelper.ValidCodeIdentifier(this.PascalName))
                     context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifier, this.Name), string.Empty, this);
+                #endregion
+
+                #region Check for duplicate names
+
+                var nameList = new Hashtable();
+                foreach (var column in columnList)
+                {
+                    var name = column.Name.ToLower();
+                    if (nameList.ContainsKey(name))
+                        context.LogError(string.Format(ValidationHelper.ErrorTextDuplicateName, column.Name), string.Empty, this);
+                    else
+                        nameList.Add(name, string.Empty);
+                }
+
                 #endregion
 
                 #region Check View SQL

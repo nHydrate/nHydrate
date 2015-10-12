@@ -324,6 +324,8 @@ namespace nHydrate.Dsl
             get
             {
                 var inheritTables = new List<Entity>(this.GetTableHierarchy());
+                if (inheritTables.Count == 1) return true;
+
                 var pkList = new Dictionary<string, Field>();
                 foreach (var c in this.PrimaryKeyFields.OrderBy(x => x.Name))
                 {
