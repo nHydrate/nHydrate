@@ -505,6 +505,14 @@
     <value>Database</value>
     <comment>Category for DomainProperty &apos;TenantColumnName&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
+  <data name="nHydrate.Dsl.nHydrateModel/EFVersion.Description" xml:space="preserve">
+    <value>Determines the target Entity Framework version</value>
+    <comment>Description for DomainProperty &apos;EFVersion&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.nHydrateModel/EFVersion.DisplayName" xml:space="preserve">
+    <value>EF Version</value>
+    <comment>DisplayName for DomainProperty &apos;EFVersion&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
+  </data>
   <data name="nHydrate.Dsl.Entity.Description" xml:space="preserve">
     <value>This object represents a database table</value>
     <comment>Description for DomainClass &apos;Entity&apos;</comment>
@@ -4532,6 +4540,22 @@
   <data name="nHydrate.Dsl.UIDataTypeConstants/ImageUrl.Description" xml:space="preserve">
     <value></value>
     <comment>Description for EnumerationLiteral &apos;ImageUrl&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EFVersionConstants/EF4.DisplayName" xml:space="preserve">
+    <value>EF4</value>
+    <comment>Display name for EnumerationLiteral &apos;EF4&apos; on DomainEnumeration &apos;EFVersionConstants&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EFVersionConstants/EF4.Description" xml:space="preserve">
+    <value>EF 4</value>
+    <comment>Description for EnumerationLiteral &apos;EF4&apos; on DomainEnumeration &apos;EFVersionConstants&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EFVersionConstants/EF6.DisplayName" xml:space="preserve">
+    <value>EF6</value>
+    <comment>Display name for EnumerationLiteral &apos;EF6&apos; on DomainEnumeration &apos;EFVersionConstants&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EFVersionConstants/EF6.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for EnumerationLiteral &apos;EF6&apos; on DomainEnumeration &apos;EFVersionConstants&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.EntityShape.Description" xml:space="preserve">
     <value></value>

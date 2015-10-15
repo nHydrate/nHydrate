@@ -48,6 +48,7 @@ namespace nHydrate.Generator.Models
         protected const bool _def_supportLegacySearchObject = false;
         protected const string _def_defaultNamespace = "";
         protected const SQLServerTypeConstants _def_sQLServerType = SQLServerTypeConstants.SQL2005;
+        protected const EFVersionConstants _def_efVersion = EFVersionConstants.EF6;
         protected const FrameworkVersionConstants _def_frameworkVersion = FrameworkVersionConstants.v35;
         protected const string _def_storedProcedurePrefix = "gen";
         protected const SupportedDatabaseConstants _def_supportedPlatforms = SupportedDatabaseConstants.MySql;
@@ -69,6 +70,7 @@ namespace nHydrate.Generator.Models
         protected IGenerator _generatorProject = null;
         //private DateTime _createdDate = DateTime.Now;
         private SQLServerTypeConstants _sQLServerType = _def_sQLServerType;
+        private EFVersionConstants _efVersion = _def_efVersion;
         private FrameworkVersionConstants _frameworkVersion = _def_frameworkVersion;
         private string _storedProcedurePrefix = _def_storedProcedurePrefix;
         private readonly VersionHistoryCollection _versionHistoryList = new VersionHistoryCollection();
@@ -250,6 +252,22 @@ namespace nHydrate.Generator.Models
             {
                 _sQLServerType = value;
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("SQLServerType"));
+            }
+        }
+
+        [
+        Browsable(true),
+        Description("Determines the target Entity Framework version."),
+        DefaultValue(typeof(EFVersionConstants), "EF6"),
+        Category("Data"),
+        ]
+        public EFVersionConstants EFVersion
+        {
+            get { return _efVersion; }
+            set
+            {
+                _efVersion = value;
+                this.OnPropertyChanged(this, new PropertyChangedEventArgs("EFVersionConstants"));
             }
         }
 
@@ -533,6 +551,7 @@ namespace nHydrate.Generator.Models
                 _versionHistoryList.XmlAppend(versionHistoryListNode);
 
                 XmlHelper.AddAttribute(node, "sqlType", this.SQLServerType.ToString());
+                XmlHelper.AddAttribute(node, "efversion", this.EFVersion.ToString());
                 XmlHelper.AddAttribute(node, "frameworkVersion", this.FrameworkVersion.ToString());
 
                 if (this.MetaData.Count > 0)
@@ -561,6 +580,7 @@ namespace nHydrate.Generator.Models
                 _version = XmlHelper.GetAttributeValue(node, "version", _def_version);
                 this.UseUTCTime = XmlHelper.GetAttributeValue(node, "useUTCTime", this.UseUTCTime);
                 this.SQLServerType = (SQLServerTypeConstants)Enum.Parse(typeof(SQLServerTypeConstants), XmlHelper.GetAttributeValue(node, "sqlType", _def_sQLServerType.ToString()));
+                this.EFVersion = (EFVersionConstants)Enum.Parse(typeof(EFVersionConstants), XmlHelper.GetAttributeValue(node, "efversion", _def_efVersion.ToString()));
                 this.FrameworkVersion = (FrameworkVersionConstants)Enum.Parse(typeof(FrameworkVersionConstants), XmlHelper.GetAttributeValue(node, "frameworkVersion", _def_frameworkVersion.ToString()));
                 this.StoredProcedurePrefix = XmlHelper.GetAttributeValue(node, "storedProcedurePrefix", _def_storedProcedurePrefix);
                 this.SupportedPlatforms = (SupportedDatabaseConstants)XmlHelper.GetAttributeValue(node, "supportedPlatforms", (int)_def_supportedPlatforms);

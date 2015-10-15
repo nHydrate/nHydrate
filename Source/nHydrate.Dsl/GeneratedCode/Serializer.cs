@@ -682,6 +682,23 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
+			// EFVersion
+			if (!serializationContext.Result.Failed)
+			{
+				string attribEFVersion = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "eFVersion");
+				if (attribEFVersion != null)
+				{
+					EFVersionConstants valueOfEFVersion;
+					if (DslModeling::SerializationUtilities.TryGetValue<EFVersionConstants>(serializationContext, attribEFVersion, out valueOfEFVersion))
+					{
+						instanceOfnHydrateModel.EFVersion = valueOfEFVersion;
+					}
+					else
+					{	// Invalid property value, ignored.
+						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "eFVersion", typeof(EFVersionConstants), attribEFVersion);
+					}
+				}
+			}
 		}
 	
 		/// <summary>
@@ -2045,6 +2062,19 @@ namespace nHydrate.Dsl
 					if (propValue != null && (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(propValue, "__tenant_user") != 0))
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "tenantColumnName", propValue);
+					}
+				}
+			}
+			// EFVersion
+			if (!serializationContext.Result.Failed)
+			{
+				EFVersionConstants propValue = instanceOfnHydrateModel.EFVersion;
+				string serializedPropValue = DslModeling::SerializationUtilities.GetString<EFVersionConstants>(serializationContext, propValue);
+				if (!serializationContext.Result.Failed)
+				{
+					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "EF6") != 0)
+					{	// No need to write the value out if it's the same as default value.
+						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "eFVersion", serializedPropValue);
 					}
 				}
 			}

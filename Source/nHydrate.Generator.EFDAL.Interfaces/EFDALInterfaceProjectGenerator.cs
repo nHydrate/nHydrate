@@ -32,73 +32,72 @@ using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.EFDAL.Interfaces
 {
-	[GeneratorProject(
-		"EF Data Access Layer Interfaces",
-		"The interfaces for the data access layer built on top of Entity Framework",
-		"b8bd6b27-b9f2-4291-82e8-88e1295eef07",
-		typeof(nHydrateGeneratorProject),
-		typeof(EFDALInterfaceProjectGenerator),
-		new string[] { }
-		)]
-	public class EFDALInterfaceProjectGenerator : BaseProjectGenerator
-	{
-		protected override string ProjectTemplate
-		{
-			get { return "efdalinterfaces.vstemplate"; }
-		}
+    [GeneratorProject(
+        "EF Data Access Layer Interfaces (EF4)",
+        "The interfaces for the data access layer built on top of Entity Framework",
+        "b8bd6b27-b9f2-4291-82e8-88e1295eef07",
+        typeof(nHydrateGeneratorProject),
+        typeof(EFDALInterfaceProjectGenerator),
+        new string[] { }
+        )]
+    public class EFDALInterfaceProjectGenerator : BaseProjectGenerator
+    {
+        protected override string ProjectTemplate
+        {
+            get { return "efdalinterfaces.vstemplate"; }
+        }
 
-		public override string LocalNamespaceExtension
-		{
-			get { return EFDALInterfaceProjectGenerator.NamespaceExtension; }
-		}
+        public override string LocalNamespaceExtension
+        {
+            get { return EFDALInterfaceProjectGenerator.NamespaceExtension; }
+        }
 
-		public static string NamespaceExtension
-		{
-			get { return "EFDAL.Interfaces"; }
-		}
+        public static string NamespaceExtension
+        {
+            get { return "EFDAL.Interfaces"; }
+        }
 
-		private void GenerateCompanySpecificFile(string fileName)
-		{
-			try
-			{
-				var defaultProjectTemplate = Path.Combine(AddinAppData.Instance.ExtensionDirectory, fileName);
-				var fileData = string.Empty;
-				using (var sr = File.OpenText(defaultProjectTemplate))
-				{
-					fileData = sr.ReadToEnd();
-				}
+        private void GenerateCompanySpecificFile(string fileName)
+        {
+            try
+            {
+                var defaultProjectTemplate = Path.Combine(AddinAppData.Instance.ExtensionDirectory, fileName);
+                var fileData = string.Empty;
+                using (var sr = File.OpenText(defaultProjectTemplate))
+                {
+                    fileData = sr.ReadToEnd();
+                }
 
-				var newFileText = fileData.Replace("Acme", _model.CompanyName);
-				newFileText = newFileText.Replace("$generatedproject$", this.DefaultNamespace);
+                var newFileText = fileData.Replace("Acme", _model.CompanyName);
+                newFileText = newFileText.Replace("$generatedproject$", this.DefaultNamespace);
 
-				var newFileName = ((ModelRoot)_model).CompanyName + fileName;
-				File.WriteAllText(Path.Combine(AddinAppData.Instance.ExtensionDirectory, newFileName), newFileText);
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
+                var newFileName = ((ModelRoot)_model).CompanyName + fileName;
+                File.WriteAllText(Path.Combine(AddinAppData.Instance.ExtensionDirectory, newFileName), newFileText);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
-		protected override void OnAfterGenerate()
-		{
-			base.OnAfterGenerate();
-			var project = EnvDTEHelper.Instance.GetProject(ProjectName);
-			if (project != null)
-			{
-				var preBuildProperty = project.Properties.Item("PreBuildEvent");
-				preBuildProperty.Value = "if not exist \"$(SolutionDir)bin\" mkdir \"$(SolutionDir)bin\"\r\nattrib -r \"$(SolutionDir)Bin\\*.*\"";
-				var postBuildProperty = project.Properties.Item("PostBuildEvent");
-				postBuildProperty.Value = "copy \"$(TargetDir)$(TargetName).*\" \"$(SolutionDir)Bin\\\"";
-			}
-		}
+        protected override void OnAfterGenerate()
+        {
+            base.OnAfterGenerate();
+            var project = EnvDTEHelper.Instance.GetProject(ProjectName);
+            if (project != null)
+            {
+                var preBuildProperty = project.Properties.Item("PreBuildEvent");
+                preBuildProperty.Value = "if not exist \"$(SolutionDir)bin\" mkdir \"$(SolutionDir)bin\"\r\nattrib -r \"$(SolutionDir)Bin\\*.*\"";
+                var postBuildProperty = project.Properties.Item("PostBuildEvent");
+                postBuildProperty.Value = "copy \"$(TargetDir)$(TargetName).*\" \"$(SolutionDir)Bin\\\"";
+            }
+        }
 
-		protected override void OnInitialize(IModelObject model)
-		{
-			nHydrateGeneratorProject.AddEFCoreToBinFolder();
-		}
+        protected override void OnInitialize(IModelObject model)
+        {
+            nHydrateGeneratorProject.AddEFCoreToBinFolder();
+        }
 
-	}
+    }
 
 }
-

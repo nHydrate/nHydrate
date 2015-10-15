@@ -194,6 +194,11 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
+        <DomainProperty Id="faacbca6-ce50-4101-846f-3b6a55e61bce" Description="Determines the target Entity Framework version" Name="EFVersion" DisplayName="EF Version" DefaultValue="EF6">
+          <Type>
+            <DomainEnumerationMoniker Name="EFVersionConstants" />
+          </Type>
+        </DomainProperty>
       </Properties>
       <ElementMergeDirectives>
         <ElementMergeDirective>
@@ -2525,6 +2530,12 @@
         <EnumerationLiteral Description="" Name="ImageUrl" Value="13" />
       </Literals>
     </DomainEnumeration>
+    <DomainEnumeration Name="EFVersionConstants" Namespace="nHydrate.Dsl" Description="">
+      <Literals>
+        <EnumerationLiteral Description="EF 4" Name="EF4" Value="" />
+        <EnumerationLiteral Description="" Name="EF6" Value="" />
+      </Literals>
+    </DomainEnumeration>
   </Types>
   <Shapes>
     <CompartmentShape Id="88c528eb-f5e8-45fd-a37f-3f092cf148d8" Description="" Name="EntityShape" DisplayName="Entity Shape" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true" TooltipType="Variable" FixedTooltipText="Entity Shape" TextColor="White" ExposesTextColor="true" FillColor="0, 122, 204" OutlineColor="Gray" InitialWidth="2" InitialHeight="0.3" OutlineThickness="0.01" FillGradientMode="None" ExposesOutlineColorAsProperty="true" ExposesFillColorAsProperty="true" ExposesOutlineDashStyleAsProperty="true" Geometry="Rectangle">
@@ -2759,6 +2770,9 @@
           <XmlRelationshipData UseFullForm="true" RoleElementName="indexModules">
             <DomainRelationshipMoniker Name="nHydrateModelHasIndexModules" />
           </XmlRelationshipData>
+          <XmlPropertyData XmlName="eFVersion">
+            <DomainPropertyMoniker Name="nHydrateModel/EFVersion" />
+          </XmlPropertyData>
         </ElementData>
       </XmlClassData>
       <XmlClassData TypeName="Entity" MonikerAttributeName="name" SerializeId="true" MonikerElementName="entityMoniker" ElementName="entity" MonikerTypeName="EntityMoniker">

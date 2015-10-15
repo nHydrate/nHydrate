@@ -1027,7 +1027,7 @@ namespace nHydrate.Core.SQLGeneration
             return sb.ToString();
         }
 
-        public static string GetSQLCreateFunction(Function function, bool isInternal)
+        public static string GetSQLCreateFunction(Function function, bool isInternal, EFVersionConstants efversion)
         {
             var sb = new StringBuilder();
             sb.AppendLine("if exists(select * from sys.objects where name = '" + function.PascalName + "' and type in('FN','IF','TF'))");
@@ -1094,7 +1094,7 @@ namespace nHydrate.Core.SQLGeneration
             sb.AppendLine();
 
             //Get the wrapper
-            if (function.IsTable)
+            if (function.IsTable && efversion == EFVersionConstants.EF4)
                 sb.Append(GetSQLCreateFunctionSPWrapper(function));
 
             return sb.ToString();

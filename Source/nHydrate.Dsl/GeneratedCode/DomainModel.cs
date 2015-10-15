@@ -186,6 +186,7 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(nHydrateModel), "OutputTarget", nHydrateModel.OutputTargetDomainPropertyId, typeof(nHydrateModel.OutputTargetPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "TenantPrefix", nHydrateModel.TenantPrefixDomainPropertyId, typeof(nHydrateModel.TenantPrefixPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "TenantColumnName", nHydrateModel.TenantColumnNameDomainPropertyId, typeof(nHydrateModel.TenantColumnNamePropertyHandler)),
+				new DomainMemberInfo(typeof(nHydrateModel), "EFVersion", nHydrateModel.EFVersionDomainPropertyId, typeof(nHydrateModel.EFVersionPropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "Name", Entity.NameDomainPropertyId, typeof(Entity.NamePropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "Summary", Entity.SummaryDomainPropertyId, typeof(Entity.SummaryPropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "AllowAuditTracking", Entity.AllowAuditTrackingDomainPropertyId, typeof(Entity.AllowAuditTrackingPropertyHandler)),
@@ -1477,6 +1478,27 @@ namespace nHydrate.Dsl
 		/// </summary>
 		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/ImageUrl.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		ImageUrl = 13,
+	}
+}
+namespace nHydrate.Dsl
+{
+	/// <summary>
+	/// DomainEnumeration: EFVersionConstants
+	/// </summary>
+	[global::System.CLSCompliant(true)]
+	public enum EFVersionConstants
+	{
+		/// <summary>
+		/// EF4
+		/// EF 4
+		/// </summary>
+		[DslDesign::DescriptionResource("nHydrate.Dsl.EFVersionConstants/EF4.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		EF4,
+		/// <summary>
+		/// EF6
+		/// </summary>
+		[DslDesign::DescriptionResource("nHydrate.Dsl.EFVersionConstants/EF6.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		EF6,
 	}
 }
 

@@ -33,7 +33,7 @@ using nHydrate.Generator.ProjectItemGenerators;
 namespace nHydrate.Generator.EFDAL
 {
     [GeneratorProjectAttribute(
-        "EF Data Access Layer",
+        "EF Data Access Layer (EF4)",
         "A data access layer built on top of Entity Framework v4",
         "b8bd6b27-b9f2-4291-82e8-88e1295eef06",
         typeof(nHydrateGeneratorProject),

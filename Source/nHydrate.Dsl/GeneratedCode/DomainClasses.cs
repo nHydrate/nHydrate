@@ -2895,6 +2895,97 @@ namespace nHydrate.Dsl
 		}
 		
 		#endregion
+		#region EFVersion domain property code
+		
+		/// <summary>
+		/// EFVersion domain property Id.
+		/// </summary>
+		public static readonly global::System.Guid EFVersionDomainPropertyId = new global::System.Guid(0xfaacbca6, 0xce50, 0x4101, 0x84, 0x6f, 0x3b, 0x6a, 0x55, 0xe6, 0x1b, 0xce);
+		
+		/// <summary>
+		/// Storage for EFVersion
+		/// </summary>
+		private EFVersionConstants eFVersionPropertyStorage = EFVersionConstants.EF6;
+		
+		/// <summary>
+		/// Gets or sets the value of EFVersion domain property.
+		/// Determines the target Entity Framework version
+		/// </summary>
+		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/EFVersion.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/EFVersion.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[global::System.ComponentModel.DefaultValue(EFVersionConstants.EF6)]
+		[DslModeling::DomainObjectId("faacbca6-ce50-4101-846f-3b6a55e61bce")]
+		public virtual EFVersionConstants EFVersion
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return eFVersionPropertyStorage;
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				EFVersionPropertyHandler.Instance.SetValue(this, value);
+			}
+		}
+		/// <summary>
+		/// Value handler for the nHydrateModel.EFVersion domain property.
+		/// </summary>
+		internal sealed partial class EFVersionPropertyHandler : DslModeling::DomainPropertyValueHandler<nHydrateModelBase, EFVersionConstants>
+		{
+			private EFVersionPropertyHandler() { }
+		
+			/// <summary>
+			/// Gets the singleton instance of the nHydrateModel.EFVersion domain property value handler.
+			/// </summary>
+			public static readonly EFVersionPropertyHandler Instance = new EFVersionPropertyHandler();
+		
+			/// <summary>
+			/// Gets the Id of the nHydrateModel.EFVersion domain property.
+			/// </summary>
+			public sealed override global::System.Guid DomainPropertyId
+			{
+				[global::System.Diagnostics.DebuggerStepThrough]
+				get
+				{
+					return EFVersionDomainPropertyId;
+				}
+			}
+			
+			/// <summary>
+			/// Gets a strongly-typed value of the property on specified element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <returns>Property value.</returns>
+			public override sealed EFVersionConstants GetValue(nHydrateModelBase element)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+				return element.EFVersion;
+				//return element.GetValue<EFVersionConstants>("EFVersion", element.eFVersionPropertyStorage);
+				//return element.eFVersionPropertyStorage; //ORIGINAL CODE
+			}
+		
+			/// <summary>
+			/// Sets property value on an element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <param name="newValue">New property value.</param>
+			public override sealed void SetValue(nHydrateModelBase element, EFVersionConstants newValue)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+		
+				EFVersionConstants oldValue = GetValue(element);
+				if (newValue != oldValue)
+				{
+					ValueChanging(element, oldValue, newValue);
+					element.eFVersionPropertyStorage = newValue;
+					ValueChanged(element, oldValue, newValue);
+					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("nHydrateModel"));
+				}
+			}
+		}
+		
+		#endregion
 		#region Entities opposite domain role accessor
 		
 		/// <summary>

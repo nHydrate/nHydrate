@@ -348,6 +348,12 @@
             <xsd:documentation>Determines the name of the column to hold tenant information for tenant tables</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
+        <!-- Property: EFVersion -->
+        <xsd:attribute name="eFVersion" type="EFVersionConstants" >
+          <xsd:annotation>
+            <xsd:documentation>Determines the target Entity Framework version</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
@@ -4159,6 +4165,18 @@
       <xsd:enumeration value="Password"/>
       <xsd:enumeration value="Url"/>
       <xsd:enumeration value="ImageUrl"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <!-- Enum EFVersionConstants -->
+  <xsd:simpleType name="EFVersionConstants">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="EF4">
+        <xsd:annotation>
+          <xsd:documentation>EF 4</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="EF6"/>
     </xsd:restriction>
   </xsd:simpleType>
   

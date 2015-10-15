@@ -34,6 +34,12 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         SQLAzure,
     }
 
+    public enum EFVersionConstants
+    {
+        EF4,
+        EF6,
+    }
+
     public enum FrameworkVersionConstants
     {
         v35 = 0,

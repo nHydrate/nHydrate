@@ -439,6 +439,7 @@ namespace nHydrate.DslPackage.Objects
                 root.DefaultNamespace = model.DefaultNamespace;
                 root.ProjectName = model.ProjectName;
                 root.SQLServerType = (SQLServerTypeConstants)Enum.Parse(typeof(SQLServerTypeConstants), model.SQLServerType.ToString());
+                root.EFVersion = (nHydrate.Generator.Common.GeneratorFramework.EFVersionConstants)Enum.Parse(typeof(nHydrate.Generator.Common.GeneratorFramework.EFVersionConstants), model.EFVersion.ToString());
                 root.SupportLegacySearchObject = false;
                 root.UseUTCTime = model.UseUTCTime;
                 root.Version = model.Version;
