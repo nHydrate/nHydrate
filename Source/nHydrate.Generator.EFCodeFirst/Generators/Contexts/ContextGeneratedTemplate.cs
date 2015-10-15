@@ -663,6 +663,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine(" });");
             }
 
+            foreach (var table in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
+            {
+                sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
+                var columnList = table.GetColumns().Where(x => x.IsPrimaryKey).OrderBy(x => x.Name).ToList();
+                foreach (var c in columnList)
+                {
+                    sb.Append("x." + c.PascalName);
+                    if (columnList.IndexOf(c) < columnList.Count - 1)
+                        sb.Append(", ");
+                }
+                sb.AppendLine(" });");
+            }
+
             sb.AppendLine();
             sb.AppendLine("			#endregion");
             sb.AppendLine();

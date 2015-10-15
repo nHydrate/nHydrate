@@ -80,7 +80,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
                 //  doubleDerivedClassName = _item.PascalName + "Base";
 
                 //  sb.AppendLine("	/// <summary>");
-                //  sb.AppendLine("	/// Executes an action based on a stored procedure");
+                //  sb.AppendLine("	/// Executes an action based on a database function");
                 //  sb.AppendLine("	/// </summary>");
                 //  sb.AppendLine("	public partial class " + _item.PascalName + " : " + doubleDerivedClassName);
                 //  sb.AppendLine("	{");
@@ -89,7 +89,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
                 //}
 
                 sb.AppendLine("	/// <summary>");
-                sb.AppendLine("	/// An object based on a stored procedure");
+                sb.AppendLine("	/// An object based on a database function");
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[DataContract(IsReference = true)]");
                 sb.AppendLine("	[Serializable]");
