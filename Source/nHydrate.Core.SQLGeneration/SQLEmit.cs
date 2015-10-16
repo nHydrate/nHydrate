@@ -1012,7 +1012,11 @@ namespace nHydrate.Core.SQLGeneration
             if (parameterList.Count > 0)
             {
                 sb.AppendLine("(");
-                sb.Append(BuildFunctionParameterList(function.GetGeneratedParametersDatabaseOrder()));
+
+                var plist = function.GetGeneratedParametersDatabaseOrder().ToList();
+                plist.ForEach(x => x.Length = 0);
+
+                sb.Append(BuildFunctionParameterList(plist));
                 sb.AppendLine(")");
             }
 
@@ -1042,7 +1046,12 @@ namespace nHydrate.Core.SQLGeneration
 
             sb.AppendLine("(");
             if (function.Parameters.Count > 0)
-                sb.Append(BuildFunctionParameterList(function.GetGeneratedParametersDatabaseOrder()));
+            {
+                var plist = function.GetGeneratedParametersDatabaseOrder().ToList();
+                plist.ForEach(x => x.Length = 0);
+
+                sb.Append(BuildFunctionParameterList(plist));
+            }
             sb.AppendLine(")");
 
             sb.Append("RETURNS ");
@@ -1783,9 +1792,8 @@ namespace nHydrate.Core.SQLGeneration
                     defaultValue = "null";
 
                 ii++;
-                output.Append("\t@" + ValidationHelper.MakeDatabaseScriptIdentifier(parameter.DatabaseName) + " " +
-                    parameter.DatabaseType.ToLower() +
-                    (parameter.GetPredefinedSize() == -1 ? "(" + parameter.GetLengthString() + ") " : string.Empty) + (parameter.IsOutputParameter ? " out " : " = " + defaultValue));
+                output.Append("\t@" + ValidationHelper.MakeDatabaseScriptIdentifier(parameter.DatabaseName) + " " + parameter.DatabaseType.ToLower());
+                output.Append((parameter.GetPredefinedSize() == -1 ? "(" + parameter.GetLengthString() + ")" : string.Empty) + (parameter.IsOutputParameter ? " out " : " = " + defaultValue));
 
                 if (ii != parameterList.Count())
                     output.Append(",");

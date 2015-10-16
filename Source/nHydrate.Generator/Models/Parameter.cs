@@ -31,7 +31,7 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-    public class Parameter : BaseModelObject, ICodeFacadeObject, INamedObject
+    public class Parameter : BaseModelObject, ICodeFacadeObject, INamedObject, ICloneable
     {
         #region Member Variables
 
@@ -818,5 +818,27 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
+
+        #region ICloneable Members
+
+        public object Clone()
+        {
+            try
+            {
+                var doc = new XmlDocument();
+                doc.LoadXml("<a><a>");
+                this.XmlAppend(doc.DocumentElement);
+
+                var newItem = new Parameter(this.Root);
+                newItem.XmlLoad(doc.DocumentElement);
+                return newItem;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        #endregion
     }
 }
