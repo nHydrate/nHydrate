@@ -165,7 +165,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #endregion
 
             #region Functions
-            foreach (var item in _model.Database.Functions.Where(x => x.Generated).OrderBy(x => x.PascalName))
+            foreach (var item in _model.Database.Functions.Where(x => x.Generated && x.IsTable).OrderBy(x => x.PascalName))
             {
                 var paramset = item.GetParameters().Where(x => x.Generated).ToList();
                 var paramString = string.Join(", ", paramset.Select(x => x.GetCodeType(true) + " " + x.CamelName).ToList());

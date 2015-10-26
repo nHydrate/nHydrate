@@ -579,9 +579,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                             sb.Append("							 .HasForeignKey(u => new { ");
 
                             var index = 0;
-                            foreach (var childColumn in relation.ColumnRelationships.Select(x => x.ChildColumnRef.Object as Column).Where(x => x != null).OrderBy(x => x.Name).ToList())
+                            foreach (var columnPacket in relation.ColumnRelationships
+                                .Select(x => new { Child = x.ChildColumnRef.Object as Column, Parent = x.ParentColumnRef.Object as Column })
+                                .Where(x => x.Child != null && x.Parent != null)
+                                .OrderBy(x => x.Parent.Name)
+                                .ToList())
                             {
-                                sb.Append("u." + childColumn.PascalName);
+                                sb.Append("u." + columnPacket.Child.PascalName);
                                 if (index < relation.ColumnRelationships.Count - 1)
                                     sb.Append(", ");
                                 index++;
@@ -626,13 +630,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #region Functions
             sb.AppendLine("			#region Functions");
             sb.AppendLine();
-            if (_model.Database.Functions.Any(x => x.Generated) || _model.Database.Tables.Any(x => x.Security.IsValid()))
+            if (_model.Database.Functions.Any(x => x.Generated && x.IsTable) || _model.Database.Tables.Any(x => x.Security.IsValid()))
             {
                 sb.AppendLine("			//You must add the NUGET package 'CodeFirstStoreFunctions' for this functionality");
                 sb.AppendLine("			modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<" + _model.ProjectName + "Entities>(\"dbo\"));");
             }
 
-            foreach (var table in _model.Database.Functions.Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Functions.Where(x => x.Generated && x.IsTable).OrderBy(x => x.Name))
             {
                 sb.AppendLine("			modelBuilder.ComplexType<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">();");
             }
