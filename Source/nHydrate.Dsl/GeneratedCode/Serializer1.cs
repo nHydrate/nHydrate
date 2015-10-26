@@ -2072,7 +2072,10 @@ namespace nHydrate.Dsl
 				string serializedPropValue = DslModeling::SerializationUtilities.GetString<EFVersionConstants>(serializationContext, propValue);
 				if (!serializationContext.Result.Failed)
 				{
-					nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "eFVersion", serializedPropValue);
+					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "EF6") != 0)
+					{	// No need to write the value out if it's the same as default value.
+						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "eFVersion", serializedPropValue);
+					}
 				}
 			}
 		}

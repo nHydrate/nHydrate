@@ -579,9 +579,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                             sb.Append("							 .HasForeignKey(u => new { ");
 
                             var index = 0;
-                            foreach (ColumnRelationship columnRelationship in relation.ColumnRelationships)
+                            foreach (var childColumn in relation.ColumnRelationships.Select(x => x.ChildColumnRef.Object as Column).Where(x => x != null).OrderBy(x => x.Name).ToList())
                             {
-                                Column childColumn = columnRelationship.ChildColumnRef.Object as Column;
                                 sb.Append("u." + childColumn.PascalName);
                                 if (index < relation.ColumnRelationships.Count - 1)
                                     sb.Append(", ");
