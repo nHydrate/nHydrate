@@ -1583,6 +1583,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             if (_item.Immutable)
             {
                 sb.AppendLine("				//Setter is left for deserialization but should never be used");
+                sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = value;");
             }
             else
             {
