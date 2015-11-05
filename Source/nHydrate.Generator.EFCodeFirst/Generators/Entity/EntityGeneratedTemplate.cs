@@ -159,7 +159,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("	[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\")]");
             }
 
-            if (_item.Immutable)
+            if (_item.Immutable && _item.TypedTable == TypedTableConstants.None)
                 sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
 
             sb.AppendLine("	[EntityMetadata(\"" + _item.PascalName + "\", " + _item.AllowAuditTracking.ToString().ToLower() + ", " + _item.AllowCreateAudit.ToString().ToLower() + ", " + _item.AllowModifiedAudit.ToString().ToLower() + ", " + _item.AllowTimestamp.ToString().ToLower() + ", \"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\", " + _item.EnforcePrimaryKey.ToString().ToLower() + ", " + _item.Immutable.ToString().ToLower() + ", " + (_item.TypedTable != TypedTableConstants.None).ToString().ToLower() + ", \"" + _item.GetSQLSchema() + "\")]");
@@ -554,17 +554,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
                     var propertySetterScope = string.Empty;
                     if (column.ComputedColumn)
-                        propertySetterScope = "internal ";
+                        propertySetterScope = "protected internal ";
+                    else if (_item.Immutable && _item.TypedTable == TypedTableConstants.None)
+                        propertySetterScope = "protected internal ";
+                    else if (_item.TypedTable != TypedTableConstants.None && StringHelper.Match(_item.GetTypeTableCodeDescription(), column.CamelName, true))
+                        propertySetterScope = "protected internal ";
+                    else if (column.Identity == IdentityTypeConstants.Database)
+                        propertySetterScope = "protected internal ";
 
                     var codeType = column.GetCodeType();
-                    //if (_item.IsColumnRelatedToTypeTable(column, out pascalRoleName) || (column.PrimaryKey && _item.TypedTable != TypedTableConstants.None))
-                    //{
-                    //}
 
                     sb.AppendLine("		public virtual " + codeType + " " + column.PascalName);
                     sb.AppendLine("		{");
                     sb.AppendLine("			get { return _" + column.CamelName + "; }");
-                    //sb.AppendLine("			set { _" + column.CamelName + " = value; }");
                     sb.AppendLine("			" + propertySetterScope + "set");
                     sb.AppendLine("			{");
 
@@ -611,15 +613,30 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
                     #endregion
 
-                    sb.AppendLine("				var eventArg = new " + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + column.PascalName + "\");");
-                    sb.AppendLine("				this.OnPropertyChanging(eventArg);");
-                    sb.AppendLine("				if (eventArg.Cancel) return;");
-                    sb.AppendLine("				_" + column.CamelName + " = eventArg.Value;");
-                    sb.AppendLine("				this.OnPropertyChanged(new PropertyChangedEventArgs(\"" + column.PascalName + "\"));");
+                    //TODO: For now type tables need to able to set properties because we could set OTHER properties not the ID/NAME. Really need to make these two properties 
+                    //if (_item.Immutable && _item.TypedTable == TypedTableConstants.None)
+                    //{
+                    //    sb.AppendLine("				//Setter is left for deserialization but should never be used");
+                    //}
+                    //else if (_item.TypedTable != TypedTableConstants.None && StringHelper.Match(_item.GetTypeTableCodeDescription(), column.CamelName, true))
+                    //{
+                    //    sb.AppendLine("				//Setter is left for deserialization but should never be used");
+                    //}
+                    //else
+                    {
+                        sb.AppendLine("				var eventArg = new " + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + column.PascalName + "\");");
+                        sb.AppendLine("				this.OnPropertyChanging(eventArg);");
+                        sb.AppendLine("				if (eventArg.Cancel) return;");
+                        sb.AppendLine("				_" + column.CamelName + " = eventArg.Value;");
+                        sb.AppendLine("				this.OnPropertyChanged(new PropertyChangedEventArgs(\"" + column.PascalName + "\"));");
+                    }
+
                     sb.AppendLine("			}");
                     sb.AppendLine("		}");
                     sb.AppendLine();
+
                 }
+
             }
 
             //Audit Fields
@@ -1569,9 +1586,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("			get { return _" + StringHelper.DatabaseNameToCamelCase(columnName) + "; }");
             if (propertyScope == "public")
             {
-                //OLD CODE - we tried to hide the setter but serialization hates this
                 sb.AppendLine("			protected internal set");
-                //sb.AppendLine("			set");
             }
             else
             {
@@ -1580,21 +1595,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("			{");
 
             //Cannot hide setter but gut the thing so cannot make changes
-            if (_item.Immutable)
-            {
-                sb.AppendLine("				//Setter is left for deserialization but should never be used");
-                sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = value;");
-            }
-            else
-            {
-                sb.AppendLine("				var eventArg = new " + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + columnName + "\");");
-                sb.AppendLine("				this.OnPropertyChanging(eventArg);");
-                sb.AppendLine("				if (eventArg.Cancel) return;");
-                sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = eventArg.Value;");
-                sb.AppendLine("				this.OnPropertyChanged(new PropertyChangedEventArgs(\"" + columnName + "\"));");
-
-                //sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = value;");
-            }
+            sb.AppendLine("				var eventArg = new " + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + columnName + "\");");
+            sb.AppendLine("				this.OnPropertyChanging(eventArg);");
+            sb.AppendLine("				if (eventArg.Cancel) return;");
+            sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = eventArg.Value;");
+            sb.AppendLine("				this.OnPropertyChanged(new PropertyChangedEventArgs(\"" + columnName + "\"));");
 
             sb.AppendLine("			}");
             sb.AppendLine("		}");
