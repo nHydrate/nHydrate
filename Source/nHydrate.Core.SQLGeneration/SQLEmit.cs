@@ -79,7 +79,7 @@ namespace nHydrate.Core.SQLGeneration
             sb.AppendLine("\t[__action] [INT] NOT NULL,");
             sb.AppendLine("\t[__insertdate] " + dateTimeString + " CONSTRAINT [DF__" + table.DatabaseName + "__AUDIT] DEFAULT " + model.GetSQLDefaultDate() + " NOT NULL,");
             if (table.AllowCreateAudit || table.AllowModifiedAudit)
-                sb.AppendLine("\t[" + model.Database.ModifiedByDatabaseName + "] [Varchar] (50) NULL,");
+                sb.AppendLine("\t[" + model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL,");
 
             var columnList = table.GetColumns().Where(x => x.Generated).ToList();
             foreach (var column in columnList)
@@ -1708,7 +1708,7 @@ namespace nHydrate.Core.SQLGeneration
                 var defaultName = "DF__" + table.DatabaseName + "_" + model.Database.CreatedDateColumnName;
                 defaultName = defaultName.ToUpper();
                 sb.AppendLine(",");
-                sb.AppendLine("\t[" + model.Database.CreatedByColumnName + "] [Varchar] (50) NULL,");
+                sb.AppendLine("\t[" + model.Database.CreatedByColumnName + "] [NVarchar] (50) NULL,");
                 sb.Append("\t[" + model.Database.CreatedDateColumnName + "] " + dateTimeString + " CONSTRAINT [" + defaultName + "] DEFAULT " + model.GetSQLDefaultDate() + " NULL");
             }
         }
@@ -1721,7 +1721,7 @@ namespace nHydrate.Core.SQLGeneration
                 var defaultName = "DF__" + table.DatabaseName + "_" + model.Database.ModifiedDateColumnName;
                 defaultName = defaultName.ToUpper();
                 sb.AppendLine(",");
-                sb.AppendLine("\t[" + model.Database.ModifiedByColumnName + "] [Varchar] (50) NULL,");
+                sb.AppendLine("\t[" + model.Database.ModifiedByColumnName + "] [NVarchar] (50) NULL,");
                 sb.Append("\t[" + model.Database.ModifiedDateColumnName + "] " + dateTimeString + " CONSTRAINT [" + defaultName + "] DEFAULT " + model.GetSQLDefaultDate() + " NULL");
             }
         }

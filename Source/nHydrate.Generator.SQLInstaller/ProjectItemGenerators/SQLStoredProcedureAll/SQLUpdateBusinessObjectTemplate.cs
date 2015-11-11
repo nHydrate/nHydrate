@@ -34,133 +34,133 @@ using nHydrate.Generator.Common;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedureAll
 {
-	internal class SQLUpdateBusinessObjectTemplate : ISQLGenerate
-	{
-		private ModelRoot _model;
-		private Table _currentTable;
+    internal class SQLUpdateBusinessObjectTemplate : ISQLGenerate
+    {
+        private ModelRoot _model;
+        private Table _currentTable;
 
-		#region Constructors
+        #region Constructors
 
-		public SQLUpdateBusinessObjectTemplate(ModelRoot model, Table currentTable)
-		{
-			_model = model;
-			_currentTable = currentTable;
-		}
+        public SQLUpdateBusinessObjectTemplate(ModelRoot model, Table currentTable)
+        {
+            _model = model;
+            _currentTable = currentTable;
+        }
 
-		#endregion
+        #endregion
 
-		#region GenerateContent
+        #region GenerateContent
 
-		public void GenerateContent(StringBuilder sb)
-		{
-			//if (_currentTable.IsTypeTable) return;
-			if (_currentTable.AssociativeTable) return;
-			try
-			{
-				sb.AppendLine("if exists(select * from sys.objects where name = '" + StoredProcedureName + "' and type = 'P' and type_desc = 'SQL_STORED_PROCEDURE')");
-				sb.AppendLine("	drop procedure [" + _currentTable.GetSQLSchema() + "].[" + StoredProcedureName + "]");
-				sb.AppendLine("GO");
-				sb.AppendLine();
+        public void GenerateContent(StringBuilder sb)
+        {
+            //if (_currentTable.IsTypeTable) return;
+            if (_currentTable.AssociativeTable) return;
+            try
+            {
+                sb.AppendLine("if exists(select * from sys.objects where name = '" + StoredProcedureName + "' and type = 'P' and type_desc = 'SQL_STORED_PROCEDURE')");
+                sb.AppendLine("	drop procedure [" + _currentTable.GetSQLSchema() + "].[" + StoredProcedureName + "]");
+                sb.AppendLine("GO");
+                sb.AppendLine();
 
-				//Just drop the procedure if no CRUD SP
-				if (!_model.Database.UseGeneratedCRUD)
-					return;
-				
-				sb.AppendLine("CREATE PROCEDURE [" + _currentTable.GetSQLSchema() + "].[" + StoredProcedureName + "]");
-				sb.AppendLine("(");
-				sb.Append(this.BuildParameterList());
-				sb.AppendLine(")");
-				sb.AppendLine("AS");
-				sb.AppendLine();
-				sb.Append(SQLGeneratedBodyHelper.SQLUpdateBusinessObjectBody(_currentTable, _model));
-				sb.AppendLine("GO");
-				sb.AppendLine();
+                //Just drop the procedure if no CRUD SP
+                if (!_model.Database.UseGeneratedCRUD)
+                    return;
 
-				if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))
-				{
-					sb.AppendFormat("GRANT EXECUTE ON [" + _currentTable.GetSQLSchema() + "].[{0}] TO [{1}]", StoredProcedureName, _model.Database.GrantExecUser);
-					sb.AppendLine();
-					sb.AppendLine("GO");
-					sb.AppendLine();
-				}
+                sb.AppendLine("CREATE PROCEDURE [" + _currentTable.GetSQLSchema() + "].[" + StoredProcedureName + "]");
+                sb.AppendLine("(");
+                sb.Append(this.BuildParameterList());
+                sb.AppendLine(")");
+                sb.AppendLine("AS");
+                sb.AppendLine();
+                sb.Append(SQLGeneratedBodyHelper.SQLUpdateBusinessObjectBody(_currentTable, _model));
+                sb.AppendLine("GO");
+                sb.AppendLine();
 
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
+                if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))
+                {
+                    sb.AppendFormat("GRANT EXECUTE ON [" + _currentTable.GetSQLSchema() + "].[{0}] TO [{1}]", StoredProcedureName, _model.Database.GrantExecUser);
+                    sb.AppendLine();
+                    sb.AppendLine("GO");
+                    sb.AppendLine();
+                }
 
-		}
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
 
-		#endregion
+        }
 
-		#region string methods
+        #endregion
 
-		protected string BuildParameterList()
-		{
-			var columnList = _currentTable.GetColumnsFullHierarchy(true).Where(x => x.Generated && !x.ComputedColumn && !x.IsReadOnly).OrderBy(x => x.Name).ToList();
-			var items = columnList.Where(x => !x.PrimaryKey).ToList();
+        #region string methods
 
-			var index = 0;
-			var output = new StringBuilder();
-			foreach (var column in items.OrderBy(x => x.Name))
-			{
-				//Get the default value and make it null if none exists
-				var defaultValue = column.GetSQLDefault();
-				if (string.IsNullOrEmpty(defaultValue) && column.AllowNull)
-					defaultValue = "null";
+        protected string BuildParameterList()
+        {
+            var columnList = _currentTable.GetColumnsFullHierarchy(true).Where(x => x.Generated && !x.ComputedColumn && !x.IsReadOnly).OrderBy(x => x.Name).ToList();
+            var items = columnList.Where(x => !x.PrimaryKey).ToList();
 
-				//if there is a value then add the '=' sign to it for SQL
-				if (!string.IsNullOrEmpty(defaultValue))
-					defaultValue = " = " + defaultValue;
+            var index = 0;
+            var output = new StringBuilder();
+            foreach (var column in items.OrderBy(x => x.Name))
+            {
+                //Get the default value and make it null if none exists
+                var defaultValue = column.GetSQLDefault();
+                if (string.IsNullOrEmpty(defaultValue) && column.AllowNull)
+                    defaultValue = "null";
 
-				output.Append("	@" + column.ToDatabaseCodeIdentifier() + " " + column.GetSQLDefaultType() + defaultValue);
-				if (index < columnList.Count() - 1 || (_currentTable.AllowCreateAudit) || (_currentTable.AllowModifiedAudit))
-					output.Append(",");
-				output.AppendLine();
-				index++;
-			}
+                //if there is a value then add the '=' sign to it for SQL
+                if (!string.IsNullOrEmpty(defaultValue))
+                    defaultValue = " = " + defaultValue;
 
-			if (_currentTable.AllowModifiedAudit)
-			{
-				output.AppendLine("\t@" + _model.Database.ModifiedByColumnName + " [Varchar] (50) = null,");
-				output.AppendLine("\t@" + _model.Database.ModifiedDateColumnName + " [DateTime] = null,");
-			}
+                output.Append("	@" + column.ToDatabaseCodeIdentifier() + " " + column.GetSQLDefaultType() + defaultValue);
+                if (index < columnList.Count() - 1 || (_currentTable.AllowCreateAudit) || (_currentTable.AllowModifiedAudit))
+                    output.Append(",");
+                output.AppendLine();
+                index++;
+            }
 
-			//Get Column List
-			items = new List<Column>(_currentTable.PrimaryKeyColumns.OrderBy(x => x.Name));
-			index = 0;
-			foreach (var column in items.OrderBy(x => x.Name))
-			{
-				output.Append("\t@Original_");
-				output.Append(column.ToDatabaseCodeIdentifier());
-				output.Append(" ");
-				output.Append(column.GetSQLDefaultType());
-				if (index < items.Count - 1 || _currentTable.AllowTimestamp)
-					output.Append(",");
-				output.AppendLine();
-				index++;
-			}
-			if (_currentTable.AllowTimestamp)
-			{
-				output.AppendLine("\t@Original_" + _model.Database.TimestampColumnName + " timestamp");
-			}
-			return output.ToString();
-		}
+            if (_currentTable.AllowModifiedAudit)
+            {
+                output.AppendLine("\t@" + _model.Database.ModifiedByColumnName + " [NVarchar] (50) = null,");
+                output.AppendLine("\t@" + _model.Database.ModifiedDateColumnName + " [DateTime] = null,");
+            }
 
-		public string StoredProcedureName
-		{
-			get
-			{
-				var moduleSuffix = string.Empty;
-				if (!string.IsNullOrEmpty(_model.ModuleName))
-					moduleSuffix = _model.ModuleName + "_";
+            //Get Column List
+            items = new List<Column>(_currentTable.PrimaryKeyColumns.OrderBy(x => x.Name));
+            index = 0;
+            foreach (var column in items.OrderBy(x => x.Name))
+            {
+                output.Append("\t@Original_");
+                output.Append(column.ToDatabaseCodeIdentifier());
+                output.Append(" ");
+                output.Append(column.GetSQLDefaultType());
+                if (index < items.Count - 1 || _currentTable.AllowTimestamp)
+                    output.Append(",");
+                output.AppendLine();
+                index++;
+            }
+            if (_currentTable.AllowTimestamp)
+            {
+                output.AppendLine("\t@Original_" + _model.Database.TimestampColumnName + " timestamp");
+            }
+            return output.ToString();
+        }
 
-				return _model.GetStoredProcedurePrefix() + "_" + _currentTable.PascalName + "_" + moduleSuffix + "Update";
-			}
-		}
+        public string StoredProcedureName
+        {
+            get
+            {
+                var moduleSuffix = string.Empty;
+                if (!string.IsNullOrEmpty(_model.ModuleName))
+                    moduleSuffix = _model.ModuleName + "_";
 
-		#endregion
+                return _model.GetStoredProcedurePrefix() + "_" + _currentTable.PascalName + "_" + moduleSuffix + "Update";
+            }
+        }
 
-	}
+        #endregion
+
+    }
 }

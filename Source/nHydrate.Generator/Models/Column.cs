@@ -647,6 +647,9 @@ namespace nHydrate.Generator.Models
             if (this.PrimaryKey)
                 text += "Primary Key, ";
 
+            if (this.Identity == IdentityTypeConstants.Database)
+                text += "AutoNumber, ";
+
             if (this.IsUnique)
                 text += "Unique, ";
 

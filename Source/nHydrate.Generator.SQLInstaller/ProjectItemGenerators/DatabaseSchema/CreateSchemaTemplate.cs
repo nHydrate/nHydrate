@@ -212,9 +212,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                     if (table.AllowModifiedAudit)
                     {
                         sb.AppendLine("if not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.ModifiedByDatabaseName + "' and o.name = '" + tableName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ADD [" + _model.Database.ModifiedByDatabaseName + "] [Varchar] (50) NULL");
+                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ADD [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
                         sb.AppendLine("GO");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ALTER COLUMN [" + _model.Database.ModifiedByDatabaseName + "] [Varchar] (50) NULL");
+                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ALTER COLUMN [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
                         sb.AppendLine("GO");
                         sb.AppendLine();
                     }
@@ -439,7 +439,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                     {
                         sb.AppendLine("--APPEND AUDIT TRAIL CREATE FOR TABLE [" + table.DatabaseName + "]");
                         sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.CreatedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + _model.Database.CreatedByColumnName + "] [Varchar] (50) NULL");
+                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + _model.Database.CreatedByColumnName + "] [NVarchar] (50) NULL");
                         var dfName = "DF__" + table.DatabaseName + "_" + _model.Database.CreatedDateColumnName;
                         dfName = dfName.ToUpper();
                         sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.CreatedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
@@ -451,7 +451,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                     {
                         sb.AppendLine("--APPEND AUDIT TRAIL MODIFY FOR TABLE [" + table.DatabaseName + "]");
                         sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.ModifiedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + _model.Database.ModifiedByColumnName + "] [Varchar] (50) NULL");
+                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + _model.Database.ModifiedByColumnName + "] [NVarchar] (50) NULL");
                         var dfName = "DF__" + table.DatabaseName + "_" + _model.Database.ModifiedDateColumnName;
                         dfName = dfName.ToUpper();
                         sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.ModifiedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
