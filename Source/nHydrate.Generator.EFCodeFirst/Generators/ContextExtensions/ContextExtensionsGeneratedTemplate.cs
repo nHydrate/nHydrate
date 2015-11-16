@@ -437,7 +437,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 sb.AppendLine("			if (arr.Length != 2) throw new System.Exception(\"Invalid selector\");");
                 sb.AppendLine("			var tn = arr.Last();");
                 sb.AppendLine("			var te = (" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants)Enum.Parse(typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants), tn, true);");
-                sb.AppendLine("			item.SetValue(te, newValue);");
+                sb.AppendLine("			item.SetValue(te, newValue, fixLength);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
             }
