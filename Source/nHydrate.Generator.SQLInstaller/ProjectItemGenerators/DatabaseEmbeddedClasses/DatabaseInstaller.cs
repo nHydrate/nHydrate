@@ -65,7 +65,7 @@ namespace PROJECTNAMESPACE
 		private string PARAMKEYS_DBVERSION = "dbversion";
 		private string PARAMKEYS_VERSIONWARN = "acceptwarnings";
 		private string PARAMKEYS_SHOWSQL = "showsql";
-		private string PARAMKEYS_TRAN = "tranaction";
+		private string[] PARAMKEYS_TRAN = new string[] { "tranaction", "transaction" };
 		private string PARAMKEYS_SKIPNORMALIZE = "skipnormalize";
 		private string PARAMKEYS_HASH = "usehash";
 		private string PARAMKEYS_CHECKONLY = "checkonly";
@@ -108,14 +108,9 @@ namespace PROJECTNAMESPACE
 					paramUICount++;
 				}
 
-				if (commandParams.ContainsKey(PARAMKEYS_TRAN))
+				if (commandParams.Any(x => PARAMKEYS_TRAN.Contains(x.Key)))
 				{
-					if (commandParams[PARAMKEYS_TRAN].ToLower() == "true" || commandParams[PARAMKEYS_TRAN].ToLower() == "1" || commandParams[PARAMKEYS_TRAN].ToLower() == string.Empty)
-						setup.UseTransaction = true;
-					else if (commandParams[PARAMKEYS_TRAN].ToLower() == "false" || commandParams[PARAMKEYS_TRAN].ToLower() == "0")
-						setup.UseTransaction = false;
-					else
-						throw new Exception("The /" + PARAMKEYS_TRAN + " parameter must be set to 'true or false'.");
+					setup.UseTransaction = GetSetting(commandParams, PARAMKEYS_TRAN, true);
 					paramUICount++;
 				}
 
@@ -455,16 +450,21 @@ namespace PROJECTNAMESPACE
 
 		private bool GetSetting(Dictionary<string, string> commandParams, string[] keys, bool defaultValue)
 		{
-			var retVal = defaultValue;
-			foreach (string s in keys)
+			foreach (var s in keys)
 			{
 				if (commandParams.ContainsKey(s))
 				{
-					retVal = true;
-					break;
+					if (commandParams[s] == "true" || commandParams[s] == "1")
+						return true;
+					else if (commandParams[s] == "false" || commandParams[s] == "0")
+						return false;
+					bool v;
+					if (bool.TryParse(commandParams[s], out v))
+						return v;
+					return defaultValue;
 				}
 			}
-			return retVal;
+			return defaultValue;
 		}
 
 		private string GetSetting(Dictionary<string, string> commandParams, string[] keys, string defaultValue)
