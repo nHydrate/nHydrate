@@ -58,6 +58,7 @@ namespace nHydrate.Generator.Models
         protected Database _database = null;
         protected UserInterface _userInterface = null;
         protected string _companyName = string.Empty;
+        protected bool _emitSafetyScripts = true;
         protected string _companyAbbreviation = string.Empty;
         protected string _copyright = string.Empty;
         protected string _projectName = string.Empty;
@@ -382,6 +383,21 @@ namespace nHydrate.Generator.Models
             }
         }
 
+        [
+        Browsable(true),
+        Description("Specifies the company name that will be used to build namespaces."),
+        Category("Data"),
+        ]
+        public bool EmitSafetyScripts
+        {
+            get { return _emitSafetyScripts; }
+            set
+            {
+                _emitSafetyScripts = value;
+                this.OnPropertyChanged(this, new PropertyChangedEventArgs("EmitSafetyScripts"));
+            }
+        }
+
         [Browsable(false)]
         public string ModuleName
         {
@@ -519,6 +535,7 @@ namespace nHydrate.Generator.Models
                 XmlHelper.AddAttribute(node, "useUTCTime", this.UseUTCTime.ToString());
                 XmlHelper.AddAttribute(node, "version", this.Version);
                 XmlHelper.AddAttribute(node, "companyName", this.CompanyName);
+                XmlHelper.AddAttribute(node, "emitSafetyScripts", this.EmitSafetyScripts);
                 XmlHelper.AddAttribute(node, "supportedPlatforms", this.SupportedPlatforms.ToString("d"));
                 XmlHelper.AddAttribute(node, "tenantColumnName", this.TenantColumnName);
                 XmlHelper.AddAttribute(node, "tenantPrefix", this.TenantPrefix);
@@ -592,6 +609,7 @@ namespace nHydrate.Generator.Models
                     this.UserInterface.XmlLoad(uiNode);
 
                 this.CompanyName = XmlHelper.GetAttributeValue(node, "companyName", this.CompanyName);
+                this.EmitSafetyScripts = XmlHelper.GetAttributeValue(node, "emitSafetyScripts", this.EmitSafetyScripts);
                 this.CompanyAbbreviation = XmlHelper.GetAttributeValue(node, "companyAbbreviation", this.CompanyAbbreviation);
                 this.ModuleName = XmlHelper.GetAttributeValue(node, "moduleName", this.ModuleName);
 

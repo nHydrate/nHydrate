@@ -354,6 +354,12 @@
             <xsd:documentation>Determines the target Entity Framework version</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
+        <!-- Property: EmitSafetyScripts -->
+        <xsd:attribute name="emitSafetyScripts" type="xsd:boolean" >
+          <xsd:annotation>
+            <xsd:documentation>Determines if normalization safety scripts are emitted into the installer</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>

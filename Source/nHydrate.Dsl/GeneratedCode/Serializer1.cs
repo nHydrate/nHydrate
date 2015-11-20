@@ -699,6 +699,23 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
+			// EmitSafetyScripts
+			if (!serializationContext.Result.Failed)
+			{
+				string attribEmitSafetyScripts = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "emitSafetyScripts");
+				if (attribEmitSafetyScripts != null)
+				{
+					global::System.Boolean valueOfEmitSafetyScripts;
+					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribEmitSafetyScripts, out valueOfEmitSafetyScripts))
+					{
+						instanceOfnHydrateModel.EmitSafetyScripts = valueOfEmitSafetyScripts;
+					}
+					else
+					{	// Invalid property value, ignored.
+						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "emitSafetyScripts", typeof(global::System.Boolean), attribEmitSafetyScripts);
+					}
+				}
+			}
 		}
 	
 		/// <summary>
@@ -2075,6 +2092,19 @@ namespace nHydrate.Dsl
 					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "EF6") != 0)
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "eFVersion", serializedPropValue);
+					}
+				}
+			}
+			// EmitSafetyScripts
+			if (!serializationContext.Result.Failed)
+			{
+				global::System.Boolean propValue = instanceOfnHydrateModel.EmitSafetyScripts;
+				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
+				if (!serializationContext.Result.Failed)
+				{
+					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "True") != 0)
+					{	// No need to write the value out if it's the same as default value.
+						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "emitSafetyScripts", serializedPropValue);
 					}
 				}
 			}

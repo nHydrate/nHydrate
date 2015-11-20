@@ -187,6 +187,7 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(nHydrateModel), "TenantPrefix", nHydrateModel.TenantPrefixDomainPropertyId, typeof(nHydrateModel.TenantPrefixPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "TenantColumnName", nHydrateModel.TenantColumnNameDomainPropertyId, typeof(nHydrateModel.TenantColumnNamePropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "EFVersion", nHydrateModel.EFVersionDomainPropertyId, typeof(nHydrateModel.EFVersionPropertyHandler)),
+				new DomainMemberInfo(typeof(nHydrateModel), "EmitSafetyScripts", nHydrateModel.EmitSafetyScriptsDomainPropertyId, typeof(nHydrateModel.EmitSafetyScriptsPropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "Name", Entity.NameDomainPropertyId, typeof(Entity.NamePropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "Summary", Entity.SummaryDomainPropertyId, typeof(Entity.SummaryPropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "AllowAuditTracking", Entity.AllowAuditTrackingDomainPropertyId, typeof(Entity.AllowAuditTrackingPropertyHandler)),

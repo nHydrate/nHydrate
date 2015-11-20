@@ -199,6 +199,11 @@
             <DomainEnumerationMoniker Name="EFVersionConstants" />
           </Type>
         </DomainProperty>
+        <DomainProperty Id="f348a2a7-4cf4-440c-b0b5-75be15bf6dde" Description="Determines if normalization safety scripts are emitted into the installer" Name="EmitSafetyScripts" DisplayName="Emit Safety Scripts" DefaultValue="true" Category="Database">
+          <Type>
+            <ExternalTypeMoniker Name="/System/Boolean" />
+          </Type>
+        </DomainProperty>
       </Properties>
       <ElementMergeDirectives>
         <ElementMergeDirective>
@@ -2772,6 +2777,9 @@
           </XmlRelationshipData>
           <XmlPropertyData XmlName="eFVersion">
             <DomainPropertyMoniker Name="nHydrateModel/EFVersion" />
+          </XmlPropertyData>
+          <XmlPropertyData XmlName="emitSafetyScripts">
+            <DomainPropertyMoniker Name="nHydrateModel/EmitSafetyScripts" />
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>

@@ -435,6 +435,7 @@ namespace nHydrate.DslPackage.Objects
                 var root = new nHydrate.Generator.Models.ModelRoot(null);
                 root.TransformNames = model.TransformNames;
                 root.CompanyName = model.CompanyName;
+                root.EmitSafetyScripts = model.EmitSafetyScripts;
                 root.Copyright = model.Copyright;
                 root.DefaultNamespace = model.DefaultNamespace;
                 root.ProjectName = model.ProjectName;

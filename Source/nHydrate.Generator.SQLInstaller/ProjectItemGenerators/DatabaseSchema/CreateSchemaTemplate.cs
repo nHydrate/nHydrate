@@ -156,17 +156,21 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 sb.AppendLine();
             }
 
-            //Now emit all field individually
-            sb.AppendLine("--##SECTION BEGIN [FIELD CREATE]");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            //Only emit these defensive scripts if necessary
+            if (_model.EmitSafetyScripts)
             {
-                sb.AppendLine("--TABLE [" + table.DatabaseName + "] ADD FIELDS");
-                foreach (var column in table.GeneratedColumns.OrderBy(x => x.SortOrder))
-                    sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlAddColumn(column, false));
-                sb.AppendLine("GO");
+                //Now emit all field individually
+                sb.AppendLine("--##SECTION BEGIN [FIELD CREATE]");
+                foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+                {
+                    sb.AppendLine("--TABLE [" + table.DatabaseName + "] ADD FIELDS");
+                    foreach (var column in table.GeneratedColumns.OrderBy(x => x.SortOrder))
+                        sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlAddColumn(column, false));
+                    sb.AppendLine("GO");
+                }
+                sb.AppendLine("--##SECTION END [FIELD CREATE]");
+                sb.AppendLine();
             }
-            sb.AppendLine("--##SECTION END [FIELD CREATE]");
-            sb.AppendLine();
 
             if (_model.Database.GrantExecUser != string.Empty)
             {
@@ -228,22 +232,26 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         private void AppendCreatePrimaryKey()
         {
-            sb.AppendLine("--##SECTION BEGIN [RENAME PK]");
-            sb.AppendLine();
-
-            //Rename existing PK if they exist
-            sb.AppendLine("--RENAME EXISTING PRIMARY KEYS IF NECESSARY");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            if (_model.EmitSafetyScripts)
             {
-                sb.AppendLine("DECLARE @pkfix" + table.PascalName + " varchar(500)");
-                sb.AppendLine("SET @pkfix" + table.PascalName + " = (SELECT top 1 i.name AS IndexName FROM sys.indexes AS i WHERE i.is_primary_key = 1 AND OBJECT_NAME(i.OBJECT_ID) = '" + table.DatabaseName + "')");
-                sb.AppendLine("if @pkfix" + table.PascalName + " <> '' and (BINARY_CHECKSUM(@pkfix" + table.PascalName + ") <> BINARY_CHECKSUM('PK_" + table.DatabaseName.ToUpper() + "')) exec('sp_rename '''+@pkfix" + table.PascalName + "+''', ''PK_" + table.DatabaseName.ToUpper() + "''')");
-            }
-            sb.AppendLine("GO");
-            sb.AppendLine();
+                sb.AppendLine("--##SECTION BEGIN [RENAME PK]");
+                sb.AppendLine();
 
-            sb.AppendLine("--##SECTION END [RENAME PK]");
-            sb.AppendLine();
+                //Rename existing PK if they exist
+                sb.AppendLine("--RENAME EXISTING PRIMARY KEYS IF NECESSARY");
+                foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+                {
+                    sb.AppendLine("DECLARE @pkfix" + table.PascalName + " varchar(500)");
+                    sb.AppendLine("SET @pkfix" + table.PascalName + " = (SELECT top 1 i.name AS IndexName FROM sys.indexes AS i WHERE i.is_primary_key = 1 AND OBJECT_NAME(i.OBJECT_ID) = '" + table.DatabaseName + "')");
+                    sb.AppendLine("if @pkfix" + table.PascalName + " <> '' and (BINARY_CHECKSUM(@pkfix" + table.PascalName + ") <> BINARY_CHECKSUM('PK_" + table.DatabaseName.ToUpper() + "')) exec('sp_rename '''+@pkfix" + table.PascalName + "+''', ''PK_" + table.DatabaseName.ToUpper() + "''')");
+                }
+                sb.AppendLine("GO");
+                sb.AppendLine();
+
+                sb.AppendLine("--##SECTION END [RENAME PK]");
+                sb.AppendLine();
+            }
+
 
             sb.AppendLine("--##SECTION BEGIN [DROP PK]");
             sb.AppendLine();
@@ -287,7 +295,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 //If there is an audit table then make its surrogate key PK clustered
                 if (table.AllowAuditTracking)
                     sb.Append(SQLEmit.GetSqlCreateAuditPK(table));
-                else
+                else if (_model.EmitSafetyScripts)
                     sb.Append(SQLEmit.GetSqlDropAuditPK(table));
             }
 
@@ -427,6 +435,10 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         private void AppendCreateAudit()
         {
+            //These should all be included in the create script so if minimizing scripts just omit these
+            if (!_model.EmitSafetyScripts)
+                return;
+
             #region Audit Trial Create
             sb.AppendLine("--##SECTION BEGIN [AUDIT TRAIL CREATE]");
             sb.AppendLine();
@@ -545,6 +557,10 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         private void AppendRemoveDefaults()
         {
+            //These should all be included in the create script so if minimizing scripts just omit these
+            if (!_model.EmitSafetyScripts)
+                return;
+
             sb.AppendLine("--##SECTION BEGIN [REMOVE DEFAULTS]");
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
@@ -574,6 +590,10 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         private void AppendCreateDefaults()
         {
+            //These should all be included in the create script so if minimizing scripts just omit these
+            if (!_model.EmitSafetyScripts)
+                return;
+
             sb.AppendLine("--##SECTION BEGIN [CREATE DEFAULTS]");
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))

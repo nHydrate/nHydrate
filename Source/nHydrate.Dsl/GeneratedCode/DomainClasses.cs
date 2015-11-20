@@ -2986,6 +2986,98 @@ namespace nHydrate.Dsl
 		}
 		
 		#endregion
+		#region EmitSafetyScripts domain property code
+		
+		/// <summary>
+		/// EmitSafetyScripts domain property Id.
+		/// </summary>
+		public static readonly global::System.Guid EmitSafetyScriptsDomainPropertyId = new global::System.Guid(0xf348a2a7, 0x4cf4, 0x440c, 0xb0, 0xb5, 0x75, 0xbe, 0x15, 0xbf, 0x6d, 0xde);
+		
+		/// <summary>
+		/// Storage for EmitSafetyScripts
+		/// </summary>
+		private global::System.Boolean emitSafetyScriptsPropertyStorage = true;
+		
+		/// <summary>
+		/// Gets or sets the value of EmitSafetyScripts domain property.
+		/// Determines if normalization safety scripts are emitted into the installer
+		/// </summary>
+		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/EmitSafetyScripts.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/EmitSafetyScripts.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/EmitSafetyScripts.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[global::System.ComponentModel.DefaultValue(true)]
+		[DslModeling::DomainObjectId("f348a2a7-4cf4-440c-b0b5-75be15bf6dde")]
+		public virtual global::System.Boolean EmitSafetyScripts
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return emitSafetyScriptsPropertyStorage;
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				EmitSafetyScriptsPropertyHandler.Instance.SetValue(this, value);
+			}
+		}
+		/// <summary>
+		/// Value handler for the nHydrateModel.EmitSafetyScripts domain property.
+		/// </summary>
+		internal sealed partial class EmitSafetyScriptsPropertyHandler : DslModeling::DomainPropertyValueHandler<nHydrateModelBase, global::System.Boolean>
+		{
+			private EmitSafetyScriptsPropertyHandler() { }
+		
+			/// <summary>
+			/// Gets the singleton instance of the nHydrateModel.EmitSafetyScripts domain property value handler.
+			/// </summary>
+			public static readonly EmitSafetyScriptsPropertyHandler Instance = new EmitSafetyScriptsPropertyHandler();
+		
+			/// <summary>
+			/// Gets the Id of the nHydrateModel.EmitSafetyScripts domain property.
+			/// </summary>
+			public sealed override global::System.Guid DomainPropertyId
+			{
+				[global::System.Diagnostics.DebuggerStepThrough]
+				get
+				{
+					return EmitSafetyScriptsDomainPropertyId;
+				}
+			}
+			
+			/// <summary>
+			/// Gets a strongly-typed value of the property on specified element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <returns>Property value.</returns>
+			public override sealed global::System.Boolean GetValue(nHydrateModelBase element)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+				return element.EmitSafetyScripts;
+				//return element.GetValue<global::System.Boolean>("EmitSafetyScripts", element.emitSafetyScriptsPropertyStorage);
+				//return element.emitSafetyScriptsPropertyStorage; //ORIGINAL CODE
+			}
+		
+			/// <summary>
+			/// Sets property value on an element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <param name="newValue">New property value.</param>
+			public override sealed void SetValue(nHydrateModelBase element, global::System.Boolean newValue)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+		
+				global::System.Boolean oldValue = GetValue(element);
+				if (newValue != oldValue)
+				{
+					ValueChanging(element, oldValue, newValue);
+					element.emitSafetyScriptsPropertyStorage = newValue;
+					ValueChanged(element, oldValue, newValue);
+					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("nHydrateModel"));
+				}
+			}
+		}
+		
+		#endregion
 		#region Entities opposite domain role accessor
 		
 		/// <summary>
