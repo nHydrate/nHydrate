@@ -194,7 +194,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             if (!string.IsNullOrEmpty(_item.Description))
                 sb.AppendLine("	[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\")]");
             sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
-            sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : " + GetLocalNamespace() + ".BaseEntity, System.ICloneable");
+            sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : " + GetLocalNamespace() + ".BaseEntity, System.ICloneable, IReadOnlyBusinessObject");
             sb.AppendLine();
 
             sb.AppendLine("	{");
@@ -202,6 +202,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             this.AppendProperties();
             this.AppendIEquatable();
             this.AppendClone();
+            this.AppendRegionGetValue();
+            this.AppendRegionBusinessObject();
             sb.AppendLine("	}");
             sb.AppendLine();
         }
@@ -305,6 +307,194 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine("		}");
             sb.AppendLine();
 
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
+        }
+
+        private void AppendRegionGetValue()
+        {
+            sb.AppendLine("		#region GetValue");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Gets the value of one of this object's properties.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public object GetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return GetValue(field, null);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Gets the value of one of this object's properties.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public object GetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, object defaultValue)");
+            sb.AppendLine("		{");
+            var allColumns = _item.GetColumns().Where(x => x.Generated).ToList();
+            foreach (var column in allColumns.OrderBy(x => x.Name))
+            {
+                sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")");
+                if (column.AllowNull)
+                    sb.AppendLine("				return ((this." + column.PascalName + " == null) ? defaultValue : this." + column.PascalName + ");");
+                else
+                    sb.AppendLine("				return this." + column.PascalName + ";");
+            }
+
+            //Now do the primary keys
+            foreach (var dbColumn in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
+            {
+                //TODO
+            }
+
+            sb.AppendLine("			throw new Exception(\"Field '\" + field.ToString() + \"' not found!\");");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
+        }
+
+        private void AppendRegionBusinessObject()
+        {
+            sb.AppendLine("		#region GetMaxLength");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Gets the maximum size of the field value.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public static int GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			switch (field)");
+            sb.AppendLine("			{");
+            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            {
+                sb.AppendLine("				case " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ":");
+                if (_item.GeneratedColumns.Contains(column))
+                {
+                    //This is an actual column in this table
+                    switch (column.DataType)
+                    {
+                        case System.Data.SqlDbType.Text:
+                            sb.AppendLine("					return int.MaxValue;");
+                            break;
+                        case System.Data.SqlDbType.NText:
+                            sb.AppendLine("					return int.MaxValue;");
+                            break;
+                        case System.Data.SqlDbType.Image:
+                            sb.AppendLine("					return int.MaxValue;");
+                            break;
+                        case System.Data.SqlDbType.Xml:
+                            sb.AppendLine("					return int.MaxValue;");
+                            break;
+                        case System.Data.SqlDbType.Char:
+                        case System.Data.SqlDbType.NChar:
+                        case System.Data.SqlDbType.NVarChar:
+                        case System.Data.SqlDbType.VarChar:
+                            if ((column.Length == 0) && (ModelHelper.SupportsMax(column.DataType)))
+                                sb.AppendLine("					return int.MaxValue;");
+                            else
+                                sb.AppendLine("					return " + column.Length + ";");
+                            break;
+                        default:
+                            sb.AppendLine("					return 0;");
+                            break;
+                    }
+                }
+            }
+            sb.AppendLine("			}");
+            sb.AppendLine("			return 0;");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		int " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetMaxLength(Enum field)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return GetMaxLength((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
+
+            sb.AppendLine("		#region GetFieldNameConstants");
+            sb.AppendLine();
+            sb.AppendLine("		System.Type " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetFieldNameConstants()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
+
+            //GetFieldType
+            sb.AppendLine("		#region GetFieldType");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Gets the system type of a field on this object");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public static System.Type GetFieldType(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
+            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
+            sb.AppendLine();
+            sb.AppendLine("			switch ((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field)");
+            sb.AppendLine("			{");
+            foreach (var column in _item.GetColumns())
+            {
+                sb.AppendLine("				case " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ": return typeof(" + column.GetCodeType() + ");");
+            }
+            sb.AppendLine("			}");
+            sb.AppendLine("			return null;");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		System.Type " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetFieldType(Enum field)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
+            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
+            sb.AppendLine();
+            sb.AppendLine("			return GetFieldType((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
+
+            //GetValue
+            sb.AppendLine("		#region Get/Set Value");
+            sb.AppendLine();
+            sb.AppendLine("		object " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetValue(System.Enum field)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return ((" + this.GetLocalNamespace() + ".IReadOnlyBusinessObject)this).GetValue(field, null);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		object " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetValue(System.Enum field, object defaultValue)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
+            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
+            sb.AppendLine("			return this.GetValue((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field, defaultValue);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            //sb.AppendLine("		void " + this.GetLocalNamespace() + ".IBusinessObject.SetValue(System.Enum field, object newValue)");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
+            //sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
+            //sb.AppendLine("			this.SetValue((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field, newValue);");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
+            //sb.AppendLine("		void " + this.GetLocalNamespace() + ".IBusinessObject.SetValue(System.Enum field, object newValue, bool fixLength)");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
+            //sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
+            //sb.AppendLine("			this.SetValue((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field, newValue, fixLength);");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
+
+            sb.AppendLine("		#region PrimaryKey");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Hold the primary key for this object");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		protected " + this.GetLocalNamespace() + ".IPrimaryKey _primaryKey = null;");
+            sb.AppendLine("		" + this.GetLocalNamespace() + ".IPrimaryKey " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.PrimaryKey");
+            sb.AppendLine("		{");
+            sb.AppendLine("			get { return null; }");
+            sb.AppendLine("		}");
+            sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
         }

@@ -207,7 +207,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             this.AppendConstructors();
             this.AppendProperties();
             this.AppendGenerateEvents();
-            this.AppendRegionGetMaxLength();
+            this.AppendRegionBusinessObject();
             //this.AppendParented();
             this.AppendClone();
             this.AppendRegionGetValue();
@@ -922,7 +922,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine();
         }
 
-        private void AppendRegionGetMaxLength()
+        private void AppendRegionBusinessObject()
         {
             sb.AppendLine("		#region GetMaxLength");
             sb.AppendLine();
@@ -1050,6 +1050,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
                 sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
                 sb.AppendLine("			this.SetValue((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field, newValue);");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		void " + this.GetLocalNamespace() + ".IBusinessObject.SetValue(System.Enum field, object newValue, bool fixLength)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
+                sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
+                sb.AppendLine("			this.SetValue((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field, newValue, fixLength);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
             }
@@ -2268,8 +2275,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
         private void AppendMetaDataMethods()
         {
+            var type = "virtual";
+            if (_item.ParentTable != null) type = "override";
+
             sb.AppendLine("		#region Methods");
-            sb.AppendLine("		public string GetTableName()");
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		public " + type + " string GetTableName()");
             sb.AppendLine("		{");
             sb.AppendLine("			return \"" + _item.DatabaseName + "\";");
             sb.AppendLine("		}");

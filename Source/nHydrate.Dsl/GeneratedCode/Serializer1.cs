@@ -2102,7 +2102,7 @@ namespace nHydrate.Dsl
 				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
 				if (!serializationContext.Result.Failed)
 				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "True") != 0)
+					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "emitSafetyScripts", serializedPropValue);
 					}
