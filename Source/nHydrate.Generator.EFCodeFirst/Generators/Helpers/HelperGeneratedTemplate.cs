@@ -910,11 +910,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public class EntityEventArgs : System.EventArgs");
                 sb.AppendLine("	{");
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public IBusinessObject Entity { get; set; }");
                 sb.AppendLine("	}");
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public class EntityListEventArgs : System.EventArgs");
                 sb.AppendLine("	{");
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public IEnumerable<System.Data.Entity.Core.Objects.ObjectStateEntry> List { get; set; }");
                 sb.AppendLine("	}");
                 sb.AppendLine("}");

@@ -175,44 +175,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             }
             #endregion
 
-            #region Add an strongly-typed extension for "AddItem" method
-            sb.AppendLine("		#region AddItem Method");
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		void AddItem(" + this.GetLocalNamespace() + ".IBusinessObject entity);");
             sb.AppendLine();
-
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName)) // && !x.IsTypeTable
-            {
-                sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		void AddItem(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " entity);");
-                sb.AppendLine();
-            }
-
-            sb.AppendLine("		#endregion");
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		void DeleteItem(" + this.GetLocalNamespace() + ".IBusinessObject entity);");
             sb.AppendLine();
-            #endregion
-
-            #region Add an strongly-typed extension for "DeleteItem" method
-            sb.AppendLine("		#region DeleteItem Methods");
-            sb.AppendLine();
-
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName)) // && !x.IsTypeTable
-            {
-                sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		void DeleteItem(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " entity);");
-                sb.AppendLine();
-            }
-
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-            #endregion
-
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		void ReloadItem(BaseEntity entity);");
+            sb.AppendLine();
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		void DetachItem(BaseEntity entity);");
-
             sb.AppendLine("	}");
             sb.AppendLine();
-
             sb.AppendLine("	#endregion");
             sb.AppendLine();
         }
@@ -222,6 +197,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	/// <summary />");
             sb.AppendLine("	public partial interface IMetadata");
             sb.AppendLine("	{");
+            sb.AppendLine("		/// <summary />");
             sb.AppendLine("		string GetTableName();");
             sb.AppendLine("	}");
             sb.AppendLine();

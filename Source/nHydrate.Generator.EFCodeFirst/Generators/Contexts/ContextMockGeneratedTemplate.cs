@@ -85,6 +85,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 //Events
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			if(BeforeSaveModifiedEntity != null)");
@@ -96,6 +97,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			if(BeforeSaveAddedEntity != null)");
@@ -107,6 +109,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveModifiedEntity;");
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		protected virtual void OnAfterSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			if(AfterSaveModifiedEntity != null)");
@@ -118,6 +121,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveAddedEntity;");
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		protected virtual void OnAfterSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			if(AfterSaveAddedEntity != null)");
@@ -442,62 +446,47 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
         {
             #region Tables AddItem
             sb.AppendLine("		#region AddItem");
+
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Adds an item to the object context.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"entity\">The entity to add</param>");
+            sb.AppendLine("		public virtual void AddItem(" + this.GetLocalNamespace() + ".IBusinessObject entity)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if (false) { }");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.PascalName))
             {
                 var name = table.PascalName;
                 if (table.Security.IsValid()) name += "__INTERNAL";
 
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Adds an item of type '" + table.PascalName + "' to the object context.");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <param name=\"entity\">The entity to add</param>");
-                sb.AppendLine("		public virtual void AddItem(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " entity)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			this." + name + ".AddObject((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
-                sb.AppendLine("		}");
-                sb.AppendLine();
-
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Adds an item of type '" + table.PascalName + "' to the object context.");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <param name=\"entity\">The entity to add</param>");
-                sb.AppendLine("		void " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities.AddItem(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " entity)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			this." + name + ".AddObject(entity);");
-                sb.AppendLine("		}");
-                sb.AppendLine();
+                sb.AppendLine("			else if (entity is " + GetLocalNamespace() + ".Entity." + table.PascalName + ")");
+                sb.AppendLine("				this." + name + ".AddObject((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
             }
+            sb.AppendLine("		}");
+            sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
             #endregion
 
             #region Tables DeleteItem
             sb.AppendLine("		#region DeleteItem");
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Deletes an item from the object context.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"entity\">The entity to Delete</param>");
+            sb.AppendLine("		public virtual void DeleteItem(" + this.GetLocalNamespace() + ".IBusinessObject entity)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if (false) { }");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.PascalName))
             {
                 var name = table.PascalName;
                 if (table.Security.IsValid()) name += "__INTERNAL";
 
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Deletes an item of type '" + table.PascalName + "' to the object context.");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <param name=\"entity\">The entity to Delete</param>");
-                sb.AppendLine("		public virtual void DeleteItem(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " entity)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			this." + name + ".DeleteObject((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
-                sb.AppendLine("		}");
-                sb.AppendLine();
-
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Deletes an item of type '" + table.PascalName + "' to the object context.");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <param name=\"entity\">The entity to Delete</param>");
-                sb.AppendLine("		void " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities.DeleteItem(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " entity)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			this." + name + ".DeleteObject(entity);");
-                sb.AppendLine("		}");
-                sb.AppendLine();
+                sb.AppendLine("			else if (entity is " + GetLocalNamespace() + ".Entity." + table.PascalName + ")");
+                sb.AppendLine("				this." + name + ".DeleteObject((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
             }
+            sb.AppendLine("		}");
+            sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
             #endregion
@@ -582,13 +571,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("			return (IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">)this." + item.PascalName + "(" + paramString2 + ");");
                 sb.AppendLine("		}");
                 sb.AppendLine();
-
-                //sb.AppendLine("		/// <summary />");
-                //sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + item.PascalName + "(" + paramString1 + ")");
-                //sb.AppendLine("		{");
-                //sb.AppendLine("			return (IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">)this." + item.PascalName + "(" + paramString2 + ");");
-                //sb.AppendLine("		}");
-                //sb.AppendLine();
             }
             #endregion
 
