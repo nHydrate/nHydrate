@@ -1159,22 +1159,20 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			if (false) { }");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable).OrderBy(x => x.PascalName))
             {
-                if (table.AllowCreateAudit || table.AllowModifiedAudit)
-                {
-                    sb.AppendLine("			else if (entity is " + GetLocalNamespace() + ".Entity." + table.PascalName + ")");
-                    sb.AppendLine("			{");
-                    if (table.AllowCreateAudit)
-                        sb.AppendLine("				((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.CreatedByPascalName + " = _contextStartup.Modifer;");
-                    if (table.AllowModifiedAudit)
-                        sb.AppendLine("				((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.ModifiedByPascalName + " = _contextStartup.Modifer;");
+                sb.AppendLine("			else if (entity is " + GetLocalNamespace() + ".Entity." + table.PascalName + ")");
+                sb.AppendLine("			{");
+                    
+                if (table.AllowCreateAudit)
+                    sb.AppendLine("				((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.CreatedByPascalName + " = _contextStartup.Modifer;");
+                if (table.AllowModifiedAudit)
+                    sb.AppendLine("				((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.ModifiedByPascalName + " = _contextStartup.Modifer;");
 
-                    if (table.Security.IsValid())
-                        sb.AppendLine("				this.ObjectContext.AddObject(entity.GetType().Name + \"__INTERNAL\", entity);");
-                    else
-                        sb.AppendLine("				this." + table.PascalName + ".Add((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
+                if (table.Security.IsValid())
+                    sb.AppendLine("				this.ObjectContext.AddObject(entity.GetType().Name + \"__INTERNAL\", entity);");
+                else
+                    sb.AppendLine("				this." + table.PascalName + ".Add((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
 
-                    sb.AppendLine("			}");
-                }
+                sb.AppendLine("			}");
             }
             sb.AppendLine("		}");
             sb.AppendLine();
