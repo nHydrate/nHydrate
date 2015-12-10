@@ -820,7 +820,11 @@ namespace nHydrate.Core.SQLGeneration
                                     else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
                                 }
 
-                                fieldValues.Add(column.Name, sqlValue);
+                                if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
+                                    fieldValues.Add(column.Name, "N" + sqlValue);
+                                else
+                                    fieldValues.Add(column.Name, sqlValue);
+
                             }
                         }
 
