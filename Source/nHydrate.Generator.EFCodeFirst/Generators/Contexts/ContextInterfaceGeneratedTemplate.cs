@@ -176,7 +176,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #endregion
 
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		void AddItem(" + this.GetLocalNamespace() + ".IBusinessObject entity);");
+            sb.AppendLine("		" + this.GetLocalNamespace() + ".IBusinessObject AddItem(" + this.GetLocalNamespace() + ".IBusinessObject entity);");
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		void DeleteItem(" + this.GetLocalNamespace() + ".IBusinessObject entity);");

@@ -451,7 +451,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// Adds an item to the object context.");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"entity\">The entity to add</param>");
-            sb.AppendLine("		public virtual void AddItem(" + this.GetLocalNamespace() + ".IBusinessObject entity)");
+            sb.AppendLine("		public virtual " + this.GetLocalNamespace() + ".IBusinessObject AddItem(" + this.GetLocalNamespace() + ".IBusinessObject entity)");
             sb.AppendLine("		{");
             sb.AppendLine("			if (false) { }");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.PascalName))
@@ -462,6 +462,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("			else if (entity is " + GetLocalNamespace() + ".Entity." + table.PascalName + ")");
                 sb.AppendLine("				this." + name + ".AddObject((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
             }
+            sb.AppendLine("			return entity;");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
