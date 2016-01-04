@@ -70,13 +70,9 @@
     <Compile Include="Generators\ContextStartup\ContextStartupExtenderTemplate.cs" />
     <Compile Include="Generators\ContextStartup\ContextStartupGeneratedGenerator.cs" />
     <Compile Include="Generators\ContextStartup\ContextStartupGeneratedTemplate.cs" />
-    <Compile Include="Generators\Contexts\ContextConfigurationExtenderGenerator.cs" />
     <Compile Include="Generators\Contexts\ContextExtenderGenerator.cs" />
-    <Compile Include="Generators\Contexts\ContextConfigurationExtenderTemplate.cs" />
     <Compile Include="Generators\Contexts\ContextExtenderTemplate.cs" />
-    <Compile Include="Generators\Contexts\ContextConfigurationGeneratedGenerator.cs" />
     <Compile Include="Generators\Contexts\ContextGeneratedGenerator.cs" />
-    <Compile Include="Generators\Contexts\ContextConfigurationGeneratedTemplate.cs" />
     <Compile Include="Generators\Contexts\ContextGeneratedTemplate.cs" />
     <Compile Include="EFDALCodeFirstProjectGenerator.cs" />
     <Compile Include="EFDALCodeFirstBaseTemplate.cs" />

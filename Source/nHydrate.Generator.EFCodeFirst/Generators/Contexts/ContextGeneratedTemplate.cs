@@ -278,12 +278,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		static " + _model.ProjectName + "Entities()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			System.Data.Entity.DbConfiguration.SetConfiguration(new " + _model.ProjectName + "Configuration());");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
             #region Constructors
             sb.AppendLine("		#region Constructors");
             sb.AppendLine();
