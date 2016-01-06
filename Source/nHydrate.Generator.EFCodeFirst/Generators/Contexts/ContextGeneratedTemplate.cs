@@ -961,6 +961,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			var retval = 0;");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
+            sb.AppendLine("				_paramList.Clear();");
             sb.AppendLine("				retval = base.SaveChanges();");
             sb.AppendLine("			}");
             sb.AppendLine("			catch (System.Data.Entity.Validation.DbEntityValidationException ex)");
@@ -1476,8 +1477,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             #region Table Security
             var securedTables = _model.Database.Tables.Where(x => x.Generated && x.Security.IsValid()).OrderBy(x => x.PascalName).ToList();
-            if (securedTables.Any())
-                sb.AppendLine("		private List<string> _paramList = new List<string>();");
+            sb.AppendLine("		private List<string> _paramList = new List<string>();");
 
             foreach (var item in securedTables)
             {
@@ -1512,6 +1512,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     sb.AppendLine("			while (_paramList.Contains(paramName1 + index)) index++;");
                     sb.AppendLine("			paramName1 = paramName1 + index;");
                     sb.AppendLine("			_paramList.Add(paramName1);");
+                    sb.AppendLine("			if (_paramList.Count > 25) _paramList.RemoveAt(0);");
 
                     if (parameter.IsOutputParameter)
                     {

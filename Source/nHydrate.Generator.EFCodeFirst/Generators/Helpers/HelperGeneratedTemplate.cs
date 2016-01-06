@@ -932,6 +932,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// Summary description for ConcurrencyException.");
                 sb.AppendLine("	/// </summary>");
+                sb.AppendLine("	[Serializable]");
                 sb.AppendLine("	public partial class ConcurrencyException : nHydrateException");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary />");
@@ -951,6 +952,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
 
                 sb.AppendLine("	#region nHydrateException");
                 sb.AppendLine("	/// <summary />");
+                sb.AppendLine("	[Serializable]");
                 sb.AppendLine("	public partial class nHydrateException : System.ApplicationException");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary />");
@@ -1019,6 +1021,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// Summary description for UniqueConstraintViolatedException.");
                 sb.AppendLine("	/// </summary>");
+                sb.AppendLine("	[Serializable]");
                 sb.AppendLine("	public partial class UniqueConstraintViolatedException : nHydrateException");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary />");
