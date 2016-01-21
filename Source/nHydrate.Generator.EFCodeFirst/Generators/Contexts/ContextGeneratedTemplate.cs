@@ -1299,7 +1299,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.Generated && x.GeneratedColumns.Count > 0).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary />");
-                sb.Append("		public ObjectResult<" + item.PascalName + "> " + item.PascalName + "(");
+                sb.Append("		public List<" + item.PascalName + "> " + item.PascalName + "(");
                 var parameterList = item.GetParameters().Where(x => x.Generated).ToList();
                 foreach (var parameter in parameterList)
                 {
@@ -1315,22 +1315,22 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 {
                     if (parameter.IsOutputParameter)
                     {
-                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + "));");
+                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + "));");
                     }
                     else if (parameter.AllowNull)
                     {
-                        sb.AppendLine("			ObjectParameter " + parameter.CamelName + "Parameter = null;");
-                        sb.AppendLine("			if (" + parameter.CamelName + " != null) { " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + "); }");
-                        sb.AppendLine("			else { " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + ")); }");
+                        sb.AppendLine("			SqlParameter " + parameter.CamelName + "Parameter = null;");
+                        sb.AppendLine("			if (" + parameter.CamelName + " != null) { " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + "); }");
+                        sb.AppendLine("			else { " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + ")); }");
                     }
                     else
                     {
-                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + ");");
+                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + ");");
                     }
                 }
 
-                sb.Append("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.ExecuteFunction<" + item.PascalName + ">(\"" + item.GetDatabaseObjectName() + "\"");
-
+                //sb.Append("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.ExecuteFunction<" + item.PascalName + ">(\"" + item.GetDatabaseObjectName() + "\"");
+                sb.Append("			var retval = this.Database.SqlQuery<" + item.PascalName + ">(\"" + item.GetDatabaseObjectName() + "\"");
                 if (parameterList.Count > 0)
                 {
                     sb.Append(", ");
@@ -1341,8 +1341,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                             sb.Append(", ");
                     }
                 }
-
-                sb.AppendLine(");");
+                sb.AppendLine(").ToList();");
 
                 //Add code here to handle output parameters
                 foreach (var parameter in parameterList.Where(x => x.IsOutputParameter))
@@ -1367,7 +1366,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine();
             }
 
-            //Stoed procs that are Action (no columns)
+            //Stored procs that are Action (no columns)
             foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.Generated && x.GeneratedColumns.Count == 0).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary>");
@@ -1375,45 +1374,54 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		/// </summary>");
                 sb.Append("		public void " + item.PascalName + "(");
 
-                var parameters = item.GetParameters().OrderBy(x => x.IsOutputParameter).ThenBy(x => x.Name).ToList();
-
+                var parameterList = item.GetParameters().Where(x => x.Generated).ToList();
+                foreach (var parameter in parameterList)
                 {
-                    var index = 0;
-                    foreach (var param in parameters)
-                    {
-                        sb.Append((param.IsOutputParameter ? "out " : string.Empty) + param.GetCodeType() + " " + param.CamelName);
-                        if (index < item.Parameters.Count - 1)
-                            sb.Append(", ");
-                        index++;
-                    }
+                    if (parameter.IsOutputParameter) sb.Append("out ");
+                    sb.Append(parameter.GetCodeType() + " " + parameter.CamelName);
+                    if (parameterList.IndexOf(parameter) < parameterList.Count() - 1)
+                        sb.Append(", ");
                 }
 
                 sb.AppendLine(")");
                 sb.AppendLine("		{");
 
-                sb.AppendLine("			var parameters = new List<ObjectParameter>();");
-                foreach (var param in parameters)
+                foreach (var parameter in parameterList)
                 {
-                    if (param.IsOutputParameter)
-                        sb.AppendLine("			parameters.Add(new ObjectParameter(\"" + param.PascalName + "\", typeof(" + param.GetCodeType() + ")));");
-                    else
-                        sb.AppendLine("			parameters.Add(new ObjectParameter(\"" + param.PascalName + "\", " + param.CamelName + "));");
-                }
-                sb.AppendLine("			this.ObjectContext.ExecuteFunction(\"" + item.PascalName + "\", parameters.ToArray());");
-
-                {
-                    var index = 0;
-                    foreach (var param in parameters)
+                    if (parameter.IsOutputParameter)
                     {
-                        if (param.IsOutputParameter)
-                        {
-                            if (param.AllowNull)
-                                sb.AppendLine("			if (parameters[" + index + "].Value == System.DBNull.Value) " + param.CamelName + " = null; else " + param.CamelName + " = (" + param.GetCodeType() + ")parameters[" + index + "].Value;");
-                            else
-                                sb.AppendLine("			" + param.CamelName + " = (" + param.GetCodeType() + ")parameters[" + index + "].Value;");
-                        }
-                        index++;
+                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + "));");
                     }
+                    else if (parameter.AllowNull)
+                    {
+                        sb.AppendLine("			SqlParameter " + parameter.CamelName + "Parameter = null;");
+                        sb.AppendLine("			if (" + parameter.CamelName + " != null) { " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + "); }");
+                        sb.AppendLine("			else { " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + ")); }");
+                    }
+                    else
+                    {
+                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + ");");
+                    }
+                }
+                
+                //sb.AppendLine("			this.ObjectContext.ExecuteFunction(\"" + item.PascalName + "\", parameters.ToArray());");
+                sb.Append("			var retval = this.Database.SqlQuery<" + item.PascalName + ">(\"" + item.GetDatabaseObjectName() + "\"");
+                if (parameterList.Count > 0)
+                {
+                    sb.Append(", ");
+                    foreach (var parameter in parameterList)
+                    {
+                        sb.Append(parameter.CamelName + "Parameter");
+                        if (parameterList.IndexOf(parameter) < parameterList.Count() - 1)
+                            sb.Append(", ");
+                    }
+                }
+                sb.AppendLine(").ToList();");
+
+                //Add code here to handle output parameters
+                foreach (var parameter in parameterList.Where(x => x.IsOutputParameter))
+                {
+                    sb.AppendLine("			" + parameter.CamelName + " = (" + parameter.GetCodeType() + ")" + parameter.CamelName + "Parameter.Value;");
                 }
 
                 sb.AppendLine("		}");
