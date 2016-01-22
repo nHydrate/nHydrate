@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2015 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2016 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2015 All Rights reserved                   *
+//              Copyright (c) 2006-2016 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -174,7 +174,7 @@ namespace nHydrate.Dsl.Custom
                         XmlHelper.AddCData((XmlElement)parameterNode, "summary", parameter.Summary);
                         XmlHelper.AddLineBreak((XmlElement)parameterNode);
 
-                        //XmlHelper.AddAttribute(parameterNode, "id", parameter.Id);
+                        XmlHelper.AddAttribute(parameterNode, "id", parameter.Id);
                         XmlHelper.AddAttribute(parameterNode, "name", parameter.Name);
                         XmlHelper.AddAttribute(parameterNode, "nullable", parameter.Nullable);
                         XmlHelper.AddAttribute(parameterNode, "datatype", parameter.DataType.ToString());
@@ -1048,8 +1048,8 @@ namespace nHydrate.Dsl.Custom
                 var secNode = document.DocumentElement.SelectSingleNode("//security");
                 if (secNode != null)
                 {
-                    var secItemID = XmlHelper.GetAttributeValue(secNode, "id", Guid.Empty);
-                    var secFunction = new SecurityFunction(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, XmlHelper.GetAttributeValue(secNode, "id", Guid.NewGuid())) });
+                    var secItemID = XmlHelper.GetAttributeValue(secNode, "id", Guid.NewGuid());
+                    var secFunction = new SecurityFunction(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, XmlHelper.GetAttributeValue(secNode, "id", secItemID)) });
                     item.SecurityFunction = secFunction;
                     item.SecurityFunction.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                     item.SecurityFunction.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
