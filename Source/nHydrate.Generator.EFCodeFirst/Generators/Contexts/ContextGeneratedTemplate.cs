@@ -1311,26 +1311,31 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine(")");
                 sb.AppendLine("		{");
 
+                var spParamString = new List<string>();
                 foreach (var parameter in parameterList)
                 {
                     if (parameter.IsOutputParameter)
                     {
                         sb.AppendLine("			var " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + "));");
+                        sb.AppendLine("			" + parameter.CamelName + "Parameter.Direction = ParameterDirection.Output;");
+                        sb.AppendLine("			" + parameter.CamelName + "Parameter.Value = " + parameter.GetCodeDefault() + ";");
+                        spParamString.Add("@" + parameter.DatabaseName + " output");
                     }
                     else if (parameter.AllowNull)
                     {
                         sb.AppendLine("			SqlParameter " + parameter.CamelName + "Parameter = null;");
                         sb.AppendLine("			if (" + parameter.CamelName + " != null) { " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + "); }");
                         sb.AppendLine("			else { " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + ")); }");
+                        spParamString.Add("@" + parameter.DatabaseName);
                     }
                     else
                     {
                         sb.AppendLine("			var " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + ");");
+                        spParamString.Add("@" + parameter.DatabaseName);
                     }
                 }
 
-                //sb.Append("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.ExecuteFunction<" + item.PascalName + ">(\"" + item.GetDatabaseObjectName() + "\"");
-                sb.Append("			var retval = this.Database.SqlQuery<" + item.PascalName + ">(\"" + item.GetDatabaseObjectName() + "\"");
+                sb.Append("			var retval = this.Database.SqlQuery<" + item.PascalName + ">(\"[" + item.GetDatabaseObjectName() + "] " + string.Join(", ", spParamString) + "\"");
                 if (parameterList.Count > 0)
                 {
                     sb.Append(", ");
@@ -1346,7 +1351,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 //Add code here to handle output parameters
                 foreach (var parameter in parameterList.Where(x => x.IsOutputParameter))
                 {
-                    sb.AppendLine("			" + parameter.CamelName + " = (" + parameter.GetCodeType() + ")" + parameter.CamelName + "Parameter.Value;");
+                    sb.AppendLine("			if (" + parameter.CamelName + "Parameter.Value == System.DBNull.Value) " + parameter.CamelName + " = null;");
+                    sb.AppendLine("			else " + parameter.CamelName + " = (" + parameter.GetCodeType() + ")" + parameter.CamelName + "Parameter.Value;");
                 }
 
                 sb.AppendLine("			return retval;");
@@ -1405,7 +1411,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 }
                 
                 //sb.AppendLine("			this.ObjectContext.ExecuteFunction(\"" + item.PascalName + "\", parameters.ToArray());");
-                sb.Append("			var retval = this.Database.SqlQuery<" + item.PascalName + ">(\"" + item.GetDatabaseObjectName() + "\"");
+                sb.Append("			var retval = this.Database.SqlQuery<" + item.PascalName + ">(\"[" + item.GetDatabaseObjectName() + "]\"");
                 if (parameterList.Count > 0)
                 {
                     sb.Append(", ");

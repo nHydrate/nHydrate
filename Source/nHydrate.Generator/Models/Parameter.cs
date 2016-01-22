@@ -818,7 +818,6 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-
         #region ICloneable Members
 
         public object Clone()
@@ -840,5 +839,160 @@ namespace nHydrate.Generator.Models
         }
 
         #endregion
+
+        /// <summary>
+        /// Gets the C# code equivalent for this default value
+        /// </summary>
+        /// <returns></returns>
+        public virtual string GetCodeDefault()
+        {
+            var defaultValue = string.Empty;
+            if (this.IsDateType)
+            {
+                var scrubbed = this.Default.Replace("(", string.Empty).Replace(")", string.Empty);
+                if (scrubbed == "getdate")
+                {
+                    defaultValue = String.Format("DateTime.Now", this.PascalName);
+                }
+                else if (scrubbed == "getutcdate")
+                {
+                    defaultValue = String.Format("DateTime.UtcNow", this.PascalName);
+                }
+                else if (scrubbed.StartsWith("getdate+"))
+                {
+                    var t = this.Default.Substring(8, this.Default.Length - 8);
+                    var tarr = t.Split('-');
+                    if (tarr.Length == 2)
+                    {
+                        if (tarr[1] == "year")
+                            defaultValue = String.Format("DateTime.Now.AddYears(" + tarr[0] + ")", this.PascalName);
+                        else if (tarr[1] == "month")
+                            defaultValue = String.Format("DateTime.Now.AddMonths(" + tarr[0] + ")", this.PascalName);
+                        else if (tarr[1] == "day")
+                            defaultValue = String.Format("DateTime.Now.AddDays(" + tarr[0] + ")", this.PascalName);
+                    }
+                }
+                else
+                {
+                    defaultValue = string.Empty;
+                }
+                //else if (this.DataType == System.Data.SqlDbType.SmallDateTime)
+                //{
+                //  defaultValue = String.Format("new DateTime(1900, 1, 1)", this.PascalName);
+                //}
+                //else
+                //{
+                //  defaultValue = String.Format("new DateTime(1753, 1, 1)", this.PascalName);
+                //}
+            }
+            else if (this.DataType == System.Data.SqlDbType.Char)
+            {
+                defaultValue = "\" \"";
+                if (this.Default.Length == 1)
+                    defaultValue = "@\"" + this.Default[0].ToString().Replace("\"", @"""") + "\"";
+            }
+            else if (this.IsBinaryType)
+            {
+                defaultValue = "new System.Byte[] { " + this.Default.ConvertToHexArrayString() + " }";
+            }
+            //else if (this.DataType == System.Data.SqlDbType.DateTimeOffset)
+            //{
+            //  defaultValue = "DateTimeOffset.MinValue";
+            //}
+            //else if (this.IsDateType)
+            //{
+            //  defaultValue = "System.DateTime.MinValue";
+            //}
+            //else if (this.DataType == System.Data.SqlDbType.Time)
+            //{
+            //  defaultValue = "0";
+            //}
+            else if (this.DataType == System.Data.SqlDbType.UniqueIdentifier)
+            {
+                if ((StringHelper.Match(this.Default, "newid", true)) || (StringHelper.Match(this.Default, "newid()", true)))
+                    defaultValue = String.Format("Guid.NewGuid()");
+                else if (string.IsNullOrEmpty(this.Default))
+                    defaultValue = "System.Guid.Empty";
+                else if (!string.IsNullOrEmpty(this.Default) && this.Default.Length == 36)
+                    defaultValue = "new Guid(\"" + this.Default.Replace("'", "") + "\")";
+            }
+            else if (this.IsIntegerType)
+            {
+                defaultValue = "0";
+                int i;
+                if (int.TryParse(this.Default, out i))
+                    defaultValue = this.Default;
+                if (this.DataType == System.Data.SqlDbType.BigInt) defaultValue += "L";
+            }
+            else if (this.IsNumericType)
+            {
+                defaultValue = "0";
+                double d;
+                if (double.TryParse(this.Default, out d))
+                {
+                    defaultValue = this.Default;
+                    if (this.GetCodeType(false) == "decimal") defaultValue += "M";
+                }
+            }
+            else if (this.DataType == System.Data.SqlDbType.Bit)
+            {
+                defaultValue = "false";
+                if (this.Default == "0")
+                    defaultValue = String.Format("false");
+                else if (this.Default == "1")
+                    defaultValue = String.Format("true");
+            }
+            else
+            {
+                if (ModelHelper.IsTextType(this.DataType))
+                    defaultValue = "\"" + this.Default.Replace("''", "") + "\"";
+                else
+                    defaultValue = "\"" + this.Default + "\"";
+            }
+            return defaultValue;
+        }
+
+        [Browsable(false)]
+        public virtual bool IsTextType
+        {
+            get { return ModelHelper.IsTextType(this.DataType); }
+        }
+
+        [Browsable(false)]
+        public virtual bool IsBinaryType
+        {
+            get { return ModelHelper.IsBinaryType(this.DataType); }
+        }
+
+        [Browsable(false)]
+        public virtual bool IsIntegerType
+        {
+            get { return ModelHelper.IsIntegerType(this.DataType); }
+        }
+
+        [Browsable(false)]
+        public virtual bool IsNumericType
+        {
+            get { return ModelHelper.IsNumericType(this.DataType); }
+        }
+
+        [Browsable(false)]
+        public virtual bool IsMoneyType
+        {
+            get { return ModelHelper.IsMoneyType(this.DataType); }
+        }
+
+        [Browsable(false)]
+        public virtual bool IsDecimalType
+        {
+            get { return ModelHelper.IsDecimalType(this.DataType); }
+        }
+
+        [Browsable(false)]
+        public virtual bool IsDateType
+        {
+            get { return ModelHelper.IsDateType(this.DataType); }
+        }
+
     }
 }
