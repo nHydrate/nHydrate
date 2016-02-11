@@ -153,7 +153,7 @@ namespace nHydrate.Generator.ModelUI
 				}
 				catch (Exception ex)
 				{
-					throw ex;
+					throw;
 				}
 			}
 		}
@@ -204,7 +204,7 @@ namespace nHydrate.Generator.ModelUI
 				}
 				catch (Exception ex)
 				{
-					throw ex;
+					throw;
 				}
 			}
 		}

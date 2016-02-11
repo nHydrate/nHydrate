@@ -267,7 +267,7 @@ namespace nHydrate.DataImport.MySqlClient
 				catch (Exception ex)
 				{
 					Console.Write(ex.ToString());
-					throw ex;
+					throw;
 				}
 			}
 		}
@@ -284,7 +284,7 @@ namespace nHydrate.DataImport.MySqlClient
 				catch (Exception ex)
 				{
 					Console.Write(ex.ToString());
-					throw ex;
+					throw;
 				}
 			}
 		}

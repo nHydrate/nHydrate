@@ -698,7 +698,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
 				}
 				catch (Exception ex)
 				{
-					throw ex;
+					throw;
 				}
 			}
 

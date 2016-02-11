@@ -960,7 +960,7 @@ namespace nHydrate.Generator
 				catch (Exception ex)
 				{
 					nHydrateLog.LogError(ex);
-					throw ex;
+					throw;
 				}
 			}
 			return retval;

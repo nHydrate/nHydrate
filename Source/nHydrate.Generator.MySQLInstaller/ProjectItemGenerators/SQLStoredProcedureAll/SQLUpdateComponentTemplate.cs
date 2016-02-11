@@ -278,7 +278,7 @@ namespace nHydrate.Generator.MySQLInstaller.ProjectItemGenerators.SQLStoredProce
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 		}
 

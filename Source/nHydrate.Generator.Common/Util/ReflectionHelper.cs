@@ -63,7 +63,7 @@ namespace nHydrate.Generator.Common.Util
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 
 		}
@@ -83,7 +83,7 @@ namespace nHydrate.Generator.Common.Util
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 		}
 
@@ -114,7 +114,7 @@ namespace nHydrate.Generator.Common.Util
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 
 		}
@@ -209,7 +209,7 @@ namespace nHydrate.Generator.Common.Util
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 
 			return (System.Type[])retval.ToArray(typeof(System.Type));
@@ -237,7 +237,7 @@ namespace nHydrate.Generator.Common.Util
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 		}
 
@@ -262,7 +262,7 @@ namespace nHydrate.Generator.Common.Util
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 		}
 
@@ -292,7 +292,7 @@ namespace nHydrate.Generator.Common.Util
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 		}
 
@@ -309,7 +309,7 @@ namespace nHydrate.Generator.Common.Util
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 		}
 
@@ -322,7 +322,7 @@ namespace nHydrate.Generator.Common.Util
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 		}
 
@@ -338,7 +338,7 @@ namespace nHydrate.Generator.Common.Util
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 		}
 
@@ -352,7 +352,7 @@ namespace nHydrate.Generator.Common.Util
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 		}
 
@@ -491,7 +491,7 @@ namespace nHydrate.Generator.Common.Util
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 
 			return (System.Type[])retval.ToArray(typeof(System.Type));
