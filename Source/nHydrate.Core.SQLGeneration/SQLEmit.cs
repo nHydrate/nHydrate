@@ -887,6 +887,112 @@ namespace nHydrate.Core.SQLGeneration
 
         }
 
+        public static string GetSqlUpdateStaticData(Table table)
+        {
+            try
+            {
+                var sb = new StringBuilder();
+                var model = (ModelRoot)table.Root;
+
+                //Generate static data
+                if (table.StaticData.Count > 0)
+                {
+                    sb.AppendLine("--UPDATE STATIC DATA FOR TABLE [" + Globals.GetTableDatabaseName(model, table) + "]");
+                    sb.AppendLine("--IF YOU WISH TO UPDATE THIS STATIC DATA UNCOMMENT THIS SQL");
+                    foreach (var rowEntry in table.StaticData.AsEnumerable<RowEntry>())
+                    {
+                        var fieldValues = new Dictionary<string, string>();
+                        foreach (var cellEntry in rowEntry.CellEntries.ToList())
+                        {
+                            var column = cellEntry.ColumnRef.Object as Column;
+                            var sqlValue = cellEntry.GetSQLData();
+                            if (sqlValue == null) //Null is actually returned if the value can be null
+                            {
+                                if (!string.IsNullOrEmpty(column.Default))
+                                {
+                                    if (ModelHelper.IsTextType(column.DataType) || ModelHelper.IsDateType(column.DataType))
+                                    {
+                                        if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
+                                            fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
+                                        else
+                                            fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
+                                    }
+                                    else
+                                    {
+                                        fieldValues.Add(column.Name, column.Default);
+                                    }
+                                }
+                                else
+                                {
+                                    fieldValues.Add(column.Name, "NULL");
+                                }
+                            }
+                            else
+                            {
+                                if (column.DataType == SqlDbType.Bit)
+                                {
+                                    sqlValue = sqlValue.ToLower().Trim();
+                                    if (sqlValue == "true") sqlValue = "1";
+                                    else if (sqlValue == "false") sqlValue = "0";
+                                    else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
+                                }
+
+                                if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
+                                    fieldValues.Add(column.Name, "N" + sqlValue);
+                                else
+                                    fieldValues.Add(column.Name, sqlValue);
+
+                            }
+                        }
+
+                        // this could probably be done smarter
+                        // but I am concerned about the order of the keys and values coming out right
+                        var fieldList = new List<string>();
+                        var valueList = new List<string>();
+                        var updateSetList = new List<string>();
+                        var primaryKeyColumnNames = table.PrimaryKeyColumns.Select(x => x.Name);
+                        foreach (var kvp in fieldValues)
+                        {
+                            fieldList.Add("[" + kvp.Key + "]");
+                            valueList.Add(kvp.Value);
+
+                            if (!primaryKeyColumnNames.Contains(kvp.Key))
+                            {
+                                updateSetList.Add(kvp.Key + " = " + kvp.Value);
+                            }
+                        }
+
+                        var fieldListString = string.Join(",", fieldList);
+                        var valueListString = string.Join(",", valueList);
+                        var updateSetString = string.Join(",", updateSetList);
+
+                        var ii = 0;
+                        var pkWhereSb = new StringBuilder();
+                        foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
+                        {
+                            var pkData = rowEntry.CellEntries[column.Name].GetSQLData();
+                            pkWhereSb.Append("([" + column.DatabaseName + "] = " + pkData + ")");
+                            if (ii < table.PrimaryKeyColumns.Count - 1)
+                                pkWhereSb.Append(" AND ");
+                            ii++;
+                        }
+
+                        sb.AppendLine("--UPDATE [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] SET " + updateSetString + " WHERE " + pkWhereSb.ToString() + ";");
+
+                    }
+
+                    sb.AppendLine();
+                }
+
+                return sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
         public static string AppendColumnDefaultCreateSQL(Column column, bool includeDrop = true)
         {
             if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
