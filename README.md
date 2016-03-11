@@ -3,10 +3,13 @@ nHydrate
 
 This platform creates strongly-typed, extendable classes for Entity Framework.
 
+You can always download the latest version from the Visual Studio Gallery
+https://visualstudiogallery.msdn.microsoft.com/d641354e-b15f-437c-b7eb-83c6ac423651
+
 Installation
 ========
 
-To load and complile this project you need Visual Stuido 2013.
+To load and compile this project you need Visual Stuido 2013 or greater.
 
 Then install the SDK from the following URL.
 
