@@ -35,53 +35,53 @@ using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.SQLInstaller
 {
-	[GeneratorProjectAttribute(
-		"SQL Database Installer/Updater",
-		"A project that installs/updates a database based on the model, used in conjuction with the DAL",
-		"b8bd6b27-b9f2-4291-82e8-88e1295eef09",
-		typeof(nHydrateGeneratorProject),
-		typeof(DatabaseProjectGenerator),
-		SupportedDatabaseConstants.SqlServer,
-		new string[] { }
-		)]
-	public class DatabaseProjectGenerator : BaseProjectGenerator
-	{
-		protected override string ProjectTemplate
-		{
-			get { return "database.vstemplate"; }
-		}
+    [GeneratorProjectAttribute(
+        "SQL Database Installer/Updater",
+        "A project that installs/updates a database based on the model, used in conjuction with the DAL",
+        "b8bd6b27-b9f2-4291-82e8-88e1295eef09",
+        typeof(nHydrateGeneratorProject),
+        typeof(DatabaseProjectGenerator),
+        true,
+        new string[] { }
+        )]
+    public class DatabaseProjectGenerator : BaseProjectGenerator
+    {
+        protected override string ProjectTemplate
+        {
+            get { return "database.vstemplate"; }
+        }
 
-		public override string LocalNamespaceExtension
-		{
-			get { return DatabaseProjectGenerator.NamespaceExtension; }
-		}
+        public override string LocalNamespaceExtension
+        {
+            get { return DatabaseProjectGenerator.NamespaceExtension; }
+        }
 
-		public static string NamespaceExtension
-		{
-			get { return "Install"; }
-		}
+        public static string NamespaceExtension
+        {
+            get { return "Install"; }
+        }
 
-		protected override void OnAfterGenerate()
-		{
-			base.OnAfterGenerate();
+        protected override void OnAfterGenerate()
+        {
+            base.OnAfterGenerate();
 
-			var project = EnvDTEHelper.Instance.GetProject(ProjectName);
+            var project = EnvDTEHelper.Instance.GetProject(ProjectName);
 
-			var preBuildProperty = project.Properties.Item("PreBuildEvent");
-			preBuildProperty.Value = "if not exist \"$(SolutionDir)bin\" mkdir \"$(SolutionDir)bin\"\r\nattrib -r \"$(SolutionDir)Bin\\*.*\"";
+            var preBuildProperty = project.Properties.Item("PreBuildEvent");
+            preBuildProperty.Value = "if not exist \"$(SolutionDir)bin\" mkdir \"$(SolutionDir)bin\"\r\nattrib -r \"$(SolutionDir)Bin\\*.*\"";
 
-			var postBuildProperty = project.Properties.Item("PostBuildEvent");
-			postBuildProperty.Value = "copy \"$(TargetDir)$(TargetName).*\" \"$(SolutionDir)Bin\\\"";
+            var postBuildProperty = project.Properties.Item("PostBuildEvent");
+            postBuildProperty.Value = "copy \"$(TargetDir)$(TargetName).*\" \"$(SolutionDir)Bin\\\"";
 
-			var config = project.ConfigurationManager.ActiveConfiguration;
-			config.Properties.Item("StartAction").Value = 1;
-			config.Properties.Item("StartProgram").Value = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory() + "InstallUtil.exe";
-			config.Properties.Item("StartArguments").Value = this.GetLocalNamespace() + ".dll";
-		}
+            var config = project.ConfigurationManager.ActiveConfiguration;
+            config.Properties.Item("StartAction").Value = 1;
+            config.Properties.Item("StartProgram").Value = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory() + "InstallUtil.exe";
+            config.Properties.Item("StartArguments").Value = this.GetLocalNamespace() + ".dll";
+        }
 
-		protected override void OnInitialize(IModelObject model)
-		{
-			//nHydrateGeneratorProject.AddICSharpDllToBinFolder();
-		}
-	}
+        protected override void OnInitialize(IModelObject model)
+        {
+            //nHydrateGeneratorProject.AddICSharpDllToBinFolder();
+        }
+    }
 }

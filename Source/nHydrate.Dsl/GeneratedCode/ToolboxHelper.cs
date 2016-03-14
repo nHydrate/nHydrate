@@ -46,19 +46,19 @@ namespace nHydrate.Dsl
 		/// See the MSDN documentation for the ToolboxItemFilterAttribute class for more information on toolbox
 		/// item filters.
 		/// </remarks>
-		public const string ToolboxFilterString = "nHydrate.5.3";
+		public const string ToolboxFilterString = "nHydrate.6.0";
 		/// <summary>
 		/// Toolbox item filter string used to identify Association connector tool.
 		/// </summary>
-		public const string AssociationFilterString = "Association.5.3";
+		public const string AssociationFilterString = "Association.6.0";
 		/// <summary>
 		/// Toolbox item filter string used to identify Inheritance connector tool.
 		/// </summary>
-		public const string InheritanceFilterString = "Inheritance.5.3";
+		public const string InheritanceFilterString = "Inheritance.6.0";
 		/// <summary>
 		/// Toolbox item filter string used to identify ViewLink connector tool.
 		/// </summary>
-		public const string ViewLinkFilterString = "ViewLink.5.3";
+		public const string ViewLinkFilterString = "ViewLink.6.0";
 
 	
 		private global::System.Collections.Generic.Dictionary<string, DslDesign::ModelingToolboxItem> toolboxItemCache = new global::System.Collections.Generic.Dictionary<string, DslDesign::ModelingToolboxItem>();

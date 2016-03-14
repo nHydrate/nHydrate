@@ -148,18 +148,9 @@ namespace nHydrate.Generator.EFDAL.Generators.Helpers
                 sb.AppendLine("	internal class Util");
                 sb.AppendLine("	{");
 
-                sb.AppendLine("		internal static DatabasePlatformConstants GetDefinedPlatform()");
-                sb.AppendLine("		{");
-                sb.AppendLine("			var tempPlatform = System.Configuration.ConfigurationManager.AppSettings[\"" + _model.ProjectName + "Entities.Platform\"];");
-                sb.AppendLine("			var platformValue = DatabasePlatformConstants.SQLServer;");
-                sb.AppendLine("			if (!Enum.TryParse(tempPlatform, true, out platformValue)) platformValue = DatabasePlatformConstants.SQLServer;");
-                sb.AppendLine("			return platformValue;");
-                sb.AppendLine("		}");
-                sb.AppendLine();
-
                 sb.AppendLine("		internal static string ConvertNormalCS2EFFromConfig(string configSettings)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			return ConvertNormalCS2EFFromConfig(configSettings, new ContextStartup(string.Empty, false, 0, GetDefinedPlatform()));");
+                sb.AppendLine("			return ConvertNormalCS2EFFromConfig(configSettings, new ContextStartup(string.Empty, false, 0));");
                 sb.AppendLine("		}");
                 sb.AppendLine();
 
@@ -184,7 +175,7 @@ namespace nHydrate.Generator.EFDAL.Generators.Helpers
 
                 sb.AppendLine("		internal static string ConvertNormalCS2EF(string connectionString)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			return ConvertNormalCS2EF(connectionString, new ContextStartup(string.Empty, false, 0, GetDefinedPlatform()));");
+                sb.AppendLine("			return ConvertNormalCS2EF(connectionString, new ContextStartup(string.Empty, false, 0));");
                 sb.AppendLine("		}");
                 sb.AppendLine();
 
@@ -193,17 +184,10 @@ namespace nHydrate.Generator.EFDAL.Generators.Helpers
                 sb.AppendLine("			if (string.IsNullOrEmpty(connectionString)) return connectionString;");
                 sb.AppendLine("			if (connectionString.StartsWith(\"metadata=\")) return connectionString;");
                 sb.AppendLine();
-                sb.AppendLine("			if (contextStartup.CurrentPlatform == DatabasePlatformConstants.MySql)");
-                sb.AppendLine("				return @\"metadata=res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".MySql.csdl|res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".MySql.ssdl|res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".msl;provider=MySql.Data.MySqlClient;provider connection string='\" + connectionString + \"'\";");
-                sb.AppendLine("			else if (contextStartup.CurrentPlatform == DatabasePlatformConstants.SQLServer)");
-                sb.AppendLine("			{");
-                sb.AppendLine("				if (contextStartup.IsAdmin)");
-                sb.AppendLine("					return @\"metadata=res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".csdl|res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".Admin.ssdl|res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".Admin.msl;provider=System.Data.SqlClient;provider connection string='\" + connectionString + \"'\";");
-                sb.AppendLine("				else");
-                sb.AppendLine("					return @\"metadata=res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".csdl|res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".ssdl|res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".msl;provider=System.Data.SqlClient;provider connection string='\" + connectionString + \"'\";");
-                sb.AppendLine("			}");
+                sb.AppendLine("			if (contextStartup.IsAdmin)");
+                sb.AppendLine("				return @\"metadata=res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".csdl|res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".Admin.ssdl|res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".Admin.msl;provider=System.Data.SqlClient;provider connection string='\" + connectionString + \"'\";");
                 sb.AppendLine("			else");
-                sb.AppendLine("				throw new Exception(\"Unknown platform!\");");
+                sb.AppendLine("				return @\"metadata=res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".csdl|res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".ssdl|res://*/" + this.GetLocalNamespace() + "." + _model.ProjectName + ".msl;provider=System.Data.SqlClient;provider connection string='\" + connectionString + \"'\";");
                 sb.AppendLine("		}");
                 sb.AppendLine();
 

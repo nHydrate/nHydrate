@@ -457,18 +457,6 @@
     <value>Diagram</value>
     <comment>Category for DomainProperty &apos;DiagramVisibility&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.nHydrateModel/SupportedPlatforms.Description" xml:space="preserve">
-    <value>Determines the platforms supported by the generation output</value>
-    <comment>Description for DomainProperty &apos;SupportedPlatforms&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/SupportedPlatforms.DisplayName" xml:space="preserve">
-    <value>Supported Platforms</value>
-    <comment>DisplayName for DomainProperty &apos;SupportedPlatforms&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/SupportedPlatforms.Category" xml:space="preserve">
-    <value>Database</value>
-    <comment>Category for DomainProperty &apos;SupportedPlatforms&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.nHydrateModel/OutputTarget.Description" xml:space="preserve">
     <value>The target location for generated projects</value>
     <comment>Description for DomainProperty &apos;OutputTarget&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
@@ -4424,22 +4412,6 @@
   <data name="nHydrate.Dsl.VisibilityTypeConstants/None.Description" xml:space="preserve">
     <value></value>
     <comment>Description for EnumerationLiteral &apos;None&apos; on DomainEnumeration &apos;VisibilityTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.DatabasePlatformConstants/SQLServer.DisplayName" xml:space="preserve">
-    <value>SQLServer</value>
-    <comment>Display name for EnumerationLiteral &apos;SQLServer&apos; on DomainEnumeration &apos;DatabasePlatformConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.DatabasePlatformConstants/SQLServer.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;SQLServer&apos; on DomainEnumeration &apos;DatabasePlatformConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.DatabasePlatformConstants/MySQL.DisplayName" xml:space="preserve">
-    <value>MySQL</value>
-    <comment>Display name for EnumerationLiteral &apos;MySQL&apos; on DomainEnumeration &apos;DatabasePlatformConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.DatabasePlatformConstants/MySQL.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;MySQL&apos; on DomainEnumeration &apos;DatabasePlatformConstants&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.UIDataTypeConstants/Custom.DisplayName" xml:space="preserve">
     <value>Custom</value>

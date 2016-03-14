@@ -28,50 +28,36 @@ using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
 {
-	[GeneratorItem("CSDLGenerator", typeof(EFDALProjectGenerator))]
-	public class CSDLGenerator : EFDALProjectItemGenerator
-	{
-		#region Class Members
+    [GeneratorItem("CSDLGenerator", typeof(EFDALProjectGenerator))]
+    public class CSDLGenerator : EFDALProjectItemGenerator
+    {
+        #region Class Members
 
-		private const string RELATIVE_OUTPUT_LOCATION = @"\";
+        private const string RELATIVE_OUTPUT_LOCATION = @"\";
 
-		#endregion
+        #endregion
 
-		#region Overrides
+        #region Overrides
 
-		public override int FileCount
-		{
-			get { return 1; }
-		}
+        public override int FileCount
+        {
+            get { return 1; }
+        }
 
-		public override void Generate()
-		{
-			//Sql Server
-			if ((_model.SupportedPlatforms & SupportedDatabaseConstants.SqlServer) == SupportedDatabaseConstants.SqlServer)
-			{
-				var template = new CSDLTemplate(_model);
-				var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
-				var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, true);
-				eventArgs.Properties.Add("BuildAction", 3);
-				OnProjectItemGenerated(this, eventArgs);
-			}
+        public override void Generate()
+        {
+            //Sql Server
+            var template = new CSDLTemplate(_model);
+            var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
+            var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, true);
+            eventArgs.Properties.Add("BuildAction", 3);
+            OnProjectItemGenerated(this, eventArgs);
 
-			//MySql
-			if ((_model.SupportedPlatforms & SupportedDatabaseConstants.MySql) == SupportedDatabaseConstants.MySql)
-			{
-				var template = new CSDLMySqlTemplate(_model);
-				var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
-				var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, true);
-				eventArgs.Properties.Add("BuildAction", 3);
-				OnProjectItemGenerated(this, eventArgs);
-			}
+            var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
+            OnGenerationComplete(this, gcEventArgs);
+        }
 
-			var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
-			OnGenerationComplete(this, gcEventArgs);
-		}
+        #endregion
 
-		#endregion
-
-	}
+    }
 }
-

@@ -170,20 +170,9 @@ namespace nHydrate.Dsl
         public static readonly string ErrorTextInheritFieldOnly1Identity = "The primary key '{1}' for Entity '{0}' has more than one identity defined in the inheritance hierarchy.";
         public static readonly string ErrorTextInheritTopMostMustBeIndentity = "The primary key field '{1}' for Entity '{0}' cannot be an identity. A field identity can only be set on the top level field in table '{2}'.";
         public static readonly string ErrorTextTableInheritMustContainParentInModule = "The ancestor entity '{1}' must be in all modules with the child entity '{0}'.";
-        public static readonly string ErrorTextMySQLNoCRUD = "A MySQL database does not support stored procedure backed CRUD operations.";
-        public static readonly string ErrorTextMySQLAuditTables = "The entity '{0}' does not support audit tracking for a MySQL database.";
-        public static readonly string ErrorTextMySQLDatatypeField = "A MySQL database does not support the data type '{0}' of field '{1}'.";
-        public static readonly string ErrorTextMySQLDatatypeParameter = "A MySQL database does not support the data type '{0}' of parameter '{1}'.";
-        public static readonly string ErrorTextMySQLCalculated = "The calculated column '{0}' is not supported for MySql databases.";
-        public static readonly string ErrorTextMySQLEntityOnlyObjects = "The model does not support functions for a MySql database.";
-        public static readonly string ErrorTextSupportedPlatformEmpty = "The model property SupportedPlatforms must have a value.";
         public static readonly string ErrorTextDuplicateParameters = "The object {0} has duplicate parameter names.";
-        public static readonly string ErrorTextMySQLNoMaxLength = "A 'max' data type is not supported for a MySql database: {0}.";
         public static readonly string ErrorTextOutputTargetInvalid = "The OutputTarget is not a valid format for a solution folder.";
         public static readonly string ErrorTextOnlyOneTimestamp = "The entity '{0}' may only have one timestamp field including the AllowTimestamp setting.";
-        public static readonly string ErrorTextMySQLTenant = "The entity '{0}' does not support tenancy for a MySQL database.";
-        public static readonly string ErrorTextMySQLTenantColumn = "When using tenacy the tenant column must be set.";
-        public static readonly string ErrorTextMySQLTenantPrefix = "When using tenacy the tenant prefix must be set.";
         public static readonly string ErrorTextTenantTypeTable = "Database typed tables cannot also be tenant tables.";
         public static readonly string ErrorTextTenantTypeTableTenantColumnMatch = "The tenant table '{0}' cannot have an explicitly defined field named '{1}'";
         public static readonly string ErrorTextStoredProcNoColumns = "The stored procedure '{0}' must have at least one field.";
@@ -408,19 +397,6 @@ namespace nHydrate.Dsl
             }
 
             return true;
-        }
-
-        public static bool MySQLSupportedDatatype(DataTypeConstants type)
-        {
-            switch (type)
-            {
-                case DataTypeConstants.Variant:
-                case DataTypeConstants.DateTimeOffset:
-                case DataTypeConstants.Udt:
-                    return false;
-                default:
-                    return true;
-            }
         }
 
     }

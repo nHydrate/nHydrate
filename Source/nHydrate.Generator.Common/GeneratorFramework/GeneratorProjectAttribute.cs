@@ -34,32 +34,20 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         protected string[] _dependencyList = new string[0];
         protected string[] _exclusionList = new string[0];
 
-        public GeneratorProjectAttribute(string name, string description, string generatorGuid, Type parentType, Type currentType, string[] dependencyList)
+        public GeneratorProjectAttribute(string name, string description, string generatorGuid, Type parentType, Type currentType, bool isMain, string[] dependencyList)
             : base(name, parentType)
         {
             _dependencyList = dependencyList;
             _currentType = currentType;
             this.Description = description;
             this.GeneratorGuid = generatorGuid;
+            this.IsMain = isMain;
         }
 
-        public GeneratorProjectAttribute(string name, string description, string generatorGuid, Type parentType, Type currentType, string[] dependencyList, string[] exclusionList)
-            : this(name, description, generatorGuid, parentType, currentType, dependencyList)
+        public GeneratorProjectAttribute(string name, string description, string generatorGuid, Type parentType, Type currentType, bool isMain, string[] dependencyList, string[] exclusionList)
+            : this(name, description, generatorGuid, parentType, currentType, isMain, dependencyList)
         {
             _exclusionList = exclusionList;
-        }
-
-        public GeneratorProjectAttribute(string name, string description, string generatorGuid, Type parentType, Type currentType, SupportedDatabaseConstants requiredPlatforms, string[] dependencyList)
-            : this(name, description, generatorGuid, parentType, currentType, dependencyList)
-        {
-            this.RequiredPlatforms = requiredPlatforms;
-        }
-
-        public GeneratorProjectAttribute(string name, string description, string generatorGuid, Type parentType, Type currentType, SupportedDatabaseConstants requiredPlatforms, string[] dependencyList, string[] exclusionList)
-            : this(name, description, generatorGuid, parentType, currentType, dependencyList)
-        {
-            _exclusionList = exclusionList;
-            this.RequiredPlatforms = requiredPlatforms;
         }
 
         public Type CurrentType
@@ -79,7 +67,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
         public string Description { get; set; }
         public string GeneratorGuid { get; set; }
-        public SupportedDatabaseConstants RequiredPlatforms { get; set; }
-
+        public bool IsMain { get; set; }
     }
 }

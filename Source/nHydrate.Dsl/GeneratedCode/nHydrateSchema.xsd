@@ -324,12 +324,6 @@
             <xsd:documentation>Determines which objects are visible on the diagram</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: SupportedPlatforms -->
-        <xsd:attribute name="supportedPlatforms" type="DatabasePlatformConstants" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the platforms supported by the generation output</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: OutputTarget -->
         <xsd:attribute name="outputTarget" type="xsd:string" >
           <xsd:annotation>
@@ -4143,14 +4137,6 @@
         </xsd:annotation>
       </xsd:enumeration>
       <xsd:enumeration value="None"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-  
-  <!-- Enum DatabasePlatformConstants -->
-  <xsd:simpleType name="DatabasePlatformConstants">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="SQLServer"/>
-      <xsd:enumeration value="MySQL"/>
     </xsd:restriction>
   </xsd:simpleType>
   

@@ -888,21 +888,8 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                #region MySQL
-
-                if (this.AllowAuditTracking && (this.nHydrateModel.SupportedPlatforms & DatabasePlatformConstants.MySQL) == DatabasePlatformConstants.MySQL)
-                {
-                    context.LogError(string.Format(ValidationHelper.ErrorTextMySQLAuditTables, this.Name), string.Empty, this);
-                }
-
-                #endregion
-
                 #region Tenant
 
-                if (this.IsTenant && (this.nHydrateModel.SupportedPlatforms & DatabasePlatformConstants.MySQL) == DatabasePlatformConstants.MySQL)
-                {
-                    context.LogError(string.Format(ValidationHelper.ErrorTextMySQLTenant, this.Name), string.Empty, this);
-                }
                 if (this.IsTenant && this.TypedEntity == TypedEntityConstants.DatabaseTable)
                 {
                     context.LogError(string.Format(ValidationHelper.ErrorTextTenantTypeTable, this.Name), string.Empty, this);

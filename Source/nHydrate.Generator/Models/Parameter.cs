@@ -238,7 +238,7 @@ namespace nHydrate.Generator.Models
             get { return _dataType; }
             set
             {
-                if (!Column.IsSupportedType(value, ((ModelRoot)this.Root).SQLServerType, ((ModelRoot)this.Root).SupportedPlatforms))
+                if (!Column.IsSupportedType(value, ((ModelRoot)this.Root).SQLServerType))
                 {
                     throw new Exception("Unsupported type");
                 }

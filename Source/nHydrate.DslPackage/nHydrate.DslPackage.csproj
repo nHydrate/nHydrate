@@ -773,10 +773,6 @@ rem copy "$(SolutionDir)bin\*.*" "%25USERPROFILE%25\AppData\Local\Microsoft\Visu
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\nHydrate.DataImport.MySqlClient\nHydrate.DataImport.MySqlClient.csproj">
-      <Project>{1668FE77-D873-4925-BE09-F5E6B16B1954}</Project>
-      <Name>nHydrate.DataImport.MySqlClient</Name>
-    </ProjectReference>
     <ProjectReference Include="..\nHydrate.DataImport.SqlClient\nHydrate.DataImport.SqlClient.csproj">
       <Project>{22C3BCFF-9471-4A27-909C-70563D9BD09D}</Project>
       <Name>nHydrate.DataImport.SqlClient</Name>

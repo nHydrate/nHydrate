@@ -38,6 +38,7 @@ namespace nHydrate.Generator.EFDAL
         "b8bd6b27-b9f2-4291-82e8-88e1295eef06",
         typeof(nHydrateGeneratorProject),
         typeof(EFDALProjectGenerator),
+        false,
         new string[] { 
             "nHydrate.Generator.EFDAL.Interfaces.EFDALInterfaceProjectGenerator"
         },

@@ -64,7 +64,6 @@
     <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
       <Link>Properties\AssemblyInfoGeneratorCommon.cs</Link>
     </Compile>
-    <Compile Include="MySQLEmit.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="HTMLEmit.cs" />
     <Compile Include="SQLEmit.cs" />

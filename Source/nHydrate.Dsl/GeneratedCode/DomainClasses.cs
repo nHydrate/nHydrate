@@ -422,7 +422,7 @@ namespace nHydrate.Dsl
 		/// <summary>
 		/// Storage for SQLServerType
 		/// </summary>
-		private DatabaseTypeConstants sQLServerTypePropertyStorage = DatabaseTypeConstants.SQL2005;
+		private DatabaseTypeConstants sQLServerTypePropertyStorage = DatabaseTypeConstants.SQL2008;
 		
 		/// <summary>
 		/// Gets or sets the value of SQLServerType domain property.
@@ -431,7 +431,7 @@ namespace nHydrate.Dsl
 		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/SQLServerType.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/SQLServerType.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/SQLServerType.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[global::System.ComponentModel.DefaultValue(DatabaseTypeConstants.SQL2005)]
+		[global::System.ComponentModel.DefaultValue(DatabaseTypeConstants.SQL2008)]
 		[DslModeling::DomainObjectId("e309bd8d-ce4c-4995-a73e-b6aaeb070c3d")]
 		public virtual DatabaseTypeConstants SQLServerType
 		{
@@ -2352,7 +2352,7 @@ namespace nHydrate.Dsl
 		/// <summary>
 		/// Storage for UseGeneratedCRUD
 		/// </summary>
-		private global::System.Boolean useGeneratedCRUDPropertyStorage = true;
+		private global::System.Boolean useGeneratedCRUDPropertyStorage;
 		
 		/// <summary>
 		/// Gets or sets the value of UseGeneratedCRUD domain property.
@@ -2361,7 +2361,6 @@ namespace nHydrate.Dsl
 		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/UseGeneratedCRUD.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/UseGeneratedCRUD.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/UseGeneratedCRUD.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[global::System.ComponentModel.DefaultValue(true)]
 		[DslModeling::DomainObjectId("4138a1c1-4bbf-4195-aba3-1c32aad51a0e")]
 		public virtual global::System.Boolean UseGeneratedCRUD
 		{
@@ -2519,98 +2518,6 @@ namespace nHydrate.Dsl
 				{
 					ValueChanging(element, oldValue, newValue);
 					element.diagramVisibilityPropertyStorage = newValue;
-					ValueChanged(element, oldValue, newValue);
-					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("nHydrateModel"));
-				}
-			}
-		}
-		
-		#endregion
-		#region SupportedPlatforms domain property code
-		
-		/// <summary>
-		/// SupportedPlatforms domain property Id.
-		/// </summary>
-		public static readonly global::System.Guid SupportedPlatformsDomainPropertyId = new global::System.Guid(0xe88f80f4, 0x31ef, 0x4d89, 0x9c, 0x9b, 0x78, 0xb0, 0x01, 0x57, 0xd2, 0x02);
-		
-		/// <summary>
-		/// Storage for SupportedPlatforms
-		/// </summary>
-		private DatabasePlatformConstants supportedPlatformsPropertyStorage;
-		
-		/// <summary>
-		/// Gets or sets the value of SupportedPlatforms domain property.
-		/// Determines the platforms supported by the generation output
-		/// </summary>
-		[System.ComponentModel.TypeConverter(typeof(nHydrate.Dsl.Design.Converters.DatabasePlatformEnumConverter))]
-		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/SupportedPlatforms.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/SupportedPlatforms.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/SupportedPlatforms.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslModeling::DomainObjectId("e88f80f4-31ef-4d89-9c9b-78b00157d202")]
-		public virtual DatabasePlatformConstants SupportedPlatforms
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return supportedPlatformsPropertyStorage;
-			}
-			[global::System.Diagnostics.DebuggerStepThrough]
-			set
-			{
-				SupportedPlatformsPropertyHandler.Instance.SetValue(this, value);
-			}
-		}
-		/// <summary>
-		/// Value handler for the nHydrateModel.SupportedPlatforms domain property.
-		/// </summary>
-		internal sealed partial class SupportedPlatformsPropertyHandler : DslModeling::DomainPropertyValueHandler<nHydrateModelBase, DatabasePlatformConstants>
-		{
-			private SupportedPlatformsPropertyHandler() { }
-		
-			/// <summary>
-			/// Gets the singleton instance of the nHydrateModel.SupportedPlatforms domain property value handler.
-			/// </summary>
-			public static readonly SupportedPlatformsPropertyHandler Instance = new SupportedPlatformsPropertyHandler();
-		
-			/// <summary>
-			/// Gets the Id of the nHydrateModel.SupportedPlatforms domain property.
-			/// </summary>
-			public sealed override global::System.Guid DomainPropertyId
-			{
-				[global::System.Diagnostics.DebuggerStepThrough]
-				get
-				{
-					return SupportedPlatformsDomainPropertyId;
-				}
-			}
-			
-			/// <summary>
-			/// Gets a strongly-typed value of the property on specified element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <returns>Property value.</returns>
-			public override sealed DatabasePlatformConstants GetValue(nHydrateModelBase element)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-				return element.SupportedPlatforms;
-				//return element.GetValue<DatabasePlatformConstants>("SupportedPlatforms", element.supportedPlatformsPropertyStorage);
-				//return element.supportedPlatformsPropertyStorage; //ORIGINAL CODE
-			}
-		
-			/// <summary>
-			/// Sets property value on an element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <param name="newValue">New property value.</param>
-			public override sealed void SetValue(nHydrateModelBase element, DatabasePlatformConstants newValue)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-		
-				DatabasePlatformConstants oldValue = GetValue(element);
-				if (newValue != oldValue)
-				{
-					ValueChanging(element, oldValue, newValue);
-					element.supportedPlatformsPropertyStorage = newValue;
 					ValueChanged(element, oldValue, newValue);
 					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("nHydrateModel"));
 				}

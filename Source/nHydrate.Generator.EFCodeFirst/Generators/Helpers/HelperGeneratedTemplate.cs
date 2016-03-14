@@ -141,18 +141,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	internal class Util");
                 sb.AppendLine("	{");
 
-                sb.AppendLine("		internal static DatabasePlatformConstants GetDefinedPlatform()");
-                sb.AppendLine("		{");
-                sb.AppendLine("			var tempPlatform = System.Configuration.ConfigurationManager.AppSettings[\"" + _model.ProjectName + "Entities.Platform\"];");
-                sb.AppendLine("			var platformValue = DatabasePlatformConstants.SQLServer;");
-                sb.AppendLine("			if (!Enum.TryParse(tempPlatform, true, out platformValue)) platformValue = DatabasePlatformConstants.SQLServer;");
-                sb.AppendLine("			return platformValue;");
-                sb.AppendLine("		}");
-                sb.AppendLine();
-
                 sb.AppendLine("		internal static string ConvertNormalCS2EFFromConfig(string configSettings)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			return ConvertNormalCS2EFFromConfig(configSettings, new ContextStartup(string.Empty, false, 0, GetDefinedPlatform()));");
+                sb.AppendLine("			return ConvertNormalCS2EFFromConfig(configSettings, new ContextStartup(string.Empty, false, 0));");
                 sb.AppendLine("		}");
                 sb.AppendLine();
 
@@ -176,7 +167,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine();
                 sb.AppendLine("		internal static string ConvertNormalCS2EF(string connectionString)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			return ConvertNormalCS2EF(connectionString, new ContextStartup(string.Empty, false, 0, GetDefinedPlatform()));");
+                sb.AppendLine("			return ConvertNormalCS2EF(connectionString, new ContextStartup(string.Empty, false, 0));");
                 sb.AppendLine("		}");
                 sb.AppendLine();
                 sb.AppendLine("		internal static string ConvertNormalCS2EF(string connectionString, ContextStartup contextStartup)");

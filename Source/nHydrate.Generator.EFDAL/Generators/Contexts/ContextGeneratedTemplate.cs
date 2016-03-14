@@ -214,16 +214,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
 
         private void AppendClass()
         {
-            sb.AppendLine("		/// <summary/>");
-            sb.AppendLine("		public enum DatabasePlatformConstants");
-            sb.AppendLine("		{");
-            sb.AppendLine("			/// <summary/>");
-            sb.AppendLine("			SQLServer,");
-            sb.AppendLine("			/// <summary/>");
-            sb.AppendLine("			MySql,");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
             sb.AppendLine("	#region Entity Context");
             sb.AppendLine();
             sb.AppendLine("	/// <summary>");
@@ -250,7 +240,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
             sb.AppendLine("		public " + _model.ProjectName + "Entities() :");
             sb.AppendLine("			base(Util.ConvertNormalCS2EFFromConfig(\"name=" + _model.ProjectName + "Entities\"), \"" + _model.ProjectName + "Entities\")");
             sb.AppendLine("		{");
-            sb.AppendLine("			this.CurrentPlatform = Util.GetDefinedPlatform();");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Connection.ConnectionString));");
@@ -275,7 +264,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
             sb.AppendLine("			base(Util.ConvertNormalCS2EFFromConfig(\"name=" + _model.ProjectName + "Entities\", contextStartup), \"" + _model.ProjectName + "Entities\")");
             sb.AppendLine("		{");
             sb.AppendLine("			_contextStartup = contextStartup;");
-            sb.AppendLine("			this.CurrentPlatform = contextStartup.CurrentPlatform;");
             sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
             sb.AppendLine("			this.CommandTimeout = contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
@@ -289,7 +277,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
             sb.AppendLine("			base(Util.ConvertNormalCS2EF(connectionString, contextStartup), \"" + _model.ProjectName + "Entities\")");
             sb.AppendLine("		{");
             sb.AppendLine("			_contextStartup = contextStartup;");
-            sb.AppendLine("			this.CurrentPlatform = contextStartup.CurrentPlatform;");
             sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
             sb.AppendLine("			this.CommandTimeout = contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
@@ -302,7 +289,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
             sb.AppendLine("		public " + _model.ProjectName + "Entities(string connectionString) :");
             sb.AppendLine("			base(Util.ConvertNormalCS2EF(connectionString), \"" + _model.ProjectName + "Entities\")");
             sb.AppendLine("		{");
-            sb.AppendLine("			this.CurrentPlatform = Util.GetDefinedPlatform();");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Connection.ConnectionString));");
@@ -326,7 +312,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
             sb.AppendLine("		public " + _model.ProjectName + "Entities(System.Data.EntityClient.EntityConnection connection) :");
             sb.AppendLine("			base(connection, \"" + _model.ProjectName + "Entities\")");
             sb.AppendLine("		{");
-            sb.AppendLine("			this.CurrentPlatform = Util.GetDefinedPlatform();");
             sb.AppendLine("			this.OnContextCreated();");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -379,12 +364,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
             sb.AppendLine("		}");
             sb.AppendLine();
             #endregion
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Determines the supported database platforms");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public DatabasePlatformConstants CurrentPlatform { get; private set; }");
-            sb.AppendLine();
 
             #region Tables
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
@@ -1141,35 +1120,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
             }
             sb.AppendLine();
 
-            #region IsTimestampAuditImplemented
-            sb.AppendLine("					if (this.CurrentPlatform == DatabasePlatformConstants.MySql)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						if (entity.IsTimestampAuditImplemented)");
-            sb.AppendLine("						{");
-
-            //For all MySQL tables with a managed Timestamp add code to set a new value to mimic Sql Server
-            index3 = 0;
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowTimestamp).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("							" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.TimestampPascalName + " = new byte[] { (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256) };");
-                index3++;
-            }
-
-            sb.AppendLine("						}");
-
-            //For all MySQL tables with a user-defined Timestamp add code to set a new value to mimic Sql Server
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable).OrderBy(x => x.PascalName))
-            {
-                foreach (var column in table.GeneratedColumns.Where(x => x.DataType == System.Data.SqlDbType.Timestamp).OrderBy(x => x.Name))
-                {
-                    sb.AppendLine("						" + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + column.PascalName + " = new byte[] { (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256) };");
-                }
-            }
-
-            sb.AppendLine("					}");
-            sb.AppendLine();
-            #endregion
-
             sb.AppendLine("				}");
             sb.AppendLine("			}");
             sb.AppendLine();
@@ -1197,34 +1147,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
             sb.AppendLine();
             #endregion
 
-            #region IsTimestampAuditImplemented
-            sb.AppendLine("					if (this.CurrentPlatform == DatabasePlatformConstants.MySql)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						if (entity.IsTimestampAuditImplemented)");
-            sb.AppendLine("						{");
-
-            //For all MySQL tables with a managed Timestamp add code to set a new value to mimic Sql Server
-            index3 = 0;
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowTimestamp).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("							" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.TimestampPascalName + " = new byte[] { (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256) };");
-                index3++;
-            }
-            sb.AppendLine("						}");
-
-            //For all MySQL tables with a user-defined Timestamp add code to set a new value to mimic Sql Server
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable).OrderBy(x => x.PascalName))
-            {
-                foreach (var column in table.GeneratedColumns.Where(x => x.DataType == System.Data.SqlDbType.Timestamp).OrderBy(x => x.Name))
-                {
-                    sb.AppendLine("						" + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + column.PascalName + " = new byte[] { (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256), (byte)_rnd.Next(0, 256) };");
-                }
-            }
-
-            sb.AppendLine("					}");
-            sb.AppendLine();
-            #endregion
-
             index3 = 0;
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowModifiedAudit).OrderBy(x => x.PascalName))
             {
@@ -1238,7 +1160,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
 
             sb.AppendLine("			return base.SaveChanges(options);");
             sb.AppendLine("		}");
-            sb.AppendLine("		private Random _rnd = new Random();"); //Used for MySql
             sb.AppendLine();
             #endregion
 

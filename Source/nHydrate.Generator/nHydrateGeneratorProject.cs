@@ -41,7 +41,6 @@ namespace nHydrate.Generator
         public const string EFCoreFile = "nHydrate.EFCore.dll";
         public const string MicrosoftServiceModelWeb = "Microsoft.ServiceModel.Web.dll";
         public const string CodeFirstCTP5 = "EntityFramework.dll";
-        public const string MySqlBinary = "MySql.Data.dll";
         #endregion
 
         #region Member Variables

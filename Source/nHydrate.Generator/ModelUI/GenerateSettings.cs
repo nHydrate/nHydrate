@@ -37,6 +37,8 @@ namespace nHydrate.Generator.ModelUI
     {
         #region Class Members
 
+        private List<Type> _wizardTypeList = null;
+        private List<Type> _generatorTypeList = null;
         private readonly Dictionary<string, Type> _generatorMap = new Dictionary<string, Type>();
         private readonly IGenerator _generator = null;
         private List<string> _moduleList = null;
@@ -59,67 +61,27 @@ namespace nHydrate.Generator.ModelUI
             wizard1.AfterSwitchPages += new Wizard.Wizard.AfterSwitchPagesEventHandler(wizard1_AfterSwitchPages);
         }
 
-        public GenerateSettings(IGenerator generator, List<Type> generatorTypeList, List<Type> wizardTypeList, List<string> moduleList, SupportedDatabaseConstants platforms)
+        public GenerateSettings(IGenerator generator, List<Type> generatorTypeList, List<Type> wizardTypeList, List<string> moduleList)
             : this()
         {
             try
             {
                 _generator = generator;
                 _moduleList = moduleList;
+                _generatorTypeList = generatorTypeList;
+                _wizardTypeList = wizardTypeList;
 
                 var globalCacheFile = new GlobalCacheFile();
                 var cacheFile = new ModelCacheFile(_generator);
                 foreach (var v in generatorTypeList)
                 {
-                    var arr = v.GetCustomAttributes(typeof(GeneratorProjectAttribute), true);
-                    if (arr.Length == 1)
+                    var attribute = v.GetCustomAttributes(typeof(GeneratorProjectAttribute), true).Cast<GeneratorProjectAttribute>().FirstOrDefault();
+                    if (!globalCacheFile.ExcludeList.Contains(v.FullName))
                     {
-                        var attribute = arr[0] as GeneratorProjectAttribute;
-                        if (!globalCacheFile.ExcludeList.Contains(v.FullName))
-                        {
-                            var doProcess = true;
-                            if (attribute.RequiredPlatforms != 0)
-                            {
-                                var required = new List<SupportedDatabaseConstants>();
-                                foreach (SupportedDatabaseConstants e in Enum.GetValues(typeof(SupportedDatabaseConstants)))
-                                {
-                                    if ((attribute.RequiredPlatforms & e) == e)
-                                        required.Add(e);
-                                }
-
-                                foreach (var e in required)
-                                {
-                                    if ((platforms & e) != e)
-                                        doProcess = false;
-                                }
-
-                            }
-
-                            if (doProcess)
-                            {
-                                _generatorMap.Add(attribute.Name, v);
-                                var typeName = string.Empty;
-                                if (attribute.CurrentType != null) typeName = attribute.CurrentType.ToString();
-                                var node = tvwProjects.Nodes.Add(typeName, attribute.Name);
-                                node.Tag = attribute;
-
-                                if (wizardTypeList != null)
-                                {
-                                    node.Checked = wizardTypeList.Contains(v);
-                                }
-                                else
-                                {
-                                    node.Checked = !cacheFile.ExcludeList.Contains(v.FullName);
-                                }
-                            }
-                            else
-                            {
-                                _invisibleList.Add(v);
-                            }
-
-                        }
+                        _generatorMap.Add(attribute.Name, v);
                     }
                 }
+                LoadGenerators(true);
 
                 //Add modules
                 foreach (var s in moduleList.OrderBy(x => x))
@@ -187,6 +149,45 @@ namespace nHydrate.Generator.ModelUI
         #endregion
 
         #region Methods
+
+        private void LoadGenerators(bool isMain)
+        {
+            try
+            {
+                var globalCacheFile = new GlobalCacheFile();
+                var cacheFile = new ModelCacheFile(_generator);
+                tvwProjects.Nodes.Clear();
+
+                foreach (var key in _generatorMap.Keys)
+                {
+                    var sysType = _generatorMap[key];
+                    if (!globalCacheFile.ExcludeList.Contains(sysType.FullName))
+                    {
+                        var attribute = sysType.GetCustomAttributes(typeof(GeneratorProjectAttribute), true).Cast<GeneratorProjectAttribute>().FirstOrDefault();
+                        if ((isMain && attribute.IsMain) || !isMain)
+                        {
+                            var typeName = string.Empty;
+                            if (attribute.CurrentType != null) typeName = attribute.CurrentType.ToString();
+                            var node = tvwProjects.Nodes.Add(typeName, attribute.Name);
+                            node.Tag = attribute;
+
+                            if (_wizardTypeList != null)
+                            {
+                                node.Checked = _wizardTypeList.Contains(sysType);
+                            }
+                            else
+                            {
+                                node.Checked = !cacheFile.ExcludeList.Contains(sysType.FullName);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
         private bool IsModulesChecked()
         {
@@ -363,6 +364,12 @@ namespace nHydrate.Generator.ModelUI
         }
 
         #endregion
+
+        private void linkShowAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            LoadGenerators(false);
+            linkShowAll.Visible = false;
+        }
 
     }
 }

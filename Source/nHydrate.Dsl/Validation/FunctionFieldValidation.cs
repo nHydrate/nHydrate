@@ -70,16 +70,6 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                #region MySQL
-                if ((this.Function.nHydrateModel.SupportedPlatforms & DatabasePlatformConstants.MySQL) == DatabasePlatformConstants.MySQL)
-                {
-                    if (!ValidationHelper.MySQLSupportedDatatype(this.DataType))
-                    {
-                        context.LogError(string.Format(ValidationHelper.ErrorTextMySQLDatatypeField, this.DataType.ToString(), this.Function.Name + "." + this.Name), string.Empty, this);
-                    }
-                }
-                #endregion
-
             }
             catch (Exception ex)
             {

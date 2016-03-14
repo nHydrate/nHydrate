@@ -34,100 +34,78 @@ using System.Windows.Forms;
 
 namespace nHydrate.DslPackage.Forms
 {
-	public partial class FirstPromptForm : Form
-	{
-		private nHydrate.Dsl.nHydrateModel _model = null;
+    public partial class FirstPromptForm : Form
+    {
+        private nHydrate.Dsl.nHydrateModel _model = null;
 
-		public FirstPromptForm()
-		{
-			InitializeComponent();
-			txtCompany.TextChanged += new EventHandler(TextBox_TextChanged);
-			txtProject.TextChanged += new EventHandler(TextBox_TextChanged);
-		}
+        public FirstPromptForm()
+        {
+            InitializeComponent();
+            txtCompany.TextChanged += new EventHandler(TextBox_TextChanged);
+            txtProject.TextChanged += new EventHandler(TextBox_TextChanged);
+        }
 
-		public FirstPromptForm(nHydrate.Dsl.nHydrateModel model)
-			: this()
-		{
-			_model = model;
+        public FirstPromptForm(nHydrate.Dsl.nHydrateModel model)
+            : this()
+        {
+            _model = model;
 
-			//Load the platoforms
-			foreach (var s in Enum.GetNames(typeof(nHydrate.Dsl.DatabasePlatformConstants)))
-			{
-				lstPlatforms.Items.Add(s);
-			}
+            txtCompany.Text = _model.CompanyName;
+            txtProject.Text = _model.ProjectName;
 
-			txtCompany.Text = _model.CompanyName;
-			txtProject.Text = _model.ProjectName;
+            TextBox_TextChanged(null, null);
+        }
 
-			for (var ii = 0; ii < lstPlatforms.Items.Count; ii++)
-			{
-				var v = (Dsl.DatabasePlatformConstants)Enum.Parse(typeof(Dsl.DatabasePlatformConstants), (string)lstPlatforms.Items[ii]);
-				if ((_model.SupportedPlatforms & v) == v)
-					lstPlatforms.SetItemChecked(ii, true);
-			}
+        private void cmdApply_Click(object sender, EventArgs e)
+        {
+            txtCompany.Text = txtCompany.Text.Trim();
+            txtProject.Text = txtProject.Text.Trim();
 
-			TextBox_TextChanged(null, null);
-		}
+            if (!nHydrate.Dsl.ValidationHelper.ValidDatabaseIdenitifer(txtCompany.Text) || !nHydrate.Dsl.ValidationHelper.ValidCodeIdentifier(txtCompany.Text))
+            {
+                MessageBox.Show(nHydrate.Dsl.ValidationHelper.ErrorTextInvalidCompany, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else if (!nHydrate.Dsl.ValidationHelper.ValidDatabaseIdenitifer(txtProject.Text) || !nHydrate.Dsl.ValidationHelper.ValidCodeIdentifier(txtProject.Text))
+            {
+                MessageBox.Show(nHydrate.Dsl.ValidationHelper.ErrorTextInvalidProject, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-		private void cmdApply_Click(object sender, EventArgs e)
-		{
-			txtCompany.Text=txtCompany.Text.Trim();
-			txtProject.Text = txtProject.Text.Trim();
+            using (var transaction = _model.Store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
+            {
+                _model.CompanyName = txtCompany.Text.Trim();
+                _model.ProjectName = txtProject.Text.Trim();
+                transaction.Commit();
+            }
 
-			if (!nHydrate.Dsl.ValidationHelper.ValidDatabaseIdenitifer(txtCompany.Text) || !nHydrate.Dsl.ValidationHelper.ValidCodeIdentifier(txtCompany.Text))
-			{
-				MessageBox.Show(nHydrate.Dsl.ValidationHelper.ErrorTextInvalidCompany, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
-			else if (!nHydrate.Dsl.ValidationHelper.ValidDatabaseIdenitifer(txtProject.Text) || !nHydrate.Dsl.ValidationHelper.ValidCodeIdentifier(txtProject.Text))
-			{
-				MessageBox.Show(nHydrate.Dsl.ValidationHelper.ErrorTextInvalidProject, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.Close();
+        }
 
-			using (var transaction = _model.Store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
-			{
-				_model.CompanyName = txtCompany.Text.Trim();
-				_model.ProjectName = txtProject.Text.Trim();
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.Close();
+        }
 
-				_model.SupportedPlatforms = 0;
-				foreach (string s in lstPlatforms.CheckedItems)
-				{
-					var v = (Dsl.DatabasePlatformConstants)Enum.Parse(typeof(Dsl.DatabasePlatformConstants), s);
-					_model.SupportedPlatforms = _model.SupportedPlatforms | v;
-				}
+        private void TextBox_TextChanged(object sender, EventArgs e)
+        {
+            var v = string.Empty;
+            if (string.IsNullOrEmpty(txtCompany.Text.Trim()))
+                v += "[NOT SET]";
+            else
+                v += txtCompany.Text.Trim();
 
-				transaction.Commit();
-			}
+            v += ".";
 
-			this.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.Close();
-		}
+            if (string.IsNullOrEmpty(txtProject.Text.Trim()))
+                v += "[NOT SET]";
+            else
+                v += txtProject.Text.Trim();
 
-		private void cmdCancel_Click(object sender, EventArgs e)
-		{
-			this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Close();
-		}
+            lblNamespace.Text = v;
+        }
 
-		private void TextBox_TextChanged(object sender, EventArgs e)
-		{
-			var v = string.Empty;
-			if (string.IsNullOrEmpty(txtCompany.Text.Trim()))
-				v += "[NOT SET]";
-			else
-				v += txtCompany.Text.Trim();
-
-			v += ".";
-
-			if (string.IsNullOrEmpty(txtProject.Text.Trim()))
-				v += "[NOT SET]";
-			else
-				v += txtProject.Text.Trim();
-
-			lblNamespace.Text = v;
-		}
-
-	}
+    }
 }
-

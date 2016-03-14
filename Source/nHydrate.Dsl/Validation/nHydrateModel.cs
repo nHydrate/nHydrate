@@ -200,15 +200,6 @@ namespace nHydrate.Dsl
                 }
                 #endregion
 
-                #region Check for supported platforms
-
-                if (this.SupportedPlatforms == 0)
-                {
-                    context.LogError(ValidationHelper.ErrorTextSupportedPlatformEmpty, string.Empty, this);
-                }
-
-                #endregion
-
                 #region Validate OutputTarget
 
                 if (!string.IsNullOrEmpty(this.OutputTarget))
@@ -225,29 +216,9 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                #region MySql
-
-                //No generated CRUD layer (SP based)
-                if (((this.SupportedPlatforms & DatabasePlatformConstants.MySQL) == DatabasePlatformConstants.MySQL) && this.UseGeneratedCRUD)
-                {
-                    context.LogError(ValidationHelper.ErrorTextMySQLNoCRUD, string.Empty, this);
-                }
-
-                //Does not support functions
-                if (this.Functions.Count(x => x.IsGenerated) > 0)
-                {
-                    context.LogWarning(ValidationHelper.ErrorTextMySQLEntityOnlyObjects, string.Empty, this);
-                }
-
-                #endregion
-
                 #region Tenant
                 if (this.Entities.Any(x => x.IsTenant))
                 {
-                    if (string.IsNullOrEmpty(this.TenantColumnName))
-                        context.LogError(ValidationHelper.ErrorTextMySQLTenantColumn, string.Empty, this);
-                    if (string.IsNullOrEmpty(this.TenantPrefix))
-                        context.LogError(ValidationHelper.ErrorTextMySQLTenantPrefix, string.Empty, this);
                     if (!ValidationHelper.ValidCodeIdentifier(this.TenantColumnName))
                         context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifier, this.TenantColumnName), string.Empty, this);
                     if (!ValidationHelper.ValidCodeIdentifier(this.TenantPrefix))

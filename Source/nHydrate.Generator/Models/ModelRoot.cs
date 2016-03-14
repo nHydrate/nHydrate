@@ -51,7 +51,6 @@ namespace nHydrate.Generator.Models
         protected const EFVersionConstants _def_efVersion = EFVersionConstants.EF6;
         protected const FrameworkVersionConstants _def_frameworkVersion = FrameworkVersionConstants.v35;
         protected const string _def_storedProcedurePrefix = "gen";
-        protected const SupportedDatabaseConstants _def_supportedPlatforms = SupportedDatabaseConstants.MySql;
         protected const string _def_tenantColumnName = "__tenant_user";
         protected const string _def_tenantPrefix = "__vw_tenant";
 
@@ -77,7 +76,6 @@ namespace nHydrate.Generator.Models
         private readonly VersionHistoryCollection _versionHistoryList = new VersionHistoryCollection();
         private string _moduleName = string.Empty;
         private string _modeToolVersion = string.Empty;
-        protected SupportedDatabaseConstants _supportedPlatforms = _def_supportedPlatforms;
         protected string _tenantColumnName = _def_tenantColumnName;
         protected string _tenantPrefix = _def_tenantPrefix;
 
@@ -103,16 +101,6 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region Property Implementations
-
-        public SupportedDatabaseConstants SupportedPlatforms
-        {
-            get { return _supportedPlatforms; }
-            set
-            {
-                _supportedPlatforms = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("SupportedPlatforms"));
-            }
-        }
 
         public string TenantColumnName
         {
@@ -536,7 +524,6 @@ namespace nHydrate.Generator.Models
                 XmlHelper.AddAttribute(node, "version", this.Version);
                 XmlHelper.AddAttribute(node, "companyName", this.CompanyName);
                 XmlHelper.AddAttribute(node, "emitSafetyScripts", this.EmitSafetyScripts);
-                XmlHelper.AddAttribute(node, "supportedPlatforms", this.SupportedPlatforms.ToString("d"));
                 XmlHelper.AddAttribute(node, "tenantColumnName", this.TenantColumnName);
                 XmlHelper.AddAttribute(node, "tenantPrefix", this.TenantPrefix);
 
@@ -600,7 +587,6 @@ namespace nHydrate.Generator.Models
                 this.EFVersion = (EFVersionConstants)Enum.Parse(typeof(EFVersionConstants), XmlHelper.GetAttributeValue(node, "efversion", _def_efVersion.ToString()));
                 this.FrameworkVersion = (FrameworkVersionConstants)Enum.Parse(typeof(FrameworkVersionConstants), XmlHelper.GetAttributeValue(node, "frameworkVersion", _def_frameworkVersion.ToString()));
                 this.StoredProcedurePrefix = XmlHelper.GetAttributeValue(node, "storedProcedurePrefix", _def_storedProcedurePrefix);
-                this.SupportedPlatforms = (SupportedDatabaseConstants)XmlHelper.GetAttributeValue(node, "supportedPlatforms", (int)_def_supportedPlatforms);
                 this.TenantColumnName = XmlHelper.GetAttributeValue(node, "tenantColumnName", _def_tenantColumnName);
                 this.TenantPrefix = XmlHelper.GetAttributeValue(node, "tenantPrefix", _def_tenantPrefix);
 

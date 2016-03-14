@@ -46,12 +46,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         v40 = 1,
     }
 
-    public enum SupportedDatabaseConstants
-    {
-        SqlServer = 1,
-        MySql = 2,
-    }
-
     public delegate void StandardEventHandler(object sender, System.EventArgs e);
     public delegate void ItemChanagedEventHandler(object sender, System.EventArgs e);
     public delegate void BooleanDelegate(object sender, BooleanEventArgs e);

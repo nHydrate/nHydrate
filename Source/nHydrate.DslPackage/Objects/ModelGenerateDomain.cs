@@ -157,7 +157,7 @@ namespace nHydrate.DslPackage.Objects
             //Show generator list
             var allModules = model.Modules.Select(x => x.Name).ToList();
             if (!model.UseModules) allModules.Clear();
-            using (var F = new GenerateSettings(genList.First(), generatorTypeList, null, allModules, (SupportedDatabaseConstants)int.Parse(model.SupportedPlatforms.ToString("d"))))
+            using (var F = new GenerateSettings(genList.First(), generatorTypeList, null, allModules))
             {
                 if (F.ShowDialog() != DialogResult.OK) return false;
                 excludeList.AddRange(F.ExcludeList);
@@ -448,7 +448,6 @@ namespace nHydrate.DslPackage.Objects
                 root.Database.ResetKey(model.Id.ToString());
                 root.OutputTarget = string.Empty; //model.OutputTarget;
                 //These have the same mapping values flags so we need convert to int and then convert to the other enumeration
-                root.SupportedPlatforms = (SupportedDatabaseConstants)int.Parse(model.SupportedPlatforms.ToString("d"));
                 root.TenantColumnName = model.TenantColumnName;
                 root.TenantPrefix = model.TenantPrefix;
 

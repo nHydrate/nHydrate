@@ -226,8 +226,7 @@ namespace nHydrate.Generator.Models
             set
             {
                 var sqlType = ((ModelRoot)this.Root).SQLServerType;
-                var supportedPlatforms = ((ModelRoot)this.Root).SupportedPlatforms;
-                if (!Column.IsSupportedType(value, sqlType, supportedPlatforms))
+                if (!Column.IsSupportedType(value, sqlType))
                 {
                     throw new Exception("Unsupported type '" + value.ToString() + "' for SQL Server type '" + sqlType + "'.");
                 }
@@ -486,14 +485,9 @@ namespace nHydrate.Generator.Models
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static bool IsSupportedType(System.Data.SqlDbType type, SQLServerTypeConstants sqlVersion,
-                                           SupportedDatabaseConstants supportedPlatforms)
+        public static bool IsSupportedType(System.Data.SqlDbType type, SQLServerTypeConstants sqlVersion)
         {
-            if (supportedPlatforms == SupportedDatabaseConstants.MySql)
-            {
-                return true;
-            }
-            else if (sqlVersion == SQLServerTypeConstants.SQL2005)
+            if (sqlVersion == SQLServerTypeConstants.SQL2005)
             {
                 switch (type)
                 {
@@ -531,7 +525,6 @@ namespace nHydrate.Generator.Models
             {
                 return false;
             }
-
         }
 
         /// <summary>
@@ -594,97 +587,6 @@ namespace nHydrate.Generator.Models
         public virtual string DatabaseName
         {
             get { return this.Name; }
-        }
-
-        /// <summary>
-        /// Gets the SQL Server type mapping for this data type
-        /// </summary>
-        public virtual string GetMySQLDefaultType()
-        {
-            return GetMySQLDefaultType(false);
-        }
-
-        /// <summary>
-        /// Gets the SQL Server type mapping for this data type
-        /// </summary>
-        /// <param name="isRaw">Determines if the square brackets '[]' are around the type</param>
-        /// <returns>The SQL ready datatype like '[Int]' or '[Varchar] (100)'</returns>
-        public virtual string GetMySQLDefaultType(bool isRaw)
-        {
-            var retval = string.Empty;
-
-            if (!isRaw) retval += "`";
-            retval += MySqlDatatypeMap(this.DataType, false);
-            if (!isRaw) retval += "`";
-
-            if (this.DataType == System.Data.SqlDbType.Binary ||
-                this.DataType == System.Data.SqlDbType.Char ||
-                this.DataType == System.Data.SqlDbType.Decimal ||
-                this.DataType == System.Data.SqlDbType.NChar ||
-                this.DataType == System.Data.SqlDbType.NVarChar ||
-                this.DataType == System.Data.SqlDbType.VarBinary ||
-                this.DataType == System.Data.SqlDbType.VarChar)
-            {
-                if (this.DataType == System.Data.SqlDbType.Decimal)
-                    retval += " (" + this.Length + ", " + this.Scale + ")";
-                else
-                    retval += " (" + this.GetLengthString() + ")";
-            }
-            else if ((this.DataType == System.Data.SqlDbType.Money) ||
-                     (this.DataType == System.Data.SqlDbType.SmallMoney))
-            {
-                retval += " (10, 2)";
-            }
-            else if (this.DataType == System.Data.SqlDbType.TinyInt)
-            {
-                retval += " unsigned";
-            }
-            else if (this.DataType == System.Data.SqlDbType.Timestamp)
-            {
-                retval += " (8)";
-            }
-            else if (this.DataType == System.Data.SqlDbType.UniqueIdentifier)
-            {
-                retval += " (36)";
-            }
-            return retval;
-        }
-
-        /// <summary>
-        /// Gets a string representation of the type
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="isEFType">If the output value is to be used in an EF string structure like SSDL, MSL, CSL file</param>
-        /// <returns></returns>
-        public static string MySqlDatatypeMap(System.Data.SqlDbType type, bool isEFType)
-        {
-            switch (type)
-            {
-                case System.Data.SqlDbType.NText:
-                    return "TEXT";
-                case System.Data.SqlDbType.SmallDateTime:
-                    return "DATETIME";
-                case System.Data.SqlDbType.Image:
-                    return "LONGBLOB";
-                case System.Data.SqlDbType.UniqueIdentifier:
-                    return "CHAR";
-                case System.Data.SqlDbType.Xml:
-                    return "TEXT";
-                case System.Data.SqlDbType.DateTime2:
-                    return "DATETIME";
-                case System.Data.SqlDbType.Real:
-                    return "DOUBLE";
-                case System.Data.SqlDbType.Money:
-                case System.Data.SqlDbType.SmallMoney:
-                    return "DECIMAL";
-                case System.Data.SqlDbType.TinyInt:
-                    if (isEFType) return "UTINYINT";
-                    else return "TINYINT";
-                case System.Data.SqlDbType.Timestamp:
-                    return "BINARY";
-                default:
-                    return type.ToString();
-            }
         }
 
         /// <summary>

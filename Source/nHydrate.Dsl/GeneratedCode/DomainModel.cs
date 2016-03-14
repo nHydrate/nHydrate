@@ -182,7 +182,6 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(nHydrateModel), "CompanyPhone", nHydrateModel.CompanyPhoneDomainPropertyId, typeof(nHydrateModel.CompanyPhonePropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "UseGeneratedCRUD", nHydrateModel.UseGeneratedCRUDDomainPropertyId, typeof(nHydrateModel.UseGeneratedCRUDPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "DiagramVisibility", nHydrateModel.DiagramVisibilityDomainPropertyId, typeof(nHydrateModel.DiagramVisibilityPropertyHandler)),
-				new DomainMemberInfo(typeof(nHydrateModel), "SupportedPlatforms", nHydrateModel.SupportedPlatformsDomainPropertyId, typeof(nHydrateModel.SupportedPlatformsPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "OutputTarget", nHydrateModel.OutputTargetDomainPropertyId, typeof(nHydrateModel.OutputTargetPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "TenantPrefix", nHydrateModel.TenantPrefixDomainPropertyId, typeof(nHydrateModel.TenantPrefixPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "TenantColumnName", nHydrateModel.TenantColumnNameDomainPropertyId, typeof(nHydrateModel.TenantColumnNamePropertyHandler)),
@@ -1378,27 +1377,6 @@ namespace nHydrate.Dsl
 		/// </summary>
 		[DslDesign::DescriptionResource("nHydrate.Dsl.VisibilityTypeConstants/None.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		None = 0,
-	}
-}
-namespace nHydrate.Dsl
-{
-	/// <summary>
-	/// DomainEnumeration: DatabasePlatformConstants
-	/// </summary>
-	[global::System.CLSCompliant(true)]
-	[global::System.Flags]
-	public enum DatabasePlatformConstants
-	{
-		/// <summary>
-		/// SQLServer
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.DatabasePlatformConstants/SQLServer.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		SQLServer = 1,
-		/// <summary>
-		/// MySQL
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.DatabasePlatformConstants/MySQL.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		MySQL = 2,
 	}
 }
 namespace nHydrate.Dsl

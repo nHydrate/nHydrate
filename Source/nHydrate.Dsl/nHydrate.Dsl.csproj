@@ -158,7 +158,6 @@
     <Compile Include="Custom\BackgroundImage.cs" />
     <Compile Include="Custom\DebugHelper.cs" />
     <Compile Include="Custom\SQLFileManagement.cs" />
-    <Compile Include="Design\Converters\DatabasePlatformEnumConverter.cs" />
     <Compile Include="Design\Converters\DatatypeConverter.cs" />
     <Compile Include="Design\Converters\VisibilityTypeEnumConverter.cs" />
     <Compile Include="Design\Converters\SQLConverter.cs" />

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Dsl xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="7a314716-48c9-4371-8978-062be635f9b4" Description="This is the nHydrate Visual Modeler" Name="nHydrate" DisplayName="nHydrate ORM Modeler" Namespace="nHydrate.Dsl" MajorVersion="5" MinorVersion="3" Revision="159" ProductName="nHydrate ORM Modeler" CompanyName="nHydrate.org" PackageGuid="36220dab-63c7-4daa-860c-fc548bf4d5d3" PackageNamespace="nHydrate.DslPackage" xmlns="http://schemas.microsoft.com/VisualStudio/2005/DslTools/DslDefinitionModel">
+<Dsl xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="7a314716-48c9-4371-8978-062be635f9b4" Description="This is the nHydrate Visual Modeler" Name="nHydrate" DisplayName="nHydrate ORM Modeler" Namespace="nHydrate.Dsl" MajorVersion="6" Revision="160" ProductName="nHydrate ORM Modeler" CompanyName="nHydrate.org" PackageGuid="36220dab-63c7-4daa-860c-fc548bf4d5d3" PackageNamespace="nHydrate.DslPackage" xmlns="http://schemas.microsoft.com/VisualStudio/2005/DslTools/DslDefinitionModel">
   <Notes>This integrated VS.NET component creates strongly-typed, extendable classes inside of a framework based on Entity Framework.</Notes>
   <Classes>
     <DomainClass Id="77b5fe81-853a-4b74-8ce5-98612544852f" Description="" Name="nHydrateModel" DisplayName="nHydrate Model" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
@@ -31,7 +31,7 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="e309bd8d-ce4c-4995-a73e-b6aaeb070c3d" Description="Determines the target SQL Server version" Name="SQLServerType" DisplayName="SQLServer Type" DefaultValue="SQL2005" Category="Database">
+        <DomainProperty Id="e309bd8d-ce4c-4995-a73e-b6aaeb070c3d" Description="Determines the target SQL Server version" Name="SQLServerType" DisplayName="SQLServer Type" DefaultValue="SQL2008" Category="Database">
           <Type>
             <DomainEnumerationMoniker Name="DatabaseTypeConstants" />
           </Type>
@@ -143,7 +143,7 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="4138a1c1-4bbf-4195-aba3-1c32aad51a0e" Description="Determines if generated stored procedures are used for the CRUD layer." Name="UseGeneratedCRUD" DisplayName="Use Generated CRUD" DefaultValue="true" Category="Database">
+        <DomainProperty Id="4138a1c1-4bbf-4195-aba3-1c32aad51a0e" Description="Determines if generated stored procedures are used for the CRUD layer." Name="UseGeneratedCRUD" DisplayName="Use Generated CRUD" DefaultValue="" Category="Database">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
@@ -158,18 +158,6 @@
           </Attributes>
           <Type>
             <DomainEnumerationMoniker Name="VisibilityTypeConstants" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="e88f80f4-31ef-4d89-9c9b-78b00157d202" Description="Determines the platforms supported by the generation output" Name="SupportedPlatforms" DisplayName="Supported Platforms" Category="Database">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.DatabasePlatformEnumConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <DomainEnumerationMoniker Name="DatabasePlatformConstants" />
           </Type>
         </DomainProperty>
         <DomainProperty Id="be71ee12-7759-4612-930e-e53430febfb8" Description="The target location for generated projects" Name="OutputTarget" DisplayName="Output Target" Category="Definition" IsBrowsable="false">
@@ -2511,12 +2499,6 @@
         <ClrAttribute Name="System.Flags" />
       </Attributes>
     </DomainEnumeration>
-    <DomainEnumeration Name="DatabasePlatformConstants" Namespace="nHydrate.Dsl" IsFlags="true" Description="">
-      <Literals>
-        <EnumerationLiteral Description="" Name="SQLServer" Value="1" />
-        <EnumerationLiteral Description="" Name="MySQL" Value="2" />
-      </Literals>
-    </DomainEnumeration>
     <DomainEnumeration Name="UIDataTypeConstants" Namespace="nHydrate.Dsl" Description="">
       <Literals>
         <EnumerationLiteral Description="" Name="Custom" Value="0" />
@@ -2759,9 +2741,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="diagramVisibility">
             <DomainPropertyMoniker Name="nHydrateModel/DiagramVisibility" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="supportedPlatforms">
-            <DomainPropertyMoniker Name="nHydrateModel/SupportedPlatforms" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="outputTarget">
             <DomainPropertyMoniker Name="nHydrateModel/OutputTarget" />

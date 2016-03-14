@@ -29,7 +29,7 @@ using System.Linq;
 
 namespace nHydrate.Generator.EFDAL.Generators.EFSSDL
 {
-    [GeneratorItem("SSDLGenerator", typeof (EFDALProjectGenerator))]
+    [GeneratorItem("SSDLGenerator", typeof(EFDALProjectGenerator))]
     public class SSDLGenerator : EFDALProjectItemGenerator
     {
         #region Class Members
@@ -47,43 +47,29 @@ namespace nHydrate.Generator.EFDAL.Generators.EFSSDL
 
         public override void Generate()
         {
-            //Sql Server
-            if ((_model.SupportedPlatforms & SupportedDatabaseConstants.SqlServer) == SupportedDatabaseConstants.SqlServer)
             {
-                {
-                    var template = new SSDLTemplate(_model);
-                    var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
-                    var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, true);
-                    eventArgs.Properties.Add("BuildAction", 3);
-                    OnProjectItemGenerated(this, eventArgs);
-                }
-
-                if (_model.Database.Tables.Any(x => x.IsTenant && x.Generated))
-                {
-                    var template = new SSDLAdminTemplate(_model);
-                    var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
-                    var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, true);
-                    eventArgs.Properties.Add("BuildAction", 3);
-                    OnProjectItemGenerated(this, eventArgs);
-                }
-                else
-                {
-                    //If this is not a tenant model then remove the admin SSDL file
-                    var template = new SSDLAdminTemplate(_model);
-                    var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
-                    var eventArgs = new ProjectItemDeletedEventArgs(fullFileName, ProjectName, this);
-                    OnProjectItemDeleted(this, eventArgs);
-                }
-            }
-
-            //MySql
-            if ((_model.SupportedPlatforms & SupportedDatabaseConstants.MySql) == SupportedDatabaseConstants.MySql)
-            {
-                var template = new SSDLMySqlTemplate(_model);
+                var template = new SSDLTemplate(_model);
                 var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
                 var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, true);
                 eventArgs.Properties.Add("BuildAction", 3);
                 OnProjectItemGenerated(this, eventArgs);
+            }
+
+            if (_model.Database.Tables.Any(x => x.IsTenant && x.Generated))
+            {
+                var template = new SSDLAdminTemplate(_model);
+                var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
+                var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, true);
+                eventArgs.Properties.Add("BuildAction", 3);
+                OnProjectItemGenerated(this, eventArgs);
+            }
+            else
+            {
+                //If this is not a tenant model then remove the admin SSDL file
+                var template = new SSDLAdminTemplate(_model);
+                var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
+                var eventArgs = new ProjectItemDeletedEventArgs(fullFileName, ProjectName, this);
+                OnProjectItemDeleted(this, eventArgs);
             }
 
             var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);

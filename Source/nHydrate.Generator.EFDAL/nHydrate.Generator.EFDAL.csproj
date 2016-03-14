@@ -98,10 +98,8 @@
     <Compile Include="Generators\ActionTypes\ActionTypesExtenderTemplate.cs" />
     <Compile Include="Generators\ActionTypes\ActionTypesGeneratedGenerator.cs" />
     <Compile Include="Generators\ActionTypes\ActionTypesGeneratedTemplate.cs" />
-    <Compile Include="Generators\EFCSDL\CSDLMySqlTemplate.cs" />
     <Compile Include="Generators\EFMSL\MSLAdminTemplate.cs" />
     <Compile Include="Generators\EFSSDL\SSDLAdminTemplate.cs" />
-    <Compile Include="Generators\EFSSDL\SSDLMySqlTemplate.cs" />
     <Compile Include="Generators\ViewEntity\ViewEntityExtenderGenerator.cs" />
     <Compile Include="Generators\ViewEntity\ViewEntityExtenderTemplate.cs" />
     <Compile Include="Generators\ViewEntity\ViewEntityGeneratedGenerator.cs" />

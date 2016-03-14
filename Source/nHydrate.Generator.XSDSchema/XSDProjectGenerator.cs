@@ -32,32 +32,32 @@ using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.XSDSchema
 {
-	[GeneratorProjectAttribute(
-		"XSD Schema",
-		"Creates an XSD schema file.",
-		"ea446b27-b9f2-4291-82e8-88e1295eef04",
-		typeof(nHydrateGeneratorProject),
-		typeof(XSDProjectGenerator),
-		new string[] { }
-		)]
-	public class XSDProjectGenerator : BaseProjectGenerator
-	{
-		protected override string ProjectTemplate
-		{
-			get { return string.Empty; }
-		}
+    [GeneratorProjectAttribute(
+        "XSD Schema",
+        "Creates an XSD schema file.",
+        "ea446b27-b9f2-4291-82e8-88e1295eef04",
+        typeof(nHydrateGeneratorProject),
+        typeof(XSDProjectGenerator),
+        false,
+        new string[] { }
+        )]
+    public class XSDProjectGenerator : BaseProjectGenerator
+    {
+        protected override string ProjectTemplate
+        {
+            get { return string.Empty; }
+        }
 
-		public override string LocalNamespaceExtension
-		{
-			get { return XSDProjectGenerator.NamespaceExtension; }
-		}
+        public override string LocalNamespaceExtension
+        {
+            get { return XSDProjectGenerator.NamespaceExtension; }
+        }
 
-		public static string NamespaceExtension
-		{
-			get { return "XSDSchema"; }
-		}
+        public static string NamespaceExtension
+        {
+            get { return "XSDSchema"; }
+        }
 
-	}
+    }
 
 }
-

@@ -246,22 +246,6 @@
       <Link>database.vstemplate</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\VSADDIN\databasemysql.csproj">
-      <Link>databasemysql.csproj</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\databasemysql.vstemplate">
-      <Link>databasemysql.vstemplate</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\datatransfer.csproj">
-      <Link>datatransfer.csproj</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\datatransfer.vstemplate">
-      <Link>datatransfer.vstemplate</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\VSADDIN\documentation.csproj">
       <Link>documentation.csproj</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -294,52 +278,12 @@
       <Link>efdalinterfaces.vstemplate</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\VSADDIN\iocextensions.csproj">
-      <Link>iocextensions.csproj</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\iocextensions.vstemplate">
-      <Link>iocextensions.vstemplate</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\mockproxy.csproj">
-      <Link>mockproxy.csproj</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\mockproxy.vstemplate">
-      <Link>mockproxy.vstemplate</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\serviceinterfaces.csproj">
-      <Link>serviceinterfaces.csproj</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\serviceinterfaces.vstemplate">
-      <Link>serviceinterfaces.vstemplate</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\VSADDIN\testwebapplication.csproj">
       <Link>testwebapplication.csproj</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\VSADDIN\testwebapplication.vstemplate">
       <Link>testwebapplication.vstemplate</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\wcfproxy.csproj">
-      <Link>wcfproxy.csproj</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\wcfproxy.vstemplate">
-      <Link>wcfproxy.vstemplate</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\wcfservice.csproj">
-      <Link>wcfservice.csproj</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\wcfservice.vstemplate">
-      <Link>wcfservice.vstemplate</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

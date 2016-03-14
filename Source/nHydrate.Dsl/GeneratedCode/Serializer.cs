@@ -614,23 +614,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// SupportedPlatforms
-			if (!serializationContext.Result.Failed)
-			{
-				string attribSupportedPlatforms = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "supportedPlatforms");
-				if (attribSupportedPlatforms != null)
-				{
-					DatabasePlatformConstants valueOfSupportedPlatforms;
-					if (DslModeling::SerializationUtilities.TryGetValue<DatabasePlatformConstants>(serializationContext, attribSupportedPlatforms, out valueOfSupportedPlatforms))
-					{
-						instanceOfnHydrateModel.SupportedPlatforms = valueOfSupportedPlatforms;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "supportedPlatforms", typeof(DatabasePlatformConstants), attribSupportedPlatforms);
-					}
-				}
-			}
 			// OutputTarget
 			if (!serializationContext.Result.Failed)
 			{
@@ -1761,7 +1744,7 @@ namespace nHydrate.Dsl
 				string serializedPropValue = DslModeling::SerializationUtilities.GetString<DatabaseTypeConstants>(serializationContext, propValue);
 				if (!serializationContext.Result.Failed)
 				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "SQL2005") != 0)
+					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "SQL2008") != 0)
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "sQLServerType", serializedPropValue);
 					}
@@ -2018,7 +2001,7 @@ namespace nHydrate.Dsl
 				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
 				if (!serializationContext.Result.Failed)
 				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
+					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, string.Empty) != 0)
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "useGeneratedCRUD", serializedPropValue);
 					}
@@ -2035,16 +2018,6 @@ namespace nHydrate.Dsl
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "diagramVisibility", serializedPropValue);
 					}
-				}
-			}
-			// SupportedPlatforms
-			if (!serializationContext.Result.Failed)
-			{
-				DatabasePlatformConstants propValue = instanceOfnHydrateModel.SupportedPlatforms;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<DatabasePlatformConstants>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "supportedPlatforms", serializedPropValue);
 				}
 			}
 			// OutputTarget

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{7BA68AA2-CE9F-401D-9388-CA9F851F19EC}"
 	ProjectSection(SolutionItems) = preProject
@@ -24,10 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VSADDIN", "VSADDIN", "{F041
 		VSADDIN\AssemblyInfo.cs = VSADDIN\AssemblyInfo.cs
 		VSADDIN\database.csproj = VSADDIN\database.csproj
 		VSADDIN\database.vstemplate = VSADDIN\database.vstemplate
-		VSADDIN\databasemysql.csproj = VSADDIN\databasemysql.csproj
-		VSADDIN\databasemysql.vstemplate = VSADDIN\databasemysql.vstemplate
-		VSADDIN\datatransfer.csproj = VSADDIN\datatransfer.csproj
-		VSADDIN\datatransfer.vstemplate = VSADDIN\datatransfer.vstemplate
 		VSADDIN\documentation.csproj = VSADDIN\documentation.csproj
 		VSADDIN\documentation.vstemplate = VSADDIN\documentation.vstemplate
 		VSADDIN\efcodefirst.csproj = VSADDIN\efcodefirst.csproj
@@ -36,18 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VSADDIN", "VSADDIN", "{F041
 		VSADDIN\efdal.vstemplate = VSADDIN\efdal.vstemplate
 		VSADDIN\efdalinterfaces.csproj = VSADDIN\efdalinterfaces.csproj
 		VSADDIN\efdalinterfaces.vstemplate = VSADDIN\efdalinterfaces.vstemplate
-		VSADDIN\iocextensions.csproj = VSADDIN\iocextensions.csproj
-		VSADDIN\iocextensions.vstemplate = VSADDIN\iocextensions.vstemplate
-		VSADDIN\mockproxy.csproj = VSADDIN\mockproxy.csproj
-		VSADDIN\mockproxy.vstemplate = VSADDIN\mockproxy.vstemplate
-		VSADDIN\serviceinterfaces.csproj = VSADDIN\serviceinterfaces.csproj
-		VSADDIN\serviceinterfaces.vstemplate = VSADDIN\serviceinterfaces.vstemplate
 		VSADDIN\testwebapplication.csproj = VSADDIN\testwebapplication.csproj
 		VSADDIN\testwebapplication.vstemplate = VSADDIN\testwebapplication.vstemplate
-		VSADDIN\wcfproxy.csproj = VSADDIN\wcfproxy.csproj
-		VSADDIN\wcfproxy.vstemplate = VSADDIN\wcfproxy.vstemplate
-		VSADDIN\wcfservice.csproj = VSADDIN\wcfservice.csproj
-		VSADDIN\wcfservice.vstemplate = VSADDIN\wcfservice.vstemplate
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.DataImport", "Source\nHydrate.DataImport\nHydrate.DataImport.csproj", "{958A56B9-1817-4944-B41F-38F28A2DF622}"
@@ -64,7 +50,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.Dsl", "Source\nHyd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.DslPackage", "Source\nHydrate.DslPackage\nHydrate.DslPackage.csproj", "{5318EFA0-8102-474D-825A-ABFA9CB06CFF}"
 	ProjectSection(ProjectDependencies) = postProject
-		{D9EDDD00-52BE-4AA0-A9DC-FF8C2668992C} = {D9EDDD00-52BE-4AA0-A9DC-FF8C2668992C}
 		{51A03D20-6B95-4540-8213-08100259F129} = {51A03D20-6B95-4540-8213-08100259F129}
 		{97136026-3D75-4830-AECB-8E364AFF0B01} = {97136026-3D75-4830-AECB-8E364AFF0B01}
 		{BB94AD78-8402-4169-A220-246F374057DC} = {BB94AD78-8402-4169-A220-246F374057DC}
@@ -72,7 +57,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.DslPackage", "Sour
 		{312A9CAA-0EC3-4F68-B8C6-08F16A3F905E} = {312A9CAA-0EC3-4F68-B8C6-08F16A3F905E}
 		{958A56B9-1817-4944-B41F-38F28A2DF622} = {958A56B9-1817-4944-B41F-38F28A2DF622}
 		{2730EDD0-982F-4B67-9519-09E1AC591C04} = {2730EDD0-982F-4B67-9519-09E1AC591C04}
-		{86C1D4D6-E458-4790-A064-163C0521CC48} = {86C1D4D6-E458-4790-A064-163C0521CC48}
 		{EDFC82E3-6266-4BFC-8B90-A43A9CE91D57} = {EDFC82E3-6266-4BFC-8B90-A43A9CE91D57}
 		{164CE6E3-E0BD-4DD1-9308-28B841B2E3EC} = {164CE6E3-E0BD-4DD1-9308-28B841B2E3EC}
 		{E2040FE8-13C7-4A6B-860B-E612A0FDBEFF} = {E2040FE8-13C7-4A6B-860B-E612A0FDBEFF}
@@ -95,12 +79,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.Generator.EFDAL", 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.Generator.EFDAL.Interfaces", "Source\nHydrate.Generator.EFDAL.Interfaces\nHydrate.Generator.EFDAL.Interfaces.csproj", "{5388DCEC-909E-4800-A895-DB1D34C54AAB}"
-	ProjectSection(ProjectDependencies) = postProject
-		{97136026-3D75-4830-AECB-8E364AFF0B01} = {97136026-3D75-4830-AECB-8E364AFF0B01}
-		{E2040FE8-13C7-4A6B-860B-E612A0FDBEFF} = {E2040FE8-13C7-4A6B-860B-E612A0FDBEFF}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.Generator.DataTransfer", "Source\nHydrate.Generator.DataTransfer\nHydrate.Generator.DataTransfer.csproj", "{86C1D4D6-E458-4790-A064-163C0521CC48}"
 	ProjectSection(ProjectDependencies) = postProject
 		{97136026-3D75-4830-AECB-8E364AFF0B01} = {97136026-3D75-4830-AECB-8E364AFF0B01}
 		{E2040FE8-13C7-4A6B-860B-E612A0FDBEFF} = {E2040FE8-13C7-4A6B-860B-E612A0FDBEFF}
@@ -132,11 +110,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.Generator.XSDSchem
 		{E2040FE8-13C7-4A6B-860B-E612A0FDBEFF} = {E2040FE8-13C7-4A6B-860B-E612A0FDBEFF}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.DataImport.MySqlClient", "Source\nHydrate.DataImport.MySqlClient\nHydrate.DataImport.MySqlClient.csproj", "{1668FE77-D873-4925-BE09-F5E6B16B1954}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.DataImport.SqlClient", "Source\nHydrate.DataImport.SqlClient\nHydrate.DataImport.SqlClient.csproj", "{22C3BCFF-9471-4A27-909C-70563D9BD09D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.Generator.MySQLInstaller", "Source\nHydrate.Generator.MySQLInstaller\nHydrate.Generator.MySQLInstaller.csproj", "{D9EDDD00-52BE-4AA0-A9DC-FF8C2668992C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.Generator.Resources", "Source\nHydrate.Generator.Resources\nHydrate.Generator.Resources.csproj", "{7AFCBF23-3095-4767-8E46-9CAAC73F47DB}"
 EndProject
@@ -214,14 +188,6 @@ Global
 		{5388DCEC-909E-4800-A895-DB1D34C54AAB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5388DCEC-909E-4800-A895-DB1D34C54AAB}.Release|x86.ActiveCfg = Release|x86
 		{5388DCEC-909E-4800-A895-DB1D34C54AAB}.Release|x86.Build.0 = Release|x86
-		{86C1D4D6-E458-4790-A064-163C0521CC48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86C1D4D6-E458-4790-A064-163C0521CC48}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86C1D4D6-E458-4790-A064-163C0521CC48}.Debug|x86.ActiveCfg = Debug|x86
-		{86C1D4D6-E458-4790-A064-163C0521CC48}.Debug|x86.Build.0 = Debug|x86
-		{86C1D4D6-E458-4790-A064-163C0521CC48}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86C1D4D6-E458-4790-A064-163C0521CC48}.Release|Any CPU.Build.0 = Release|Any CPU
-		{86C1D4D6-E458-4790-A064-163C0521CC48}.Release|x86.ActiveCfg = Release|x86
-		{86C1D4D6-E458-4790-A064-163C0521CC48}.Release|x86.Build.0 = Release|x86
 		{BB94AD78-8402-4169-A220-246F374057DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BB94AD78-8402-4169-A220-246F374057DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB94AD78-8402-4169-A220-246F374057DC}.Debug|x86.ActiveCfg = Debug|x86
@@ -262,14 +228,6 @@ Global
 		{2730EDD0-982F-4B67-9519-09E1AC591C04}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2730EDD0-982F-4B67-9519-09E1AC591C04}.Release|x86.ActiveCfg = Release|x86
 		{2730EDD0-982F-4B67-9519-09E1AC591C04}.Release|x86.Build.0 = Release|x86
-		{1668FE77-D873-4925-BE09-F5E6B16B1954}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1668FE77-D873-4925-BE09-F5E6B16B1954}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1668FE77-D873-4925-BE09-F5E6B16B1954}.Debug|x86.ActiveCfg = Debug|x86
-		{1668FE77-D873-4925-BE09-F5E6B16B1954}.Debug|x86.Build.0 = Debug|x86
-		{1668FE77-D873-4925-BE09-F5E6B16B1954}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1668FE77-D873-4925-BE09-F5E6B16B1954}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1668FE77-D873-4925-BE09-F5E6B16B1954}.Release|x86.ActiveCfg = Release|x86
-		{1668FE77-D873-4925-BE09-F5E6B16B1954}.Release|x86.Build.0 = Release|x86
 		{22C3BCFF-9471-4A27-909C-70563D9BD09D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22C3BCFF-9471-4A27-909C-70563D9BD09D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22C3BCFF-9471-4A27-909C-70563D9BD09D}.Debug|x86.ActiveCfg = Debug|x86
@@ -278,14 +236,6 @@ Global
 		{22C3BCFF-9471-4A27-909C-70563D9BD09D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22C3BCFF-9471-4A27-909C-70563D9BD09D}.Release|x86.ActiveCfg = Release|x86
 		{22C3BCFF-9471-4A27-909C-70563D9BD09D}.Release|x86.Build.0 = Release|x86
-		{D9EDDD00-52BE-4AA0-A9DC-FF8C2668992C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9EDDD00-52BE-4AA0-A9DC-FF8C2668992C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D9EDDD00-52BE-4AA0-A9DC-FF8C2668992C}.Debug|x86.ActiveCfg = Debug|x86
-		{D9EDDD00-52BE-4AA0-A9DC-FF8C2668992C}.Debug|x86.Build.0 = Debug|x86
-		{D9EDDD00-52BE-4AA0-A9DC-FF8C2668992C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D9EDDD00-52BE-4AA0-A9DC-FF8C2668992C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D9EDDD00-52BE-4AA0-A9DC-FF8C2668992C}.Release|x86.ActiveCfg = Release|x86
-		{D9EDDD00-52BE-4AA0-A9DC-FF8C2668992C}.Release|x86.Build.0 = Release|x86
 		{7AFCBF23-3095-4767-8E46-9CAAC73F47DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7AFCBF23-3095-4767-8E46-9CAAC73F47DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AFCBF23-3095-4767-8E46-9CAAC73F47DB}.Debug|x86.ActiveCfg = Debug|x86

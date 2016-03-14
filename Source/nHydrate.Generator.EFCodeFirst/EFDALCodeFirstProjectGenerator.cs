@@ -41,6 +41,7 @@ namespace nHydrate.Generator.EFCodeFirst
         "b8bd6b27-b9f2-4291-82e8-88e1295eef05",
         typeof(nHydrateGeneratorProject),
         typeof(EFCodeFirstProjectGenerator),
+        true,
         new string[] { }
         )]
     public class EFCodeFirstProjectGenerator : BaseProjectGenerator
