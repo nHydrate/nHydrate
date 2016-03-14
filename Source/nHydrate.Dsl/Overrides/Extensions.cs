@@ -991,7 +991,7 @@ namespace nHydrate.Dsl
                     break;
 
                 case DataTypeConstants.DateTime2:
-                    size = 7;
+                    size = 2;
                     break;
 
             }

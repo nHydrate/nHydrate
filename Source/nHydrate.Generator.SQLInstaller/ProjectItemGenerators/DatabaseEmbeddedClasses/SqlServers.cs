@@ -1053,7 +1053,7 @@ namespace PROJECTNAMESPACE
                 {
                     if (setup.ShowSql && !string.IsNullOrEmpty(sql))
                     {
-                        var debugText = "[" + DateTime.UtcNow.ToString() + "]\r\n";
+                        var debugText = "[" + DateTime.Now.ToString() + "]\r\n";
                         const int MAX_SQL = 500;
                         var sqlLength = Math.Min(sql.Length, MAX_SQL);
                         debugText += sql.Substring(0, sqlLength);
