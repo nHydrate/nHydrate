@@ -32,8 +32,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VSADDIN", "VSADDIN", "{F041
 		VSADDIN\efdal.vstemplate = VSADDIN\efdal.vstemplate
 		VSADDIN\efdalinterfaces.csproj = VSADDIN\efdalinterfaces.csproj
 		VSADDIN\efdalinterfaces.vstemplate = VSADDIN\efdalinterfaces.vstemplate
-		VSADDIN\testwebapplication.csproj = VSADDIN\testwebapplication.csproj
-		VSADDIN\testwebapplication.vstemplate = VSADDIN\testwebapplication.vstemplate
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.DataImport", "Source\nHydrate.DataImport\nHydrate.DataImport.csproj", "{958A56B9-1817-4944-B41F-38F28A2DF622}"

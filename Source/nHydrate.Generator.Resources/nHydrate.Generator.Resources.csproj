@@ -278,14 +278,6 @@
       <Link>efdalinterfaces.vstemplate</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\VSADDIN\testwebapplication.csproj">
-      <Link>testwebapplication.csproj</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\VSADDIN\testwebapplication.vstemplate">
-      <Link>testwebapplication.vstemplate</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\ThirdParty\DiffPlex.dll">
