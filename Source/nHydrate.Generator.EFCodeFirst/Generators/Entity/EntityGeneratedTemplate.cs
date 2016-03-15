@@ -268,7 +268,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 //    sb.AppendLine("			[System.ComponentModel.DataAnnotations.Key]");
                 //}
 
-                if (column.PrimaryKey || _item.Immutable)
+                if (column.PrimaryKey || _item.Immutable || column.IsReadOnly)
                 {
                     sb.AppendLine("			[System.ComponentModel.ReadOnly(true)]");
                 }
@@ -530,6 +530,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
                     //if (column.PrimaryKey || _item.Immutable || column.ComputedColumn || column.IsReadOnly)
                     //    sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
+                    if (column.ComputedColumn || column.IsReadOnly)
+                        sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
 
                     if (!string.IsNullOrEmpty(column.Description))
                         sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
@@ -560,6 +562,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     else if (_item.TypedTable != TypedTableConstants.None && StringHelper.Match(_item.GetTypeTableCodeDescription(), column.CamelName, true))
                         propertySetterScope = "protected internal ";
                     else if (column.Identity == IdentityTypeConstants.Database)
+                        propertySetterScope = "protected internal ";
+                    else if (column.IsReadOnly)
                         propertySetterScope = "protected internal ";
 
                     var codeType = column.GetCodeType();
@@ -2227,7 +2231,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 }
 
                 //If a range column then validate
-                if (column.IsRangeType)
+                if (column.IsRangeType && column.Identity == IdentityTypeConstants.None)
                 {
                     //If at least one is a value then process
                     if (!Double.IsNaN(column.Min) || !Double.IsNaN(column.Max))

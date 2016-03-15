@@ -33,239 +33,238 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-	//[Editor(typeof(nHydrate.Generator.Design.Editors.CustomRetrieveRuleCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
-	public class CustomRetrieveRuleCollection : BaseModelCollection, IEnumerable<CustomRetrieveRule>
-	{
-		#region Member Variables
+    //[Editor(typeof(nHydrate.Generator.Design.Editors.CustomRetrieveRuleCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
+    public class CustomRetrieveRuleCollection : BaseModelCollection, IEnumerable<CustomRetrieveRule>
+    {
+        #region Member Variables
 
-		protected List<CustomRetrieveRule> _internalList;
+        protected List<CustomRetrieveRule> _internalList;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		public CustomRetrieveRuleCollection(INHydrateModelObject root)
-			: base(root)
-		{
-			_internalList = new List<CustomRetrieveRule>();
-		}
+        public CustomRetrieveRuleCollection(INHydrateModelObject root)
+            : base(root)
+        {
+            _internalList = new List<CustomRetrieveRule>();
+        }
 
-		#endregion
+        #endregion
 
-		#region Property Implementations
+        #region Property Implementations
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public CustomRetrieveRule[] GetById(int id)
-		{
-			var retval = new ArrayList();
-			foreach(CustomRetrieveRule element in this)
-			{
-				if(element.Id == id)
-					retval.Add(element);
-			}
-			return (CustomRetrieveRule[])retval.ToArray(typeof(CustomRetrieveRule));
-		}
+        public CustomRetrieveRule[] GetById(int id)
+        {
+            var retval = new ArrayList();
+            foreach (CustomRetrieveRule element in this)
+            {
+                if (element.Id == id)
+                    retval.Add(element);
+            }
+            return (CustomRetrieveRule[])retval.ToArray(typeof(CustomRetrieveRule));
+        }
 
-		private Random _rnd = new Random();
-		internal int NextIndex()
-		{
-			var retval = _rnd.Next(1, int.MaxValue);
-			while (_internalList.Select(x => x.Id).Count(x => x == retval) != 0)
-			{
-				retval = _rnd.Next(1, int.MaxValue);
-			}
-			return retval;
-		}
+        private Random _rnd = new Random();
+        internal int NextIndex()
+        {
+            var retval = _rnd.Next(1, int.MaxValue);
+            while (_internalList.Select(x => x.Id).Count(x => x == retval) != 0)
+            {
+                retval = _rnd.Next(1, int.MaxValue);
+            }
+            return retval;
+        }
 
-		#endregion
+        #endregion
 
-		#region IXMLable Members
+        #region IXMLable Members
 
-		public override void XmlAppend(XmlNode node)
-		{
-			var oDoc = node.OwnerDocument;
+        public override void XmlAppend(XmlNode node)
+        {
+            var oDoc = node.OwnerDocument;
 
-			XmlHelper.AddAttribute(node, "key", this.Key);
+            XmlHelper.AddAttribute(node, "key", this.Key);
 
-			foreach(var customRetrieveRule in _internalList)
-			{
-				var customRetrieveRuleNode = oDoc.CreateElement("customRetrieveRule");
-				customRetrieveRule.XmlAppend(customRetrieveRuleNode);
-				node.AppendChild(customRetrieveRuleNode);
-			}
+            foreach (var customRetrieveRule in _internalList)
+            {
+                var customRetrieveRuleNode = oDoc.CreateElement("customRetrieveRule");
+                customRetrieveRule.XmlAppend(customRetrieveRuleNode);
+                node.AppendChild(customRetrieveRuleNode);
+            }
 
-		}
+        }
 
-		public override void XmlLoad(XmlNode node)
-		{
-			_key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-			var customRetrieveRuleNodes = node.SelectNodes("customRetrieveRule");
-			foreach(XmlNode customRetrieveRuleNode in customRetrieveRuleNodes)
-			{
-				var newCustomRetrieveRule = new CustomRetrieveRule(this.Root);
-				newCustomRetrieveRule.XmlLoad(customRetrieveRuleNode);
-				_internalList.Add(newCustomRetrieveRule);
-			}
+        public override void XmlLoad(XmlNode node)
+        {
+            _key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+            var customRetrieveRuleNodes = node.SelectNodes("customRetrieveRule");
+            foreach (XmlNode customRetrieveRuleNode in customRetrieveRuleNodes)
+            {
+                var newCustomRetrieveRule = new CustomRetrieveRule(this.Root);
+                newCustomRetrieveRule.XmlLoad(customRetrieveRuleNode);
+                _internalList.Add(newCustomRetrieveRule);
+            }
 
-			this.Dirty = false;
+            this.Dirty = false;
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-		#region IEnumerable Members
-		public override IEnumerator GetEnumerator()
-		{
-			return _internalList.GetEnumerator();
-		}
-		#endregion
+        #region IEnumerable Members
+        public override IEnumerator GetEnumerator()
+        {
+            return _internalList.GetEnumerator();
+        }
+        #endregion
 
-		#region IDictionary Members
-		public bool IsReadOnly
-		{
-			get { return false; }
-		}
+        #region IDictionary Members
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
 
-		public CustomRetrieveRule this[int id]
-		{
-			get { return _internalList.FirstOrDefault(x => x.Id == id); }
-		}
+        public CustomRetrieveRule this[int id]
+        {
+            get { return _internalList.FirstOrDefault(x => x.Id == id); }
+        }
 
-		public void Remove(int customRetrieveRuleId)
-		{
-			var customRetrieveRule = this.GetById(customRetrieveRuleId)[0];
+        public void Remove(int customRetrieveRuleId)
+        {
+            var customRetrieveRule = this.GetById(customRetrieveRuleId)[0];
 
-			//Remove the parameters
-			foreach (Reference reference in customRetrieveRule.Parameters)
-			{
-				var item = (Parameter)reference.Object;
-				if (item != null)
-				{
-					((ModelRoot)this.Root).Database.CustomRetrieveRuleParameters.Remove(item);
-				}
-			}
-			customRetrieveRule.Parameters.Clear();
+            //Remove the parameters
+            foreach (Reference reference in customRetrieveRule.Parameters)
+            {
+                var item = (Parameter)reference.Object;
+                if (item != null)
+                {
+                    ((ModelRoot)this.Root).Database.CustomRetrieveRuleParameters.Remove(item);
+                }
+            }
+            customRetrieveRule.Parameters.Clear();
 
-			this.Root.Dirty = true;
-			_internalList.RemoveAll(x => x.Id == customRetrieveRuleId);
-		}
+            this.Root.Dirty = true;
+            _internalList.RemoveAll(x => x.Id == customRetrieveRuleId);
+        }
 
-		public void Remove(CustomRetrieveRule customRetrieveRule)
-		{      
-			this.Remove(customRetrieveRule.Id);
-		}
+        public void Remove(CustomRetrieveRule customRetrieveRule)
+        {
+            this.Remove(customRetrieveRule.Id);
+        }
 
-		public bool Contains(int id)
-		{
-			return (_internalList.Count(x => x.Id == id) > 0);
-		}
+        public bool Contains(int id)
+        {
+            return (_internalList.Count(x => x.Id == id) > 0);
+        }
 
-		public override void Clear()
-		{
-			_internalList.Clear();
-		}
+        public override void Clear()
+        {
+            _internalList.Clear();
+        }
 
 
-		private void Add(CustomRetrieveRule value)
-		{
-			_internalList.Add(value);
-		}
+        private void Add(CustomRetrieveRule value)
+        {
+            _internalList.Add(value);
+        }
 
-		public CustomRetrieveRule Add(string name)
-		{
-			var newItem = new CustomRetrieveRule(this.Root);
-			newItem.Name = name;
-			newItem.ResetId(NextIndex());
-			this.Add(newItem);
-			return newItem;
-		}
+        public CustomRetrieveRule Add(string name)
+        {
+            var newItem = new CustomRetrieveRule(this.Root);
+            newItem.Name = name;
+            newItem.ResetId(NextIndex());
+            this.Add(newItem);
+            return newItem;
+        }
 
-		public override void AddRange(ICollection list)
-		{
-			foreach(CustomRetrieveRule element in list)
-			{
-				element.ResetId(NextIndex());
-				_internalList.Add(element);
-			}
-		}
+        public override void AddRange(ICollection list)
+        {
+            foreach (CustomRetrieveRule element in list)
+            {
+                element.ResetId(NextIndex());
+                _internalList.Add(element);
+            }
+        }
 
-		public CustomRetrieveRule Add()
-		{
-			return this.Add(this.GetUniqueName());
-		}
+        public CustomRetrieveRule Add()
+        {
+            return this.Add(this.GetUniqueName());
+        }
 
-		public bool IsFixedSize
-		{
-			get { throw new NotImplementedException(); }
-		}
+        public bool IsFixedSize
+        {
+            get { throw new NotImplementedException(); }
+        }
 
-		public bool Contains(string key)
-		{
-			foreach (CustomRetrieveRule customRetrieveRule in this)
-			{
-				if (string.Compare(customRetrieveRule.Key, key, true) == 0)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
+        public bool Contains(string key)
+        {
+            foreach (CustomRetrieveRule customRetrieveRule in this)
+            {
+                if (string.Compare(customRetrieveRule.Key, key, true) == 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
-		private string GetUniqueName()
-		{
-			//const string baseName = "RetrieveRule";
-			//int ii = 1;
-			//string newName = baseName + ii.ToString();
-			//while(this.Contains(newName))
-			//{
-			//  ii++;
-			//  newName = baseName + ii.ToString();
-			//}
-			//return newName;
-			return "[NEW RULE]";
-		}
+        private string GetUniqueName()
+        {
+            //const string baseName = "RetrieveRule";
+            //int ii = 1;
+            //string newName = baseName + ii.ToString();
+            //while(this.Contains(newName))
+            //{
+            //  ii++;
+            //  newName = baseName + ii.ToString();
+            //}
+            //return newName;
+            return "[NEW RULE]";
+        }
 
-		#endregion
+        #endregion
 
-		#region ICollection Members
+        #region ICollection Members
 
-		public override bool IsSynchronized
-		{
-			get { return false; }
-		}
+        public override bool IsSynchronized
+        {
+            get { return false; }
+        }
 
-		public override int Count
-		{
-			get
-			{
-				return _internalList.Count;
-			}
-		}
+        public override int Count
+        {
+            get
+            {
+                return _internalList.Count;
+            }
+        }
 
-		public override void CopyTo(Array array, int index)
-		{
-			throw new NotImplementedException();
-		}
+        public override void CopyTo(Array array, int index)
+        {
+            throw new NotImplementedException();
+        }
 
-		public override object SyncRoot
-		{
-			get { return _internalList; }
-		}
+        public override object SyncRoot
+        {
+            get { return _internalList; }
+        }
 
-		#endregion
+        #endregion
 
-		#region IEnumerable<CustomRetrieveRule> Members
+        #region IEnumerable<CustomRetrieveRule> Members
 
-		IEnumerator<CustomRetrieveRule> IEnumerable<CustomRetrieveRule>.GetEnumerator()
-		{
-			return _internalList.GetEnumerator();
-		}
+        IEnumerator<CustomRetrieveRule> IEnumerable<CustomRetrieveRule>.GetEnumerator()
+        {
+            return _internalList.GetEnumerator();
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }
-

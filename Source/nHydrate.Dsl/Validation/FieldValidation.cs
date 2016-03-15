@@ -239,6 +239,13 @@ namespace nHydrate.Dsl
                 }
                 #endregion
 
+                #region Identity cannot have range check
+                if ((!Double.IsNaN(this.Min) || !Double.IsNaN(this.Max)) && this.Identity != IdentityTypeConstants.None)
+                {
+                    context.LogError(string.Format(ValidationHelper.ErrorTextColumnNoRange4Identity, this.Entity.Name + "." + this.Name), string.Empty, this);
+                }
+                #endregion
+
             }
             catch (Exception ex)
             {

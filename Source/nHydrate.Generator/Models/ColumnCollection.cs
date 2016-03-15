@@ -35,351 +35,351 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-	
-	//[Editor(typeof(nHydrate.Generator.Design.Editors.ColumnCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
-	public class ColumnCollection : BaseModelCollection, IEnumerable<Column>
-	{
-		#region Member Variables
 
-		protected Dictionary<int, Column> _internalList;
+    //[Editor(typeof(nHydrate.Generator.Design.Editors.ColumnCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
+    public class ColumnCollection : BaseModelCollection, IEnumerable<Column>
+    {
+        #region Member Variables
 
-		#endregion
+        protected Dictionary<int, Column> _internalList;
 
-		#region Constructor
+        #endregion
 
-		public ColumnCollection(INHydrateModelObject root)
-			: base(root)
-		{
-			_internalList = new Dictionary<int, Column>();
-		}
+        #region Constructor
 
-		#endregion
+        public ColumnCollection(INHydrateModelObject root)
+            : base(root)
+        {
+            _internalList = new Dictionary<int, Column>();
+        }
 
-		#region Methods
+        #endregion
 
-		private ReadOnlyCollection<Column> GetById(int id)
-		{
-			return this.AsEnumerable()
-				.Where(element => element.Id == id)
-				.ToList()
-				.AsReadOnly();
-		}
+        #region Methods
 
-		private Random _rnd = new Random();
+        private ReadOnlyCollection<Column> GetById(int id)
+        {
+            return this.AsEnumerable()
+                .Where(element => element.Id == id)
+                .ToList()
+                .AsReadOnly();
+        }
 
-		private int NextIndex()
-		{
-			var retval = _rnd.Next(1, int.MaxValue);
-			while (_internalList.Values.Select(x => x.Id).Count(x => x == retval) != 0)
-			{
-				retval = _rnd.Next(1, int.MaxValue);
-			}
-			return retval;
-		}
+        private Random _rnd = new Random();
 
-		public int IndexOf(Column column)
-		{
-			var index = 0;
-			foreach (var c in this)
-			{
-				if (column == c) return index;
-				index++;
-			}
-			return -1;
-		}
+        private int NextIndex()
+        {
+            var retval = _rnd.Next(1, int.MaxValue);
+            while (_internalList.Values.Select(x => x.Id).Count(x => x == retval) != 0)
+            {
+                retval = _rnd.Next(1, int.MaxValue);
+            }
+            return retval;
+        }
 
-		#endregion
+        public int IndexOf(Column column)
+        {
+            var index = 0;
+            foreach (var c in this)
+            {
+                if (column == c) return index;
+                index++;
+            }
+            return -1;
+        }
 
-		#region IXMLable Members
+        #endregion
 
-		public override void XmlAppend(XmlNode node)
-		{
-			var oDoc = node.OwnerDocument;
+        #region IXMLable Members
 
-			XmlHelper.AddAttribute(node, "key", this.Key);
+        public override void XmlAppend(XmlNode node)
+        {
+            var oDoc = node.OwnerDocument;
 
-			foreach (var column in this.OrderBy(x => x.Name))
-			{
-				var columnNode = oDoc.CreateElement("c");
-				column.XmlAppend(columnNode);
-				node.AppendChild(columnNode);
-			}
+            XmlHelper.AddAttribute(node, "key", this.Key);
 
-		}
+            foreach (var column in this.OrderBy(x => x.Name))
+            {
+                var columnNode = oDoc.CreateElement("c");
+                column.XmlAppend(columnNode);
+                node.AppendChild(columnNode);
+            }
 
-		public override void XmlLoad(XmlNode node)
-		{
-			try
-			{
-				_key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-				var columnNodes = node.SelectNodes("column"); //deprecated, use "c"
-				if (columnNodes.Count == 0) columnNodes = node.SelectNodes("c");
-				foreach (XmlNode columnNode in columnNodes)
-				{
-					var newColumn = new Column(this.Root);
-					newColumn.XmlLoad(columnNode);
-					this.Add(newColumn);
-				}
+        }
 
-				this.Dirty = false;
+        public override void XmlLoad(XmlNode node)
+        {
+            try
+            {
+                _key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+                var columnNodes = node.SelectNodes("column"); //deprecated, use "c"
+                if (columnNodes.Count == 0) columnNodes = node.SelectNodes("c");
+                foreach (XmlNode columnNode in columnNodes)
+                {
+                    var newColumn = new Column(this.Root);
+                    newColumn.XmlLoad(columnNode);
+                    this.Add(newColumn);
+                }
 
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
+                this.Dirty = false;
 
-		#endregion
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
-		#region IEnumerable Members
+        #endregion
 
-		public override IEnumerator GetEnumerator()
-		{
-			return _internalList.Values.GetEnumerator();
-		}
+        #region IEnumerable Members
 
-		#endregion
+        public override IEnumerator GetEnumerator()
+        {
+            return _internalList.Values.GetEnumerator();
+        }
 
-		#region IDictionary Members
+        #endregion
 
-		public bool IsReadOnly
-		{
-			get { return false; }
-		}
+        #region IDictionary Members
 
-		public Column this[int id]
-		{
-			get
-			{
-				if (_internalList.ContainsKey(id))
-					return _internalList[id];
-				else return null;
-			}
-		}
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
 
-		public Column this[string name]
-		{
-			get
-			{
-				foreach (var c in this.AsEnumerable())
-				{
-					if (c.Name.ToLower() == name.ToLower())
-						return c;
-				}
-				return null;
-			}
-		}
+        public Column this[int id]
+        {
+            get
+            {
+                if (_internalList.ContainsKey(id))
+                    return _internalList[id];
+                else return null;
+            }
+        }
 
-
-		public void Remove(int columnId)
-		{
-			var column = this.GetById(columnId).FirstOrDefault();
-
-			//Delete relationships where this column is a child
-			var al1 = ((ModelRoot)this.Root).Database.Relations.AsEnumerable().FindByChildColumn(column);
-			foreach (var relation in al1)
-			{
-				((ModelRoot)this.Root).Database.Relations.Remove(relation);
-			}
-
-			//Delete relationships where this column is a parent
-			var al2 = ((ModelRoot)this.Root).Database.Relations.FindByParentColumn(column);
-			foreach (var relation in al2)
-			{
-				((ModelRoot)this.Root).Database.Relations.Remove(relation);
-			}
-
-			//Delete from the parent table
-			var table = column.ParentTableRef.Object as Table;
-			var delRefList = new List<Reference>();
-			if (table != null)
-			{
-				foreach (Reference r in table.Columns)
-				{
-					if (((Column)r.Object).Key == column.Key)
-						delRefList.Add(r);
-				}
-			}
-
-			//Remove deleted fields
-			foreach (var r in delRefList)
-			{
-				table.Columns.Remove(r);
-			}
-
-			//Remove from the database object if necessary
-			if (((ModelRoot)this.Root).Database.Columns != this)
-			{
-				if (((ModelRoot)this.Root).Database.Columns.Contains(column))
-					((ModelRoot)this.Root).Database.Columns.Remove(column);
-			}
-
-			this.Root.Dirty = true;
-			column.PropertyChanged -= new PropertyChangedEventHandler(value_PropertyChanged);
-			 _internalList.Remove(columnId);
-		}
-
-		public void Remove(Column column)
-		{
-			Remove(column.Id);
-		}
-
-		public bool Contains(int columnId)
-		{
-			return (_internalList.Count(x => x.Key == columnId) > 0);
-		}
-
-		public bool Contains(Column column)
-		{
-			foreach (Column c in this)
-			{
-				if (c.Id == column.Id)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public override void Clear()
-		{
-			_internalList.Clear();
-		}
+        public Column this[string name]
+        {
+            get
+            {
+                foreach (var c in this.AsEnumerable())
+                {
+                    if (c.Name.ToLower() == name.ToLower())
+                        return c;
+                }
+                return null;
+            }
+        }
 
 
-		internal void Add(Column value)
-		{
-			try
-			{
-				_internalList.Add(value.Id, value);
-				value.PropertyChanged += new PropertyChangedEventHandler(value_PropertyChanged);
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
+        public void Remove(int columnId)
+        {
+            var column = this.GetById(columnId).FirstOrDefault();
 
-		private void value_PropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == "Id")
-			{
-				foreach (var item in _internalList.Values)
-				{
-					if (item == sender)
-					{
-						foreach(var key in _internalList.Keys)
-						{
-							if (_internalList[key].Id != key)
-							{
-								item.PropertyChanged -= new PropertyChangedEventHandler(value_PropertyChanged);
-								_internalList.Remove(key);
-								this.Add(item);
-								return;
-							}
-						}
-					}
-				}
-			}
-		}
+            //Delete relationships where this column is a child
+            var al1 = ((ModelRoot)this.Root).Database.Relations.AsEnumerable().FindByChildColumn(column);
+            foreach (var relation in al1)
+            {
+                ((ModelRoot)this.Root).Database.Relations.Remove(relation);
+            }
 
-		public Column Add(string name)
-		{
-			var newItem = new Column(this.Root);
-			newItem.Name = name;
-			newItem.ResetId(NextIndex());
-			this.Add(newItem);
-			return newItem;
-		}
+            //Delete relationships where this column is a parent
+            var al2 = ((ModelRoot)this.Root).Database.Relations.FindByParentColumn(column);
+            foreach (var relation in al2)
+            {
+                ((ModelRoot)this.Root).Database.Relations.Remove(relation);
+            }
 
-		public override void AddRange(ICollection list)
-		{
-			foreach (Column element in list)
-			{
-				element.ResetId(NextIndex());
-				this.Add(element);
-			}
-		}
+            //Delete from the parent table
+            var table = column.ParentTableRef.Object as Table;
+            var delRefList = new List<Reference>();
+            if (table != null)
+            {
+                foreach (Reference r in table.Columns)
+                {
+                    if (((Column)r.Object).Key == column.Key)
+                        delRefList.Add(r);
+                }
+            }
 
-		public Column Add()
-		{
-			return this.Add(this.GetUniqueName());
-		}
+            //Remove deleted fields
+            foreach (var r in delRefList)
+            {
+                table.Columns.Remove(r);
+            }
 
-		public bool IsFixedSize
-		{
-			get { return false; }
-		}
+            //Remove from the database object if necessary
+            if (((ModelRoot)this.Root).Database.Columns != this)
+            {
+                if (((ModelRoot)this.Root).Database.Columns.Contains(column))
+                    ((ModelRoot)this.Root).Database.Columns.Remove(column);
+            }
 
-		public bool Contains(string name)
-		{
-			foreach (Column column in this)
-			{
-				if (string.Compare(column.Name, name, true) == 0)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
+            this.Root.Dirty = true;
+            column.PropertyChanged -= new PropertyChangedEventHandler(value_PropertyChanged);
+            _internalList.Remove(columnId);
+        }
 
-		private string GetUniqueName()
-		{
-			//const string baseName = "Column";
-			//int ii = 1;
-			//string newName = baseName + ii.ToString();
-			//while (this.Contains(newName))
-			//{
-			//  ii++;
-			//  newName = baseName + ii.ToString();
-			//}
-			//return newName;
-			return "[NEW COLUMN]";
-		}
+        public void Remove(Column column)
+        {
+            Remove(column.Id);
+        }
 
-		#endregion
+        public bool Contains(int columnId)
+        {
+            return (_internalList.Count(x => x.Key == columnId) > 0);
+        }
 
-		#region ICollection Members
+        public bool Contains(Column column)
+        {
+            foreach (Column c in this)
+            {
+                if (c.Id == column.Id)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
-		public override bool IsSynchronized
-		{
-			get { return false; }
-		}
+        public override void Clear()
+        {
+            _internalList.Clear();
+        }
 
-		public override int Count
-		{
-			get { return _internalList.Count; }
-		}
 
-		public override void CopyTo(Array array, int index)
-		{
-			throw new NotImplementedException();
-		}
+        internal void Add(Column value)
+        {
+            try
+            {
+                _internalList.Add(value.Id, value);
+                value.PropertyChanged += new PropertyChangedEventHandler(value_PropertyChanged);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
-		public override object SyncRoot
-		{
-			get { return _internalList; }
-		}
+        private void value_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Id")
+            {
+                foreach (var item in _internalList.Values)
+                {
+                    if (item == sender)
+                    {
+                        foreach (var key in _internalList.Keys)
+                        {
+                            if (_internalList[key].Id != key)
+                            {
+                                item.PropertyChanged -= new PropertyChangedEventHandler(value_PropertyChanged);
+                                _internalList.Remove(key);
+                                this.Add(item);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-		#endregion
+        public Column Add(string name)
+        {
+            var newItem = new Column(this.Root);
+            newItem.Name = name;
+            newItem.ResetId(NextIndex());
+            this.Add(newItem);
+            return newItem;
+        }
 
-		#region IEnumerable<Column> Members
+        public override void AddRange(ICollection list)
+        {
+            foreach (Column element in list)
+            {
+                element.ResetId(NextIndex());
+                this.Add(element);
+            }
+        }
 
-		IEnumerator<Column> IEnumerable<Column>.GetEnumerator()
-		{
-			return _internalList.Values.GetEnumerator();
-		}
+        public Column Add()
+        {
+            return this.Add(this.GetUniqueName());
+        }
 
-		#endregion
+        public bool IsFixedSize
+        {
+            get { return false; }
+        }
 
-		#region IEnumerable Members
+        public bool Contains(string name)
+        {
+            foreach (Column column in this)
+            {
+                if (string.Compare(column.Name, name, true) == 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return _internalList.GetEnumerator();
-		}
+        private string GetUniqueName()
+        {
+            //const string baseName = "Column";
+            //int ii = 1;
+            //string newName = baseName + ii.ToString();
+            //while (this.Contains(newName))
+            //{
+            //  ii++;
+            //  newName = baseName + ii.ToString();
+            //}
+            //return newName;
+            return "[NEW COLUMN]";
+        }
 
-		#endregion
-	}
+        #endregion
+
+        #region ICollection Members
+
+        public override bool IsSynchronized
+        {
+            get { return false; }
+        }
+
+        public override int Count
+        {
+            get { return _internalList.Count; }
+        }
+
+        public override void CopyTo(Array array, int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override object SyncRoot
+        {
+            get { return _internalList; }
+        }
+
+        #endregion
+
+        #region IEnumerable<Column> Members
+
+        IEnumerator<Column> IEnumerable<Column>.GetEnumerator()
+        {
+            return _internalList.Values.GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _internalList.GetEnumerator();
+        }
+
+        #endregion
+    }
 }

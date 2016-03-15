@@ -100,10 +100,7 @@ namespace nHydrate.Generator.Models
 
         public bool IsReadOnly
         {
-            get
-            {
-                return internalList.IsReadOnly;
-            }
+            get { return internalList.IsReadOnly; }
         }
 
         public RowEntry this[int index]
