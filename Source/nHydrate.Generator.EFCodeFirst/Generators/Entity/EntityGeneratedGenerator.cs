@@ -68,7 +68,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 var eventArgs = new ProjectItemGeneratedEventArgs(template.FileName, template.FileContent, ProjectName, fullParentName, this, true);
                 OnProjectItemGenerated(this, eventArgs);
             }
-            ProjectItemGenerationCompleteEventArgs gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
+
+            //Process deleted items
+            foreach (var name in _model.RemovedTables)
+            {
+                var fullFileName = RELATIVE_OUTPUT_LOCATION + string.Format("{0}.Generated.cs", name);
+                var eventArgs = new ProjectItemDeletedEventArgs(fullFileName, ProjectName, this);
+                OnProjectItemDeleted(this, eventArgs);
+            }
+
+            var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
             OnGenerationComplete(this, gcEventArgs);
         }
 

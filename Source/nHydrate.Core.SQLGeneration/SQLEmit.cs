@@ -148,6 +148,29 @@ namespace nHydrate.Core.SQLGeneration
                 }
             }
 
+            var model = newTable.Root as ModelRoot;
+
+            //Change the default name for all audit fields
+            if (oldTable.AllowCreateAudit)
+            {
+                var defaultName = ("DF__" + oldTable.DatabaseName + "_" + model.Database.CreatedDateColumnName).ToUpper();
+                var defaultName2 = ("DF__" + newTable.DatabaseName + "_" + model.Database.CreatedDateColumnName).ToUpper();
+                sb.AppendLine("--CHANGE THE DEFAULT NAME FOR CREATED AUDIT");
+                sb.AppendLine("if exists (select * from sys.default_constraints where name = '" + defaultName + "')");
+                sb.AppendLine("exec sp_rename @objname='" + defaultName + "', @newname='" + defaultName2 + "'");
+                sb.AppendLine();
+            }
+            if (oldTable.AllowModifiedAudit)
+            {
+                var defaultName = ("DF__" + oldTable.DatabaseName + "_" + model.Database.ModifiedDateColumnName).ToUpper();
+                var defaultName2 = ("DF__" + newTable.DatabaseName + "_" + model.Database.ModifiedDateColumnName).ToUpper();
+                sb.AppendLine("--CHANGE THE DEFAULT NAME FOR MODIFIED AUDIT");
+                sb.AppendLine("if exists (select * from sys.default_constraints where name = '" + defaultName + "')");
+                sb.AppendLine("exec sp_rename @objname='" + defaultName + "', @newname='" + defaultName2 + "'");
+                sb.AppendLine();
+            }
+
+
             return sb.ToString();
         }
 

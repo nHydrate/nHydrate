@@ -57,7 +57,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             string fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;
             ProjectItemGeneratedEventArgs eventArgs = new ProjectItemGeneratedEventArgs(template.FileName, template.FileContent, ProjectName, fullParentName, this, true);
             OnProjectItemGenerated(this, eventArgs);
-            ProjectItemGenerationCompleteEventArgs gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
+            var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
             OnGenerationComplete(this, gcEventArgs);
         }
 

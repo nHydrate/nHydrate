@@ -71,7 +71,7 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.EFCSDL
                 var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false);
                 OnProjectItemGenerated(this, eventArgs);
             }
-            ProjectItemGenerationCompleteEventArgs gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
+            var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
             OnGenerationComplete(this, gcEventArgs);
         }
 

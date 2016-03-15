@@ -32,59 +32,58 @@ using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator.EFDAL.Interfaces.Generators.Entity
 {
-	[GeneratorItem("EntityExtenderGenerator", typeof(EFDALInterfaceProjectGenerator))]
-	public class EntityExtenderGenerator : BaseClassGenerator
-	{
-		#region Class Members
+    [GeneratorItem("EntityExtenderGenerator", typeof(EFDALInterfaceProjectGenerator))]
+    public class EntityExtenderGenerator : BaseClassGenerator
+    {
+        #region Class Members
 
-		private const string RELATIVE_OUTPUT_LOCATION = @"\Entity\";
+        private const string RELATIVE_OUTPUT_LOCATION = @"\Entity\";
 
-		#endregion
+        #endregion
 
-		#region Overrides
+        #region Overrides
 
-		public override int FileCount
-		{
-			get { return GetList().Count; }
-		}
+        public override int FileCount
+        {
+            get { return GetList().Count; }
+        }
 
-		private List<Table> GetList()
-		{
-			return _model.Database.Tables
-				.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly))
-				.OrderBy(x => x.Name)
-				.ToList();
-		}
+        private List<Table> GetList()
+        {
+            return _model.Database.Tables
+                .Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly))
+                .OrderBy(x => x.Name)
+                .ToList();
+        }
 
-		public override void Generate()
-		{
-			foreach (var table in GetList())
-			{
-				var template = new EntityExtenderTemplate(_model, table);
-				var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
-				var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false);
-				OnProjectItemGenerated(this, eventArgs);
-			}
+        public override void Generate()
+        {
+            foreach (var table in GetList())
+            {
+                var template = new EntityExtenderTemplate(_model, table);
+                var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
+                var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false);
+                OnProjectItemGenerated(this, eventArgs);
+            }
 
-			//Process deleted items
-			foreach (var name in _model.RemovedTables)
-			{
-				var fullFileName = RELATIVE_OUTPUT_LOCATION + string.Format("I{0}.cs", name);
-				var eventArgs = new ProjectItemDeletedEventArgs(fullFileName, ProjectName, this);
-				OnProjectItemDeleted(this, eventArgs);
-			}
+            //Process deleted items
+            foreach (var name in _model.RemovedTables)
+            {
+                var fullFileName = RELATIVE_OUTPUT_LOCATION + string.Format("I{0}.cs", name);
+                var eventArgs = new ProjectItemDeletedEventArgs(fullFileName, ProjectName, this);
+                OnProjectItemDeleted(this, eventArgs);
+            }
 
-			var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
-			OnGenerationComplete(this, gcEventArgs);
-		}
+            var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
+            OnGenerationComplete(this, gcEventArgs);
+        }
 
-		public override string LocalNamespaceExtension
-		{
-			get { return EFDALInterfaceProjectGenerator.NamespaceExtension; }
-		}
+        public override string LocalNamespaceExtension
+        {
+            get { return EFDALInterfaceProjectGenerator.NamespaceExtension; }
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }
-
