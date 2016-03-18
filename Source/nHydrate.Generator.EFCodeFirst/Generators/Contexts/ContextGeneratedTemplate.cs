@@ -1638,10 +1638,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
             #endregion
 
-            sb.AppendLine("	#endregion");
             sb.AppendLine();
 
             sb.AppendLine("	}");
+            sb.AppendLine("	#endregion");
             sb.AppendLine();
 
             sb.AppendLine("	internal class CustomDatabaseInitializer<TContext> : IDatabaseInitializer<TContext> where TContext : global::System.Data.Entity.DbContext");

@@ -1078,33 +1078,23 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             //If this is not derived then add the Primary key stuff
             if (_item.ParentTable == null)
             {
+                var pkList = string.Empty;
+                var index = 0;
+                foreach (var dbColumn in _item.PrimaryKeyColumns.OrderBy(x => x.Name).ToList())
+                {
+                    pkList += "this." + dbColumn.PascalName + " + \"|" + index + "|\" + ";
+                    index++;
+                }
+                pkList += "\"\"";
+
                 sb.AppendLine("		#region PrimaryKey");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Hold the primary key for this object");
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		protected " + this.GetLocalNamespace() + ".IPrimaryKey _primaryKey = null;");
                 sb.AppendLine("		" + this.GetLocalNamespace() + ".IPrimaryKey " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.PrimaryKey");
                 sb.AppendLine("		{");
-                sb.AppendLine("			get { return null; }");
-                #region OLD CODE
-                //sb.AppendLine("			get");
-                //sb.AppendLine("			{");
-                //sb.Append("				if (_primaryKey == null)");
-                //sb.Append(" _primaryKey = new " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + "PrimaryKey(");
-
-                //var ii = 0;
-                //foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
-                //{
-                //  sb.Append("this." + column.PascalName);
-                //  if (ii < _item.PrimaryKeyColumns.Count - 1)
-                //    sb.Append(", ");
-                //  ii++;
-                //}
-                //sb.AppendLine(");");
-                //sb.AppendLine("				return _primaryKey;");
-                //sb.AppendLine("			}");
-                #endregion
+                sb.AppendLine("			get { return new PrimaryKey(\""+ _item.PascalName +"|\" + " + pkList + "); }");
                 sb.AppendLine("		}");
 
                 sb.AppendLine();

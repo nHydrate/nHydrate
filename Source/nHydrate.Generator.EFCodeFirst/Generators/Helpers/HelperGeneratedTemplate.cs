@@ -97,7 +97,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 #region DBHelper
 
                 sb.AppendLine("	#region DBHelper");
-                sb.AppendLine("	internal class DBHelper");
+                sb.AppendLine("	internal static partial class DBHelper");
                 sb.AppendLine("	{");
                 sb.AppendLine("		internal static IDbConnection GetConnection()");
                 sb.AppendLine("		{");
@@ -138,8 +138,20 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
 
                 #region Util
                 sb.AppendLine("	#region Util");
-                sb.AppendLine("	internal class Util");
+                sb.AppendLine("	internal static partial class Util");
                 sb.AppendLine("	{");
+
+                sb.AppendLine("		public static UInt64 HashFast(string read)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			UInt64 hashedValue = 3074457345618258791ul;");
+                sb.AppendLine("			for (int i = 0; i < read.Length; i++)");
+                sb.AppendLine("			{");
+                sb.AppendLine("				hashedValue += read[i];");
+                sb.AppendLine("				hashedValue *= 3074457345618258799ul;");
+                sb.AppendLine("			}");
+                sb.AppendLine("			return hashedValue;");
+                sb.AppendLine("		}");
+                sb.AppendLine();
 
                 sb.AppendLine("		internal static string ConvertNormalCS2EFFromConfig(string configSettings)");
                 sb.AppendLine("		{");
@@ -273,7 +285,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
-                
+
                 sb.AppendLine("	#region IAuditable");
 
                 sb.AppendLine("	/// <summary />");
@@ -699,6 +711,44 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public partial interface IPrimaryKey");
                 sb.AppendLine("	{");
+                sb.AppendLine("		long Hash { get; }");
+                sb.AppendLine("	}");
+                sb.AppendLine();
+                sb.AppendLine("	public partial class PrimaryKey : IPrimaryKey");
+                sb.AppendLine("	{");
+                sb.AppendLine("		internal PrimaryKey(string key)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			this.Hash = (long)Util.HashFast(key);");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		public override bool Equals(object obj)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			if (obj == null) return false;");
+                sb.AppendLine("			if (!(obj is PrimaryKey)) return false;");
+                sb.AppendLine("				return (((PrimaryKey)obj).Hash == this.Hash);");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		public static bool operator ==(PrimaryKey a, PrimaryKey b)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			if (System.Object.ReferenceEquals(a, b))");
+                sb.AppendLine("			{");
+                sb.AppendLine("				return true;");
+                sb.AppendLine("			}");
+                sb.AppendLine("			// If one is null, but not both, return false.");
+                sb.AppendLine("			if ((a == null) || (b == null))");
+                sb.AppendLine("			{");
+                sb.AppendLine("				return false;");
+                sb.AppendLine("			}");
+                sb.AppendLine();
+                sb.AppendLine("			return a.Hash == b.Hash;");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		public static bool operator !=(PrimaryKey a, PrimaryKey b)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			return !(a == b);");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		public long Hash { get; private set; }");
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
