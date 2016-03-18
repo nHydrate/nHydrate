@@ -267,7 +267,23 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
 
+                sb.AppendLine("	#region ICreatable");
+                sb.AppendLine("	public partial interface ICreatable");
+                sb.AppendLine("	{");
+                sb.AppendLine("	}");
+                sb.AppendLine("	#endregion");
+                sb.AppendLine();
+                
                 sb.AppendLine("	#region IAuditable");
+
+                sb.AppendLine("	/// <summary />");
+                sb.AppendLine("	internal partial interface IAuditableSet");
+                sb.AppendLine("	{");
+                sb.AppendLine("		string ModifiedBy { get; set; }");
+                sb.AppendLine("		string CreatedBy { get; set; }");
+                sb.AppendLine("	}");
+                sb.AppendLine();
+
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public partial interface IAuditable");
                 sb.AppendLine("	{");

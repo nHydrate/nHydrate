@@ -1073,24 +1073,36 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// <param name=\"entity\">The entity to add</param>");
             sb.AppendLine("		public virtual " + this.GetLocalNamespace() + ".IBusinessObject AddItem(" + this.GetLocalNamespace() + ".IBusinessObject entity)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if (false) { }");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("			else if (entity is " + GetLocalNamespace() + ".Entity." + table.PascalName + ")");
-                sb.AppendLine("			{");
-                    
-                if (table.AllowCreateAudit)
-                    sb.AppendLine("				((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.CreatedByPascalName + " = _contextStartup.Modifer;");
-                if (table.AllowModifiedAudit)
-                    sb.AppendLine("				((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.ModifiedByPascalName + " = _contextStartup.Modifer;");
 
-                if (table.Security.IsValid())
-                    sb.AppendLine("				this.ObjectContext.AddObject(entity.GetType().Name + \"__INTERNAL\", entity);");
-                else
-                    sb.AppendLine("				this." + table.PascalName + ".Add((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
+            sb.AppendLine("			if (entity == null) throw new NullReferenceException();");
+            sb.AppendLine("			var audit = entity as " + this.GetLocalNamespace() + ".IAuditableSet;");
+            sb.AppendLine("			if (audit != null)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				audit.CreatedBy = _contextStartup.Modifer;");
+            sb.AppendLine("				audit.ModifiedBy = _contextStartup.Modifer;");
+            sb.AppendLine("			}");
+            sb.AppendLine("			if (entity is " + this.GetLocalNamespace() + ".ICreatable)");
+            sb.AppendLine("				this.ObjectContext.AddObject(entity.GetType().Name, entity);");
 
-                sb.AppendLine("			}");
-            }
+            //sb.AppendLine("			if (false) { }");
+            //foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable).OrderBy(x => x.PascalName))
+            //{
+            //    sb.AppendLine("			else if (entity is " + GetLocalNamespace() + ".Entity." + table.PascalName + ")");
+            //    sb.AppendLine("			{");
+
+            //    //if (table.AllowCreateAudit)
+            //    //    sb.AppendLine("				((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.CreatedByPascalName + " = _contextStartup.Modifer;");
+            //    //if (table.AllowModifiedAudit)
+            //    //    sb.AppendLine("				((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.ModifiedByPascalName + " = _contextStartup.Modifer;");
+
+            //    if (table.Security.IsValid())
+            //        sb.AppendLine("				this.ObjectContext.AddObject(entity.GetType().Name + \"__INTERNAL\", entity);");
+            //    else
+            //        sb.AppendLine("				this.ObjectContext.AddObject(entity.GetType().Name, entity);");
+            //    //sb.AppendLine("				this." + table.PascalName + ".Add((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
+
+            //    sb.AppendLine("			}");
+            //}
             sb.AppendLine("			return entity;");
             sb.AppendLine("		}");
             sb.AppendLine();

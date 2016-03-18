@@ -198,8 +198,15 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
             if (_item.AllowCreateAudit || _item.AllowModifiedAudit || _item.AllowTimestamp)
             {
-                sb.Append(", " + this.GetLocalNamespace() + ".IAuditable");
+                sb.Append(", " + this.GetLocalNamespace() + ".IAuditable, " + this.GetLocalNamespace() + ".IAuditableSet");
             }
+
+            //If we can add this item then implement the ICreatable interface
+            if (!_item.AssociativeTable && !_item.Immutable)
+            {
+                sb.Append(", " + this.GetLocalNamespace() + ".ICreatable");
+            }
+
             sb.AppendLine();
 
             sb.AppendLine("	{");
@@ -1160,7 +1167,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the value of one of this object's properties.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public object GetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field)");
+            sb.AppendLine("		public virtual object GetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field)");
             sb.AppendLine("		{");
             sb.AppendLine("			return GetValue(field, null);");
             sb.AppendLine("		}");
@@ -1168,7 +1175,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the value of one of this object's properties.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public object GetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, object defaultValue)");
+            sb.AppendLine("		public virtual object GetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, object defaultValue)");
             sb.AppendLine("		{");
             var allColumns = _item.GetColumnsFullHierarchy(true).Where(x => x.Generated).ToList();
             foreach (var column in allColumns.OrderBy(x => x.Name))
@@ -1441,6 +1448,32 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 return;
 
             sb.AppendLine("		#region Auditing");
+
+            sb.AppendLine("		string " + this.GetLocalNamespace() + ".IAuditableSet.CreatedBy");
+            sb.AppendLine("		{");
+            if (_item.AllowCreateAudit)
+                sb.AppendLine("			get { return this." + _model.Database.CreatedByPascalName + "; }");
+            else
+                sb.AppendLine("			get { return null; }");
+            if (_item.AllowCreateAudit)
+                sb.AppendLine("			set { this." + _model.Database.CreatedByPascalName + " = value; }");
+            else
+                sb.AppendLine("			set { ; }");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		string " + this.GetLocalNamespace() + ".IAuditableSet.ModifiedBy");
+            sb.AppendLine("		{");
+            if (_item.AllowModifiedAudit)
+                sb.AppendLine("			get { return this." + _model.Database.ModifiedByPascalName + "; }");
+            else
+                sb.AppendLine("			get { return null; }");
+            if (_item.AllowModifiedAudit)
+                sb.AppendLine("			set { this." + _model.Database.ModifiedByPascalName + " = value; }");
+            else
+                sb.AppendLine("			set { ; }");
+            sb.AppendLine("		}");
+
             sb.AppendLine("		string " + this.GetLocalNamespace() + ".IAuditable.CreatedBy");
             sb.AppendLine("		{");
             if (_item.AllowCreateAudit)

@@ -505,7 +505,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// The mock set for the '" + item.PascalName + "' entity");
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		" + (hasSecurity ? "protected internal" : "public") + " MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + name);
+                sb.AppendLine("		" + (hasSecurity ? "protected internal" : "public") + " virtual MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + name);
                 sb.AppendLine("		{");
                 sb.AppendLine("			get { return _" + name + " ?? (_" + name + " = new MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">()); }");
                 sb.AppendLine("			set { _" + name + " = value as MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">; }");
@@ -539,7 +539,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// The mock set for the '" + item.PascalName + "' entity");
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		public MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "");
+                sb.AppendLine("		public virtual MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "");
                 sb.AppendLine("		{");
                 sb.AppendLine("			get { return _" + item.PascalName + " ?? (_" + item.PascalName + " = new MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">()); }");
                 sb.AppendLine("			set { _" + item.PascalName + " = value as MockObjectSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">; }");
