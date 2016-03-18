@@ -929,7 +929,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Entity set for " + item.PascalName);
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		" + (hasSecurity ? "protected internal" : "public") + " DbSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + name + " { get; set; }");
+                sb.AppendLine("		" + (hasSecurity ? "protected internal" : "public") + " virtual DbSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + name + " { get; set; }");
                 sb.AppendLine();
             }
 
@@ -938,7 +938,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Entity set for " + item.PascalName);
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		public DbSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + " { get; set; }");
+                sb.AppendLine("		public virtual DbSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + " { get; set; }");
                 sb.AppendLine();
             }
 
