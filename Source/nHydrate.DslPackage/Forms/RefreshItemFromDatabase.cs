@@ -75,7 +75,7 @@ namespace nHydrate.DslPackage.Forms
             _model = model;
             _store = store;
             _modelElement = modelElement;
-            //_importDomain = new ImportDomain();
+            _importDomain = new nHydrate.DataImport.SqlClient.ImportDomain();
 
             this.DatabaseConnectionControl1.FileName = Path.Combine((new FileInfo(docData.FileName)).DirectoryName, "importconnection.cache");
             DatabaseConnectionControl1.LoadSettings();
@@ -100,7 +100,7 @@ namespace nHydrate.DslPackage.Forms
 
         private void LoadDatabaseObjects()
         {
-            var _importDomain = new nHydrate.DataImport.SqlClient.ImportDomain();
+            //var _importDomain = new nHydrate.DataImport.SqlClient.ImportDomain();
 
             //Load database objects for user selection
             try

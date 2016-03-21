@@ -485,6 +485,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine("		#endregion");
             sb.AppendLine();
 
+            var pkList = string.Join(",", _item.PrimaryKeyColumns.OrderBy(x => x.Name).Select(x => "this." + x.PascalName).ToList());
             sb.AppendLine("		#region PrimaryKey");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
@@ -493,7 +494,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             sb.AppendLine("		protected " + this.GetLocalNamespace() + ".IPrimaryKey _primaryKey = null;");
             sb.AppendLine("		" + this.GetLocalNamespace() + ".IPrimaryKey " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.PrimaryKey");
             sb.AppendLine("		{");
-            sb.AppendLine("			get { return null; }");
+            sb.AppendLine("			get { return new PrimaryKey(Util.HashPK(\"" + _item.PascalName + "\", " + pkList + ")); }");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");

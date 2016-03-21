@@ -403,7 +403,16 @@ namespace nHydrate.Generator.Models
         ]
         public IList<CustomViewColumn> PrimaryKeyColumns
         {
-            get { return new List<CustomViewColumn>(); }
+            get
+            {
+                var primaryKeyColumns = new List<CustomViewColumn>();
+                foreach (Reference columnRef in this.Columns)
+                {
+                    var column = (CustomViewColumn)columnRef.Object;
+                    if (column.IsPrimaryKey) primaryKeyColumns.Add(column);
+                }
+                return primaryKeyColumns.AsReadOnly();
+            }
         }
 
         public void ResetId(int newId)

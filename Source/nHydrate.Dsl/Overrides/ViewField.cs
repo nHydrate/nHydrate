@@ -96,6 +96,16 @@ namespace nHydrate.Dsl
         /// </summary>
         internal System.Drawing.Bitmap CachedImage { get; set; }
 
+        public override bool Nullable
+        {
+            get
+            {
+                if (this.DataType == DataTypeConstants.Variant) return false;
+                else return base.Nullable && !this.IsPrimaryKey;
+            }
+            set { base.Nullable = value; }
+        }
+
         public override string ToString()
         {
             return this.Name;

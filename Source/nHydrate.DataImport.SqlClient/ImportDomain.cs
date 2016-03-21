@@ -384,10 +384,13 @@ namespace nHydrate.DataImport.SqlClient
                     var view = database.ViewList.FirstOrDefault(x => x.Name.ToLower() == viewName.ToLower());
 
                     //The length is half the bytes for these types
-                    if ((dataType == SqlDbType.NChar) ||
-                        (dataType == SqlDbType.NVarChar))
+                    if ((dataType == SqlDbType.NChar) || (dataType == SqlDbType.NVarChar))
                     {
                         length = length / 2;
+                    }
+                    else if (dataType == SqlDbType.DateTime2)
+                    {
+                        length = int.Parse(rowView["scale"].ToString());
                     }
 
                     if (view != null)

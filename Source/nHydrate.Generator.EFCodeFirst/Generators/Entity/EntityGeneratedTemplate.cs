@@ -747,6 +747,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                             sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + targetTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? "" : " (role: '" + otherRelation.PascalRoleName + "')"));
                             sb.AppendLine("		/// </summary>");
                             sb.AppendLine("		[DataMember]");
+                            sb.AppendLine("		[XmlIgnore]");
                             sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + targetTable.PascalName + "> " + otherRelation.PascalRoleName + targetTable.PascalName + "List");
                             sb.AppendLine("		{");
                             sb.AppendLine("			get");
@@ -769,6 +770,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
+                        sb.AppendLine("		[XmlIgnore]");
                         sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + relation.PascalRoleName + childTable.PascalName + "List");
                         sb.AppendLine("		{");
                         sb.AppendLine("			get");
@@ -1084,7 +1086,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("		#region PrimaryKey");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Hold the primary key for this object");
+                sb.AppendLine("		/// Generic primary key for this object");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		" + this.GetLocalNamespace() + ".IPrimaryKey " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.PrimaryKey");
                 sb.AppendLine("		{");
