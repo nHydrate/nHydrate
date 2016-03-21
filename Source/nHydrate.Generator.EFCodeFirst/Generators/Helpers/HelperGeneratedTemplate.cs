@@ -141,6 +141,17 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	internal static partial class Util");
                 sb.AppendLine("	{");
 
+                sb.AppendLine("		public static string HashPK(params object[] p)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			var retval = string.Empty;");
+                sb.AppendLine("			for (var ii = 0; ii < p.Length; ii++)");
+                sb.AppendLine("			{");
+                sb.AppendLine("				retval += p[ii] + \"|\" + ii + \"|\";");
+                sb.AppendLine("			}");
+                sb.AppendLine("			return retval;");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+
                 sb.AppendLine("		public static UInt64 HashFast(string read)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			UInt64 hashedValue = 3074457345618258791ul;");
@@ -280,6 +291,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine();
 
                 sb.AppendLine("	#region ICreatable");
+                sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public partial interface ICreatable");
                 sb.AppendLine("	{");
                 sb.AppendLine("	}");
@@ -711,9 +723,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public partial interface IPrimaryKey");
                 sb.AppendLine("	{");
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		long Hash { get; }");
                 sb.AppendLine("	}");
                 sb.AppendLine();
+                sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public partial class PrimaryKey : IPrimaryKey");
                 sb.AppendLine("	{");
                 sb.AppendLine("		internal PrimaryKey(string key)");
@@ -721,6 +735,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			this.Hash = (long)Util.HashFast(key);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public override bool Equals(object obj)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			if (obj == null) return false;");
@@ -728,6 +743,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("				return (((PrimaryKey)obj).Hash == this.Hash);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+                sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		public override int GetHashCode()");
+                sb.AppendLine("		{");
+                sb.AppendLine("			return base.GetHashCode();");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public static bool operator ==(PrimaryKey a, PrimaryKey b)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			if (System.Object.ReferenceEquals(a, b))");
@@ -743,11 +765,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			return a.Hash == b.Hash;");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public static bool operator !=(PrimaryKey a, PrimaryKey b)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			return !(a == b);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public long Hash { get; private set; }");
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");

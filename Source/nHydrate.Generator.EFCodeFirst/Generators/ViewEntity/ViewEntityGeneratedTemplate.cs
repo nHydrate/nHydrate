@@ -81,6 +81,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
         {
             try
             {
+                nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 this.AppendUsingStatements();
                 sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");

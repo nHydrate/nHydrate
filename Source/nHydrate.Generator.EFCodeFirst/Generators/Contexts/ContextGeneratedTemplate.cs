@@ -70,6 +70,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
         {
             try
             {
+                nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 this.AppendUsingStatements();
                 sb.AppendLine("namespace " + this.GetLocalNamespace());
@@ -351,6 +352,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #endregion
 
             sb.AppendLine("		partial void OnContextCreated();");
+            sb.AppendLine("		partial void OnBeforeSaveChanges(ref bool cancel);");
+            sb.AppendLine("		partial void OnAfterSaveChanges();");
             sb.AppendLine();
 
             #region OnModelCreating
@@ -719,6 +722,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// <returns>The number of objects in an System.Data.Entity.EntityState.Added, System.Data.Entity.EntityState.Modified, or System.Data.Entity.EntityState.Deleted state when System.Data.Objects.ObjectContext.SaveChanges() was called.</returns>");
             sb.AppendLine("		public override int SaveChanges()");
             sb.AppendLine("		{");
+
+            sb.AppendLine("			var cancel = false;");
+            sb.AppendLine("			OnBeforeSaveChanges(ref cancel);");
+            sb.AppendLine("			if (cancel) return 0;");
+            sb.AppendLine();
             sb.AppendLine("			//Get the added list");
             sb.AppendLine("			var addedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added);");
             sb.AppendLine();
@@ -911,6 +919,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			}");
             sb.AppendLine("			this.OnAfterSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
             sb.AppendLine("			this.OnAfterSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
+            sb.AppendLine("			OnAfterSaveChanges();");
             sb.AppendLine("			return retval;");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -1285,7 +1294,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 //Add code here to handle output parameters
                 foreach (var parameter in parameterList.Where(x => x.IsOutputParameter))
                 {
-                    sb.AppendLine("			if (" + parameter.CamelName + "Parameter.Value == System.DBNull.Value) " + parameter.CamelName + " = null;");
+                    sb.AppendLine("			if (" + parameter.CamelName + "Parameter.Value == System.DBNull.Value) " + parameter.CamelName + " = default("+ parameter.GetCodeType(parameter.AllowNull) +");");
                     sb.AppendLine("			else " + parameter.CamelName + " = (" + parameter.GetCodeType() + ")" + parameter.CamelName + "Parameter.Value;");
                 }
 

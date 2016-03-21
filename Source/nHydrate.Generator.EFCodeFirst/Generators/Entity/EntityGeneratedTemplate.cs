@@ -79,6 +79,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
         {
             try
             {
+                nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 this.AppendUsingStatements();
                 sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
@@ -1078,14 +1079,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             //If this is not derived then add the Primary key stuff
             if (_item.ParentTable == null)
             {
-                var pkList = string.Empty;
-                var index = 0;
-                foreach (var dbColumn in _item.PrimaryKeyColumns.OrderBy(x => x.Name).ToList())
-                {
-                    pkList += "this." + dbColumn.PascalName + " + \"|" + index + "|\" + ";
-                    index++;
-                }
-                pkList += "\"\"";
+                var pkList = string.Join(",", _item.PrimaryKeyColumns.OrderBy(x => x.Name).Select(x => "this." + x.PascalName).ToList());
 
                 sb.AppendLine("		#region PrimaryKey");
                 sb.AppendLine();
@@ -1094,7 +1088,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		" + this.GetLocalNamespace() + ".IPrimaryKey " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.PrimaryKey");
                 sb.AppendLine("		{");
-                sb.AppendLine("			get { return new PrimaryKey(\""+ _item.PascalName +"|\" + " + pkList + "); }");
+                sb.AppendLine("			get { return new PrimaryKey(Util.HashPK(\"" + _item.PascalName + "\", " + pkList + ")); }");
                 sb.AppendLine("		}");
 
                 sb.AppendLine();

@@ -7,6 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+#pragma warning disable 0168
 namespace PROJECTNAMESPACE
 {
 	using System;
@@ -419,3 +420,4 @@ namespace PROJECTNAMESPACE
 
 	}
 }
+#pragma warning restore 0168
