@@ -303,8 +303,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	internal partial interface IAuditableSet");
                 sb.AppendLine("	{");
+                sb.AppendLine("		DateTime? CreatedDate { get; set; }");
+                sb.AppendLine("		DateTime? ModifiedDate { get; set; }");
                 sb.AppendLine("		string ModifiedBy { get; set; }");
                 sb.AppendLine("		string CreatedBy { get; set; }");
+                sb.AppendLine("		void ResetCreatedBy(string modifier);");
+                sb.AppendLine("		void ResetModifiedBy(string modifier);");
                 sb.AppendLine("	}");
                 sb.AppendLine();
 

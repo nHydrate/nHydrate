@@ -1499,6 +1499,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("			get { return null; }");
             sb.AppendLine("		}");
             sb.AppendLine();
+
             sb.AppendLine("		System.DateTime? " + this.GetLocalNamespace() + ".IAuditable.ModifiedDate");
             sb.AppendLine("		{");
             if (_item.AllowModifiedAudit)
@@ -1507,6 +1508,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("			get { return null; }");
             sb.AppendLine("		}");
             sb.AppendLine();
+
             sb.AppendLine("		byte[] " + this.GetLocalNamespace() + ".IAuditable.TimeStamp");
             sb.AppendLine("		{");
             if (_item.AllowTimestamp)
@@ -1516,11 +1518,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            var auditMethodModifier = "virtual";
-            if (_item.ParentTable != null)
-                auditMethodModifier = "override";
-
-            sb.AppendLine("		internal " + auditMethodModifier + " void ResetModifiedBy(string modifier)");
+            sb.AppendLine("		void IAuditableSet.ResetModifiedBy(string modifier)");
             sb.AppendLine("		{");
             if (_item.AllowModifiedAudit)
             {
@@ -1529,15 +1527,48 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             }
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		internal " + auditMethodModifier + " void ResetCreatedBy(string modifier)");
+            sb.AppendLine("		void IAuditableSet.ResetCreatedBy(string modifier)");
             sb.AppendLine("		{");
             if (_item.AllowCreateAudit)
             {
                 sb.AppendLine("			if (this." + _model.Database.CreatedByPascalName + " != modifier)");
                 sb.AppendLine("				this." + _model.Database.CreatedByPascalName + " = modifier;");
             }
-            sb.AppendLine("			this.ResetModifiedBy(modifier);");
+            sb.AppendLine("			((IAuditableSet)this).ResetModifiedBy(modifier);");
             sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		System.DateTime? " + this.GetLocalNamespace() + ".IAuditableSet.CreatedDate");
+            sb.AppendLine("		{");
+            if (_item.AllowCreateAudit)
+            {
+                sb.AppendLine("			get { return this." + _model.Database.CreatedDatePascalName + "; }");
+                sb.AppendLine("			set { this." + _model.Database.CreatedDatePascalName + " = value; }");
+            }
+            else
+            {
+                sb.AppendLine("			get { return null; }");
+                sb.AppendLine("			set { ; }");
+            }
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		System.DateTime? " + this.GetLocalNamespace() + ".IAuditableSet.ModifiedDate");
+            sb.AppendLine("		{");
+            if (_item.AllowModifiedAudit)
+            {
+                sb.AppendLine("			get { return this." + _model.Database.ModifiedDatePascalName + "; }");
+                sb.AppendLine("			set { this." + _model.Database.ModifiedDatePascalName + " = value; }");
+            }
+            else
+            {
+                sb.AppendLine("			get { return null; }");
+                sb.AppendLine("			set { ; }");
+            }
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+
             sb.AppendLine("		#endregion");
             sb.AppendLine();
         }

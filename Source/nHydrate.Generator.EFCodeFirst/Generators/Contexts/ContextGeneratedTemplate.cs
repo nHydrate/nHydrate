@@ -732,16 +732,22 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
             sb.AppendLine("			if (_contextStartup.IsAdmin)");
             sb.AppendLine("			{");
-            sb.AppendLine("				foreach (var item in addedList)");
-            sb.AppendLine("				{");
-            foreach (var table in _model.Database.Tables.Where(x => x.IsTenant).OrderBy(x => x.Name).ToList())
+
+            var tenantTables = _model.Database.Tables.Where(x => x.IsTenant).OrderBy(x => x.Name).ToList();
+            if (tenantTables.Any())
             {
-                sb.AppendLine("					if (item.Entity is " + this.GetLocalNamespace() + ".Entity." + table.Name + ")");
-                sb.AppendLine("						throw new Exception(\"You cannot add items to the tenant table '" + table.Name + "' in Admin mode.\");");
+                sb.AppendLine("				foreach (var item in addedList)");
+                sb.AppendLine("				{");
+                foreach (var table in tenantTables)
+                {
+                    sb.AppendLine("					if (item.Entity is " + this.GetLocalNamespace() + ".Entity." + table.Name + ")");
+                    sb.AppendLine("						throw new Exception(\"You cannot add items to the tenant table '" + table.Name + "' in Admin mode.\");");
+                }
+                sb.AppendLine("				}");
+                sb.AppendLine("			}");
+                sb.AppendLine();
             }
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine();
+
             sb.AppendLine("			//Process deleted list");
             sb.AppendLine("			var deletedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Deleted);");
             sb.AppendLine("			foreach (var item in deletedList)");
@@ -816,38 +822,15 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				var entity = item.Entity as IAuditable;");
             sb.AppendLine("				if (entity != null)");
             sb.AppendLine("				{");
+            sb.AppendLine("					var audit = entity as IAuditableSet;");
             sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
             sb.AppendLine("					{");
-
-            var index3 = 0;
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowCreateAudit).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("						" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity).ResetCreatedBy(this.ContextStartup.Modifer);");
-                index3++;
-            }
+            sb.AppendLine("						if (audit != null) audit.ResetCreatedBy(this.ContextStartup.Modifer);");
+            sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
             sb.AppendLine("					}");
-
-            index3 = 0;
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowCreateAudit).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("					" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.CreatedDatePascalName + " = markedTime;");
-                index3++;
-            }
-
-            index3 = 0;
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowModifiedAudit).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("					" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.ModifiedDatePascalName + " = markedTime;");
-                index3++;
-            }
-            sb.AppendLine();
-
+            sb.AppendLine("					audit.CreatedDate = markedTime;");
+            sb.AppendLine("					audit.ModifiedDate = markedTime;");
             sb.AppendLine("				}");
-            sb.AppendLine();
-
-            //Raise added save event
-            index3 = 0;
-
             sb.AppendLine("			}");
             sb.AppendLine("			this.OnBeforeSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
             sb.AppendLine();
@@ -861,35 +844,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				var entity = item.Entity as IAuditable;");
             sb.AppendLine("				if (entity != null)");
             sb.AppendLine("				{");
-
-            #region IsModifyAuditImplemented
+            sb.AppendLine("					var audit = entity as IAuditableSet;");
             sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
             sb.AppendLine("					{");
-
-            index3 = 0;
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowModifiedAudit).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("						" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.ModifiedByPascalName + " = this.ContextStartup.Modifer;");
-                index3++;
-            }
-
+            sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
             sb.AppendLine("					}");
-            sb.AppendLine();
-            #endregion
-
-            index3 = 0;
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowModifiedAudit).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("					" + (index3 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.ModifiedDatePascalName + " = markedTime;");
-                index3++;
-            }
-
+            sb.AppendLine("					audit.ModifiedDate = markedTime;");
             sb.AppendLine("				}");
-            sb.AppendLine();
-
-            //Raise modified save event
-            index3 = 0;
-
             sb.AppendLine("			}");
             sb.AppendLine("			this.OnBeforeSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
             sb.AppendLine();
@@ -918,7 +879,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				throw;");
             sb.AppendLine("			}");
             sb.AppendLine("			this.OnAfterSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
-            sb.AppendLine("			this.OnAfterSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
+            sb.AppendLine("			this.OnAfterSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
             sb.AppendLine("			OnAfterSaveChanges();");
             sb.AppendLine("			return retval;");
             sb.AppendLine("		}");
@@ -1091,27 +1052,15 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				audit.ModifiedBy = _contextStartup.Modifer;");
             sb.AppendLine("			}");
             sb.AppendLine("			if (entity is " + this.GetLocalNamespace() + ".ICreatable)");
-            sb.AppendLine("				this.ObjectContext.AddObject(entity.GetType().Name, entity);");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var extra = string.Empty;");
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && x.Security.IsValid()).OrderBy(x => x.PascalName))
+            {
+                sb.AppendLine("				if (entity is "+ table.PascalName +") extra = \"__INTERNAL\";");
+            }
+            sb.AppendLine("				this.ObjectContext.AddObject(entity.GetType().Name + extra, entity);");
+            sb.AppendLine("			}");
 
-            //sb.AppendLine("			if (false) { }");
-            //foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable).OrderBy(x => x.PascalName))
-            //{
-            //    sb.AppendLine("			else if (entity is " + GetLocalNamespace() + ".Entity." + table.PascalName + ")");
-            //    sb.AppendLine("			{");
-
-            //    //if (table.AllowCreateAudit)
-            //    //    sb.AppendLine("				((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.CreatedByPascalName + " = _contextStartup.Modifer;");
-            //    //if (table.AllowModifiedAudit)
-            //    //    sb.AppendLine("				((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + _model.Database.ModifiedByPascalName + " = _contextStartup.Modifer;");
-
-            //    if (table.Security.IsValid())
-            //        sb.AppendLine("				this.ObjectContext.AddObject(entity.GetType().Name + \"__INTERNAL\", entity);");
-            //    else
-            //        sb.AppendLine("				this.ObjectContext.AddObject(entity.GetType().Name, entity);");
-            //    //sb.AppendLine("				this." + table.PascalName + ".Add((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
-
-            //    sb.AppendLine("			}");
-            //}
             sb.AppendLine("			return entity;");
             sb.AppendLine("		}");
             sb.AppendLine();
