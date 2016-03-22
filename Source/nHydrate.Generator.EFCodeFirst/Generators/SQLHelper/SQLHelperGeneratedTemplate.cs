@@ -109,7 +109,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
         {
             sb.AppendLine("	#region LinqSQLField");
             sb.AppendLine();
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	internal class LinqSQLField");
             sb.AppendLine("	{");
             sb.AppendLine("		public string Name { get; set; }");
@@ -142,7 +141,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine();
             sb.AppendLine("	#region LinqSQLFromClause");
             sb.AppendLine();
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	internal class LinqSQLFromClause");
             sb.AppendLine("	{");
             sb.AppendLine("		public string TableName { get; set; }");
@@ -161,7 +159,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("		}");
             sb.AppendLine("	}");
             sb.AppendLine();
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	internal class LinqSQLFromClauseCollection : List<LinqSQLFromClause>");
             sb.AppendLine("	{");
             sb.AppendLine("		public bool ContainsTable(string tableName)");
@@ -293,7 +290,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("	#region BusinessObjectQuery");
             sb.AppendLine();
             sb.AppendLine("	delegate string GetDatabaseFieldNameDelegate(string field);");
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	internal partial class BusinessObjectQuery<T, K, P>");
             sb.AppendLine("		where T : class, IBusinessObject");
             sb.AppendLine("		where K : class, IBusinessObjectLINQQuery");
@@ -606,7 +602,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine();
             sb.AppendLine("	#region LinqSQLParser");
             sb.AppendLine();
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	internal partial class LinqSQLParser");
             sb.AppendLine("	{");
             sb.AppendLine("		internal enum ObjectTypeConstants");
@@ -1145,7 +1140,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
 
             sb.AppendLine("	#region GlobalValues");
             sb.AppendLine();
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	internal static class GlobalValues");
             sb.AppendLine("	{");
             sb.AppendLine("		public const string ERROR_PROPERTY_NULL = \"The value is null and in an invalid state.\";");
@@ -1490,7 +1484,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
 
             sb.AppendLine("	#region Extensions");
             sb.AppendLine();
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	internal static class Extensions");
             sb.AppendLine("	{");
             sb.AppendLine("		public static bool Contains(this DataRelationCollection relationList, DataRelation relation)");
