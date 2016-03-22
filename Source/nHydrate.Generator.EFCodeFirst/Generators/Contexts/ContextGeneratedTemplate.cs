@@ -1383,7 +1383,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             #region Table Security
             var securedTables = _model.Database.Tables.Where(x => x.Generated && x.Security.IsValid()).OrderBy(x => x.PascalName).ToList();
-            sb.AppendLine("		private List<string> _paramList = new List<string>();");
+            sb.AppendLine("		protected List<string> _paramList = new List<string>();");
 
             foreach (var item in securedTables)
             {
@@ -1441,7 +1441,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 var inputParams = string.Join(", ", (parameterList.Select(x => "@\" + paramName" + paramIndex++ + " + \"")));
 
                 var inputParamVars = string.Join(", ", (parameterList.Select(x => x.CamelName + "Parameter")));
-                sb.AppendLine("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.CreateQuery<" + item.PascalName + ">(\"[" + _model.ProjectName + "Entities].[" + objectName + "](" + inputParams + ")\"" + (string.IsNullOrEmpty(inputParamVars) ? string.Empty : ", " + inputParamVars) + ");");
+                sb.AppendLine("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.CreateQuery<" + item.PascalName + ">(\"[\" + this.GetType().Name + \"].[" + objectName + "](" + inputParams + ")\"" + (string.IsNullOrEmpty(inputParamVars) ? string.Empty : ", " + inputParamVars) + ");");
 
                 //Add code here to handle output parameters
                 foreach (var parameter in parameterList.Where(x => x.IsOutputParameter))
