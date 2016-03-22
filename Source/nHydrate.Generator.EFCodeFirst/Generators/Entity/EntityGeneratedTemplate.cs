@@ -1821,195 +1821,282 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		#region UpdateData");
             sb.AppendLine();
 
-            //All types that are valid for these operations
-            var typeList = new List<string>();
-            typeList.Add("int");
-            typeList.Add("Single");
-            typeList.Add("decimal");
-            typeList.Add("double");
-            typeList.Add("short");
-            typeList.Add("string");
-            typeList.Add("DateTime");
-            typeList.Add("bool");
-            typeList.Add("Guid");
-            //typeList.Add("byte[]");
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
+            sb.AppendLine("		}");
+            sb.AppendLine();
 
-            var tableList = new List<Table>(_item.GetTableHierarchy());
-            tableList.Remove(_item);
-            var columnList = new Dictionary<string, Column>();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            sb.AppendLine("		/// <param name=\"connection\">An open database connection</param>");
+            sb.AppendLine("		/// <param name=\"transaction\">The database connection transaction</param>");
+            sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, System.Data.IDbConnection connection, System.Data.Common.DbTransaction transaction)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", null, connection, transaction);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
 
-            //Need the columns in order from base UP
-            foreach (var t in tableList.OrderBy(x => x.Name))
-            {
-                foreach (var c in t.GetColumns().Where(x => x.Generated))
-                {
-                    if (!columnList.ContainsKey(c.DatabaseName.ToLower()))
-                        columnList.Add(c.DatabaseName.ToLower(), c);
-                }
-            }
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            sb.AppendLine("		/// <param name=\"startup\">A configuration object</param>");
+            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
+            sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, ContextStartup startup, string connectionString)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup, connectionString);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
 
-            //Add primary Keys
-            foreach (var c in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
-            {
-                if (columnList.ContainsKey(c.DatabaseName.ToLower()))
-                    columnList.Remove(c.DatabaseName.ToLower());
-            }
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
+            sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, string connectionString)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
 
-            foreach (var typeName in typeList)
-            {
-                //var nullTypeName = typeName + (typeName == "string" || typeName == "byte[]" ? string.Empty : "?");
-                var nullTypeName = typeName + (typeName == "string" ? string.Empty : "?");
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
+            sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " newValue)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
+            sb.AppendLine("		}");
+            sb.AppendLine();
 
-                #region Normal Call
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
+            sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " newValue, string connectionString)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
 
-                //The NON-nullable call
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-                sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-                sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-                sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + typeName + " newValue)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
-                sb.AppendLine("		}");
-                sb.AppendLine();
+            #region OLD CODE
+            ////All types that are valid for these operations
+            //var typeList = new List<string>();
+            //typeList.Add("int");
+            //typeList.Add("Single");
+            //typeList.Add("decimal");
+            //typeList.Add("double");
+            //typeList.Add("short");
+            //typeList.Add("string");
+            //typeList.Add("DateTime");
+            //typeList.Add("bool");
+            //typeList.Add("Guid");
+            ////typeList.Add("byte[]");
 
-                //The Nullable call
-                if (nullTypeName != typeName)
-                {
-                    sb.AppendLine("		/// <summary>");
-                    sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-                    sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-                    sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-                    sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-                    sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + nullTypeName + " newValue)");
-                    sb.AppendLine("		{");
-                    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
-                    sb.AppendLine("		}");
-                    sb.AppendLine();
-                }
+            //var tableList = new List<Table>(_item.GetTableHierarchy());
+            //tableList.Remove(_item);
+            //var columnList = new Dictionary<string, Column>();
 
-                #endregion
+            ////Need the columns in order from base UP
+            //foreach (var t in tableList.OrderBy(x => x.Name))
+            //{
+            //    foreach (var c in t.GetColumns().Where(x => x.Generated))
+            //    {
+            //        if (!columnList.ContainsKey(c.DatabaseName.ToLower()))
+            //            columnList.Add(c.DatabaseName.ToLower(), c);
+            //    }
+            //}
 
-                #region Overload for connection string
+            ////Add primary Keys
+            //foreach (var c in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
+            //{
+            //    if (columnList.ContainsKey(c.DatabaseName.ToLower()))
+            //        columnList.Remove(c.DatabaseName.ToLower());
+            //}
 
-                //The NON-nullable call
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-                sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-                sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-                sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
-                sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + typeName + " newValue, string connectionString)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString);");
-                sb.AppendLine("		}");
-                sb.AppendLine();
+            //foreach (var typeName in typeList)
+            //{
+            //    //var nullTypeName = typeName + (typeName == "string" || typeName == "byte[]" ? string.Empty : "?");
+            //    var nullTypeName = typeName + (typeName == "string" ? string.Empty : "?");
 
-                //Add an overload for startup object if there are tenant tables
-                if (_model.Database.Tables.Any(x => x.Generated && x.IsTenant))
-                {
-                    sb.AppendLine("		/// <summary>");
-                    sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-                    sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-                    sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-                    sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-                    sb.AppendLine("		/// <param name=\"startup\">A configuration object</param>");
-                    sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
-                    sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + typeName + " newValue, ContextStartup startup, string connectionString)");
-                    sb.AppendLine("		{");
-                    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup, connectionString);");
-                    sb.AppendLine("		}");
-                    sb.AppendLine();
-                }
+            //    #region Normal Call
 
-                //The Nullable call
-                if (nullTypeName != typeName)
-                {
-                    sb.AppendLine("		/// <summary>");
-                    sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-                    sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-                    sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-                    sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-                    sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
-                    sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + nullTypeName + " newValue, string connectionString)");
-                    sb.AppendLine("		{");
-                    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString);");
-                    sb.AppendLine("		}");
-                    sb.AppendLine();
+            //    //The NON-nullable call
+            //    sb.AppendLine("		/// <summary>");
+            //    sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            //    sb.AppendLine("		/// </summary>");
+            //    sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            //    sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            //    sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            //    sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            //    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + typeName + " newValue)");
+            //    sb.AppendLine("		{");
+            //    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
+            //    sb.AppendLine("		}");
+            //    sb.AppendLine();
 
-                    //Add an overload for startup object if there are tenant tables
-                    if (_model.Database.Tables.Any(x => x.Generated && x.IsTenant))
-                    {
-                        sb.AppendLine("		/// <summary>");
-                        sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-                        sb.AppendLine("		/// </summary>");
-                        sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-                        sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-                        sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-                        sb.AppendLine("		/// <param name=\"startup\">A configuration object</param>");
-                        sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
-                        sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                        sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + nullTypeName + " newValue, ContextStartup startup, string connectionString)");
-                        sb.AppendLine("		{");
-                        sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup, connectionString);");
-                        sb.AppendLine("		}");
-                        sb.AppendLine();
-                    }
-                }
+            //    //The Nullable call
+            //    if (nullTypeName != typeName)
+            //    {
+            //        sb.AppendLine("		/// <summary>");
+            //        sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            //        sb.AppendLine("		/// </summary>");
+            //        sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            //        sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            //        sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            //        sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            //        sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + nullTypeName + " newValue)");
+            //        sb.AppendLine("		{");
+            //        sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
+            //        sb.AppendLine("		}");
+            //        sb.AppendLine();
+            //    }
 
-                #endregion
+            //    #endregion
 
-                #region Overload for connection object
+            //    #region Overload for connection string
 
-                //The NON-nullable call
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-                sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-                sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-                sb.AppendLine("		/// <param name=\"connection\">An open database connection</param>");
-                sb.AppendLine("		/// <param name=\"transaction\">The database connection transaction</param>");
-                sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + typeName + " newValue, System.Data.IDbConnection connection, System.Data.Common.DbTransaction transaction)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", null, connection, transaction);");
-                sb.AppendLine("		}");
-                sb.AppendLine();
+            //    //The NON-nullable call
+            //    sb.AppendLine("		/// <summary>");
+            //    sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            //    sb.AppendLine("		/// </summary>");
+            //    sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            //    sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            //    sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            //    sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
+            //    sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            //    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + typeName + " newValue, string connectionString)");
+            //    sb.AppendLine("		{");
+            //    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString);");
+            //    sb.AppendLine("		}");
+            //    sb.AppendLine();
 
-                //The Nullable call
-                if (nullTypeName != typeName)
-                {
-                    sb.AppendLine("		/// <summary>");
-                    sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-                    sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-                    sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-                    sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-                    sb.AppendLine("		/// <param name=\"connection\">An open database connection</param>");
-                    sb.AppendLine("		/// <param name=\"transaction\">The database connection transaction</param>");
-                    sb.AppendLine("		/// <returns>The number of records affected</returns>");
-                    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + nullTypeName + " newValue, System.Data.IDbConnection connection, System.Data.Common.DbTransaction transaction)");
-                    sb.AppendLine("		{");
-                    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", null, connection, transaction);");
-                    sb.AppendLine("		}");
-                    sb.AppendLine();
-                }
+            //    //Add an overload for startup object if there are tenant tables
+            //    if (_model.Database.Tables.Any(x => x.Generated && x.IsTenant))
+            //    {
+            //        sb.AppendLine("		/// <summary>");
+            //        sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            //        sb.AppendLine("		/// </summary>");
+            //        sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            //        sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            //        sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            //        sb.AppendLine("		/// <param name=\"startup\">A configuration object</param>");
+            //        sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
+            //        sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            //        sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + typeName + " newValue, ContextStartup startup, string connectionString)");
+            //        sb.AppendLine("		{");
+            //        sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup, connectionString);");
+            //        sb.AppendLine("		}");
+            //        sb.AppendLine();
+            //    }
 
-                #endregion
+            //    //The Nullable call
+            //    if (nullTypeName != typeName)
+            //    {
+            //        sb.AppendLine("		/// <summary>");
+            //        sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            //        sb.AppendLine("		/// </summary>");
+            //        sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            //        sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            //        sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            //        sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
+            //        sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            //        sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + nullTypeName + " newValue, string connectionString)");
+            //        sb.AppendLine("		{");
+            //        sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString);");
+            //        sb.AppendLine("		}");
+            //        sb.AppendLine();
 
-            }
+            //        //Add an overload for startup object if there are tenant tables
+            //        if (_model.Database.Tables.Any(x => x.Generated && x.IsTenant))
+            //        {
+            //            sb.AppendLine("		/// <summary>");
+            //            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            //            sb.AppendLine("		/// </summary>");
+            //            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            //            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            //            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            //            sb.AppendLine("		/// <param name=\"startup\">A configuration object</param>");
+            //            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
+            //            sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            //            sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + nullTypeName + " newValue, ContextStartup startup, string connectionString)");
+            //            sb.AppendLine("		{");
+            //            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup, connectionString);");
+            //            sb.AppendLine("		}");
+            //            sb.AppendLine();
+            //        }
+            //    }
+
+            //    #endregion
+
+            //    #region Overload for connection object
+
+            //    //The NON-nullable call
+            //    sb.AppendLine("		/// <summary>");
+            //    sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            //    sb.AppendLine("		/// </summary>");
+            //    sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            //    sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            //    sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            //    sb.AppendLine("		/// <param name=\"connection\">An open database connection</param>");
+            //    sb.AppendLine("		/// <param name=\"transaction\">The database connection transaction</param>");
+            //    sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            //    sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + typeName + " newValue, System.Data.IDbConnection connection, System.Data.Common.DbTransaction transaction)");
+            //    sb.AppendLine("		{");
+            //    sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + typeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", null, connection, transaction);");
+            //    sb.AppendLine("		}");
+            //    sb.AppendLine();
+
+            //    //The Nullable call
+            //    if (nullTypeName != typeName)
+            //    {
+            //        sb.AppendLine("		/// <summary>");
+            //        sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
+            //        sb.AppendLine("		/// </summary>");
+            //        sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
+            //        sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
+            //        sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
+            //        sb.AppendLine("		/// <param name=\"connection\">An open database connection</param>");
+            //        sb.AppendLine("		/// <param name=\"transaction\">The database connection transaction</param>");
+            //        sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            //        sb.AppendLine("		public static int UpdateData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + nullTypeName + " newValue, System.Data.IDbConnection connection, System.Data.Common.DbTransaction transaction)");
+            //        sb.AppendLine("		{");
+            //        sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, " + nullTypeName + ">.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", null, connection, transaction);");
+            //        sb.AppendLine("		}");
+            //        sb.AppendLine();
+            //    }
+
+            //    #endregion
+
+            //}
+            #endregion
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();

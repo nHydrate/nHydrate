@@ -730,12 +730,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			//Get the added list");
             sb.AppendLine("			var addedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added);");
             sb.AppendLine();
-            sb.AppendLine("			if (_contextStartup.IsAdmin)");
-            sb.AppendLine("			{");
 
             var tenantTables = _model.Database.Tables.Where(x => x.IsTenant).OrderBy(x => x.Name).ToList();
             if (tenantTables.Any())
             {
+                sb.AppendLine("			if (_contextStartup.IsAdmin)");
+                sb.AppendLine("			{");
                 sb.AppendLine("				foreach (var item in addedList)");
                 sb.AppendLine("				{");
                 foreach (var table in tenantTables)
