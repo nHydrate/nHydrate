@@ -130,7 +130,6 @@
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 22;
             this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
             // 
             // pictureBox1
             // 
@@ -200,7 +199,6 @@
             this.linkReleaseNotes.TabStop = true;
             this.linkReleaseNotes.Text = "Release Notes";
             this.linkReleaseNotes.Visible = false;
-            this.linkReleaseNotes.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkReleaseNotes_LinkClicked);
             // 
             // label4
             // 

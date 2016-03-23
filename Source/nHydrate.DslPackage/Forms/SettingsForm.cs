@@ -204,14 +204,6 @@ namespace nHydrate.DslPackage.Forms
             }
         }
 
-        private void linkReleaseNotes_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            //string link = "http://nhydrate.codeplex.com/wikipage?title=Release%20Notes
-            var link = "http://bit.ly/8xBPhd";
-            linkLabel1.Links[0].Visited = true;
-            System.Diagnostics.Process.Start(link);
-        }
-
         private void pictureBox1_Click(object sender, System.EventArgs e)
         {
             //System.Diagnostics.Process.Start("http://www.linkedin.com/groups?gid=2401073");
@@ -220,54 +212,8 @@ namespace nHydrate.DslPackage.Forms
 
         private void pictureBox2_Click(object sender, System.EventArgs e)
         {
-            //System.Diagnostics.Process.Start("http://nhydrate.codeplex.com");
-            System.Diagnostics.Process.Start("http://bit.ly/8gI7Ap");
+            System.Diagnostics.Process.Start("https://github.com/nHydrate/nHydrate/wiki");
         }
-
-        private void pictureBox4_Click(object sender, System.EventArgs e)
-        {
-            //System.Diagnostics.Process.Start("http://www.youtube.com/nhydrate");
-            System.Diagnostics.Process.Start("http://bit.ly/62Vaxz");
-        }
-
-        private void pictureBox5_Click(object sender, System.EventArgs e)
-        {
-            //System.Diagnostics.Process.Start("http://www.twitter.com/nhydrate");
-            System.Diagnostics.Process.Start("http://bit.ly/5IIdmw");
-        }
-
-        private void pictureBox6_Click(object sender, System.EventArgs e)
-        {
-            //System.Diagnostics.Process.Start("http://nhydrate.blogspot.com/");
-            System.Diagnostics.Process.Start("http://bit.ly/6XRZl1");
-        }
-
-        private void cmdGettingStarted_Click(object sender, EventArgs e)
-        {
-            var fileName = Path.Combine(AddinAppData.Instance.ExtensionDirectory, "GettingStarted.pdf");
-            if (File.Exists(fileName))
-            {
-                System.Diagnostics.Process.Start(fileName);
-            }
-            else
-            {
-                MessageBox.Show("The file could not be found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
-        private void cmdUserGuide_Click(object sender, EventArgs e)
-        {
-            var fileName = Path.Combine(AddinAppData.Instance.ExtensionDirectory, "UsersGuide.pdf");
-            if (File.Exists(fileName))
-            {
-                System.Diagnostics.Process.Start(fileName);
-            }
-            else
-            {
-                MessageBox.Show("The file could not be found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
 
     }
 }

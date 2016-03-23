@@ -28,8 +28,8 @@
     <Version><#= this.Dsl.MajorVersion #>.<#= this.Dsl.MinorVersion #>.<#= this.Dsl.Build #>.<#= this.Dsl.Revision #></Version>
     <Description><#= this.Dsl.Description #></Description>
     <Locale><#= localeId #></Locale>
-    <MoreInfoUrl>http://nhydrate.codeplex.com</MoreInfoUrl>
-    <GettingStartedGuide>http://nhydrate.codeplex.com/downloads/get/94926</GettingStartedGuide>
+    <MoreInfoUrl>https://github.com/nHydrate/nHydrate</MoreInfoUrl>
+    <GettingStartedGuide>https://github.com/nHydrate/nHydrate/wiki</GettingStartedGuide>
     <Icon>Resources\nhydrate32.png</Icon>
     <PreviewImage>Resources\vsix-gallery.png</PreviewImage>
     <License>Resources\License.txt</License>
