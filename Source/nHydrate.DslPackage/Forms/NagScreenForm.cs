@@ -33,7 +33,6 @@ namespace nHydrate.DslPackage.Forms
         public NagScreenForm()
         {
             InitializeComponent();
-            linkLabel1.Links.Add(new LinkLabel.Link(0, linkLabel1.Text.Length, linkLabel1.Text));
             lblText.Text = "This product has not been registered. This is a FREE product, but we would like to keep track of its use. Please register below to get your FREE key.";
         }
 
@@ -41,12 +40,6 @@ namespace nHydrate.DslPackage.Forms
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
-        }
-
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            linkLabel1.Links[linkLabel1.Links.IndexOf(e.Link)].Visited = true;
-            System.Diagnostics.Process.Start(e.Link.LinkData.ToString());
         }
 
         private void cmdRegister_Click(object sender, System.EventArgs e)
