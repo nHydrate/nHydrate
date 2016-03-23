@@ -73,9 +73,9 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                 _addInProperties = new AddinProperties();
                 if (_addinDataStoreFile.Exists)
                 {
-                    var serializer = new XmlSerializer(typeof (AddinProperties));
+                    var serializer = new XmlSerializer(typeof(AddinProperties));
                     var tr = new StreamReader(_addinDataStoreFile.FullName);
-                    _addInProperties = (AddinProperties) serializer.Deserialize(tr);
+                    _addInProperties = (AddinProperties)serializer.Deserialize(tr);
                     tr.Close();
                 }
             }
@@ -147,6 +147,12 @@ namespace nHydrate.Generator.Common.GeneratorFramework
             set { Properties.PremiumValidated = value; }
         }
 
+        public DateTime LastNag
+        {
+            get { return Properties.LastNag; }
+            set { Properties.LastNag = value; }
+        }
+
         public DateTime LastUpdateCheck
         {
             get { return Properties.LastUpdateCheck; }
@@ -172,7 +178,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                 if (!_addinDataStoreFile.Directory.Exists)
                     _addinDataStoreFile.Directory.Create();
 
-                var serializer = new XmlSerializer(typeof (AddinProperties));
+                var serializer = new XmlSerializer(typeof(AddinProperties));
                 var tw = new StreamWriter(_addinDataStoreFile.FullName);
                 serializer.Serialize(tw, Properties);
                 tw.Close();

@@ -191,10 +191,12 @@ namespace nHydrate.DslPackage.Forms
             //Check for latest version
             if (VersionHelper.CanConnect())
             {
-                if (VersionHelper.NeedUpdate(VersionHelper.GetLatestVersion()))
-                    MessageBox.Show("The version of nHydrate you are using is " + VersionHelper.GetCurrentVersion() + ". There is a newer version available " + VersionHelper.GetLatestVersion() + ". Download the latest version at http://nHydrate.CodePlex.com.", "New Version Available", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var lastest = VersionHelper.GetLatestVersion();
+                if (VersionHelper.NeedUpdate(lastest))
+                    MessageBox.Show("The version of nHydrate you are using is " + VersionHelper.GetCurrentVersion() + ". There is a newer version available " + lastest + ". Download the latest version from the Visual Studio 'Tools|Extensions and Updates' menu.", "New Version Available", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 else
                     MessageBox.Show("This is the latest version.", "Version Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                VersionHelper.DidVersionCheck();
             }
             else
             {

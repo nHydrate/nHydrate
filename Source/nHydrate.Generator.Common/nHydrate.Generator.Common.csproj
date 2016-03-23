@@ -235,7 +235,6 @@
     <Compile Include="GeneratorFramework\IGeneratorStore.cs" />
     <Compile Include="GeneratorFramework\RefactorTableCombine.cs" />
     <Compile Include="GeneratorFramework\RefactorTableSplit.cs" />
-    <Compile Include="GeneratorFramework\UserSettings.cs" />
     <Compile Include="GlobalCacheFile.cs" />
     <Compile Include="Exceptions\ThreadExceptionHandler.cs" />
     <Compile Include="Exceptions\ThreadExceptionHandlerForm.cs">

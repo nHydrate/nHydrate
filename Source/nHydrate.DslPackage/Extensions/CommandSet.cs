@@ -200,32 +200,30 @@ namespace nHydrate.DslPackage
             command.Visible = this.IsDiagramSelected();
         }
 
-        private bool _nagScreenShown = false;
         private void OnMenuCommandGenerate(object sender, EventArgs e)
         {
-            //if (!MenuFunctions.IsCurrentlyRunningAsAdmin())
-            //{
-            //  MessageBox.Show("You are not running as an administrator. You cannot generate files into the solution unless you are running Visual Studio an an administrator.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //  return;
-            //}
-
-            //if (!_nagScreenShown && (nHydrate.Generator.Common.GeneratorFramework.AddinAppData.Instance.Key == null) && DateTime.Now.Day % 2 == 0)
-            //{
-            //  _nagScreenShown = true;
-            //  var nsf = new NagScreenForm();
-            //  nsf.ShowDialog();
-            //}
+            #region Register
+            
+            if (VersionHelper.ShouldNag())
+            {
+                VersionHelper.DidNag();
+                var nsf = new NagScreenForm();
+                nsf.ShowDialog();
+            }
+            else if (VersionHelper.ShouldVersionCheck())
+            {
+                VersionHelper.DidVersionCheck();
+                var lastest = VersionHelper.GetLatestVersion();
+                if (VersionHelper.NeedUpdate(lastest))
+                    MessageBox.Show("The version of nHydrate you are using is " + VersionHelper.GetCurrentVersion() + ". There is a newer version available " + lastest + ". Download the latest version from the Visual Studio 'Tools|Extensions and Updates' menu.", "New Version Available", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            #endregion
 
             var store = this.CurrentDocData.Store;
             var view = this.CurrentDocView;
             var diagram = view.CurrentDiagram;
             var docdata = this.CurrentDocData as nHydrateDocData;
             var model = view.CurrentDiagram.ModelElement as nHydrateModel;
-
-            //var validationController = new VsValidationController(this.ServiceProvider);
-            //var errorList = new ErrorListObserver(this.ServiceProvider);
-            //validationController.AddObserver(errorList);
-            //validationController.Validate(model.Entities, Microsoft.VisualStudio.Modeling.Validation.ValidationCategories.Custom);
 
             var validationController = docdata.ValidationController;
 

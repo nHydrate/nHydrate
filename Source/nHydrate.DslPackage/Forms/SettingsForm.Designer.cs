@@ -42,29 +42,21 @@
             this.lblVersion = new System.Windows.Forms.Label();
             this.cmdCheckUpdate = new System.Windows.Forms.Button();
             this.linkReleaseNotes = new System.Windows.Forms.LinkLabel();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.cmdLibrary = new System.Windows.Forms.Button();
-            this.cmdGettingStarted = new System.Windows.Forms.Button();
-            this.cmdUserGuide = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdOK
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdOK.Location = new System.Drawing.Point(224, 96);
+            this.cmdOK.Location = new System.Drawing.Point(224, 319);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 0;
@@ -76,7 +68,7 @@
             // 
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(305, 96);
+            this.cmdCancel.Location = new System.Drawing.Point(305, 319);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 1;
@@ -134,24 +126,22 @@
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
             this.pictureBox2.Location = new System.Drawing.Point(12, 105);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(75, 45);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox2.Size = new System.Drawing.Size(75, 33);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 22;
             this.pictureBox2.TabStop = false;
-            this.pictureBox2.Visible = false;
             this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
             // 
             // pictureBox1
             // 
             this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(11, 247);
+            this.pictureBox1.Location = new System.Drawing.Point(9, 150);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(119, 32);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox1.TabIndex = 21;
             this.pictureBox1.TabStop = false;
-            this.pictureBox1.Visible = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // chkStat
@@ -197,7 +187,6 @@
             this.cmdCheckUpdate.TabIndex = 3;
             this.cmdCheckUpdate.Text = "Check Updates";
             this.cmdCheckUpdate.UseVisualStyleBackColor = true;
-            this.cmdCheckUpdate.Visible = false;
             this.cmdCheckUpdate.Click += new System.EventHandler(this.cmdCheckUpdate_Click);
             // 
             // linkReleaseNotes
@@ -213,64 +202,15 @@
             this.linkReleaseNotes.Visible = false;
             this.linkReleaseNotes.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkReleaseNotes_LinkClicked);
             // 
-            // pictureBox4
-            // 
-            this.pictureBox4.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
-            this.pictureBox4.Location = new System.Drawing.Point(11, 163);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(110, 40);
-            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox4.TabIndex = 25;
-            this.pictureBox4.TabStop = false;
-            this.pictureBox4.Visible = false;
-            this.pictureBox4.Click += new System.EventHandler(this.pictureBox4_Click);
-            // 
-            // label2
-            // 
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(145, 180);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(231, 23);
-            this.label2.TabIndex = 26;
-            this.label2.Text = "View training videos on YouTube.";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.label2.Visible = false;
-            // 
-            // label3
-            // 
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(148, 218);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(228, 23);
-            this.label3.TabIndex = 28;
-            this.label3.Text = "Follow us on Twitter to get updates.";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.label3.Visible = false;
-            // 
-            // pictureBox5
-            // 
-            this.pictureBox5.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
-            this.pictureBox5.Location = new System.Drawing.Point(11, 209);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(88, 32);
-            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox5.TabIndex = 27;
-            this.pictureBox5.TabStop = false;
-            this.pictureBox5.Visible = false;
-            this.pictureBox5.Click += new System.EventHandler(this.pictureBox5_Click);
-            // 
             // label4
             // 
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(148, 247);
+            this.label4.Location = new System.Drawing.Point(146, 150);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(228, 23);
             this.label4.TabIndex = 29;
             this.label4.Text = "Join the LinkedIn group.";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.label4.Visible = false;
             // 
             // label5
             // 
@@ -280,9 +220,8 @@
             this.label5.Size = new System.Drawing.Size(252, 45);
             this.label5.TabIndex = 30;
             this.label5.Text = "As always you can get the latest updates, release notes, documentation, examples," +
-    " and source code from CodePlex.com.";
+    " and source code from Git.com.";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.label5.Visible = false;
             // 
             // label7
             // 
@@ -304,16 +243,15 @@
             this.panel1.Controls.Add(this.linkLabel1);
             this.panel1.Controls.Add(this.cmdRegister);
             this.panel1.Controls.Add(this.chkStat);
-            this.panel1.Location = new System.Drawing.Point(12, 321);
+            this.panel1.Location = new System.Drawing.Point(12, 188);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(368, 123);
             this.panel1.TabIndex = 33;
-            this.panel1.Visible = false;
             // 
             // cmdLibrary
             // 
             this.cmdLibrary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cmdLibrary.Location = new System.Drawing.Point(12, 96);
+            this.cmdLibrary.Location = new System.Drawing.Point(12, 319);
             this.cmdLibrary.Name = "cmdLibrary";
             this.cmdLibrary.Size = new System.Drawing.Size(123, 23);
             this.cmdLibrary.TabIndex = 2;
@@ -322,46 +260,18 @@
             this.cmdLibrary.Visible = false;
             this.cmdLibrary.Click += new System.EventHandler(this.cmdLibrary_Click);
             // 
-            // cmdGettingStarted
-            // 
-            this.cmdGettingStarted.Location = new System.Drawing.Point(12, 292);
-            this.cmdGettingStarted.Name = "cmdGettingStarted";
-            this.cmdGettingStarted.Size = new System.Drawing.Size(175, 23);
-            this.cmdGettingStarted.TabIndex = 4;
-            this.cmdGettingStarted.Text = "Getting Started";
-            this.cmdGettingStarted.UseVisualStyleBackColor = true;
-            this.cmdGettingStarted.Visible = false;
-            this.cmdGettingStarted.Click += new System.EventHandler(this.cmdGettingStarted_Click);
-            // 
-            // cmdUserGuide
-            // 
-            this.cmdUserGuide.Location = new System.Drawing.Point(205, 292);
-            this.cmdUserGuide.Name = "cmdUserGuide";
-            this.cmdUserGuide.Size = new System.Drawing.Size(175, 23);
-            this.cmdUserGuide.TabIndex = 5;
-            this.cmdUserGuide.Text = "User\'s Guide";
-            this.cmdUserGuide.UseVisualStyleBackColor = true;
-            this.cmdUserGuide.Visible = false;
-            this.cmdUserGuide.Click += new System.EventHandler(this.cmdUserGuide_Click);
-            // 
             // SettingsForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(388, 126);
-            this.Controls.Add(this.cmdUserGuide);
-            this.Controls.Add(this.cmdGettingStarted);
+            this.ClientSize = new System.Drawing.Size(388, 349);
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.cmdLibrary);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.pictureBox5);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.pictureBox4);
             this.Controls.Add(this.linkReleaseNotes);
             this.Controls.Add(this.cmdCheckUpdate);
             this.Controls.Add(this.pictureBox3);
@@ -381,8 +291,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -405,16 +313,10 @@
         private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.Button cmdCheckUpdate;
         private System.Windows.Forms.LinkLabel linkReleaseNotes;
-        private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button cmdLibrary;
-        private System.Windows.Forms.Button cmdGettingStarted;
-        private System.Windows.Forms.Button cmdUserGuide;
     }
 }

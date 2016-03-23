@@ -32,85 +32,85 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Common
 {
-	[Serializable]
-	public class GlobalCacheFile
-	{
-		#region Class Members
+    [Serializable]
+    public class GlobalCacheFile
+    {
+        #region Class Members
 
-		private readonly List<string> _excludeList = new List<string>();
+        private readonly List<string> _excludeList = new List<string>();
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		public GlobalCacheFile()
-		{
-			this.Load();
-		}
+        public GlobalCacheFile()
+        {
+            this.Load();
+        }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		public List<string> ExcludeList
-		{
-			get { return _excludeList; }
-		}
+        public List<string> ExcludeList
+        {
+            get { return _excludeList; }
+        }
 
-		public string FileName
-		{
-			get
-			{
-				var fileName = Assembly.GetExecutingAssembly().Location;
-				var fi = new System.IO.FileInfo(fileName);
-				if (fi.Exists)
-				{
-					//Get file name
-					fileName = System.IO.Path.Combine(fi.DirectoryName, "ProjectExcludes.xml");
-					return fileName;
-				}
-				else return "";
-			}
-		}
+        public string FileName
+        {
+            get
+            {
+                var fileName = Assembly.GetExecutingAssembly().Location;
+                var fi = new System.IO.FileInfo(fileName);
+                if (fi.Exists)
+                {
+                    //Get file name
+                    fileName = System.IO.Path.Combine(fi.DirectoryName, "ProjectExcludes.xml");
+                    return fileName;
+                }
+                else return "";
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public void Save()
-		{
-			var document = new XmlDocument();
-			document.LoadXml("<configuration></configuration>");
+        public void Save()
+        {
+            var document = new XmlDocument();
+            document.LoadXml("<configuration></configuration>");
 
-			//Save ExcludeList
-			var exludeListNode = XmlHelper.AddElement(document.DocumentElement, "excludeList");
-			foreach (var key in this.ExcludeList)
-			{
-				XmlHelper.AddElement((XmlElement)exludeListNode, "item", key);
-			}
+            //Save ExcludeList
+            var exludeListNode = XmlHelper.AddElement(document.DocumentElement, "excludeList");
+            foreach (var key in this.ExcludeList)
+            {
+                XmlHelper.AddElement((XmlElement)exludeListNode, "item", key);
+            }
 
-			document.Save(this.FileName);
-		}
+            document.Save(this.FileName);
+        }
 
-		public void Load()
-		{
-			var document = new XmlDocument();
-			if (!File.Exists(this.FileName)) return;
-			document.Load(this.FileName);
+        public void Load()
+        {
+            var document = new XmlDocument();
+            if (!File.Exists(this.FileName)) return;
+            document.Load(this.FileName);
 
-			//Get ExcludeList
-			this.ExcludeList.Clear();
-			var exludeListNode = XmlHelper.GetElement(document.DocumentElement, "excludeList");
-			if (exludeListNode != null)
-			{
-				foreach (XmlNode node in exludeListNode.ChildNodes)
-				{
-					this.ExcludeList.Add(node.InnerText);
-				}
-			}
-		}
+            //Get ExcludeList
+            this.ExcludeList.Clear();
+            var exludeListNode = XmlHelper.GetElement(document.DocumentElement, "excludeList");
+            if (exludeListNode != null)
+            {
+                foreach (XmlNode node in exludeListNode.ChildNodes)
+                {
+                    this.ExcludeList.Add(node.InnerText);
+                }
+            }
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }

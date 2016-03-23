@@ -32,79 +32,121 @@ using System.IO;
 
 namespace nHydrate.DslPackage.Objects
 {
-	internal static class VersionHelper
-	{
-		public const string SERVICE_URL = "http://www.nhydrate.org/Webservice/MainService.asmx";
+    internal static class VersionHelper
+    {
+        public const string SERVICE_URL = "http://www.nhydrate.org/Webservice/MainService.asmx";
 
-		public static bool CanConnect()
-		{
-			nHydrate.Generator.Common.nhydrateservice.MainService service = null;
-			try
-			{
-				service = new nHydrate.Generator.Common.nhydrateservice.MainService();
-				service.Url = SERVICE_URL;
-				return service.IsLive();
-			}
-			catch (Exception ex)
-			{
-				return false;
-			}
-		}
+        public static bool CanConnect()
+        {
+            nHydrate.Generator.Common.nhydrateservice.MainService service = null;
+            try
+            {
+                service = new nHydrate.Generator.Common.nhydrateservice.MainService();
+                service.Url = SERVICE_URL;
+                return service.IsLive();
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
 
-		public static string GetLatestVersion()
-		{
-			nHydrate.Generator.Common.nhydrateservice.MainService service = null;
-			try
-			{
-				service = new nHydrate.Generator.Common.nhydrateservice.MainService();
-				service.Url = SERVICE_URL;
-				var version = service.GetLatestVersion3(AddinAppData.Instance.Key, GetCurrentVersion());
-				//var version = service.GetLatestVersion();
-				return version.Version;
-			}
-			catch (Exception ex)
-			{
-				return "(Unknown)";
-			}
-		}
+        public static string GetLatestVersion()
+        {
+            nHydrate.Generator.Common.nhydrateservice.MainService service = null;
+            try
+            {
+                service = new nHydrate.Generator.Common.nhydrateservice.MainService();
+                service.Url = SERVICE_URL;
+                var version = service.GetLatestVersion3(AddinAppData.Instance.Key, GetCurrentVersion());
+                //var version = service.GetLatestVersion();
+                return version.Version;
+            }
+            catch (Exception ex)
+            {
+                return "(Unknown)";
+            }
+        }
 
-		public static string GetCurrentVersion()
-		{
-			var a = System.Reflection.Assembly.GetExecutingAssembly();
-			var version = a.GetName().Version;
-			return version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
-		}
+        public static string GetCurrentVersion()
+        {
+            var a = System.Reflection.Assembly.GetExecutingAssembly();
+            var version = a.GetName().Version;
+            return version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
+        }
 
-		public static bool ShouldCheck()
-		{
-			try
-			{
-				return (DateTime.Now.Subtract(AddinAppData.Instance.LastUpdateCheck).TotalDays >= 7);
-			}
-			catch (Exception ex)
-			{
-				//Something bad happened, probably permission based
-				//Do Nothing
-				return false;
-			}
-		}
+        public static bool ShouldVersionCheck()
+        {
+            try
+            {
+                return (DateTime.Now.Subtract(AddinAppData.Instance.LastUpdateCheck).TotalDays >= 7);
+            }
+            catch (Exception ex)
+            {
+                //Something bad happened, probably permission based
+                //Do Nothing
+                return false;
+            }
+        }
 
-		public static bool NeedUpdate(string newVersion)
-		{
-			var currentVersion = GetCurrentVersion();
-			try
-			{
-				var versionNew = new Version(newVersion);
-				var versionNow = new Version(currentVersion);
-				return (versionNow < versionNew);
-			}
-			catch (Exception ex)
-			{
-				return (newVersion != currentVersion);
-			}
+        public static void DidVersionCheck()
+        {
+            try
+            {
+                AddinAppData.Instance.LastUpdateCheck = DateTime.Now;
+                AddinAppData.Instance.Save();
+            }
+            catch (Exception ex)
+            {
+                //Something bad happened, probably permission based
+                //Do Nothing
+            }
+        }
 
-		}
+        public static bool ShouldNag()
+        {
+            try
+            {
+                return (string.IsNullOrEmpty(nHydrate.Generator.Common.GeneratorFramework.AddinAppData.Instance.Key) &&
+                    (DateTime.Now.Subtract(AddinAppData.Instance.LastNag).TotalDays >= 7));
+            }
+            catch (Exception ex)
+            {
+                //Something bad happened, probably permission based
+                //Do Nothing
+                return false;
+            }
+        }
 
-	}
+        public static void DidNag()
+        {
+            try
+            {
+                AddinAppData.Instance.LastNag = DateTime.Now;
+                AddinAppData.Instance.Save();
+            }
+            catch (Exception ex)
+            {
+                //Something bad happened, probably permission based
+                //Do Nothing
+            }
+        }
+
+        public static bool NeedUpdate(string newVersion)
+        {
+            var currentVersion = GetCurrentVersion();
+            try
+            {
+                var versionNew = new Version(newVersion);
+                var versionNow = new Version(currentVersion);
+                return (versionNow < versionNew);
+            }
+            catch (Exception ex)
+            {
+                return (newVersion != currentVersion);
+            }
+
+        }
+
+    }
 }
-
