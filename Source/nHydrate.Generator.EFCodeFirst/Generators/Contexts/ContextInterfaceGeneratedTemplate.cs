@@ -201,12 +201,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		string GetTableName();");
             sb.AppendLine("	}");
             sb.AppendLine();
-
-            sb.AppendLine("	/// <summary />");
-            sb.AppendLine("	public partial interface IDTO");
-            sb.AppendLine("	{");
-            sb.AppendLine("	}");
-            sb.AppendLine();
         }
 
         private void AppendTypeTableEnums()
