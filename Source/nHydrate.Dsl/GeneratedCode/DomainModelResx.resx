@@ -513,6 +513,18 @@
     <value>Database</value>
     <comment>Category for DomainProperty &apos;EmitSafetyScripts&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
+  <data name="nHydrate.Dsl.nHydrateModel/AllowMocks.Description" xml:space="preserve">
+    <value>Determines if mock objects are generated</value>
+    <comment>Description for DomainProperty &apos;AllowMocks&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.nHydrateModel/AllowMocks.DisplayName" xml:space="preserve">
+    <value>Allow Mocks</value>
+    <comment>DisplayName for DomainProperty &apos;AllowMocks&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.nHydrateModel/AllowMocks.Category" xml:space="preserve">
+    <value>Code</value>
+    <comment>Category for DomainProperty &apos;AllowMocks&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
+  </data>
   <data name="nHydrate.Dsl.Entity.Description" xml:space="preserve">
     <value>This object represents a database table</value>
     <comment>Description for DomainClass &apos;Entity&apos;</comment>

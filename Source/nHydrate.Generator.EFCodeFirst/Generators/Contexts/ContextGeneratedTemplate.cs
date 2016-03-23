@@ -1383,6 +1383,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             #region Table Security
             var securedTables = _model.Database.Tables.Where(x => x.Generated && x.Security.IsValid()).OrderBy(x => x.PascalName).ToList();
+            sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected List<string> _paramList = new List<string>();");
 
             foreach (var item in securedTables)

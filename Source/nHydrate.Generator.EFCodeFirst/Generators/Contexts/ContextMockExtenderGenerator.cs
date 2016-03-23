@@ -42,11 +42,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
         public override int FileCount
         {
-            get { return 1; }
+            get
+            {
+                if (_model.AllowMocks) return 1;
+                else return 0;
+            }
         }
 
         public override void Generate()
         {
+            if (!_model.AllowMocks) return;
             var template = new ContextMockExtenderTemplate(_model);
             var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
             var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false);

@@ -533,6 +533,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("		[System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = @\"" + column.Mask.Replace(@"\\", @"\\\\") + "\")]");
                     }
 
+                    if (column.IsIndexed && column.PrimaryKey)
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.Index(IsUnique = true)]");
+                    else if (column.IsIndexed)
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.Index()]");
+
                     //if (column.PrimaryKey)
                     //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
 
@@ -711,6 +716,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
+                        sb.AppendLine("		[XmlIgnore]");
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		" + scope + " virtual " + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; set; }");
                         sb.AppendLine();
@@ -826,6 +832,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
+                        sb.AppendLine("		[XmlIgnore]");
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		public virtual " + parentTable.PascalName + " " + relation.PascalRoleName + parentTable.PascalName + " { get; set; }");
                         sb.AppendLine();
@@ -1421,6 +1428,29 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		public override int GetHashCode()");
             sb.AppendLine("		{");
             sb.AppendLine("			return base.GetHashCode();");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		public static bool operator ==(" + _item.PascalName + " a, " + _item.PascalName + " b)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if (System.Object.ReferenceEquals(a, b))");
+            sb.AppendLine("			{");
+            sb.AppendLine("				return true;");
+            sb.AppendLine("			}");
+            sb.AppendLine("			// If one is null, but not both, return false.");
+            sb.AppendLine("			if ((a == null) || (b == null))");
+            sb.AppendLine("			{");
+            sb.AppendLine("				return false;");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+            sb.AppendLine("			return a.Equals(b);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		public static bool operator !=(" + _item.PascalName + " a, " + _item.PascalName + " b)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return !(a == b);");
             sb.AppendLine("		}");
             sb.AppendLine();
 

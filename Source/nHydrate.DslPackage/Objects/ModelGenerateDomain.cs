@@ -450,6 +450,7 @@ namespace nHydrate.DslPackage.Objects
                 //These have the same mapping values flags so we need convert to int and then convert to the other enumeration
                 root.TenantColumnName = model.TenantColumnName;
                 root.TenantPrefix = model.TenantPrefix;
+                root.AllowMocks = model.AllowMocks;
 
                 foreach (var md in model.ModelMetadata)
                 {

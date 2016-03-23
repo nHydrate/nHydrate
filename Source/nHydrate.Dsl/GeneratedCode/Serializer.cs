@@ -699,6 +699,23 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
+			// AllowMocks
+			if (!serializationContext.Result.Failed)
+			{
+				string attribAllowMocks = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "allowMocks");
+				if (attribAllowMocks != null)
+				{
+					global::System.Boolean valueOfAllowMocks;
+					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribAllowMocks, out valueOfAllowMocks))
+					{
+						instanceOfnHydrateModel.AllowMocks = valueOfAllowMocks;
+					}
+					else
+					{	// Invalid property value, ignored.
+						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "allowMocks", typeof(global::System.Boolean), attribAllowMocks);
+					}
+				}
+			}
 		}
 	
 		/// <summary>
@@ -2078,6 +2095,19 @@ namespace nHydrate.Dsl
 					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "emitSafetyScripts", serializedPropValue);
+					}
+				}
+			}
+			// AllowMocks
+			if (!serializationContext.Result.Failed)
+			{
+				global::System.Boolean propValue = instanceOfnHydrateModel.AllowMocks;
+				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
+				if (!serializationContext.Result.Failed)
+				{
+					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
+					{	// No need to write the value out if it's the same as default value.
+						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "allowMocks", serializedPropValue);
 					}
 				}
 			}

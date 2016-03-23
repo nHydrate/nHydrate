@@ -33,12 +33,8 @@ namespace nHydrate.DslPackage.Forms
         public NagScreenForm()
         {
             InitializeComponent();
-
             linkLabel1.Links.Add(new LinkLabel.Link(0, linkLabel1.Text.Length, linkLabel1.Text));
-            var asm = Assembly.GetExecutingAssembly();
-
-            lblText.Text = "This product has not been registered. This is a FREE product, but we would like to keep track of its use. We will be developing the collaboration functionality on the main site to improve the tool over time. Please register at the URL below to get your FREE key.";
-            lblTrademark.Text = ((AssemblyTrademarkAttribute)asm.GetCustomAttributes(typeof(AssemblyTrademarkAttribute), false)[0]).Trademark;
+            lblText.Text = "This product has not been registered. This is a FREE product, but we would like to keep track of its use. Please register below to get your FREE key.";
         }
 
         private void cmdClose_Click(object sender, System.EventArgs e)

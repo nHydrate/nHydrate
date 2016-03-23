@@ -53,6 +53,7 @@ namespace nHydrate.Generator.Models
         protected const string _def_storedProcedurePrefix = "gen";
         protected const string _def_tenantColumnName = "__tenant_user";
         protected const string _def_tenantPrefix = "__vw_tenant";
+        protected const bool _def_allowMocks = false;
 
         protected Database _database = null;
         protected UserInterface _userInterface = null;
@@ -78,6 +79,7 @@ namespace nHydrate.Generator.Models
         private string _modeToolVersion = string.Empty;
         protected string _tenantColumnName = _def_tenantColumnName;
         protected string _tenantPrefix = _def_tenantPrefix;
+        protected bool _allowMocks = _def_allowMocks;
 
         #endregion
 
@@ -101,6 +103,16 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region Property Implementations
+
+        public bool AllowMocks
+        {
+            get { return _allowMocks; }
+            set
+            {
+                _allowMocks = value;
+                this.OnPropertyChanged(this, new PropertyChangedEventArgs("AllowMocks"));
+            }
+        }
 
         public string TenantColumnName
         {
@@ -526,6 +538,7 @@ namespace nHydrate.Generator.Models
                 XmlHelper.AddAttribute(node, "emitSafetyScripts", this.EmitSafetyScripts);
                 XmlHelper.AddAttribute(node, "tenantColumnName", this.TenantColumnName);
                 XmlHelper.AddAttribute(node, "tenantPrefix", this.TenantPrefix);
+                XmlHelper.AddAttribute(node, "allowMocks", this.AllowMocks);
 
                 if (!string.IsNullOrEmpty(this.ModuleName))
                     XmlHelper.AddAttribute(node, "moduleName", this.ModuleName);
@@ -589,6 +602,7 @@ namespace nHydrate.Generator.Models
                 this.StoredProcedurePrefix = XmlHelper.GetAttributeValue(node, "storedProcedurePrefix", _def_storedProcedurePrefix);
                 this.TenantColumnName = XmlHelper.GetAttributeValue(node, "tenantColumnName", _def_tenantColumnName);
                 this.TenantPrefix = XmlHelper.GetAttributeValue(node, "tenantPrefix", _def_tenantPrefix);
+                this.AllowMocks = XmlHelper.GetAttributeValue(node, "allowMocks", _def_allowMocks);
 
                 var uiNode = node.SelectSingleNode("userInterface");
                 if (uiNode != null)

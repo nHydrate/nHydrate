@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Dsl xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="7a314716-48c9-4371-8978-062be635f9b4" Description="This is the nHydrate Visual Modeler" Name="nHydrate" DisplayName="nHydrate ORM Modeler" Namespace="nHydrate.Dsl" MajorVersion="6" Revision="163" ProductName="nHydrate ORM Modeler" CompanyName="nHydrate.org" PackageGuid="36220dab-63c7-4daa-860c-fc548bf4d5d3" PackageNamespace="nHydrate.DslPackage" xmlns="http://schemas.microsoft.com/VisualStudio/2005/DslTools/DslDefinitionModel">
+<Dsl xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="7a314716-48c9-4371-8978-062be635f9b4" Description="This is the nHydrate Visual Modeler" Name="nHydrate" DisplayName="nHydrate ORM Modeler" Namespace="nHydrate.Dsl" MajorVersion="6" Revision="164" ProductName="nHydrate ORM Modeler" CompanyName="nHydrate.org" PackageGuid="36220dab-63c7-4daa-860c-fc548bf4d5d3" PackageNamespace="nHydrate.DslPackage" xmlns="http://schemas.microsoft.com/VisualStudio/2005/DslTools/DslDefinitionModel">
   <Notes>This integrated VS.NET component creates strongly-typed, extendable classes inside of a framework based on Entity Framework.</Notes>
   <Classes>
     <DomainClass Id="77b5fe81-853a-4b74-8ce5-98612544852f" Description="" Name="nHydrateModel" DisplayName="nHydrate Model" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
@@ -188,6 +188,11 @@
           </Type>
         </DomainProperty>
         <DomainProperty Id="f348a2a7-4cf4-440c-b0b5-75be15bf6dde" Description="Determines if normalization safety scripts are emitted into the installer" Name="EmitSafetyScripts" DisplayName="Emit Safety Scripts" DefaultValue="true" Category="Database">
+          <Type>
+            <ExternalTypeMoniker Name="/System/Boolean" />
+          </Type>
+        </DomainProperty>
+        <DomainProperty Id="ef57a476-64d2-47a8-9e7f-562a41dd6be1" Description="Determines if mock objects are generated" Name="AllowMocks" DisplayName="Allow Mocks" DefaultValue="false" Category="Code">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
@@ -2759,6 +2764,9 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="emitSafetyScripts">
             <DomainPropertyMoniker Name="nHydrateModel/EmitSafetyScripts" />
+          </XmlPropertyData>
+          <XmlPropertyData XmlName="allowMocks">
+            <DomainPropertyMoniker Name="nHydrateModel/AllowMocks" />
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>
