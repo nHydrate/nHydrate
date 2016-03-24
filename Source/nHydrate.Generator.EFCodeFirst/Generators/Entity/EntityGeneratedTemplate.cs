@@ -1439,7 +1439,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             //sb.AppendLine("				return true;");
             //sb.AppendLine("			}");
             //sb.AppendLine("			// If one is null, but not both, return false.");
-            //sb.AppendLine("			if ((a is null) || (b is null))");
+            //sb.AppendLine("			if (object.ReferenceEquals(a, null) || object.ReferenceEquals(b, null))");
             //sb.AppendLine("			{");
             //sb.AppendLine("				return false;");
             //sb.AppendLine("			}");

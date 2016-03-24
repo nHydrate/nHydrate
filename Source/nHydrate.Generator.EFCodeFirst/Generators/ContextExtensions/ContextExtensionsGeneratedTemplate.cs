@@ -103,13 +103,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	public static partial class " + _model.ProjectName + "EntitiesExtensions");
             sb.AppendLine("	{");
-            sb.AppendLine("		internal static ContextStartup AsAdmin(this ContextStartup o)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			var q = (ContextStartup)o.Clone();");
-            sb.AppendLine("			q.IsAdmin = true;");
-            sb.AppendLine("			return q;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
 
             #region Include Extension Methods
             //Add an strongly-typed extension for "Include" method

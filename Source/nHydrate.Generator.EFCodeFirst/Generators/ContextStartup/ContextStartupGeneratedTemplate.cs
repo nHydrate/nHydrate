@@ -110,16 +110,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextStartup
                 sb.AppendLine("		}");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Creates a new instance of the ContextStartup object");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		protected internal ContextStartup(string modifier, bool allowLazyLoading, int commandTimeout, bool isAdmin) :");
-                sb.AppendLine("			this(modifier, allowLazyLoading)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			this.CommandTimeout = commandTimeout;");
-                sb.AppendLine("			this.IsAdmin = isAdmin;");
-                sb.AppendLine("		}");
-                sb.AppendLine();
-                sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// The modifier string used for auditing");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		public virtual string Modifer { get; protected internal set; }");
@@ -133,11 +123,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextStartup
                 sb.AppendLine("		/// Determines the database timeout value in seconds");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		public virtual int? CommandTimeout { get; protected internal set; }");
-                sb.AppendLine();
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Determines the connection string is for an admin user that can see all tenant based data");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		protected internal virtual bool IsAdmin { get; set; }");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public object Clone()");
