@@ -1823,10 +1823,7 @@ namespace PROJECTNAMESPACE
 		/// <summary />
 		public static bool operator !=(GeneratedVersion r1, GeneratedVersion r2)
 		{
-			if ((object)r1 == null && (object)r2 == null) return false;
-			if ((object)r1 == null ^ (object)r2 == null) return true;
-			if (r1 < r2) return true;
-			if (r1 > r2) return true;
+			return !(r1 == r2);
 			return false;
 		}
 
