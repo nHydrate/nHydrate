@@ -4983,6 +4983,23 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
+			// Obsolete
+			if (!serializationContext.Result.Failed)
+			{
+				string attribObsolete = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "obsolete");
+				if (attribObsolete != null)
+				{
+					global::System.Boolean valueOfObsolete;
+					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribObsolete, out valueOfObsolete))
+					{
+						instanceOfField.Obsolete = valueOfObsolete;
+					}
+					else
+					{	// Invalid property value, ignored.
+						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "obsolete", typeof(global::System.Boolean), attribObsolete);
+					}
+				}
+			}
 		}
 	
 		/// <summary>
@@ -5897,6 +5914,19 @@ namespace nHydrate.Dsl
 					if (!string.IsNullOrEmpty(propValue))
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "importedDefaultName", propValue);
 	
+				}
+			}
+			// Obsolete
+			if (!serializationContext.Result.Failed)
+			{
+				global::System.Boolean propValue = instanceOfField.Obsolete;
+				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
+				if (!serializationContext.Result.Failed)
+				{
+					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
+					{	// No need to write the value out if it's the same as default value.
+						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "obsolete", serializedPropValue);
+					}
 				}
 			}
 		}

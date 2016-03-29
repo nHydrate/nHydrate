@@ -72,6 +72,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             {
                 nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
+                sb.AppendLine("#pragma warning disable 612");
                 this.AppendUsingStatements();
                 sb.AppendLine("namespace " + this.GetLocalNamespace());
                 sb.AppendLine("{");
@@ -83,6 +84,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
                 sb.AppendLine("{");
                 sb.AppendLine("}");
+                sb.AppendLine("#pragma warning restore 612");
                 sb.AppendLine();
             }
             catch (Exception ex)

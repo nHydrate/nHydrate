@@ -682,7 +682,7 @@
     <comment>Description for DomainProperty &apos;GeneratesDoubleDerived&apos; on DomainClass &apos;Entity&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.Entity/GeneratesDoubleDerived.DisplayName" xml:space="preserve">
-    <value>Generates Double Derived</value>
+    <value>Double Derived</value>
     <comment>DisplayName for DomainProperty &apos;GeneratesDoubleDerived&apos; on DomainClass &apos;Entity&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.Entity/GeneratesDoubleDerived.Category" xml:space="preserve">
@@ -1068,6 +1068,18 @@
   <data name="nHydrate.Dsl.Field/ImportedDefaultName.DisplayName" xml:space="preserve">
     <value>Imported Default Name</value>
     <comment>DisplayName for DomainProperty &apos;ImportedDefaultName&apos; on DomainClass &apos;Field&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.Field/Obsolete.Description" xml:space="preserve">
+    <value>Determines if this property should create a compiler warning</value>
+    <comment>Description for DomainProperty &apos;Obsolete&apos; on DomainClass &apos;Field&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.Field/Obsolete.DisplayName" xml:space="preserve">
+    <value>Obsolete</value>
+    <comment>DisplayName for DomainProperty &apos;Obsolete&apos; on DomainClass &apos;Field&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.Field/Obsolete.Category" xml:space="preserve">
+    <value>Code</value>
+    <comment>Category for DomainProperty &apos;Obsolete&apos; on DomainClass &apos;Field&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.StoredProcedure.Description" xml:space="preserve">
     <value>This is a custom database stored procedure</value>

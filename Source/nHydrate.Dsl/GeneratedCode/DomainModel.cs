@@ -233,6 +233,7 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(Field), "UIDataType", Field.UIDataTypeDomainPropertyId, typeof(Field.UIDataTypePropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "DefaultIsFunc", Field.DefaultIsFuncDomainPropertyId, typeof(Field.DefaultIsFuncPropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "ImportedDefaultName", Field.ImportedDefaultNameDomainPropertyId, typeof(Field.ImportedDefaultNamePropertyHandler)),
+				new DomainMemberInfo(typeof(Field), "Obsolete", Field.ObsoleteDomainPropertyId, typeof(Field.ObsoletePropertyHandler)),
 				new DomainMemberInfo(typeof(StoredProcedure), "SQL", StoredProcedure.SQLDomainPropertyId, typeof(StoredProcedure.SQLPropertyHandler)),
 				new DomainMemberInfo(typeof(StoredProcedure), "Name", StoredProcedure.NameDomainPropertyId, typeof(StoredProcedure.NamePropertyHandler)),
 				new DomainMemberInfo(typeof(StoredProcedure), "IsGenerated", StoredProcedure.IsGeneratedDomainPropertyId, typeof(StoredProcedure.IsGeneratedPropertyHandler)),

@@ -61,6 +61,7 @@ namespace nHydrate.Generator.Models
         protected const bool _def_defaultIsFunc = false;
         protected const string _def_validationExpression = "";
         protected const bool _def_isReadOnly = false;
+        protected const bool _def_obsolete = false;
 
         protected string _codeFacade = _def_codefacade;
         protected bool _primaryKey = _def_primaryKey;
@@ -84,6 +85,7 @@ namespace nHydrate.Generator.Models
         protected string _formula = _def_formula;
         protected string _validationExpression = _def_validationExpression;
         protected bool _isReadOnly = _def_isReadOnly;
+        protected bool _obsolete = _def_obsolete;
 
         #endregion
 
@@ -439,6 +441,25 @@ namespace nHydrate.Generator.Models
             {
                 _mask = value;
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("mask"));
+            }
+        }
+
+        /// <summary>
+        /// Determines if the field is marked obsolete
+        /// </summary>
+        [
+        Browsable(false),
+        Description("Determines if the field is marked obsolete"),
+        Category("Code"),
+        DefaultValue(_def_obsolete),
+        ]
+        public bool Obsolete
+        {
+            get { return _obsolete; }
+            set
+            {
+                _obsolete = value;
+                this.OnPropertyChanged(this, new PropertyChangedEventArgs("obsolete"));
             }
         }
 
@@ -1108,6 +1129,9 @@ namespace nHydrate.Generator.Models
                 if (this.Mask != _def_mask)
                     XmlHelper.AddAttribute(node, "mask", this.Mask);
 
+                if (this.Obsolete != _def_obsolete)
+                    XmlHelper.AddAttribute(node, "obsolete", this.Obsolete);
+
                 //XmlHelper.AddAttribute(node, "createdDate", _createdDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
 
                 if (RelationshipRef != null)
@@ -1158,6 +1182,7 @@ namespace nHydrate.Generator.Models
                 this.Min = XmlHelper.GetAttributeValue(node, "min", _def_min);
                 this.Max = XmlHelper.GetAttributeValue(node, "max", _def_max);
                 this.Mask = XmlHelper.GetAttributeValue(node, "mask", _def_mask);
+                this.Obsolete = XmlHelper.GetAttributeValue(node, "obsolete", _def_obsolete);
                 //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 this.IsIndexed = XmlHelper.GetAttributeValue(node, "isIndexed", _def_isIndexed);
                 this.IsUnique = XmlHelper.GetAttributeValue(node, "isUnique", _def_isUnique);

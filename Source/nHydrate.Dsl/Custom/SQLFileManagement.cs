@@ -145,6 +145,7 @@ namespace nHydrate.Dsl.Custom
                         XmlHelper.AddAttribute(fieldNode, "max", field.Max);
                         XmlHelper.AddAttribute(fieldNode, "min", field.Min);
                         XmlHelper.AddAttribute(fieldNode, "validationexpression", field.ValidationExpression);
+                        XmlHelper.AddAttribute(fieldNode, "obsolete", field.Obsolete);
 
                         XmlHelper.AddLineBreak((XmlElement)fieldsNodes);
                     }
@@ -1034,6 +1035,7 @@ namespace nHydrate.Dsl.Custom
                         field.Max = XmlHelper.GetAttributeValue(n, "max", field.Max);
                         field.Min = XmlHelper.GetAttributeValue(n, "min", field.Min);
                         field.ValidationExpression = XmlHelper.GetAttributeValue(n, "validationexpression", field.ValidationExpression);
+                        field.Obsolete = XmlHelper.GetAttributeValue(n, "obsolete", field.Obsolete);
                         field.Summary = XmlHelper.GetNodeValue(n, "summary", field.Summary);
                         field.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                     }

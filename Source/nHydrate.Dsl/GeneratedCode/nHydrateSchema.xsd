@@ -880,6 +880,12 @@
             <xsd:documentation>The imported database default name</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
+        <!-- Property: Obsolete -->
+        <xsd:attribute name="obsolete" type="xsd:boolean" >
+          <xsd:annotation>
+            <xsd:documentation>Determines if this property should create a compiler warning</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>

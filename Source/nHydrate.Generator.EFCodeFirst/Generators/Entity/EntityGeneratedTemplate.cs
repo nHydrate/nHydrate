@@ -81,6 +81,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             {
                 nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
+                sb.AppendLine("#pragma warning disable 612");
                 this.AppendUsingStatements();
                 sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
                 sb.AppendLine("{");
@@ -88,6 +89,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("}");
                 sb.AppendLine();
                 this.AppendMetaData();
+                sb.AppendLine("#pragma warning restore 612");
                 sb.AppendLine();
             }
             catch (Exception ex)
@@ -492,6 +494,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine("		/// </summary>");
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
+                        if (column.Obsolete)
+                            sb.AppendLine("		[System.Obsolete()]");
                         sb.AppendLine("		public virtual " + this.GetLocalNamespace() + "." + typeTable.PascalName + "Constants" + nullSuffix + " " + pascalRoleName + typeTable.PascalName + "Value");
                         sb.AppendLine("		{");
                         sb.AppendLine("			get { return (" + this.GetLocalNamespace() + "." + typeTable.PascalName + "Constants" + nullSuffix + ")this." + column.PascalName + "; }");
@@ -567,6 +571,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     }
 
                     sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
+
+                    if (column.Obsolete)
+                        sb.AppendLine("		[System.Obsolete()]");
 
                     //if (column.Identity == IdentityTypeConstants.Database)
                     //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]");

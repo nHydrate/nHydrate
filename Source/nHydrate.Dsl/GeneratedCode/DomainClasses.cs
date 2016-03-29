@@ -8238,6 +8238,97 @@ namespace nHydrate.Dsl
 		}
 		
 		#endregion
+		#region Obsolete domain property code
+		
+		/// <summary>
+		/// Obsolete domain property Id.
+		/// </summary>
+		public static readonly global::System.Guid ObsoleteDomainPropertyId = new global::System.Guid(0xe798fdc7, 0x2666, 0x435a, 0xbf, 0x56, 0x5f, 0x4d, 0x16, 0x13, 0x97, 0x4e);
+		
+		/// <summary>
+		/// Storage for Obsolete
+		/// </summary>
+		private global::System.Boolean obsoletePropertyStorage;
+		
+		/// <summary>
+		/// Gets or sets the value of Obsolete domain property.
+		/// Determines if this property should create a compiler warning
+		/// </summary>
+		[DslDesign::DisplayNameResource("nHydrate.Dsl.Field/Obsolete.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::CategoryResource("nHydrate.Dsl.Field/Obsolete.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("nHydrate.Dsl.Field/Obsolete.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainObjectId("e798fdc7-2666-435a-bf56-5f4d1613974e")]
+		public virtual global::System.Boolean Obsolete
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return obsoletePropertyStorage;
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				ObsoletePropertyHandler.Instance.SetValue(this, value);
+			}
+		}
+		/// <summary>
+		/// Value handler for the Field.Obsolete domain property.
+		/// </summary>
+		internal sealed partial class ObsoletePropertyHandler : DslModeling::DomainPropertyValueHandler<FieldBase, global::System.Boolean>
+		{
+			private ObsoletePropertyHandler() { }
+		
+			/// <summary>
+			/// Gets the singleton instance of the Field.Obsolete domain property value handler.
+			/// </summary>
+			public static readonly ObsoletePropertyHandler Instance = new ObsoletePropertyHandler();
+		
+			/// <summary>
+			/// Gets the Id of the Field.Obsolete domain property.
+			/// </summary>
+			public sealed override global::System.Guid DomainPropertyId
+			{
+				[global::System.Diagnostics.DebuggerStepThrough]
+				get
+				{
+					return ObsoleteDomainPropertyId;
+				}
+			}
+			
+			/// <summary>
+			/// Gets a strongly-typed value of the property on specified element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <returns>Property value.</returns>
+			public override sealed global::System.Boolean GetValue(FieldBase element)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+				return element.Obsolete;
+				//return element.GetValue<global::System.Boolean>("Obsolete", element.obsoletePropertyStorage);
+				//return element.obsoletePropertyStorage; //ORIGINAL CODE
+			}
+		
+			/// <summary>
+			/// Sets property value on an element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <param name="newValue">New property value.</param>
+			public override sealed void SetValue(FieldBase element, global::System.Boolean newValue)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+		
+				global::System.Boolean oldValue = GetValue(element);
+				if (newValue != oldValue)
+				{
+					ValueChanging(element, oldValue, newValue);
+					element.obsoletePropertyStorage = newValue;
+					ValueChanged(element, oldValue, newValue);
+					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("Field"));
+				}
+			}
+		}
+		
+		#endregion
 		#region Entity opposite domain role accessor
 		/// <summary>
 		/// Gets or sets Entity.

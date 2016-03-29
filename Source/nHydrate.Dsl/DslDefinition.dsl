@@ -343,7 +343,7 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="a597dfa1-fc68-43e9-856f-2ef82291ea30" Description="If True, will generate both a base class with all functionality and a partial class to support customization through overrides" Name="GeneratesDoubleDerived" DisplayName="Generates Double Derived" DefaultValue="false" Category="Code">
+        <DomainProperty Id="a597dfa1-fc68-43e9-856f-2ef82291ea30" Description="If True, will generate both a base class with all functionality and a partial class to support customization through overrides" Name="GeneratesDoubleDerived" DisplayName="Double Derived" DefaultValue="false" Category="Code">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
@@ -609,6 +609,11 @@
         <DomainProperty Id="3122c386-bdd3-49ff-a1ef-40aac8b4803d" Description="The imported database default name" Name="ImportedDefaultName" DisplayName="Imported Default Name" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
+          </Type>
+        </DomainProperty>
+        <DomainProperty Id="e798fdc7-2666-435a-bf56-5f4d1613974e" Description="Determines if this property should create a compiler warning" Name="Obsolete" DisplayName="Obsolete" DefaultValue="false" Category="Code">
+          <Type>
+            <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
         </DomainProperty>
       </Properties>
@@ -2988,6 +2993,9 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="importedDefaultName">
             <DomainPropertyMoniker Name="Field/ImportedDefaultName" />
+          </XmlPropertyData>
+          <XmlPropertyData XmlName="obsolete">
+            <DomainPropertyMoniker Name="Field/Obsolete" />
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>
