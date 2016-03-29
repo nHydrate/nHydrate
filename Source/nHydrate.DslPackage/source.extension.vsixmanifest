@@ -3,7 +3,7 @@
   <Identifier Id="36220dab-63c7-4daa-860c-fc548bf4d5d3">
     <Name>nHydrate ORM Modeler</Name>
     <Author>nHydrate.org</Author>
-    <Version>6.0.0.165</Version>
+    <Version>6.0.0.166</Version>
     <Description>This is the nHydrate Visual Modeler</Description>
     <Locale>1033</Locale>
     <MoreInfoUrl>https://github.com/nHydrate/nHydrate</MoreInfoUrl>

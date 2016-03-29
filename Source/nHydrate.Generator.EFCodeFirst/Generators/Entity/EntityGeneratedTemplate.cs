@@ -123,22 +123,34 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 doubleDerivedClassName = _item.PascalName + "Base";
 
                 sb.AppendLine("	/// <summary>");
-                sb.AppendLine("	/// The collection to hold '" + _item.PascalName + "' entities");
+                sb.AppendLine("	/// The '" + _item.PascalName + "' entity");
                 if (!string.IsNullOrEmpty(_item.Description))
                     StringHelper.LineBreakCode(sb, _item.Description, "	/// ");
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
                 if (_item.IsAbstract)
-                    sb.AppendLine("	public abstract partial class " + _item.PascalName + " : " + doubleDerivedClassName);
+                    sb.Append("	public abstract partial class " + _item.PascalName + " : " + doubleDerivedClassName);
                 else
-                    sb.AppendLine("	public partial class " + _item.PascalName + " : " + doubleDerivedClassName);
+                    sb.Append("	public partial class " + _item.PascalName + " : " + doubleDerivedClassName + ", System.ICloneable");
+
+                //If we can add this item then implement the ICreatable interface
+                if (!_item.AssociativeTable && !_item.Immutable)
+                {
+                    sb.Append(", " + this.GetLocalNamespace() + ".ICreatable");
+                }
+
+                sb.AppendLine();
                 sb.AppendLine("	{");
+                this.AppendClone();
                 sb.AppendLine("	}");
                 sb.AppendLine();
             }
 
             sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// The collection to hold '" + _item.PascalName + "' entities");
+            if (_item.GeneratesDoubleDerived)
+                sb.AppendLine("	/// The base for the double derived '" + _item.PascalName + "' entity");
+            else
+                sb.AppendLine("	/// The '" + _item.PascalName + "' entity");
             if (!string.IsNullOrEmpty(_item.Description))
                 sb.AppendLine("	/// " + _item.Description);
             sb.AppendLine("	/// </summary>");
@@ -187,7 +199,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             else //NON-Abstract
             {
                 if (_item.ParentTable == null)
-                    sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : BaseEntity, " + boInterface + ", System.ICloneable");
+                {
+                    sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : BaseEntity, " + boInterface);
+                    if (!_item.GeneratesDoubleDerived)
+                        sb.Append(", System.ICloneable");
+                }
                 else
                     sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : " + this.GetLocalNamespace() + ".Entity." + _item.ParentTable.PascalName + ", " + boInterface);
             }
@@ -203,7 +219,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             }
 
             //If we can add this item then implement the ICreatable interface
-            if (!_item.AssociativeTable && !_item.Immutable)
+            if (!_item.AssociativeTable && !_item.Immutable && !_item.GeneratesDoubleDerived)
             {
                 sb.Append(", " + this.GetLocalNamespace() + ".ICreatable");
             }
@@ -217,7 +233,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             this.AppendGenerateEvents();
             this.AppendRegionBusinessObject();
             //this.AppendParented();
-            this.AppendClone();
+            if (!_item.GeneratesDoubleDerived)
+                this.AppendClone();
             this.AppendRegionGetValue();
             this.AppendRegionSetValue();
             this.AppendNavigationProperties();
@@ -324,25 +341,20 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             if (_item.Immutable)
                 scope = "protected internal";
 
+            var doubleDerivedClassName = _item.PascalName;
+            if (_item.GeneratesDoubleDerived)
+                doubleDerivedClassName = _item.PascalName + "Base";
+
             sb.AppendLine("		#region Constructors");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Initializes a new instance of the " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " class");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		" + scope + " " + _item.PascalName + "()");
+            sb.AppendLine("		" + scope + " " + doubleDerivedClassName + "()");
             sb.AppendLine("		{");
             if (_item.PrimaryKeyColumns.Count == 1 && _item.PrimaryKeyColumns[0].DataType == System.Data.SqlDbType.UniqueIdentifier)
                 sb.AppendLine("			this." + _item.PrimaryKeyColumns[0].PascalName + " = Guid.NewGuid();");
             sb.Append(this.SetInitialValues("this"));
-
-            //if (_item.AllowCreateAudit)
-            //{
-            //    sb.AppendLine("			this." + _model.Database.CreatedDatePascalName + " = DateTime.Now;");
-            //}
-            //if (_item.AllowModifiedAudit)
-            //{
-            //    sb.AppendLine("			this." + _model.Database.ModifiedDateColumnName + " = DateTime.Now;");
-            //}
 
             sb.AppendLine();
             sb.AppendLine("		}");
@@ -354,7 +366,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Initializes a new instance of the " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " class with a defined primary key");
                 sb.AppendLine("		/// </summary>");
-                sb.Append("		" + scope + " " + _item.PascalName + "(");
+                sb.Append("		" + scope + " " + doubleDerivedClassName + "(");
                 int index = 0;
                 foreach (Column pkColumn in _item.PrimaryKeyColumns.OrderBy(x => x.PascalName))
                 {

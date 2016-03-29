@@ -4722,7 +4722,6 @@ namespace nHydrate.Dsl
 		[DslDesign::DisplayNameResource("nHydrate.Dsl.Entity/GeneratesDoubleDerived.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::CategoryResource("nHydrate.Dsl.Entity/GeneratesDoubleDerived.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.Entity/GeneratesDoubleDerived.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[global::System.ComponentModel.Browsable(false)]
 		[DslModeling::DomainObjectId("a597dfa1-fc68-43e9-856f-2ef82291ea30")]
 		public virtual global::System.Boolean GeneratesDoubleDerived
 		{
