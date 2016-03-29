@@ -956,15 +956,18 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				audit.CreatedBy = _contextStartup.Modifer;");
             sb.AppendLine("				audit.ModifiedBy = _contextStartup.Modifer;");
             sb.AppendLine("			}");
-            sb.AppendLine("			if (entity is " + this.GetLocalNamespace() + ".ICreatable)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var extra = string.Empty;");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && x.Security.IsValid()).OrderBy(x => x.PascalName))
+
+            sb.AppendLine("			if (false) { }");
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("				if (entity is "+ table.PascalName +") extra = \"__INTERNAL\";");
+                sb.AppendLine("			else if (entity is " + GetLocalNamespace() + ".Entity." + table.PascalName + ")");
+                sb.AppendLine("			{");
+                if (table.Security.IsValid())
+                    sb.AppendLine("				this.ObjectContext.AddObject(entity.GetType().Name + \"__INTERNAL\", entity);");
+                else
+                    sb.AppendLine("				this." + table.PascalName + ".Add((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
+                sb.AppendLine("			}");
             }
-            sb.AppendLine("				this.ObjectContext.AddObject(entity.GetType().Name + extra, entity);");
-            sb.AppendLine("			}");
 
             sb.AppendLine("			return entity;");
             sb.AppendLine("		}");
