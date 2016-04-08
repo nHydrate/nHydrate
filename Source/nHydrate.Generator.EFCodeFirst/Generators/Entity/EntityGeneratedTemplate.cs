@@ -451,14 +451,14 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
             if (_item.AllowCreateAudit)
             {
-                sb.AppendLine("			newItem." + _model.Database.CreatedDateColumnName + " = item." + _model.Database.CreatedDateColumnName + ";");
-                sb.AppendLine("			newItem." + _model.Database.CreatedByColumnName + " = item." + _model.Database.CreatedByColumnName + ";");
+                sb.AppendLine("			newItem." + _model.Database.CreatedDatePascalName + " = item." + _model.Database.CreatedDatePascalName + ";");
+                sb.AppendLine("			newItem." + _model.Database.CreatedByPascalName + " = item." + _model.Database.CreatedByPascalName + ";");
             }
 
             if (_item.AllowModifiedAudit)
             {
-                sb.AppendLine("			newItem." + _model.Database.ModifiedDateColumnName + " = item." + _model.Database.ModifiedDateColumnName + ";");
-                sb.AppendLine("			newItem." + _model.Database.ModifiedByColumnName + " = item." + _model.Database.ModifiedByColumnName + ";");
+                sb.AppendLine("			newItem." + _model.Database.ModifiedDatePascalName + " = item." + _model.Database.ModifiedDatePascalName + ";");
+                sb.AppendLine("			newItem." + _model.Database.ModifiedByPascalName + " = item." + _model.Database.ModifiedByPascalName + ";");
             }
 
             sb.AppendLine("			return newItem;");
