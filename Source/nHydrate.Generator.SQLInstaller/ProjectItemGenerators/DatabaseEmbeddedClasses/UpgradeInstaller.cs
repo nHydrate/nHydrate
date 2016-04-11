@@ -1824,7 +1824,6 @@ namespace PROJECTNAMESPACE
 		public static bool operator !=(GeneratedVersion r1, GeneratedVersion r2)
 		{
 			return !(r1 == r2);
-			return false;
 		}
 
 		#endregion
