@@ -403,7 +403,7 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.EFCSDL
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            if (_item.GetColumns().Count(x => x.DataType == System.Data.SqlDbType.Binary) > 0)
+            if (_item.GetColumns().Count(x => x.IsBinaryType) > 0)
             {
                 //Read binary method
                 sb.AppendLine("		private static byte[] ReadFromByteArray(int ordinal, System.Data.IDataReader dataReader)");
