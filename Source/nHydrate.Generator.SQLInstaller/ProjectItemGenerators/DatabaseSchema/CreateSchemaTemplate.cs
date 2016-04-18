@@ -149,6 +149,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         private void AppendCreateTable()
         {
+            //Emit each create table statement
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
                 sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSQLCreateTable(_model, table));
@@ -250,36 +251,35 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
                 sb.AppendLine("--##SECTION END [RENAME PK]");
                 sb.AppendLine();
-            }
 
+                sb.AppendLine("--##SECTION BEGIN [DROP PK]");
+                sb.AppendLine();
 
-            sb.AppendLine("--##SECTION BEGIN [DROP PK]");
-            sb.AppendLine();
-
-            //Create PK
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly && !x.EnforcePrimaryKey).OrderBy(x => x.Name))
-            {
-                sb.Append(SQLEmit.GetSqlDropPK(table));
-            }
-
-            sb.AppendLine("--##SECTION END [DROP PK]");
-            sb.AppendLine();
-
-            sb.AppendLine("--##SECTION BEGIN [CREATE PK]");
-            sb.AppendLine();
-
-            //Create PK
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
-            {
-                if (table.EnforcePrimaryKey)
+                //Drop PK
+                foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly && !x.EnforcePrimaryKey).OrderBy(x => x.Name))
                 {
-                    sb.Append(SQLEmit.GetSqlCreatePK(table));
-                    sb.AppendLine("GO");
+                    sb.Append(SQLEmit.GetSqlDropPK(table));
                 }
-            }
 
-            sb.AppendLine("--##SECTION END [CREATE PK]");
-            sb.AppendLine();
+                sb.AppendLine("--##SECTION END [DROP PK]");
+                sb.AppendLine();
+
+                sb.AppendLine("--##SECTION BEGIN [CREATE PK]");
+                sb.AppendLine();
+
+                //Create PK
+                foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+                {
+                    if (table.EnforcePrimaryKey)
+                    {
+                        sb.Append(SQLEmit.GetSqlCreatePK(table));
+                        sb.AppendLine("GO");
+                    }
+                }
+
+                sb.AppendLine("--##SECTION END [CREATE PK]");
+                sb.AppendLine();
+            }
 
         }
 
