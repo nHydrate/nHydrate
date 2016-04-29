@@ -409,7 +409,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 if (_item.ParentTable.IsAbstract)
                     modifieraux = "virtual";
                 else
-                    modifieraux = "new";
+                    modifieraux = "override";
             }
 
             sb.AppendLine("		#region Clone");

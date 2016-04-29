@@ -151,14 +151,15 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             {
                 //Build relation list
                 var relationList1 = table.GetRelationsFullHierarchy().Where(x =>
-                    x.ParentTableRef.Object == table &&
+                    (x.ParentTableRef.Object == table ||
+                    table.GetParentTables().Contains(x.ParentTableRef.Object)) &&
                     !(x.ChildTableRef.Object as Table).IsInheritedFrom(x.ParentTableRef.Object as Table)
-                    );
+                    ).ToList();
 
                 var relationList2 = table.GetRelationsWhereChild().Where(x =>
                     x.ChildTableRef.Object == table &&
                     !(x.ChildTableRef.Object as Table).IsInheritedFrom(x.ParentTableRef.Object as Table)
-                    );
+                    ).ToList();
 
                 var relationList = new List<Relation>();
                 relationList.AddRange(relationList1);
