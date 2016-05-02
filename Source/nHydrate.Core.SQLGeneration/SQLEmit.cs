@@ -39,30 +39,51 @@ namespace nHydrate.Core.SQLGeneration
     {
         public static string GetSQLCreateTable(ModelRoot model, Table table)
         {
-            if (table.TypedTable == TypedTableConstants.EnumOnly)
-                return string.Empty;
-
-            var sb = new StringBuilder();
-            var tableName = Globals.GetTableDatabaseName(model, table);
-
-            sb.AppendLine("--CREATE TABLE [" + table.DatabaseName + "]");
-            sb.AppendLine("if not exists(select * from sysobjects where name = '" + tableName + "' and xtype = 'U')");
-            sb.AppendLine("CREATE TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] (");
-
-            var firstLoop = true;
-            foreach (var column in table.GeneratedColumns.OrderBy(x => x.SortOrder))
+            try
             {
-                if (!firstLoop) sb.AppendLine(",");
-                else firstLoop = false;
-                sb.Append("\t" + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true));
+                if (table.TypedTable == TypedTableConstants.EnumOnly)
+                    return string.Empty;
+
+                var sb = new StringBuilder();
+                var tableName = Globals.GetTableDatabaseName(model, table);
+
+                sb.AppendLine("--CREATE TABLE [" + table.DatabaseName + "]");
+                sb.AppendLine("if not exists(select * from sysobjects where name = '" + tableName + "' and xtype = 'U')");
+                sb.AppendLine("CREATE TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] (");
+
+                var firstLoop = true;
+                foreach (var column in table.GeneratedColumns.OrderBy(x => x.SortOrder))
+                {
+                    if (!firstLoop) sb.AppendLine(",");
+                    else firstLoop = false;
+                    sb.Append("\t" + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true));
+                }
+                AppendModifiedAudit(model, table, sb);
+                AppendCreateAudit(model, table, sb);
+                AppendTimestamp(model, table, sb);
+                AppendTenantField(model, table, sb);
+
+                //Emit PK
+                var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
+                if (tableIndex != null)
+                {
+                    var indexName = "PK_" + table.DatabaseName.ToUpper();
+                    sb.AppendLine(",");
+                    sb.AppendLine("\t" + "CONSTRAINT [" + indexName + "] PRIMARY KEY " + (tableIndex.Clustered ? "CLUSTERED" : "NONCLUSTERED"));
+                    sb.AppendLine("\t" + "(");
+                    sb.AppendLine("\t\t" + Globals.GetSQLIndexField(table, tableIndex));
+                    sb.AppendLine("\t" + ")");
+                }
+                else
+                    sb.AppendLine();
+
+                sb.AppendLine(")");
+                return sb.ToString();
             }
-            AppendModifiedAudit(model, table, sb);
-            AppendCreateAudit(model, table, sb);
-            AppendTimestamp(model, table, sb);
-            AppendTenantField(model, table, sb);
-            sb.Append(")");
-            sb.AppendLine();
-            return sb.ToString();
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public static string GetSQLCreateAuditTable(ModelRoot model, Table table)
@@ -1393,29 +1414,17 @@ namespace nHydrate.Core.SQLGeneration
         {
             try
             {
-                var indexName = "PK_" + table.DatabaseName.ToUpper();
-                indexName = indexName.ToUpper();
-
                 var sb = new StringBuilder();
                 var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
                 if (tableIndex != null)
                 {
+                    var indexName = "PK_" + table.DatabaseName.ToUpper();
                     sb.AppendLine("--PRIMARY KEY FOR TABLE [" + table.DatabaseName + "]");
                     sb.AppendLine("if not exists(select * from sysobjects where name = '" + indexName + "' and xtype = 'PK')");
                     sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] WITH NOCHECK ADD ");
                     sb.AppendLine("CONSTRAINT [" + indexName + "] PRIMARY KEY " + (tableIndex.Clustered ? "CLUSTERED" : "NONCLUSTERED"));
                     sb.AppendLine("(");
-
-                    var index = 0;
-                    foreach (var indexColumn in tableIndex.IndexColumnList)
-                    {
-                        var column = table.GeneratedColumns.FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
-                        sb.Append("	[" + column.DatabaseName + "]");
-                        if (index < tableIndex.IndexColumnList.Count - 1)
-                            sb.Append(",");
-                        sb.AppendLine();
-                        index++;
-                    }
+                    sb.AppendLine("\t" + Globals.GetSQLIndexField(table, tableIndex));
                     sb.Append(")");
                     sb.AppendLine();
                 }
@@ -1820,7 +1829,7 @@ namespace nHydrate.Core.SQLGeneration
             if (table.AllowTimestamp)
             {
                 sb.AppendLine(",");
-                sb.AppendLine("\t[" + model.Database.TimestampColumnName + "] [ROWVERSION] NOT NULL");
+                sb.Append("\t[" + model.Database.TimestampColumnName + "] [ROWVERSION] NOT NULL");
             }
         }
 
@@ -1829,7 +1838,7 @@ namespace nHydrate.Core.SQLGeneration
             if (table.IsTenant)
             {
                 sb.AppendLine(",");
-                sb.AppendLine("\t[" + model.TenantColumnName + "] [nvarchar] (128) NOT NULL CONSTRAINT [DF__" + table.DatabaseName.ToUpper() + "_" + model.TenantColumnName.ToUpper() + "] DEFAULT (suser_sname())");
+                sb.Append("\t[" + model.TenantColumnName + "] [nvarchar] (128) NOT NULL CONSTRAINT [DF__" + table.DatabaseName.ToUpper() + "_" + model.TenantColumnName.ToUpper() + "] DEFAULT (suser_sname())");
             }
         }
 
