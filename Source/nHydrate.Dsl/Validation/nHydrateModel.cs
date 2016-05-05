@@ -235,6 +235,15 @@ namespace nHydrate.Dsl
 
                 #endregion
 
+                #region CRUD
+
+                if (this.UseGeneratedCRUD)
+                {
+                    context.LogWarning(ValidationHelper.ErrorTextGeneratedCRUD_EF4, string.Empty, this);
+                }
+
+                #endregion
+
                 if (string.IsNullOrEmpty(this.StoredProcedurePrefix))
                 {
                     context.LogError(ValidationHelper.ErrorTextInvalidStoredProcPrefix, string.Empty, this);
