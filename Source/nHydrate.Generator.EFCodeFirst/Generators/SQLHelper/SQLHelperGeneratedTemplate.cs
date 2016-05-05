@@ -355,8 +355,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("						var value = newValue.GetType().GetProperty(field.Name).GetValue(newValue, null);");
             sb.AppendLine("						sql += \"SET [\" + parser.GetTableAlias(field.Name, leafTable) + \"].[\" + field.Name + \"] = @newValue\" + index + \"\\r\\n\";");
             sb.AppendLine();
-            sb.AppendLine("						if (hasModifyAudit && (field.Name != \"ModifiedBy\")) sql += \", [\" + parser.GetTableAlias(field.Name, leafTable) + \"].[ModifiedBy] = NULL\\r\\n\";");
-            sb.AppendLine("						if (hasModifyAudit && (field.Name != \"ModifiedDate\")) sql += \", [\" + parser.GetTableAlias(field.Name, leafTable) + \"].[ModifiedDate] = sysdatetime()\\r\\n\";");
+            var fieldName = _model.Database.ModifiedByColumnName;
+            sb.AppendLine("						if (hasModifyAudit && (field.Name != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(field.Name, leafTable) + \"].[" + fieldName + "] = NULL\\r\\n\";");
+            fieldName = _model.Database.ModifiedDateColumnName;
+            sb.AppendLine("						if (hasModifyAudit && (field.Name != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(field.Name, leafTable) + \"].[" + fieldName + "] = sysdatetime()\\r\\n\";");
             sb.AppendLine("						sql += parser.GetFromClause(new QueryOptimizer()) + \"\\r\\n\";");
             sb.AppendLine("						sql += parser.GetWhereClause() + \";\";");
             sb.AppendLine("						if (value == null) cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"newValue\" + index, System.DBNull.Value));");
@@ -480,7 +482,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("					var fieldName = parser.GetSelectClause();");
             sb.AppendLine("					var sql = \"UPDATE [\" + parser.GetTableAlias(fieldName, leafTable) + \"]\\r\\n\";");
             sb.AppendLine("					sql += \"SET [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[\" + fieldName + \"] = @newValue\\r\\n\";");
-            var fieldName = _model.Database.ModifiedByColumnName;
+            fieldName = _model.Database.ModifiedByColumnName;
             sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[" + fieldName + "] = NULL\\r\\n\";");
             fieldName = _model.Database.ModifiedDateColumnName;
             sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[" + fieldName + "] = " + (_model.UseUTCTime ? "sysutcdatetime" : "sysdatetime") + "()\\r\\n\";");
