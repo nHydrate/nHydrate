@@ -687,7 +687,8 @@ namespace nHydrate.Generator.Models
             get
             {
                 return _allowAuditTracking &&
-                    this.TypedTable == TypedTableConstants.None &&
+                    (this.TypedTable == TypedTableConstants.None || 
+                    this.TypedTable == TypedTableConstants.DatabaseTable) &&
                     !this.AssociativeTable;
             }
             set
