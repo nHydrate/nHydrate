@@ -284,9 +284,22 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
 
 					if (table.AllowModifiedAudit)
 					{
+					    if (model.EFVersion == EFVersionConstants.EF4)
+					    {
 						sb.AppendLine("DECLARE @" + model.Database.ModifiedDateColumnName + " [DateTime]");
 						sb.AppendLine("SET @" + model.Database.ModifiedDateColumnName + " = " + model.GetSQLDefaultDate());
 					}
+                        else if (model.EFVersion == EFVersionConstants.EF6)
+                        {
+                            //Modified Date - This is where we override the placeholder parameter for EF6 runtime.
+                            sb.Append("SET @" + model.Database.ModifiedDateColumnName + " = " + model.GetSQLDefaultDate());
+                            sb.AppendLine("--Entity Framework 6 Required Modified Date be passed in, overwrite it here.");
+                        }
+                        else
+                        {
+                            throw new NotImplementedException(string.Format("model.EFVersion [{0}] not supported", model.EFVersion));
+                        }
+                    }
 
 					foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
 					{
@@ -605,7 +618,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
 				sb.AppendLine("FROM ");
 				sb.AppendLine(table.GetFullHierarchyTableJoin());
 				sb.AppendLine("WHERE");
-				sb.AppendLine("\t" + BuildSelectWhereStatement(table));
+				sb.AppendLine("\t" + BuildSelectWhereStatement(table, model));
 				return sb.ToString();
 			}
 
@@ -656,9 +669,15 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
 					foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
 					{
 						output.Append("[" + table.GetSQLSchema() + "].[" + table.DatabaseName + "].[" + column.DatabaseName);
-						output.Append("] = ");
-						output.Append("@Original_");
+						output.Append("] = @");
+
+                        if (model.EFVersion == EFVersionConstants.EF4)
+                        {
+                            output.Append("Original_");
+                        }
+
 						output.Append(column.ToDatabaseCodeIdentifier());
+
 						if (index < table.PrimaryKeyColumns.Count - 1 || isTimeStamp)
 							output.Append(" AND" + Environment.NewLine + "\t");
 						index++;
@@ -666,8 +685,21 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
 
 					if (isTimeStamp)
 					{
-						output.AppendFormat("[" + table.GetSQLSchema() + "].[" + table.DatabaseName + "].[{0}] = @Original_{0}", model.Database.TimestampColumnName);
+                        output.AppendFormat("[" + table.GetSQLSchema() + "].[" + table.DatabaseName + "].[{0}] = ", model.Database.TimestampColumnName);
+
+                        if (model.EFVersion == EFVersionConstants.EF4)
+					    {
+                            output.AppendFormat("@Original_{0}", model.Database.TimestampColumnName);
 					}
+                        else if (model.EFVersion == EFVersionConstants.EF6)
+                        {
+                            output.AppendFormat("@{0}_Original", model.Database.TimestampColumnName);
+                        }
+                        else
+                        {
+                            throw new NotImplementedException(string.Format("model.EFVersion [{0}] not supported", model.EFVersion));
+                        }
+                    }
 
 					output.AppendLine();
 					return output.ToString();
@@ -679,7 +711,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
 				}
 			}
 
-			private static string BuildSelectWhereStatement(Table table)
+			private static string BuildSelectWhereStatement(Table table, ModelRoot model)
 			{
 				try
 				{
@@ -687,8 +719,13 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
 					var index = 0;
 					foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
 					{
-						output.Append("[" + table.GetSQLSchema() + "].[" + table.DatabaseName + "].[" + column.DatabaseName + "] = ");
-						output.Append("@Original_");
+						output.Append("[" + table.GetSQLSchema() + "].[" + table.DatabaseName + "].[" + column.DatabaseName + "] = @");
+
+                        if (model.EFVersion == EFVersionConstants.EF4)
+					    {
+					        output.Append("Original_");
+					    }
+
 						output.Append(column.ToDatabaseCodeIdentifier());
 						if (index < table.PrimaryKeyColumns.Count - 1)
 							output.Append(" AND" + Environment.NewLine + "\t");
@@ -719,7 +756,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
 				sb.AppendLine("DELETE FROM");
 				sb.AppendLine("	[" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] ");
 				sb.AppendLine("WHERE ");
-				sb.AppendLine("	" + BuildDeleteWhereStatement(table) + ";");
+				sb.AppendLine("	" + BuildDeleteWhereStatement(table, model) + ";");
 				sb.AppendLine();
 				sb.AppendLine("if (@@RowCount = 0) return;");
 				sb.AppendLine();
@@ -745,15 +782,21 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
 
 			#region Helpers
 
-			private static string BuildDeleteWhereStatement(Table table)
+			private static string BuildDeleteWhereStatement(Table table, ModelRoot model)
 			{
 				var output = new StringBuilder();
 				var index = 0;
 				var colList = table.PrimaryKeyColumns.OrderBy(x => x.Name).ToList();
 				foreach (var column in colList)
 				{
-					output.Append("[" + column.DatabaseName + "] = ");
-					output.Append("@Original_" + column.ToDatabaseCodeIdentifier());
+					output.Append("[" + column.DatabaseName + "] = @");
+
+				    if (model.EFVersion == EFVersionConstants.EF4)
+				    {
+				        output.Append("Original_");
+				    }
+
+					output.Append(column.ToDatabaseCodeIdentifier());
 					if (index < colList.Count - 1)
 					{
 						output.AppendLine(" AND");

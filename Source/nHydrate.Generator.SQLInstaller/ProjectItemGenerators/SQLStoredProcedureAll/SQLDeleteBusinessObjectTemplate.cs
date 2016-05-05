@@ -28,6 +28,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.Models;
 
@@ -133,9 +134,21 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
 				}
 			}
 
+		    if (_model.EFVersion == EFVersionConstants.EF6 && _currentTable.AllowTimestamp)
+		    {
+		        output.Append(string.Format("\t@{0}_Original timestamp = null,", _model.Database.TimestampColumnName));
+                output.AppendLine("--Entity Framework 6 Required timestamp be passed in");
+            }
+
 			foreach (var column in items.OrderBy(x => x.Name))
 			{
-				output.Append("\t@Original_");
+                output.Append("\t@");
+
+                if (_model.EFVersion == EFVersionConstants.EF4)
+			    {
+			        output.Append("Original_");
+			    }
+
 				output.Append(column.ToDatabaseCodeIdentifier());
 				output.Append(" ");
 				output.Append(column.GetSQLDefaultType());

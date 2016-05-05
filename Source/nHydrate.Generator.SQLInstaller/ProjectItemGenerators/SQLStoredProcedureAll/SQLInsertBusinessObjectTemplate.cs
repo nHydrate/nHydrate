@@ -28,6 +28,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.Models;
 
@@ -105,7 +106,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
 
         #region Helpers
 
-        private static string BuildParameterList(Table table, ModelRoot model)
+        private string BuildParameterList(Table table, ModelRoot model)
         {
             var output = new StringBuilder();
             var columnList = table.GetColumnsFullHierarchy().Where(x => x.Generated && !x.ComputedColumn && !x.IsReadOnly).OrderBy(x => x.Name).AsEnumerable();
@@ -148,6 +149,13 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
 
             if (table.AllowModifiedAudit)
             {
+                if (_model.EFVersion == EFVersionConstants.EF6)
+                {
+                    //Modified Date - This is a placeholder parameter for EF6 runtime. The Stored Procedure body will overwrite this value.
+                    output.AppendFormat("	@{0} [DateTime] = null,", model.Database.ModifiedDateColumnName);
+                    output.AppendLine("--Entity Framework 6 Required Modified Date be passed in");
+                }
+
                 //Modified By
                 output.AppendFormat("	@{0} [NVarchar] (50) = null", model.Database.ModifiedByColumnName);
                 output.AppendLine();
