@@ -554,8 +554,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     else if (column.IsIndexed)
                         sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.Index()]");
 
-                    //if (column.PrimaryKey)
-                    //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
+                    if (column.PrimaryKey)
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
 
                     //if (column.PrimaryKey || _item.Immutable || column.ComputedColumn || column.IsReadOnly)
                     //    sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
