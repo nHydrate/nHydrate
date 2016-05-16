@@ -290,10 +290,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("			/// Field mapping for the '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
                 sb.AppendLine("			/// </summary>");
 
-                //if (column.PrimaryKey)
-                //{
-                //    sb.AppendLine("			[System.ComponentModel.DataAnnotations.Key]");
-                //}
+                if (column.PrimaryKey)
+                {
+                    sb.AppendLine("			[System.ComponentModel.DataAnnotations.Key]");
+                }
 
                 if (column.PrimaryKey || _item.Immutable || column.IsReadOnly)
                 {
