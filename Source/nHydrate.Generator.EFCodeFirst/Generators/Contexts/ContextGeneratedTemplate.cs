@@ -404,8 +404,57 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     }
                 }
 
+                if (table.AllowAuditTracking)
+                {
+                    if (table.AllowCreateAudit)
+                    {
+                        if (!String.Equals(_model.Database.CreatedByDatabaseName, _model.Database.CreatedByPascalName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
+                            sb.Append(".Property(d => d." + _model.Database.CreatedByPascalName + ")");
+                            sb.Append(".HasColumnName(\"" + _model.Database.CreatedByDatabaseName + "\")");
+                            sb.AppendLine(";");
+                        }
+
+                        if (!String.Equals(_model.Database.CreatedDateDatabaseName, _model.Database.CreatedDatePascalName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
+                            sb.Append(".Property(d => d." + _model.Database.CreatedDatePascalName + ")");
+                            sb.Append(".HasColumnName(\"" + _model.Database.CreatedDateDatabaseName + "\")");
+                            sb.AppendLine(";");
+                        }
+                    }
+                    if (table.AllowModifiedAudit)
+                    {
+                        if (!_model.Database.ModifiedByDatabaseName.Equals(_model.Database.ModifiedByPascalName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
+                            sb.Append(".Property(d => d." + _model.Database.ModifiedByPascalName + ")");
+                            sb.Append(".HasColumnName(\"" + _model.Database.ModifiedByDatabaseName + "\")");
+                            sb.AppendLine(";");
+                        }
+
+                        if (!_model.Database.ModifiedDateDatabaseName.Equals(_model.Database.ModifiedDatePascalName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
+                            sb.Append(".Property(d => d." + _model.Database.ModifiedDatePascalName + ")");
+                            sb.Append(".HasColumnName(\"" + _model.Database.ModifiedDateDatabaseName + "\")");
+                            sb.AppendLine(";");
+                        }
+                    }
+                }
+
+
                 if (table.AllowTimestamp)
                 {
+                    if (!String.Equals(_model.Database.TimestampDatabaseName, _model.Database.TimestampPascalName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
+                        sb.Append(".Property(d => d." + _model.Database.TimestampPascalName + ")");
+                        sb.Append(".HasColumnName(\"" + _model.Database.TimestampDatabaseName + "\")");
+                        sb.AppendLine(";");
+                    }
+
                     sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").IsConcurrencyToken(true);");
                 }
 
