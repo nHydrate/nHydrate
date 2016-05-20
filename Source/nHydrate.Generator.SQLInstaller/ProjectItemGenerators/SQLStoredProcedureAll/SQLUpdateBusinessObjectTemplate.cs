@@ -31,6 +31,7 @@ using System.Text;
 using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.Models;
 using nHydrate.Generator.Common;
+using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedureAll
 {
@@ -121,6 +122,14 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
                 index++;
             }
 
+            if (_model.EFVersion == EFVersionConstants.EF6 && _currentTable.AllowModifiedAudit)
+            {
+                output.Append("\t@" + _model.Database.CreatedByColumnName + " [NVarchar] (50) = null,");
+                output.AppendLine("--Entity Framework 6 Required Created By be passed in.");
+                output.Append("\t@" + _model.Database.CreatedDateColumnName + " [DateTime] = null,");
+                output.AppendLine("--Entity Framework 6 Required Created Date be passed in.");
+            }
+
             if (_currentTable.AllowModifiedAudit)
             {
                 output.AppendLine("\t@" + _model.Database.ModifiedByColumnName + " [NVarchar] (50) = null,");
@@ -132,7 +141,13 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
             index = 0;
             foreach (var column in items.OrderBy(x => x.Name))
             {
-                output.Append("\t@Original_");
+                output.Append("\t@");
+
+                if (_model.EFVersion == EFVersionConstants.EF4)
+                {
+                    output.Append("Original_");
+                }
+
                 output.Append(column.ToDatabaseCodeIdentifier());
                 output.Append(" ");
                 output.Append(column.GetSQLDefaultType());
@@ -141,10 +156,23 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
                 output.AppendLine();
                 index++;
             }
+
             if (_currentTable.AllowTimestamp)
             {
+                if (_model.EFVersion == EFVersionConstants.EF4)
+                {
                 output.AppendLine("\t@Original_" + _model.Database.TimestampColumnName + " timestamp");
             }
+                else if (_model.EFVersion == EFVersionConstants.EF6)
+                {
+                    output.AppendLine("\t@" + _model.Database.TimestampColumnName + "_Original timestamp");
+                }
+                else
+                {
+                    throw new NotImplementedException(string.Format("model.EFVersion [{0}] not supported", _model.EFVersion));
+                }
+            }
+
             return output.ToString();
         }
 

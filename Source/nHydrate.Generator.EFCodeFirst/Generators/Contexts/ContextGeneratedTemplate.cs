@@ -301,6 +301,20 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		{");
             sb.AppendLine("			base.OnModelCreating(modelBuilder);");
             sb.AppendLine("			modelBuilder.Conventions.Remove<System.Data.Entity.ModelConfiguration.Conventions.PluralizingTableNameConvention>();");
+
+            if (_model.EFVersion == EFVersionConstants.EF6 && _model.Database.UseGeneratedCRUD)
+            {
+                // EF6 - Map Entities to generated Stored Procedures
+                var procedurePrefix = _model.StoredProcedurePrefix;
+                sb.AppendLine("			modelBuilder.Types().Configure(conventionTypeConfiguration =>");
+                sb.AppendLine("			    conventionTypeConfiguration.MapToStoredProcedures(conventionModificationStoredProceduresConfiguration =>");
+                sb.AppendLine("			        conventionModificationStoredProceduresConfiguration");
+                sb.AppendLine("			            .Insert(insertProcedure => insertProcedure.HasName(\"" + procedurePrefix + "_\" + conventionTypeConfiguration.ClrType.Name + \"_Insert\"))");
+                sb.AppendLine("			            .Update(updateProcedure => updateProcedure.HasName(\"" + procedurePrefix + "_\" + conventionTypeConfiguration.ClrType.Name + \"_Update\"))");
+                sb.AppendLine("			            .Delete(deleteProcedure => deleteProcedure.HasName(\"" + procedurePrefix + "_\" + conventionTypeConfiguration.ClrType.Name + \"_Delete\"))");
+                sb.AppendLine("			        ));");
+            }
+
             sb.AppendLine("			Database.SetInitializer(new CustomDatabaseInitializer<" + _model.ProjectName + "Entities>());");
             sb.AppendLine();
 
