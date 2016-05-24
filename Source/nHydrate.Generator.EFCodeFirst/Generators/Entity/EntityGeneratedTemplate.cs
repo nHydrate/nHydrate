@@ -290,10 +290,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("			/// Field mapping for the '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
                 sb.AppendLine("			/// </summary>");
 
-                //if (column.PrimaryKey)
-                //{
-                //    sb.AppendLine("			[System.ComponentModel.DataAnnotations.Key]");
-                //}
+                if (column.PrimaryKey)
+                {
+                    sb.AppendLine("			[System.ComponentModel.DataAnnotations.Key]");
+                }
 
                 if (column.PrimaryKey || _item.Immutable || column.IsReadOnly)
                 {
@@ -554,8 +554,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     else if (column.IsIndexed)
                         sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.Index()]");
 
-                    //if (column.PrimaryKey)
-                    //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
+                    if (column.PrimaryKey)
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
 
                     //if (column.PrimaryKey || _item.Immutable || column.ComputedColumn || column.IsReadOnly)
                     //    sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
@@ -2134,20 +2134,20 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             {
                 //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.CreatedByPascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.CreatedByPascalName.ToLower() + "]\");");
                 //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.CreatedDatePascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.CreatedDatePascalName.ToLower() + "]\");");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.CreatedByPascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.CreatedByPascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.CreatedDatePascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.CreatedDatePascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
+                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.CreatedByDatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.CreatedByDatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
+                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.CreatedDateDatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.CreatedDateDatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
             }
             if (_item.AllowModifiedAudit)
             {
                 //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.ModifiedByPascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.ModifiedByPascalName.ToLower() + "]\");");
                 //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.ModifiedDatePascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.ModifiedDatePascalName.ToLower() + "]\");");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.ModifiedByPascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.ModifiedByPascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.ModifiedDatePascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.ModifiedDatePascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
+                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.ModifiedByDatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.ModifiedByDatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
+                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.ModifiedDateDatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.ModifiedDateDatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
             }
             if (_item.AllowTimestamp)
             {
                 //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.TimestampPascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.TimestampPascalName.ToLower() + "]\");");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.TimestampPascalName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.TimestampPascalName.ToLower() + "]\", RegexOptions.IgnoreCase);");
+                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.TimestampDatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.TimestampDatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
             }
 
             sb.AppendLine("			return sql;");

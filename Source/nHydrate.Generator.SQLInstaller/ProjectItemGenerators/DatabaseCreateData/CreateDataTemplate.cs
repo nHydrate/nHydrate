@@ -96,7 +96,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
                 //Turn ON CONSTRAINTS
                 sb.AppendLine("if (SERVERPROPERTY('EngineEdition') <> 5) --NOT AZURE");
-                sb.AppendLine("exec sp_MSforeachtable 'ALTER TABLE ? CHECK CONSTRAINT ALL'");
+                sb.AppendLine("exec sp_MSforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL'");
                 sb.AppendLine();
 
             }

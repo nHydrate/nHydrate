@@ -449,34 +449,17 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                     var dateTimeString = (_model.SQLServerType == Common.GeneratorFramework.SQLServerTypeConstants.SQL2005) ? "[DateTime]" : "[DateTime2]";
                     if (table.AllowCreateAudit)
                     {
-                        sb.AppendLine("--APPEND AUDIT TRAIL CREATE FOR TABLE [" + table.DatabaseName + "]");
-                        sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.CreatedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + _model.Database.CreatedByColumnName + "] [NVarchar] (50) NULL");
-                        var dfName = "DF__" + table.DatabaseName + "_" + _model.Database.CreatedDateColumnName;
-                        dfName = dfName.ToUpper();
-                        sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.CreatedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + _model.Database.CreatedDateColumnName + "] " + dateTimeString + " CONSTRAINT [" + dfName + "] DEFAULT " + _model.GetSQLDefaultDate() + " NULL");
-                        sb.AppendLine();
+                        Globals.AppendCreateAudit(table, _model, sb);
                     }
 
                     if (table.AllowModifiedAudit)
                     {
-                        sb.AppendLine("--APPEND AUDIT TRAIL MODIFY FOR TABLE [" + table.DatabaseName + "]");
-                        sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.ModifiedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + _model.Database.ModifiedByColumnName + "] [NVarchar] (50) NULL");
-                        var dfName = "DF__" + table.DatabaseName + "_" + _model.Database.ModifiedDateColumnName;
-                        dfName = dfName.ToUpper();
-                        sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.ModifiedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + _model.Database.ModifiedDateColumnName + "] " + dateTimeString + " CONSTRAINT [" + dfName + "] DEFAULT " + _model.GetSQLDefaultDate() + " NULL");
-                        sb.AppendLine();
+                        Globals.AppendModifiedAudit(table, _model, sb);
                     }
 
                     if (table.AllowTimestamp)
                     {
-                        sb.AppendLine("--APPEND AUDIT TRAIL TIMESTAMP FOR TABLE [" + table.DatabaseName + "]");
-                        sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.TimestampColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + _model.Database.TimestampColumnName + "] [ROWVERSION] NOT NULL");
-                        sb.AppendLine();
+                        Globals.AppendTimestampAudit(table, _model, sb);
                     }
 
                     if (table.IsTenant)
@@ -505,38 +488,17 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 {
                     if (!table.AllowCreateAudit)
                     {
-                        sb.AppendLine("--REMOVE AUDIT TRAIL CREATE FOR TABLE [" + table.DatabaseName + "]");
-                        sb.AppendLine("if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.CreatedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP COLUMN [" + _model.Database.CreatedByColumnName + "]");
-                        var dfName = "DF__" + table.DatabaseName + "_" + _model.Database.CreatedDateColumnName;
-                        dfName = dfName.ToUpper();
-                        sb.AppendLine("if exists (select * from sys.objects where name = '" + dfName + "' and [type] = 'D')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP CONSTRAINT [" + dfName + "]");
-                        sb.AppendLine("if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.CreatedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP COLUMN [" + _model.Database.CreatedDateColumnName + "]");
-                        sb.AppendLine();
+                        Globals.DropCreateAudit(table, _model, sb);
                     }
 
                     if (!table.AllowModifiedAudit)
                     {
-                        sb.AppendLine("--REMOVE AUDIT TRAIL MODIFY FOR TABLE [" + table.DatabaseName + "]");
-                        sb.AppendLine("if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.ModifiedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP COLUMN [" + _model.Database.ModifiedByColumnName + "]");
-                        var dfName = "DF__" + table.DatabaseName + "_" + _model.Database.ModifiedDateColumnName;
-                        dfName = dfName.ToUpper();
-                        sb.AppendLine("if exists (select * from sys.objects where name = '" + dfName + "' and [type] = 'D')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP CONSTRAINT [" + dfName + "]");
-                        sb.AppendLine("if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.ModifiedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP COLUMN [" + _model.Database.ModifiedDateColumnName + "]");
-                        sb.AppendLine();
+                        Globals.DropModifiedAudit(table, _model, sb);
                     }
 
                     if (!table.AllowTimestamp)
                     {
-                        sb.AppendLine("--REMOVE AUDIT TRAIL TIMESTAMP FOR TABLE [" + table.DatabaseName + "]");
-                        sb.AppendLine("if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.TimestampColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP COLUMN [" + _model.Database.TimestampColumnName + "]");
-                        sb.AppendLine();
+                        Globals.DropTimestampAudit(table, _model, sb);
                     }
 
                     sb.AppendLine("GO");

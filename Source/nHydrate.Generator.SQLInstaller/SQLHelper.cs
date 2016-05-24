@@ -809,6 +809,31 @@ namespace nHydrate.Generator.SQLInstaller
 
                 #endregion
 
+                #region Add/Remove Audit fields
+
+                foreach (var newT in modelNew.Database.Tables.OrderBy(x => x.Name))
+                {
+                    var oldT = modelOld.Database.Tables.FirstOrDefault(x => x.Key == newT.Key);
+                    if (oldT != null)
+                    {
+                        if (!oldT.AllowCreateAudit && newT.AllowCreateAudit)
+                            Globals.AppendCreateAudit(newT, modelNew, sb);
+                        if (!oldT.AllowModifiedAudit && newT.AllowModifiedAudit)
+                            Globals.AppendModifiedAudit(newT, modelNew, sb);
+                        if (!oldT.AllowTimestamp && newT.AllowTimestamp)
+                            Globals.AppendTimestampAudit(newT, modelNew, sb);
+
+                        if (oldT.AllowCreateAudit && !newT.AllowCreateAudit)
+                            Globals.DropCreateAudit(newT, modelNew, sb);
+                        if (oldT.AllowModifiedAudit && !newT.AllowModifiedAudit)
+                            Globals.DropModifiedAudit(newT, modelNew, sb);
+                        if (oldT.AllowTimestamp && !newT.AllowTimestamp)
+                            Globals.DropTimestampAudit(newT, modelNew, sb);
+                    }
+                }
+
+                #endregion
+
                 return sb.ToString();
             }
             catch (Exception ex)
