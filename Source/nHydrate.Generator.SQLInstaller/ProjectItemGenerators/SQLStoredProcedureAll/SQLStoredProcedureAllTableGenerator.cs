@@ -124,14 +124,17 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
                 }
                 else
                 {
-                    //Process all tables
-                    foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+                    if (_model.EmitSafetyScripts)
                     {
-                        var template = new SQLStoredProcedureTableAllTemplate(_model, table, false);
-                        var fullFileName = template.FileName;
-                        var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this.ParentItemPath, ProjectItemType.Folder, this, true);
-                        eventArgs.Properties.Add("BuildAction", 3);
-                        OnProjectItemGenerated(this, eventArgs);
+                        //Process all tables
+                        foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+                        {
+                            var template = new SQLStoredProcedureTableAllTemplate(_model, table, false);
+                            var fullFileName = template.FileName;
+                            var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this.ParentItemPath, ProjectItemType.Folder, this, true);
+                            eventArgs.Properties.Add("BuildAction", 3);
+                            OnProjectItemGenerated(this, eventArgs);
+                        }
                     }
                 }
 
