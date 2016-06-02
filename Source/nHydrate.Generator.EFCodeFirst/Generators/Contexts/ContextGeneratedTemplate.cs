@@ -347,7 +347,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			#region Hierarchy Mapping");
             foreach (var table in hierarchyList)
             {
-                sb.AppendLine("			modelBuilder.Entity<" + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\");");
+                var schema = "dbo";
+                if (!string.IsNullOrEmpty(table.DBSchema)) schema = table.DBSchema;
+                sb.AppendLine("			modelBuilder.Entity<" + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\", \"" + schema + "\");");
             }
             sb.AppendLine("			#endregion");
             sb.AppendLine();
@@ -355,16 +357,22 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #endregion
 
             #region Rename Tables
-            sb.AppendLine("			#region Rename Tables");
+            sb.AppendLine("			#region Map Tables");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
+                var schema = "dbo";
+                if (!string.IsNullOrEmpty(table.DBSchema)) schema = table.DBSchema;
                 if (table.IsTenant)
                 {
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + _model.TenantPrefix + "_" + table.DatabaseName + "\");");
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + _model.TenantPrefix + "_" + table.DatabaseName + "\", \"" + schema + "\");");
                 }
                 else if (table.DatabaseName != table.PascalName)
                 {
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\");");
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\", \"" + schema + "\");");
+                }
+                else
+                {
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\", \"" + schema + "\");");
                 }
             }
             sb.AppendLine("			#endregion");
