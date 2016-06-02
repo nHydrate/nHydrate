@@ -156,6 +156,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		private static object _seqCacheLock = new object();");
             sb.AppendLine();
 
+            // Create consts for version and modelKey
+            sb.AppendLine("		private const string _version = \"" + _model.Version + "." + _model.GeneratedVersion + "\";");
+            sb.AppendLine("		private const string _modelKey = \"" + _model.Key + "\";");
+            sb.AppendLine();
+
             //Events
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
@@ -907,7 +912,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public virtual string Version");
             sb.AppendLine("		{");
-            sb.AppendLine("			get { return \"" + _model.Version + "." + _model.GeneratedVersion + "\"; }");
+            sb.AppendLine("			get { return _version; }");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
@@ -915,7 +920,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public virtual string ModelKey");
             sb.AppendLine("		{");
-            sb.AppendLine("			get { return \"" + _model.Key + "\"; }");
+            sb.AppendLine("			get { return _modelKey; }");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
