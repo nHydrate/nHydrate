@@ -647,6 +647,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("		public long TotalMilliseconds { get; set; }");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// The maximum number of rows to affect with a query. 0 is no limit.");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		public int ChunkSize { get; set; }");
+                sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Default constructor");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		public QueryOptimizer()");

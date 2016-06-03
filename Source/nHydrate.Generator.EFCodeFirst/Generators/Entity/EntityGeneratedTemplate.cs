@@ -1797,6 +1797,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             }
 
             sb.AppendLine(")\";");
+            sb.AppendLine("						sql += \"set rowcount \" + optimizer.ChunkSize + \";\";");
             sb.Append("						sql += \"INSERT INTO #t (");
 
             ii = 0;
@@ -1845,15 +1846,21 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             }
 
             sb.AppendLine("						sql += \";select @@rowcount\";");
-            sb.AppendLine("						sql = \"set ansi_nulls off;\" + sql;");
+            sb.AppendLine("						sql = \"set ansi_nulls off;\" + sql + \";drop table #t;\";");
             sb.AppendLine("						cmd.CommandText = sql;");
             sb.AppendLine("						dc.Connection.Open();");
             sb.AppendLine("						var startTime = DateTime.Now;");
-            sb.AppendLine("						object p = cmd.ExecuteScalar();");
+            sb.AppendLine("						var affected = 0;");
+            sb.AppendLine("						var count = 0;");
+            sb.AppendLine("						do");
+            sb.AppendLine("						{");
+            sb.AppendLine("							count = (int)cmd.ExecuteScalar();");
+            sb.AppendLine("							affected += count;");
+            sb.AppendLine("						} while (count > 0 && optimizer.ChunkSize > 0);");
             sb.AppendLine("						var endTime = DateTime.Now;");
             sb.AppendLine("						optimizer.TotalMilliseconds = (long)endTime.Subtract(startTime).TotalMilliseconds;");
             sb.AppendLine("						dc.Connection.Close();");
-            sb.AppendLine("						return (int)p;");
+            sb.AppendLine("						return affected;");
             sb.AppendLine("					}");
             sb.AppendLine("				}");
             sb.AppendLine("			}");
