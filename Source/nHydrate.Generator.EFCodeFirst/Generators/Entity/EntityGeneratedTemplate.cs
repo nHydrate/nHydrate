@@ -1731,6 +1731,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
+            sb.AppendLine("		[Obsolete(\"Replaced by the context Delete method\")]");
             sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where)");
             sb.AppendLine("		{");
             sb.AppendLine("			return DeleteData(where, new QueryOptimizer(), new ContextStartup(null), " + this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
@@ -1743,6 +1744,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
             sb.AppendLine("		/// <param name=\"optimizer\">The optimization object to use for running queries</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
+            sb.AppendLine("		[Obsolete(\"Replaced by the context Delete method\")]");
             sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, QueryOptimizer optimizer)");
             sb.AppendLine("		{");
             sb.AppendLine("			return DeleteData(where, optimizer, new ContextStartup(null), " + this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
@@ -1755,6 +1757,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
+            sb.AppendLine("		[Obsolete(\"Replaced by the context Delete method\")]");
             sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			return DeleteData(where, new QueryOptimizer(), new ContextStartup(null), connectionString);");
@@ -1769,6 +1772,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"startup\">The startup options</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
+            sb.AppendLine("		[Obsolete(\"Replaced by the context Delete method\")]");
             sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, QueryOptimizer optimizer, ContextStartup startup, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			if (optimizer == null)");

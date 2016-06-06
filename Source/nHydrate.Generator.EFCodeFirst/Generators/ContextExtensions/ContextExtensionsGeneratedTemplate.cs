@@ -451,6 +451,116 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine();
             #endregion
 
+            #region Delete Extensions
+            sb.AppendLine("		#region Delete Extensions");
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Delete all records that match a where condition");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public static int Delete<T>(this IQueryable<T> query)");
+            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return query.Delete(null, null);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Delete all records that match a where condition");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public static int Delete<T>(this IQueryable<T> query, QueryOptimizer optimizer)");
+            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return query.Delete(optimizer, null);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Delete all records that match a where condition");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public static int Delete<T>(this IQueryable<T> query, string connectionString)");
+            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return query.Delete(new QueryOptimizer(), connectionString);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Delete all records that match a where condition");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public static int Delete<T>(this IQueryable<T> query, QueryOptimizer optimizer, string connectionString)");
+            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if (optimizer == null)");
+            sb.AppendLine("				optimizer = new QueryOptimizer();");
+            sb.AppendLine();
+
+            sb.AppendLine("			try {");
+            sb.AppendLine("				if (string.IsNullOrEmpty(connectionString))");
+            sb.AppendLine("				{");
+            sb.AppendLine("					var propContext = query.Provider.GetType().GetProperty(\"InternalContext\");");
+            sb.AppendLine("					if (propContext != null)");
+            sb.AppendLine("					{");
+            sb.AppendLine("						var context = propContext.GetValue(query.Provider);");
+            sb.AppendLine("						if (context != null)");
+            sb.AppendLine("						{");
+            sb.AppendLine("							var propCs = context.GetType().GetProperty(\"OriginalConnectionString\");");
+            sb.AppendLine("							if (propCs != null) connectionString = (string)propCs.GetValue(context);");
+            sb.AppendLine("						}");
+            sb.AppendLine("					}");
+            sb.AppendLine("				}");
+            sb.AppendLine("			} catch { }");
+            sb.AppendLine();
+
+            sb.AppendLine("			var sb = new System.Text.StringBuilder();");
+            sb.AppendLine("			if (false) ;");
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
+            {
+                var tableName = table.DatabaseName;
+                if (table.IsTenant)
+                    tableName = _model.TenantPrefix + "_" + table.DatabaseName;
+
+                sb.AppendLine("			else if (typeof(T) == typeof(" + GetLocalNamespace() + ".Entity." + table.PascalName + "))");
+                sb.AppendLine("			{");
+                sb.AppendLine("				sb.AppendLine(\"set rowcount \" + optimizer.ChunkSize + \";\");");
+                sb.AppendLine("				sb.AppendLine(\"delete [X] from [" + table.GetSQLSchema() + "].[" + tableName + "] [X] inner join (\");");
+                sb.AppendLine("				sb.AppendLine(((IQueryable<" + GetLocalNamespace() + ".Entity." + table.PascalName + ">)query).Select(x => new { " + string.Join(", ", table.PrimaryKeyColumns.Select(x => "x." + x.PascalName).ToList()) + " }).ToString());");
+                sb.AppendLine("				sb.AppendLine(\") AS [Extent2]\");");
+                sb.AppendLine("				sb.AppendLine(\"on " + string.Join(" AND ", table.PrimaryKeyColumns.Select(x => "[X].[" + x.Name + "] = [Extent2].[" + x.Name + "]").ToList()) + "\");");
+                sb.AppendLine("				sb.AppendLine(\"select @@ROWCOUNT\");");
+                sb.AppendLine("			}");
+            }
+            sb.AppendLine("			else throw new Exception(\"Entity type not found\");");
+
+            sb.AppendLine("			var affected = 0;");
+            sb.AppendLine("			var count = 0;");
+            sb.AppendLine();
+            sb.AppendLine("			if (string.IsNullOrEmpty(connectionString))");
+            sb.AppendLine("				connectionString = " + _model.ProjectName + "Entities.GetConnectionString();");
+            sb.AppendLine();
+            sb.AppendLine("			var startTime = DateTime.Now;");
+            sb.AppendLine("			using (var connection = new System.Data.SqlClient.SqlConnection(" + GetLocalNamespace() + ".Util.StripEFCS2Normal(connectionString)))");
+            sb.AppendLine("			{");
+            sb.AppendLine("				connection.Open();");
+            sb.AppendLine("				using (var cmd = new System.Data.SqlClient.SqlCommand(sb.ToString(), connection))");
+            sb.AppendLine("				{");
+            sb.AppendLine("					cmd.CommandTimeout = 30;");
+            sb.AppendLine("					do");
+            sb.AppendLine("					{");
+            sb.AppendLine("						count = (int)cmd.ExecuteNonQuery();");
+            sb.AppendLine("						affected += count;");
+            sb.AppendLine("					} while (count > 0 && optimizer.ChunkSize > 0);");
+            sb.AppendLine("				}");
+            sb.AppendLine("				connection.Close();");
+            sb.AppendLine("				var endTime = DateTime.Now;");
+            sb.AppendLine("				optimizer.TotalMilliseconds = (long)endTime.Subtract(startTime).TotalMilliseconds;");
+            sb.AppendLine("			}");
+            sb.AppendLine("			return affected;");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
+            #endregion
+
             sb.AppendLine("	}");
             sb.AppendLine();
 
