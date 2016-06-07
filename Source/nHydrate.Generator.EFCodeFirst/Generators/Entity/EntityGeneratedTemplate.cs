@@ -1888,6 +1888,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
             sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
             sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            sb.AppendLine("		[Obsolete(\"Replaced by the context Update method\")]");
             sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue)");
             sb.AppendLine("		{");
             sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
@@ -1903,6 +1904,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"connection\">An open database connection</param>");
             sb.AppendLine("		/// <param name=\"transaction\">The database connection transaction</param>");
             sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            sb.AppendLine("		[Obsolete(\"Replaced by the context Update method\")]");
             sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, System.Data.IDbConnection connection, System.Data.Common.DbTransaction transaction)");
             sb.AppendLine("		{");
             sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", null, connection, transaction);");
@@ -1918,6 +1920,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"startup\">A configuration object</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
             sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            sb.AppendLine("		[Obsolete(\"Replaced by the context Update method\")]");
             sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, ContextStartup startup, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup, connectionString);");
@@ -1932,6 +1935,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
             sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            sb.AppendLine("		[Obsolete(\"Replaced by the context Update method\")]");
             sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString);");
@@ -1945,6 +1949,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
             sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
             sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            sb.AppendLine("		[Obsolete(\"Replaced by the context Update method\")]");
             sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " newValue)");
             sb.AppendLine("		{");
             sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
@@ -1959,6 +1964,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
             sb.AppendLine("		/// <returns>The number of records affected</returns>");
+            sb.AppendLine("		[Obsolete(\"Replaced by the context Update method\")]");
             sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " newValue, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select, where, newValue, \"" + _item.DatabaseName + "\", GetDatabaseFieldName, " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString);");

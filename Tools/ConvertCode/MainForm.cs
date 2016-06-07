@@ -10,26 +10,26 @@ using System.Collections;
 
 namespace ConvertCode
 {
-	public partial class MainForm : Form
-	{
-		public MainForm()
-		{
-			InitializeComponent();
-		}
+    public partial class MainForm : Form
+    {
+        public MainForm()
+        {
+            InitializeComponent();
+        }
 
-		private void cmdParse_Click(object sender, EventArgs e)
-		{
-			var text = txtInput.Text;
-			text = text.Replace("\r\n", "\n");
-			text = text.Replace("\n", "\r\n");
-			txtOutput.Text = AspStringBlock.ConvertCode(text);
-		}
+        private void cmdParse_Click(object sender, EventArgs e)
+        {
+            var text = txtInput.Text;
+            text = text.Replace("\r\n", "\n");
+            text = text.Replace("\n", "\r\n");
+            txtOutput.Text = AspStringBlock.ConvertCode(text, chkTabs.Checked);
+        }
 
-		private void cmdCopy_Click(object sender, EventArgs e)
-		{
-			if (!string.IsNullOrEmpty(txtOutput.Text))
-				Clipboard.SetText(txtOutput.Text);
-		}
+        private void cmdCopy_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtOutput.Text))
+                Clipboard.SetText(txtOutput.Text);
+        }
 
-	}
+    }
 }
