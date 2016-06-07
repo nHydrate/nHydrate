@@ -510,7 +510,21 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			} catch { }");
             sb.AppendLine();
 
+            sb.AppendLine("			System.Data.Entity.Core.Objects.ObjectParameterCollection existingParams = null;");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var ss = query.ToString(); //DO NOT REMOVE! must call this to init params");
+            sb.AppendLine("				var internalQueryField = query.GetType().GetProperty(\"InternalQuery\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(query);");
+            sb.AppendLine("				if (internalQueryField != null)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					var objectQuery = internalQueryField.GetType().GetProperty(\"ObjectQuery\").GetValue(internalQueryField) as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
+            sb.AppendLine("					if (objectQuery != null)");
+            sb.AppendLine("						existingParams = objectQuery.GetType().GetProperty(\"Parameters\").GetValue(objectQuery) as System.Data.Entity.Core.Objects.ObjectParameterCollection;");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+
             sb.AppendLine("			var sb = new System.Text.StringBuilder();");
+            sb.AppendLine("			#region Per table code");
             sb.AppendLine("			if (false) ;");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
             {
@@ -529,6 +543,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 sb.AppendLine("			}");
             }
             sb.AppendLine("			else throw new Exception(\"Entity type not found\");");
+            sb.AppendLine("			#endregion");
 
             sb.AppendLine("			var affected = 0;");
             sb.AppendLine("			var count = 0;");
@@ -543,6 +558,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("				using (var cmd = new System.Data.SqlClient.SqlCommand(sb.ToString(), connection))");
             sb.AppendLine("				{");
             sb.AppendLine("					cmd.CommandTimeout = 30;");
+            sb.AppendLine("					if (existingParams != null)");
+            sb.AppendLine("					{");
+            sb.AppendLine("						foreach (var ep in existingParams)");
+            sb.AppendLine("							cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter { ParameterName= ep.Name, Value = ep.Value });");
+            sb.AppendLine("					}");
             sb.AppendLine("					do");
             sb.AppendLine("					{");
             sb.AppendLine("						count = (int)cmd.ExecuteNonQuery();");
@@ -607,6 +627,20 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			}");
             sb.AppendLine("			catch { }");
             sb.AppendLine();
+
+            sb.AppendLine("			System.Data.Entity.Core.Objects.ObjectParameterCollection existingParams = null;");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var ss = query.ToString(); //DO NOT REMOVE! must call this to init params");
+            sb.AppendLine("				var internalQueryField = query.GetType().GetProperty(\"InternalQuery\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(query);");
+            sb.AppendLine("				if (internalQueryField != null)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					var objectQuery = internalQueryField.GetType().GetProperty(\"ObjectQuery\").GetValue(internalQueryField) as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
+            sb.AppendLine("					if (objectQuery != null)");
+            sb.AppendLine("						existingParams = objectQuery.GetType().GetProperty(\"Parameters\").GetValue(objectQuery) as System.Data.Entity.Core.Objects.ObjectParameterCollection;");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+
             sb.AppendLine("			var startTime = DateTime.Now;");
             sb.AppendLine("			var changedList = new Dictionary<string, object>();");
             sb.AppendLine();
@@ -720,6 +754,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			}");
             sb.AppendLine();
             sb.AppendLine("			var sb = new System.Text.StringBuilder();");
+            sb.AppendLine("			#region Per table code");
             sb.AppendLine("			if (false) ;");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
             {
@@ -740,6 +775,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 sb.AppendLine("			}");
             }
             sb.AppendLine("			else throw new Exception(\"Entity type not found\");");
+            sb.AppendLine("			#endregion");
 
             sb.AppendLine();
             sb.AppendLine("			var count = 0;");
@@ -752,6 +788,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("				using (var cmd = new System.Data.SqlClient.SqlCommand(sb.ToString(), connection))");
             sb.AppendLine("				{");
             sb.AppendLine("					cmd.CommandTimeout = 30;");
+            sb.AppendLine("					if (existingParams != null)");
+            sb.AppendLine("					{");
+            sb.AppendLine("						foreach (var ep in existingParams)");
+            sb.AppendLine("							cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter { ParameterName= ep.Name, Value = ep.Value });");
+            sb.AppendLine("					}");
             sb.AppendLine("					cmd.Parameters.AddRange(parameters.ToArray());");
             sb.AppendLine("					count = (int)cmd.ExecuteNonQuery();");
             sb.AppendLine("				}");
