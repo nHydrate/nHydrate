@@ -286,7 +286,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			var tn = arr.Last();");
             sb.AppendLine("			var ft = ((IReadOnlyBusinessObject)item).GetFieldNameConstants();");
             sb.AppendLine("			var te = (System.Enum)Enum.Parse(ft, tn, true);");
-            sb.AppendLine("			return item.GetValueInternal<T, R>(te, default(T));");
+            sb.AppendLine("			return item.GetValueInternal<T, R>(field: te, defaultValue: default(T));");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -309,7 +309,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			var tn = arr.Last();");
             sb.AppendLine("			var ft = ((IReadOnlyBusinessObject)item).GetFieldNameConstants();");
             sb.AppendLine("			var te = (System.Enum)Enum.Parse(ft, tn, true);");
-            sb.AppendLine("			return item.GetValueInternal<T, R>(te, defaultValue);");
+            sb.AppendLine("			return item.GetValueInternal<T, R>(field: te, defaultValue: defaultValue);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -406,7 +406,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		public static void SetValue<TResult, R>(this R item, System.Linq.Expressions.Expression<System.Func<R, TResult>> selector, TResult newValue)");
             sb.AppendLine("			where R : BaseEntity, IBusinessObject");
             sb.AppendLine("		{");
-            sb.AppendLine("			SetValue(item, selector, newValue, false);");
+            sb.AppendLine("			SetValue(item: item, selector: selector, newValue: newValue, fixLength: false);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -426,7 +426,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			var tn = arr.Last();");
             sb.AppendLine("			var ft = ((IReadOnlyBusinessObject)item).GetFieldNameConstants();");
             sb.AppendLine("			var te = (System.Enum)Enum.Parse(ft, tn, true);");
-            sb.AppendLine("			((IBusinessObject)item).SetValue(te, newValue, fixLength);");
+            sb.AppendLine("			((IBusinessObject)item).SetValue(field: te, newValue: newValue, fixLength: fixLength);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -459,7 +459,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		public static int Delete<T>(this IQueryable<T> query)");
             sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
             sb.AppendLine("		{");
-            sb.AppendLine("			return query.Delete(null, null);");
+            sb.AppendLine("			return query.Delete(optimizer: null, connectionString: null);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -469,7 +469,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		public static int Delete<T>(this IQueryable<T> query, QueryOptimizer optimizer)");
             sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
             sb.AppendLine("		{");
-            sb.AppendLine("			return query.Delete(optimizer, null);");
+            sb.AppendLine("			return query.Delete(optimizer: optimizer, connectionString: null);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -479,7 +479,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		public static int Delete<T>(this IQueryable<T> query, string connectionString)");
             sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
             sb.AppendLine("		{");
-            sb.AppendLine("			return query.Delete(new QueryOptimizer(), connectionString);");
+            sb.AppendLine("			return query.Delete(optimizer: new QueryOptimizer(), connectionString: connectionString);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -577,6 +577,25 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		}");
             sb.AppendLine();
 
+            sb.AppendLine("		public static int Delete<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where)");
+            sb.AppendLine("			where T : class, " + GetLocalNamespace() + ".IBusinessObject, new()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return entitySet.Where(where).Delete(optimizer: null, connectionString: null);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		public static int Delete<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, QueryOptimizer optimizer)");
+            sb.AppendLine("			where T : System.Data.Entity.DbSet<T>, " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return entitySet.Where(where).Delete(optimizer: optimizer, connectionString: null);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		public static int Delete<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, string connectionString)");
+            sb.AppendLine("			where T : System.Data.Entity.DbSet<T>, " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return entitySet.Where(where).Delete(optimizer: null, connectionString: connectionString);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
             sb.AppendLine("		#endregion");
             sb.AppendLine();
             #endregion
@@ -587,19 +606,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		public static int Update<T>(this IQueryable<T> query, Expression<Func<T, dynamic>> obj)");
             sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
             sb.AppendLine("		{");
-            sb.AppendLine("			return query.Update(obj, null, null);");
+            sb.AppendLine("			return query.Update(obj: obj, optimizer: null, connectionString: null);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		public static int Update<T>(this IQueryable<T> query, Expression<Func<T, dynamic>> obj, QueryOptimizer optimizer)");
             sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
             sb.AppendLine("		{");
-            sb.AppendLine("			return query.Update(obj, optimizer, null);");
+            sb.AppendLine("			return query.Update(obj: obj, optimizer: optimizer, connectionString: null);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		public static int Update<T>(this IQueryable<T> query, Expression<Func<T, dynamic>> obj, string connectionString)");
             sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
             sb.AppendLine("		{");
-            sb.AppendLine("			return query.Update(obj, null, connectionString);");
+            sb.AppendLine("			return query.Update(obj: obj, optimizer: null, connectionString: connectionString);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		public static int Update<T>(this IQueryable<T> query, Expression<Func<T, dynamic>> obj, QueryOptimizer optimizer, string connectionString)");
@@ -812,6 +831,26 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine();
             sb.AppendLine("		}");
             sb.AppendLine();
+
+            sb.AppendLine("		public static int Update<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, Expression<Func<T, dynamic>> obj)");
+            sb.AppendLine("			where T : class, " + GetLocalNamespace() + ".IBusinessObject, new()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return entitySet.Where(where).Update(obj, optimizer: null, connectionString: null);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		public static int Update<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, Expression<Func<T, dynamic>> obj, QueryOptimizer optimizer)");
+            sb.AppendLine("			where T : class, " + GetLocalNamespace() + ".IBusinessObject, new()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return entitySet.Where(where).Update(obj, optimizer: optimizer, connectionString: null);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		public static int Update<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, Expression<Func<T, dynamic>> obj, string connectionString)");
+            sb.AppendLine("			where T : class, " + GetLocalNamespace() + ".IBusinessObject, new()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return entitySet.Where(where).Update(obj, optimizer: null, connectionString: connectionString);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
             sb.AppendLine("		#endregion");
 
             #endregion
