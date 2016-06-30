@@ -493,6 +493,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("				optimizer = new QueryOptimizer();");
             sb.AppendLine();
 
+            sb.AppendLine("			//There is nothing to do");
+            sb.AppendLine("			if (query.ToString().Replace(\"\\r\", string.Empty).Split(new char[] { '\\n' }).LastOrDefault().Trim() == \"WHERE 1 = 0\")");
+            sb.AppendLine("			{");
+            sb.AppendLine("				return 0;");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+
             sb.AppendLine("			try {");
             sb.AppendLine("				if (string.IsNullOrEmpty(connectionString))");
             sb.AppendLine("				{");
@@ -561,7 +568,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("					if (existingParams != null)");
             sb.AppendLine("					{");
             sb.AppendLine("						foreach (var ep in existingParams)");
-            sb.AppendLine("							cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter { ParameterName= ep.Name, Value = ep.Value });");
+            sb.AppendLine("							cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter { ParameterName= ep.Name, Value = (ep.Value == null ? System.DBNull.Value : ep.Value) });");
             sb.AppendLine("					}");
             sb.AppendLine("					do");
             sb.AppendLine("					{");
@@ -628,6 +635,14 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			if (optimizer == null)");
             sb.AppendLine("				optimizer = new QueryOptimizer();");
             sb.AppendLine();
+
+            sb.AppendLine("			//There is nothing to do");
+            sb.AppendLine("			if (query.ToString().Replace(\"\\r\", string.Empty).Split(new char[] { '\\n' }).LastOrDefault().Trim() == \"WHERE 1 = 0\")");
+            sb.AppendLine("			{");
+            sb.AppendLine("				return 0;");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				if (string.IsNullOrEmpty(connectionString))");
@@ -810,7 +825,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("					if (existingParams != null)");
             sb.AppendLine("					{");
             sb.AppendLine("						foreach (var ep in existingParams)");
-            sb.AppendLine("							cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter { ParameterName= ep.Name, Value = ep.Value });");
+            sb.AppendLine("							cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter { ParameterName= ep.Name, Value = (ep.Value == null ? System.DBNull.Value : ep.Value) });");
             sb.AppendLine("					}");
             sb.AppendLine("					cmd.Parameters.AddRange(parameters.ToArray());");
             sb.AppendLine("					count = (int)cmd.ExecuteNonQuery();");
