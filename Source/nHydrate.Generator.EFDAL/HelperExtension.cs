@@ -298,7 +298,6 @@ namespace nHydrate.Generator.EFDAL
                 retVal = string.Empty;
             }
 
-            retVal = "Computed";
             return retVal;
         }
 
