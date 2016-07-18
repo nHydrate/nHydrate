@@ -1731,7 +1731,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            sb.AppendLine("		[Obsolete(\"Replaced by the context Delete method\")]");
+            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
             sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where)");
             sb.AppendLine("		{");
             sb.AppendLine("			return DeleteData(where: where, optimizer: new QueryOptimizer(), startup: new ContextStartup(null), connectionString: " + this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
@@ -1744,7 +1744,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
             sb.AppendLine("		/// <param name=\"optimizer\">The optimization object to use for running queries</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            sb.AppendLine("		[Obsolete(\"Replaced by the context Delete method\")]");
+            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
             sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, QueryOptimizer optimizer)");
             sb.AppendLine("		{");
             sb.AppendLine("			return DeleteData(where: where, optimizer: optimizer, startup: new ContextStartup(null), connectionString: " + this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
@@ -1757,7 +1757,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            sb.AppendLine("		[Obsolete(\"Replaced by the context Delete method\")]");
+            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
             sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			return DeleteData(where: where, optimizer: new QueryOptimizer(), startup: new ContextStartup(null), connectionString: connectionString);");
@@ -1772,7 +1772,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"startup\">The startup options</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            sb.AppendLine("		[Obsolete(\"Replaced by the context Delete method\")]");
+            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
             sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, QueryOptimizer optimizer, ContextStartup startup, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			if (optimizer == null)");
@@ -1796,6 +1796,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
             {
                 sb.Append("[" + column.DatabaseName + "] " + column.DatabaseType);
+                if (column.IsTextType) sb.Append(" COLLATE database_default");
                 if (ii < _item.PrimaryKeyColumns.Count - 1) sb.Append(", ");
                 ii++;
             }
@@ -1888,7 +1889,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
             sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
             sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            sb.AppendLine("		[Obsolete(\"Replaced by the context Update method\")]");
+            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
             sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue)");
             sb.AppendLine("		{");
             sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
@@ -1904,7 +1905,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"connection\">An open database connection</param>");
             sb.AppendLine("		/// <param name=\"transaction\">The database connection transaction</param>");
             sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            sb.AppendLine("		[Obsolete(\"Replaced by the context Update method\")]");
+            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
             sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, System.Data.IDbConnection connection, System.Data.Common.DbTransaction transaction)");
             sb.AppendLine("		{");
             sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup: null, connection: connection, transaction: transaction);");
@@ -1920,7 +1921,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"startup\">A configuration object</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
             sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            sb.AppendLine("		[Obsolete(\"Replaced by the context Update method\")]");
+            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
             sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, ContextStartup startup, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup: startup, connectionString: connectionString);");
@@ -1935,7 +1936,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
             sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            sb.AppendLine("		[Obsolete(\"Replaced by the context Update method\")]");
+            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
             sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString: connectionString);");
@@ -1949,7 +1950,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
             sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
             sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            sb.AppendLine("		[Obsolete(\"Replaced by the context Update method\")]");
+            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
             sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " newValue)");
             sb.AppendLine("		{");
             sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
@@ -1964,7 +1965,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
             sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            sb.AppendLine("		[Obsolete(\"Replaced by the context Update method\")]");
+            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
             sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " newValue, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString: connectionString);");

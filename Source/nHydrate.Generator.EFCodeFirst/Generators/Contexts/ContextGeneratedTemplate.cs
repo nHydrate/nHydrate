@@ -145,6 +145,14 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : System.Data.Entity.DbContext, " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities, IContext");
             sb.AppendLine("	{");
 
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		protected override void Dispose(bool disposing)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			QueryPreCache.Remove(this.ObjectContext);");
+            sb.AppendLine("			base.Dispose(disposing);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
             //Create the modifier property
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// The audit modifier used to mark database edits");
@@ -844,6 +852,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			{");
             sb.AppendLine("				_paramList.Clear();");
             sb.AppendLine("				retval = base.SaveChanges();");
+            sb.AppendLine("				retval += QueryPreCache.Execute(this.ObjectContext);");
             sb.AppendLine("			}");
             sb.AppendLine("			catch (System.Data.Entity.Validation.DbEntityValidationException ex)");
             sb.AppendLine("			{");

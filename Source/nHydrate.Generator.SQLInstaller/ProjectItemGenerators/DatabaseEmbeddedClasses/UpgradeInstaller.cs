@@ -1881,8 +1881,10 @@ namespace PROJECTNAMESPACE
 		public uint D;
 	}
 
+	/// <summary />
 	public static class MD5Provider
 	{
+		/// <summary />
 		public static byte[] ComputeHash(string input, Encoding encoding)
 		{
 			if (null == input)
@@ -1895,11 +1897,13 @@ namespace PROJECTNAMESPACE
 			return ComputeHash(target);
 		}
 
+		/// <summary />
 		public static byte[] ComputeHash(string input)
 		{
 			return ComputeHash(input, new UTF8Encoding());
 		}
 
+		/// <summary />
 		public static string ComputeHashString(byte[] input)
 		{
 			if (null == input)
@@ -1911,6 +1915,7 @@ namespace PROJECTNAMESPACE
 			return retval.ToLowerInvariant();
 		}
 
+		/// <summary />
 		public static string ComputeHashString(string input, Encoding encoding)
 		{
 			if (null == input)
@@ -1923,11 +1928,13 @@ namespace PROJECTNAMESPACE
 			return ComputeHashString(target);
 		}
 
+		/// <summary />
 		public static string ComputeHashString(string input)
 		{
 			return ComputeHashString(input, new UTF8Encoding());
 		}
 
+		/// <summary />
 		public static byte[] ComputeHashFromFile(string fileName)
 		{
 			using (Stream stream = File.OpenRead(fileName))
@@ -1936,6 +1943,7 @@ namespace PROJECTNAMESPACE
 			}
 		}
 
+		/// <summary />
 		public static byte[] ComputeHash(Stream stream)
 		{
 			byte[] buffer = new byte[8192];
@@ -1951,11 +1959,13 @@ namespace PROJECTNAMESPACE
 			return ComputeHash(streamBytes);
 		}
 
+		/// <summary />
 		public static byte[] ComputeHash(byte[] input)
 		{
 			return ComputeHash(input, 0, input.Length);
 		}
 
+		/// <summary />
 		public static byte[] ComputeHash(byte[] input, int startIndex, int length)
 		{
 			if (null == input)
@@ -1978,6 +1988,7 @@ namespace PROJECTNAMESPACE
 			return MD5Provider.ComputeHashFinalBlock(input, startIndex, length - startIndex, abcd, (Int64)length * 8);
 		}
 
+		/// <summary />
 		internal static byte[] ComputeHashFinalBlock(byte[] input, int ibStart, int cbSize, ABCDStruct ABCD, Int64 len)
 		{
 			byte[] working = new byte[64];
@@ -2018,6 +2029,7 @@ namespace PROJECTNAMESPACE
 		//    C = 0x98badcfe;
 		//    D = 0x10325476;
 		*/
+		/// <summary />
 		internal static void ComputeHashBlock(byte[] input, ref ABCDStruct ABCDValue, int ibStart)
 		{
 			uint[] temp = Converter(input, ibStart);
@@ -2171,7 +2183,6 @@ namespace PROJECTNAMESPACE
 			return q.Hash(input);
 		}
 
-		private static readonly string PHash = "Pa@Sw0rd96d$";
 		private static readonly string CryptKey = "8s$w@r1%a-m>2pq9";
 		private static readonly string IVKey = "@2C1c3D4e5F6g7H8";
 		
