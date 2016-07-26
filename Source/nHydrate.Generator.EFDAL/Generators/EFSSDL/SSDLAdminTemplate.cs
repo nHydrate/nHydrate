@@ -511,7 +511,8 @@ namespace nHydrate.Generator.EFDAL.Generators.EFSSDL
             if (!string.IsNullOrEmpty(column.EFGetDatabaseMaxLengthString()))
                 sb.AppendFormat("MaxLength=\"{0}\" ", column.EFGetDatabaseMaxLengthString());
             //Append StoreGeneratedPattern
-            sb.AppendFormat("StoreGeneratedPattern=\"{0}\" ", column.ToEFStoreGeneratedPattern());
+            if (!string.IsNullOrEmpty(column.ToEFStoreGeneratedPattern()))
+                sb.AppendFormat("StoreGeneratedPattern=\"{0}\" ", column.ToEFStoreGeneratedPattern());
 
             sb.AppendLine("/>");
         }
