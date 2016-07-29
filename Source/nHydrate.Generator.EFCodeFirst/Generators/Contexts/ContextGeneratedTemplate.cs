@@ -148,7 +148,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected override void Dispose(bool disposing)");
             sb.AppendLine("		{");
-            sb.AppendLine("			QueryPreCache.Remove(this.ObjectContext);");
+            sb.AppendLine("			QueryPreCache.RemoveAll(this.ObjectContext);");
             sb.AppendLine("			base.Dispose(disposing);");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -171,6 +171,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             //Events
             sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		[field:NonSerialized]");
             sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
@@ -183,6 +184,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		[field:NonSerialized]");
             sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
@@ -195,6 +197,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		[field:NonSerialized]");
             sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveModifiedEntity;");
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnAfterSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
@@ -207,6 +210,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		[field:NonSerialized]");
             sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveAddedEntity;");
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnAfterSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
@@ -851,8 +855,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				_paramList.Clear();");
+            sb.AppendLine("				retval += QueryPreCache.ExecuteDeletes(this.ObjectContext);");
             sb.AppendLine("				retval = base.SaveChanges();");
-            sb.AppendLine("				retval += QueryPreCache.Execute(this.ObjectContext);");
+            sb.AppendLine("				retval += QueryPreCache.ExecuteUpdates(this.ObjectContext);");
             sb.AppendLine("			}");
             sb.AppendLine("			catch (System.Data.Entity.Validation.DbEntityValidationException ex)");
             sb.AppendLine("			{");

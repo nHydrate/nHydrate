@@ -568,7 +568,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("					newParams.Add(new System.Data.SqlClient.SqlParameter { ParameterName = ep.Name, Value = (ep.Value == null ? System.DBNull.Value : ep.Value) });");
             sb.AppendLine("				}");
             sb.AppendLine("			}");
-            sb.AppendLine("			QueryPreCache.Add(objectContext, sb.ToString(), newParams, optimizer);");
+            sb.AppendLine("			QueryPreCache.AddDelete(objectContext, sb.ToString(), newParams, optimizer);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -825,7 +825,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("				}");
             sb.AppendLine("			}");
             sb.AppendLine("			newParams.AddRange(parameters);");
-            sb.AppendLine("			QueryPreCache.Add(objectContext, sb.ToString(), newParams, optimizer);");
+            sb.AppendLine("			QueryPreCache.AddUpdate(objectContext, sb.ToString(), newParams, optimizer);");
 
             sb.AppendLine("		}");
             sb.AppendLine();

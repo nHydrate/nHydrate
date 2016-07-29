@@ -84,6 +84,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
                 //Events
                 sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		[field:NonSerialized]");
                 sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
@@ -96,6 +97,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine();
 
                 sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		[field:NonSerialized]");
                 sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
@@ -108,6 +110,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine();
 
                 sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		[field:NonSerialized]");
                 sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveModifiedEntity;");
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		protected virtual void OnAfterSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
@@ -120,6 +123,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine();
 
                 sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		[field:NonSerialized]");
                 sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveAddedEntity;");
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		protected virtual void OnAfterSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");

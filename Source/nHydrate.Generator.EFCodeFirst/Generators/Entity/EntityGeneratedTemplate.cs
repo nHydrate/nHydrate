@@ -908,8 +908,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
             ////TODO: Implement this!!
             //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		[field:NonSerialized]");
             //sb.AppendLine("		public event PropertyChangedEventHandler PropertyChanged;");
             //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		[field:NonSerialized]");
             //sb.AppendLine("		public event PropertyChangingEventHandler PropertyChanging;");
             //sb.AppendLine();
         }
@@ -935,6 +937,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Occurs when the '" + columnName + "' property value change is a pending.");
             sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		[field:NonSerialized]");
             sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">> " + columnName + "Changing;");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
@@ -949,6 +952,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Occurs when the '" + columnName + "' property value has changed.");
             sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		[field:NonSerialized]");
             sb.AppendLine("		public event EventHandler<ChangedEventArgs<" + codeType + ">> " + columnName + "Changed;");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
