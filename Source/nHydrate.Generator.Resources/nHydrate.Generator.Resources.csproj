@@ -182,10 +182,6 @@
       <Link>nHydrate.DataImport.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\bin\nHydrate.DataImport.MySqlClient.dll">
-      <Link>nHydrate.DataImport.MySqlClient.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\bin\nHydrate.DataImport.SqlClient.dll">
       <Link>nHydrate.DataImport.SqlClient.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -202,10 +198,6 @@
       <Link>nHydrate.Generator.Datasite.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\bin\nHydrate.Generator.DataTransfer.dll">
-      <Link>nHydrate.Generator.DataTransfer.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\bin\nHydrate.Generator.dll">
       <Link>nHydrate.Generator.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -220,10 +212,6 @@
     </Content>
     <Content Include="..\..\bin\nHydrate.Generator.EFDAL.Interfaces.dll">
       <Link>nHydrate.Generator.EFDAL.Interfaces.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\bin\nHydrate.Generator.MySQLInstaller.dll">
-      <Link>nHydrate.Generator.MySQLInstaller.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\bin\nHydrate.Generator.SQLInstaller.dll">
