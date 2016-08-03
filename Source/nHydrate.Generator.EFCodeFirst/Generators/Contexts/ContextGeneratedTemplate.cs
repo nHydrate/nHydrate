@@ -856,7 +856,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			{");
             sb.AppendLine("				_paramList.Clear();");
             sb.AppendLine("				retval += QueryPreCache.ExecuteDeletes(this.ObjectContext);");
-            sb.AppendLine("				retval = base.SaveChanges();");
+            sb.AppendLine("				retval += base.SaveChanges();");
             sb.AppendLine("				retval += QueryPreCache.ExecuteUpdates(this.ObjectContext);");
             sb.AppendLine("			}");
             sb.AppendLine("			catch (System.Data.Entity.Validation.DbEntityValidationException ex)");
