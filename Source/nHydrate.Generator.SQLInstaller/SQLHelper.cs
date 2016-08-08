@@ -834,6 +834,33 @@ namespace nHydrate.Generator.SQLInstaller
 
                 #endregion
 
+                #region Loop and change computed fields
+
+                foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+                {
+                    //If the table exists...
+                    var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                    if (oldT != null)
+                    {
+                        //If there is a computed field with a different value
+                        foreach (var newC in newT.GetColumns().Where(x => x.ComputedColumn).ToList())
+                        {
+                            var oldC = Globals.GetColumnByKey(oldT.Columns, newC.Key);
+                            if (oldC != null && oldC.Formula != newC.Formula)
+                            {
+                                sb.AppendLine("if exists(select o.name, c.name from sys.columns c inner join sys.objects o on c.object_id = o.object_id where o.type = 'U' and o.name = '" + newT.DatabaseName + "' and c.name = '" + newC.DatabaseName + "')");
+                                sb.AppendLine("ALTER TABLE [" + newT.DatabaseName + "] DROP COLUMN [" + newC.DatabaseName + "]");
+                                sb.AppendLine("GO");
+                                sb.AppendLine("ALTER TABLE [" + newT.DatabaseName + "] ADD [" + newC.DatabaseName + "] AS (" + newC.Formula + ")");
+                                sb.AppendLine("GO");
+                                sb.AppendLine();
+                            }
+                        }
+                    }
+                }
+
+                #endregion
+
                 return sb.ToString();
             }
             catch (Exception ex)
