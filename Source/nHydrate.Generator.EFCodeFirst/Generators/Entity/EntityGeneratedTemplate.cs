@@ -659,6 +659,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     //    sb.AppendLine("				//Setter is left for deserialization but should never be used");
                     //}
                     //else
+                    if (column.ComputedColumn)
+                    {
+                        sb.AppendLine("				_" + column.CamelName + " = value;");
+                    }
+                    else
                     {
                         sb.AppendLine("				var eventArg = new " + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + column.PascalName + "\");");
                         sb.AppendLine("				this.OnPropertyChanging(eventArg);");

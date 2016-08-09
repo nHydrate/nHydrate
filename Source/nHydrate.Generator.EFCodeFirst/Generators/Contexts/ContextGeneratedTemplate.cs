@@ -226,6 +226,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		#region Constructors");
             sb.AppendLine();
 
+            sb.AppendLine("		private void ResetContextStartup()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			try");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var frame = new System.Diagnostics.StackFrame(2, true);");
+            sb.AppendLine("				var method = frame.GetMethod();");
+            sb.AppendLine("				int lineNumber = frame.GetFileLineNumber();");
+            sb.AppendLine("				_contextStartup.DebugInfo = method.DeclaringType.ToString() + \".\" + method.Name + \":\" + lineNumber;");
+            sb.AppendLine("			}");
+            sb.AppendLine("			catch { }");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Initializes a new " + _model.ProjectName + "Entities object using the connection string found in the '" + _model.ProjectName + "Entities' section of the application configuration file.");
             sb.AppendLine("		/// </summary>");
@@ -233,6 +246,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			base(Util.ConvertNormalCS2EFFromConfig(\"name=" + _model.ProjectName + "Entities\"))");
             sb.AppendLine("		{");
             sb.AppendLine("			_contextStartup = new EFDAL.ContextStartup(null, true, 30);");
+            sb.AppendLine("			ResetContextStartup();");
+            sb.AppendLine("			System.Data.Entity.Infrastructure.Interception.DbInterception.Add(new DbInterceptor());");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Database.Connection.ConnectionString));");
@@ -257,6 +272,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			base(Util.ConvertNormalCS2EFFromConfig(\"name=" + _model.ProjectName + "Entities\", contextStartup))");
             sb.AppendLine("		{");
             sb.AppendLine("			_contextStartup = contextStartup;");
+            sb.AppendLine("			ResetContextStartup();");
+            sb.AppendLine("			System.Data.Entity.Infrastructure.Interception.DbInterception.Add(new DbInterceptor());");
             sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
             sb.AppendLine("			this.CommandTimeout = contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
@@ -270,6 +287,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			base(Util.ConvertNormalCS2EF(connectionString, contextStartup))");
             sb.AppendLine("		{");
             sb.AppendLine("			_contextStartup = contextStartup;");
+            sb.AppendLine("			ResetContextStartup();");
+            sb.AppendLine("			System.Data.Entity.Infrastructure.Interception.DbInterception.Add(new DbInterceptor());");
             sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
             sb.AppendLine("			this.CommandTimeout = contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
@@ -283,6 +302,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			base(Util.ConvertNormalCS2EF(connectionString))");
             sb.AppendLine("		{");
             sb.AppendLine("			_contextStartup = new EFDAL.ContextStartup(null, true, 30);");
+            sb.AppendLine("			ResetContextStartup();");
+            sb.AppendLine("			System.Data.Entity.Infrastructure.Interception.DbInterception.Add(new DbInterceptor());");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Database.Connection.ConnectionString));");
@@ -1605,6 +1626,51 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		}");
             sb.AppendLine("	}");
             sb.AppendLine();
+
+            sb.AppendLine("	#region DbInterceptor");
+            sb.AppendLine("	internal class DbInterceptor : System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor");
+            sb.AppendLine("	{");
+            sb.AppendLine("		#region IDbCommandInterceptor Members");
+            sb.AppendLine();
+            sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.NonQueryExecuted(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<int> interceptionContext)");
+            sb.AppendLine("		{");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.NonQueryExecuting(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<int> interceptionContext)");
+            sb.AppendLine("		{");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.ReaderExecuted(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<System.Data.Common.DbDataReader> interceptionContext)");
+            sb.AppendLine("		{");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.ReaderExecuting(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<System.Data.Common.DbDataReader> interceptionContext)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			try");
+            sb.AppendLine("			{");
+            sb.AppendLine("				//If this is a tenant table then rig query plan for this specific tenant");
+            sb.AppendLine("				if (command.CommandText.Contains(\"__vw_tenant_\"))");
+            sb.AppendLine("				{");
+            sb.AppendLine("					var builder = new SqlConnectionStringBuilder(command.Connection.ConnectionString);");
+            sb.AppendLine("					command.CommandText = \"--T:\" + builder.UserID + \"\\r\\n\" + command.CommandText;");
+            sb.AppendLine("					//var debugInfo = ((I" + _model.ProjectName + "Entities)(interceptionContext.DbContexts.First())).ContextStartup.DebugInfo;");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine("			catch { }");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.ScalarExecuted(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<object> interceptionContext)");
+            sb.AppendLine("		{");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.ScalarExecuting(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<object> interceptionContext)");
+            sb.AppendLine("		{");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		#endregion");
+            sb.AppendLine("	}");
+            sb.AppendLine("	#endregion");
+
         }
 
         #endregion

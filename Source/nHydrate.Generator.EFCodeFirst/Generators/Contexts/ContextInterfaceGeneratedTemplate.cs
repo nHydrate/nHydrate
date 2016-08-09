@@ -186,6 +186,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		void DetachItem(BaseEntity entity);");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		ContextStartup ContextStartup { get; }");
             sb.AppendLine("	}");
             sb.AppendLine();
             sb.AppendLine("	#endregion");

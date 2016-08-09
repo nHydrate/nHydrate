@@ -842,12 +842,14 @@ namespace nHydrate.Generator.SQLInstaller
                     var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
                     if (oldT != null)
                     {
+                        var tChanged = false;
                         //If there is a computed field with a different value
                         foreach (var newC in newT.GetColumns().Where(x => x.ComputedColumn).ToList())
                         {
                             var oldC = Globals.GetColumnByKey(oldT.Columns, newC.Key);
                             if (oldC != null && oldC.Formula != newC.Formula)
                             {
+                                tChanged = true;
                                 sb.AppendLine("if exists(select o.name, c.name from sys.columns c inner join sys.objects o on c.object_id = o.object_id where o.type = 'U' and o.name = '" + newT.DatabaseName + "' and c.name = '" + newC.DatabaseName + "')");
                                 sb.AppendLine("ALTER TABLE [" + newT.DatabaseName + "] DROP COLUMN [" + newC.DatabaseName + "]");
                                 sb.AppendLine("GO");
@@ -855,6 +857,15 @@ namespace nHydrate.Generator.SQLInstaller
                                 sb.AppendLine("GO");
                                 sb.AppendLine();
                             }
+                        }
+
+                        if (newT.IsTenant && tChanged)
+                        {
+                            var grantSB = new StringBuilder();
+                            var q1 = nHydrate.Core.SQLGeneration.SQLEmit.GetSqlTenantView(modelNew, newT, grantSB);
+                            sb.AppendLine(q1);
+                            if (grantSB.ToString() != string.Empty)
+                                sb.AppendLine(grantSB.ToString());
                         }
                     }
                 }

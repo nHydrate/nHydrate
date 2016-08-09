@@ -82,6 +82,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextStartup
                 sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
                 sb.AppendLine("	public partial class ContextStartup : ICloneable");
                 sb.AppendLine("	{");
+                sb.AppendLine("		internal string DebugInfo { get; set; }");
+                sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Creates a new instance of the ContextStartup object");
                 sb.AppendLine("		/// </summary>");
