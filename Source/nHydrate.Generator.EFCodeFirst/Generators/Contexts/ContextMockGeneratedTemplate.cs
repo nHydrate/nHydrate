@@ -82,6 +82,21 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("	{");
                 sb.AppendLine();
 
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// The audit modifier used to mark database edits");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		protected ContextStartup _contextStartup = new ContextStartup(null);");
+                sb.AppendLine();
+
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// The global settings of this context");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		public virtual ContextStartup ContextStartup");
+                sb.AppendLine("		{");
+                sb.AppendLine("			get { return _contextStartup; }");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+
                 //Events
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		[field:NonSerialized]");
