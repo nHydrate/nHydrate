@@ -1139,7 +1139,7 @@ namespace nHydrate.Dsl
 				// Only model has schema, diagram has no schema.
 				//rootElementSettings.SchemaTargetNamespace = "http://schemas.microsoft.com/dsltools/nHydrate";
 			}
-			rootElementSettings.Version = new global::System.Version("6.0.0.183");
+			rootElementSettings.Version = new global::System.Version("6.0.0.184");
 	
 			// Carry out the normal serialization.
 			rootSerializer.Write(serializationContext, rootElement, writer, rootElementSettings);
@@ -1161,7 +1161,7 @@ namespace nHydrate.Dsl
 				throw new global::System.ArgumentNullException("reader");
 			#endregion
 	
-			global::System.Version expectedVersion = new global::System.Version("6.0.0.183");
+			global::System.Version expectedVersion = new global::System.Version("6.0.0.184");
 			string dslVersionStr = reader.GetAttribute("dslVersion");
 			if (dslVersionStr != null)
 			{
