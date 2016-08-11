@@ -985,7 +985,7 @@ namespace PROJECTNAMESPACE
         {
             if (sql.StartsWith("--##METHODCALL"))
             {
-                CallMethod(sql, connection, transaction);
+                CallMethod(sql, connection, transaction, setup);
                 return;
             }
 
@@ -1107,7 +1107,7 @@ namespace PROJECTNAMESPACE
             return (F.ShowDialog() == System.Windows.Forms.DialogResult.OK);
         }
 
-        private static void CallMethod(string text, SqlConnection connection, SqlTransaction transaction)
+        private static void CallMethod(string text, SqlConnection connection, SqlTransaction transaction, InstallSetup setup)
         {
             var cleaned = string.Empty;
             try
@@ -1123,11 +1123,22 @@ namespace PROJECTNAMESPACE
                 var typeName = string.Join(".", arr.Take(arr.Length - 1));
 
                 Type type = Type.GetType(typeName);
-                if (type.GetMethod(methodName) == null)
+                var methodType = type.GetMethod(methodName);
+                if (methodType == null)
                     throw new Exception("Method: '" + methodName + "' not implemented");
 
-                type.GetMethod(methodName).Invoke(null, new object[] { connection, transaction });
-
+                if (methodType.GetParameters().Count() == 2)
+                {
+                    methodType.Invoke(null, new object[] { connection, transaction });
+                }
+                else if (methodType.GetParameters().Count() == 3)
+                {
+                    methodType.Invoke(null, new object[] { connection, transaction, setup.ConnectionString });
+                }
+                else
+                {
+                    throw new Exception("Method: '" + methodName + "' does not have valid parameters.");
+                }
             }
             catch (Exception ex)
             {
