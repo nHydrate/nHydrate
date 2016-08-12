@@ -253,7 +253,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		{");
             sb.AppendLine("			_contextStartup = new EFDAL.ContextStartup(null, true, 30);");
             sb.AppendLine("			ResetContextStartup();");
-            sb.AppendLine("			System.Data.Entity.Infrastructure.Interception.DbInterception.Add(new DbInterceptor());");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Database.Connection.ConnectionString));");
@@ -279,7 +278,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		{");
             sb.AppendLine("			_contextStartup = contextStartup;");
             sb.AppendLine("			ResetContextStartup();");
-            sb.AppendLine("			System.Data.Entity.Infrastructure.Interception.DbInterception.Add(new DbInterceptor());");
             sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
             sb.AppendLine("			this.CommandTimeout = contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
@@ -294,7 +292,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		{");
             sb.AppendLine("			_contextStartup = contextStartup;");
             sb.AppendLine("			ResetContextStartup();");
-            sb.AppendLine("			System.Data.Entity.Infrastructure.Interception.DbInterception.Add(new DbInterceptor());");
             sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
             sb.AppendLine("			this.CommandTimeout = contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
@@ -309,7 +306,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		{");
             sb.AppendLine("			_contextStartup = new EFDAL.ContextStartup(null, true, 30);");
             sb.AppendLine("			ResetContextStartup();");
-            sb.AppendLine("			System.Data.Entity.Infrastructure.Interception.DbInterception.Add(new DbInterceptor());");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Database.Connection.ConnectionString));");
