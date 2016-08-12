@@ -145,6 +145,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : System.Data.Entity.DbContext, " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities, IContext");
             sb.AppendLine("	{");
 
+            sb.AppendLine("		static " + _model.ProjectName + "Entities()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			System.Data.Entity.Infrastructure.Interception.DbInterception.Add(new DbInterceptor());");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected override void Dispose(bool disposing)");
             sb.AppendLine("		{");
