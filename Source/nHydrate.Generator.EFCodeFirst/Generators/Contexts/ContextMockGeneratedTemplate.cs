@@ -83,6 +83,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine();
 
                 sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// A unique key for this object instance");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		public Guid InstanceKey { get; private set; }");
+                sb.AppendLine();
+
+                sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		public System.Data.Entity.Core.Objects.ObjectContext ObjectContext { get { return null; } }");
+                sb.AppendLine();
+
+                sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// The audit modifier used to mark database edits");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		protected ContextStartup _contextStartup = new ContextStartup(null);");
@@ -154,6 +164,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public " + _model.ProjectName + "MockEntities()");
                 sb.AppendLine("		{");
+                sb.AppendLine("			InstanceKey = Guid.NewGuid();");
 
                 //Create objects for type tables
                 foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && x.TypedTable == TypedTableConstants.DatabaseTable).OrderBy(x => x.PascalName))

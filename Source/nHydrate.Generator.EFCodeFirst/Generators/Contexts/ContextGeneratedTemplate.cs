@@ -151,10 +151,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		}");
             sb.AppendLine();
 
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// A unique key for this object instance");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public Guid InstanceKey { get; private set; }");
+            sb.AppendLine();
+
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected override void Dispose(bool disposing)");
             sb.AppendLine("		{");
-            sb.AppendLine("			QueryPreCache.RemoveAll(this.ObjectContext);");
+            sb.AppendLine("			QueryPreCache.RemoveAll(InstanceKey);");
             sb.AppendLine("			base.Dispose(disposing);");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -251,6 +257,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		public " + _model.ProjectName + "Entities() :");
             sb.AppendLine("			base(Util.ConvertNormalCS2EFFromConfig(\"name=" + _model.ProjectName + "Entities\"))");
             sb.AppendLine("		{");
+            sb.AppendLine("			InstanceKey = Guid.NewGuid();");
             sb.AppendLine("			_contextStartup = new EFDAL.ContextStartup(null, true, 30);");
             sb.AppendLine("			ResetContextStartup();");
             sb.AppendLine("			try");
@@ -276,6 +283,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		public " + _model.ProjectName + "Entities(ContextStartup contextStartup) :");
             sb.AppendLine("			base(Util.ConvertNormalCS2EFFromConfig(\"name=" + _model.ProjectName + "Entities\", contextStartup))");
             sb.AppendLine("		{");
+            sb.AppendLine("			InstanceKey = Guid.NewGuid();");
             sb.AppendLine("			_contextStartup = contextStartup;");
             sb.AppendLine("			ResetContextStartup();");
             sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
@@ -290,6 +298,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		public " + _model.ProjectName + "Entities(ContextStartup contextStartup, string connectionString) :");
             sb.AppendLine("			base(Util.ConvertNormalCS2EF(connectionString, contextStartup))");
             sb.AppendLine("		{");
+            sb.AppendLine("			InstanceKey = Guid.NewGuid();");
             sb.AppendLine("			_contextStartup = contextStartup;");
             sb.AppendLine("			ResetContextStartup();");
             sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
@@ -304,6 +313,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		public " + _model.ProjectName + "Entities(string connectionString) :");
             sb.AppendLine("			base(Util.ConvertNormalCS2EF(connectionString))");
             sb.AppendLine("		{");
+            sb.AppendLine("			InstanceKey = Guid.NewGuid();");
             sb.AppendLine("			_contextStartup = new EFDAL.ContextStartup(null, true, 30);");
             sb.AppendLine("			ResetContextStartup();");
             sb.AppendLine("			try");
@@ -878,9 +888,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				_paramList.Clear();");
-            sb.AppendLine("				retval += QueryPreCache.ExecuteDeletes(this.ObjectContext, _contextStartup);");
+            sb.AppendLine("				retval += QueryPreCache.ExecuteDeletes(this);");
             sb.AppendLine("				retval += base.SaveChanges();");
-            sb.AppendLine("				retval += QueryPreCache.ExecuteUpdates(this.ObjectContext, _contextStartup);");
+            sb.AppendLine("				retval += QueryPreCache.ExecuteUpdates(this);");
             sb.AppendLine("			}");
             sb.AppendLine("			catch (System.Data.Entity.Validation.DbEntityValidationException ex)");
             sb.AppendLine("			{");

@@ -498,6 +498,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("				return;");
             sb.AppendLine();
 
+            sb.AppendLine("			var instanceKey = Guid.NewGuid();");
             sb.AppendLine("			System.Data.Entity.Core.Objects.ObjectContext objectContext = null;");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
@@ -511,6 +512,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			            {");
             sb.AppendLine("			                var oc = context.GetType().GetProperty(\"ObjectContext\").GetValue(context) as System.Data.Entity.Core.Objects.ObjectContext;");
             sb.AppendLine("			                objectContext = oc as System.Data.Entity.Core.Objects.ObjectContext;");
+            sb.AppendLine("			                instanceKey = ((IContext)context.GetType().GetProperty(\"Owner\").GetValue(context)).InstanceKey;");
             sb.AppendLine("			                var propCs = context.GetType().GetProperty(\"OriginalConnectionString\");");
             sb.AppendLine("			                if (propCs != null) connectionString = (string)propCs.GetValue(context);");
             sb.AppendLine("			            }");
@@ -597,7 +599,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("					newParams.Add(new System.Data.SqlClient.SqlParameter { ParameterName = ep.Name, Value = (ep.Value == null ? System.DBNull.Value : ep.Value) });");
             sb.AppendLine("				}");
             sb.AppendLine("			}");
-            sb.AppendLine("			QueryPreCache.AddDelete(objectContext, sb.ToString(), newParams, optimizer);");
+            sb.AppendLine("			QueryPreCache.AddDelete(instanceKey, sb.ToString(), newParams, optimizer);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -665,6 +667,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("				return;");
             sb.AppendLine();
 
+            sb.AppendLine("			var instanceKey = Guid.NewGuid();");
             sb.AppendLine("			System.Data.Entity.Core.Objects.ObjectContext objectContext = null;");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
@@ -678,6 +681,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			            {");
             sb.AppendLine("			                var oc = context.GetType().GetProperty(\"ObjectContext\").GetValue(context) as System.Data.Entity.Core.Objects.ObjectContext;");
             sb.AppendLine("			                objectContext = oc as System.Data.Entity.Core.Objects.ObjectContext;");
+            sb.AppendLine("			                instanceKey = ((IContext)context.GetType().GetProperty(\"Owner\").GetValue(context)).InstanceKey;");
             sb.AppendLine("			                var propCs = context.GetType().GetProperty(\"OriginalConnectionString\");");
             sb.AppendLine("			                if (propCs != null) connectionString = (string)propCs.GetValue(context);");
             sb.AppendLine("			            }");
@@ -881,7 +885,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("				}");
             sb.AppendLine("			}");
             sb.AppendLine("			newParams.AddRange(parameters);");
-            sb.AppendLine("			QueryPreCache.AddUpdate(objectContext, sb.ToString(), newParams, optimizer);");
+            sb.AppendLine("			QueryPreCache.AddUpdate(instanceKey, sb.ToString(), newParams, optimizer);");
 
             sb.AppendLine("		}");
             sb.AppendLine();

@@ -175,6 +175,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("		}");
                 sb.AppendLine();
 
+                sb.AppendLine("		private static Dictionary<string, string> _csConvertCache = new Dictionary<string, string>();");
                 sb.AppendLine("		internal static string ConvertNormalCS2EFFromConfig(string configSettings, ContextStartup contextStartup)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			if (string.IsNullOrEmpty(configSettings)) return configSettings;");
@@ -535,6 +536,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	public partial interface IContext");
                 sb.AppendLine("	{");
+                sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		ContextStartup ContextStartup { get; }");
+                sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Gets the object context.");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		System.Data.Entity.Core.Objects.ObjectContext ObjectContext { get; }");
+                sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// A unique key for this object instance");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		Guid InstanceKey { get; }");
+                sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Determines the key of the model that created this library.");
                 sb.AppendLine("		/// </summary>");
@@ -955,11 +969,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	#region QueryPreCache");
                 sb.AppendLine("	internal static class QueryPreCache");
                 sb.AppendLine("	{");
-                sb.AppendLine("		private static ConcurrentDictionary<System.Data.Entity.Core.Objects.ObjectContext, List<PreCacheItem>> _queryDeleteCache = new ConcurrentDictionary<System.Data.Entity.Core.Objects.ObjectContext, List<PreCacheItem>>();");
-                sb.AppendLine("		private static ConcurrentDictionary<System.Data.Entity.Core.Objects.ObjectContext, List<PreCacheItem>> _queryUpdateCache = new ConcurrentDictionary<System.Data.Entity.Core.Objects.ObjectContext, List<PreCacheItem>>();");
+                sb.AppendLine("		private static ConcurrentDictionary<Guid, List<PreCacheItem>> _queryDeleteCache = new ConcurrentDictionary<Guid, List<PreCacheItem>>();");
+                sb.AppendLine("		private static ConcurrentDictionary<Guid, List<PreCacheItem>> _queryUpdateCache = new ConcurrentDictionary<Guid, List<PreCacheItem>>();");
                 sb.AppendLine();
-
-                sb.AppendLine("		internal static void AddDelete(System.Data.Entity.Core.Objects.ObjectContext context, string sql, List<System.Data.SqlClient.SqlParameter> parameters, QueryOptimizer optimizer)");
+                sb.AppendLine("		internal static void AddDelete(Guid instanceKey, string sql, List<System.Data.SqlClient.SqlParameter> parameters, QueryOptimizer optimizer)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			try");
                 sb.AppendLine("			{");
@@ -970,9 +983,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("					Optimizer = optimizer,");
                 sb.AppendLine("				};");
                 sb.AppendLine();
-                sb.AppendLine("				if (!_queryDeleteCache.ContainsKey(context))");
-                sb.AppendLine("					_queryDeleteCache.TryAdd(context, new List<PreCacheItem>());");
-                sb.AppendLine("				_queryDeleteCache[context].Add(newItem);");
+                sb.AppendLine("				if (!_queryDeleteCache.ContainsKey(instanceKey))");
+                sb.AppendLine("					_queryDeleteCache.TryAdd(instanceKey, new List<PreCacheItem>());");
+                sb.AppendLine("				_queryDeleteCache[instanceKey].Add(newItem);");
                 sb.AppendLine("			}");
                 sb.AppendLine("			catch (Exception ex)");
                 sb.AppendLine("			{");
@@ -980,8 +993,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
-
-                sb.AppendLine("		internal static void AddUpdate(System.Data.Entity.Core.Objects.ObjectContext context, string sql, List<System.Data.SqlClient.SqlParameter> parameters, QueryOptimizer optimizer)");
+                sb.AppendLine("		internal static void AddUpdate(Guid instanceKey, string sql, List<System.Data.SqlClient.SqlParameter> parameters, QueryOptimizer optimizer)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			try");
                 sb.AppendLine("			{");
@@ -992,9 +1004,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("					Optimizer = optimizer,");
                 sb.AppendLine("				};");
                 sb.AppendLine();
-                sb.AppendLine("				if (!_queryUpdateCache.ContainsKey(context))");
-                sb.AppendLine("					_queryUpdateCache.TryAdd(context, new List<PreCacheItem>());");
-                sb.AppendLine("				_queryUpdateCache[context].Add(newItem);");
+                sb.AppendLine("				if (!_queryUpdateCache.ContainsKey(instanceKey))");
+                sb.AppendLine("					_queryUpdateCache.TryAdd(instanceKey, new List<PreCacheItem>());");
+                sb.AppendLine("				_queryUpdateCache[instanceKey].Add(newItem);");
                 sb.AppendLine("			}");
                 sb.AppendLine("			catch (Exception ex)");
                 sb.AppendLine("			{");
@@ -1002,34 +1014,31 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
-
-                sb.AppendLine("		internal static int ExecuteDeletes(System.Data.Entity.Core.Objects.ObjectContext context, ContextStartup startup)");
+                sb.AppendLine("		internal static int ExecuteDeletes(IContext context)");
                 sb.AppendLine("		{");
-                sb.AppendLine("				if (!_queryDeleteCache.ContainsKey(context))");
+                sb.AppendLine("				if (!_queryDeleteCache.ContainsKey(context.InstanceKey))");
                 sb.AppendLine("					return 0;");
                 sb.AppendLine("				List<PreCacheItem> list;");
-                sb.AppendLine("				if (!_queryDeleteCache.TryRemove(context, out list))");
+                sb.AppendLine("				if (!_queryDeleteCache.TryRemove(context.InstanceKey, out list))");
                 sb.AppendLine("					return 0;");
-                sb.AppendLine("				var retval = Execute(context, list, startup);");
-                sb.AppendLine("				RemoveDeletes(context);");
+                sb.AppendLine("				var retval = Execute(context, list);");
+                sb.AppendLine("				RemoveDeletes(context.InstanceKey);");
                 sb.AppendLine("				return retval;");
                 sb.AppendLine("		}");
                 sb.AppendLine();
-
-                sb.AppendLine("		internal static int ExecuteUpdates(System.Data.Entity.Core.Objects.ObjectContext context, ContextStartup startup)");
+                sb.AppendLine("		internal static int ExecuteUpdates(IContext context)");
                 sb.AppendLine("		{");
-                sb.AppendLine("				if (!_queryUpdateCache.ContainsKey(context))");
+                sb.AppendLine("				if (!_queryUpdateCache.ContainsKey(context.InstanceKey))");
                 sb.AppendLine("					return 0;");
                 sb.AppendLine("				List<PreCacheItem> list;");
-                sb.AppendLine("				if (!_queryUpdateCache.TryRemove(context, out list))");
+                sb.AppendLine("				if (!_queryUpdateCache.TryRemove(context.InstanceKey, out list))");
                 sb.AppendLine("					return 0;");
-                sb.AppendLine("				var retval = Execute(context, list, startup);");
-                sb.AppendLine("				RemoveUpdates(context);");
+                sb.AppendLine("				var retval = Execute(context, list);");
+                sb.AppendLine("				RemoveUpdates(context.InstanceKey);");
                 sb.AppendLine("				return retval;");
                 sb.AppendLine("		}");
                 sb.AppendLine();
-
-                sb.AppendLine("		private static int Execute(System.Data.Entity.Core.Objects.ObjectContext context, List<PreCacheItem> list, ContextStartup startup)");
+                sb.AppendLine("		private static int Execute(IContext context, List<PreCacheItem> list)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			try");
                 sb.AppendLine("			{");
@@ -1038,14 +1047,14 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("				{");
                 sb.AppendLine("					if (cacheItem.Optimizer == null) cacheItem.Optimizer = new QueryOptimizer();");
                 sb.AppendLine("					var affected = 0;");
-                sb.AppendLine("					var connection = (SqlConnection)(context.Connection as EntityConnection).StoreConnection;");
+                sb.AppendLine("					var connection = (SqlConnection)(context.ObjectContext.Connection as EntityConnection).StoreConnection;");
                 sb.AppendLine("					{");
                 sb.AppendLine("						if (connection.State == System.Data.ConnectionState.Closed)");
                 sb.AppendLine("							connection.Open();");
                 sb.AppendLine();
                 sb.AppendLine("						using (var cmd = connection.CreateCommand())");
                 sb.AppendLine("						{");
-                sb.AppendLine("							if (startup.CommandTimeout != null && startup.CommandTimeout > 0) cmd.CommandTimeout = startup.CommandTimeout.Value;");
+                sb.AppendLine("							if (context.ContextStartup.CommandTimeout != null && context.ContextStartup.CommandTimeout > 0) cmd.CommandTimeout = context.ContextStartup.CommandTimeout.Value;");
                 sb.AppendLine("							else cmd.CommandTimeout = 30;");
                 sb.AppendLine("							cmd.CommandText = cacheItem.SQL;");
                 sb.AppendLine("							cmd.Transaction = FetchTransaction(connection);");
@@ -1069,13 +1078,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
-
-                sb.AppendLine("		internal static void RemoveDeletes(System.Data.Entity.Core.Objects.ObjectContext context)");
+                sb.AppendLine("		internal static void RemoveDeletes(Guid instanceKey)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			try");
                 sb.AppendLine("			{");
                 sb.AppendLine("				List<PreCacheItem> v;");
-                sb.AppendLine("				_queryDeleteCache.TryRemove(context, out v);");
+                sb.AppendLine("				_queryDeleteCache.TryRemove(instanceKey, out v);");
                 sb.AppendLine("			}");
                 sb.AppendLine("			catch (Exception ex)");
                 sb.AppendLine("			{");
@@ -1083,13 +1091,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
-
-                sb.AppendLine("		internal static void RemoveUpdates(System.Data.Entity.Core.Objects.ObjectContext context)");
+                sb.AppendLine("		internal static void RemoveUpdates(Guid instanceKey)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			try");
                 sb.AppendLine("			{");
                 sb.AppendLine("				List<PreCacheItem> v;");
-                sb.AppendLine("				_queryUpdateCache.TryRemove(context, out v);");
+                sb.AppendLine("				_queryUpdateCache.TryRemove(instanceKey, out v);");
                 sb.AppendLine("			}");
                 sb.AppendLine("			catch (Exception ex)");
                 sb.AppendLine("			{");
@@ -1097,13 +1104,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
-
-                sb.AppendLine("		internal static void RemoveAll(System.Data.Entity.Core.Objects.ObjectContext context)");
+                sb.AppendLine("		internal static void RemoveAll(Guid instanceKey)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			try");
                 sb.AppendLine("			{");
-                sb.AppendLine("				RemoveDeletes(context);");
-                sb.AppendLine("				RemoveUpdates(context);");
+                sb.AppendLine("				RemoveDeletes(instanceKey);");
+                sb.AppendLine("				RemoveUpdates(instanceKey);");
                 sb.AppendLine("			}");
                 sb.AppendLine("			catch (Exception ex)");
                 sb.AppendLine("			{");
@@ -1111,7 +1117,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
-                
                 sb.AppendLine("		private static SqlTransaction FetchTransaction(SqlConnection conn)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			try");
