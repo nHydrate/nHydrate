@@ -151,6 +151,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		}");
             sb.AppendLine();
 
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		public static Action<string> QueryLogger { get; set; }");
+            sb.AppendLine();
+
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// A unique key for this object instance");
             sb.AppendLine("		/// </summary>");
@@ -1665,7 +1669,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				{");
             sb.AppendLine("					var builder = new SqlConnectionStringBuilder(command.Connection.ConnectionString);");
             sb.AppendLine("					command.CommandText = \"--T:\" + builder.UserID + \"\\r\\n\" + command.CommandText;");
-            sb.AppendLine("					//var debugInfo = ((I" + _model.ProjectName + "Entities)(interceptionContext.DbContexts.First())).ContextStartup.DebugInfo;");
+            sb.AppendLine("				}");
+            sb.AppendLine("				if (" + _model.ProjectName + "Entities.QueryLogger != null)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					var debugInfo = ((I" + _model.ProjectName + "Entities)(interceptionContext.DbContexts.First())).ContextStartup.DebugInfo;");
+            sb.AppendLine("					" + _model.ProjectName + "Entities.QueryLogger(debugInfo + \"\\r\\n\" + command.CommandText);");
             sb.AppendLine("				}");
             sb.AppendLine("			}");
             sb.AppendLine("			catch { }");
