@@ -987,7 +987,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("					_queryDeleteCache.TryAdd(instanceKey, new List<PreCacheItem>());");
                 sb.AppendLine("				_queryDeleteCache[instanceKey].Add(newItem);");
                 sb.AppendLine("			}");
-                sb.AppendLine("			catch (Exception ex)");
+                sb.AppendLine("			catch");
                 sb.AppendLine("			{");
                 sb.AppendLine("				throw;");
                 sb.AppendLine("			}");
@@ -1008,7 +1008,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("					_queryUpdateCache.TryAdd(instanceKey, new List<PreCacheItem>());");
                 sb.AppendLine("				_queryUpdateCache[instanceKey].Add(newItem);");
                 sb.AppendLine("			}");
-                sb.AppendLine("			catch (Exception ex)");
+                sb.AppendLine("			catch");
                 sb.AppendLine("			{");
                 sb.AppendLine("				throw;");
                 sb.AppendLine("			}");
@@ -1072,7 +1072,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("				}");
                 sb.AppendLine("				return count;");
                 sb.AppendLine("			}");
-                sb.AppendLine("			catch (Exception ex)");
+                sb.AppendLine("			catch");
                 sb.AppendLine("			{");
                 sb.AppendLine("				throw;");
                 sb.AppendLine("			}");
@@ -1085,7 +1085,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("				List<PreCacheItem> v;");
                 sb.AppendLine("				_queryDeleteCache.TryRemove(instanceKey, out v);");
                 sb.AppendLine("			}");
-                sb.AppendLine("			catch (Exception ex)");
+                sb.AppendLine("			catch");
                 sb.AppendLine("			{");
                 sb.AppendLine("				throw;");
                 sb.AppendLine("			}");
@@ -1098,7 +1098,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("				List<PreCacheItem> v;");
                 sb.AppendLine("				_queryUpdateCache.TryRemove(instanceKey, out v);");
                 sb.AppendLine("			}");
-                sb.AppendLine("			catch (Exception ex)");
+                sb.AppendLine("			catch");
                 sb.AppendLine("			{");
                 sb.AppendLine("				throw;");
                 sb.AppendLine("			}");
@@ -1111,7 +1111,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("				RemoveDeletes(instanceKey);");
                 sb.AppendLine("				RemoveUpdates(instanceKey);");
                 sb.AppendLine("			}");
-                sb.AppendLine("			catch (Exception ex)");
+                sb.AppendLine("			catch");
                 sb.AppendLine("			{");
                 sb.AppendLine("				throw;");
                 sb.AppendLine("			}");
@@ -1130,7 +1130,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("				SqlTransaction transaction = (SqlTransaction)sqlInternalTransaction.GetType().GetProperty(\"Parent\", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(sqlInternalTransaction, null);");
                 sb.AppendLine("				return transaction;");
                 sb.AppendLine("			}");
-                sb.AppendLine("			catch (Exception ex)");
+                sb.AppendLine("			catch");
                 sb.AppendLine("			{");
                 sb.AppendLine("				return null;");
                 sb.AppendLine("			}");
