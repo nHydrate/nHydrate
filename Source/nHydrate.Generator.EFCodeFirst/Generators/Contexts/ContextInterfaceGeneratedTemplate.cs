@@ -189,6 +189,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		ContextStartup ContextStartup { get; }");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		System.Guid InstanceKey { get; }");
             sb.AppendLine("	}");
             sb.AppendLine();
             sb.AppendLine("	#endregion");

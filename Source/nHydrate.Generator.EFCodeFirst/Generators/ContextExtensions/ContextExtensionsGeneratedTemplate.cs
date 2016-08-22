@@ -498,7 +498,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("				return;");
             sb.AppendLine();
 
-            sb.AppendLine("			var instanceKey = Guid.NewGuid();");
+            sb.AppendLine("			var instanceKey = Guid.Empty;");
             sb.AppendLine("			System.Data.Entity.Core.Objects.ObjectContext objectContext = null;");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
@@ -521,6 +521,22 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			                throw new Exception(\"Unknown context\");");
             sb.AppendLine("			            }");
             sb.AppendLine("			        }");
+            sb.AppendLine();
+            sb.AppendLine("					if (instanceKey == Guid.Empty)");
+            sb.AppendLine("					{");
+            sb.AppendLine("						var context2 = query.Provider.GetType().GetField(\"_context\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);");
+            sb.AppendLine("						if (context2 != null)");
+            sb.AppendLine("						{");
+            sb.AppendLine("							var context = context2.GetValue(query.Provider);");
+            sb.AppendLine("							objectContext = context as System.Data.Entity.Core.Objects.ObjectContext;");
+            sb.AppendLine("							var qq = objectContext.InterceptionContext.DbContexts.First() as " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities;");
+            sb.AppendLine("							instanceKey = qq.InstanceKey;");
+            sb.AppendLine("							connectionString = Util.StripEFCS2Normal(objectContext.Connection.ConnectionString);");
+            sb.AppendLine("						}");
+            sb.AppendLine("					}");
+            sb.AppendLine();
+            sb.AppendLine("					if (instanceKey == Guid.Empty)");
+            sb.AppendLine("						throw new Exception(\"Unknown context\");");
             sb.AppendLine("			    }");
             sb.AppendLine();
             sb.AppendLine("			    if (string.IsNullOrEmpty(connectionString))");
@@ -667,7 +683,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("				return;");
             sb.AppendLine();
 
-            sb.AppendLine("			var instanceKey = Guid.NewGuid();");
+            sb.AppendLine("			var instanceKey = Guid.Empty;");
             sb.AppendLine("			System.Data.Entity.Core.Objects.ObjectContext objectContext = null;");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
@@ -690,6 +706,23 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			                throw new Exception(\"Unknown context\");");
             sb.AppendLine("			            }");
             sb.AppendLine("			        }");
+            sb.AppendLine();
+            sb.AppendLine("					if (instanceKey == Guid.Empty)");
+            sb.AppendLine("					{");
+            sb.AppendLine("						var context2 = query.Provider.GetType().GetField(\"_context\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);");
+            sb.AppendLine("						if (context2 != null)");
+            sb.AppendLine("						{");
+            sb.AppendLine("							var context = context2.GetValue(query.Provider);");
+            sb.AppendLine("							objectContext = context as System.Data.Entity.Core.Objects.ObjectContext;");
+            sb.AppendLine("							var qq = objectContext.InterceptionContext.DbContexts.First() as " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities;");
+            sb.AppendLine("							instanceKey = qq.InstanceKey;");
+            sb.AppendLine("							connectionString = Util.StripEFCS2Normal(objectContext.Connection.ConnectionString);");
+            sb.AppendLine("						}");
+            sb.AppendLine("					}");
+            sb.AppendLine();
+            sb.AppendLine("					if (instanceKey == Guid.Empty)");
+            sb.AppendLine("						throw new Exception(\"Unknown context\");");
+            sb.AppendLine();
             sb.AppendLine("			    }");
             sb.AppendLine();
             sb.AppendLine("			    if (string.IsNullOrEmpty(connectionString))");
