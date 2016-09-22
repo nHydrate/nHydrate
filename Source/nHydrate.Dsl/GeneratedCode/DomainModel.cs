@@ -188,6 +188,7 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(nHydrateModel), "EFVersion", nHydrateModel.EFVersionDomainPropertyId, typeof(nHydrateModel.EFVersionPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "EmitSafetyScripts", nHydrateModel.EmitSafetyScriptsDomainPropertyId, typeof(nHydrateModel.EmitSafetyScriptsPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "AllowMocks", nHydrateModel.AllowMocksDomainPropertyId, typeof(nHydrateModel.AllowMocksPropertyHandler)),
+				new DomainMemberInfo(typeof(nHydrateModel), "EmitChangeScripts", nHydrateModel.EmitChangeScriptsDomainPropertyId, typeof(nHydrateModel.EmitChangeScriptsPropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "Name", Entity.NameDomainPropertyId, typeof(Entity.NamePropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "Summary", Entity.SummaryDomainPropertyId, typeof(Entity.SummaryPropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "AllowAuditTracking", Entity.AllowAuditTrackingDomainPropertyId, typeof(Entity.AllowAuditTrackingPropertyHandler)),

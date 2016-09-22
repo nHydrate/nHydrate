@@ -2819,6 +2819,7 @@ namespace nHydrate.Dsl
 		/// Determines the target Entity Framework version
 		/// </summary>
 		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/EFVersion.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/EFVersion.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/EFVersion.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[global::System.ComponentModel.DefaultValue(EFVersionConstants.EF6)]
 		[DslModeling::DomainObjectId("faacbca6-ce50-4101-846f-3b6a55e61bce")]
@@ -3069,6 +3070,98 @@ namespace nHydrate.Dsl
 				{
 					ValueChanging(element, oldValue, newValue);
 					element.allowMocksPropertyStorage = newValue;
+					ValueChanged(element, oldValue, newValue);
+					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("nHydrateModel"));
+				}
+			}
+		}
+		
+		#endregion
+		#region EmitChangeScripts domain property code
+		
+		/// <summary>
+		/// EmitChangeScripts domain property Id.
+		/// </summary>
+		public static readonly global::System.Guid EmitChangeScriptsDomainPropertyId = new global::System.Guid(0xbca19c13, 0x0e3b, 0x4ecf, 0x96, 0x27, 0xa5, 0x03, 0x67, 0xe1, 0xae, 0xe4);
+		
+		/// <summary>
+		/// Storage for EmitChangeScripts
+		/// </summary>
+		private global::System.Boolean emitChangeScriptsPropertyStorage = true;
+		
+		/// <summary>
+		/// Gets or sets the value of EmitChangeScripts domain property.
+		/// Determines if change events are generated around all entity property setters
+		/// </summary>
+		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/EmitChangeScripts.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/EmitChangeScripts.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/EmitChangeScripts.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[global::System.ComponentModel.DefaultValue(true)]
+		[DslModeling::DomainObjectId("bca19c13-0e3b-4ecf-9627-a50367e1aee4")]
+		public virtual global::System.Boolean EmitChangeScripts
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return emitChangeScriptsPropertyStorage;
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				EmitChangeScriptsPropertyHandler.Instance.SetValue(this, value);
+			}
+		}
+		/// <summary>
+		/// Value handler for the nHydrateModel.EmitChangeScripts domain property.
+		/// </summary>
+		internal sealed partial class EmitChangeScriptsPropertyHandler : DslModeling::DomainPropertyValueHandler<nHydrateModelBase, global::System.Boolean>
+		{
+			private EmitChangeScriptsPropertyHandler() { }
+		
+			/// <summary>
+			/// Gets the singleton instance of the nHydrateModel.EmitChangeScripts domain property value handler.
+			/// </summary>
+			public static readonly EmitChangeScriptsPropertyHandler Instance = new EmitChangeScriptsPropertyHandler();
+		
+			/// <summary>
+			/// Gets the Id of the nHydrateModel.EmitChangeScripts domain property.
+			/// </summary>
+			public sealed override global::System.Guid DomainPropertyId
+			{
+				[global::System.Diagnostics.DebuggerStepThrough]
+				get
+				{
+					return EmitChangeScriptsDomainPropertyId;
+				}
+			}
+			
+			/// <summary>
+			/// Gets a strongly-typed value of the property on specified element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <returns>Property value.</returns>
+			public override sealed global::System.Boolean GetValue(nHydrateModelBase element)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+				return element.EmitChangeScripts;
+				//return element.GetValue<global::System.Boolean>("EmitChangeScripts", element.emitChangeScriptsPropertyStorage);
+				//return element.emitChangeScriptsPropertyStorage; //ORIGINAL CODE
+			}
+		
+			/// <summary>
+			/// Sets property value on an element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <param name="newValue">New property value.</param>
+			public override sealed void SetValue(nHydrateModelBase element, global::System.Boolean newValue)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+		
+				global::System.Boolean oldValue = GetValue(element);
+				if (newValue != oldValue)
+				{
+					ValueChanging(element, oldValue, newValue);
+					element.emitChangeScriptsPropertyStorage = newValue;
 					ValueChanged(element, oldValue, newValue);
 					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("nHydrateModel"));
 				}

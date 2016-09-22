@@ -716,6 +716,23 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
+			// EmitChangeScripts
+			if (!serializationContext.Result.Failed)
+			{
+				string attribEmitChangeScripts = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "emitChangeScripts");
+				if (attribEmitChangeScripts != null)
+				{
+					global::System.Boolean valueOfEmitChangeScripts;
+					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribEmitChangeScripts, out valueOfEmitChangeScripts))
+					{
+						instanceOfnHydrateModel.EmitChangeScripts = valueOfEmitChangeScripts;
+					}
+					else
+					{	// Invalid property value, ignored.
+						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "emitChangeScripts", typeof(global::System.Boolean), attribEmitChangeScripts);
+					}
+				}
+			}
 		}
 	
 		/// <summary>
@@ -2108,6 +2125,19 @@ namespace nHydrate.Dsl
 					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "allowMocks", serializedPropValue);
+					}
+				}
+			}
+			// EmitChangeScripts
+			if (!serializationContext.Result.Failed)
+			{
+				global::System.Boolean propValue = instanceOfnHydrateModel.EmitChangeScripts;
+				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
+				if (!serializationContext.Result.Failed)
+				{
+					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
+					{	// No need to write the value out if it's the same as default value.
+						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "emitChangeScripts", serializedPropValue);
 					}
 				}
 			}

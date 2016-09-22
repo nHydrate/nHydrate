@@ -600,26 +600,29 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	[System.Runtime.Serialization.DataContract(IsReference = true)]");
                 sb.AppendLine("	public abstract partial class BaseEntity");
                 sb.AppendLine("	{");
-                sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		[field:NonSerialized]");
-                sb.AppendLine("		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;");
-                sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		[field:NonSerialized]");
-                sb.AppendLine("		public event System.ComponentModel.PropertyChangingEventHandler PropertyChanging;");
-                sb.AppendLine();
-                sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		protected virtual void OnPropertyChanging(System.ComponentModel.PropertyChangingEventArgs e)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			if (this.PropertyChanging != null)");
-                sb.AppendLine("				this.PropertyChanging(this, e);");
-                sb.AppendLine("		}");
-                sb.AppendLine();
-                sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		protected virtual void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			if (this.PropertyChanged != null)");
-                sb.AppendLine("				this.PropertyChanged(this, e);");
-                sb.AppendLine("		}");
+                if (_model.EnableCustomChangeEvents)
+                {
+                    sb.AppendLine("		/// <summary />");
+                    sb.AppendLine("		[field:NonSerialized]");
+                    sb.AppendLine("		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;");
+                    sb.AppendLine("		/// <summary />");
+                    sb.AppendLine("		[field:NonSerialized]");
+                    sb.AppendLine("		public event System.ComponentModel.PropertyChangingEventHandler PropertyChanging;");
+                    sb.AppendLine();
+                    sb.AppendLine("		/// <summary />");
+                    sb.AppendLine("		protected virtual void OnPropertyChanging(System.ComponentModel.PropertyChangingEventArgs e)");
+                    sb.AppendLine("		{");
+                    sb.AppendLine("			if (this.PropertyChanging != null)");
+                    sb.AppendLine("				this.PropertyChanging(this, e);");
+                    sb.AppendLine("		}");
+                    sb.AppendLine();
+                    sb.AppendLine("		/// <summary />");
+                    sb.AppendLine("		protected virtual void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)");
+                    sb.AppendLine("		{");
+                    sb.AppendLine("			if (this.PropertyChanged != null)");
+                    sb.AppendLine("				this.PropertyChanged(this, e);");
+                    sb.AppendLine("		}");
+                }
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
@@ -628,7 +631,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// The interface for all entities");
                 sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	public partial interface IBusinessObject : " + GetLocalNamespace() + ".IReadOnlyBusinessObject, System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging");
+                sb.AppendLine("	public partial interface IBusinessObject : " + GetLocalNamespace() + ".IReadOnlyBusinessObject");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Sets the value of a field");

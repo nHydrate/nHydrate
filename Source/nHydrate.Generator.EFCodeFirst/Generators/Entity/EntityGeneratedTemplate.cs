@@ -108,6 +108,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Text;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ";");
+            sb.AppendLine("using " + this.GetLocalNamespace() + ".EventArguments;");
             sb.AppendLine("using System.Text.RegularExpressions;");
             sb.AppendLine("using System.Linq.Expressions;");
             sb.AppendLine("using System.Data.Entity;");
@@ -190,6 +191,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
             var boInterface = this.GetLocalNamespace() + ".IBusinessObject";
             if (_item.Immutable) boInterface = "" + this.GetLocalNamespace() + ".IReadOnlyBusinessObject";
+
+            if(_model.EnableCustomChangeEvents)
+            {
+                boInterface += ", System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging";
+            }
 
             if (_item.IsAbstract)
             {
@@ -663,13 +669,17 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     {
                         sb.AppendLine("				_" + column.CamelName + " = value;");
                     }
-                    else
+                    else if(_model.EnableCustomChangeEvents)
                     {
                         sb.AppendLine("				var eventArg = new " + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + column.PascalName + "\");");
                         sb.AppendLine("				this.OnPropertyChanging(eventArg);");
                         sb.AppendLine("				if (eventArg.Cancel) return;");
                         sb.AppendLine("				_" + column.CamelName + " = eventArg.Value;");
                         sb.AppendLine("				this.OnPropertyChanged(new PropertyChangedEventArgs(\"" + column.PascalName + "\"));");
+                    }
+                    else
+                    {
+                        sb.AppendLine("				_" + column.CamelName + " = value;");
                     }
 
                     sb.AppendLine("			}");
@@ -1714,11 +1724,18 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("			{");
 
             //Cannot hide setter but gut the thing so cannot make changes
-            sb.AppendLine("				var eventArg = new " + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + columnName + "\");");
-            sb.AppendLine("				this.OnPropertyChanging(eventArg);");
-            sb.AppendLine("				if (eventArg.Cancel) return;");
-            sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = eventArg.Value;");
-            sb.AppendLine("				this.OnPropertyChanged(new PropertyChangedEventArgs(\"" + columnName + "\"));");
+            if (_model.EnableCustomChangeEvents)
+            {
+                sb.AppendLine("				var eventArg = new " + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + columnName + "\");");
+                sb.AppendLine("				this.OnPropertyChanging(eventArg);");
+                sb.AppendLine("				if (eventArg.Cancel) return;");
+                sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = eventArg.Value;");
+                sb.AppendLine("				this.OnPropertyChanged(new PropertyChangedEventArgs(\"" + columnName + "\"));");
+            }
+            else
+            {
+                sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = value;");
+            }
 
             sb.AppendLine("			}");
             sb.AppendLine("		}");
