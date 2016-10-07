@@ -214,8 +214,10 @@ namespace nHydrate.DslPackage
             {
                 VersionHelper.DidVersionCheck();
                 var lastest = VersionHelper.GetLatestVersion();
-                if (VersionHelper.NeedUpdate(lastest))
+                if (VersionHelper.NeedUpdate(lastest) && !lastest.Contains("(Unknown)"))
+                {
                     MessageBox.Show("The version of nHydrate you are using is " + VersionHelper.GetCurrentVersion() + ". There is a newer version available " + lastest + ". Download the latest version from the Visual Studio 'Tools|Extensions and Updates' menu.", "New Version Available", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
             #endregion
 

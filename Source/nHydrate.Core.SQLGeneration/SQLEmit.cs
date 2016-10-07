@@ -124,7 +124,7 @@ namespace nHydrate.Core.SQLGeneration
             var sb = new StringBuilder();
             sb.AppendLine("--RENAME TABLE '" + oldTable.DatabaseName + "' TO '" + newTable.DatabaseName + "'");
             sb.AppendLine("if exists(select * from sysobjects where name = '" + oldTable.DatabaseName + "' and xtype = 'U')");
-            sb.AppendLine("exec sp_rename '" + oldTable.DatabaseName + "', '" + newTable.DatabaseName + "'");
+            sb.AppendLine("exec sp_rename '" + oldTable.DatabaseName + "', '" + newTable.DatabaseName + "';");
             sb.AppendLine("GO");
             sb.AppendLine();
 
@@ -135,11 +135,25 @@ namespace nHydrate.Core.SQLGeneration
                 var newIndexName = "PK_" + newTable.DatabaseName.ToUpper();
                 sb.AppendLine("--RENAME PRIMARY KEY FOR TABLE '" + oldTable.DatabaseName + "'");
                 sb.AppendLine("if exists (select * from sys.indexes where name = '" + oldIndexName + "')");
-                sb.AppendLine("exec sp_rename '" + oldIndexName + "', '" + newIndexName + "'");
+                sb.AppendLine("exec sp_rename '" + oldIndexName + "', '" + newIndexName + "';");
                 sb.AppendLine();
             }
 
-            //rename all indexes for this table's fields
+            //Rename all FK
+            foreach (var relation in newTable.GetRelationsWhereChild())
+            {
+                var oldIndexName = "FK_" + relation.RoleName + "_" + oldTable.DatabaseName + "_" + relation.ParentTable.DatabaseName;
+                oldIndexName = oldIndexName.ToUpper();
+                var newIndexName = "FK_" + relation.RoleName + "_" + newTable.DatabaseName + "_" + relation.ParentTable.DatabaseName;
+                newIndexName = newIndexName.ToUpper();
+
+                sb.AppendLine("--RENAME FK [" + newTable.DatabaseName + "].[" + oldIndexName + "]");
+                sb.AppendLine("if exists (select * from sys.foreign_keys where name = '" + oldIndexName + "')");
+                sb.AppendLine("exec sp_rename @objname='" + newTable.GetSQLSchema() + "." + oldIndexName + "', @newname='" + newIndexName + "', @objtype='OBJECT';");
+                sb.AppendLine();
+            }
+
+            //Rename all indexes for this table's fields
             foreach (var column in newTable.GetColumns())
             {
                 var oldColumn = oldTable.GetColumns().FirstOrDefault(x => x.Key == column.Key);
@@ -149,7 +163,7 @@ namespace nHydrate.Core.SQLGeneration
                     var newIndexName = CreateIndexName(newTable, column);
                     sb.AppendLine("--RENAME INDEX [" + newTable.DatabaseName + "].[" + oldIndexName + "]");
                     sb.AppendLine("if exists (select * from sys.indexes where name = '" + oldIndexName + "')");
-                    sb.AppendLine("exec sp_rename @objname='" + newTable.GetSQLSchema() + "." + newTable.DatabaseName + "." + oldIndexName + "', @newname='" + newIndexName + "', @objtype='INDEX'");
+                    sb.AppendLine("exec sp_rename @objname='" + newTable.GetSQLSchema() + "." + newTable.DatabaseName + "." + oldIndexName + "', @newname='" + newIndexName + "', @objtype='INDEX';");
                     sb.AppendLine();
                 }
             }
@@ -164,7 +178,7 @@ namespace nHydrate.Core.SQLGeneration
                     var newIndexName = GetIndexName(newTable, index);
                     sb.AppendLine("--RENAME INDEX [" + newTable.DatabaseName + "].[" + oldIndexName + "]");
                     sb.AppendLine("if exists (select * from sys.indexes where name = '" + oldIndexName + "')");
-                    sb.AppendLine("exec sp_rename @objname='" + newTable.GetSQLSchema() + "." + newTable.DatabaseName + "." + oldIndexName + "', @newname='" + newIndexName + "', @objtype='INDEX'");
+                    sb.AppendLine("exec sp_rename @objname='" + newTable.GetSQLSchema() + "." + newTable.DatabaseName + "." + oldIndexName + "', @newname='" + newIndexName + "', @objtype='INDEX';");
                     sb.AppendLine();
                 }
             }
@@ -178,7 +192,7 @@ namespace nHydrate.Core.SQLGeneration
                 var defaultName2 = ("DF__" + newTable.DatabaseName + "_" + model.Database.CreatedDateColumnName).ToUpper();
                 sb.AppendLine("--CHANGE THE DEFAULT NAME FOR CREATED AUDIT");
                 sb.AppendLine("if exists (select * from sys.default_constraints where name = '" + defaultName + "')");
-                sb.AppendLine("exec sp_rename @objname='" + defaultName + "', @newname='" + defaultName2 + "'");
+                sb.AppendLine("exec sp_rename @objname='" + defaultName + "', @newname='" + defaultName2 + "';");
                 sb.AppendLine();
             }
             if (oldTable.AllowModifiedAudit)
@@ -187,7 +201,7 @@ namespace nHydrate.Core.SQLGeneration
                 var defaultName2 = ("DF__" + newTable.DatabaseName + "_" + model.Database.ModifiedDateColumnName).ToUpper();
                 sb.AppendLine("--CHANGE THE DEFAULT NAME FOR MODIFIED AUDIT");
                 sb.AppendLine("if exists (select * from sys.default_constraints where name = '" + defaultName + "')");
-                sb.AppendLine("exec sp_rename @objname='" + defaultName + "', @newname='" + defaultName2 + "'");
+                sb.AppendLine("exec sp_rename @objname='" + defaultName + "', @newname='" + defaultName2 + "';");
                 sb.AppendLine();
             }
 
@@ -450,7 +464,7 @@ namespace nHydrate.Core.SQLGeneration
             {
                 sql += "AND not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + newColumn + "' and o.name = '" + table + "')";
             }
-            sql += "\r\nEXEC sp_rename @objname = '" + table + "." + oldColumn + "', @newname = '" + newColumn + "', @objtype = 'COLUMN'";
+            sql += "\r\nEXEC sp_rename @objname = '" + table + "." + oldColumn + "', @newname = '" + newColumn + "', @objtype = 'COLUMN';";
 
             var sb = new StringBuilder();
             sb.AppendLine("--RENAME COLUMN '" + table + "." + oldColumn + "'");
@@ -490,7 +504,7 @@ namespace nHydrate.Core.SQLGeneration
                         {
                             sb.AppendLine("--RENAME INDEX [" + oldTable.DatabaseName + "].[" + oldIndexName + "]");
                             sb.AppendLine("if exists (select * from sys.indexes where name = '" + oldIndexName + "')");
-                            sb.AppendLine("exec sp_rename @objname='" + newTable.GetSQLSchema() + "." + newTable.DatabaseName + "." + oldIndexName + "', @newname='" + newIndexName + "', @objtype='INDEX'");
+                            sb.AppendLine("exec sp_rename @objname='" + newTable.GetSQLSchema() + "." + newTable.DatabaseName + "." + oldIndexName + "', @newname='" + newIndexName + "', @objtype='INDEX';");
                             sb.AppendLine();
                         }
                     }
