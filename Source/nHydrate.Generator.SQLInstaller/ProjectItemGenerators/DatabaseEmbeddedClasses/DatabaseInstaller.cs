@@ -700,6 +700,9 @@ namespace PROJECTNAMESPACE
 
 		/// <summary />
 		public bool AcceptVersionWarningsNewScripts { get; set; }
+
+		internal string DebugScriptName { get; set; }
+
 	}
 
 	#endregion

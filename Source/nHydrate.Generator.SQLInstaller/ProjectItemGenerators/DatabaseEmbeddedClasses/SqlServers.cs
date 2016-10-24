@@ -1092,8 +1092,8 @@ namespace PROJECTNAMESPACE
 				else
 				{
 					if (setup.SuppressUI)
-						throw new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql };
-					else if (!SkipScriptPrompt(new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql }))
+						throw new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql, FileName = setup.DebugScriptName };
+					else if (!SkipScriptPrompt(new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql, FileName = setup.DebugScriptName }))
 						throw new HandledSQLException(sqlexp.Message, sqlexp);
 				}
 			}
@@ -1932,6 +1932,7 @@ namespace PROJECTNAMESPACE
 		public InvalidSQLException(string message, Exception innerException) : base(message, innerException) { }
 
 		public string SQL { get; set; }
+		public string FileName { get; set; }
 	}
 
 	#endregion

@@ -20,8 +20,8 @@ namespace PROJECTNAMESPACE
 
 		public void Setup(InvalidSQLException exception, bool allowSkip)
 		{
-			UpgradeInstaller.LogError(exception.InnerException, "[ERROR SCRIPT]\r\n" + exception.SQL);
-			txtError.Text = exception.InnerException.ToString();
+			UpgradeInstaller.LogError(exception.InnerException, "[ERROR]\r\n" + "FileName: '" + ((InvalidSQLException)exception).FileName + "'\r\n" + exception.SQL);
+			txtError.Text = "FileName: '" + exception.FileName + "'\r\n" + exception.InnerException.ToString();
 			txtSql.Text = exception.SQL;
 			cmdSkip.Visible = allowSkip;
 		}
@@ -36,7 +36,11 @@ namespace PROJECTNAMESPACE
 				this.panel3.Visible = false;
 				this.panel1.Dock = DockStyle.Fill;
 				this.panel1.BringToFront();
-				UpgradeInstaller.LogError(exception.InnerException, "[ERROR]\r\n" + exception.ToString());
+				var errorText = exception.ToString();
+				if (exception is InvalidSQLException)
+					errorText = "FileName: '" + ((InvalidSQLException)exception).FileName + "'" + errorText;
+
+				UpgradeInstaller.LogError(exception.InnerException, "[ERROR]\r\n" + errorText);
 				if (exception.InnerException != null)
 					txtError.Text = exception.InnerException.ToString();
 				else

@@ -712,11 +712,13 @@ namespace PROJECTNAMESPACE
 					if (hashItem == null) _newItems.Add(ern.FullName);
 					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
 					{
+						setup.DebugScriptName = ern.FullName;
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
 					}
 				}
 			}
+			setup.DebugScriptName = null;
 		}
 
 		private void UpgradeFolder3(InstallSetup setup)
@@ -747,10 +749,12 @@ namespace PROJECTNAMESPACE
 					if (hashItem == null) _newItems.Add(ern.FullName);
 					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
 					{
+						setup.DebugScriptName = ern.FullName;
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
 					}
 				}
+				setup.DebugScriptName = null;
 
 				//Run the static data
 				scripts = this.GetResourceNameUnderLocation(STATIC_DATA_FILE);
@@ -760,10 +764,12 @@ namespace PROJECTNAMESPACE
 					if (hashItem == null) _newItems.Add(ern.FullName);
 					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
 					{
+						setup.DebugScriptName = ern.FullName;
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
 					}
 				}
+				setup.DebugScriptName = null;
 
 				//Other static data
 				scripts = this.GetResourceNameUnderLocation(MAIN_FOLDER);
@@ -776,10 +782,12 @@ namespace PROJECTNAMESPACE
 					if (hashItem == null) _newItems.Add(ern.FullName);
 					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
 					{
+						setup.DebugScriptName = ern.FullName;
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
 					}
 				}
+				setup.DebugScriptName = null;
 
 				//Run the triggers
 				scripts = this.GetResourceNameUnderLocation(TRIGGER_FILE);
@@ -789,10 +797,12 @@ namespace PROJECTNAMESPACE
 					if (hashItem == null) _newItems.Add(ern.FullName);
 					if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
 					{
+						setup.DebugScriptName = ern.FullName;
 						if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
 						else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
 					}
 				}
+				setup.DebugScriptName = null;
 			}
 			catch (Exception ex)
 			{
@@ -1114,9 +1124,11 @@ namespace PROJECTNAMESPACE
 						if (hashItem == null) _newItems.Add(ern.FullName);
 						if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
 						{
+							setup.DebugScriptName = ern.FullName;
 							if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, failedScripts, _databaseItems, setup);
 							else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
 						}
+						setup.DebugScriptName = null;
 					}
 					catch
 					{
