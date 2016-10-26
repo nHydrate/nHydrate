@@ -188,37 +188,38 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.LINQ
                     sb.AppendLine("		public virtual byte[] " + _model.Database.TimestampPascalName + " { get; set; }");
                 }
 
-                //Add child relationships
-                foreach (var relation in _model.Database.Relations.FindByParentTable(table, true).Where(x => x.IsGenerated))
-                {
-                    //Relation relation = (Relation)reference.Object;
-                    var parentTable = (Table)relation.ParentTableRef.Object;
-                    var childTable = (Table)relation.ChildTableRef.Object;
-                    //Column pkColumn = (Column)relation.ColumnRelationships[0].ChildColumnRef.Object;
+                ////Add child relationships
+                //foreach (var relation in _model.Database.Relations.FindByParentTable(table, true).Where(x => x.IsGenerated))
+                //{
+                //    //Relation relation = (Relation)reference.Object;
+                //    var parentTable = (Table)relation.ParentTableRef.Object;
+                //    var childTable = (Table)relation.ChildTableRef.Object;
+                //    //Column pkColumn = (Column)relation.ColumnRelationships[0].ChildColumnRef.Object;
 
-                    var thisKey = string.Empty;
-                    var otherKey = string.Empty;
-                    foreach (var columnRelationship in relation.ColumnRelationships.AsEnumerable())
-                    {
-                        thisKey += ((Column)columnRelationship.ParentColumnRef.Object).PascalName + ",";
-                        otherKey += ((Column)columnRelationship.ChildColumnRef.Object).PascalName + ",";
-                    }
-                    if (!string.IsNullOrEmpty(thisKey)) thisKey = thisKey.Substring(0, thisKey.Length - 1);
-                    if (!string.IsNullOrEmpty(otherKey)) otherKey = otherKey.Substring(0, otherKey.Length - 1);
+                //    var thisKey = string.Empty;
+                //    var otherKey = string.Empty;
+                //    foreach (var columnRelationship in relation.ColumnRelationships.AsEnumerable())
+                //    {
+                //        thisKey += ((Column)columnRelationship.ParentColumnRef.Object).PascalName + ",";
+                //        otherKey += ((Column)columnRelationship.ChildColumnRef.Object).PascalName + ",";
+                //    }
+                //    if (!string.IsNullOrEmpty(thisKey)) thisKey = thisKey.Substring(0, thisKey.Length - 1);
+                //    if (!string.IsNullOrEmpty(otherKey)) otherKey = otherKey.Substring(0, otherKey.Length - 1);
 
-                    if (childTable.Generated & (childTable.TypedTable != TypedTableConstants.EnumOnly) && (!allTables.Contains(childTable)))
-                    {
-                        sb.AppendLine("		/// <summary>");
-                        sb.AppendLine("		/// This is a mapping of the relationship with the " + childTable.PascalName + " entity." + (relation.PascalRoleName == "" ? "" : " (Role: '" + relation.RoleName + "')"));
-                        sb.AppendLine("		/// </summary>");
-                        sb.AppendLine("		[Association(ThisKey = \"" + thisKey + "\", OtherKey = \"" + otherKey + "\")]");
-                        if (relation.IsOneToOne)
-                            sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Query " + relation.PascalRoleName + childTable.PascalName + " { get; private set; }");
-                        else
-                            sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Query " + relation.PascalRoleName + childTable.PascalName + "List { get; private set; }");
-                    }
+                //    if (childTable.Generated & (childTable.TypedTable != TypedTableConstants.EnumOnly) && (!allTables.Contains(childTable)))
+                //    {
+                //        sb.AppendLine("		/// <summary>");
+                //        sb.AppendLine("		/// This is a mapping of the relationship with the " + childTable.PascalName + " entity." + (relation.PascalRoleName == "" ? "" : " (Role: '" + relation.RoleName + "')"));
+                //        sb.AppendLine("		/// </summary>");
+                //        sb.AppendLine("		[Association(ThisKey = \"" + thisKey + "\", OtherKey = \"" + otherKey + "\")]");
+                //        if (relation.IsOneToOne)
+                //            sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Query " + relation.PascalRoleName + childTable.PascalName + " { get; private set; }");
+                //        else
+                //            sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Query " + relation.PascalRoleName + childTable.PascalName + "List { get; private set; }");
+                //        sb.AppendLine();
+                //    }
 
-                }
+                //}
 
                 //Add parent relationships
                 foreach (var relation in _model.Database.Relations.FindByChildTable(table, true).Where(x => x.IsGenerated))
@@ -246,6 +247,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.LINQ
                             sb.AppendLine("		/// </summary>");
                             sb.AppendLine("		[Association(ThisKey = \"" + thisKey + "\", OtherKey = \"" + otherKey + "\")]");
                             sb.AppendLine("		public " + this.GetLocalNamespace() + "." + parentTable.PascalName + "Query " + relation.PascalRoleName + parentTable.PascalName + " { get; private set; }");
+                            sb.AppendLine();
                         }
 
                     }

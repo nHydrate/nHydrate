@@ -398,7 +398,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             {
                 var schema = "dbo";
                 if (!string.IsNullOrEmpty(table.DBSchema)) schema = table.DBSchema;
-                sb.AppendLine("			modelBuilder.Entity<" + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\", \"" + schema + "\");");
+                sb.AppendLine("			modelBuilder.Entity<EFDAL.Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\", \"" + schema + "\");");
             }
             sb.AppendLine("			#endregion");
             sb.AppendLine();

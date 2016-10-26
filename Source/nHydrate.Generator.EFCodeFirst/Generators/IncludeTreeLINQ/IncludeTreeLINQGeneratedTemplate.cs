@@ -145,6 +145,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.IncludeTreeLINQ
                                     sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Include " + relation.PascalRoleName + childTable.PascalName + " { get; private set; }");
                                 else
                                     sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Include " + relation.PascalRoleName + childTable.PascalName + "List { get; private set; }");
+                                sb.AppendLine();
                             }
                         }
                         else
@@ -173,7 +174,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.IncludeTreeLINQ
                                     sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Include " + relation.PascalRoleName + childTable.PascalName + " { get; private set; }");
                                 else
                                     sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Include " + relation.PascalRoleName + childTable.PascalName + "List { get; private set; }");
-
                                 sb.AppendLine();
                             }
                         }
