@@ -2243,17 +2243,17 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("		/// </summary>");
 
                 ////If not nullable then it is required
-                //if (!column.AllowNull)
-                //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = \"'" + column.GetFriendlyName() + "' is required.\", AllowEmptyStrings = true)]");
+                if (!column.AllowNull)
+                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = \"'" + column.GetFriendlyName() + "' is required.\", AllowEmptyStrings = true)]");
 
                 if (!string.IsNullOrEmpty(column.ValidationExpression))
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.RegularExpression(@\"" + column.ValidationExpression.Replace("\"", "\"\"") + "\")]");
 
-                //if (column.PrimaryKey)
-                //{
-                //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
+                if (column.PrimaryKey)
+                {
+                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
                 //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
-                //}
+                }
 
                 //If PK or calculated then there is no setter (readonly)
                 if (column.PrimaryKey || column.ComputedColumn)
