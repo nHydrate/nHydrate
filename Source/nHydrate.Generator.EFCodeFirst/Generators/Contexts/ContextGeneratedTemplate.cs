@@ -1442,7 +1442,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		{");
 
                 if (parameterList.Any())
+                {
                     sb.AppendLine("			var index = 0;");
+                    sb.AppendLine();
+                }
 
                 var paramIndex = 1;
                 foreach (var parameter in parameterList)
@@ -1450,9 +1453,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     var pid = HashHelper.HashAlphaNumeric(parameter.Key);
                     sb.AppendLine("			var paramName" + paramIndex + " = \"X" + pid + "\";");
                     sb.AppendLine("			index = 0;");
-                    sb.AppendLine("			while (_paramList.Contains(paramName1 + index)) index++;");
-                    sb.AppendLine("			paramName1 = paramName1 + index;");
-                    sb.AppendLine("			_paramList.Add(paramName1);");
+                    sb.AppendLine("			while (_paramList.Contains(paramName" + paramIndex + " + index)) index++;");
+                    sb.AppendLine("			paramName" + paramIndex + " += index;");
+                    sb.AppendLine("			_paramList.Add(paramName" + paramIndex + ");");
                     sb.AppendLine("			if (_paramList.Count > 25) _paramList.RemoveAt(0);");
 
                     if (parameter.IsOutputParameter)
@@ -1469,6 +1472,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     {
                         sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(paramName" + paramIndex + ", " + parameter.CamelName + ");");
                     }
+                    sb.AppendLine();
                     paramIndex++;
                 }
 
