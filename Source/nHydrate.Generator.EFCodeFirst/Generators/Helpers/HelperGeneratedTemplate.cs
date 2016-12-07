@@ -171,7 +171,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
 
                 sb.AppendLine("		internal static string ConvertNormalCS2EFFromConfig(string configSettings)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			return ConvertNormalCS2EFFromConfig(configSettings, new ContextStartup(string.Empty, false, 0));");
+                sb.AppendLine("			return ConvertNormalCS2EFFromConfig(configSettings, new ContextStartup(string.Empty, false));");
                 sb.AppendLine("		}");
                 sb.AppendLine();
 
@@ -196,7 +196,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine();
                 sb.AppendLine("		internal static string ConvertNormalCS2EF(string connectionString)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			return ConvertNormalCS2EF(connectionString, new ContextStartup(string.Empty, false, 0));");
+                sb.AppendLine("			return ConvertNormalCS2EF(connectionString, new ContextStartup(string.Empty, false));");
                 sb.AppendLine("		}");
                 sb.AppendLine();
                 sb.AppendLine("		internal static string ConvertNormalCS2EF(string connectionString, ContextStartup contextStartup)");
@@ -1057,8 +1057,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine();
                 sb.AppendLine("						using (var cmd = connection.CreateCommand())");
                 sb.AppendLine("						{");
-                sb.AppendLine("							if (context.ContextStartup.CommandTimeout != null && context.ContextStartup.CommandTimeout > 0) cmd.CommandTimeout = context.ContextStartup.CommandTimeout.Value;");
-                sb.AppendLine("							else cmd.CommandTimeout = 30;");
+                sb.AppendLine("							if (!context.ContextStartup.DefaultTimeout && context.ContextStartup.CommandTimeout > 0) cmd.CommandTimeout = context.ContextStartup.CommandTimeout;");
+                sb.AppendLine("							else if (context.ObjectContext.CommandTimeout != null) cmd.CommandTimeout = context.ObjectContext.CommandTimeout.Value;");
                 sb.AppendLine("							cmd.CommandText = cacheItem.SQL;");
                 sb.AppendLine("							cmd.Transaction = FetchTransaction(connection);");
                 sb.AppendLine("							if (cacheItem.Parameters != null)");

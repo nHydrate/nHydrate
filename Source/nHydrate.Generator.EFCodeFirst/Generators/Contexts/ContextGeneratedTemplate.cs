@@ -262,7 +262,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			base(Util.ConvertNormalCS2EFFromConfig(\"name=" + _model.ProjectName + "Entities\"))");
             sb.AppendLine("		{");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
-            sb.AppendLine("			_contextStartup = new EFDAL.ContextStartup(null, true, 30);");
+            sb.AppendLine("			_contextStartup = new EFDAL.ContextStartup(null, true);");
             sb.AppendLine("			ResetContextStartup();");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
@@ -318,7 +318,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			base(Util.ConvertNormalCS2EF(connectionString))");
             sb.AppendLine("		{");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
-            sb.AppendLine("			_contextStartup = new EFDAL.ContextStartup(null, true, 30);");
+            sb.AppendLine("			_contextStartup = new EFDAL.ContextStartup(null, true);");
             sb.AppendLine("			ResetContextStartup();");
             sb.AppendLine("			try");
             sb.AppendLine("			{");

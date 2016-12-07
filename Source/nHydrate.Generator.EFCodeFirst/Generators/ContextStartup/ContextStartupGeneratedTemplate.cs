@@ -82,15 +82,18 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextStartup
                 sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
                 sb.AppendLine("	public partial class ContextStartup : ICloneable");
                 sb.AppendLine("	{");
-                sb.AppendLine("		internal string DebugInfo { get; set; }");
+                sb.AppendLine("		protected internal string DebugInfo { get; set; }");
+                sb.AppendLine("		protected internal bool DefaultTimeout { get; private set; }");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Creates a new instance of the ContextStartup object");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		public ContextStartup(string modifier)");
                 sb.AppendLine("		{");
+                sb.AppendLine("			this.CommandTimeout = 30;");
                 sb.AppendLine("			this.Modifer = modifier;");
                 sb.AppendLine("			this.AllowLazyLoading = true;");
+                sb.AppendLine("			this.DefaultTimeout = true;");
                 sb.AppendLine("		}");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
@@ -100,6 +103,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextStartup
                 sb.AppendLine("			this(modifier)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			this.AllowLazyLoading = allowLazyLoading;");
+                sb.AppendLine("			this.DefaultTimeout = true;");
                 sb.AppendLine("		}");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
@@ -109,6 +113,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextStartup
                 sb.AppendLine("			this(modifier, allowLazyLoading)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			this.CommandTimeout = commandTimeout;");
+                sb.AppendLine("			this.DefaultTimeout = false;");
                 sb.AppendLine("		}");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
@@ -124,7 +129,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextStartup
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Determines the database timeout value in seconds");
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		public virtual int? CommandTimeout { get; protected internal set; }");
+                sb.AppendLine("		public virtual int CommandTimeout { get; protected internal set; }");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public object Clone()");

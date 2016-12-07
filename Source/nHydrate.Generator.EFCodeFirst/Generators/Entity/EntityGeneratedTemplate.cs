@@ -1812,8 +1812,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("					var template = dc.GetTable<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query>();");
             sb.AppendLine("					using (var cmd = BusinessEntityQuery.GetCommand<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query>(dc, template, where))");
             sb.AppendLine("					{");
-            sb.AppendLine("						if (startup.CommandTimeout != null && startup.CommandTimeout > 0) cmd.CommandTimeout = startup.CommandTimeout.Value;");
-            sb.AppendLine("						else cmd.CommandTimeout = 30;");
+            sb.AppendLine("						if (!startup.DefaultTimeout && startup.CommandTimeout > 0) cmd.CommandTimeout = startup.CommandTimeout;");
+            sb.AppendLine("						else");
+            sb.AppendLine("						{");
+            sb.AppendLine("							var cb = new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString);");
+            sb.AppendLine("							cmd.CommandTimeout = cb.ConnectTimeout;");
+            sb.AppendLine("						}");
             sb.AppendLine();
             sb.AppendLine("						var parser = LinqSQLParser.Create(cmd.CommandText, LinqSQLParser.ObjectTypeConstants.Table);");
             sb.Append("						var sql = \"CREATE TABLE #t (");

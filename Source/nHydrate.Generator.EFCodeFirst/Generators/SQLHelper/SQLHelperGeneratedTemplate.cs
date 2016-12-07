@@ -341,7 +341,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("				var template = dc.GetTable<K>();");
             sb.AppendLine("				using (var cmd = BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where))");
             sb.AppendLine("				{");
-            sb.AppendLine("					if (startup.CommandTimeout != null && startup.CommandTimeout > 0) cmd.CommandTimeout = startup.CommandTimeout.Value;");
+            sb.AppendLine("					if (!startup.DefaultTimeout && startup.CommandTimeout > 0) cmd.CommandTimeout = startup.CommandTimeout;");
             sb.AppendLine("						else cmd.CommandTimeout = DEFAULTTIMEOUT;");
             sb.AppendLine("					if (transaction != null)");
             sb.AppendLine("						cmd.Transaction = transaction;");
@@ -474,7 +474,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("				var template = dc.GetTable<K>();");
             sb.AppendLine("				using (var cmd = BusinessEntityQuery.GetCommand<K, P>(dc, template, select, where))");
             sb.AppendLine("				{");
-            sb.AppendLine("					if (startup.CommandTimeout != null && startup.CommandTimeout > 0) cmd.CommandTimeout = startup.CommandTimeout.Value;");
+            sb.AppendLine("					if (!startup.DefaultTimeout && startup.CommandTimeout > 0) cmd.CommandTimeout = startup.CommandTimeout;");
             sb.AppendLine("					else cmd.CommandTimeout = DEFAULTTIMEOUT;");
             sb.AppendLine("					if (transaction != null)");
             sb.AppendLine("						cmd.Transaction = transaction;");
