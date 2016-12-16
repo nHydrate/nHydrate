@@ -561,6 +561,17 @@ namespace nHydrate.Dsl
                             else rc.TableList.Add(entity);
                             duplicateList.Add(key, rc);
                         }
+
+                        //Verify that a FK has an index on it
+                        foreach (var field in relationFields)
+                        {
+                            var targetField = field.GetTargetField(relation);
+                            if (targetField != null)
+                            {
+                                if (!childTable.Indexes.SelectMany(x => x.FieldList.Select(z => z.Id)).Any(x => x == targetField.Id))
+                                    context.LogWarning(string.Format(ValidationHelper.ErrorTextFKNeedIndex, childTable.Name + "." + targetField.Name), string.Empty, this);
+                            }
+                        }
                     }
 
                 }
