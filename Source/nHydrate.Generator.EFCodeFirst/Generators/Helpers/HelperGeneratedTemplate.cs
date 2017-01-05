@@ -1213,8 +1213,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public IEnumerable<System.Data.Entity.Core.Objects.ObjectStateEntry> List { get; set; }");
                 sb.AppendLine("	}");
-                sb.AppendLine("}");
                 sb.AppendLine("	#endregion");
+                sb.AppendLine("}");
                 sb.AppendLine();
                 #endregion
 
