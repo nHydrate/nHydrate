@@ -111,10 +111,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("using " + this.GetLocalNamespace() + ".EventArguments;");
             sb.AppendLine("using System.Text.RegularExpressions;");
             sb.AppendLine("using System.Linq.Expressions;");
-            //sb.AppendLine("using System.Data.Entity;");
-            //sb.AppendLine("using System.Data.Linq;");
-            //sb.AppendLine("using System.Data.Entity.ModelConfiguration;");
-            //sb.AppendLine("using System.ComponentModel.DataAnnotations;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
             sb.AppendLine();
         }
@@ -163,7 +159,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
 
             sb.AppendLine("	[FieldNameConstants(typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))]");
-            sb.AppendLine("	[System.ComponentModel.DataAnnotations.MetadataType(typeof(" + this.GetLocalNamespace() + ".Entity.Metadata." + _item.PascalName + "Metadata))]");
+
+            //NETCORE Removed
+            //sb.AppendLine("	[System.ComponentModel.DataAnnotations.MetadataType(typeof(" + this.GetLocalNamespace() + ".Entity.Metadata." + _item.PascalName + "Metadata))]");
 
             //Add known types for all descendants
             foreach (var table in _item.GetTablesInheritedFromHierarchy().Where(x => x.Generated).OrderBy(x => x.PascalName))
@@ -171,10 +169,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("	[KnownType(typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "))]");
             }
 
-            if (!string.IsNullOrEmpty(_item.Description))
-            {
-                sb.AppendLine("	[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\")]");
-            }
+            //NETCORE Removed
+            //if (!string.IsNullOrEmpty(_item.Description))
+            //{
+            //    sb.AppendLine("	[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\")]");
+            //}
 
             if (_item.Immutable && _item.TypedTable == TypedTableConstants.None)
                 sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
@@ -248,9 +247,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             this.AppendRegionSetValue();
             this.AppendNavigationProperties();
             this.AppendAuditQuery();
-            this.AppendStaticSQLHelpers();
-            this.AppendDeleteDataScaler();
-            this.AppendUpdateDataScaler();
             this.AppendRegionGetDatabaseFieldName();
             this.AppendIAuditable();
             //this.AppendStaticMethods();
@@ -275,7 +271,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     sb.AppendLine("		/// <summary>");
                     sb.AppendLine("		/// Field mapping for the image parameter '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
                     sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		[System.ComponentModel.Description(\"Field mapping for the image parameter '" + column.PascalName + "' property\")]");
+                    //NETCORE Removed
+                    //sb.AppendLine("		[System.ComponentModel.Description(\"Field mapping for the image parameter '" + column.PascalName + "' property\")]");
                     sb.AppendLine("		" + column.PascalName + ",");
                 }
                 sb.AppendLine("	}");
@@ -304,10 +301,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                 if (column.PrimaryKey || _item.Immutable || column.IsReadOnly)
                 {
-                    sb.AppendLine("			[System.ComponentModel.ReadOnly(true)]");
+                    sb.AppendLine("			[System.ComponentModel.DataAnnotations.Editable(false)]");
                 }
-
-                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + column.PascalName + "' property\")]");
+                //NETCORE Removed
+                //sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + column.PascalName + "' property\")]");
                 sb.AppendLine("			" + column.PascalName + ",");
             }
 
@@ -316,12 +313,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("			/// <summary>");
                 sb.AppendLine("			/// Field mapping for the '" + _model.Database.CreatedByPascalName + "' property");
                 sb.AppendLine("			/// </summary>");
-                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedByPascalName + "' property\")]");
+                //NETCORE Removed
+                //sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedByPascalName + "' property\")]");
                 sb.AppendLine("			" + _model.Database.CreatedByPascalName + ",");
                 sb.AppendLine("			/// <summary>");
                 sb.AppendLine("			/// Field mapping for the '" + _model.Database.CreatedDatePascalName + "' property");
                 sb.AppendLine("			/// </summary>");
-                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedDatePascalName + "' property\")]");
+                //NETCORE Removed
+                //sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedDatePascalName + "' property\")]");
                 sb.AppendLine("			" + _model.Database.CreatedDatePascalName + ",");
             }
 
@@ -330,12 +329,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("			/// <summary>");
                 sb.AppendLine("			/// Field mapping for the '" + _model.Database.ModifiedByPascalName + "' property");
                 sb.AppendLine("			/// </summary>");
-                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedByPascalName + "' property\")]");
+                //NETCORE Removed
+                //sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedByPascalName + "' property\")]");
                 sb.AppendLine("			" + _model.Database.ModifiedByPascalName + ",");
                 sb.AppendLine("			/// <summary>");
                 sb.AppendLine("			/// Field mapping for the '" + _model.Database.ModifiedDatePascalName + "' property");
                 sb.AppendLine("			/// </summary>");
-                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedDatePascalName + "' property\")]");
+                //NETCORE Removed
+                //sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedDatePascalName + "' property\")]");
                 sb.AppendLine("			" + _model.Database.ModifiedDatePascalName + ",");
             }
 
@@ -541,10 +542,16 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     sb.AppendLine("		/// <remarks>" + column.GetIntellisenseRemarks() + "</remarks>");
                     sb.AppendLine("		[DataMember]");
 
-                    sb.AppendLine("		[System.ComponentModel.Browsable(" + column.IsBrowsable.ToString().ToLower() + ")]");
-                    if (!string.IsNullOrEmpty(column.Category))
-                        sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
-                    sb.AppendLine("		[System.ComponentModel.DisplayName(\"" + column.GetFriendlyName() + "\")]");
+                    if (column.IsBrowsable)
+                        sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Always)]");
+                    else
+                        sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]");
+
+                    //NETCORE Removed
+                    //if (!string.IsNullOrEmpty(column.Category))
+                    //    sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
+
+                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Display(Name = \"" + column.GetFriendlyName() + "\")]");
 
                     if (column.UIDataType != System.ComponentModel.DataAnnotations.DataType.Custom)
                     {
@@ -556,21 +563,23 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		[System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = @\"" + column.Mask.Replace(@"\\", @"\\\\") + "\")]");
                     }
 
-                    if (column.IsIndexed && column.PrimaryKey)
-                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.Index(IsUnique = true)]");
-                    else if (column.IsIndexed)
-                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.Index()]");
+                    //NETCORE Removed
+                    //if (column.IsIndexed && column.PrimaryKey)
+                    //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.Index(IsUnique = true)]");
+                    //else if (column.IsIndexed)
+                    //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.Index()]");
 
                     if (column.PrimaryKey)
                         sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
 
                     //if (column.PrimaryKey || _item.Immutable || column.ComputedColumn || column.IsReadOnly)
-                    //    sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
+                    //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
                     if (column.ComputedColumn || column.IsReadOnly)
-                        sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
 
-                    if (!string.IsNullOrEmpty(column.Description))
-                        sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
+                    //NETCORE Removed
+                    //if (!string.IsNullOrEmpty(column.Description))
+                    //    sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
 
                     foreach (var meta in column.MetaData)
                     {
@@ -1182,7 +1191,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Determines if this object is part of a collection or is detached");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		[System.ComponentModel.Browsable(false)]");
+            sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]");
             sb.AppendLine(_item.ParentTable == null ? "		public virtual bool IsParented" : "		public override bool IsParented");
             sb.AppendLine("		{");
             sb.AppendLine("			get { return (this.EntityState != System.Data.EntityState.Detached); }");
@@ -1704,7 +1713,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 StringHelper.LineBreakCode(sb, description, "		/// ");
                 sb.AppendLine("		/// </summary>");
             }
-            sb.AppendLine("		[System.ComponentModel.Browsable(false)]");
+            sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]");
             sb.AppendLine("		[DataMember()]");
             sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 
@@ -1743,267 +1752,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected " + codeType + " _" + StringHelper.DatabaseNameToCamelCase(columnName) + ";");
-            sb.AppendLine();
-
-        }
-
-        private void AppendDeleteDataScaler()
-        {
-            if (_item.Immutable) return;
-
-            sb.AppendLine("		#region DeleteData");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
-            sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return DeleteData(where: where, optimizer: new QueryOptimizer(), startup: new ContextStartup(null), connectionString: " + this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
-            sb.AppendLine("		/// <param name=\"optimizer\">The optimization object to use for running queries</param>");
-            sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, QueryOptimizer optimizer)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return DeleteData(where: where, optimizer: optimizer, startup: new ContextStartup(null), connectionString: " + this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
-            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
-            sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, string connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return DeleteData(where: where, optimizer: new QueryOptimizer(), startup: new ContextStartup(null), connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
-            sb.AppendLine("		/// <param name=\"optimizer\">The optimization object to use for running queries</param>");
-            sb.AppendLine("		/// <param name=\"startup\">The startup options</param>");
-            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
-            sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, QueryOptimizer optimizer, ContextStartup startup, string connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			if (optimizer == null)");
-            sb.AppendLine("				optimizer = new QueryOptimizer();");
-            sb.AppendLine("				if (startup == null) startup = new ContextStartup(null);");
-            sb.AppendLine();
-            sb.AppendLine("			using (var connection = " + this.GetLocalNamespace() + ".DBHelper.GetConnection(" + this.GetLocalNamespace() + ".Util.StripEFCS2Normal(connectionString)))");
-            sb.AppendLine("			{");
-            sb.AppendLine("				using (var dc = new DataContext(connection))");
-            sb.AppendLine("				{");
-            sb.AppendLine("					var template = dc.GetTable<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query>();");
-            sb.AppendLine("					using (var cmd = BusinessEntityQuery.GetCommand<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query>(dc, template, where))");
-            sb.AppendLine("					{");
-            sb.AppendLine("						if (!startup.DefaultTimeout && startup.CommandTimeout > 0) cmd.CommandTimeout = startup.CommandTimeout;");
-            sb.AppendLine("						else");
-            sb.AppendLine("						{");
-            sb.AppendLine("							var cb = new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString);");
-            sb.AppendLine("							cmd.CommandTimeout = cb.ConnectTimeout;");
-            sb.AppendLine("						}");
-            sb.AppendLine();
-            sb.AppendLine("						var parser = LinqSQLParser.Create(cmd.CommandText, LinqSQLParser.ObjectTypeConstants.Table);");
-            sb.Append("						var sql = \"CREATE TABLE #t (");
-
-            var ii = 0;
-            foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
-            {
-                sb.Append("[" + column.DatabaseName + "] " + column.DatabaseType);
-                if (column.IsTextType) sb.Append(" COLLATE database_default");
-                if (ii < _item.PrimaryKeyColumns.Count - 1) sb.Append(", ");
-                ii++;
-            }
-
-            sb.AppendLine(")\";");
-            sb.AppendLine("						sql += \"set rowcount \" + optimizer.ChunkSize + \";\";");
-            sb.Append("						sql += \"INSERT INTO #t (");
-
-            ii = 0;
-            foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
-            {
-                sb.Append("[" + column.DatabaseName + "]");
-                if (ii < _item.PrimaryKeyColumns.Count - 1) sb.Append(", ");
-                ii++;
-            }
-
-            sb.AppendLine(")\";");
-
-            sb.Append("						sql += \"SELECT ");
-
-            ii = 0;
-            foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
-            {
-                sb.Append("[t0].[" + column.DatabaseName + "]");
-                if (ii < _item.PrimaryKeyColumns.Count - 1)
-                    sb.Append(", ");
-                ii++;
-            }
-            sb.AppendLine(" #t\\r\\n\";");
-            sb.AppendLine("						sql += parser.GetFromClause(optimizer) + \"\\r\\n\";");
-            sb.AppendLine("						sql += parser.GetWhereClause();");
-            sb.AppendLine("						sql += \"\\r\\n\";");
-            sb.AppendLine();
-
-            var tableList = new List<Table>(_item.GetTableHierarchy());
-            tableList.Reverse();
-            sb.AppendLine("						var noLock = string.Empty;");
-            foreach (var table in tableList)
-            {
-                sb.AppendLine("						noLock = (optimizer.NoLocking ? \"WITH (READUNCOMMITTED) \" : string.Empty);");
-                sb.Append("						sql += \"DELETE [" + table.DatabaseName + "] FROM [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] \" + noLock + \"INNER JOIN #t ON ");
-
-                ii = 0;
-                foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
-                {
-                    sb.Append("[" + table.GetSQLSchema() + "].[" + table.DatabaseName + "].[" + column.DatabaseName + "] = #t.[" + column.DatabaseName + "]");
-                    if (ii < _item.PrimaryKeyColumns.Count - 1)
-                        sb.Append(" AND ");
-                    ii++;
-                }
-                sb.AppendLine("\\r\\n\";");
-            }
-
-            sb.AppendLine("						sql += \";select @@rowcount\";");
-            sb.AppendLine("						sql = \"set ansi_nulls off;\" + sql + \";drop table #t;\";");
-            sb.AppendLine("						cmd.CommandText = sql;");
-            sb.AppendLine("						dc.Connection.Open();");
-            sb.AppendLine("						var startTime = DateTime.Now;");
-            sb.AppendLine("						var affected = 0;");
-            sb.AppendLine("						var count = 0;");
-            sb.AppendLine("						do");
-            sb.AppendLine("						{");
-            sb.AppendLine("							count = (int)cmd.ExecuteScalar();");
-            sb.AppendLine("							affected += count;");
-            sb.AppendLine("						} while (count > 0 && optimizer.ChunkSize > 0);");
-            sb.AppendLine("						var endTime = DateTime.Now;");
-            sb.AppendLine("						optimizer.TotalMilliseconds = (long)endTime.Subtract(startTime).TotalMilliseconds;");
-            sb.AppendLine("						dc.Connection.Close();");
-            sb.AppendLine("						return affected;");
-            sb.AppendLine("					}");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-        }
-
-        private void AppendUpdateDataScaler()
-        {
-            if (_item.Immutable) return;
-
-            sb.AppendLine("		#region UpdateData");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-            sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
-            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-            sb.AppendLine("		/// <param name=\"connection\">An open database connection</param>");
-            sb.AppendLine("		/// <param name=\"transaction\">The database connection transaction</param>");
-            sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
-            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, System.Data.IDbConnection connection, System.Data.Common.DbTransaction transaction)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup: null, connection: connection, transaction: transaction);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-            sb.AppendLine("		/// <param name=\"startup\">A configuration object</param>");
-            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
-            sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
-            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, ContextStartup startup, string connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup: startup, connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
-            sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
-            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, string connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-            sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
-            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " newValue)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
-            sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
-            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " newValue, string connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		#endregion");
             sb.AppendLine();
 
         }
@@ -2056,157 +1804,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
-        }
-
-        private void AppendStaticSQLHelpers()
-        {
-            sb.AppendLine("		#region Static SQL Methods");
-            sb.AppendLine();
-
-            var allColumns = _item.GetColumnsFullHierarchy(true).Where(x => x.Generated).ToList();
-
-            #region GetFieldAliasFromFieldNameSqlMapping
-            sb.AppendLine("		internal " + (_item.ParentTable == null ? "" : "new ") + "static string GetFieldAliasFromFieldNameSqlMapping(string alias)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			alias = alias.Replace(\"[\", string.Empty).Replace(\"]\", string.Empty);");
-            sb.AppendLine("			switch (alias.ToLower())");
-            sb.AppendLine("			{");
-            foreach (var column in allColumns.OrderBy(x => x.Name))
-            {
-                sb.AppendLine("				case \"" + column.DatabaseName.ToLower() + "\": return \"" + column.PascalName.ToLower() + "\";");
-            }
-            if (_item.AllowCreateAudit)
-            {
-                sb.AppendLine("				case \"" + _model.Database.CreatedDateColumnName.ToLower() + "\": return \"" + _model.Database.CreatedDatePascalName.ToLower() + "\";");
-                sb.AppendLine("				case \"" + _model.Database.CreatedByColumnName.ToLower() + "\": return \"" + _model.Database.CreatedByPascalName.ToLower() + "\";");
-            }
-            if (_item.AllowModifiedAudit)
-            {
-                sb.AppendLine("				case \"" + _model.Database.ModifiedDateColumnName.ToLower() + "\": return \"" + _model.Database.ModifiedDatePascalName.ToLower() + "\";");
-                sb.AppendLine("				case \"" + _model.Database.ModifiedByColumnName.ToLower() + "\": return \"" + _model.Database.ModifiedByPascalName.ToLower() + "\";");
-            }
-            if (_item.AllowTimestamp)
-            {
-                sb.AppendLine("				case \"" + _model.Database.TimestampColumnName.ToLower() + "\": return \"" + _model.Database.TimestampPascalName.ToLower() + "\";");
-            }
-            sb.AppendLine("				default: throw new Exception(\"The select clause is not valid.\");");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            #endregion
-
-            #region GetTableFromFieldAliasSqlMapping
-            sb.AppendLine("		internal " + (_item.ParentTable == null ? "" : "new ") + "static string GetTableFromFieldAliasSqlMapping(string alias)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			switch (alias.ToLower())");
-            sb.AppendLine("			{");
-
-            foreach (var column in allColumns.OrderBy(x => x.Name))
-            {
-                var table = column.ParentTableRef.Object as Table;
-                if (table.IsTenant)
-                    sb.AppendLine("				case \"" + column.PascalName.ToLower() + "\": return \"" + _model.TenantPrefix + "_" + table.DatabaseName + "\";");
-                else
-                    sb.AppendLine("				case \"" + column.PascalName.ToLower() + "\": return \"" + table.DatabaseName + "\";");
-            }
-
-            var tableName = _item.DatabaseName;
-            if (_item.IsTenant)
-                tableName = _model.TenantPrefix + "_" + _item.DatabaseName;
-
-            if (_item.AllowCreateAudit)
-            {
-                sb.AppendLine("				case \"" + _model.Database.CreatedByPascalName.ToLower() + "\": return \"" + tableName + "\";");
-                sb.AppendLine("				case \"" + _model.Database.CreatedDatePascalName.ToLower() + "\": return \"" + tableName + "\";");
-            }
-            if (_item.AllowModifiedAudit)
-            {
-                sb.AppendLine("				case \"" + _model.Database.ModifiedByPascalName.ToLower() + "\": return \"" + tableName + "\";");
-                sb.AppendLine("				case \"" + _model.Database.ModifiedDatePascalName.ToLower() + "\": return \"" + tableName + "\";");
-            }
-            if (_item.AllowTimestamp)
-            {
-                sb.AppendLine("				case \"" + _model.Database.TimestampPascalName.ToLower() + "\": return \"" + tableName + "\";");
-            }
-
-            sb.AppendLine("				default: throw new Exception(\"The select clause is not valid.\");");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            #endregion
-
-            #region GetTableFromFieldNameSqlMapping
-            sb.AppendLine("		internal " + (_item.ParentTable == null ? "" : "new ") + "static string GetTableFromFieldNameSqlMapping(string field)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			switch (field.ToLower())");
-            sb.AppendLine("			{");
-
-            foreach (var column in allColumns.OrderBy(x => x.Name))
-            {
-                var table = column.ParentTableRef.Object as Table;
-                if (table.IsTenant)
-                    sb.AppendLine("				case \"" + column.DatabaseName.ToLower() + "\": return \"" + _model.TenantPrefix + "_" + table.DatabaseName + "\";");
-                else
-                    sb.AppendLine("				case \"" + column.DatabaseName.ToLower() + "\": return \"" + table.DatabaseName + "\";");
-            }
-
-            if (_item.AllowCreateAudit)
-            {
-                sb.AppendLine("				case \"" + _model.Database.CreatedByColumnName.ToLower() + "\": return \"" + tableName + "\";");
-                sb.AppendLine("				case \"" + _model.Database.CreatedDateColumnName.ToLower() + "\": return \"" + tableName + "\";");
-            }
-            if (_item.AllowModifiedAudit)
-            {
-                sb.AppendLine("				case \"" + _model.Database.ModifiedByColumnName.ToLower() + "\": return \"" + tableName + "\";");
-                sb.AppendLine("				case \"" + _model.Database.ModifiedDateColumnName.ToLower() + "\": return \"" + tableName + "\";");
-            }
-            if (_item.AllowTimestamp)
-            {
-                sb.AppendLine("				case \"" + _model.Database.TimestampColumnName.ToLower() + "\": return \"" + tableName + "\";");
-            }
-
-            sb.AppendLine("				default: throw new Exception(\"The select clause is not valid.\");");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            #endregion
-
-            #region GetRemappedLinqSql
-            sb.AppendLine("		internal " + (_item.ParentTable == null ? "" : "new ") + "static string GetRemappedLinqSql(string sql, string parentAlias, LinqSQLFromClauseCollection childTables)");
-            sb.AppendLine("		{");
-            foreach (var column in allColumns.OrderBy(x => x.Name))
-            {
-                //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + column.DatabaseName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + ((Table)column.ParentTableRef.Object).DatabaseName + "\") + \"].[" + column.DatabaseName.ToLower() + "]\");");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + column.DatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + ((Table)column.ParentTableRef.Object).DatabaseName + "\") + \"].[" + column.DatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
-            }
-            if (_item.AllowCreateAudit)
-            {
-                //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.CreatedByPascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.CreatedByPascalName.ToLower() + "]\");");
-                //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.CreatedDatePascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.CreatedDatePascalName.ToLower() + "]\");");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.CreatedByDatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.CreatedByDatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.CreatedDateDatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.CreatedDateDatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
-            }
-            if (_item.AllowModifiedAudit)
-            {
-                //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.ModifiedByPascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.ModifiedByPascalName.ToLower() + "]\");");
-                //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.ModifiedDatePascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.ModifiedDatePascalName.ToLower() + "]\");");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.ModifiedByDatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.ModifiedByDatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.ModifiedDateDatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.ModifiedDateDatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
-            }
-            if (_item.AllowTimestamp)
-            {
-                //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + _model.Database.TimestampPascalName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.TimestampPascalName.ToLower() + "]\");");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + _model.Database.TimestampDatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + _item.DatabaseName + "\") + \"].[" + _model.Database.TimestampDatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
-            }
-
-            sb.AppendLine("			return sql;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            #endregion
-
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-
         }
 
         private void AppendMetaData()
@@ -2262,7 +1859,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                 //If PK or calculated then there is no setter (readonly)
                 if (column.PrimaryKey || column.ComputedColumn)
-                    sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
+                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
 
                 //If text then validate the length
                 if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml)
@@ -2340,7 +1937,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// Metadata information for the '" + fieldName + "' parameter");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		[System.ComponentModel.DataAnnotations.StringLength(100, ErrorMessage = \"The property '" + fieldName + "' has a maximum length of 100\")]");
-            sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
+            sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
             sb.AppendLine("		public " + (_item.ParentTable == null ? string.Empty : "new ") + "object " + fieldName + ";");
             sb.AppendLine();
         }
@@ -2350,7 +1947,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Metadata information for the '" + fieldName + "' parameter");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
+            sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
             sb.AppendLine("		public " + (_item.ParentTable == null ? string.Empty : "new ") + "object " + fieldName + ";");
             sb.AppendLine();
         }
@@ -2362,7 +1959,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		[System.ComponentModel.DataAnnotations.Timestamp()]");
             sb.AppendLine("		[System.ComponentModel.DataAnnotations.ConcurrencyCheck()]");
-            sb.AppendLine("		[System.ComponentModel.ReadOnly(true)]");
+            sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
             sb.AppendLine("		public " + (_item.ParentTable == null ? string.Empty : "new ") + "object " + fieldName + ";");
             sb.AppendLine();
         }

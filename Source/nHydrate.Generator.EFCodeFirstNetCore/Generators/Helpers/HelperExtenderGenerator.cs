@@ -29,8 +29,8 @@ using nHydrate.Generator.EFCodeFirstNetCore;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
 {
-    [GeneratorItem("HelperExtenderGenerator", typeof(EFCodeFirstProjectGenerator))]
-    public class HelperExtenderGenerator : EFCodeFirstProjectItemGenerator
+    [GeneratorItem("HelperExtenderGenerator", typeof(EFCodeFirstNetCoreProjectGenerator))]
+    public class HelperExtenderGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
         #region Class Members
 

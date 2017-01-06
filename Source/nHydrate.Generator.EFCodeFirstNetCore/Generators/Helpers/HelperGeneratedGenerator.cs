@@ -30,7 +30,7 @@ using nHydrate.Generator.EFCodeFirstNetCore;
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
 {
     [GeneratorItem("HelperGeneratedGenerator", typeof(HelperExtenderGenerator))]
-    public class HelperGeneratedGenerator : EFCodeFirstProjectItemGenerator
+    public class HelperGeneratedGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
         #region Class Members
 

@@ -30,7 +30,7 @@ using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
 {
-    public class HelperExtenderTemplate : EFCodeFirstBaseTemplate
+    public class HelperExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
         private StringBuilder sb = new StringBuilder();
 

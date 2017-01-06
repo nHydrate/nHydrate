@@ -54,10 +54,18 @@
     <Compile Include="EFCodeFirstNetCoreProjectItemGenerator.cs" />
     <Compile Include="EFCodeFirstNetCoreProjectGenerator.cs" />
     <Compile Include="EFCodeFirstNetCoreBaseTemplate.cs" />
+    <Compile Include="Generators\ContextStartup\ContextStartupExtenderGenerator.cs" />
+    <Compile Include="Generators\ContextStartup\ContextStartupExtenderTemplate.cs" />
+    <Compile Include="Generators\ContextStartup\ContextStartupGeneratedGenerator.cs" />
+    <Compile Include="Generators\ContextStartup\ContextStartupGeneratedTemplate.cs" />
     <Compile Include="Generators\Entity\EntityExtenderGenerator.cs" />
     <Compile Include="Generators\Entity\EntityExtenderTemplate.cs" />
     <Compile Include="Generators\Entity\EntityGeneratedGenerator.cs" />
     <Compile Include="Generators\Entity\EntityGeneratedTemplate.cs" />
+    <Compile Include="Generators\Helpers\HelperExtenderGenerator.cs" />
+    <Compile Include="Generators\Helpers\HelperExtenderTemplate.cs" />
+    <Compile Include="Generators\Helpers\HelperGeneratedGenerator.cs" />
+    <Compile Include="Generators\Helpers\HelperGeneratedTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
