@@ -33,7 +33,7 @@ using System.Collections.Generic;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
 {
-    public class ContextExtensionsGeneratedTemplate : EFCodeFirstBaseTemplate
+    public class ContextExtensionsGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
         private StringBuilder sb = new StringBuilder();
 
@@ -90,6 +90,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
             sb.AppendLine("using System.Linq.Expressions;");
+            sb.AppendLine("using System.Reflection;");
             sb.AppendLine();
         }
 
@@ -109,29 +110,31 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		#region Include Extension Methods");
             sb.AppendLine();
 
-            sb.AppendLine("		private static System.Data.Entity.Infrastructure.DbQuery<T> GetInclude<T, R>(this System.Data.Entity.Infrastructure.DbQuery<T> item, Expression<Func<R, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
-            sb.AppendLine("			where T : BaseEntity");
-            sb.AppendLine("			where R : IContextInclude");
-            sb.AppendLine("		{");
-            sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
-            sb.AppendLine("			strings.RemoveAt(0);");
-            sb.AppendLine("			var compoundString = string.Empty;");
-            sb.AppendLine("			foreach (var s in strings)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				if (!string.IsNullOrEmpty(compoundString)) compoundString += \".\";");
-            sb.AppendLine("				compoundString += s;");
-            sb.AppendLine("				item = item.Include(compoundString);");
-            sb.AppendLine("			}");
-            sb.AppendLine("			return item;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            //NETCORE REMOVED
+            //sb.AppendLine("		private static System.Data.Entity.Infrastructure.DbQuery<T> GetInclude<T, R>(this System.Data.Entity.Infrastructure.DbQuery<T> item, Expression<Func<R, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
+            //sb.AppendLine("			where T : BaseEntity");
+            //sb.AppendLine("			where R : IContextInclude");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
+            //sb.AppendLine("			strings.RemoveAt(0);");
+            //sb.AppendLine("			var compoundString = string.Empty;");
+            //sb.AppendLine("			foreach (var s in strings)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				if (!string.IsNullOrEmpty(compoundString)) compoundString += \".\";");
+            //sb.AppendLine("				compoundString += s;");
+            //sb.AppendLine("				item = item.Include(compoundString);");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("			return item;");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
 
             sb.AppendLine("		private static IQueryable<T> GetInclude<T, R>(this IQueryable<T> item, Expression<Func<R, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
             sb.AppendLine("			where T : BaseEntity");
             sb.AppendLine("			where R : IContextInclude");
             sb.AppendLine("		{");
-            sb.AppendLine("			var dbItem = item as System.Data.Entity.Infrastructure.DbQuery<T>;");
-            sb.AppendLine("			if (dbItem != null) return GetInclude(dbItem, query);");
+            //NETCORE REMOVED
+            //sb.AppendLine("			var dbItem = item as System.Data.Entity.Infrastructure.DbQuery<T>;");
+            //sb.AppendLine("			if (dbItem != null) return GetInclude(dbItem, query);");
             sb.AppendLine("			var tempItem = item as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
             sb.AppendLine("			if (tempItem == null) return item;");
             sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
@@ -219,27 +222,27 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             #endregion
 
             #region Metadata Extension Methods
-            sb.AppendLine("		#region Metadata Extension Methods");
-            sb.AppendLine();
+            //sb.AppendLine("		#region Metadata Extension Methods");
+            //sb.AppendLine();
 
-            //Main one for base IReadOnlyBusinessObject object
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Creates and returns a metadata object for an entity type");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"entity\">The source class</param>");
-            sb.AppendLine("		/// <returns>A metadata object for the entity types in this assembly</returns>");
-            sb.AppendLine("		public static " + this.GetLocalNamespace() + ".IMetadata GetMetaData(this " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject entity)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			var a = entity.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true).FirstOrDefault();");
-            sb.AppendLine("			if (a == null) return null;");
-            sb.AppendLine("			var t = ((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)a).MetadataClassType;");
-            sb.AppendLine("			if (t == null) return null;");
-            sb.AppendLine("			return Activator.CreateInstance(t) as " + this.GetLocalNamespace() + ".IMetadata;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            ////Main one for base IReadOnlyBusinessObject object
+            //sb.AppendLine("		/// <summary>");
+            //sb.AppendLine("		/// Creates and returns a metadata object for an entity type");
+            //sb.AppendLine("		/// </summary>");
+            //sb.AppendLine("		/// <param name=\"entity\">The source class</param>");
+            //sb.AppendLine("		/// <returns>A metadata object for the entity types in this assembly</returns>");
+            //sb.AppendLine("		public static " + this.GetLocalNamespace() + ".IMetadata GetMetaData(this " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject entity)");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			var a = entity.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true).FirstOrDefault();");
+            //sb.AppendLine("			if (a == null) return null;");
+            //sb.AppendLine("			var t = ((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)a).MetadataClassType;");
+            //sb.AppendLine("			if (t == null) return null;");
+            //sb.AppendLine("			return Activator.CreateInstance(t) as " + this.GetLocalNamespace() + ".IMetadata;");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
 
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
+            //sb.AppendLine("		#endregion");
+            //sb.AppendLine();
             #endregion
 
             #region GetEntityType
@@ -449,508 +452,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		}");
             sb.AppendLine("		#endregion");
             sb.AppendLine();
-            #endregion
-
-            #region Delete Extensions
-            sb.AppendLine("		#region Delete Extensions");
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static void Delete<T>(this IQueryable<T> query)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
-            sb.AppendLine("		{");
-            sb.AppendLine("			query.Delete(optimizer: null, connectionString: null);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static void Delete<T>(this IQueryable<T> query, QueryOptimizer optimizer)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
-            sb.AppendLine("		{");
-            sb.AppendLine("			query.Delete(optimizer: optimizer, connectionString: null);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static void Delete<T>(this IQueryable<T> query, string connectionString)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
-            sb.AppendLine("		{");
-            sb.AppendLine("			query.Delete(optimizer: new QueryOptimizer(), connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static void  Delete<T>(this IQueryable<T> query, QueryOptimizer optimizer, string connectionString)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
-            sb.AppendLine("		{");
-            sb.AppendLine("			if (optimizer == null)");
-            sb.AppendLine("				optimizer = new QueryOptimizer();");
-            sb.AppendLine();
-            sb.AppendLine("			//There is nothing to do");
-            sb.AppendLine("			if (query.ToString().Replace(\"\\r\", string.Empty).Split(new char[] { '\\n' }).LastOrDefault().Trim() == \"WHERE 1 = 0\")");
-            sb.AppendLine("				return;");
-            sb.AppendLine();
-            sb.AppendLine("			var instanceKey = Guid.Empty;");
-            sb.AppendLine("			System.Data.Entity.Core.Objects.ObjectContext objectContext = null;");
-            sb.AppendLine("			try");
-            sb.AppendLine("			{");
-            sb.AppendLine();
-            sb.AppendLine("				var propContext = query.Provider.GetType().GetProperty(\"InternalContext\");");
-            sb.AppendLine("				if (propContext != null)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					var context = propContext.GetValue(query.Provider);");
-            sb.AppendLine("					if (context != null)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						var oc = context.GetType().GetProperty(\"ObjectContext\").GetValue(context) as System.Data.Entity.Core.Objects.ObjectContext;");
-            sb.AppendLine("						objectContext = oc as System.Data.Entity.Core.Objects.ObjectContext;");
-            sb.AppendLine("						instanceKey = ((IContext)context.GetType().GetProperty(\"Owner\").GetValue(context)).InstanceKey;");
-            sb.AppendLine("						if (string.IsNullOrEmpty(connectionString))");
-            sb.AppendLine("						{");
-            sb.AppendLine("							var propCs = context.GetType().GetProperty(\"OriginalConnectionString\");");
-            sb.AppendLine("							if (propCs != null) connectionString = (string)propCs.GetValue(context);");
-            sb.AppendLine("						}");
-            sb.AppendLine("					}");
-            sb.AppendLine("				}");
-            sb.AppendLine();
-            sb.AppendLine("				if (instanceKey == Guid.Empty)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					var context2 = query.Provider.GetType().GetField(\"_context\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);");
-            sb.AppendLine("					if (context2 != null)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						var context = context2.GetValue(query.Provider);");
-            sb.AppendLine("						objectContext = context as System.Data.Entity.Core.Objects.ObjectContext;");
-            sb.AppendLine("						var qq = objectContext.InterceptionContext.DbContexts.First() as " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities;");
-            sb.AppendLine("						instanceKey = qq.InstanceKey;");
-            sb.AppendLine("						if (string.IsNullOrEmpty(connectionString))");
-            sb.AppendLine("						{");
-            sb.AppendLine("							connectionString = Util.StripEFCS2Normal(objectContext.Connection.ConnectionString);");
-            sb.AppendLine("						}");
-            sb.AppendLine("					}");
-            sb.AppendLine("				}");
-            sb.AppendLine();
-            sb.AppendLine("				if (instanceKey == Guid.Empty)");
-            sb.AppendLine("					throw new Exception(\"Unknown context\");");
-            sb.AppendLine();
-            sb.AppendLine("				if (string.IsNullOrEmpty(connectionString))");
-            sb.AppendLine("				{");
-            sb.AppendLine("					var propContext2 = query.GetType().GetProperty(\"Context\");");
-            sb.AppendLine("					if (propContext2 != null)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						var context = propContext2.GetValue(query) as System.Data.Entity.Core.Objects.ObjectContext;");
-            sb.AppendLine("						if (context != null)");
-            sb.AppendLine("						{");
-            sb.AppendLine("							var builder = new System.Data.Entity.Core.EntityClient.EntityConnectionStringBuilder(context.Connection.ConnectionString);");
-            sb.AppendLine("							if (!string.IsNullOrWhiteSpace(builder.ProviderConnectionString))");
-            sb.AppendLine("							{");
-            sb.AppendLine("								objectContext = context;");
-            sb.AppendLine("								connectionString = builder.ProviderConnectionString;");
-            sb.AppendLine("							}");
-            sb.AppendLine("						}");
-            sb.AppendLine("					}");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("			catch { }");
-            sb.AppendLine();
-
-            sb.AppendLine("			System.Data.Entity.Core.Objects.ObjectParameterCollection existingParams = null;");
-            sb.AppendLine("			{");
-            sb.AppendLine("			    var objectQuery = query as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
-            sb.AppendLine("			    if (objectQuery == null)");
-            sb.AppendLine("			    {");
-            sb.AppendLine("			        var internalQueryField = query.GetType().GetProperty(\"InternalQuery\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(query);");
-            sb.AppendLine("			        if (internalQueryField != null)");
-            sb.AppendLine("			            objectQuery = internalQueryField.GetType().GetProperty(\"ObjectQuery\").GetValue(internalQueryField) as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
-            sb.AppendLine("			    }");
-            sb.AppendLine();
-            sb.AppendLine("			    if (objectQuery != null)");
-            sb.AppendLine("			    {");
-            sb.AppendLine("			        var ss2 = objectQuery.ToTraceString(); //DO NOT REMOVE! must call this to init params");
-            sb.AppendLine("			        existingParams = objectQuery.GetType().GetProperty(\"Parameters\").GetValue(objectQuery) as System.Data.Entity.Core.Objects.ObjectParameterCollection;");
-            sb.AppendLine("			    }");
-            sb.AppendLine("			}");
-            sb.AppendLine();
-
-            sb.AppendLine("			var sb = new System.Text.StringBuilder();");
-            sb.AppendLine("			#region Per table code");
-            sb.AppendLine("			if (false) ;");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
-            {
-                var tableName = table.DatabaseName;
-                if (table.IsTenant)
-                    tableName = _model.TenantPrefix + "_" + table.DatabaseName;
-                
-                var innerQueryToString = "((IQueryable<" + GetLocalNamespace() + ".Entity." + table.PascalName + ">)query).Select(x => new { " + string.Join(", ", table.PrimaryKeyColumns.Select(x => "x." + x.PascalName).ToList()) + " }).ToString()";
-                if (table.Security.IsValid())
-                    innerQueryToString = "((System.Data.Entity.Core.Objects.ObjectQuery)(((System.Data.Entity.Core.Objects.ObjectQuery<" + GetLocalNamespace() + ".Entity." + table.PascalName + ">)query).Select(x => new { " + string.Join(", ", table.PrimaryKeyColumns.Select(x => "x." + x.PascalName).ToList()) + " }))).ToTraceString()";
-
-                sb.AppendLine("			else if (typeof(T) == typeof(" + GetLocalNamespace() + ".Entity." + table.PascalName + "))");
-                sb.AppendLine("			{");
-                sb.AppendLine("				sb.AppendLine(\"set rowcount \" + optimizer.ChunkSize + \";\");");
-                sb.AppendLine("				sb.AppendLine(\"delete [X] from [" + table.GetSQLSchema() + "].[" + tableName + "] [X] inner join (\");");
-                sb.AppendLine("				sb.AppendLine(" + innerQueryToString + ");");
-                sb.AppendLine("				sb.AppendLine(\") AS [Extent2]\");");
-                sb.AppendLine("				sb.AppendLine(\"on " + string.Join(" AND ", table.PrimaryKeyColumns.Select(x => "[X].[" + x.Name + "] = [Extent2].[" + x.Name + "]").ToList()) + "\");");
-                sb.AppendLine("				sb.AppendLine(\"select @@ROWCOUNT\");");
-                sb.AppendLine("			}");
-            }
-            sb.AppendLine("			else throw new Exception(\"Entity type not found\");");
-            sb.AppendLine("			#endregion");
-
-            sb.AppendLine("			if (string.IsNullOrEmpty(connectionString))");
-            sb.AppendLine("				connectionString = " + _model.ProjectName + "Entities.GetConnectionString();");
-            sb.AppendLine();
-            sb.AppendLine("			var newParams = new List<System.Data.SqlClient.SqlParameter>();");
-            sb.AppendLine("			if (existingParams != null)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				foreach (var ep in existingParams)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					newParams.Add(new System.Data.SqlClient.SqlParameter { ParameterName = ep.Name, Value = (ep.Value == null ? System.DBNull.Value : ep.Value) });");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("			QueryPreCache.AddDelete(instanceKey, sb.ToString(), newParams, optimizer);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Delete<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where)");
-            sb.AppendLine("			where T : class, " + GetLocalNamespace() + ".IBusinessObject, new()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			entitySet.Where(where).Delete(optimizer: null, connectionString: null);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Delete<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, QueryOptimizer optimizer)");
-            sb.AppendLine("			where T : System.Data.Entity.DbSet<T>, " + GetLocalNamespace() + ".IBusinessObject");
-            sb.AppendLine("		{");
-            sb.AppendLine("			entitySet.Where(where).Delete(optimizer: optimizer, connectionString: null);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Delete<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, string connectionString)");
-            sb.AppendLine("			where T : System.Data.Entity.DbSet<T>, " + GetLocalNamespace() + ".IBusinessObject");
-            sb.AppendLine("		{");
-            sb.AppendLine("			entitySet.Where(where).Delete(optimizer: null, connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-            #endregion
-
-            #region Update Extensions
-            sb.AppendLine("		#region Update Extensions");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, dynamic>> obj)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
-            sb.AppendLine("		{");
-            sb.AppendLine("			query.Update(obj: obj, optimizer: null, connectionString: null);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, dynamic>> obj, QueryOptimizer optimizer)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
-            sb.AppendLine("		{");
-            sb.AppendLine("			query.Update(obj: obj, optimizer: optimizer, connectionString: null);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, dynamic>> obj, string connectionString)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
-            sb.AppendLine("		{");
-            sb.AppendLine("			query.Update(obj: obj, optimizer: null, connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, dynamic>> obj, QueryOptimizer optimizer, string connectionString)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
-            sb.AppendLine("		{");
-            sb.AppendLine();
-            sb.AppendLine("			if (optimizer == null)");
-            sb.AppendLine("				optimizer = new QueryOptimizer();");
-            sb.AppendLine();
-            sb.AppendLine("			//There is nothing to do");
-            sb.AppendLine("			if (query.ToString().Replace(\"\\r\", string.Empty).Split(new char[] { '\\n' }).LastOrDefault().Trim() == \"WHERE 1 = 0\")");
-            sb.AppendLine("				return;");
-            sb.AppendLine();
-            sb.AppendLine("			var instanceKey = Guid.Empty;");
-            sb.AppendLine("			System.Data.Entity.Core.Objects.ObjectContext objectContext = null;");
-            sb.AppendLine("			try");
-            sb.AppendLine("			{");
-            sb.AppendLine();
-            sb.AppendLine("				var propContext = query.Provider.GetType().GetProperty(\"InternalContext\");");
-            sb.AppendLine("				if (propContext != null)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					var context = propContext.GetValue(query.Provider);");
-            sb.AppendLine("					if (context != null)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						var oc = context.GetType().GetProperty(\"ObjectContext\").GetValue(context) as System.Data.Entity.Core.Objects.ObjectContext;");
-            sb.AppendLine("						objectContext = oc as System.Data.Entity.Core.Objects.ObjectContext;");
-            sb.AppendLine("						instanceKey = ((IContext)context.GetType().GetProperty(\"Owner\").GetValue(context)).InstanceKey;");
-            sb.AppendLine("						if (string.IsNullOrEmpty(connectionString))");
-            sb.AppendLine("						{");
-            sb.AppendLine("							var propCs = context.GetType().GetProperty(\"OriginalConnectionString\");");
-            sb.AppendLine("							if (propCs != null) connectionString = (string)propCs.GetValue(context);");
-            sb.AppendLine("						}");
-            sb.AppendLine("					}");
-            sb.AppendLine("				}");
-            sb.AppendLine();
-            sb.AppendLine("				if (instanceKey == Guid.Empty)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					var context2 = query.Provider.GetType().GetField(\"_context\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);");
-            sb.AppendLine("					if (context2 != null)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						var context = context2.GetValue(query.Provider);");
-            sb.AppendLine("						objectContext = context as System.Data.Entity.Core.Objects.ObjectContext;");
-            sb.AppendLine("						var qq = objectContext.InterceptionContext.DbContexts.First() as " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities;");
-            sb.AppendLine("						instanceKey = qq.InstanceKey;");
-            sb.AppendLine("						if (string.IsNullOrEmpty(connectionString))");
-            sb.AppendLine("						{");
-            sb.AppendLine("							connectionString = Util.StripEFCS2Normal(objectContext.Connection.ConnectionString);");
-            sb.AppendLine("						}");
-            sb.AppendLine("					}");
-            sb.AppendLine("				}");
-            sb.AppendLine();
-            sb.AppendLine("				if (instanceKey == Guid.Empty)");
-            sb.AppendLine("					throw new Exception(\"Unknown context\");");
-            sb.AppendLine();
-            sb.AppendLine("				if (string.IsNullOrEmpty(connectionString))");
-            sb.AppendLine("				{");
-            sb.AppendLine("					var propContext2 = query.GetType().GetProperty(\"Context\");");
-            sb.AppendLine("					if (propContext2 != null)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						var context = propContext2.GetValue(query) as System.Data.Entity.Core.Objects.ObjectContext;");
-            sb.AppendLine("						if (context != null)");
-            sb.AppendLine("						{");
-            sb.AppendLine("							var builder = new System.Data.Entity.Core.EntityClient.EntityConnectionStringBuilder(context.Connection.ConnectionString);");
-            sb.AppendLine("							if (!string.IsNullOrWhiteSpace(builder.ProviderConnectionString))");
-            sb.AppendLine("							{");
-            sb.AppendLine("								objectContext = context;");
-            sb.AppendLine("								connectionString = builder.ProviderConnectionString;");
-            sb.AppendLine("							}");
-            sb.AppendLine("						}");
-            sb.AppendLine("					}");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("			catch { }");
-            sb.AppendLine();
-
-            sb.AppendLine("			System.Data.Entity.Core.Objects.ObjectParameterCollection existingParams = null;");
-            sb.AppendLine("			{");
-            sb.AppendLine("			    var objectQuery = query as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
-            sb.AppendLine("			    if (objectQuery == null)");
-            sb.AppendLine("			    {");
-            sb.AppendLine("			        var internalQueryField = query.GetType().GetProperty(\"InternalQuery\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(query);");
-            sb.AppendLine("			        if (internalQueryField != null)");
-            sb.AppendLine("			            objectQuery = internalQueryField.GetType().GetProperty(\"ObjectQuery\").GetValue(internalQueryField) as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
-            sb.AppendLine("			    }");
-            sb.AppendLine();
-            sb.AppendLine("			    if (objectQuery != null)");
-            sb.AppendLine("			    {");
-            sb.AppendLine("			        var ss2 = objectQuery.ToTraceString(); //DO NOT REMOVE! must call this to init params");
-            sb.AppendLine("			        existingParams = objectQuery.GetType().GetProperty(\"Parameters\").GetValue(objectQuery) as System.Data.Entity.Core.Objects.ObjectParameterCollection;");
-            sb.AppendLine("			    }");
-            sb.AppendLine("			}");
-            sb.AppendLine();
-
-            sb.AppendLine("			var startTime = DateTime.Now;");
-            sb.AppendLine("			var changedList = new Dictionary<string, object>();");
-            sb.AppendLine();
-            sb.AppendLine("			#region Parse Tree");
-            sb.AppendLine("			var propBody = obj.GetType().GetProperty(\"Body\");");
-            sb.AppendLine("			if (propBody != null)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var body = propBody.GetValue(obj);");
-            sb.AppendLine("				if (body != null)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					var propBindings = body.GetType().GetProperty(\"Bindings\");");
-            sb.AppendLine("					if (propBindings != null)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						var members = (IEnumerable<System.Linq.Expressions.MemberBinding>)propBindings.GetValue(body);");
-            sb.AppendLine("						foreach (System.Linq.Expressions.MemberAssignment item in members)");
-            sb.AppendLine("						{");
-            sb.AppendLine("							var name = item.Member.Name;");
-            sb.AppendLine("							object value = null;");
-            sb.AppendLine();
-            sb.AppendLine("							if (item.Expression.Type == typeof(int?))");
-            sb.AppendLine("								value = CompileValue<int?>(item.Expression);");
-            sb.AppendLine("							else if (item.Expression.Type == typeof(int))");
-            sb.AppendLine("								value = CompileValue<int>(item.Expression);");
-            sb.AppendLine();
-            sb.AppendLine("							else if (item.Expression.Type == typeof(string))");
-            sb.AppendLine("								value = CompileValue<string>(item.Expression);");
-            sb.AppendLine();
-            sb.AppendLine("							else if (item.Expression.Type == typeof(bool?))");
-            sb.AppendLine("								value = CompileValue<bool?>(item.Expression);");
-            sb.AppendLine("							else if (item.Expression.Type == typeof(bool))");
-            sb.AppendLine("								value = CompileValue<bool>(item.Expression);");
-            sb.AppendLine();
-            sb.AppendLine("							else if (item.Expression.Type == typeof(byte?))");
-            sb.AppendLine("								value = CompileValue<byte?>(item.Expression);");
-            sb.AppendLine("							else if (item.Expression.Type == typeof(byte))");
-            sb.AppendLine("								value = CompileValue<byte>(item.Expression);");
-            sb.AppendLine();
-            sb.AppendLine("							else if (item.Expression.Type == typeof(char?))");
-            sb.AppendLine("								value = CompileValue<char?>(item.Expression);");
-            sb.AppendLine("							else if (item.Expression.Type == typeof(char))");
-            sb.AppendLine("								value = CompileValue<char>(item.Expression);");
-            sb.AppendLine();
-            sb.AppendLine("							else if (item.Expression.Type == typeof(decimal?))");
-            sb.AppendLine("								value = CompileValue<decimal?>(item.Expression);");
-            sb.AppendLine("							else if (item.Expression.Type == typeof(decimal))");
-            sb.AppendLine("								value = CompileValue<decimal>(item.Expression);");
-            sb.AppendLine();
-            sb.AppendLine("							else if (item.Expression.Type == typeof(double?))");
-            sb.AppendLine("								value = CompileValue<double?>(item.Expression);");
-            sb.AppendLine("							else if (item.Expression.Type == typeof(double))");
-            sb.AppendLine("								value = CompileValue<double>(item.Expression);");
-            sb.AppendLine();
-            sb.AppendLine("							else if (item.Expression.Type == typeof(float?))");
-            sb.AppendLine("								value = CompileValue<float?>(item.Expression);");
-            sb.AppendLine("							else if (item.Expression.Type == typeof(float))");
-            sb.AppendLine("								value = CompileValue<float>(item.Expression);");
-            sb.AppendLine();
-            sb.AppendLine("							else if (item.Expression.Type == typeof(long?))");
-            sb.AppendLine("								value = CompileValue<long?>(item.Expression);");
-            sb.AppendLine("							else if (item.Expression.Type == typeof(long))");
-            sb.AppendLine("								value = CompileValue<long>(item.Expression);");
-            sb.AppendLine();
-            sb.AppendLine("							else if (item.Expression.Type == typeof(short?))");
-            sb.AppendLine("								value = CompileValue<short?>(item.Expression);");
-            sb.AppendLine("							else if (item.Expression.Type == typeof(short))");
-            sb.AppendLine("								value = CompileValue<short>(item.Expression);");
-            sb.AppendLine();
-            sb.AppendLine("							else if (item.Expression.Type == typeof(DateTime?))");
-            sb.AppendLine("								value = CompileValue<DateTime?>(item.Expression);");
-            sb.AppendLine("							else if (item.Expression.Type == typeof(DateTime))");
-            sb.AppendLine("								value = CompileValue<DateTime>(item.Expression);");
-            sb.AppendLine();
-            sb.AppendLine("							else");
-            sb.AppendLine("								throw new Exception(\"Data type is not handled '\" + item.Expression.Type.Name + \"'\");");
-            sb.AppendLine();
-            sb.AppendLine("							changedList.Add(name, value);");
-            sb.AppendLine("						}");
-            sb.AppendLine("					}");
-            sb.AppendLine("					else");
-            sb.AppendLine("					{");
-            sb.AppendLine("						throw new Exception(\"Update statement must be in format 'm => new Entity { Field = 0 }'\");");
-            sb.AppendLine("					}");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("			#endregion");
-            sb.AppendLine();
-            sb.AppendLine("			var fieldSql = new List<string>();");
-            sb.AppendLine("			var paramIndex = 0;");
-            sb.AppendLine("			var parameters = new List<System.Data.SqlClient.SqlParameter>();");
-            sb.AppendLine("			foreach (var key in changedList.Keys)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var value = changedList[key];");
-            sb.AppendLine("				if (value == null)");
-            sb.AppendLine("					fieldSql.Add(\"[\" + key + \"] = NULL\");");
-            sb.AppendLine("				else if (value is string)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					fieldSql.Add(\"[\" + key + \"] = @param\" + paramIndex);");
-            sb.AppendLine("					parameters.Add(new System.Data.SqlClient.SqlParameter { ParameterName = \"@param\" + paramIndex, DbType = System.Data.DbType.String, Value = changedList[key] });");
-            sb.AppendLine("				}");
-            sb.AppendLine("				else if (value is DateTime)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					fieldSql.Add(\"[\" + key + \"] = @param\" + paramIndex);");
-            sb.AppendLine("					parameters.Add(new System.Data.SqlClient.SqlParameter { ParameterName = \"@param\" + paramIndex, DbType = System.Data.DbType.DateTime, Value = changedList[key] });");
-            sb.AppendLine("				}");
-            sb.AppendLine("				else");
-            sb.AppendLine("				{");
-            sb.AppendLine("					fieldSql.Add(\"[\" + key + \"] = @param\" + paramIndex);");
-            sb.AppendLine("					parameters.Add(new System.Data.SqlClient.SqlParameter { ParameterName = \"@param\" + paramIndex, Value = changedList[key] });");
-            sb.AppendLine("				}");
-            sb.AppendLine("				paramIndex++;");
-            sb.AppendLine("			}");
-            sb.AppendLine();
-            sb.AppendLine("			var sb = new System.Text.StringBuilder();");
-            sb.AppendLine("			#region Per table code");
-            sb.AppendLine("			if (false) ;");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
-            {
-                var tableName = table.DatabaseName;
-                if (table.IsTenant)
-                    tableName = _model.TenantPrefix + "_" + table.DatabaseName;
-
-                var innerQueryToString = "((IQueryable<" + GetLocalNamespace() + ".Entity." + table.PascalName + ">)query).Select(x => new { " + string.Join(", ", table.PrimaryKeyColumns.Select(x => "x." + x.PascalName).ToList()) + " }).ToString()";
-                if (table.Security.IsValid())
-                    innerQueryToString = "((System.Data.Entity.Core.Objects.ObjectQuery)(((System.Data.Entity.Core.Objects.ObjectQuery<" + GetLocalNamespace() + ".Entity." + table.PascalName + ">)query).Select(x => new { " + string.Join(", ", table.PrimaryKeyColumns.Select(x => "x." + x.PascalName).ToList()) + " }))).ToTraceString()";
-
-                sb.AppendLine("			else if (typeof(T) == typeof(" + GetLocalNamespace() + ".Entity." + table.PascalName + "))");
-                sb.AppendLine("			{");
-                sb.AppendLine("				sb.AppendLine(\"set rowcount \" + optimizer.ChunkSize + \";\");");
-                sb.AppendLine("				sb.AppendLine(\"UPDATE [X] SET\");");
-                sb.AppendLine("				sb.AppendLine(string.Join(\", \", fieldSql));");
-                sb.AppendLine("				sb.AppendLine(\"FROM [" + table.GetSQLSchema() + "].[" + tableName + "] AS [X] INNER JOIN (\");");
-                sb.AppendLine("				sb.AppendLine(" + innerQueryToString + ");");
-                sb.AppendLine("				sb.AppendLine(\") AS [Extent2]\");");
-                sb.AppendLine("				sb.AppendLine(\"on " + string.Join(" AND ", table.PrimaryKeyColumns.Select(x => "[X].[" + x.Name + "] = [Extent2].[" + x.Name + "]").ToList()) + "\");");
-                sb.AppendLine("				sb.AppendLine(\"select @@ROWCOUNT\");");
-                sb.AppendLine("			}");
-            }
-            sb.AppendLine("			else throw new Exception(\"Entity type not found\");");
-            sb.AppendLine("			#endregion");
-
-            sb.AppendLine();
-            sb.AppendLine("			if (string.IsNullOrEmpty(connectionString))");
-            sb.AppendLine("				connectionString = " + _model.ProjectName + "Entities.GetConnectionString();");
-            sb.AppendLine();
-
-            sb.AppendLine("			var newParams = new List<System.Data.SqlClient.SqlParameter>();");
-            sb.AppendLine("			if (existingParams != null)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				foreach (var ep in existingParams)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					newParams.Add(new System.Data.SqlClient.SqlParameter { ParameterName = ep.Name, Value = (ep.Value == null ? System.DBNull.Value : ep.Value) });");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("			newParams.AddRange(parameters);");
-            sb.AppendLine("			QueryPreCache.AddUpdate(instanceKey, sb.ToString(), newParams, optimizer);");
-
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine("		private static T CompileValue<T>(this Expression exp)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			var accessorExpression = Expression.Lambda<Func<T>>(exp);");
-            sb.AppendLine("			var accessor = accessorExpression.Compile();");
-            sb.AppendLine("			return accessor();");
-            sb.AppendLine();
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, Expression<Func<T, dynamic>> obj)");
-            sb.AppendLine("			where T : class, " + GetLocalNamespace() + ".IBusinessObject, new()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			entitySet.Where(where).Update(obj, optimizer: null, connectionString: null);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, Expression<Func<T, dynamic>> obj, QueryOptimizer optimizer)");
-            sb.AppendLine("			where T : class, " + GetLocalNamespace() + ".IBusinessObject, new()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			entitySet.Where(where).Update(obj, optimizer: optimizer, connectionString: null);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, Expression<Func<T, dynamic>> obj, string connectionString)");
-            sb.AppendLine("			where T : class, " + GetLocalNamespace() + ".IBusinessObject, new()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			entitySet.Where(where).Update(obj, optimizer: null, connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		#endregion");
-
             #endregion
 
             sb.AppendLine("	}");

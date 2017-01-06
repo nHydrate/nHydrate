@@ -30,8 +30,8 @@ using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 {
-    [GeneratorItem("ContextInterfaceExtenderGenerator", typeof(EFCodeFirstProjectGenerator))]
-    public class ContextInterfaceExtenderGenerator : EFCodeFirstProjectItemGenerator
+    [GeneratorItem("ContextInterfaceExtenderGenerator", typeof(EFCodeFirstNetCoreProjectGenerator))]
+    public class ContextInterfaceExtenderGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
         #region Class Members
 
@@ -58,7 +58,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
         public override string LocalNamespaceExtension
         {
-            get { return EFCodeFirstProjectGenerator.NamespaceExtension; }
+            get { return EFCodeFirstNetCoreProjectGenerator.NamespaceExtension; }
         }
 
         #endregion

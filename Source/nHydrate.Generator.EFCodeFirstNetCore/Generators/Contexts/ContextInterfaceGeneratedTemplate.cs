@@ -32,7 +32,7 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 {
-    public class ContextInterfaceGeneratedTemplate : EFCodeFirstBaseTemplate
+    public class ContextInterfaceGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
         private readonly StringBuilder sb = new StringBuilder();
 
@@ -77,7 +77,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("{");
                 this.AppendTypeTableEnums();
                 this.AppendContextClass();
-                this.AppendOtherInterfaces();
                 sb.AppendLine("}");
                 sb.AppendLine();
                 sb.AppendLine("#pragma warning restore 0168"); //Supress variable declared not used
@@ -114,10 +113,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             sb.AppendLine("	public partial interface I" + _model.ProjectName + "Entities : System.IDisposable");
             sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
+            //NETCORE REMOVED
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		int SaveChanges();");
             sb.AppendLine();
@@ -184,9 +184,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		void ReloadItem(BaseEntity entity);");
             sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		void DetachItem(BaseEntity entity);");
-            sb.AppendLine();
+            //NETCORE REMOVED
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		void DetachItem(BaseEntity entity);");
+            //sb.AppendLine();
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		ContextStartup ContextStartup { get; }");
             sb.AppendLine();
@@ -195,17 +196,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("	}");
             sb.AppendLine();
             sb.AppendLine("	#endregion");
-            sb.AppendLine();
-        }
-
-        private void AppendOtherInterfaces()
-        {
-            sb.AppendLine("	/// <summary />");
-            sb.AppendLine("	public partial interface IMetadata");
-            sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		string GetTableName();");
-            sb.AppendLine("	}");
             sb.AppendLine();
         }
 

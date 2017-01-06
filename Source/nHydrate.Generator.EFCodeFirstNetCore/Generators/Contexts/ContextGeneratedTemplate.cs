@@ -34,7 +34,7 @@ using nHydrate.Generator.Common;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 {
-    public class ContextGeneratedTemplate : EFCodeFirstBaseTemplate
+    public class ContextGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
         private StringBuilder sb = new StringBuilder();
 
@@ -124,12 +124,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Runtime.Serialization;");
             sb.AppendLine("using System.Collections.Generic;");
-            sb.AppendLine("using System.Data.Entity;");
-            sb.AppendLine("using System.Data.SqlClient;");
-            sb.AppendLine("using System.Data;");
-            sb.AppendLine("using System.Data.Entity.ModelConfiguration;");
+            sb.AppendLine("using Microsoft.EntityFrameworkCore;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
-            sb.AppendLine("using System.Data.Entity.Core.Objects;");
             sb.AppendLine();
         }
 
@@ -142,14 +138,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("	/// </summary>");
             sb.AppendLine("	[DataContract]");
             sb.AppendLine("	[Serializable]");
-            sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : System.Data.Entity.DbContext, " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities, IContext");
+            sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : Microsoft.EntityFrameworkCore.DbContext, " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities, IContext");
             sb.AppendLine("	{");
-
-            sb.AppendLine("		static " + _model.ProjectName + "Entities()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			System.Data.Entity.Infrastructure.Interception.DbInterception.Add(new DbInterceptor());");
-            sb.AppendLine("		}");
-            sb.AppendLine();
 
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public static Action<string> QueryLogger { get; set; }");
@@ -161,14 +151,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		public Guid InstanceKey { get; private set; }");
             sb.AppendLine();
 
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		protected override void Dispose(bool disposing)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			QueryPreCache.RemoveAll(InstanceKey);");
-            sb.AppendLine("			base.Dispose(disposing);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
             //Create the modifier property
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// The audit modifier used to mark database edits");
@@ -176,7 +158,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		protected ContextStartup _contextStartup = new ContextStartup(null);");
             sb.AppendLine();
 
-            sb.AppendLine("		private static Dictionary<string, SequentialIdGenerator> _sequentialIdGeneratorCache = new Dictionary<string, SequentialIdGenerator>();");
             sb.AppendLine("		private static object _seqCacheLock = new object();");
             sb.AppendLine();
 
@@ -185,98 +166,88 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		private const string _modelKey = \"" + _model.Key + "\";");
             sb.AppendLine();
 
+            //NETCORE REMOVED
             //Events
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		[field:NonSerialized]");
-            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			if(BeforeSaveModifiedEntity != null)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				BeforeSaveModifiedEntity(this, e);");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		[field:NonSerialized]");
+            //sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			if(BeforeSaveModifiedEntity != null)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				BeforeSaveModifiedEntity(this, e);");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
 
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		[field:NonSerialized]");
-            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			if(BeforeSaveAddedEntity != null)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				BeforeSaveAddedEntity(this, e);");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		[field:NonSerialized]");
+            //sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			if(BeforeSaveAddedEntity != null)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				BeforeSaveAddedEntity(this, e);");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
 
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		[field:NonSerialized]");
-            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveModifiedEntity;");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		protected virtual void OnAfterSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			if(AfterSaveModifiedEntity != null)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				AfterSaveModifiedEntity(this, e);");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		[field:NonSerialized]");
+            //sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveModifiedEntity;");
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		protected virtual void OnAfterSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			if(AfterSaveModifiedEntity != null)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				AfterSaveModifiedEntity(this, e);");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
 
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		[field:NonSerialized]");
-            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveAddedEntity;");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		protected virtual void OnAfterSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			if(AfterSaveAddedEntity != null)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				AfterSaveAddedEntity(this, e);");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		[field:NonSerialized]");
+            //sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveAddedEntity;");
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		protected virtual void OnAfterSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			if(AfterSaveAddedEntity != null)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				AfterSaveAddedEntity(this, e);");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
 
             #region Constructors
             sb.AppendLine("		#region Constructors");
-            sb.AppendLine();
-
-            sb.AppendLine("		private void ResetContextStartup()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			try");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var frame = new System.Diagnostics.StackFrame(2, true);");
-            sb.AppendLine("				var method = frame.GetMethod();");
-            sb.AppendLine("				int lineNumber = frame.GetFileLineNumber();");
-            sb.AppendLine("				_contextStartup.DebugInfo = method.DeclaringType.ToString() + \".\" + method.Name + \":\" + lineNumber;");
-            sb.AppendLine("			}");
-            sb.AppendLine("			catch { }");
-            sb.AppendLine("		}");
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Initializes a new " + _model.ProjectName + "Entities object using the connection string found in the '" + _model.ProjectName + "Entities' section of the application configuration file.");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public " + _model.ProjectName + "Entities() :");
-            sb.AppendLine("			base(Util.ConvertNormalCS2EFFromConfig(\"name=" + _model.ProjectName + "Entities\"))");
+            //NETCORE REMOVED
+            //sb.AppendLine("			base(Util.ConvertNormalCS2EFFromConfig(\"name=" + _model.ProjectName + "Entities\"))");
+            sb.AppendLine("			base()");
             sb.AppendLine("		{");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
-            sb.AppendLine("			_contextStartup = new EFDAL.ContextStartup(null, true);");
-            sb.AppendLine("			ResetContextStartup();");
-            sb.AppendLine("			try");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Database.Connection.ConnectionString));");
-            sb.AppendLine("				var timeoutValue = \"30\";");
-            sb.AppendLine("				if (builder.ContainsKey(\"connect timeout\"))");
-            sb.AppendLine("					timeoutValue = (string) builder[\"connect timeout\"];");
-            sb.AppendLine("				else if (builder.ContainsKey(\"connection timeout\"))");
-            sb.AppendLine("					timeoutValue = (string) builder[\"connection timeout\"];");
-            sb.AppendLine("				var v = Convert.ToInt32(timeoutValue);");
-            sb.AppendLine("				if (v > 0)");
-            sb.AppendLine("					this.CommandTimeout = v;");
-            sb.AppendLine("			}");
-            sb.AppendLine("			catch { }");
+            sb.AppendLine("			_contextStartup = new ContextStartup(null, true);");
+            //NETCORE REMOVED
+            //sb.AppendLine("			try");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Database.Connection.ConnectionString));");
+            //sb.AppendLine("				var timeoutValue = \"30\";");
+            //sb.AppendLine("				if (builder.ContainsKey(\"connect timeout\"))");
+            //sb.AppendLine("					timeoutValue = (string) builder[\"connect timeout\"];");
+            //sb.AppendLine("				else if (builder.ContainsKey(\"connection timeout\"))");
+            //sb.AppendLine("					timeoutValue = (string) builder[\"connection timeout\"];");
+            //sb.AppendLine("				var v = Convert.ToInt32(timeoutValue);");
+            //sb.AppendLine("				if (v > 0)");
+            //sb.AppendLine("					this.CommandTimeout = v;");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("			catch { }");
             sb.AppendLine("			this.OnContextCreated();");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -285,12 +256,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// Initialize a new " + _model.ProjectName + "Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public " + _model.ProjectName + "Entities(ContextStartup contextStartup) :");
-            sb.AppendLine("			base(Util.ConvertNormalCS2EFFromConfig(\"name=" + _model.ProjectName + "Entities\", contextStartup))");
+            //NETCORE REMOVED
+            //sb.AppendLine("			base(Util.ConvertNormalCS2EFFromConfig(\"name=" + _model.ProjectName + "Entities\", contextStartup))");
+            sb.AppendLine("				base()");
             sb.AppendLine("		{");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
             sb.AppendLine("			_contextStartup = contextStartup;");
-            sb.AppendLine("			ResetContextStartup();");
-            sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
+            //NETCORE REMOVED
+            //sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
             sb.AppendLine("			this.CommandTimeout = contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
             sb.AppendLine("		}");
@@ -300,12 +273,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// Initialize a new " + _model.ProjectName + "Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public " + _model.ProjectName + "Entities(ContextStartup contextStartup, string connectionString) :");
-            sb.AppendLine("			base(Util.ConvertNormalCS2EF(connectionString, contextStartup))");
+            //NETCORE REMOVED
+            //sb.AppendLine("			base(Util.ConvertNormalCS2EF(connectionString, contextStartup))");
+            sb.AppendLine("				this(connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
             sb.AppendLine("			_contextStartup = contextStartup;");
-            sb.AppendLine("			ResetContextStartup();");
-            sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
+            //NETCORE REMOVED
+            //sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
             sb.AppendLine("			this.CommandTimeout = contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
             sb.AppendLine("		}");
@@ -315,24 +290,31 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// Initialize a new " + _model.ProjectName + "Entities object.");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public " + _model.ProjectName + "Entities(string connectionString) :");
-            sb.AppendLine("			base(Util.ConvertNormalCS2EF(connectionString))");
+            //NETCORE REMOVED
+            //sb.AppendLine("			base(Util.ConvertNormalCS2EF(connectionString))");
+            sb.AppendLine("			base (((Func<DbContextOptions>)(() =>");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var optionsBuilder = new DbContextOptionsBuilder<" + _model.ProjectName + "Entities>();");
+            sb.AppendLine("				optionsBuilder.UseSqlServer(connectionString);");
+            sb.AppendLine("				return optionsBuilder.Options;");
+            sb.AppendLine("			}))())");
             sb.AppendLine("		{");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
-            sb.AppendLine("			_contextStartup = new EFDAL.ContextStartup(null, true);");
-            sb.AppendLine("			ResetContextStartup();");
-            sb.AppendLine("			try");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Database.Connection.ConnectionString));");
-            sb.AppendLine("				var timeoutValue = \"30\";");
-            sb.AppendLine("				if (builder.ContainsKey(\"connect timeout\"))");
-            sb.AppendLine("					timeoutValue = (string) builder[\"connect timeout\"];");
-            sb.AppendLine("				else if (builder.ContainsKey(\"connection timeout\"))");
-            sb.AppendLine("					timeoutValue = (string) builder[\"connection timeout\"];");
-            sb.AppendLine("				var v = Convert.ToInt32(timeoutValue);");
-            sb.AppendLine("				if (v > 0)");
-            sb.AppendLine("					this.CommandTimeout = v;");
-            sb.AppendLine("			}");
-            sb.AppendLine("			catch { }");
+            sb.AppendLine("			_contextStartup = new ContextStartup(null, true);");
+            //NETCORE REMOVED
+            //sb.AppendLine("			try");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Database.Connection.ConnectionString));");
+            //sb.AppendLine("				var timeoutValue = \"30\";");
+            //sb.AppendLine("				if (builder.ContainsKey(\"connect timeout\"))");
+            //sb.AppendLine("					timeoutValue = (string) builder[\"connect timeout\"];");
+            //sb.AppendLine("				else if (builder.ContainsKey(\"connection timeout\"))");
+            //sb.AppendLine("					timeoutValue = (string) builder[\"connection timeout\"];");
+            //sb.AppendLine("				var v = Convert.ToInt32(timeoutValue);");
+            //sb.AppendLine("				if (v > 0)");
+            //sb.AppendLine("					this.CommandTimeout = v;");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("			catch { }");
             sb.AppendLine("			this.OnContextCreated();");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -351,10 +333,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Model creation event");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		protected override void OnModelCreating(DbModelBuilder modelBuilder)");
+            sb.AppendLine("		protected override void OnModelCreating(ModelBuilder modelBuilder)");
             sb.AppendLine("		{");
             sb.AppendLine("			base.OnModelCreating(modelBuilder);");
-            sb.AppendLine("			modelBuilder.Conventions.Remove<System.Data.Entity.ModelConfiguration.Conventions.PluralizingTableNameConvention>();");
+
+            //NETCORE REMOVED
+            //sb.AppendLine("			modelBuilder.Conventions.Remove<System.Data.Entity.ModelConfiguration.Conventions.PluralizingTableNameConvention>();");
 
             if (_model.EFVersion == EFVersionConstants.EF6 && _model.Database.UseGeneratedCRUD)
             {
@@ -369,7 +353,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("			        ));");
             }
 
-            sb.AppendLine("			Database.SetInitializer(new CustomDatabaseInitializer<" + _model.ProjectName + "Entities>());");
             sb.AppendLine();
 
             //For entities with security functions we need to manually set the 
@@ -729,41 +712,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             #endregion
 
-            #region SequentialID functionality
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void ResetSequentialGuid(EntityMappingConstants entity, string key, Guid seed)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			if (string.IsNullOrEmpty(key))");
-            sb.AppendLine("				throw new Exception(\"Invalid key\");");
-            sb.AppendLine();
-            sb.AppendLine("			lock (_seqCacheLock)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var k = entity.ToString() + \"|\" + key;");
-            sb.AppendLine("				if (!_sequentialIdGeneratorCache.ContainsKey(k))");
-            sb.AppendLine("					_sequentialIdGeneratorCache.Add(k, new SequentialIdGenerator(seed));");
-            sb.AppendLine("				else");
-            sb.AppendLine("					_sequentialIdGeneratorCache[k].LastValue = seed;");
-            sb.AppendLine("			}");
-            sb.AppendLine();
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static Guid GetNextSequentialGuid(EntityMappingConstants entity, string key)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			if (string.IsNullOrEmpty(key))");
-            sb.AppendLine("				throw new Exception(\"Invalid key\");");
-            sb.AppendLine();
-            sb.AppendLine("			lock (_seqCacheLock)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var k = entity.ToString() + \"|\" + key;");
-            sb.AppendLine("				if (!_sequentialIdGeneratorCache.ContainsKey(k))");
-            sb.AppendLine("					ResetSequentialGuid(entity, key, Guid.NewGuid());");
-            sb.AppendLine("				return _sequentialIdGeneratorCache[k].NewId();");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            #endregion
-
             #region Auditing
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Persists all updates to the data source and resets change tracking in the object context.");
@@ -776,144 +724,147 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			OnBeforeSaveChanges(ref cancel);");
             sb.AppendLine("			if (cancel) return 0;");
             sb.AppendLine();
-            sb.AppendLine("			//Get the added list");
-            sb.AppendLine("			var addedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added);");
-            sb.AppendLine();
 
-            sb.AppendLine("			//Process deleted list");
-            sb.AppendLine("			var deletedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Deleted);");
-            sb.AppendLine("			foreach (var item in deletedList)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var entity = item.Entity as IAuditable;");
-            sb.AppendLine("				if (entity != null)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						System.Data.SqlClient.SqlConnection connection = null;");
-            sb.AppendLine("						try");
-            sb.AppendLine("						{");
-            sb.AppendLine("							connection = new System.Data.SqlClient.SqlConnection(GetConnectionString());");
-            sb.AppendLine("							connection.Open();");
-            sb.AppendLine("							System.Data.SqlClient.SqlCommand command = null;");
+            //NETCORE REMOVED: AUDIT
+            //sb.AppendLine("			//Get the added list");
+            //sb.AppendLine("			var addedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added);");
+            //sb.AppendLine();
 
-            var index2 = 0;
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowModifiedAudit && x.AllowAuditTracking).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("							" + (index2 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")");
-                sb.AppendLine("							{");
-                sb.Append("								command = new System.Data.SqlClient.SqlCommand(\"UPDATE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] SET [" + _model.Database.ModifiedByDatabaseName + "] = @mod WHERE ");
+            //sb.AppendLine("			//Process deleted list");
+            //sb.AppendLine("			var deletedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Deleted);");
+            //sb.AppendLine("			foreach (var item in deletedList)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				var entity = item.Entity as IAuditable;");
+            //sb.AppendLine("				if (entity != null)");
+            //sb.AppendLine("				{");
+            //sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
+            //sb.AppendLine("					{");
+            //sb.AppendLine("						System.Data.SqlClient.SqlConnection connection = null;");
+            //sb.AppendLine("						try");
+            //sb.AppendLine("						{");
+            //sb.AppendLine("							connection = new System.Data.SqlClient.SqlConnection(GetConnectionString());");
+            //sb.AppendLine("							connection.Open();");
+            //sb.AppendLine("							System.Data.SqlClient.SqlCommand command = null;");
 
-                var ii = 1;
-                foreach (var column in table.PrimaryKeyColumns)
-                {
-                    sb.Append("[" + column.DatabaseName + "] = @pk" + ii + " AND ");
-                    ii++;
-                }
-                sb.Append("(([" + _model.Database.ModifiedByDatabaseName + "] != @mod) OR ([" + _model.Database.ModifiedByDatabaseName + "] IS NULL AND @mod IS NOT NULL) OR ([" + _model.Database.ModifiedByDatabaseName + "] IS NOT NULL AND @mod IS NULL))");
-                sb.AppendLine("\", connection);");
+            //var index2 = 0;
+            //foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowModifiedAudit && x.AllowAuditTracking).OrderBy(x => x.PascalName))
+            //{
+            //    sb.AppendLine("							" + (index2 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")");
+            //    sb.AppendLine("							{");
+            //    sb.Append("								command = new System.Data.SqlClient.SqlCommand(\"UPDATE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] SET [" + _model.Database.ModifiedByDatabaseName + "] = @mod WHERE ");
 
-                ii = 1;
-                foreach (var column in table.PrimaryKeyColumns)
-                {
-                    sb.AppendLine("								command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@pk" + ii + "\", ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + column.PascalName + "));");
-                }
+            //    var ii = 1;
+            //    foreach (var column in table.PrimaryKeyColumns)
+            //    {
+            //        sb.Append("[" + column.DatabaseName + "] = @pk" + ii + " AND ");
+            //        ii++;
+            //    }
+            //    sb.Append("(([" + _model.Database.ModifiedByDatabaseName + "] != @mod) OR ([" + _model.Database.ModifiedByDatabaseName + "] IS NULL AND @mod IS NOT NULL) OR ([" + _model.Database.ModifiedByDatabaseName + "] IS NOT NULL AND @mod IS NULL))");
+            //    sb.AppendLine("\", connection);");
 
-                sb.AppendLine("							}");
-                index2++;
-            }
+            //    ii = 1;
+            //    foreach (var column in table.PrimaryKeyColumns)
+            //    {
+            //        sb.AppendLine("								command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@pk" + ii + "\", ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + column.PascalName + "));");
+            //    }
 
-            sb.AppendLine("							if (command != null)");
-            sb.AppendLine("							{");
-            sb.AppendLine("								command.CommandType = System.Data.CommandType.Text;");
-            sb.AppendLine("								if (this.ContextStartup.Modifer == null)");
-            sb.AppendLine("									command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@mod\", System.DBNull.Value));");
-            sb.AppendLine("								else");
-            sb.AppendLine("									command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@mod\", this.ContextStartup.Modifer));");
-            sb.AppendLine("								command.ExecuteNonQuery();");
-            sb.AppendLine("							}");
-            sb.AppendLine("						}");
-            sb.AppendLine("						catch");
-            sb.AppendLine("						{");
-            sb.AppendLine("							throw;");
-            sb.AppendLine("						}");
-            sb.AppendLine("						finally");
-            sb.AppendLine("						{");
-            sb.AppendLine("							if (connection != null && connection.State == System.Data.ConnectionState.Open)");
-            sb.AppendLine("								connection.Close();");
-            sb.AppendLine("						}");
-            sb.AppendLine("					}");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine();
+            //    sb.AppendLine("							}");
+            //    index2++;
+            //}
 
-            #region Added Items
-            sb.AppendLine("			var markedTime = " + (_model.UseUTCTime ? "System.DateTime.UtcNow" : "System.DateTime.Now") + ";");
-            sb.AppendLine("			//Process added list");
-            sb.AppendLine("			foreach (var item in addedList)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var entity = item.Entity as IAuditable;");
-            sb.AppendLine("				if (entity != null)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					var audit = entity as IAuditableSet;");
-            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						if (audit != null) audit.ResetCreatedBy(this.ContextStartup.Modifer);");
-            sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
-            sb.AppendLine("					}");
-            sb.AppendLine("					audit.CreatedDate = markedTime;");
-            sb.AppendLine("					audit.ModifiedDate = markedTime;");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("			this.OnBeforeSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
-            sb.AppendLine();
-            #endregion
+            //sb.AppendLine("							if (command != null)");
+            //sb.AppendLine("							{");
+            //sb.AppendLine("								command.CommandType = System.Data.CommandType.Text;");
+            //sb.AppendLine("								if (this.ContextStartup.Modifer == null)");
+            //sb.AppendLine("									command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@mod\", System.DBNull.Value));");
+            //sb.AppendLine("								else");
+            //sb.AppendLine("									command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@mod\", this.ContextStartup.Modifer));");
+            //sb.AppendLine("								command.ExecuteNonQuery();");
+            //sb.AppendLine("							}");
+            //sb.AppendLine("						}");
+            //sb.AppendLine("						catch");
+            //sb.AppendLine("						{");
+            //sb.AppendLine("							throw;");
+            //sb.AppendLine("						}");
+            //sb.AppendLine("						finally");
+            //sb.AppendLine("						{");
+            //sb.AppendLine("							if (connection != null && connection.State == System.Data.ConnectionState.Open)");
+            //sb.AppendLine("								connection.Close();");
+            //sb.AppendLine("						}");
+            //sb.AppendLine("					}");
+            //sb.AppendLine("				}");
+            //sb.AppendLine("			}");
+            //sb.AppendLine();
 
-            #region Modified Items
-            sb.AppendLine("			//Process modified list");
-            sb.AppendLine("			var modifiedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Modified);");
-            sb.AppendLine("			foreach (var item in modifiedList)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var entity = item.Entity as IAuditable;");
-            sb.AppendLine("				if (entity != null)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					var audit = entity as IAuditableSet;");
-            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
-            sb.AppendLine("					}");
-            sb.AppendLine("					audit.ModifiedDate = markedTime;");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("			this.OnBeforeSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
-            sb.AppendLine();
-            #endregion
+            //#region Added Items
+            //sb.AppendLine("			var markedTime = " + (_model.UseUTCTime ? "System.DateTime.UtcNow" : "System.DateTime.Now") + ";");
+            //sb.AppendLine("			//Process added list");
+            //sb.AppendLine("			foreach (var item in addedList)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				var entity = item.Entity as IAuditable;");
+            //sb.AppendLine("				if (entity != null)");
+            //sb.AppendLine("				{");
+            //sb.AppendLine("					var audit = entity as IAuditableSet;");
+            //sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
+            //sb.AppendLine("					{");
+            //sb.AppendLine("						if (audit != null) audit.ResetCreatedBy(this.ContextStartup.Modifer);");
+            //sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
+            //sb.AppendLine("					}");
+            //sb.AppendLine("					audit.CreatedDate = markedTime;");
+            //sb.AppendLine("					audit.ModifiedDate = markedTime;");
+            //sb.AppendLine("				}");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("			this.OnBeforeSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
+            //sb.AppendLine();
+            //#endregion
+
+            //#region Modified Items
+            //sb.AppendLine("			//Process modified list");
+            //sb.AppendLine("			var modifiedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Modified);");
+            //sb.AppendLine("			foreach (var item in modifiedList)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				var entity = item.Entity as IAuditable;");
+            //sb.AppendLine("				if (entity != null)");
+            //sb.AppendLine("				{");
+            //sb.AppendLine("					var audit = entity as IAuditableSet;");
+            //sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
+            //sb.AppendLine("					{");
+            //sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
+            //sb.AppendLine("					}");
+            //sb.AppendLine("					audit.ModifiedDate = markedTime;");
+            //sb.AppendLine("				}");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("			this.OnBeforeSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
+            //sb.AppendLine();
+            //#endregion
 
             sb.AppendLine("			var retval = 0;");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				_paramList.Clear();");
-            sb.AppendLine("				retval += QueryPreCache.ExecuteDeletes(this);");
-            sb.AppendLine("				retval += base.SaveChanges();");
-            sb.AppendLine("				retval += QueryPreCache.ExecuteUpdates(this);");
-            sb.AppendLine("			}");
-            sb.AppendLine("			catch (System.Data.Entity.Validation.DbEntityValidationException ex)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var sb = new System.Text.StringBuilder();");
-            sb.AppendLine("				foreach (var error in ex.EntityValidationErrors)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					foreach (var validationError in error.ValidationErrors)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						sb.AppendLine(validationError.PropertyName + \": \" + validationError.ErrorMessage);");
-            sb.AppendLine("					}");
-            sb.AppendLine("				}");
-            sb.AppendLine("				throw new System.Data.Entity.Validation.DbEntityValidationException(sb.ToString(), ex.EntityValidationErrors);");
-            sb.AppendLine("			}");
+            sb.AppendLine("				retval = base.SaveChanges();");
+            sb.AppendLine("			}");            
+            //NETCORE REMOVED
+            //sb.AppendLine("			catch (System.Data.Entity.Validation.DbEntityValidationException ex)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				var sb = new System.Text.StringBuilder();");
+            //sb.AppendLine("				foreach (var error in ex.EntityValidationErrors)");
+            //sb.AppendLine("				{");
+            //sb.AppendLine("					foreach (var validationError in error.ValidationErrors)");
+            //sb.AppendLine("					{");
+            //sb.AppendLine("						sb.AppendLine(validationError.PropertyName + \": \" + validationError.ErrorMessage);");
+            //sb.AppendLine("					}");
+            //sb.AppendLine("				}");
+            //sb.AppendLine("				throw new System.Data.Entity.Validation.DbEntityValidationException(sb.ToString(), ex.EntityValidationErrors);");
+            //sb.AppendLine("			}");
             sb.AppendLine("			catch");
             sb.AppendLine("			{");
             sb.AppendLine("				throw;");
             sb.AppendLine("			}");
-            sb.AppendLine("			this.OnAfterSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
-            sb.AppendLine("			this.OnAfterSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
+
+            //NETCORE REMOVED
+            //sb.AppendLine("			this.OnAfterSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
+            //sb.AppendLine("			this.OnAfterSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
             sb.AppendLine("			OnAfterSaveChanges();");
             sb.AppendLine("			return retval;");
             sb.AppendLine("		}");
@@ -958,12 +909,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			get { return _contextStartup; }");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public virtual System.Data.Entity.Core.Objects.ObjectContextOptions ContextOptions");
-            sb.AppendLine("		{");
-            sb.AppendLine("			get { return this.ObjectContext.ContextOptions; }");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            
+            //NETCORE REMOVED
+            //sb.AppendLine("		/// <summary />");
+            //sb.AppendLine("		public virtual System.Data.Entity.Core.Objects.ObjectContextOptions ContextOptions");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			get { return this.ContextOptions; }");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
 
             #region Configuration API/Database verification
             sb.AppendLine("		/// <summary>");
@@ -1125,7 +1078,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("			else if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") this." + name + ".Remove(entity as " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ");");
             }
 
-            sb.AppendLine("			else this.ObjectContext.DeleteObject(entity);");
+            sb.AppendLine("			else this.Remove(entity);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -1585,14 +1538,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			this.Entry(entity).Reload();");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Detaches the the object from context");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public void DetachItem(BaseEntity entity)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			this.ObjectContext.Detach(entity);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+
+            //NETCORE REMOVED
+            //sb.AppendLine("		/// <summary>");
+            //sb.AppendLine("		/// Detaches the the object from context");
+            //sb.AppendLine("		/// </summary>");
+            //sb.AppendLine("		public void DetachItem(BaseEntity entity)");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			this.ObjectContext.Detach(entity);");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
+
             sb.AppendLine("		#endregion");
             sb.AppendLine();
             #endregion
@@ -1600,35 +1556,40 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #region ObjectContext
             sb.AppendLine("		#region ObjectContext");
             sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Gets the object context");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public System.Data.Entity.Core.Objects.ObjectContext ObjectContext");
-            sb.AppendLine("		{");
-            sb.AppendLine("			get");
-            sb.AppendLine("			{");
-            sb.AppendLine("				if (_objectContext == null)");
-            sb.AppendLine("					_objectContext = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext;");
-            sb.AppendLine("				return _objectContext;");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine("		private System.Data.Entity.Core.Objects.ObjectContext _objectContext = null;");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Accepts all changes made to objects in the object context");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public void AcceptAllChanges()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			this.ObjectContext.AcceptAllChanges();");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            
+            //NETCORE REMOVED
+            //sb.AppendLine("		/// <summary>");
+            //sb.AppendLine("		/// Gets the object context");
+            //sb.AppendLine("		/// </summary>");
+            //sb.AppendLine("		public System.Data.Entity.Core.Objects.ObjectContext ObjectContext");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			get");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				if (_objectContext == null)");
+            //sb.AppendLine("					_objectContext = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext;");
+            //sb.AppendLine("				return _objectContext;");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("		}");
+            //sb.AppendLine("		private System.Data.Entity.Core.Objects.ObjectContext _objectContext = null;");
+            //sb.AppendLine();
+
+            //NETCORE REMOVED
+            //sb.AppendLine("		/// <summary>");
+            //sb.AppendLine("		/// Accepts all changes made to objects in the object context");
+            //sb.AppendLine("		/// </summary>");
+            //sb.AppendLine("		public void AcceptAllChanges()");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			this.ObjectContext.AcceptAllChanges();");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
+
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Determines the timeout of the database connection");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public int? CommandTimeout");
             sb.AppendLine("		{");
-            sb.AppendLine("			get { return this.Database.CommandTimeout; }");
-            sb.AppendLine("			set { this.Database.CommandTimeout = value; }");
+            sb.AppendLine("			get { return this.CommandTimeout; }");
+            sb.AppendLine("			set { this.CommandTimeout = value; }");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
@@ -1638,62 +1599,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("	}");
             sb.AppendLine("	#endregion");
             sb.AppendLine();
-
-            sb.AppendLine("	internal class CustomDatabaseInitializer<TContext> : IDatabaseInitializer<TContext> where TContext : global::System.Data.Entity.DbContext");
-            sb.AppendLine("	{");
-            sb.AppendLine("		public void InitializeDatabase(TContext context)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine("	}");
-            sb.AppendLine();
-
-            sb.AppendLine("	#region DbInterceptor");
-            sb.AppendLine("	internal class DbInterceptor : System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor");
-            sb.AppendLine("	{");
-            sb.AppendLine("		#region IDbCommandInterceptor Members");
-            sb.AppendLine();
-            sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.NonQueryExecuted(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<int> interceptionContext)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.NonQueryExecuting(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<int> interceptionContext)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.ReaderExecuted(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<System.Data.Common.DbDataReader> interceptionContext)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.ReaderExecuting(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<System.Data.Common.DbDataReader> interceptionContext)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			try");
-            sb.AppendLine("			{");
-            sb.AppendLine("				//If this is a tenant table then rig query plan for this specific tenant");
-            sb.AppendLine("				if (command.CommandText.Contains(\"__vw_tenant_\"))");
-            sb.AppendLine("				{");
-            sb.AppendLine("					var builder = new SqlConnectionStringBuilder(command.Connection.ConnectionString);");
-            sb.AppendLine("					command.CommandText = \"--T:\" + builder.UserID + \"\\r\\n\" + command.CommandText;");
-            sb.AppendLine("				}");
-            sb.AppendLine("				if (" + _model.ProjectName + "Entities.QueryLogger != null)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					var debugInfo = ((I" + _model.ProjectName + "Entities)(interceptionContext.DbContexts.First())).ContextStartup.DebugInfo;");
-            sb.AppendLine("					" + _model.ProjectName + "Entities.QueryLogger(debugInfo + \"\\r\\n\" + command.CommandText);");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("			catch { }");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.ScalarExecuted(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<object> interceptionContext)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.ScalarExecuting(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<object> interceptionContext)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine("	}");
-            sb.AppendLine("	#endregion");
 
         }
 

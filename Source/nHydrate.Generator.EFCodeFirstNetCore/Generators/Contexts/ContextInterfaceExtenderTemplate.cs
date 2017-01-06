@@ -29,7 +29,7 @@ using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 {
-    public class ContextInterfaceExtenderTemplate : EFCodeFirstBaseTemplate
+    public class ContextInterfaceExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
         private readonly StringBuilder sb = new StringBuilder();
 

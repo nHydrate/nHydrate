@@ -33,7 +33,7 @@ using System.Collections.Generic;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 {
-    public class ContextExtenderTemplate : EFCodeFirstBaseTemplate
+    public class ContextExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
         private StringBuilder sb = new StringBuilder();
 
