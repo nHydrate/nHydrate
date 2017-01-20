@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2016 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2016 All Rights reserved                   *
+//              Copyright (c) 2006-2017 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -889,10 +889,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #endregion
 
             sb.AppendLine("			var retval = 0;");
+            sb.AppendLine("			DbContextTransaction customTrans = null;");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				_paramList.Clear();");
-            sb.AppendLine("				DbContextTransaction customTrans = null;");
             sb.AppendLine("				if (base.Database.CurrentTransaction == null)");
             sb.AppendLine("					customTrans = base.Database.BeginTransaction();");
             sb.AppendLine("				retval += QueryPreCache.ExecuteDeletes(this);");
@@ -916,6 +916,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			catch");
             sb.AppendLine("			{");
             sb.AppendLine("				throw;");
+            sb.AppendLine("			}");
+            sb.AppendLine("			finally");
+            sb.AppendLine("			{");
+            sb.AppendLine("				if (customTrans != null)");
+            sb.AppendLine("					customTrans.Dispose();");
             sb.AppendLine("			}");
             sb.AppendLine("			this.OnAfterSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
             sb.AppendLine("			this.OnAfterSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
@@ -1033,11 +1038,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Retrieves the latest database version for the current model");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public string GetDBVersion(string connectionString)");
+            sb.AppendLine("		public string GetDBVersion(string connectionString = null)");
             sb.AppendLine("		{");
             sb.AppendLine("			var conn = new System.Data.SqlClient.SqlConnection();");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
+            sb.AppendLine("				if (string.IsNullOrEmpty(connectionString))");
+            sb.AppendLine("					connectionString = this.ConnectionString;");
             sb.AppendLine("				conn.ConnectionString = connectionString;");
             sb.AppendLine("				conn.Open();");
             sb.AppendLine();
