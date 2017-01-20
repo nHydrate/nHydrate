@@ -183,7 +183,7 @@ namespace nHydrate.Generator.Models
             {
                 if (_defaultNamespace != value)
                 {
-                    if (MessageBox.Show("Changing this setting will cause all generated assemblies to have this value as the base name and namespace. Leaving this field blank will result in assemblies having a base name of CompanyName.ProjectName.\n\n Do you wish to proceed?", "Change Settings", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    //if (MessageBox.Show("Changing this setting will cause all generated assemblies to have this value as the base name and namespace. Leaving this field blank will result in assemblies having a base name of CompanyName.ProjectName.\n\n Do you wish to proceed?", "Change Settings", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         _defaultNamespace = value;
                         this.OnPropertyChanged(this, new PropertyChangedEventArgs("DefaultNamespace"));

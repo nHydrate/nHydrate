@@ -892,9 +892,14 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				_paramList.Clear();");
+            sb.AppendLine("				DbContextTransaction customTrans = null;");
+            sb.AppendLine("				if (base.Database.CurrentTransaction == null)");
+            sb.AppendLine("					customTrans = base.Database.BeginTransaction();");
             sb.AppendLine("				retval += QueryPreCache.ExecuteDeletes(this);");
             sb.AppendLine("				retval += base.SaveChanges();");
             sb.AppendLine("				retval += QueryPreCache.ExecuteUpdates(this);");
+            sb.AppendLine("				if (customTrans != null)");
+            sb.AppendLine("					customTrans.Commit();");
             sb.AppendLine("			}");
             sb.AppendLine("			catch (System.Data.Entity.Validation.DbEntityValidationException ex)");
             sb.AppendLine("			{");
