@@ -672,9 +672,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             sb.AppendLine("(");
             sb.AppendLine("	[rowid] [bigint] IDENTITY(1,1) NOT NULL,");
             sb.AppendLine("	[id] [uniqueidentifier] NULL,");
-            sb.AppendLine("	[name] [varchar](500) NOT NULL,");
+            sb.AppendLine("	[name] [nvarchar](450) NOT NULL,");
             sb.AppendLine("	[type] [varchar](10) NOT NULL,");
-            sb.AppendLine("	[schema] [varchar](500) NULL,");
+            sb.AppendLine("	[schema] [nvarchar](450) NULL,");
             sb.AppendLine("	[CreatedDate] [datetime] NOT NULL,");
             sb.AppendLine("	[ModifiedDate] [datetime] NOT NULL,");
             sb.AppendLine("	[Hash] [varchar](32) NULL,");
