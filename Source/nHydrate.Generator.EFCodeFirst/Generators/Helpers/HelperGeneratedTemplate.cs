@@ -1250,7 +1250,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	#region nHydrateException");
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	[Serializable]");
-                sb.AppendLine("	public partial class nHydrateException : System.ApplicationException");
+                sb.AppendLine("	public partial class nHydrateException : System.Exception");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public string ErrorCode = null;");

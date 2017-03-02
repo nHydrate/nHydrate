@@ -29,7 +29,7 @@ using System.Runtime.Serialization;
 namespace nHydrate.Generator.Common.Exceptions
 {
 	//[Serializable]
-	public class nHydrateException : System.ApplicationException
+	public class nHydrateException : System.Exception
 	{
 		/// <summary>
 		/// 

@@ -29,8 +29,8 @@ using System.Runtime.Serialization;
 namespace nHydrate.EFCore.Exceptions
 {
 	//[Serializable] 
-	public partial class nHydrateException : System.ApplicationException
-	{
+	public partial class nHydrateException : System.Exception
+    {
 		/// <summary>
 		/// 
 		/// </summary>

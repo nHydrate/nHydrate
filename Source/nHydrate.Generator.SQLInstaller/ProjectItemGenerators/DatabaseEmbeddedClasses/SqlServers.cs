@@ -96,7 +96,7 @@ namespace PROJECTNAMESPACE
 										if (SQL_NEED_DATA != SQLBrowseConnect(hconn, inString, inStringLength, outString,
 											lenNeeded, out lenNeeded))
 										{
-											throw new ApplicationException("Unabled to aquire SQL Servers from ODBC driver.");
+											throw new Exception("Unabled to aquire SQL Servers from ODBC driver.");
 										}
 									}
 									txt = outString.ToString();
