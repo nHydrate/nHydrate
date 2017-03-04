@@ -934,6 +934,8 @@ namespace nHydrate.Core.SQLGeneration
                         sb.AppendLine("SET identity_insert [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] off");
 
                     sb.AppendLine();
+                    sb.AppendLine("GO");
+                    sb.AppendLine();
                 }
 
                 return sb.ToString();
