@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2016 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2016 All Rights reserved                   *
+//              Copyright (c) 2006-2017 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -639,6 +639,14 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		public virtual string Version");
             sb.AppendLine("		{");
             sb.AppendLine("			get { return \"" + _model.Version + "." + _model.GeneratedVersion + "\"; }");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Gets the database version");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public string GetDBVersion(string connectionString = null)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return this.Version;");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");

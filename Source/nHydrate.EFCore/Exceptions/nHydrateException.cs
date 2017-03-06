@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2016 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2016 All Rights reserved                   *
+//              Copyright (c) 2006-2017 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -29,8 +29,8 @@ using System.Runtime.Serialization;
 namespace nHydrate.EFCore.Exceptions
 {
 	//[Serializable] 
-	public partial class nHydrateException : System.ApplicationException
-	{
+	public partial class nHydrateException : System.Exception
+    {
 		/// <summary>
 		/// 
 		/// </summary>

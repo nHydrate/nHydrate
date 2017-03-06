@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2016 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2016 All Rights reserved                   *
+//              Copyright (c) 2006-2017 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -776,77 +776,27 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			OnBeforeSaveChanges(ref cancel);");
             sb.AppendLine("			if (cancel) return 0;");
             sb.AppendLine();
-            sb.AppendLine("			//Get the added list");
-            sb.AppendLine("			var addedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added);");
-            sb.AppendLine();
 
-            sb.AppendLine("			//Process deleted list");
-            sb.AppendLine("			var deletedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Deleted);");
-            sb.AppendLine("			foreach (var item in deletedList)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var entity = item.Entity as IAuditable;");
-            sb.AppendLine("				if (entity != null)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						System.Data.SqlClient.SqlConnection connection = null;");
-            sb.AppendLine("						try");
-            sb.AppendLine("						{");
-            sb.AppendLine("							connection = new System.Data.SqlClient.SqlConnection(GetConnectionString());");
-            sb.AppendLine("							connection.Open();");
-            sb.AppendLine("							System.Data.SqlClient.SqlCommand command = null;");
-
-            var index2 = 0;
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowModifiedAudit && x.AllowAuditTracking).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("							" + (index2 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")");
-                sb.AppendLine("							{");
-                sb.Append("								command = new System.Data.SqlClient.SqlCommand(\"UPDATE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] SET [" + _model.Database.ModifiedByDatabaseName + "] = @mod WHERE ");
-
-                var ii = 1;
-                foreach (var column in table.PrimaryKeyColumns)
-                {
-                    sb.Append("[" + column.DatabaseName + "] = @pk" + ii + " AND ");
-                    ii++;
-                }
-                sb.Append("(([" + _model.Database.ModifiedByDatabaseName + "] != @mod) OR ([" + _model.Database.ModifiedByDatabaseName + "] IS NULL AND @mod IS NOT NULL) OR ([" + _model.Database.ModifiedByDatabaseName + "] IS NOT NULL AND @mod IS NULL))");
-                sb.AppendLine("\", connection);");
-
-                ii = 1;
-                foreach (var column in table.PrimaryKeyColumns)
-                {
-                    sb.AppendLine("								command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@pk" + ii + "\", ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + column.PascalName + "));");
-                }
-
-                sb.AppendLine("							}");
-                index2++;
-            }
-
-            sb.AppendLine("							if (command != null)");
-            sb.AppendLine("							{");
-            sb.AppendLine("								command.CommandType = System.Data.CommandType.Text;");
-            sb.AppendLine("								if (this.ContextStartup.Modifer == null)");
-            sb.AppendLine("									command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@mod\", System.DBNull.Value));");
-            sb.AppendLine("								else");
-            sb.AppendLine("									command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@mod\", this.ContextStartup.Modifer));");
-            sb.AppendLine("								command.ExecuteNonQuery();");
-            sb.AppendLine("							}");
-            sb.AppendLine("						}");
-            sb.AppendLine("						catch");
-            sb.AppendLine("						{");
-            sb.AppendLine("							throw;");
-            sb.AppendLine("						}");
-            sb.AppendLine("						finally");
-            sb.AppendLine("						{");
-            sb.AppendLine("							if (connection != null && connection.State == System.Data.ConnectionState.Open)");
-            sb.AppendLine("								connection.Close();");
-            sb.AppendLine("						}");
-            sb.AppendLine("					}");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine();
+            //sb.AppendLine("			//Process deleted list");
+            //sb.AppendLine("			var deletedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Deleted);");
+            //sb.AppendLine("			foreach (var item in deletedList)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				var entity = item.Entity as IAuditable;");
+            //sb.AppendLine("				if (entity != null)");
+            //sb.AppendLine("				{");
+            //sb.AppendLine("					var audit = entity as IAuditableSet;");
+            //sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
+            //sb.AppendLine("					{");
+            //sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
+            //sb.AppendLine("					}");
+            //sb.AppendLine("					audit.ModifiedDate = markedTime;");
+            //sb.AppendLine("				}");
+            //sb.AppendLine("			}");
+            //sb.AppendLine();
 
             #region Added Items
+            sb.AppendLine("			//Get the added list");
+            sb.AppendLine("			var addedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added);");
             sb.AppendLine("			var markedTime = " + (_model.UseUTCTime ? "System.DateTime.UtcNow" : "System.DateTime.Now") + ";");
             sb.AppendLine("			//Process added list");
             sb.AppendLine("			foreach (var item in addedList)");
@@ -889,10 +839,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #endregion
 
             sb.AppendLine("			var retval = 0;");
+            sb.AppendLine("			DbContextTransaction customTrans = null;");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				_paramList.Clear();");
-            sb.AppendLine("				DbContextTransaction customTrans = null;");
             sb.AppendLine("				if (base.Database.CurrentTransaction == null)");
             sb.AppendLine("					customTrans = base.Database.BeginTransaction();");
             sb.AppendLine("				retval += QueryPreCache.ExecuteDeletes(this);");
@@ -916,6 +866,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			catch");
             sb.AppendLine("			{");
             sb.AppendLine("				throw;");
+            sb.AppendLine("			}");
+            sb.AppendLine("			finally");
+            sb.AppendLine("			{");
+            sb.AppendLine("				if (customTrans != null)");
+            sb.AppendLine("					customTrans.Dispose();");
             sb.AppendLine("			}");
             sb.AppendLine("			this.OnAfterSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
             sb.AppendLine("			this.OnAfterSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
@@ -1033,11 +988,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Retrieves the latest database version for the current model");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public string GetDBVersion(string connectionString)");
+            sb.AppendLine("		public string GetDBVersion(string connectionString = null)");
             sb.AppendLine("		{");
             sb.AppendLine("			var conn = new System.Data.SqlClient.SqlConnection();");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
+            sb.AppendLine("				if (string.IsNullOrEmpty(connectionString))");
+            sb.AppendLine("					connectionString = this.ConnectionString;");
             sb.AppendLine("				conn.ConnectionString = connectionString;");
             sb.AppendLine("				conn.Open();");
             sb.AppendLine();

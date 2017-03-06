@@ -96,7 +96,7 @@ namespace PROJECTNAMESPACE
 										if (SQL_NEED_DATA != SQLBrowseConnect(hconn, inString, inStringLength, outString,
 											lenNeeded, out lenNeeded))
 										{
-											throw new ApplicationException("Unabled to aquire SQL Servers from ODBC driver.");
+											throw new Exception("Unabled to aquire SQL Servers from ODBC driver.");
 										}
 									}
 									txt = outString.ToString();
@@ -1851,9 +1851,9 @@ namespace PROJECTNAMESPACE
 																						 "CREATE TABLE [dbo].[__nhydrateobjects]" +
 																						 "([rowid] [bigint] IDENTITY(1,1) NOT NULL," +
 																						 "[id] [uniqueidentifier] NULL," +
-																						 "[name] [varchar](500) NOT NULL," +
+																						 "[name] [nvarchar](450) NOT NULL," +
 																						 "[type] [varchar](10) NOT NULL," +
-																						 "[schema] [varchar](500) NULL," +
+																						 "[schema] [nvarchar](450) NULL," +
 																						 "[CreatedDate] [datetime] NOT NULL," +
 																						 "[ModifiedDate] [datetime] NOT NULL," +
 																						 "[Hash] [varchar](32) NULL," +

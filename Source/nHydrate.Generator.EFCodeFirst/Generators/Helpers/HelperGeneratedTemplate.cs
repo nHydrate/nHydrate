@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2016 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2016 All Rights reserved                   *
+//              Copyright (c) 2006-2017 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -536,6 +536,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	public partial interface IContext");
                 sb.AppendLine("	{");
+                sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		string GetDBVersion(string connectionString = null);");
+                sb.AppendLine();
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		ContextStartup ContextStartup { get; }");
                 sb.AppendLine();
@@ -1247,7 +1250,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	#region nHydrateException");
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	[Serializable]");
-                sb.AppendLine("	public partial class nHydrateException : System.ApplicationException");
+                sb.AppendLine("	public partial class nHydrateException : System.Exception");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		public string ErrorCode = null;");

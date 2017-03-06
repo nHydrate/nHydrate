@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2016 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2016 All Rights reserved                   *
+//              Copyright (c) 2006-2017 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -672,9 +672,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             sb.AppendLine("(");
             sb.AppendLine("	[rowid] [bigint] IDENTITY(1,1) NOT NULL,");
             sb.AppendLine("	[id] [uniqueidentifier] NULL,");
-            sb.AppendLine("	[name] [varchar](500) NOT NULL,");
+            sb.AppendLine("	[name] [nvarchar](450) NOT NULL,");
             sb.AppendLine("	[type] [varchar](10) NOT NULL,");
-            sb.AppendLine("	[schema] [varchar](500) NULL,");
+            sb.AppendLine("	[schema] [nvarchar](450) NULL,");
             sb.AppendLine("	[CreatedDate] [datetime] NOT NULL,");
             sb.AppendLine("	[ModifiedDate] [datetime] NOT NULL,");
             sb.AppendLine("	[Hash] [varchar](32) NULL,");
