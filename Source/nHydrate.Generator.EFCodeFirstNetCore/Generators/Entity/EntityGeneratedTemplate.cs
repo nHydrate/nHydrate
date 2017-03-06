@@ -760,7 +760,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
-                        sb.AppendLine("		[XmlIgnore]");
+                        sb.AppendLine("		//[XmlIgnore]"); //.NETCORE REMOVED
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		" + scope + " virtual " + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; set; }");
                         sb.AppendLine();
@@ -797,7 +797,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + targetTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? "" : " (role: '" + otherRelation.PascalRoleName + "')"));
                             sb.AppendLine("		/// </summary>");
                             sb.AppendLine("		[DataMember]");
-                            sb.AppendLine("		[XmlIgnore]");
+                            sb.AppendLine("		//[XmlIgnore]"); //.NETCORE REMOVED
                             sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + targetTable.PascalName + "> " + otherRelation.PascalRoleName + targetTable.PascalName + "List");
                             sb.AppendLine("		{");
                             sb.AppendLine("			get");
@@ -820,7 +820,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
-                        sb.AppendLine("		[XmlIgnore]");
+                        sb.AppendLine("		//[XmlIgnore]"); //.NETCORE REMOVED
                         sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + relation.PascalRoleName + childTable.PascalName + "List");
                         sb.AppendLine("		{");
                         sb.AppendLine("			get");
@@ -876,7 +876,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
-                        sb.AppendLine("		[XmlIgnore]");
+                        sb.AppendLine("		//[XmlIgnore]"); //.NETCORE REMOVED
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		public virtual " + parentTable.PascalName + " " + relation.PascalRoleName + parentTable.PascalName + " { get; set; }");
                         sb.AppendLine();

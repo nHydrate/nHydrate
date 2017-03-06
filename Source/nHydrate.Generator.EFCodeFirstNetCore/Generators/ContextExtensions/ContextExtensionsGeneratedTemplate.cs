@@ -105,102 +105,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("	public static partial class " + _model.ProjectName + "EntitiesExtensions");
             sb.AppendLine("	{");
 
-            #region Include Extension Methods
-            //Add an strongly-typed extension for "Include" method
-            sb.AppendLine("		#region Include Extension Methods");
-            sb.AppendLine();
-
-            //NETCORE REMOVED
-            //sb.AppendLine("		private static System.Data.Entity.Infrastructure.DbQuery<T> GetInclude<T, R>(this System.Data.Entity.Infrastructure.DbQuery<T> item, Expression<Func<R, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
-            //sb.AppendLine("			where T : BaseEntity");
-            //sb.AppendLine("			where R : IContextInclude");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
-            //sb.AppendLine("			strings.RemoveAt(0);");
-            //sb.AppendLine("			var compoundString = string.Empty;");
-            //sb.AppendLine("			foreach (var s in strings)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				if (!string.IsNullOrEmpty(compoundString)) compoundString += \".\";");
-            //sb.AppendLine("				compoundString += s;");
-            //sb.AppendLine("				item = item.Include(compoundString);");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			return item;");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-
-            //sb.AppendLine("		private static IQueryable<T> GetInclude<T, R>(this IQueryable<T> item, Expression<Func<R, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
-            //sb.AppendLine("			where T : BaseEntity");
-            //sb.AppendLine("			where R : IContextInclude");
-            //sb.AppendLine("		{");
-            ////NETCORE REMOVED
-            ////sb.AppendLine("			var dbItem = item as System.Data.Entity.Infrastructure.DbQuery<T>;");
-            ////sb.AppendLine("			if (dbItem != null) return GetInclude(dbItem, query);");
-            //sb.AppendLine("			var tempItem = item as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
-            //sb.AppendLine("			if (tempItem == null) return item;");
-            //sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
-            //sb.AppendLine("			strings.RemoveAt(0);");
-            //sb.AppendLine("			var compoundString = string.Empty;");
-            //sb.AppendLine("			foreach (var s in strings)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				if (!string.IsNullOrEmpty(compoundString)) compoundString += \".\";");
-            //sb.AppendLine("				compoundString += s;");
-            //sb.AppendLine("				tempItem = tempItem.Include(compoundString);");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			return tempItem;");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
-            {
-                //Build relation list
-                var relationList1 = table.GetRelationsFullHierarchy().Where(x =>
-                    (x.ParentTableRef.Object == table ||
-                    table.GetParentTables().Contains(x.ParentTableRef.Object)) &&
-                    !(x.ChildTableRef.Object as Table).IsInheritedFrom(x.ParentTableRef.Object as Table)
-                    ).ToList();
-
-                var relationList2 = table.GetRelationsWhereChild().Where(x =>
-                    x.ChildTableRef.Object == table &&
-                    !(x.ChildTableRef.Object as Table).IsInheritedFrom(x.ParentTableRef.Object as Table)
-                    ).ToList();
-
-                var relationList = new List<Relation>();
-                relationList.AddRange(relationList1);
-                relationList.AddRange(relationList2);
-
-                //Generate an extension if there are relations for this table
-                if (relationList.Count() != 0 && table.TypedTable != TypedTableConstants.EnumOnly)
-                {
-                    //Add one for DbQuery
-                    sb.AppendLine("		/// <summary>");
-                    sb.AppendLine("		/// Specifies the related objects to include in the query results.");
-                    sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		/// <param name=\"item\">Related object to return in query results</param>");
-                    sb.AppendLine("		/// <param name=\"query\">The LINQ expresssion that maps an include path</param>");
-                    sb.AppendLine("		public static System.Data.Entity.Infrastructure.DbQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> Include(this System.Data.Entity.Infrastructure.DbQuery<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item, Expression<Func<" + this.GetLocalNamespace() + "." + table.PascalName + "Include, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
-                    sb.AppendLine("		{");
-                    sb.AppendLine("			return GetInclude<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", " + this.GetLocalNamespace() + "." + table.PascalName + "Include>(item, query);");
-                    sb.AppendLine("		}");
-                    sb.AppendLine();
-
-                    //Now add one for IQueryable
-                    sb.AppendLine("		/// <summary>");
-                    sb.AppendLine("		/// Specifies the related objects to include in the query results.");
-                    sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		/// <param name=\"item\">Related object to return in query results</param>");
-                    sb.AppendLine("		/// <param name=\"query\">The LINQ expresssion that maps an include path</param>");
-                    sb.AppendLine("		public static IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> Include(this IQueryable<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "> item, Expression<Func<" + this.GetLocalNamespace() + "." + table.PascalName + "Include, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
-                    sb.AppendLine("		{");
-                    sb.AppendLine("			return GetInclude<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ", " + this.GetLocalNamespace() + "." + table.PascalName + "Include>(item, query);");
-                    sb.AppendLine("		}");
-                    sb.AppendLine();
-
-                }
-            }
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-            #endregion
-
             #region GetFieldType
             sb.AppendLine("		#region GetFieldType Extension Method");
             sb.AppendLine();
@@ -222,27 +126,48 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             #endregion
 
             #region Metadata Extension Methods
-            //sb.AppendLine("		#region Metadata Extension Methods");
-            //sb.AppendLine();
+            sb.AppendLine("		#region Metadata Extension Methods");
+            sb.AppendLine();
 
-            ////Main one for base IReadOnlyBusinessObject object
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Creates and returns a metadata object for an entity type");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		/// <param name=\"entity\">The source class</param>");
-            //sb.AppendLine("		/// <returns>A metadata object for the entity types in this assembly</returns>");
-            //sb.AppendLine("		public static " + this.GetLocalNamespace() + ".IMetadata GetMetaData(this " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject entity)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			var a = entity.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true).FirstOrDefault();");
-            //sb.AppendLine("			if (a == null) return null;");
-            //sb.AppendLine("			var t = ((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)a).MetadataClassType;");
-            //sb.AppendLine("			if (t == null) return null;");
-            //sb.AppendLine("			return Activator.CreateInstance(t) as " + this.GetLocalNamespace() + ".IMetadata;");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Specifies the metadata class to associate with a data model class.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]");
+            sb.AppendLine("		public sealed class MetadataTypeAttribute : Attribute");
+            sb.AppendLine("		{");
+            sb.AppendLine("			/// <summary>");
+            sb.AppendLine("			/// Initializes a new instance of the System.ComponentModel.DataAnnotations.MetadataTypeAttribute");
+            sb.AppendLine("			/// </summary>");
+            sb.AppendLine("			public MetadataTypeAttribute(Type metadataClassType)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				this.MetadataClassType = metadataClassType;");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+            sb.AppendLine("			/// <summary>");
+            sb.AppendLine("			/// Gets the metadata class that is associated with a data-model partial class.");
+            sb.AppendLine("			/// </summary>");
+            sb.AppendLine("			public Type MetadataClassType { get; private set; }");
+            sb.AppendLine("		}");
+            sb.AppendLine();
 
-            //sb.AppendLine("		#endregion");
-            //sb.AppendLine();
+            //Main one for base IReadOnlyBusinessObject object
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Creates and returns a metadata object for an entity type");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"entity\">The source class</param>");
+            sb.AppendLine("		/// <returns>A metadata object for the entity types in this assembly</returns>");
+            sb.AppendLine("		public static " + this.GetLocalNamespace() + ".IMetadata GetMetaData(this " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject entity)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			var a = entity.GetType().GetTypeInfo().GetCustomAttributes(typeof(MetadataTypeAttribute), true).FirstOrDefault();");
+            sb.AppendLine("			if (a == null) return null;");
+            sb.AppendLine("			var t = ((MetadataTypeAttribute)a).MetadataClassType;");
+            sb.AppendLine("			if (t == null) return null;");
+            sb.AppendLine("			return Activator.CreateInstance(t) as " + this.GetLocalNamespace() + ".IMetadata;");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
             #endregion
 
             #region GetEntityType
@@ -565,7 +490,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine();
             #endregion
 
-            sb.AppendLine();
             sb.AppendLine("	#endregion");
             sb.AppendLine();
         }

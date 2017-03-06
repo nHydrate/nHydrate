@@ -169,57 +169,57 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             //NETCORE REMOVED
             //Events
-            //sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		/// <summary />");
             //sb.AppendLine("		[field:NonSerialized]");
-            //sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			if(BeforeSaveModifiedEntity != null)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				BeforeSaveModifiedEntity(this, e);");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
+            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if(BeforeSaveModifiedEntity != null)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				BeforeSaveModifiedEntity(this, e);");
+            sb.AppendLine("			}");
+            sb.AppendLine("		}");
+            sb.AppendLine();
 
-            //sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		/// <summary />");
             //sb.AppendLine("		[field:NonSerialized]");
-            //sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			if(BeforeSaveAddedEntity != null)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				BeforeSaveAddedEntity(this, e);");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
+            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if(BeforeSaveAddedEntity != null)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				BeforeSaveAddedEntity(this, e);");
+            sb.AppendLine("			}");
+            sb.AppendLine("		}");
+            sb.AppendLine();
 
-            //sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		/// <summary />");
             //sb.AppendLine("		[field:NonSerialized]");
-            //sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveModifiedEntity;");
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		protected virtual void OnAfterSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			if(AfterSaveModifiedEntity != null)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				AfterSaveModifiedEntity(this, e);");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
+            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveModifiedEntity;");
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		protected virtual void OnAfterSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if(AfterSaveModifiedEntity != null)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				AfterSaveModifiedEntity(this, e);");
+            sb.AppendLine("			}");
+            sb.AppendLine("		}");
+            sb.AppendLine();
 
-            //sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		/// <summary />");
             //sb.AppendLine("		[field:NonSerialized]");
-            //sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveAddedEntity;");
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		protected virtual void OnAfterSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			if(AfterSaveAddedEntity != null)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				AfterSaveAddedEntity(this, e);");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
+            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveAddedEntity;");
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		protected virtual void OnAfterSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			if(AfterSaveAddedEntity != null)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				AfterSaveAddedEntity(this, e);");
+            sb.AppendLine("			}");
+            sb.AppendLine("		}");
+            sb.AppendLine();
 
             #region Constructors
             sb.AppendLine("		#region Constructors");
@@ -586,12 +586,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
 
                             if (relation.IsRequired)
-                                sb.AppendLine("							 .HasRequired(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                                sb.AppendLine("							 .HasOne(a => a." + relation.PascalRoleName + table.PascalName + ")");
                             else
                                 sb.AppendLine("							 .HasOptional(a => a." + relation.PascalRoleName + table.PascalName + ")");
 
-                            sb.AppendLine("							 .WithOptional(x => x." + relation.PascalRoleName + childTable.PascalName + ")");
-                            sb.AppendLine("							 .WillCascadeOnDelete(false);");
+                            sb.AppendLine("							 .WithOptional(x => x." + relation.PascalRoleName + childTable.PascalName + ");");
+                            //sb.AppendLine("							 .WillCascadeOnDelete(false);");
                         }
                         else
                         {
@@ -599,7 +599,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
 
                             if (relation.IsRequired)
-                                sb.AppendLine("							 .HasRequired(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                                sb.AppendLine("							 .HasOne(a => a." + relation.PascalRoleName + table.PascalName + ")");
                             else
                                 sb.AppendLine("							 .HasOptional(a => a." + relation.PascalRoleName + table.PascalName + ")");
 
@@ -619,8 +619,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                                 index++;
                             }
 
-                            sb.AppendLine(" })");
-                            sb.AppendLine("							 .WillCascadeOnDelete(false);");
+                            sb.AppendLine(" });");
+                            //sb.AppendLine("							 .WillCascadeOnDelete(false);");
                         }
 
                         sb.AppendLine();
@@ -729,125 +729,58 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			if (cancel) return 0;");
             sb.AppendLine();
 
-            //NETCORE REMOVED: AUDIT
-            //sb.AppendLine("			//Get the added list");
-            //sb.AppendLine("			var addedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added);");
-            //sb.AppendLine();
+            sb.AppendLine("			var markedTime = " + (_model.UseUTCTime ? "System.DateTime.UtcNow" : "System.DateTime.Now") + ";");
+            sb.AppendLine();
 
-            //sb.AppendLine("			//Process deleted list");
-            //sb.AppendLine("			var deletedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Deleted);");
-            //sb.AppendLine("			foreach (var item in deletedList)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				var entity = item.Entity as IAuditable;");
-            //sb.AppendLine("				if (entity != null)");
-            //sb.AppendLine("				{");
-            //sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
-            //sb.AppendLine("					{");
-            //sb.AppendLine("						System.Data.SqlClient.SqlConnection connection = null;");
-            //sb.AppendLine("						try");
-            //sb.AppendLine("						{");
-            //sb.AppendLine("							connection = new System.Data.SqlClient.SqlConnection(GetConnectionString());");
-            //sb.AppendLine("							connection.Open();");
-            //sb.AppendLine("							System.Data.SqlClient.SqlCommand command = null;");
+            #region Added Items
+            sb.AppendLine("			//Get the added list");
+            sb.AppendLine("			var addedList = this.ChangeTracker.Entries().Where(x=>x.State == EntityState.Added);");
+            sb.AppendLine("			//Process added list");
+            sb.AppendLine("			foreach (var item in addedList)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var entity = item.Entity as IAuditable;");
+            sb.AppendLine("				if (entity != null)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					var audit = entity as IAuditableSet;");
+            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
+            sb.AppendLine("					{");
+            sb.AppendLine("						if (audit != null) audit.ResetCreatedBy(this.ContextStartup.Modifer);");
+            sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
+            sb.AppendLine("					}");
+            sb.AppendLine("					audit.CreatedDate = markedTime;");
+            sb.AppendLine("					audit.ModifiedDate = markedTime;");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine("			this.OnBeforeSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
+            sb.AppendLine();
+            #endregion
 
-            //var index2 = 0;
-            //foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable == TypedTableConstants.None) && !x.AssociativeTable && x.AllowModifiedAudit && x.AllowAuditTracking).OrderBy(x => x.PascalName))
-            //{
-            //    sb.AppendLine("							" + (index2 > 0 ? "else " : string.Empty) + "if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")");
-            //    sb.AppendLine("							{");
-            //    sb.Append("								command = new System.Data.SqlClient.SqlCommand(\"UPDATE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] SET [" + _model.Database.ModifiedByDatabaseName + "] = @mod WHERE ");
-
-            //    var ii = 1;
-            //    foreach (var column in table.PrimaryKeyColumns)
-            //    {
-            //        sb.Append("[" + column.DatabaseName + "] = @pk" + ii + " AND ");
-            //        ii++;
-            //    }
-            //    sb.Append("(([" + _model.Database.ModifiedByDatabaseName + "] != @mod) OR ([" + _model.Database.ModifiedByDatabaseName + "] IS NULL AND @mod IS NOT NULL) OR ([" + _model.Database.ModifiedByDatabaseName + "] IS NOT NULL AND @mod IS NULL))");
-            //    sb.AppendLine("\", connection);");
-
-            //    ii = 1;
-            //    foreach (var column in table.PrimaryKeyColumns)
-            //    {
-            //        sb.AppendLine("								command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@pk" + ii + "\", ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + column.PascalName + "));");
-            //    }
-
-            //    sb.AppendLine("							}");
-            //    index2++;
-            //}
-
-            //sb.AppendLine("							if (command != null)");
-            //sb.AppendLine("							{");
-            //sb.AppendLine("								command.CommandType = System.Data.CommandType.Text;");
-            //sb.AppendLine("								if (this.ContextStartup.Modifer == null)");
-            //sb.AppendLine("									command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@mod\", System.DBNull.Value));");
-            //sb.AppendLine("								else");
-            //sb.AppendLine("									command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@mod\", this.ContextStartup.Modifer));");
-            //sb.AppendLine("								command.ExecuteNonQuery();");
-            //sb.AppendLine("							}");
-            //sb.AppendLine("						}");
-            //sb.AppendLine("						catch");
-            //sb.AppendLine("						{");
-            //sb.AppendLine("							throw;");
-            //sb.AppendLine("						}");
-            //sb.AppendLine("						finally");
-            //sb.AppendLine("						{");
-            //sb.AppendLine("							if (connection != null && connection.State == System.Data.ConnectionState.Open)");
-            //sb.AppendLine("								connection.Close();");
-            //sb.AppendLine("						}");
-            //sb.AppendLine("					}");
-            //sb.AppendLine("				}");
-            //sb.AppendLine("			}");
-            //sb.AppendLine();
-
-            //#region Added Items
-            //sb.AppendLine("			var markedTime = " + (_model.UseUTCTime ? "System.DateTime.UtcNow" : "System.DateTime.Now") + ";");
-            //sb.AppendLine("			//Process added list");
-            //sb.AppendLine("			foreach (var item in addedList)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				var entity = item.Entity as IAuditable;");
-            //sb.AppendLine("				if (entity != null)");
-            //sb.AppendLine("				{");
-            //sb.AppendLine("					var audit = entity as IAuditableSet;");
-            //sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
-            //sb.AppendLine("					{");
-            //sb.AppendLine("						if (audit != null) audit.ResetCreatedBy(this.ContextStartup.Modifer);");
-            //sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
-            //sb.AppendLine("					}");
-            //sb.AppendLine("					audit.CreatedDate = markedTime;");
-            //sb.AppendLine("					audit.ModifiedDate = markedTime;");
-            //sb.AppendLine("				}");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			this.OnBeforeSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
-            //sb.AppendLine();
-            //#endregion
-
-            //#region Modified Items
-            //sb.AppendLine("			//Process modified list");
-            //sb.AppendLine("			var modifiedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Modified);");
-            //sb.AppendLine("			foreach (var item in modifiedList)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				var entity = item.Entity as IAuditable;");
-            //sb.AppendLine("				if (entity != null)");
-            //sb.AppendLine("				{");
-            //sb.AppendLine("					var audit = entity as IAuditableSet;");
-            //sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
-            //sb.AppendLine("					{");
-            //sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
-            //sb.AppendLine("					}");
-            //sb.AppendLine("					audit.ModifiedDate = markedTime;");
-            //sb.AppendLine("				}");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			this.OnBeforeSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
-            //sb.AppendLine();
-            //#endregion
+            #region Modified Items
+            sb.AppendLine("			//Process modified list");
+            sb.AppendLine("			var modifiedList = this.ChangeTracker.Entries().Where(x=>x.State == EntityState.Modified);");
+            sb.AppendLine("			foreach (var item in modifiedList)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var entity = item.Entity as IAuditable;");
+            sb.AppendLine("				if (entity != null)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					var audit = entity as IAuditableSet;");
+            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
+            sb.AppendLine("					{");
+            sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
+            sb.AppendLine("					}");
+            sb.AppendLine("					audit.ModifiedDate = markedTime;");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine("			this.OnBeforeSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
+            sb.AppendLine();
+            #endregion
 
             sb.AppendLine("			var retval = 0;");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				_paramList.Clear();");
             sb.AppendLine("				retval = base.SaveChanges();");
-            sb.AppendLine("			}");            
+            sb.AppendLine("			}");
             //NETCORE REMOVED
             //sb.AppendLine("			catch (System.Data.Entity.Validation.DbEntityValidationException ex)");
             //sb.AppendLine("			{");
@@ -866,9 +799,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("				throw;");
             sb.AppendLine("			}");
 
-            //NETCORE REMOVED
-            //sb.AppendLine("			this.OnAfterSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
-            //sb.AppendLine("			this.OnAfterSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
+            sb.AppendLine("			this.OnAfterSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
+            sb.AppendLine("			this.OnAfterSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
             sb.AppendLine("			OnAfterSaveChanges();");
             sb.AppendLine("			return retval;");
             sb.AppendLine("		}");

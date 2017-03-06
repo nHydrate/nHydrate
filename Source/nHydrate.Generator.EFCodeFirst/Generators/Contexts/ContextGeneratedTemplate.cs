@@ -777,23 +777,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			if (cancel) return 0;");
             sb.AppendLine();
 
-            //sb.AppendLine("			//Process deleted list");
-            //sb.AppendLine("			var deletedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Deleted);");
-            //sb.AppendLine("			foreach (var item in deletedList)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				var entity = item.Entity as IAuditable;");
-            //sb.AppendLine("				if (entity != null)");
-            //sb.AppendLine("				{");
-            //sb.AppendLine("					var audit = entity as IAuditableSet;");
-            //sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
-            //sb.AppendLine("					{");
-            //sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
-            //sb.AppendLine("					}");
-            //sb.AppendLine("					audit.ModifiedDate = markedTime;");
-            //sb.AppendLine("				}");
-            //sb.AppendLine("			}");
-            //sb.AppendLine();
-
             #region Added Items
             sb.AppendLine("			//Get the added list");
             sb.AppendLine("			var addedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added);");
