@@ -126,6 +126,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
+            sb.AppendLine("using System.Data.SqlClient;");
             sb.AppendLine();
         }
 
@@ -446,18 +447,21 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     {
                         sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
                         sb.Append(".Property(d => d." + column.PascalName + ")");
-                        if (column.AllowNull) sb.Append(".IsOptional()");
-                        else sb.Append(".IsRequired()");
+                        //if (column.AllowNull) sb.Append(".IsOptional()");
+                        //else sb.Append(".IsRequired()");
 
-                        if (column.PrimaryKey && column.IsIntegerType && column.Identity != IdentityTypeConstants.Database)
-                            sb.Append(".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)");
-                        else if (column.ComputedColumn)
-                            sb.Append(".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)");
-                        else if (column.Identity == IdentityTypeConstants.Database && column.IsIntegerType)
-                            sb.Append(".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)");
+                        if (!column.AllowNull) sb.Append(".IsRequired()");
+
+                        //if (column.PrimaryKey && column.IsIntegerType && column.Identity != IdentityTypeConstants.Database)
+                        //    sb.Append(".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)");
+                        //else if (column.ComputedColumn)
+                        //    sb.Append(".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)");
+                        //else
+                        if (column.Identity == IdentityTypeConstants.Database && column.IsIntegerType)
+                            sb.Append(".UseSqlServerIdentityColumn()");
 
                         if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
-                        if (column.DataType == System.Data.SqlDbType.VarChar) sb.Append(".HasColumnType(\"VARCHAR\")");
+                        if (column.DataType == System.Data.SqlDbType.VarChar) sb.Append(".HasColumnType(\"VARCHAR(" + column.GetAnnotationStringLength() + ")\")");
                         if (column.DatabaseName != column.PascalName) sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
                         sb.AppendLine(";");
                     }
@@ -514,7 +518,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         sb.AppendLine(";");
                     }
 
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").IsConcurrencyToken(true);");
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").IsConcurrencyToken(true).IsRowVersion();");
                 }
 
                 sb.AppendLine();
@@ -935,49 +939,49 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			get { return _modelKey; }");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Determines if the API matches the database connection");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public virtual bool IsValidConnection()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return IsValidConnection(GetConnectionString(), true);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Determines if the API matches the database connection");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public virtual bool IsValidConnection(bool checkVersion)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return IsValidConnection(GetConnectionString(), checkVersion);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Determines if the API matches the database connection");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"checkVersion\">Determines if the check also includes the exact version of the model</param>");
-            sb.AppendLine("		/// <param name=\"connectionString\">Determines the connection string to use when connecting to the database</param>");
-            sb.AppendLine("		/// <returns></returns>");
-            sb.AppendLine("		public virtual bool IsValidConnection(string connectionString, bool checkVersion = true)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			if (string.IsNullOrEmpty(connectionString))");
-            sb.AppendLine("				return false;");
-            sb.AppendLine();
-            sb.AppendLine("			//Get current version");
-            sb.AppendLine("			var version = GetDBVersion(connectionString);");
-            sb.AppendLine();
-            sb.AppendLine("			//If there is any version then the ModelKey was found, if not found then the database does not contain this model");
-            sb.AppendLine("			if (string.IsNullOrEmpty(version))");
-            sb.AppendLine("				return false;");
-            sb.AppendLine();
-            sb.AppendLine("			if (checkVersion)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				if (version != this.Version)");
-            sb.AppendLine("					return false;");
-            sb.AppendLine("			}");
-            sb.AppendLine();
-            sb.AppendLine("			return true;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            //sb.AppendLine("		/// <summary>");
+            //sb.AppendLine("		/// Determines if the API matches the database connection");
+            //sb.AppendLine("		/// </summary>");
+            //sb.AppendLine("		public virtual bool IsValidConnection()");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			return IsValidConnection(GetConnectionString(), true);");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
+            //sb.AppendLine("		/// <summary>");
+            //sb.AppendLine("		/// Determines if the API matches the database connection");
+            //sb.AppendLine("		/// </summary>");
+            //sb.AppendLine("		public virtual bool IsValidConnection(bool checkVersion)");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			return IsValidConnection(GetConnectionString(), checkVersion);");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
+            //sb.AppendLine("		/// <summary>");
+            //sb.AppendLine("		/// Determines if the API matches the database connection");
+            //sb.AppendLine("		/// </summary>");
+            //sb.AppendLine("		/// <param name=\"checkVersion\">Determines if the check also includes the exact version of the model</param>");
+            //sb.AppendLine("		/// <param name=\"connectionString\">Determines the connection string to use when connecting to the database</param>");
+            //sb.AppendLine("		/// <returns></returns>");
+            //sb.AppendLine("		public virtual bool IsValidConnection(string connectionString, bool checkVersion = true)");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			if (string.IsNullOrEmpty(connectionString))");
+            //sb.AppendLine("				return false;");
+            //sb.AppendLine();
+            //sb.AppendLine("			//Get current version");
+            //sb.AppendLine("			var version = GetDBVersion(connectionString);");
+            //sb.AppendLine();
+            //sb.AppendLine("			//If there is any version then the ModelKey was found, if not found then the database does not contain this model");
+            //sb.AppendLine("			if (string.IsNullOrEmpty(version))");
+            //sb.AppendLine("				return false;");
+            //sb.AppendLine();
+            //sb.AppendLine("			if (checkVersion)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				if (version != this.Version)");
+            //sb.AppendLine("					return false;");
+            //sb.AppendLine("			}");
+            //sb.AppendLine();
+            //sb.AppendLine("			return true;");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Retrieves the latest database version for the current model");
             sb.AppendLine("		/// </summary>");
@@ -989,18 +993,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("				conn.ConnectionString = connectionString;");
             sb.AppendLine("				conn.Open();");
             sb.AppendLine();
-            sb.AppendLine("				var da = new SqlDataAdapter(\"select * from sys.tables where name = '__nhydrateschema'\", conn);");
-            sb.AppendLine("				var ds = new DataSet();");
-            sb.AppendLine("				da.Fill(ds);");
-            sb.AppendLine("				if (ds.Tables[0].Rows.Count > 0)");
+            sb.AppendLine("				var command = new SqlCommand(\"SELECT dbVersion FROM [__nhydrateschema] where [ModelKey] = '\" + this.ModelKey + \"'\", conn);");
+            sb.AppendLine("				using (var reader = command.ExecuteReader())");
             sb.AppendLine("				{");
-            sb.AppendLine("					da = new SqlDataAdapter(\"SELECT * FROM [__nhydrateschema] where [ModelKey] = '\" + this.ModelKey + \"'\", conn);");
-            sb.AppendLine("					ds = new DataSet();");
-            sb.AppendLine("					da.Fill(ds);");
-            sb.AppendLine("					var t = ds.Tables[0];");
-            sb.AppendLine("					if (t.Rows.Count > 0)");
+            sb.AppendLine("					while (reader.Read())");
             sb.AppendLine("					{");
-            sb.AppendLine("						return (string) t.Rows[0][\"dbVersion\"];");
+            sb.AppendLine("						return (string)reader[0];");
             sb.AppendLine("					}");
             sb.AppendLine("				}");
             sb.AppendLine("				return string.Empty;");
@@ -1096,9 +1094,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			{");
             sb.AppendLine("				try");
             sb.AppendLine("				{");
-            sb.AppendLine("					if (this.Database.Connection != null && !string.IsNullOrEmpty(this.Database.Connection.ConnectionString))");
+            sb.AppendLine("					if (this.Database.GetDbConnection() != null && !string.IsNullOrEmpty(this.Database.GetDbConnection().ConnectionString))");
             sb.AppendLine("					{");
-            sb.AppendLine("						return Util.StripEFCS2Normal(this.Database.Connection.ConnectionString);");
+            sb.AppendLine("						return Util.StripEFCS2Normal(this.Database.GetDbConnection().ConnectionString);");
             sb.AppendLine("					}");
             sb.AppendLine("					else");
             sb.AppendLine("					{");
@@ -1113,37 +1111,37 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Returns the globally configured connection string for this context type");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		internal static string GetConnectionString()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			try");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var a = System.Configuration.ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"];");
-            sb.AppendLine("				if (a != null)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					var s = a.ConnectionString;");
-            sb.AppendLine("					var regEx = new System.Text.RegularExpressions.Regex(\"provider connection string\\\\s*=\\\\s*\\\"([^\\\"]*)\");");
-            sb.AppendLine("					var m = regEx.Match(s);");
-            sb.AppendLine("					var connString = s;");
-            sb.AppendLine("					if (m != null && m.Groups.Count > 1)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						connString = m.Groups[1].Value;");
-            sb.AppendLine("					}");
-            sb.AppendLine("					return connString;");
-            sb.AppendLine("				}");
-            sb.AppendLine("				else");
-            sb.AppendLine("				{");
-            sb.AppendLine("					throw new Exception(\"The connection string was not found.\");");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("			catch (Exception)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				throw new Exception(\"The connection string was not found.\");");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            //sb.AppendLine("		/// <summary>");
+            //sb.AppendLine("		/// Returns the globally configured connection string for this context type");
+            //sb.AppendLine("		/// </summary>");
+            //sb.AppendLine("		internal static string GetConnectionString()");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			try");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				var a = System.Configuration.ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"];");
+            //sb.AppendLine("				if (a != null)");
+            //sb.AppendLine("				{");
+            //sb.AppendLine("					var s = a.ConnectionString;");
+            //sb.AppendLine("					var regEx = new System.Text.RegularExpressions.Regex(\"provider connection string\\\\s*=\\\\s*\\\"([^\\\"]*)\");");
+            //sb.AppendLine("					var m = regEx.Match(s);");
+            //sb.AppendLine("					var connString = s;");
+            //sb.AppendLine("					if (m != null && m.Groups.Count > 1)");
+            //sb.AppendLine("					{");
+            //sb.AppendLine("						connString = m.Groups[1].Value;");
+            //sb.AppendLine("					}");
+            //sb.AppendLine("					return connString;");
+            //sb.AppendLine("				}");
+            //sb.AppendLine("				else");
+            //sb.AppendLine("				{");
+            //sb.AppendLine("					throw new Exception(\"The connection string was not found.\");");
+            //sb.AppendLine("				}");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("			catch (Exception)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				throw new Exception(\"The connection string was not found.\");");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
             #endregion
 
             #region Context Interface Members

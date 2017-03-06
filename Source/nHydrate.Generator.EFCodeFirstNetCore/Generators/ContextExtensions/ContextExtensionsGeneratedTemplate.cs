@@ -128,27 +128,27 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             //sb.AppendLine("		}");
             //sb.AppendLine();
 
-            sb.AppendLine("		private static IQueryable<T> GetInclude<T, R>(this IQueryable<T> item, Expression<Func<R, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
-            sb.AppendLine("			where T : BaseEntity");
-            sb.AppendLine("			where R : IContextInclude");
-            sb.AppendLine("		{");
-            //NETCORE REMOVED
-            //sb.AppendLine("			var dbItem = item as System.Data.Entity.Infrastructure.DbQuery<T>;");
-            //sb.AppendLine("			if (dbItem != null) return GetInclude(dbItem, query);");
-            sb.AppendLine("			var tempItem = item as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
-            sb.AppendLine("			if (tempItem == null) return item;");
-            sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
-            sb.AppendLine("			strings.RemoveAt(0);");
-            sb.AppendLine("			var compoundString = string.Empty;");
-            sb.AppendLine("			foreach (var s in strings)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				if (!string.IsNullOrEmpty(compoundString)) compoundString += \".\";");
-            sb.AppendLine("				compoundString += s;");
-            sb.AppendLine("				tempItem = tempItem.Include(compoundString);");
-            sb.AppendLine("			}");
-            sb.AppendLine("			return tempItem;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            //sb.AppendLine("		private static IQueryable<T> GetInclude<T, R>(this IQueryable<T> item, Expression<Func<R, " + this.GetLocalNamespace() + ".IContextInclude>> query)");
+            //sb.AppendLine("			where T : BaseEntity");
+            //sb.AppendLine("			where R : IContextInclude");
+            //sb.AppendLine("		{");
+            ////NETCORE REMOVED
+            ////sb.AppendLine("			var dbItem = item as System.Data.Entity.Infrastructure.DbQuery<T>;");
+            ////sb.AppendLine("			if (dbItem != null) return GetInclude(dbItem, query);");
+            //sb.AppendLine("			var tempItem = item as System.Data.Entity.Core.Objects.ObjectQuery<T>;");
+            //sb.AppendLine("			if (tempItem == null) return item;");
+            //sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
+            //sb.AppendLine("			strings.RemoveAt(0);");
+            //sb.AppendLine("			var compoundString = string.Empty;");
+            //sb.AppendLine("			foreach (var s in strings)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				if (!string.IsNullOrEmpty(compoundString)) compoundString += \".\";");
+            //sb.AppendLine("				compoundString += s;");
+            //sb.AppendLine("				tempItem = tempItem.Include(compoundString);");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("			return tempItem;");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
 
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
             {
