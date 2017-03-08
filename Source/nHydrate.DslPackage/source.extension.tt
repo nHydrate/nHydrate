@@ -54,6 +54,13 @@
         <Edition>Express</Edition>
         <Edition>Pro</Edition>
       </VisualStudio>
+      <VisualStudio Version="15.0">
+        <Edition>Enterprise</Edition>
+        <Edition>Ultimate</Edition>
+        <Edition>Premium</Edition>
+        <Edition>Express</Edition>
+        <Edition>Pro</Edition>
+      </VisualStudio>
     </SupportedProducts>
     <SupportedFrameworkRuntimeEdition MinVersion="4.0" />
   </Identifier>
