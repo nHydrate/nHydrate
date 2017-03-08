@@ -1729,13 +1729,13 @@ namespace nHydrate.DslPackage
                 Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
             }
 
-            // Show "Documentation Window"
-            var myDocumentationWindow = this.MyToolWindowDocumentation;
-            if (myDocumentationWindow != null)
-            {
-                var windowFrame = (IVsWindowFrame)myDocumentationWindow.Frame;
-                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
-            }
+            //// Show "Documentation Window"
+            //var myDocumentationWindow = this.MyToolWindowDocumentation;
+            //if (myDocumentationWindow != null)
+            //{
+            //    var windowFrame = (IVsWindowFrame)myDocumentationWindow.Frame;
+            //    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            //}
         }
 
         protected override void ProcessOnMenuEditCompartmentItemCommand()
@@ -1761,20 +1761,20 @@ namespace nHydrate.DslPackage
             }
         }
 
-        protected ToolWindow MyToolWindowDocumentation
-        {
-            get
-            {
-                ToolWindow myToolWindow = null;
-                var package = this.ServiceProvider.GetService(typeof(nHydratePackage)) as ModelingPackage;
+        //protected ToolWindow MyToolWindowDocumentation
+        //{
+        //    get
+        //    {
+        //        ToolWindow myToolWindow = null;
+        //        var package = this.ServiceProvider.GetService(typeof(nHydratePackage)) as ModelingPackage;
 
-                if (package != null)
-                {
-                    myToolWindow = package.GetToolWindow(typeof(DocumentationWindow), true);
-                }
-                return myToolWindow;
-            }
-        }
+        //        if (package != null)
+        //        {
+        //            myToolWindow = package.GetToolWindow(typeof(DocumentationWindow), true);
+        //        }
+        //        return myToolWindow;
+        //    }
+        //}
 
         #endregion
 

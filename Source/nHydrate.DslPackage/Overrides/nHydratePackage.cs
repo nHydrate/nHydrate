@@ -36,8 +36,8 @@ namespace nHydrate.DslPackage
     //http://www.code-magazine.com/article.aspx?quickid=0710072&page=2
     [VSShell::ProvideToolWindow(typeof(FindWindow), MultiInstances = false, Style = VSShell::VsDockStyle.Tabbed, Orientation = VSShell::ToolWindowOrientation.Right, Window = "{5AE79031-E1BC-11D0-8F78-00A0C9110057}")]
     [VSShell::ProvideToolWindowVisibility(typeof(FindWindow), Constants.nHydrateEditorFactoryId)]
-    [VSShell::ProvideToolWindow(typeof(DocumentationWindow), MultiInstances = false, Style = VSShell::VsDockStyle.Tabbed, Orientation = VSShell::ToolWindowOrientation.Right, Window = "{4AE79031-E1BC-11D0-8F78-00A0C9110057}")]
-    [VSShell::ProvideToolWindowVisibility(typeof(DocumentationWindow), Constants.nHydrateEditorFactoryId)]
+    //[VSShell::ProvideToolWindow(typeof(DocumentationWindow), MultiInstances = false, Style = VSShell::VsDockStyle.Tabbed, Orientation = VSShell::ToolWindowOrientation.Right, Window = "{4AE79031-E1BC-11D0-8F78-00A0C9110057}")]
+    //[VSShell::ProvideToolWindowVisibility(typeof(DocumentationWindow), Constants.nHydrateEditorFactoryId)]
     [Microsoft.VisualStudio.Shell.InstalledProductRegistration("nHydrate Visual Modeler", "The nHydrate Visual Modeler is a plug-in that manages models to emit Entity Framework compatible code.", "5.0")]
     partial class nHydratePackage
     {
@@ -46,7 +46,7 @@ namespace nHydrate.DslPackage
             base.Initialize();
 
             //Registers the custom tool window
-            this.AddToolWindow(typeof(DocumentationWindow));
+            //this.AddToolWindow(typeof(DocumentationWindow));
 
             //Registers the custom tool window
             this.AddToolWindow(typeof(FindWindow));
