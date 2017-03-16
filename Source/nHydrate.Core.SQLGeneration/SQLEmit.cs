@@ -693,12 +693,16 @@ namespace nHydrate.Core.SQLGeneration
                     if (newColumn.Identity == IdentityTypeConstants.None && oldColumn.Identity == IdentityTypeConstants.Database)
                     {
                         //Check PK
-                        var indexName = "PK_" + newTable.DatabaseName;
-                        sb.AppendLine("--UNCOMMENT TO DELETE THE PRIMARY KEY CONSTRAINT IF NECESSARY");
-                        sb.AppendLine("--if exists(select * from sys.indexes where name = '" + indexName + "')");
-                        sb.AppendLine("--ALTER TABLE [" + newTable.DatabaseName + "] DROP CONSTRAINT [" + indexName + "];");
-                        sb.AppendLine("--GO");
-                        sb.AppendLine();
+                        if (oldColumn.PrimaryKey)
+                        {
+                            var indexName = "PK_" + newTable.DatabaseName;
+                            sb.AppendLine("--UNCOMMENT TO DELETE THE PRIMARY KEY CONSTRAINT IF NECESSARY");
+                            sb.AppendLine("--if exists(select * from sys.indexes where name = '" + indexName + "')");
+                            sb.AppendLine("--ALTER TABLE [" + newTable.DatabaseName + "] DROP CONSTRAINT [" + indexName + "];");
+                            sb.AppendLine("--GO");
+                            sb.AppendLine();
+                        }
+
                         sb.AppendLine("--NOTE: YOU MAY NEED TO REMOVE OTHER RELATIONSHIPS FOR THIS FIELD HERE");
                         sb.AppendLine();
                         sb.AppendLine("--CREATE A NEW TEMP COLUMN AND MOVE THE DATA THERE");
