@@ -648,7 +648,6 @@ namespace nHydrate.Core.SQLGeneration
 
             #endregion
 
-
             #region Update column
 
             //Only change if the column type, length, or nullable values have changed
@@ -688,6 +687,46 @@ namespace nHydrate.Core.SQLGeneration
                             sb.AppendLine("--UPDATE [" + newTable.GetSQLSchema() + "].[" + newTable.DatabaseName + "] SET [" + newColumn.DatabaseName + "] = " + dValue + " WHERE [" + newColumn.DatabaseName + "] IS NULL");
                         }
                         sb.AppendLine();
+                    }
+
+                    //If old column was Identity and it has been removed then remove it
+                    if (newColumn.Identity == IdentityTypeConstants.None && oldColumn.Identity == IdentityTypeConstants.Database)
+                    {
+                        //Check PK
+                        var indexName = "PK_" + newTable.DatabaseName;
+                        sb.AppendLine("--UNCOMMENT TO DELETE THE PRIMARY KEY CONSTRAINT IF NECESSARY");
+                        sb.AppendLine("--if exists(select * from sys.indexes where name = '" + indexName + "')");
+                        sb.AppendLine("--ALTER TABLE [" + newTable.DatabaseName + "] DROP CONSTRAINT [" + indexName + "];");
+                        sb.AppendLine("--GO");
+                        sb.AppendLine();
+                        sb.AppendLine("--NOTE: YOU MAY NEED TO REMOVE OTHER RELATIONSHIPS FOR THIS FIELD HERE");
+                        sb.AppendLine();
+                        sb.AppendLine("--CREATE A NEW TEMP COLUMN AND MOVE THE DATA THERE");
+                        sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] ADD [__TCOL] " + oldColumn.DatabaseType);
+                        sb.AppendLine("GO");
+                        sb.AppendLine("UPDATE [" + newTable.DatabaseName + "] SET [__TCOL] = [" + oldColumn.DatabaseName + "]");
+                        sb.AppendLine("GO");
+                        sb.AppendLine();
+                        sb.AppendLine("--DROP THE ORIGINAL COLUMN WITH THE IDENTITY");
+                        sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] DROP COLUMN [" + oldColumn.DatabaseName + "]");
+                        sb.AppendLine("GO");
+                        sb.AppendLine();
+                        sb.AppendLine("--RENAME THE TEMP COLUMN TO THE ORIGINAL NAME");
+                        sb.AppendLine("EXEC sp_rename '" + newTable.DatabaseName + ".__TCOL', '" + newColumn.DatabaseName + "', 'COLUMN';");
+                        sb.AppendLine("GO");
+                        sb.AppendLine();
+
+                        if (!newColumn.AllowNull)
+                        {
+                            sb.AppendLine("--MAKE THE NEW COLUMN NOT NULL AS THE ORIGINAL WAS");
+                            sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] ALTER COLUMN [" + newColumn.DatabaseName + "] " + newColumn.DatabaseType + " NOT NULL");
+                            sb.AppendLine("GO");
+                            sb.AppendLine();
+                        }
+                    }
+                    else if (newColumn.Identity == IdentityTypeConstants.Database && oldColumn.Identity == IdentityTypeConstants.None)
+                    {
+                        sb.AppendLine("--ADD SCRIPT HERE TO CONVERT [" + newTable.DatabaseName + "].[" + newColumn.DatabaseName + "] TO IDENTITY COLUMN");
                     }
 
                     sb.AppendLine("--UPDATE COLUMN");
