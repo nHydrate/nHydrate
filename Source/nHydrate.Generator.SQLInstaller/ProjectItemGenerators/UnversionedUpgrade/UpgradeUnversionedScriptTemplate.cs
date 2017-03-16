@@ -38,7 +38,7 @@ using nHydrate.Generator.Common;
 using nHydrate.Generator.SQLInstaller;
 using nHydrate.Generator.ProjectItemGenerators;
 
-namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
+namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.UnversionedUpgrade
 {
     class UpgradeUnversionedScriptTemplate : BaseDbScriptTemplate
     {

@@ -31,7 +31,7 @@ using nHydrate.Generator.Models;
 
 using nHydrate.Generator.Common.EventArgs;
 
-namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
+namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.AuditTriggers
 {
 	[GeneratorItemAttribute("CreateAuditTriggers", typeof(DatabaseProjectGenerator))]
 	public class CreateAuditTriggersGenerator : BaseDbScriptGenerator

@@ -31,7 +31,7 @@ using nHydrate.Generator.Models;
 using nHydrate.Generator.ProjectItemGenerators;
 using nHydrate.Generator.Common.EventArgs;
 
-namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
+namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.UnversionedUpgrade
 {
     [GeneratorItemAttribute("UpgradeVersioned", typeof(DatabaseProjectGenerator))]
     public class UpgradeUnversionedScriptGenerator : BaseDbScriptGenerator
