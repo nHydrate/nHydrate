@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using nHydrate.Generator.Models;
 
-namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
+namespace nHydrate.Generator.EFDAL.Generators.ViewEntity
 {
 	public class ViewEntityExtenderTemplate : EFDALBaseTemplate
 	{

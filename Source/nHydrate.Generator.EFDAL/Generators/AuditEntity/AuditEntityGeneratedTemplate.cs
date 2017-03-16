@@ -30,7 +30,7 @@ using System.Text;
 using nHydrate.Generator.Models;
 using nHydrate.Generator.Common.Util;
 
-namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
+namespace nHydrate.Generator.EFDAL.Generators.AuditEntity
 {
 	public class AuditEntityGeneratedTemplate : EFDALBaseTemplate
 	{

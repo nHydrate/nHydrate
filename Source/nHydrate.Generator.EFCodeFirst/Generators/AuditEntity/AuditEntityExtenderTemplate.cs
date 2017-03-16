@@ -1,39 +1,27 @@
-#region Copyright (c) 2006-2011 Widgetsphere LLC, All Rights Reserved
-//--------------------------------------------------------------------- *
-//                          Widgetsphere  LLC                           *
-//             Copyright (c) 2006-2011 All Rights reserved              *
-//                                                                      *
-//                                                                      *
-//This file and its contents are protected by United States and         *
-//International copyright laws.  Unauthorized reproduction and/or       *
-//distribution of all or any portion of the code contained herein       *
-//is strictly prohibited and will result in severe civil and criminal   *
-//penalties.  Any violations of this copyright will be prosecuted       *
-//to the fullest extent possible under law.                             *
-//                                                                      *
-//THE SOURCE CODE CONTAINED HEREIN AND IN RELATED FILES IS PROVIDED     *
-//TO THE REGISTERED DEVELOPER FOR THE PURPOSES OF EDUCATION AND         *
-//TROUBLESHOOTING. UNDER NO CIRCUMSTANCES MAY ANY PORTION OF THE SOURCE *
-//CODE BE DISTRIBUTED, DISCLOSED OR OTHERWISE MADE AVAILABLE TO ANY     *
-//THIRD PARTY WITHOUT THE EXPRESS WRITTEN CONSENT OF WIDGETSPHERE LLC   *
-//                                                                      *
-//UNDER NO CIRCUMSTANCES MAY THE SOURCE CODE BE USED IN WHOLE OR IN     *
-//PART, AS THE BASIS FOR CREATING A PRODUCT THAT PROVIDES THE SAME, OR  *
-//SUBSTANTIALLY THE SAME, FUNCTIONALITY AS ANY WIDGETSPHERE PRODUCT.    *
-//                                                                      *
-//THE REGISTERED DEVELOPER ACKNOWLEDGES THAT THIS SOURCE CODE           *
-//CONTAINS VALUABLE AND PROPRIETARY TRADE SECRETS OF WIDGETSPHERE,      *
-//INC.  THE REGISTERED DEVELOPER AGREES TO EXPEND EVERY EFFORT TO       *
-//INSURE ITS CONFIDENTIALITY.                                           *
-//                                                                      *
-//THE END USER LICENSE AGREEMENT (EULA) ACCOMPANYING THE PRODUCT        *
-//PERMITS THE REGISTERED DEVELOPER TO REDISTRIBUTE THE PRODUCT IN       *
-//EXECUTABLE FORM ONLY IN SUPPORT OF APPLICATIONS WRITTEN USING         *
-//THE PRODUCT.  IT DOES NOT PROVIDE ANY RIGHTS REGARDING THE            *
-//SOURCE CODE CONTAINED HEREIN.                                         *
-//                                                                      *
-//THIS COPYRIGHT NOTICE MAY NOT BE REMOVED FROM THIS FILE.              *
-//--------------------------------------------------------------------- *
+#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+// -------------------------------------------------------------------------- *
+//                           NHYDRATE.ORG                                     *
+//              Copyright (c) 2006-2017 All Rights reserved                   *
+//                                                                            *
+//                                                                            *
+// Permission is hereby granted, free of charge, to any person obtaining a    *
+// copy of this software and associated documentation files (the "Software"), *
+// to deal in the Software without restriction, including without limitation  *
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,   *
+// and/or sell copies of the Software, and to permit persons to whom the      *
+// Software is furnished to do so, subject to the following conditions:       *
+//                                                                            *
+// The above copyright notice and this permission notice shall be included    *
+// in all copies or substantial portions of the Software.                     *
+//                                                                            *
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,            *
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES            *
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  *
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY       *
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,       *
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE          *
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                     *
+// -------------------------------------------------------------------------- *
 #endregion
 using System;
 using System.Linq;
@@ -45,7 +33,7 @@ using nHydrate.Generator.EFCodeFirst;
 using nHydrate.Generator.Models;
 using nHydrate.Generator.Common;
 
-namespace Widgetsphere.Generator.EFCodeFirst.Generators.EFCSDL
+namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
 {
     public class AuditEntityExtenderTemplate : EFCodeFirstBaseTemplate
     {

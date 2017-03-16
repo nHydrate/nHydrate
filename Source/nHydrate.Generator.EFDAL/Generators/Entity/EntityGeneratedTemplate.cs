@@ -31,7 +31,7 @@ using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.Models;
 
-namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
+namespace nHydrate.Generator.EFDAL.Generators.Entity
 {
     public class EntityGeneratedTemplate : EFDALBaseTemplate
     {

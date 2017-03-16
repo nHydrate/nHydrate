@@ -29,7 +29,7 @@ using nHydrate.Generator.Common.GeneratorFramework;
 using System.Collections.Generic;
 using nHydrate.Generator.Models;
 
-namespace nHydrate.Generator.EFDAL.Generators.EFCSDL
+namespace nHydrate.Generator.EFDAL.Generators.ViewEntity
 {
 	[GeneratorItem("ViewEntityExtenderGenerator", typeof(EFDALProjectGenerator))]
 	public class ViewEntityExtenderGenerator : EFDALProjectItemGenerator
