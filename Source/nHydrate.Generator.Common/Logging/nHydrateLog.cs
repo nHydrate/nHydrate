@@ -819,9 +819,15 @@ namespace nHydrate.Generator.Common.Logging
                 {
                     retVal = new EventLogTraceListener(initializationData);
                 }
+                else if (typeString == "System.Diagnostics.DefaultTraceListener")
+                {
+                    retVal = new System.Diagnostics.DefaultTraceListener();
+                }
                 else
                 {
-                    retVal = (TraceListener)ReflectionHelper.CreateInstance(Type.GetType(typeString), new object[] { initializationData });
+                    var obj = Type.GetType(typeString);
+                    if (obj != null)
+                        retVal = (TraceListener)ReflectionHelper.CreateInstance(obj, new object[] { initializationData });
                 }
                 if (retVal != null)
                 {
