@@ -809,7 +809,7 @@ namespace nHydrate.DslPackage.Forms
 				var element = lvwSubItem.SelectedItems[0].Tag as Microsoft.VisualStudio.Modeling.ModelElement;
 				(_docData as nHydrateDocData).ModelExplorerToolWindow.SelectElement(element, false);
 			}
-			else (_docData as nHydrateDocData).DocumentationWindow.SelectElement(null);
+			//else (_docData as nHydrateDocData).DocumentationWindow.SelectElement(null);
 		}
 
 		private void lvwMain_SelectedIndexChanged(object sender, EventArgs e)
@@ -821,7 +821,7 @@ namespace nHydrate.DslPackage.Forms
 				var element = lvwMain.SelectedItems[0].Tag as Microsoft.VisualStudio.Modeling.ModelElement;
 				(_docData as nHydrateDocData).ModelExplorerToolWindow.SelectElement(element, false);
 			}
-			else (_docData as nHydrateDocData).DocumentationWindow.SelectElement(null);
+			//else (_docData as nHydrateDocData).DocumentationWindow.SelectElement(null);
 		}
 
 		private void FindWindowControl_Resize(object sender, EventArgs e)

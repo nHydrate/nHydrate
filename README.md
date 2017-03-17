@@ -9,7 +9,7 @@ https://visualstudiogallery.msdn.microsoft.com/d641354e-b15f-437c-b7eb-83c6ac423
 Installation
 ========
 
-To load and compile this project you need Visual Stuido 2013 or greater.
+To load and compile this project you need Visual Studio 2013 or greater.
 
 Then install the SDK from the following URL.
 

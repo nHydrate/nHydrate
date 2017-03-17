@@ -40,7 +40,7 @@
     <ClearToolboxCacheInExpHive>true</ClearToolboxCacheInExpHive>
     <StartupObject>
     </StartupObject>
-    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -203,13 +203,6 @@
     <Compile Include="Extensions\MenuFunctions.cs" />
     <Compile Include="Extensions\nHydrateExplorer.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\DocumentationWindow.cs" />
-    <Compile Include="Forms\DocumentationWindowControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\DocumentationWindowControl.Designer.cs">
-      <DependentUpon>DocumentationWindowControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FindWindow.cs" />
     <Compile Include="Forms\FindWindowColumnSetupForm.cs">
@@ -554,9 +547,6 @@
     <Service Include="{508349B6-6B84-4df5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\DocumentationWindowControl.resx">
-      <DependentUpon>DocumentationWindowControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FindWindowColumnSetupForm.resx">
       <DependentUpon>FindWindowColumnSetupForm.cs</DependentUpon>
     </EmbeddedResource>

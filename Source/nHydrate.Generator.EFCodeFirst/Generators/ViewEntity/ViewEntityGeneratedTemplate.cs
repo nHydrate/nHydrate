@@ -235,8 +235,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ViewEntity
             var index = 0;
             foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
             {
-                CustomView typeTable = null;
-
                 sb.AppendLine("		/// <summary>");
                 if (!string.IsNullOrEmpty(column.Description))
                     StringHelper.LineBreakCode(sb, column.Description, "		/// ");

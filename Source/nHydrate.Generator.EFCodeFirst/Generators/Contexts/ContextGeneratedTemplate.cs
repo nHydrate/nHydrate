@@ -441,7 +441,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     var isTypeValue = false;
                     #region Determine if this is a type table Value field and if so ignore
                     {
-                        string roleName;
                         string pascalRoleName;
                         Table typeTable = null;
                         if (table.IsColumnRelatedToTypeTable(column, out pascalRoleName) || (column.PrimaryKey && table.TypedTable != TypedTableConstants.None))

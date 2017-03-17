@@ -44,7 +44,7 @@ namespace nHydrate.DslPackage
         public bool IsImporting { get; set; }
 
         public nHydrateExplorerToolWindow ModelExplorerToolWindow { get; private set; }
-        public DocumentationWindow DocumentationWindow { get; private set; }
+        //public DocumentationWindow DocumentationWindow { get; private set; }
         public FindWindow FindWindow { get; private set; }
 
         protected override void OnDocumentLoaded()
@@ -120,10 +120,10 @@ namespace nHydrate.DslPackage
             var package = this.ServiceProvider.GetService(typeof(nHydratePackage)) as Microsoft.VisualStudio.Modeling.Shell.ModelingPackage;
             if (package != null)
             {
-                this.DocumentationWindow = package.GetToolWindow(typeof(DocumentationWindow), true) as DocumentationWindow;
+                //this.DocumentationWindow = package.GetToolWindow(typeof(DocumentationWindow), true) as DocumentationWindow;
                 this.FindWindow = package.GetToolWindow(typeof(FindWindow), true) as FindWindow;
                 this.ModelExplorerToolWindow = package.GetToolWindow(typeof(nHydrateExplorerToolWindow), true) as nHydrateExplorerToolWindow;
-                this.ModelExplorerToolWindow.SelectionChanged += new EventHandler(ModelExplorerToolWindow_SelectionChanged);
+                //this.ModelExplorerToolWindow.SelectionChanged += new EventHandler(ModelExplorerToolWindow_SelectionChanged);
             }
 
             //Prompt dialog to setup these essential properties
@@ -419,12 +419,12 @@ namespace nHydrate.DslPackage
             }
         }
 
-        private void ModelExplorerToolWindow_SelectionChanged(object sender, EventArgs e)
-        {
-            var explorer = sender as nHydrate.DslPackage.nHydrateExplorerToolWindowBase;
-            var item = explorer.GetSelectedComponents().Cast<Microsoft.VisualStudio.Modeling.ModelElement>().FirstOrDefault();
-            this.DocumentationWindow.SelectElement(item);
-        }
+        //private void ModelExplorerToolWindow_SelectionChanged(object sender, EventArgs e)
+        //{
+        //    var explorer = sender as nHydrate.DslPackage.nHydrateExplorerToolWindowBase;
+        //    var item = explorer.GetSelectedComponents().Cast<Microsoft.VisualStudio.Modeling.ModelElement>().FirstOrDefault();
+        //    this.DocumentationWindow.SelectElement(item);
+        //}
 
     }
 

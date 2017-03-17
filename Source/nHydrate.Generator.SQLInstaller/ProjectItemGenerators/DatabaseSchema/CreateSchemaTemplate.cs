@@ -36,7 +36,7 @@ using nHydrate.Core.SQLGeneration;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 {
-    class CreateSchemaTemplate : BaseDbScriptTemplate
+    public class CreateSchemaTemplate : BaseDbScriptTemplate
     {
         private StringBuilder sb = new StringBuilder();
 

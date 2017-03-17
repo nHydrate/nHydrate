@@ -544,7 +544,7 @@ namespace nHydrate.DslPackage
 
         public static nHydrate.DataImport.SQLObject ToDatabaseObject(this Entity item)
         {
-            var retval = new nHydrate.DataImport.Entity();
+            var retval = new DataImport.Entity();
 
             retval.Name = item.Name;
             retval.Schema = item.Schema;
@@ -578,7 +578,7 @@ namespace nHydrate.DslPackage
 
         public static nHydrate.DataImport.SQLObject ToDatabaseObject(this View item)
         {
-            var retval = new nHydrate.DataImport.View();
+            var retval = new DataImport.View();
 
             retval.Name = item.Name;
             retval.Schema = item.Schema;
@@ -603,7 +603,7 @@ namespace nHydrate.DslPackage
 
         public static nHydrate.DataImport.SQLObject ToDatabaseObject(this StoredProcedure item)
         {
-            var retval = new nHydrate.DataImport.StoredProc();
+            var retval = new DataImport.StoredProc();
 
             retval.Name = item.Name;
             retval.Schema = item.Schema;
@@ -643,7 +643,7 @@ namespace nHydrate.DslPackage
 
         public static nHydrate.DataImport.SQLObject ToDatabaseObject(this Function item)
         {
-            var retval = new nHydrate.DataImport.Function();
+            var retval = new DataImport.Function();
 
             retval.Name = item.Name;
             retval.Schema = item.Schema;

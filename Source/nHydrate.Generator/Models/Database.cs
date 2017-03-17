@@ -249,46 +249,31 @@ namespace nHydrate.Generator.Models
         [Browsable(false)]
         public virtual string CreatedDateDatabaseName
         {
-            get
-            {
-                return this.CreatedDateColumnName;
-            }
+            get { return this.CreatedDateColumnName; }
         }
 
         [Browsable(false)]
         public virtual string CreatedByDatabaseName
         {
-            get
-            {
-                return this.CreatedByColumnName;
-            }
+            get { return this.CreatedByColumnName; }
         }
 
         [Browsable(false)]
         public virtual string ModifiedDateDatabaseName
         {
-            get
-            {
-                return this.ModifiedDateColumnName;
-            }
+            get { return this.ModifiedDateColumnName; }
         }
 
         [Browsable(false)]
         public virtual string ModifiedByDatabaseName
         {
-            get
-            {
-                return this.ModifiedByColumnName;
-            }
+            get { return this.ModifiedByColumnName; }
         }
 
         [Browsable(false)]
         public virtual string TimestampDatabaseName
         {
-            get
-            {
-                return this.TimestampColumnName;
-            }
+            get { return this.TimestampColumnName; }
         }
 
         [Browsable(true),
@@ -764,7 +749,7 @@ namespace nHydrate.Generator.Models
                     {
                         table.CustomRetrieveRules.Remove(reference);
                     }
-                #endregion
+                    #endregion
 
                 }
 

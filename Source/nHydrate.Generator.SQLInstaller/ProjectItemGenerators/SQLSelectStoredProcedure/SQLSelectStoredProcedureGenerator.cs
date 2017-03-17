@@ -32,7 +32,7 @@ using nHydrate.Generator.Models;
 using nHydrate.Generator.ProjectItemGenerators;
 using nHydrate.Generator.Common.EventArgs;
 
-namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
+namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLSelectStoredProcedure
 {
 	[GeneratorItemAttribute("SqlSelectDefinedStoredProcedure", typeof(DatabaseProjectGenerator))]
 	public class SQLSelectStoredProcedureGenerator : BaseDbScriptGenerator

@@ -36,8 +36,6 @@ namespace nHydrate.Dsl
     [ValidationState(ValidationState.Enabled)]
     partial class nHydrateModel
     {
-        private ValidationContext _context = null;
-
         #region Dirty
         [System.ComponentModel.Browsable(false)]
         public bool IsDirty
@@ -57,9 +55,6 @@ namespace nHydrate.Dsl
                 this.Views.ResetDirty(value);
                 this.StoredProcedures.ResetDirty(value);
                 this.Functions.ResetDirty(value);
-
-                //If dirty then rest context for new validation run
-                if (value) _context = null;
             }
         }
         private bool _isDirty = false;
@@ -74,24 +69,6 @@ namespace nHydrate.Dsl
         [ValidationMethod(ValidationCategories.Open | ValidationCategories.Save | ValidationCategories.Menu | ValidationCategories.Custom | ValidationCategories.Load)]
         public void Validate(ValidationContext context)
         {
-            //If this model is not dirty, then use the last validation and skip
-            //if (!this.IsDirty && _context != null)
-            //{
-            //  foreach (var v in _context.CurrentViolations)
-            //  {
-            //    if (v.Type == ViolationType.Error)
-            //      context.LogError(v.Description, v.Code, v.ReferencedModelElements.ToArray());
-            //    if (v.Type == ViolationType.Fatal)
-            //      context.LogFatal(v.Description, v.Code, v.ReferencedModelElements.ToArray());
-            //    if (v.Type == ViolationType.Message)
-            //      context.LogMessage(v.Description, v.Code, v.ReferencedModelElements.ToArray());
-            //    if (v.Type == ViolationType.Warning)
-            //      context.LogWarning(v.Description, v.Code, v.ReferencedModelElements.ToArray());
-            //  }
-            //  return;
-            //}
-            //_context = context;
-
             var timer = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
 
             try

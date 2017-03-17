@@ -417,6 +417,11 @@ namespace nHydrate.Generator.Models
 
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         /// <summary>
         /// Get the parent table of this relation
         /// </summary>

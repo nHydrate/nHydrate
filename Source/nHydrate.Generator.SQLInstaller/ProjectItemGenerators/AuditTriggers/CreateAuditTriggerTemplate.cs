@@ -33,7 +33,7 @@ using System.Collections;
 using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.ProjectItemGenerators;
 
-namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
+namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.AuditTriggers
 {
     public class CreateAuditTriggerTemplate : BaseDbScriptTemplate
     {

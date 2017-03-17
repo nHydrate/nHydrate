@@ -752,8 +752,13 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                         //If error, do nothing and the project will be requeried
                         try
                         {
-                            var s = p.Name;
-                            project = p;
+                            if (p != null)
+                            {
+                                var s = p.Name;
+                                project = p;
+                            }
+                            else
+                                projectCache.Remove(e.ProjectName);
                         }
                         catch (Exception)
                         {

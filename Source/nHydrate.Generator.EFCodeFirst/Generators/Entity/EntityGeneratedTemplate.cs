@@ -482,7 +482,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
             foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
             {
-                string roleName;
                 string pascalRoleName;
                 Table typeTable = null;
                 if (_item.IsColumnRelatedToTypeTable(column, out pascalRoleName) || (column.PrimaryKey && _item.TypedTable != TypedTableConstants.None))
@@ -650,9 +649,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         sb.AppendLine();
                     }
 
-                    //Do not process the setter if the value is NOT changing
-                    sb.AppendLine("				if (value == _" + column.CamelName + ") return;");
-
                     #endregion
 
                     //TODO: For now type tables need to able to set properties because we could set OTHER properties not the ID/NAME. Really need to make these two properties 
@@ -671,6 +667,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     }
                     else if(_model.EnableCustomChangeEvents)
                     {
+                        //Do not process the setter if the value is NOT changing
+                        sb.AppendLine("				if (value == _" + column.CamelName + ") return;");
+
                         sb.AppendLine("				var eventArg = new " + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + column.PascalName + "\");");
                         sb.AppendLine("				this.OnPropertyChanging(eventArg);");
                         sb.AppendLine("				if (eventArg.Cancel) return;");
