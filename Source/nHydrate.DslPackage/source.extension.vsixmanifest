@@ -1,53 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
-  <Identifier Id="36220dab-63c7-4daa-860c-fc548bf4d5d3">
-    <Name>nHydrate ORM Modeler</Name>
-    <Author>nHydrate.org</Author>
-    <Version>6.0.0.200</Version>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="36220dab-63c7-4daa-860c-fc548bf4d5d3" Version="6.0.0.200" Language="en-US" Publisher="nHydrate.org" />
+    <DisplayName>nHydrate ORM Modeler</DisplayName>
     <Description>This is the nHydrate Visual Modeler</Description>
-    <Locale>1033</Locale>
-    <MoreInfoUrl>https://github.com/nHydrate/nHydrate</MoreInfoUrl>
-    <GettingStartedGuide>https://github.com/nHydrate/nHydrate/wiki</GettingStartedGuide>
-    <Icon>Resources\nhydrate32.png</Icon>
-    <PreviewImage>Resources\vsix-gallery.png</PreviewImage>
-    <License>Resources\License.txt</License>
-    <InstalledByMsi>false</InstalledByMsi>
-    <SupportedProducts>
-      <VisualStudio Version="11.0">
-        <Edition>Ultimate</Edition>
-        <Edition>Premium</Edition>
-        <Edition>Express</Edition>
-        <Edition>Pro</Edition>
-      </VisualStudio>
-      <VisualStudio Version="12.0">
-        <Edition>Ultimate</Edition>
-        <Edition>Premium</Edition>
-        <Edition>Express</Edition>
-        <Edition>Pro</Edition>
-      </VisualStudio>
-      <VisualStudio Version="14.0">
-        <Edition>Enterprise</Edition>
-        <Edition>Ultimate</Edition>
-        <Edition>Premium</Edition>
-        <Edition>Express</Edition>
-        <Edition>Pro</Edition>
-      </VisualStudio>
-      <VisualStudio Version="15.0">
-        <Edition>Enterprise</Edition>
-        <Edition>Ultimate</Edition>
-        <Edition>Premium</Edition>
-        <Edition>Express</Edition>
-        <Edition>Pro</Edition>
-      </VisualStudio>
-    </SupportedProducts>
-    <SupportedFrameworkRuntimeEdition MinVersion="4.0" />
-  </Identifier>
-  <References/>
-  <Content>
-    <VsPackage>|%CurrentProject%;PkgdefProjectOutputGroup|</VsPackage>
-    <MefComponent>|nHydrate.Dsl|</MefComponent>
-    <MefComponent>|%CurrentProject%|</MefComponent>
-    <ToolboxControl>|%CurrentProject%;PkgdefProjectOutputGroup|</ToolboxControl>
-    <ItemTemplate>ItemTemplates</ItemTemplate>
-  </Content>
-</Vsix>
+  </Metadata>
+  <Installation InstalledByMsi="false">
+    <InstallationTarget Version="[14.0,15.0]" Id="Microsoft.VisualStudio.Community" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+  </Dependencies>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[14.0,16.0)" DisplayName="Visual Studio core editor" />
+  </Prerequisites>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="nHydrate.Dsl" Path="|nHydrate.Dsl|" />
+    <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
+  </Assets>
+</PackageManifest>
