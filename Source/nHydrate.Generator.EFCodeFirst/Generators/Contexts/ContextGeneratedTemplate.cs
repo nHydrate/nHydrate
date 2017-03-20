@@ -694,15 +694,30 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
-                sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
-                var columnList = table.GetColumns().Where(x => x.PrimaryKey).OrderBy(x => x.Name).ToList();
-                foreach (var c in columnList)
+                foreach (var index in table.TableIndexList.Where(x => x.PrimaryKey))
                 {
-                    sb.Append("x." + c.PascalName);
-                    if (columnList.IndexOf(c) < columnList.Count - 1)
-                        sb.Append(", ");
+                    var columnList = index.IndexColumnList.ToList();
+                    var tempList = new List<string>();
+                    foreach (var c in columnList)
+                    {
+                        var field = table.GetColumns().FirstOrDefault(x => new Guid(x.Key) == c.FieldID);
+                        if (field != null)
+                            tempList.Add("x." + field.PascalName);
+                    }
+                    sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
+                    sb.Append(string.Join(", ", tempList));
+                    sb.AppendLine(" });");
                 }
-                sb.AppendLine(" });");
+
+                //sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
+                //var columnList = table.GetColumns().Where(x => x.PrimaryKey).OrderBy(x => x.Name).ToList();
+                //foreach (var c in columnList)
+                //{
+                //    sb.Append("x." + c.PascalName);
+                //    if (columnList.IndexOf(c) < columnList.Count - 1)
+                //        sb.Append(", ");
+                //}
+                //sb.AppendLine(" });");
             }
 
             foreach (var table in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
