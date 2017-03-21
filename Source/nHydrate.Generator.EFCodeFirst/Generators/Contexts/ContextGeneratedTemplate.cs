@@ -708,16 +708,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     sb.Append(string.Join(", ", tempList));
                     sb.AppendLine(" });");
                 }
-
-                //sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
-                //var columnList = table.GetColumns().Where(x => x.PrimaryKey).OrderBy(x => x.Name).ToList();
-                //foreach (var c in columnList)
-                //{
-                //    sb.Append("x." + c.PascalName);
-                //    if (columnList.IndexOf(c) < columnList.Count - 1)
-                //        sb.Append(", ");
-                //}
-                //sb.AppendLine(" });");
             }
 
             foreach (var table in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
