@@ -2346,6 +2346,23 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		}");
             sb.AppendLine();
 
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		public " + type + " System.Type InheritsFrom()");
+            sb.AppendLine("		{");
+            if (_item.ParentTable == null)
+                sb.AppendLine("			return null;");
+            else
+                sb.AppendLine("			return typeof(" + this.GetLocalNamespace() + ".Entity." + _item.ParentTable.PascalName + ");");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		public " + type + " string Schema()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return \""+ _item.GetSQLSchema() +"\";");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
             sb.AppendLine("		#endregion");
             sb.AppendLine();
         }

@@ -208,6 +208,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		List<string> GetFields();");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		System.Type InheritsFrom();");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		string Schema();");
             sb.AppendLine("	}");
             sb.AppendLine();
         }
