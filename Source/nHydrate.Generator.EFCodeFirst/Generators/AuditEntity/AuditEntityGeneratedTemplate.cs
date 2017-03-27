@@ -235,7 +235,7 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
                 x.DataType != System.Data.SqlDbType.NText &&
                 x.DataType != System.Data.SqlDbType.Image);
 
-            int index = 0;
+            var index = 0;
             foreach (Column column in _item.PrimaryKeyColumns)
             {
                 sb.Append(column.GetCodeType() + " " + column.CamelName);
@@ -244,7 +244,7 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
                 index++;
             }
 
-            sb.AppendLine(")");
+            sb.AppendLine(", string connectionString = null)");
             sb.AppendLine("		{");
             sb.Append("			return GetAuditRecords(0, 0, null, null, ");
 
@@ -256,7 +256,7 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
                     sb.Append(", ");
                 index++;
             }
-            sb.AppendLine(").InnerList;");
+            sb.AppendLine(", connectionString).InnerList;");
 
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -284,7 +284,7 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
                 index++;
             }
 
-            sb.AppendLine(")");
+            sb.AppendLine(", string connectionString = null)");
             sb.AppendLine("		{");
             sb.AppendLine("			var retval = new " + this.GetLocalNamespace() + ".AuditPaging<" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit>();");
             sb.AppendLine("			retval.PageOffset = pageOffset;");
@@ -297,7 +297,9 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
             sb.AppendLine();
             sb.AppendLine("			try");
             sb.AppendLine("			{");
-            sb.AppendLine("				dbConnection = new System.Data.SqlClient.SqlConnection(" + this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
+            sb.AppendLine("				if (string.IsNullOrWhiteSpace(connectionString))");
+            sb.AppendLine("					connectionString = " + this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString();");
+            sb.AppendLine("				dbConnection = new System.Data.SqlClient.SqlConnection(connectionString);");
             sb.AppendLine("				dbConnection.Open();");
             sb.AppendLine();
             sb.AppendLine("				dbCommand = " + this.GetLocalNamespace() + ".DBHelper.GetCommand(\"[" + _item.GetSQLSchema() + "].[" + _model.GetStoredProcedurePrefix() + "_" + _item.PascalName + "__AUDIT_SELECT]\", CommandType.StoredProcedure, dbConnection);");

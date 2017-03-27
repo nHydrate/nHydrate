@@ -375,7 +375,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 sb.AppendLine("		/// Initializes a new instance of the " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " class with a defined primary key");
                 sb.AppendLine("		/// </summary>");
                 sb.Append("		" + scope + " " + doubleDerivedClassName + "(");
-                int index = 0;
+                var index = 0;
                 foreach (Column pkColumn in _item.PrimaryKeyColumns.OrderBy(x => x.PascalName))
                 {
                     sb.Append(pkColumn.GetCodeType() + " " + pkColumn.CamelName);
@@ -1658,7 +1658,18 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		public " + modifier + " IEnumerable<" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit> GetAuditRecords()");
             sb.AppendLine("		{");
             sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit.GetAuditRecords(");
-            sb.AppendLine(string.Join(", ", _item.PrimaryKeyColumns.Select(x => "this." + x.PascalName)) + ");");
+            sb.AppendLine(string.Join(", ", _item.PrimaryKeyColumns.Select(x => "this." + x.PascalName)) + ", null);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Return audit records for this entity");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <returns>A set of audit records for the current record based on primary key</returns>");
+            sb.AppendLine("		public " + modifier + " IEnumerable<" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit> GetAuditRecords(string connectionString)");
+            sb.AppendLine("		{");
+            sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit.GetAuditRecords(");
+            sb.AppendLine(string.Join(", ", _item.PrimaryKeyColumns.Select(x => "this." + x.PascalName)) + ", connectionString);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
