@@ -1346,7 +1346,7 @@ namespace nHydrate.Generator.Models
         {
             var retval = new List<Table>();
             var curTable = this;
-            foreach (var r in curTable.AllRelationships.ToList())
+            foreach (var r in curTable.AllRelationships.Where(x => x.IsInherited).ToList())
             {
                 if (r.ChildTableRef.Object == curTable)
                 {
