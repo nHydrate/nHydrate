@@ -906,8 +906,7 @@ namespace nHydrate.Generator.Models
             {
                 case System.Data.SqlDbType.BigInt:
                     {
-                        long v;
-                        return long.TryParse(value, out v);
+                        return long.TryParse(value, out long v);
                     }
                 case System.Data.SqlDbType.Binary:
                 case System.Data.SqlDbType.Image:

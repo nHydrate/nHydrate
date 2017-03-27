@@ -205,6 +205,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	{");
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		string GetTableName();");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		List<string> GetFields();");
             sb.AppendLine("	}");
             sb.AppendLine();
         }

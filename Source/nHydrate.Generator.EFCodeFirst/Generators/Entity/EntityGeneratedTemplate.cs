@@ -2323,11 +2323,29 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             if (_item.ParentTable != null) type = "override";
 
             sb.AppendLine("		#region Methods");
+
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public " + type + " string GetTableName()");
             sb.AppendLine("		{");
             sb.AppendLine("			return \"" + _item.DatabaseName + "\";");
             sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Get a list of fields for this object excluding inheritance");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <returns></returns>");
+            sb.AppendLine("		public " + type + " List<string> GetFields()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			var retval = new List<string>();");
+            foreach (var field in _item.GeneratedColumns)
+            {
+                sb.AppendLine("			retval.Add(\"" + field.PascalName + "\");");
+            }
+            sb.AppendLine("			return retval;");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
             sb.AppendLine("		#endregion");
             sb.AppendLine();
         }

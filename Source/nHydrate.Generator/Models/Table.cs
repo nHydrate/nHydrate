@@ -1339,7 +1339,22 @@ namespace nHydrate.Generator.Models
                     retval.Add((Table)r.ParentTableRef.Object);
                 }
             }
+            return retval;
+        }
 
+        public IEnumerable<Table> GetParentTablesFullHierarchy()
+        {
+            var retval = new List<Table>();
+            var curTable = this;
+            foreach (var r in curTable.AllRelationships.ToList())
+            {
+                if (r.ChildTableRef.Object == curTable)
+                {
+                    var parentTable = (Table)r.ParentTableRef.Object;
+                    retval.Add(parentTable);
+                    retval.AddRange(parentTable.GetParentTablesFullHierarchy());
+                }
+            }
             return retval;
         }
 
