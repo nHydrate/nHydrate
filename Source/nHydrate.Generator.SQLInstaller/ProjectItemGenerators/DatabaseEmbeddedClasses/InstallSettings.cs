@@ -46,8 +46,11 @@ namespace PROJECTNAMESPACE
 		/// <summary />
 		public string CloudPassword { get; set; }
 
-		/// <summary />
-		public InstallSettings()
+        /// <summary />
+        public string DiskPath { get; set; }
+
+        /// <summary />
+        public InstallSettings()
 		{
 			this.IsLoaded = false;
 		}
@@ -105,6 +108,8 @@ namespace PROJECTNAMESPACE
 				this.CloudUserName = XmlHelper.GetNodeValue(node, "username", string.Empty);
 				this.CloudPassword = XmlHelper.GetNodeValue(node, "password", string.Empty);
 
+				this.DiskPath = XmlHelper.GetNodeValue(node, "diskpath", string.Empty);
+
 				v = XmlHelper.GetNodeValue(node, "username-encrypted", string.Empty).Decrypt();
 				if (!string.IsNullOrEmpty(v))
 					this.CloudUserName = v;
@@ -152,6 +157,8 @@ namespace PROJECTNAMESPACE
 			XmlHelper.AddElement(node, "username-encrypted", (this.CloudUserName + string.Empty).Encrypt());
 			XmlHelper.AddElement(node, "password-encrypted", (this.CloudPassword + string.Empty).Encrypt());
 			XmlHelper.AddElement(node, "database", this.CloudDatabase);
+
+			XmlHelper.AddElement(node, "diskpath", (this.DiskPath + string.Empty));
 
 			document.Save(fi.FullName);
 
