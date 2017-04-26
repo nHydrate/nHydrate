@@ -578,7 +578,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
 
             sb.AppendLine("			var sb = new System.Text.StringBuilder();");
             sb.AppendLine("			#region Per table code");
-            sb.AppendLine("			if (false) ;");
+
+            var index = 0;
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
             {
                 var tableName = table.DatabaseName;
@@ -589,7 +590,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 if (table.Security.IsValid())
                     innerQueryToString = "((System.Data.Entity.Core.Objects.ObjectQuery)(((System.Data.Entity.Core.Objects.ObjectQuery<" + GetLocalNamespace() + ".Entity." + table.PascalName + ">)query).Select(x => new { " + string.Join(", ", table.PrimaryKeyColumns.Select(x => "x." + x.PascalName).ToList()) + " }))).ToTraceString()";
 
-                sb.AppendLine("			else if (typeof(T) == typeof(" + GetLocalNamespace() + ".Entity." + table.PascalName + "))");
+                sb.AppendLine("			" + (index == 0 ? string.Empty : "else ") + "if (typeof(T) == typeof(" + GetLocalNamespace() + ".Entity." + table.PascalName + "))");
                 sb.AppendLine("			{");
                 if (table.ParentTable == null)
                 {
@@ -626,6 +627,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                     sb.AppendLine("				sb.AppendLine(\"drop table #t;\");");
                 }
                 sb.AppendLine("			}");
+                index++;
             }
             sb.AppendLine("			else throw new Exception(\"Entity type not found\");");
             sb.AppendLine("			#endregion");
@@ -916,7 +918,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine();
             sb.AppendLine("			var sb = new System.Text.StringBuilder();");
             sb.AppendLine("			#region Per table code");
-            sb.AppendLine("			if (false) ;");
+
+            index = 0;
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
             {
                 var tableName = table.DatabaseName;
@@ -927,7 +930,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 if (table.Security.IsValid())
                     innerQueryToString = "((System.Data.Entity.Core.Objects.ObjectQuery)(((System.Data.Entity.Core.Objects.ObjectQuery<" + GetLocalNamespace() + ".Entity." + table.PascalName + ">)query).Select(x => new { " + string.Join(", ", table.PrimaryKeyColumns.Select(x => "x." + x.PascalName).ToList()) + " }))).ToTraceString()";
 
-                sb.AppendLine("			else if (typeof(T) == typeof(" + GetLocalNamespace() + ".Entity." + table.PascalName + "))");
+                sb.AppendLine("			" + (index == 0 ? string.Empty : "else ") + "if (typeof(T) == typeof(" + GetLocalNamespace() + ".Entity." + table.PascalName + "))");
                 sb.AppendLine("			{");
                 sb.AppendLine("				sb.AppendLine(\"set rowcount \" + optimizer.ChunkSize + \";\");");
                 sb.AppendLine("				foreach (var item in mapping.Where(x => x.SqlList.Any()).ToList())");
@@ -941,6 +944,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 sb.AppendLine("					sb.AppendLine(\"select @@ROWCOUNT\");");
                 sb.AppendLine("				}");
                 sb.AppendLine("			}");
+                index++;
             }
             sb.AppendLine("			else throw new Exception(\"Entity type not found\");");
             sb.AppendLine("			#endregion");
