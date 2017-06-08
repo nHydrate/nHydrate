@@ -780,6 +780,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			OnBeforeSaveChanges(ref cancel);");
             sb.AppendLine("			if (cancel) return 0;");
             sb.AppendLine();
+            sb.AppendLine("			//This must be called to truly see all Added/Updated Entities in the ObjectStateManager!!!");
+            sb.AppendLine("			//Items added to context work fine, but children added to parent objects do not i.e. 'ParentObject.ChildItems.Add(newChild)'");
+            sb.AppendLine("			this.ChangeTracker.Entries().Any();");
+            sb.AppendLine();
 
             //sb.AppendLine("			//Process deleted list");
             //sb.AppendLine("			var deletedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Deleted);");
