@@ -37,7 +37,7 @@
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
     <SignAssembly>true</SignAssembly>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <ClearToolboxCacheInExpHive>true</ClearToolboxCacheInExpHive>
     <StartupObject>
     </StartupObject>
