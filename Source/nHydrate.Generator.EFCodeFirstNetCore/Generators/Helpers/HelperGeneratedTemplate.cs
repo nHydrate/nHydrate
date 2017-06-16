@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2016 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2016 All Rights reserved                   *
+//              Copyright (c) 2006-2017 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -922,10 +922,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 if (_model.EnableCustomChangeEvents)
                 {
                     sb.AppendLine("		/// <summary />");
-                    sb.AppendLine("		[field:NonSerialized]");
+                    //sb.AppendLine("		[field:NonSerialized]");
                     sb.AppendLine("		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;");
                     sb.AppendLine("		/// <summary />");
-                    sb.AppendLine("		[field:NonSerialized]");
+                    //sb.AppendLine("		[field:NonSerialized]");
                     sb.AppendLine("		public event System.ComponentModel.PropertyChangingEventHandler PropertyChanging;");
                     sb.AppendLine();
                     sb.AppendLine("		/// <summary />");

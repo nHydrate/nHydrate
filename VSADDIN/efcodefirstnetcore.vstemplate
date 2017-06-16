@@ -11,7 +11,7 @@
 		<ProvideDefaultName>true</ProvideDefaultName>
 	</TemplateData>
 	<TemplateContent>
-		<Project File="efcodefirst.csproj" ReplaceParameters="true">
+		<Project File="efcodefirstnetcore.csproj" ReplaceParameters="true">
 			<ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
 		</Project>
 	</TemplateContent>

@@ -43,6 +43,7 @@ namespace nHydrate.Generator.Common.Util
                     //List: https://www.codeproject.com/reference/720512/list-of-visual-studio-project-type-guids
                     case "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}": //C#
                     case "{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}": //ASP.NET 5
+                    case "{9A19103F-16F7-4668-BE54-9A1E7A4F7556}": //.NET Core
                         projects.Add(project); break;
                     default:
                         break;

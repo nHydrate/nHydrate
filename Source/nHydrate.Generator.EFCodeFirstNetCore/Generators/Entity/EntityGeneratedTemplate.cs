@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2016 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2016 All Rights reserved                   *
+//              Copyright (c) 2006-2017 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -962,7 +962,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Occurs when the '" + columnName + "' property value change is a pending.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		[field:NonSerialized]");
+            //sb.AppendLine("		[field:NonSerialized]");
             sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">> " + columnName + "Changing;");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
@@ -977,7 +977,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Occurs when the '" + columnName + "' property value has changed.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		[field:NonSerialized]");
+            //sb.AppendLine("		[field:NonSerialized]");
             sb.AppendLine("		public event EventHandler<ChangedEventArgs<" + codeType + ">> " + columnName + "Changed;");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
