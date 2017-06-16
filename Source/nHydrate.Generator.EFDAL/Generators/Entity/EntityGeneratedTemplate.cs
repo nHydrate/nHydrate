@@ -181,7 +181,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Entity
 
             var boInterface = "nHydrate.EFCore.DataAccess.IBusinessObject";
             if (_item.Immutable) boInterface = "nHydrate.EFCore.DataAccess.IReadOnlyBusinessObject";
-            boInterface += ", " + this.GetLocalNamespace() + ".IEntityWithContext";
             boInterface += ", " + "System.ComponentModel.IDataErrorInfo";
 
             foreach (var meta in _item.MetaData)
@@ -227,7 +226,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Entity
             this.AppendDeleteDataScaler();
             this.AppendUpdateDataScaler();
             this.AppendRegionGetDatabaseFieldName();
-            this.AppendContextReference();
             this.AppendIAuditable();
             this.AppendStaticMethods();
             this.AppendIEquatable();
@@ -1047,13 +1045,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Entity
                         //sb.AppendLine("				this.OnPropertyChanging(\"" + column.PascalName + "\");");
                         //sb.AppendLine("				_" + column.CamelName + " = StructuralObject.SetValidValue(value);");
                         sb.AppendLine("				_" + column.CamelName + " = value;");
-                        //if (_currentTable.AllowModifiedAudit)
-                        //{
-                        //  sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(_model.Database.ModifiedDatePascalName) + " = " + this.GetDateTimeNowCode() + ";");
-                        //  sb.AppendLine("				if ((this as IEntityWithContext).Context != null)");
-                        //  sb.AppendLine("					_" + StringHelper.DatabaseNameToCamelCase(_model.Database.ModifiedByPascalName) + " = (this as IEntityWithContext).Context.ContextStartup.Modifer;");
-                        //}
-
                         sb.AppendLine("				ReportPropertyChanged(\"" + column.PascalName + "\");");
                         //sb.AppendLine("				this.OnPropertyChanged(\"" + column.PascalName + "\");");
                     }
@@ -1070,12 +1061,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Entity
                         //sb.AppendLine("				this.OnPropertyChanging(\"" + column.PascalName + "\");");
                         //sb.AppendLine("				_" + column.CamelName + " = StructuralObject.SetValidValue(value);");
                         sb.AppendLine("				_" + column.CamelName + " = eventArg.Value;");
-                        //if (_currentTable.AllowModifiedAudit)
-                        //{
-                        //  sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(_model.Database.ModifiedDatePascalName) + " = " + this.GetDateTimeNowCode() + ";");
-                        //  sb.AppendLine("				if ((this as IEntityWithContext).Context != null)");
-                        //  sb.AppendLine("					_" + StringHelper.DatabaseNameToCamelCase(_model.Database.ModifiedByPascalName) + " = (this as IEntityWithContext).Context.ContextStartup.Modifer;");
-                        //}
                         sb.AppendLine("				ReportPropertyChanged(\"" + column.PascalName + "\");");
                         //sb.AppendLine("				this.OnPropertyChanged(\"" + column.PascalName + "\");");
                         if (_model.EnableCustomChangeEvents)
@@ -1852,16 +1837,30 @@ namespace nHydrate.Generator.EFDAL.Generators.Entity
             sb.AppendLine("		/// <returns>A set of audit records for the current record based on primary key</returns>");
             sb.AppendLine("		public " + modifier + " IEnumerable<" + this.GetLocalNamespace() + ".Interfaces.Audit.I" + _item.PascalName + "Audit> GetAuditRecords()");
             sb.AppendLine("		{");
-
-            sb.AppendLine("			if (this._internalContext == null)");
-            sb.AppendLine("				throw new Exception(\"The entity is not attached to a valid context. Audit records cannot be loaded.\");");
             sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit.GetAuditRecords(");
 
             foreach (var column in _item.PrimaryKeyColumns)
             {
                 sb.Append("this." + column.PascalName + ", ");
             }
-            sb.AppendLine("this._internalContext.ConnectionString);");
+            sb.AppendLine(this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
+
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Return audit records for this entity");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <returns>A set of audit records for the current record based on primary key</returns>");
+            sb.AppendLine("		public " + modifier + " IEnumerable<" + this.GetLocalNamespace() + ".Interfaces.Audit.I" + _item.PascalName + "Audit> GetAuditRecords(string connectionString)");
+            sb.AppendLine("		{");
+            sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit.GetAuditRecords(");
+
+            foreach (var column in _item.PrimaryKeyColumns)
+            {
+                sb.Append("this." + column.PascalName + ", ");
+            }
+            sb.AppendLine("connectionString);");
 
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -1874,16 +1873,13 @@ namespace nHydrate.Generator.EFDAL.Generators.Entity
             sb.AppendLine("		/// <returns>A set of audit records for the current record based on primary key</returns>");
             sb.AppendLine("		public " + modifier + " nHydrate.EFCore.DataAccess.AuditPaging<" + this.GetLocalNamespace() + ".Interfaces.Audit.I" + _item.PascalName + "Audit> GetAuditRecords(int pageOffset, int recordsPerPage)");
             sb.AppendLine("		{");
-
-            sb.AppendLine("			if (this._internalContext == null)");
-            sb.AppendLine("				throw new Exception(\"The entity is not attached to a valid context. Audit records cannot be loaded.\");");
             sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit.GetAuditRecords(pageOffset, recordsPerPage, null, null, ");
 
             foreach (var column in _item.PrimaryKeyColumns)
             {
                 sb.Append("this." + column.PascalName + ", ");
             }
-            sb.AppendLine("this._internalContext.ConnectionString);");
+            sb.AppendLine(this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
 
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -1898,16 +1894,13 @@ namespace nHydrate.Generator.EFDAL.Generators.Entity
             sb.AppendLine("		/// <returns>A set of audit records for the current record based on primary key</returns>");
             sb.AppendLine("		public " + modifier + " nHydrate.EFCore.DataAccess.AuditPaging<" + this.GetLocalNamespace() + ".Interfaces.Audit.I" + _item.PascalName + "Audit> GetAuditRecords(int pageOffset, int recordsPerPage, DateTime? startDate, DateTime? endDate)");
             sb.AppendLine("		{");
-
-            sb.AppendLine("			if (this._internalContext == null)");
-            sb.AppendLine("				throw new Exception(\"The entity is not attached to a valid context. Audit records cannot be loaded.\");");
             sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit.GetAuditRecords(pageOffset, recordsPerPage, startDate, endDate, ");
 
             foreach (var column in _item.PrimaryKeyColumns)
             {
                 sb.Append("this." + column.PascalName + ", ");
             }
-            sb.AppendLine("this._internalContext.ConnectionString);");
+            sb.AppendLine(this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
 
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -2497,21 +2490,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Entity
             sb.AppendLine("			}");
             sb.AppendLine("			return string.Empty;");
             sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-        }
-
-        private void AppendContextReference()
-        {
-            sb.AppendLine("		#region Context");
-            sb.AppendLine();
-            sb.AppendLine("		"+_model.ProjectName+"Entities IEntityWithContext.Context");
-            sb.AppendLine("		{");
-            sb.AppendLine("			get { return _internalContext; }");
-            sb.AppendLine("			set { _internalContext = value; }");
-            sb.AppendLine("		}");
-            sb.AppendLine("		private " + _model.ProjectName + "Entities _internalContext = null;");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();

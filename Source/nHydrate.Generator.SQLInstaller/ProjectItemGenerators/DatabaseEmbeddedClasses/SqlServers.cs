@@ -343,7 +343,10 @@ namespace PROJECTNAMESPACE
                 var cmdCreateDb = new SqlCommand();
                 var collate = string.Empty;
                 if (!string.IsNullOrEmpty(collate)) collate = " COLLATE " + collate;
-                cmdCreateDb.CommandText = "CREATE DATABASE [" + setup.NewDatabaseName + "]" + collate;
+                var fileInfo = string.Empty;
+                if (!string.IsNullOrEmpty(setup.DiskPath))
+                    fileInfo = " ON (NAME='" + setup.NewDatabaseName + "', FILENAME= '" + Path.Combine(setup.DiskPath, setup.NewDatabaseName) + ".mdf')";
+                cmdCreateDb.CommandText = "CREATE DATABASE [" + setup.NewDatabaseName + "]" + collate + fileInfo;
                 cmdCreateDb.CommandType = System.Data.CommandType.Text;
                 cmdCreateDb.Connection = conn;
                 SqlServers.ExecuteCommand(cmdCreateDb);

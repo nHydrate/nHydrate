@@ -324,17 +324,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
             sb.AppendLine("		partial void OnContextCreated();");
             sb.AppendLine();
 
-            sb.AppendLine("		partial void OnContextCreated()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			// set the Context reference whenever an entity is loaded");
-            sb.AppendLine("			this.ObjectMaterialized += (sender, e) =>");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var o = ((e.Entity as nHydrate.EFCore.DataAccess.IReadOnlyBusinessObject) as IEntityWithContext);");
-            sb.AppendLine("				if (o != null) o.Context = this;");
-            sb.AppendLine("			};");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
             #region SequentialID functionality
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public static void ResetSequentialGuid(EntityMappingConstants entity, string key, Guid seed)");

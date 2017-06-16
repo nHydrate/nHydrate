@@ -96,6 +96,7 @@ namespace PROJECTNAMESPACE
 				radioButtonCreationUserPassword.Checked = !optCreationIntegratedSecurity.Checked;
 				txtCreationUserName.Text = this.Settings.PrimaryUserName;
 				txtCreationPassword.Text = this.Settings.PrimaryPassword;
+				txtDiskPath.Text = this.Settings.DiskPath;
 
 				//Tab Azure Copy
 				azureCopyControl1.LoadSettings(this.Settings);
@@ -257,12 +258,20 @@ namespace PROJECTNAMESPACE
 			var connectString = SqlServers.BuildConnectionString(optCreationIntegratedSecurity.Checked, string.Empty, cboCreationServerName.Text, txtCreationUserName.Text, txtCreationPassword.Text);
 			if (SqlServers.TestConnectionString(connectString) && SqlServers.HasCreatePermissions(connectString))
 			{
+				if (!string.IsNullOrWhiteSpace(txtDiskPath.Text) && !Directory.Exists(txtDiskPath.Text))
+				{
+					error = true;
+					MessageBox.Show("The specified disk path does not exist.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return error;
+				}
+
 				try
 				{
 					var setup = new InstallSetup()
 					{
 						MasterConnectionString = connectString,
 						NewDatabaseName = txtCreationDatabaseName.Text,
+						DiskPath = txtDiskPath.Text.Trim(),
 					};
 					SqlServers.CreateDatabase(setup);
 				}
@@ -270,7 +279,7 @@ namespace PROJECTNAMESPACE
 				{
 					error = true;
 					System.Diagnostics.Debug.WriteLine(ex.ToString());
-					MessageBox.Show("Could not create database." + Environment.NewLine + ex.Message);
+					MessageBox.Show("Could not create database." + Environment.NewLine + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
 			else
@@ -353,7 +362,8 @@ namespace PROJECTNAMESPACE
 		private void SaveSettings()
 		{
 			this.Settings.Kill();
-			if (tabControlChooseDatabase.SelectedTab == tabPageConnection)
+            this.Settings.DiskPath = txtDiskPath.Text;
+            if (tabControlChooseDatabase.SelectedTab == tabPageConnection)
 			{
 				this.Settings.PrimaryServer = cboConnectionServerName.Text;
 				this.Settings.PrimaryUseIntegratedSecurity = optConnectionIntegratedSecurity.Checked;

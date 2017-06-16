@@ -704,6 +704,9 @@ namespace PROJECTNAMESPACE
         /// <summary />
         public bool AcceptVersionWarningsNewScripts { get; set; }
 
+        /// <summary />
+        public string DiskPath { get; set; }
+
         internal string DebugScriptName { get; set; }
 
     }

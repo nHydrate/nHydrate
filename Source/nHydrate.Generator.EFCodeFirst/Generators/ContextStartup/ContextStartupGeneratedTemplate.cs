@@ -82,7 +82,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextStartup
                 sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
                 sb.AppendLine("	public partial class ContextStartup : ICloneable");
                 sb.AppendLine("	{");
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		protected internal string DebugInfo { get; set; }");
+                sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		protected internal bool DefaultTimeout { get; private set; }");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary>");

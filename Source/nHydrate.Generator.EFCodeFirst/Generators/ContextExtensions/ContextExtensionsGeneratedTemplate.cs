@@ -457,7 +457,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		/// Delete all records that match a where condition");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public static void Delete<T>(this IQueryable<T> query)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject, new()");
             sb.AppendLine("		{");
             sb.AppendLine("			query.Delete(optimizer: null, connectionString: null);");
             sb.AppendLine("		}");
@@ -467,7 +467,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		/// Delete all records that match a where condition");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public static void Delete<T>(this IQueryable<T> query, QueryOptimizer optimizer)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject, new()");
             sb.AppendLine("		{");
             sb.AppendLine("			query.Delete(optimizer: optimizer, connectionString: null);");
             sb.AppendLine("		}");
@@ -477,7 +477,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		/// Delete all records that match a where condition");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public static void Delete<T>(this IQueryable<T> query, string connectionString)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject, new()");
             sb.AppendLine("		{");
             sb.AppendLine("			query.Delete(optimizer: new QueryOptimizer(), connectionString: connectionString);");
             sb.AppendLine("		}");
@@ -487,7 +487,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		/// Delete all records that match a where condition");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public static void  Delete<T>(this IQueryable<T> query, QueryOptimizer optimizer, string connectionString)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject, new()");
             sb.AppendLine("		{");
             sb.AppendLine("			if (optimizer == null)");
             sb.AppendLine("				optimizer = new QueryOptimizer();");
@@ -578,7 +578,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
 
             sb.AppendLine("			var sb = new System.Text.StringBuilder();");
             sb.AppendLine("			#region Per table code");
-            sb.AppendLine("			if (false) ;");
+
+            var index = 0;
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
             {
                 var tableName = table.DatabaseName;
@@ -589,15 +590,44 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 if (table.Security.IsValid())
                     innerQueryToString = "((System.Data.Entity.Core.Objects.ObjectQuery)(((System.Data.Entity.Core.Objects.ObjectQuery<" + GetLocalNamespace() + ".Entity." + table.PascalName + ">)query).Select(x => new { " + string.Join(", ", table.PrimaryKeyColumns.Select(x => "x." + x.PascalName).ToList()) + " }))).ToTraceString()";
 
-                sb.AppendLine("			else if (typeof(T) == typeof(" + GetLocalNamespace() + ".Entity." + table.PascalName + "))");
+                sb.AppendLine("			" + (index == 0 ? string.Empty : "else ") + "if (typeof(T) == typeof(" + GetLocalNamespace() + ".Entity." + table.PascalName + "))");
                 sb.AppendLine("			{");
-                sb.AppendLine("				sb.AppendLine(\"set rowcount \" + optimizer.ChunkSize + \";\");");
-                sb.AppendLine("				sb.AppendLine(\"delete [X] from [" + table.GetSQLSchema() + "].[" + tableName + "] [X] inner join (\");");
-                sb.AppendLine("				sb.AppendLine(" + innerQueryToString + ");");
-                sb.AppendLine("				sb.AppendLine(\") AS [Extent2]\");");
-                sb.AppendLine("				sb.AppendLine(\"on " + string.Join(" AND ", table.PrimaryKeyColumns.Select(x => "[X].[" + x.Name + "] = [Extent2].[" + x.Name + "]").ToList()) + "\");");
-                sb.AppendLine("				sb.AppendLine(\"select @@ROWCOUNT\");");
+                if (table.ParentTable == null)
+                {
+                    //Single table no parent, so no special code, easy delete
+                    sb.AppendLine("				sb.AppendLine(\"set rowcount \" + optimizer.ChunkSize + \";\");");
+                    sb.AppendLine("				sb.AppendLine(\"delete [X] from [" + table.GetSQLSchema() + "].[" + tableName + "] [X] inner join (\");");
+                    sb.AppendLine("				sb.AppendLine(" + innerQueryToString + ");");
+                    sb.AppendLine("				sb.AppendLine(\") AS [Extent2]\");");
+                    sb.AppendLine("				sb.AppendLine(\"on " + string.Join(" AND ", table.PrimaryKeyColumns.Select(x => "[X].[" + x.Name + "] = [Extent2].[" + x.Name + "]").ToList()) + "\");");
+                    sb.AppendLine("				sb.AppendLine(\"select @@ROWCOUNT\");");
+                }
+                else
+                {
+                    //For parented tables the hierarchy must be deleted
+                    var tableParams = string.Join(", ", table.PrimaryKeyColumns.Select(x => "[" + x.DatabaseName + "] " + x.DatabaseType));
+                    sb.AppendLine("				sb.AppendLine(\"create table #t ("+ tableParams + ")\");");
+                    sb.AppendLine("				sb.AppendLine(\"insert into #t\");");
+                    sb.AppendLine("				sb.AppendLine(" + innerQueryToString + " + \";\");");
+                    sb.AppendLine("				var joinQuery = \"select "+ string.Join(", ", table.PrimaryKeyColumns.Select(x => "[" + x.DatabaseName + "]")) + " from #t\";");
+                    sb.AppendLine("				sb.AppendLine(\"set rowcount \" + optimizer.ChunkSize + \";\");");
+
+                    var allTables = table.GetParentTablesFullHierarchy().ToList();
+                    allTables.Insert(0, table);
+                    foreach (var tt in allTables)
+                    {
+                        sb.AppendLine("				sb.AppendLine(\"delete [X] from [" + tt.GetSQLSchema() + "].[" + tt.DatabaseName + "] [X] inner join (\");");
+                        sb.AppendLine("				sb.AppendLine(joinQuery);");
+                        sb.AppendLine("				sb.AppendLine(\") AS [Extent2]\");");
+                        sb.AppendLine("				sb.AppendLine(\"on " + string.Join(" AND ", tt.PrimaryKeyColumns.Select(x => "[X].[" + x.Name + "] = [Extent2].[" + x.Name + "]").ToList()) + "\");");
+                        if (tt == table)
+                            sb.AppendLine("				sb.AppendLine(\"select @@ROWCOUNT\");");
+                    }
+
+                    sb.AppendLine("				sb.AppendLine(\"drop table #t;\");");
+                }
                 sb.AppendLine("			}");
+                index++;
             }
             sb.AppendLine("			else throw new Exception(\"Entity type not found\");");
             sb.AppendLine("			#endregion");
@@ -626,14 +656,14 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public static void Delete<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, QueryOptimizer optimizer)");
-            sb.AppendLine("			where T : System.Data.Entity.DbSet<T>, " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("			where T : System.Data.Entity.DbSet<T>, " + GetLocalNamespace() + ".IBusinessObject, new()");
             sb.AppendLine("		{");
             sb.AppendLine("			entitySet.Where(where).Delete(optimizer: optimizer, connectionString: null);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public static void Delete<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, string connectionString)");
-            sb.AppendLine("			where T : System.Data.Entity.DbSet<T>, " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("			where T : System.Data.Entity.DbSet<T>, " + GetLocalNamespace() + ".IBusinessObject, new()");
             sb.AppendLine("		{");
             sb.AppendLine("			entitySet.Where(where).Delete(optimizer: null, connectionString: connectionString);");
             sb.AppendLine("		}");
@@ -647,29 +677,29 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		#region Update Extensions");
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, dynamic>> obj)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, T>> obj)");
+            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject, new()");
             sb.AppendLine("		{");
             sb.AppendLine("			query.Update(obj: obj, optimizer: null, connectionString: null);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, dynamic>> obj, QueryOptimizer optimizer)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, T>> obj, QueryOptimizer optimizer)");
+            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject, new()");
             sb.AppendLine("		{");
             sb.AppendLine("			query.Update(obj: obj, optimizer: optimizer, connectionString: null);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, dynamic>> obj, string connectionString)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, T>> obj, string connectionString)");
+            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject, new()");
             sb.AppendLine("		{");
             sb.AppendLine("			query.Update(obj: obj, optimizer: null, connectionString: connectionString);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, dynamic>> obj, QueryOptimizer optimizer, string connectionString)");
-            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject");
+            sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, T>> obj, QueryOptimizer optimizer, string connectionString)");
+            sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject, new()");
             sb.AppendLine("		{");
             sb.AppendLine();
             sb.AppendLine("			if (optimizer == null)");
@@ -845,27 +875,42 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			}");
             sb.AppendLine("			#endregion");
             sb.AppendLine();
-            sb.AppendLine("			var fieldSql = new List<string>();");
+            sb.AppendLine("			//Create a mapping for inheritance");
+            sb.AppendLine("			var mapping = new List<UpdateSqlMapItem>();");
+            sb.AppendLine("			IReadOnlyBusinessObject theObj = new T();");
+            sb.AppendLine("			do");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var md = theObj.GetMetaData();");
+            sb.AppendLine("				mapping.Add(new UpdateSqlMapItem { TableName = md.GetTableName(), FieldList = md.GetFields(), Schema = md.Schema(), Metadata = md });");
+            sb.AppendLine("				var newT = md.InheritsFrom();");
+            sb.AppendLine("				if (newT == null)");
+            sb.AppendLine("					theObj = default(T);");
+            sb.AppendLine("				else");
+            sb.AppendLine("					theObj = (IReadOnlyBusinessObject)Activator.CreateInstance(newT, false);");
+            sb.AppendLine("			} while (theObj != null);");
+            sb.AppendLine();
             sb.AppendLine("			var paramIndex = 0;");
             sb.AppendLine("			var parameters = new List<System.Data.SqlClient.SqlParameter>();");
             sb.AppendLine("			foreach (var key in changedList.Keys)");
             sb.AppendLine("			{");
+            sb.AppendLine("				var map = mapping.First(x => x.FieldList.Any(z => z == key));");
+            sb.AppendLine("				var fieldSql = map.SqlList;");
             sb.AppendLine("				var value = changedList[key];");
             sb.AppendLine("				if (value == null)");
-            sb.AppendLine("					fieldSql.Add(\"[\" + key + \"] = NULL\");");
+            sb.AppendLine("					fieldSql.Add(\"[\" + map.Metadata.GetDatabaseFieldName(key) + \"] = NULL\");");
             sb.AppendLine("				else if (value is string)");
             sb.AppendLine("				{");
-            sb.AppendLine("					fieldSql.Add(\"[\" + key + \"] = @param\" + paramIndex);");
+            sb.AppendLine("					fieldSql.Add(\"[\" + map.Metadata.GetDatabaseFieldName(key) + \"] = @param\" + paramIndex);");
             sb.AppendLine("					parameters.Add(new System.Data.SqlClient.SqlParameter { ParameterName = \"@param\" + paramIndex, DbType = System.Data.DbType.String, Value = changedList[key] });");
             sb.AppendLine("				}");
             sb.AppendLine("				else if (value is DateTime)");
             sb.AppendLine("				{");
-            sb.AppendLine("					fieldSql.Add(\"[\" + key + \"] = @param\" + paramIndex);");
+            sb.AppendLine("					fieldSql.Add(\"[\" + map.Metadata.GetDatabaseFieldName(key) + \"] = @param\" + paramIndex);");
             sb.AppendLine("					parameters.Add(new System.Data.SqlClient.SqlParameter { ParameterName = \"@param\" + paramIndex, DbType = System.Data.DbType.DateTime, Value = changedList[key] });");
             sb.AppendLine("				}");
             sb.AppendLine("				else");
             sb.AppendLine("				{");
-            sb.AppendLine("					fieldSql.Add(\"[\" + key + \"] = @param\" + paramIndex);");
+            sb.AppendLine("					fieldSql.Add(\"[\" + map.Metadata.GetDatabaseFieldName(key) + \"] = @param\" + paramIndex);");
             sb.AppendLine("					parameters.Add(new System.Data.SqlClient.SqlParameter { ParameterName = \"@param\" + paramIndex, Value = changedList[key] });");
             sb.AppendLine("				}");
             sb.AppendLine("				paramIndex++;");
@@ -873,7 +918,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine();
             sb.AppendLine("			var sb = new System.Text.StringBuilder();");
             sb.AppendLine("			#region Per table code");
-            sb.AppendLine("			if (false) ;");
+
+            index = 0;
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
             {
                 var tableName = table.DatabaseName;
@@ -884,17 +930,21 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 if (table.Security.IsValid())
                     innerQueryToString = "((System.Data.Entity.Core.Objects.ObjectQuery)(((System.Data.Entity.Core.Objects.ObjectQuery<" + GetLocalNamespace() + ".Entity." + table.PascalName + ">)query).Select(x => new { " + string.Join(", ", table.PrimaryKeyColumns.Select(x => "x." + x.PascalName).ToList()) + " }))).ToTraceString()";
 
-                sb.AppendLine("			else if (typeof(T) == typeof(" + GetLocalNamespace() + ".Entity." + table.PascalName + "))");
+                sb.AppendLine("			" + (index == 0 ? string.Empty : "else ") + "if (typeof(T) == typeof(" + GetLocalNamespace() + ".Entity." + table.PascalName + "))");
                 sb.AppendLine("			{");
                 sb.AppendLine("				sb.AppendLine(\"set rowcount \" + optimizer.ChunkSize + \";\");");
-                sb.AppendLine("				sb.AppendLine(\"UPDATE [X] SET\");");
-                sb.AppendLine("				sb.AppendLine(string.Join(\", \", fieldSql));");
-                sb.AppendLine("				sb.AppendLine(\"FROM [" + table.GetSQLSchema() + "].[" + tableName + "] AS [X] INNER JOIN (\");");
-                sb.AppendLine("				sb.AppendLine(" + innerQueryToString + ");");
-                sb.AppendLine("				sb.AppendLine(\") AS [Extent2]\");");
-                sb.AppendLine("				sb.AppendLine(\"on " + string.Join(" AND ", table.PrimaryKeyColumns.Select(x => "[X].[" + x.Name + "] = [Extent2].[" + x.Name + "]").ToList()) + "\");");
-                sb.AppendLine("				sb.AppendLine(\"select @@ROWCOUNT\");");
+                sb.AppendLine("				foreach (var item in mapping.Where(x => x.SqlList.Any()).ToList())");
+                sb.AppendLine("				{");
+                sb.AppendLine("					sb.AppendLine(\"UPDATE [X] SET\");");
+                sb.AppendLine("					sb.AppendLine(string.Join(\", \", item.SqlList));");
+                sb.AppendLine("					sb.AppendLine(\"FROM [\" + item.Schema + \"].[\" + item.TableName + \"] AS [X] INNER JOIN (\");");
+                sb.AppendLine("					sb.AppendLine(" + innerQueryToString + ");");
+                sb.AppendLine("					sb.AppendLine(\") AS [Extent2]\");");
+                sb.AppendLine("					sb.AppendLine(\"on " + string.Join(" AND ", table.PrimaryKeyColumns.Select(x => "[X].[" + x.Name + "] = [Extent2].[" + x.Name + "]").ToList()) + "\");");
+                sb.AppendLine("					sb.AppendLine(\"select @@ROWCOUNT\");");
+                sb.AppendLine("				}");
                 sb.AppendLine("			}");
+                index++;
             }
             sb.AppendLine("			else throw new Exception(\"Entity type not found\");");
             sb.AppendLine("			#endregion");
@@ -914,9 +964,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			}");
             sb.AppendLine("			newParams.AddRange(parameters);");
             sb.AppendLine("			QueryPreCache.AddUpdate(instanceKey, sb.ToString(), newParams, optimizer);");
-
             sb.AppendLine("		}");
             sb.AppendLine();
+            sb.AppendLine("		private class UpdateSqlMapItem");
+            sb.AppendLine("		{");
+            sb.AppendLine("			public string TableName { get; set; }");
+            sb.AppendLine("			public List<string> FieldList { get; set; } = new List<string>();");
+            sb.AppendLine("			public List<string> SqlList { get; set; } = new List<string>();");
+            sb.AppendLine("			public string Schema { get; set; }");
+            sb.AppendLine("			public IMetadata Metadata { get; set; }");
+            sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		private static T CompileValue<T>(this Expression exp)");
             sb.AppendLine("		{");
@@ -926,29 +983,27 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine();
             sb.AppendLine("		}");
             sb.AppendLine();
-
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, Expression<Func<T, dynamic>> obj)");
+            sb.AppendLine("		public static void Update<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, Expression<Func<T, T>> obj)");
             sb.AppendLine("			where T : class, " + GetLocalNamespace() + ".IBusinessObject, new()");
             sb.AppendLine("		{");
             sb.AppendLine("			entitySet.Where(where).Update(obj, optimizer: null, connectionString: null);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, Expression<Func<T, dynamic>> obj, QueryOptimizer optimizer)");
+            sb.AppendLine("		public static void Update<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, Expression<Func<T, T>> obj, QueryOptimizer optimizer)");
             sb.AppendLine("			where T : class, " + GetLocalNamespace() + ".IBusinessObject, new()");
             sb.AppendLine("		{");
             sb.AppendLine("			entitySet.Where(where).Update(obj, optimizer: optimizer, connectionString: null);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static void Update<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, Expression<Func<T, dynamic>> obj, string connectionString)");
+            sb.AppendLine("		public static void Update<T>(this System.Data.Entity.DbSet<T> entitySet, Expression<Func<T, bool>> where, Expression<Func<T, T>> obj, string connectionString)");
             sb.AppendLine("			where T : class, " + GetLocalNamespace() + ".IBusinessObject, new()");
             sb.AppendLine("		{");
             sb.AppendLine("			entitySet.Where(where).Update(obj, optimizer: null, connectionString: connectionString);");
             sb.AppendLine("		}");
             sb.AppendLine();
-
             sb.AppendLine("		#endregion");
 
             #endregion
@@ -1064,7 +1119,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine();
             #endregion
 
-            sb.AppendLine();
             sb.AppendLine("	#endregion");
             sb.AppendLine();
         }

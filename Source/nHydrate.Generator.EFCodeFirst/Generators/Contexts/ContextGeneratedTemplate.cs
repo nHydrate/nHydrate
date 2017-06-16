@@ -708,16 +708,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     sb.Append(string.Join(", ", tempList));
                     sb.AppendLine(" });");
                 }
-
-                //sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
-                //var columnList = table.GetColumns().Where(x => x.PrimaryKey).OrderBy(x => x.Name).ToList();
-                //foreach (var c in columnList)
-                //{
-                //    sb.Append("x." + c.PascalName);
-                //    if (columnList.IndexOf(c) < columnList.Count - 1)
-                //        sb.Append(", ");
-                //}
-                //sb.AppendLine(" });");
             }
 
             foreach (var table in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
@@ -789,6 +779,10 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			var cancel = false;");
             sb.AppendLine("			OnBeforeSaveChanges(ref cancel);");
             sb.AppendLine("			if (cancel) return 0;");
+            sb.AppendLine();
+            sb.AppendLine("			//This must be called to truly see all Added/Updated Entities in the ObjectStateManager!!!");
+            sb.AppendLine("			//Items added to context work fine, but children added to parent objects do not i.e. 'ParentObject.ChildItems.Add(newChild)'");
+            sb.AppendLine("			this.ChangeTracker.Entries().Any();");
             sb.AppendLine();
 
             #region Added Items
@@ -1628,7 +1622,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				//If this is a tenant table then rig query plan for this specific tenant");
-            sb.AppendLine("				if (command.CommandText.Contains(\"__vw_tenant_\"))");
+            sb.AppendLine("				if (command.CommandText.Contains(\"__vw_tenant_\") || command.CommandText.Contains(\"__security\"))");
             sb.AppendLine("				{");
             sb.AppendLine("					var builder = new SqlConnectionStringBuilder(command.Connection.ConnectionString);");
             sb.AppendLine("					command.CommandText = \"--T:\" + builder.UserID + \"\\r\\n\" + command.CommandText;");

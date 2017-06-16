@@ -134,16 +134,6 @@ namespace nHydrate.Generator.EFDAL.Generators.Helpers
 
                 #endregion
 
-                #region EntityContextInterface
-
-                sb.AppendLine("	internal interface IEntityWithContext");
-                sb.AppendLine("	{");
-                sb.AppendLine("		" + _model.ProjectName + "Entities Context { get; set; }");
-                sb.AppendLine("	}");
-                sb.AppendLine();
-
-                #endregion
-
                 #region Util
                 sb.AppendLine("	internal class Util");
                 sb.AppendLine("	{");

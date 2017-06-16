@@ -607,7 +607,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
                 foreach (var childTable in tableList)
                 {
                     sb.AppendLine("						newAlias = childTables.NewAlias();");
-                    sb.Append("						childTables.Add(new LinqSQLFromClause(\"" + childTable.DatabaseName + "\", GetSchema(\"" + childTable.DatabaseName + "\"), newAlias, \"ON ");
+                    var tName = (childTable.IsTenant ? _model.TenantPrefix + "_" : string.Empty) + childTable.DatabaseName;
+                    sb.Append("						childTables.Add(new LinqSQLFromClause(\"" + tName + "\", GetSchema(\"" + childTable.DatabaseName + "\"), newAlias, \"ON ");
                     var columnList = childTable.PrimaryKeyColumns.OrderBy(x => x.Name).ToList();
                     var index2 = 0;
                     foreach (var column in columnList)
@@ -639,7 +640,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
                     foreach (var childTable in tableList)
                     {
                         sb.AppendLine("						newAlias = childTables.NewAlias();");
-                        sb.Append("						childTables.Add(new LinqSQLFromClause(\"" + childTable.DatabaseName + "\", GetSchema(\"" + childTable.DatabaseName + "\"), newAlias, \"ON ");
+                        var tName = (childTable.IsTenant ? _model.TenantPrefix + "_" : string.Empty) + childTable.DatabaseName;
+                        sb.Append("						childTables.Add(new LinqSQLFromClause(\"" + tName + "\", GetSchema(\"" + childTable.DatabaseName + "\"), newAlias, \"ON ");
                         foreach (var column in childTable.PrimaryKeyColumns.OrderBy(x => x.Name))
                         {
                             sb.Append("[\" + fromClause.Alias + \"].[" + column.DatabaseName + "] = [\" + newAlias + \"].[" + column.DatabaseName + "]\"));");
