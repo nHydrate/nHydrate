@@ -839,29 +839,29 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 #endregion
 
                 #region MetadataTypeAttribute
-                sb.AppendLine("		#region MetadataTypeAttribute");
+                sb.AppendLine("	#region MetadataTypeAttribute");
                 sb.AppendLine();
+                sb.AppendLine("	/// <summary>");
+                sb.AppendLine("	/// Specifies the metadata class to associate with a data model class.");
+                sb.AppendLine("	/// </summary>");
+                sb.AppendLine("	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]");
+                sb.AppendLine("	public sealed class MetadataTypeAttribute : Attribute");
+                sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Specifies the metadata class to associate with a data model class.");
+                sb.AppendLine("		/// Initializes a new instance of the System.ComponentModel.DataAnnotations.MetadataTypeAttribute");
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]");
-                sb.AppendLine("		public sealed class MetadataTypeAttribute : Attribute");
+                sb.AppendLine("		public MetadataTypeAttribute(Type metadataClassType)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			/// <summary>");
-                sb.AppendLine("			/// Initializes a new instance of the System.ComponentModel.DataAnnotations.MetadataTypeAttribute");
-                sb.AppendLine("			/// </summary>");
-                sb.AppendLine("			public MetadataTypeAttribute(Type metadataClassType)");
-                sb.AppendLine("			{");
-                sb.AppendLine("				this.MetadataClassType = metadataClassType;");
-                sb.AppendLine("			}");
-                sb.AppendLine();
-                sb.AppendLine("			/// <summary>");
-                sb.AppendLine("			/// Gets the metadata class that is associated with a data-model partial class.");
-                sb.AppendLine("			/// </summary>");
-                sb.AppendLine("			public Type MetadataClassType { get; private set; }");
+                sb.AppendLine("			this.MetadataClassType = metadataClassType;");
                 sb.AppendLine("		}");
                 sb.AppendLine();
-                sb.AppendLine("		#endregion");
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Gets the metadata class that is associated with a data-model partial class.");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		public Type MetadataClassType { get; private set; }");
+                sb.AppendLine("	}");
+                sb.AppendLine();
+                sb.AppendLine("	#endregion");
                 sb.AppendLine();
                 #endregion
 
@@ -1414,7 +1414,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("					cmd.CommandText = cacheItem.SQL;");
                 sb.AppendLine("					var obj1 = context.Database.CurrentTransaction.GetType().GetTypeInfo().GetDeclaredField(\"_dbTransaction\").GetValue(context.Database.CurrentTransaction);");
                 sb.AppendLine("					cmd.Transaction = obj1 as System.Data.Common.DbTransaction;");
-                sb.AppendLine("					cmd.Parameters.AddRange(cacheItem.Parameters.ToArray());");
+                sb.AppendLine("					if (cacheItem.Parameters != null)");
+                sb.AppendLine("						cmd.Parameters.AddRange(cacheItem.Parameters.ToArray());");
                 sb.AppendLine("					var affected = cmd.ExecuteNonQuery();");
                 sb.AppendLine("					count += affected;");
                 sb.AppendLine("				}");

@@ -1530,8 +1530,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public int? CommandTimeout");
             sb.AppendLine("		{");
-            sb.AppendLine("			get { return this.CommandTimeout; }");
-            sb.AppendLine("			set { this.CommandTimeout = value; }");
+            sb.AppendLine("			get { return this.Database.GetCommandTimeout(); }");
+            sb.AppendLine("			set { this.Database.SetCommandTimeout(value); }");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
