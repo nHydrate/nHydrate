@@ -39,7 +39,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore
 
         public override string LocalNamespaceExtension
         {
-            get { return "EFDALNetCore"; }
+            get { return "EFDAL"; }
         }
 
     }

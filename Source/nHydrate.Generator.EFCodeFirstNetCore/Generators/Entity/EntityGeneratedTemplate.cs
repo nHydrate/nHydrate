@@ -179,6 +179,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
 
             sb.AppendLine("	[EntityMetadata(\"" + _item.PascalName + "\", " + _item.AllowAuditTracking.ToString().ToLower() + ", " + _item.AllowCreateAudit.ToString().ToLower() + ", " + _item.AllowModifiedAudit.ToString().ToLower() + ", " + _item.AllowTimestamp.ToString().ToLower() + ", \"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\", " + _item.EnforcePrimaryKey.ToString().ToLower() + ", " + _item.Immutable.ToString().ToLower() + ", " + (_item.TypedTable != TypedTableConstants.None).ToString().ToLower() + ", \"" + _item.GetSQLSchema() + "\")]");
+            sb.AppendLine("	[MetadataTypeAttribute(typeof(" + this.GetLocalNamespace() + ".Entity.Metadata." + _item.PascalName + "Metadata))]");
 
             //Auditing
             if (_item.AllowAuditTracking)
@@ -1927,6 +1928,74 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		{");
             sb.AppendLine("			return \"" + _item.DatabaseName + "\";");
             sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Gets a list of all object fields with alias/code facade applied excluding inheritance.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public " + type + " List<string> GetFields()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			var retval = new List<string>();");
+            foreach (var field in _item.GeneratedColumns)
+            {
+                sb.AppendLine("			retval.Add(\"" + field.PascalName + "\");");
+            }
+            sb.AppendLine("			return retval;");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Returns the type of the parent object if one exists.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public " + type + " System.Type InheritsFrom()");
+            sb.AppendLine("		{");
+            if (_item.ParentTable == null)
+                sb.AppendLine("			return null;");
+            else
+                sb.AppendLine("			return typeof(" + this.GetLocalNamespace() + ".Entity." + _item.ParentTable.PascalName + ");");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Returns the database schema name.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public " + type + " string Schema()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return \"" + _item.GetSQLSchema() + "\";");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Returns the actual database name of the specified field.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public " + type + " string GetDatabaseFieldName(string field)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			switch (field)");
+            sb.AppendLine("			{");
+            foreach (var column in _item.GeneratedColumns)
+            {
+                if (column.Generated)
+                    sb.AppendLine("				case \"" + column.PascalName + "\": return \"" + column.Name + "\";");
+            }
+            if (_item.AllowCreateAudit)
+            {
+                sb.AppendLine("				case \"" + _model.Database.CreatedByPascalName + "\": return \"" + _model.Database.CreatedByColumnName + "\";");
+                sb.AppendLine("				case \"" + _model.Database.CreatedDatePascalName + "\": return \"" + _model.Database.CreatedDateColumnName + "\";");
+            }
+            if (_item.AllowModifiedAudit)
+            {
+                sb.AppendLine("				case \"" + _model.Database.ModifiedByPascalName + "\": return \"" + _model.Database.ModifiedByColumnName + "\";");
+                sb.AppendLine("				case \"" + _model.Database.ModifiedDatePascalName + "\": return \"" + _model.Database.ModifiedDateColumnName + "\";");
+            }
+            if (_item.AllowTimestamp)
+            {
+                sb.AppendLine("				case \"" + _model.Database.TimestampPascalName + "\": return \"" + _model.Database.TimestampColumnName + "\";");
+            }
+            sb.AppendLine("			}");
+            sb.AppendLine("			return string.Empty;");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
             sb.AppendLine("		#endregion");
             sb.AppendLine();
         }

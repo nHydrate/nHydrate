@@ -158,7 +158,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// A unique key for this object instance");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public Guid InstanceKey { get; private set; }");
+            sb.AppendLine("		public Guid InstanceKey { get; private set; } = Guid.NewGuid();");
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary />");
@@ -863,6 +863,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				if (customTrans != null)");
             sb.AppendLine("					customTrans.Dispose();");
             sb.AppendLine("			}");
+
             sb.AppendLine("			this.OnAfterSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
             sb.AppendLine("			this.OnAfterSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
             sb.AppendLine("			OnAfterSaveChanges();");

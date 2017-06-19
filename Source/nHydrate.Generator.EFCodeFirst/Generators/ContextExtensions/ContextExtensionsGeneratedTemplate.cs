@@ -697,6 +697,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			query.Update(obj: obj, optimizer: null, connectionString: connectionString);");
             sb.AppendLine("		}");
             sb.AppendLine();
+
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, T>> obj, QueryOptimizer optimizer, string connectionString)");
             sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject, new()");

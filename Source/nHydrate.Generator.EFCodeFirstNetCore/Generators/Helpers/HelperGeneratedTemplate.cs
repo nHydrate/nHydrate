@@ -86,6 +86,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("using System.Runtime.Serialization;");
                 sb.AppendLine("using System.Collections.Concurrent;");
                 sb.AppendLine("using System.Reflection;");
+                sb.AppendLine("using Microsoft.EntityFrameworkCore;");
 
                 sb.AppendLine();
                 #endregion
@@ -93,10 +94,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 #region  This is a Polyfill/Shim that does nothing but allows Serializable to compile
                 sb.AppendLine("namespace System");
                 sb.AppendLine("{");
-                sb.AppendLine("	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Delegate)]");
-                sb.AppendLine("	internal class SerializableAttribute : Attribute");
-                sb.AppendLine("	{");
-                sb.AppendLine("	}");
                 sb.AppendLine("	public interface ICloneable");
                 sb.AppendLine("	{");
                 sb.AppendLine("	}");
@@ -109,8 +106,30 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public partial interface IMetadata");
                 sb.AppendLine("	{");
-                sb.AppendLine("		/// <summary />");
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Gets the underlying table name.");
+                sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		string GetTableName();");
+                sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Gets a list of all object fields with alias/code facade applied excluding inheritance.");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		List<string> GetFields();");
+                sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Returns the type of the parent object if one exists.");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		System.Type InheritsFrom();");
+                sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Returns the database schema name.");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		string Schema();");
+                sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Returns the actual database name of the specified field.");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		string GetDatabaseFieldName(string field);");
                 sb.AppendLine("	}");
                 sb.AppendLine();
                 #endregion
@@ -745,6 +764,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
 
+                #region EntityHistory
                 sb.AppendLine("	#region EntityHistory");
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// Identities an entity class as having an audit history");
@@ -759,7 +779,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region EntityMetadata
                 sb.AppendLine("	#region EntityMetadata");
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	[AttributeUsage(AttributeTargets.Class)]");
@@ -814,7 +836,36 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region MetadataTypeAttribute
+                sb.AppendLine("		#region MetadataTypeAttribute");
+                sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// Specifies the metadata class to associate with a data model class.");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]");
+                sb.AppendLine("		public sealed class MetadataTypeAttribute : Attribute");
+                sb.AppendLine("		{");
+                sb.AppendLine("			/// <summary>");
+                sb.AppendLine("			/// Initializes a new instance of the System.ComponentModel.DataAnnotations.MetadataTypeAttribute");
+                sb.AppendLine("			/// </summary>");
+                sb.AppendLine("			public MetadataTypeAttribute(Type metadataClassType)");
+                sb.AppendLine("			{");
+                sb.AppendLine("				this.MetadataClassType = metadataClassType;");
+                sb.AppendLine("			}");
+                sb.AppendLine();
+                sb.AppendLine("			/// <summary>");
+                sb.AppendLine("			/// Gets the metadata class that is associated with a data-model partial class.");
+                sb.AppendLine("			/// </summary>");
+                sb.AppendLine("			public Type MetadataClassType { get; private set; }");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		#endregion");
+                sb.AppendLine();
+                #endregion
+
+                #region FieldNameConstantsAttribute
                 sb.AppendLine("	#region FieldNameConstantsAttribute");
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// Identities the type of IBusinessObject for an enumeration");
@@ -829,7 +880,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region PrimaryKeyAttribute
                 sb.AppendLine("	#region PrimaryKeyAttribute");
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// Identities the primary key of an IBusinessObject enumeration");
@@ -840,7 +893,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region IContextInclude
                 sb.AppendLine("	#region IContextInclude");
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public partial interface IContextInclude");
@@ -848,7 +903,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region IContext
                 sb.AppendLine("	#region IContext");
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// The interface for a context object");
@@ -863,6 +920,16 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 //sb.AppendLine("		/// </summary>");
                 //sb.AppendLine("		System.Data.Entity.Core.Objects.ObjectContext ObjectContext { get; }");
                 //sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// The database context");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		Microsoft.EntityFrameworkCore.Infrastructure.DatabaseFacade Database { get; }");
+                sb.AppendLine();
+                sb.AppendLine("		/// <summary>");
+                sb.AppendLine("		/// The database connection string");
+                sb.AppendLine("		/// </summary>");
+                sb.AppendLine("		string ConnectionString { get; }");
+                sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// A unique key for this object instance");
                 sb.AppendLine("		/// </summary>");
@@ -910,7 +977,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region BaseEntity
                 sb.AppendLine("	#region BaseEntity");
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// The base class for all entity objects using EF 6");
@@ -945,7 +1014,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region IBusinessObject
                 sb.AppendLine("	#region IBusinessObject");
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// The interface for all entities");
@@ -972,7 +1043,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region QueryOptimizer
                 sb.AppendLine("	#region QueryOptimizer");
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// This class can be used to optimize queries or report information about the operations");
@@ -1014,7 +1087,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region IPrimaryKey
                 sb.AppendLine("	#region IPrimaryKey");
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public partial interface IPrimaryKey");
@@ -1023,6 +1098,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("		long Hash { get; }");
                 sb.AppendLine("	}");
                 sb.AppendLine();
+                #endregion
+
+                #region PrimaryKey
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public partial class PrimaryKey : IPrimaryKey");
                 sb.AppendLine("	{");
@@ -1072,7 +1150,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region IReadOnlyBusinessObject
                 sb.AppendLine("	#region IReadOnlyBusinessObject");
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public partial interface IReadOnlyBusinessObject");
@@ -1116,7 +1196,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region IBusinessObjectLINQQuery
                 sb.AppendLine("	#region IBusinessObjectLINQQuery");
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public partial interface IBusinessObjectLINQQuery");
@@ -1124,7 +1206,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region AuditPaging
                 sb.AppendLine("	#region AuditPaging");
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// ");
@@ -1145,7 +1229,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region AuditResult
                 sb.AppendLine("	#region AuditResult");
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// A result structure for audit records");
@@ -1169,7 +1255,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region IAuditResultFieldCompare
                 sb.AppendLine("	#region IAuditResultFieldCompare");
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("	public interface IAuditResultFieldCompare");
@@ -1185,7 +1273,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #region AuditResultFieldCompare
                 sb.AppendLine("	#region AuditResultFieldCompare");
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public class AuditResultFieldCompare<R, E> : IAuditResultFieldCompare");
@@ -1231,7 +1321,160 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
 
+                #endregion
+
+                #region QueryPreCache
+                sb.AppendLine("	#region QueryPreCache");
+                sb.AppendLine("	internal static class QueryPreCache");
+                sb.AppendLine("	{");
+                sb.AppendLine("		private static ConcurrentDictionary<Guid, List<PreCacheItem>> _queryDeleteCache = new ConcurrentDictionary<Guid, List<PreCacheItem>>();");
+                sb.AppendLine("		private static ConcurrentDictionary<Guid, List<PreCacheItem>> _queryUpdateCache = new ConcurrentDictionary<Guid, List<PreCacheItem>>();");
+                sb.AppendLine();
+                sb.AppendLine("		internal static void AddDelete(Guid instanceKey, string sql, List<System.Data.Common.DbParameter> parameters, QueryOptimizer optimizer)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			try");
+                sb.AppendLine("			{");
+                sb.AppendLine("				var newItem = new PreCacheItem");
+                sb.AppendLine("				{");
+                sb.AppendLine("					SQL = sql,");
+                sb.AppendLine("					Parameters = parameters,");
+                sb.AppendLine("					Optimizer = optimizer,");
+                sb.AppendLine("				};");
+                sb.AppendLine();
+                sb.AppendLine("				if (!_queryDeleteCache.ContainsKey(instanceKey))");
+                sb.AppendLine("					_queryDeleteCache.TryAdd(instanceKey, new List<PreCacheItem>());");
+                sb.AppendLine("				_queryDeleteCache[instanceKey].Add(newItem);");
+                sb.AppendLine("			}");
+                sb.AppendLine("			catch");
+                sb.AppendLine("			{");
+                sb.AppendLine("				throw;");
+                sb.AppendLine("			}");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		internal static void AddUpdate(Guid instanceKey, string sql, List<System.Data.Common.DbParameter> parameters, QueryOptimizer optimizer)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			try");
+                sb.AppendLine("			{");
+                sb.AppendLine("				var newItem = new PreCacheItem");
+                sb.AppendLine("				{");
+                sb.AppendLine("					SQL = sql,");
+                sb.AppendLine("					Parameters = parameters,");
+                sb.AppendLine("					Optimizer = optimizer,");
+                sb.AppendLine("				};");
+                sb.AppendLine();
+                sb.AppendLine("				if (!_queryUpdateCache.ContainsKey(instanceKey))");
+                sb.AppendLine("					_queryUpdateCache.TryAdd(instanceKey, new List<PreCacheItem>());");
+                sb.AppendLine("				_queryUpdateCache[instanceKey].Add(newItem);");
+                sb.AppendLine("			}");
+                sb.AppendLine("			catch");
+                sb.AppendLine("			{");
+                sb.AppendLine("				throw;");
+                sb.AppendLine("			}");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		internal static int ExecuteDeletes(IContext context)");
+                sb.AppendLine("		{");
+                sb.AppendLine("				if (!_queryDeleteCache.ContainsKey(context.InstanceKey))");
+                sb.AppendLine("					return 0;");
+                sb.AppendLine("				List<PreCacheItem> list;");
+                sb.AppendLine("				if (!_queryDeleteCache.TryRemove(context.InstanceKey, out list))");
+                sb.AppendLine("					return 0;");
+                sb.AppendLine("				var retval = Execute(context, list);");
+                sb.AppendLine("				RemoveDeletes(context.InstanceKey);");
+                sb.AppendLine("				return retval;");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		internal static int ExecuteUpdates(IContext context)");
+                sb.AppendLine("		{");
+                sb.AppendLine("				if (!_queryUpdateCache.ContainsKey(context.InstanceKey))");
+                sb.AppendLine("					return 0;");
+                sb.AppendLine("				List<PreCacheItem> list;");
+                sb.AppendLine("				if (!_queryUpdateCache.TryRemove(context.InstanceKey, out list))");
+                sb.AppendLine("					return 0;");
+                sb.AppendLine("				var retval = Execute(context, list);");
+                sb.AppendLine("				RemoveUpdates(context.InstanceKey);");
+                sb.AppendLine("				return retval;");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		private static int Execute(IContext context, List<PreCacheItem> list)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			try");
+                sb.AppendLine("			{");
+                sb.AppendLine("				var count = 0;");
+                sb.AppendLine("				foreach (var cacheItem in list)");
+                sb.AppendLine("				{");
+                sb.AppendLine("					if (cacheItem.Optimizer == null) cacheItem.Optimizer = new QueryOptimizer();");
+                sb.AppendLine("					var connection = context.Database.GetDbConnection();");
+                sb.AppendLine("					if (connection.State == System.Data.ConnectionState.Closed)");
+                sb.AppendLine("						connection.Open();");
+                sb.AppendLine();
+                sb.AppendLine("					var cmd = connection.CreateCommand();");
+                sb.AppendLine("					cmd.CommandText = cacheItem.SQL;");
+                sb.AppendLine("					var obj1 = context.Database.CurrentTransaction.GetType().GetTypeInfo().GetDeclaredField(\"_dbTransaction\").GetValue(context.Database.CurrentTransaction);");
+                sb.AppendLine("					cmd.Transaction = obj1 as System.Data.Common.DbTransaction;");
+                sb.AppendLine("					cmd.Parameters.AddRange(cacheItem.Parameters.ToArray());");
+                sb.AppendLine("					var affected = cmd.ExecuteNonQuery();");
+                sb.AppendLine("					count += affected;");
+                sb.AppendLine("				}");
+                sb.AppendLine("				return count;");
+                sb.AppendLine("			}");
+                sb.AppendLine("			catch");
+                sb.AppendLine("			{");
+                sb.AppendLine("				throw;");
+                sb.AppendLine("			}");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		internal static void RemoveDeletes(Guid instanceKey)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			try");
+                sb.AppendLine("			{");
+                sb.AppendLine("				List<PreCacheItem> v;");
+                sb.AppendLine("				_queryDeleteCache.TryRemove(instanceKey, out v);");
+                sb.AppendLine("			}");
+                sb.AppendLine("			catch");
+                sb.AppendLine("			{");
+                sb.AppendLine("				throw;");
+                sb.AppendLine("			}");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		internal static void RemoveUpdates(Guid instanceKey)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			try");
+                sb.AppendLine("			{");
+                sb.AppendLine("				List<PreCacheItem> v;");
+                sb.AppendLine("				_queryUpdateCache.TryRemove(instanceKey, out v);");
+                sb.AppendLine("			}");
+                sb.AppendLine("			catch");
+                sb.AppendLine("			{");
+                sb.AppendLine("				throw;");
+                sb.AppendLine("			}");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("		internal static void RemoveAll(Guid instanceKey)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			try");
+                sb.AppendLine("			{");
+                sb.AppendLine("				RemoveDeletes(instanceKey);");
+                sb.AppendLine("				RemoveUpdates(instanceKey);");
+                sb.AppendLine("			}");
+                sb.AppendLine("			catch");
+                sb.AppendLine("			{");
+                sb.AppendLine("				throw;");
+                sb.AppendLine("			}");
+                sb.AppendLine("		}");
+                sb.AppendLine();
+                sb.AppendLine("	}");
+                sb.AppendLine();
+                sb.AppendLine("	internal class PreCacheItem");
+                sb.AppendLine("	{");
+                sb.AppendLine("		public string SQL { get; set; }");
+                sb.AppendLine("		public List<System.Data.Common.DbParameter> Parameters { get; set; }");
+                sb.AppendLine("		public QueryOptimizer Optimizer { get; set; }");
+                sb.AppendLine("	}");
+                sb.AppendLine("	#endregion");
+                sb.AppendLine();
                 #endregion
 
                 sb.AppendLine("}");

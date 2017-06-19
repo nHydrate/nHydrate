@@ -776,10 +776,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             sb.AppendLine("			var retval = 0;");
+            sb.AppendLine("			Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction customTrans = null;");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				_paramList.Clear();");
-            sb.AppendLine("				retval = base.SaveChanges();");
+            sb.AppendLine("				if (base.Database.CurrentTransaction == null)");
+            sb.AppendLine("					customTrans = base.Database.BeginTransaction();");
+            sb.AppendLine("				retval += QueryPreCache.ExecuteDeletes(this);");
+            sb.AppendLine("				retval += base.SaveChanges();");
+            sb.AppendLine("				retval += QueryPreCache.ExecuteUpdates(this);");
+            sb.AppendLine("				if (customTrans != null)");
+            sb.AppendLine("					customTrans.Commit();");
             sb.AppendLine("			}");
             //NETCORE REMOVED
             //sb.AppendLine("			catch (System.Data.Entity.Validation.DbEntityValidationException ex)");
@@ -797,6 +804,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			catch");
             sb.AppendLine("			{");
             sb.AppendLine("				throw;");
+            sb.AppendLine("			}");
+            sb.AppendLine("			finally");
+            sb.AppendLine("			{");
+            sb.AppendLine("				if (customTrans != null)");
+            sb.AppendLine("					customTrans.Dispose();");
             sb.AppendLine("			}");
 
             sb.AppendLine("			this.OnAfterSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");

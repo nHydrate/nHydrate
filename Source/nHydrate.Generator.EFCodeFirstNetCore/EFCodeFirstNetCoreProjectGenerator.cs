@@ -36,8 +36,8 @@ using nHydrate.Generator.ProjectItemGenerators;
 namespace nHydrate.Generator.EFCodeFirstNetCore
 {
     [GeneratorProject(
-        "EF .NET Core Data Access Layer (code first)",
-        "A data access layer built on top of Entity Framework .NET Core",
+        "EF Data Access Layer Code First (.NET Standard)",
+        "A data access layer built on top of Entity Framework (.NET Standard)",
         "d8156b27-b9f2-4291-82e8-88e1295eef05",
         typeof(nHydrateGeneratorProject),
         typeof(EFCodeFirstNetCoreProjectGenerator),
@@ -64,7 +64,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore
 
         public static string NamespaceExtension
         {
-            get { return "EFDALNetCore"; }
+            get { return "EFDAL"; }
         }
 
         private void GenerateCompanySpecificFile(string fileName)
@@ -99,10 +99,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore
             EnvDTE.Project project = EnvDTEHelper.Instance.GetProject(ProjectName);
             if (project != null)
             {
-                EnvDTE.Property preBuildProperty = project.Properties.Item("PreBuildEvent");
-                preBuildProperty.Value = "attrib -r \"$(SolutionDir)Bin\\*.*\"";
-                EnvDTE.Property postBuildProperty = project.Properties.Item("PostBuildEvent");
-                postBuildProperty.Value = "copy \"$(TargetDir)$(TargetName).*\" \"$(SolutionDir)Bin\\\"";
+                //EnvDTE.Property preBuildProperty = project.Properties.Item("PreBuildEvent");
+                //preBuildProperty.Value = "attrib -r \"$(SolutionDir)Bin\\*.*\"";
+                //EnvDTE.Property postBuildProperty = project.Properties.Item("PostBuildEvent");
+                //postBuildProperty.Value = "copy \"$(TargetDir)$(TargetName).*\" \"$(SolutionDir)Bin\\\"";
             }
         }
 
