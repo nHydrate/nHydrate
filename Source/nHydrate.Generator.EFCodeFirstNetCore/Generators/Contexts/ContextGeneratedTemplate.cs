@@ -584,26 +584,19 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         {
                             sb.AppendLine("			//Relation " + table.PascalName + " -> " + childTable.PascalName);
                             sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
-
-                            if (relation.IsRequired)
-                                sb.AppendLine("							 .HasOne(a => a." + relation.PascalRoleName + table.PascalName + ")");
-                            else
-                                sb.AppendLine("							 .HasOptional(a => a." + relation.PascalRoleName + table.PascalName + ")");
-
-                            sb.AppendLine("							 .WithOptional(x => x." + relation.PascalRoleName + childTable.PascalName + ");");
-                            //sb.AppendLine("							 .WillCascadeOnDelete(false);");
+                            sb.AppendLine("							 .HasOne(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                            sb.AppendLine("							 .WithOne(x => x." + relation.PascalRoleName + childTable.PascalName + ");");
+                            if (!relation.IsRequired)
+                                sb.AppendLine("							 .IsRequired(false)");
                         }
                         else
                         {
                             sb.AppendLine("			//Relation " + table.PascalName + " -> " + childTable.PascalName);
                             sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
-
-                            if (relation.IsRequired)
-                                sb.AppendLine("							 .HasOne(a => a." + relation.PascalRoleName + table.PascalName + ")");
-                            else
-                                sb.AppendLine("							 .HasOptional(a => a." + relation.PascalRoleName + table.PascalName + ")");
-
+                            sb.AppendLine("							 .HasOne(a => a." + relation.PascalRoleName + table.PascalName + ")");
                             sb.AppendLine("							 .WithMany(b => b." + relation.PascalRoleName + childTable.PascalName + "List)");
+                            if (!relation.IsRequired)
+                                sb.AppendLine("							 .IsRequired(false)");
                             sb.Append("							 .HasForeignKey(u => new { ");
 
                             var index = 0;
@@ -620,7 +613,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             }
 
                             sb.AppendLine(" });");
-                            //sb.AppendLine("							 .WillCascadeOnDelete(false);");
                         }
 
                         sb.AppendLine();

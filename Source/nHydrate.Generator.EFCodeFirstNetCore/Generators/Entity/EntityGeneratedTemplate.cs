@@ -1764,30 +1764,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             sb.AppendLine("		#region DeleteData");
             sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
-            sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", bool>> where)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return DeleteData(where: where, optimizer: new QueryOptimizer(), startup: new ContextStartup(null), connectionString: " + this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
-            sb.AppendLine("		/// <param name=\"optimizer\">The optimization object to use for running queries</param>");
-            sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", bool>> where, QueryOptimizer optimizer)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return DeleteData(where: where, optimizer: optimizer, startup: new ContextStartup(null), connectionString: " + this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
-            sb.AppendLine("		}");
-            sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Delete all records that match a where condition");
@@ -1799,6 +1775,32 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", bool>> where, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			return DeleteData(where: where, optimizer: new QueryOptimizer(), startup: new ContextStartup(null), connectionString: connectionString);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Delete all records that match a where condition");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
+            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
+            sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
+            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
+            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", bool>> where, QueryOptimizer optimizer, string connectionString)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return DeleteData(where: where, optimizer: optimizer, startup: new ContextStartup(null), connectionString: connectionString);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Delete all records that match a where condition");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
+            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
+            sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
+            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
+            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", bool>> where, ContextStartup startup, string connectionString)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			return DeleteData(where: where, optimizer: new QueryOptimizer(), startup: startup, connectionString: connectionString);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
