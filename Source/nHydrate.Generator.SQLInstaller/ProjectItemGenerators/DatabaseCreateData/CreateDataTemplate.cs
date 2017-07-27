@@ -83,9 +83,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateDa
                 sb.AppendLine();
 
                 //Turn OFF CONSTRAINTS
-                sb.AppendLine("if (SERVERPROPERTY('EngineEdition') <> 5) --NOT AZURE");
-                sb.AppendLine("exec sp_MSforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'");
-                sb.AppendLine();
+                //sb.AppendLine("if (SERVERPROPERTY('EngineEdition') <> 5) --NOT AZURE");
+                //sb.AppendLine("exec sp_MSforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'");
+                //sb.AppendLine();
 
                 #region Add Static Data
                 foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
@@ -95,9 +95,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateDa
                 #endregion
 
                 //Turn ON CONSTRAINTS
-                sb.AppendLine("if (SERVERPROPERTY('EngineEdition') <> 5) --NOT AZURE");
-                sb.AppendLine("exec sp_MSforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL'");
-                sb.AppendLine();
+                //sb.AppendLine("if (SERVERPROPERTY('EngineEdition') <> 5) --NOT AZURE");
+                //sb.AppendLine("exec sp_MSforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL'");
+                //sb.AppendLine();
             }
             catch (Exception ex)
             {
