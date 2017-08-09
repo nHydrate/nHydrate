@@ -625,15 +625,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 {
                     var relation1 = relations.First();
                     var relation2 = relations.Last();
+
+                    sb.AppendLine("			//Relation for "+ relation1.ParentTable.PascalName + " <-> "+ relation2.ParentTable.PascalName + " (Many-to-Many)");
                     sb.AppendLine("			modelBuilder.Entity<" + relation1.ParentTable.PascalName + ">()");
                     sb.AppendLine("				.HasMany(q => q." + relation2.PascalRoleName + relation2.ParentTable.PascalName + "List)");
-                    sb.AppendLine("				.WithMany(q => q." + relation1.PascalRoleName + relation1.ParentTable.PascalName + "List)");
-                    sb.AppendLine("				.Map(q =>");
-                    sb.AppendLine("			{");
-                    sb.AppendLine("				q.ToTable(\"" + table.PascalName + "\");");
-                    sb.AppendLine("				q.MapLeftKey(" + string.Join(",", relation1.ColumnRelationships.Select(x => "\"" + x.ChildColumn.DatabaseName + "\"").ToList()) + ");");
-                    sb.AppendLine("				q.MapRightKey(" + string.Join(",", relation2.ColumnRelationships.Select(x => "\"" + x.ChildColumn.DatabaseName + "\"").ToList()) + ");");
-                    sb.AppendLine("			});");
+                    sb.AppendLine("				.WithOne(q => q." + relation1.PascalRoleName + relation1.ParentTable.PascalName + ");");
+                    sb.AppendLine();
+                    sb.AppendLine("			modelBuilder.Entity<" + relation2.ParentTable.PascalName + ">()");
+                    sb.AppendLine("				.HasMany(q => q." + relation1.PascalRoleName + relation1.ParentTable.PascalName + "List)");
+                    sb.AppendLine("				.WithOne(q => q." + relation2.PascalRoleName + relation2.ParentTable.PascalName + ");");
                     sb.AppendLine();
                 }
             }

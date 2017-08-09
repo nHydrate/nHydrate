@@ -502,7 +502,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		/// <summary>");
                         sb.AppendLine("		/// This property is a wrapper for the typed enumeration for the '" + column.PascalName + "' field.");
                         sb.AppendLine("		/// </summary>");
-                        //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                         if (column.Obsolete)
                             sb.AppendLine("		[System.Obsolete()]");
@@ -762,8 +762,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
-                        sb.AppendLine("		//[XmlIgnore]"); //.NETCORE REMOVED
-                        //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		" + scope + " virtual " + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; set; }");
                         sb.AppendLine();
 
@@ -796,21 +795,20 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         if (targetTable.Generated && (targetTable.TypedTable != TypedTableConstants.EnumOnly))
                         {
                             sb.AppendLine("		/// <summary>");
-                            sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + targetTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? "" : " (role: '" + otherRelation.PascalRoleName + "')"));
+                            sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? "" : " (role: '" + otherRelation.PascalRoleName + "')"));
                             sb.AppendLine("		/// </summary>");
                             sb.AppendLine("		[DataMember]");
-                            sb.AppendLine("		//[XmlIgnore]"); //.NETCORE REMOVED
-                            sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + targetTable.PascalName + "> " + otherRelation.PascalRoleName + targetTable.PascalName + "List");
+                            sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + otherRelation.PascalRoleName + childTable.PascalName + "List");
                             sb.AppendLine("		{");
                             sb.AppendLine("			get");
                             sb.AppendLine("			{");
-                            sb.AppendLine("				if (_" + otherRelation.PascalRoleName + targetTable.PascalName + "List == null) _" + otherRelation.PascalRoleName + targetTable.PascalName + "List = new List<" + this.GetLocalNamespace() + ".Entity." + targetTable.PascalName + ">();");
-                            sb.AppendLine("				return _" + otherRelation.PascalRoleName + targetTable.PascalName + "List;");
+                            sb.AppendLine("				if (_" + otherRelation.PascalRoleName + childTable.PascalName + "List == null) _" + otherRelation.PascalRoleName + childTable.PascalName + "List = new List<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">();");
+                            sb.AppendLine("				return _" + otherRelation.PascalRoleName + childTable.PascalName + "List;");
                             sb.AppendLine("			}");
-                            sb.AppendLine("			set { _" + otherRelation.PascalRoleName + targetTable.PascalName + "List = value; }");
+                            sb.AppendLine("			set { _" + otherRelation.PascalRoleName + childTable.PascalName + "List = value; }");
                             sb.AppendLine("		}");
                             sb.AppendLine("		/// <summary />");
-                            sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + targetTable.PascalName + "> _" + otherRelation.PascalRoleName + targetTable.PascalName + "List { get; set; }");
+                            sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> _" + otherRelation.PascalRoleName + childTable.PascalName + "List { get; set; }");
                             sb.AppendLine();
                         }
                     }
@@ -822,7 +820,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
-                        sb.AppendLine("		//[XmlIgnore]"); //.NETCORE REMOVED
                         sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + relation.PascalRoleName + childTable.PascalName + "List");
                         sb.AppendLine("		{");
                         sb.AppendLine("			get");
@@ -878,8 +875,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
-                        sb.AppendLine("		//[XmlIgnore]"); //.NETCORE REMOVED
-                        //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		public virtual " + parentTable.PascalName + " " + relation.PascalRoleName + parentTable.PascalName + " { get; set; }");
                         sb.AppendLine();
 

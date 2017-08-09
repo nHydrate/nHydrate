@@ -54,14 +54,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
         private List<Table> GetList()
         {
             return _model.Database.Tables
-                .Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly))
+                .Where(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly))
                 .OrderBy(x => x.Name)
                 .ToList();
         }
 
         public override void Generate()
         {
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 var template = new EntityGeneratedTemplate(_model, table);
                 var fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;

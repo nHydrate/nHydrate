@@ -382,7 +382,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("			if (optimizer == null)");
             sb.AppendLine("				optimizer = new QueryOptimizer();");
             sb.AppendLine();
-            sb.AppendLine("			var obj1 = ((Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider)((Remotion.Linq.QueryableBase<Acme.Test55.EFDAL.Entity.Customer>)query).Provider);");
+            sb.AppendLine("			var obj1 = ((Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider)(query).Provider);");
             sb.AppendLine("			var obj2 = obj1.GetType().GetFieldInfo(\"_queryCompiler\").GetValue(obj1);");
             sb.AppendLine("			var obj3 = obj2.GetType().GetFieldInfo(\"_database\").GetValue(obj2);");
             sb.AppendLine("			var obj4 = obj3.GetType().GetFieldInfo(\"_batchExecutor\").GetValue(obj3);");
@@ -512,12 +512,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("			if (optimizer == null)");
             sb.AppendLine("				optimizer = new QueryOptimizer();");
             sb.AppendLine();
-            sb.AppendLine("            var obj1 = ((Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider)((Remotion.Linq.QueryableBase<Acme.Test55.EFDAL.Entity.Customer>)query).Provider);");
-            sb.AppendLine("            var obj2 = obj1.GetType().GetFieldInfo(\"_queryCompiler\").GetValue(obj1);");
-            sb.AppendLine("            var obj3 = obj2.GetType().GetFieldInfo(\"_database\").GetValue(obj2);");
-            sb.AppendLine("            var obj4 = obj3.GetType().GetFieldInfo(\"_batchExecutor\").GetValue(obj3);");
-            sb.AppendLine("            var obj5 = obj4.GetType().GetRuntimeProperty(\"CurrentContext\").GetValue(obj4) as Microsoft.EntityFrameworkCore.Internal.CurrentDbContext;");
-            sb.AppendLine("            var context = obj5.Context as IContext;");
+            sb.AppendLine("			var obj1 = ((Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider)(query).Provider);");
+            sb.AppendLine("			var obj2 = obj1.GetType().GetFieldInfo(\"_queryCompiler\").GetValue(obj1);");
+            sb.AppendLine("			var obj3 = obj2.GetType().GetFieldInfo(\"_database\").GetValue(obj2);");
+            sb.AppendLine("			var obj4 = obj3.GetType().GetFieldInfo(\"_batchExecutor\").GetValue(obj3);");
+            sb.AppendLine("			var obj5 = obj4.GetType().GetRuntimeProperty(\"CurrentContext\").GetValue(obj4) as Microsoft.EntityFrameworkCore.Internal.CurrentDbContext;");
+            sb.AppendLine("			var context = obj5.Context as IContext;");
             sb.AppendLine();
 
             sb.AppendLine("			var startTime = DateTime.Now;");
