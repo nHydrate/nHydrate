@@ -36,7 +36,7 @@ using nHydrate.Generator.Common.EventArgs;
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 {
     [GeneratorItem("ViewEntityGeneratedGenerator", typeof(ViewEntityExtenderGenerator))]
-    public class ViewEntityGeneratedGenerator : EFCodeFirstProjectItemGenerator
+    public class ViewEntityGeneratedGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
         #region Class Members
 

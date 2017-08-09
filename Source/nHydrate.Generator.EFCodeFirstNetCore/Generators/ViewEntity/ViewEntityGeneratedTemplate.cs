@@ -35,7 +35,7 @@ using nHydrate.Generator.Common;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 {
-    public class ViewEntityGeneratedTemplate : EFCodeFirstBaseTemplate
+    public class ViewEntityGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
         private StringBuilder sb = new StringBuilder();
         private CustomView _item;
@@ -108,8 +108,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             sb.AppendLine("using " + this.GetLocalNamespace() + ";");
             sb.AppendLine("using System.Text.RegularExpressions;");
             sb.AppendLine("using System.Linq.Expressions;");
-            sb.AppendLine("using System.Data.Entity;");
-            sb.AppendLine("using System.Data.Entity.ModelConfiguration;");
+            //sb.AppendLine("using System.Data.Entity;");
+            //sb.AppendLine("using System.Data.Entity.ModelConfiguration;");
             sb.AppendLine("using System.ComponentModel.DataAnnotations;");
             //sb.AppendLine("using System.Data.Entity.Core.Objects.DataClasses;");
             sb.AppendLine();

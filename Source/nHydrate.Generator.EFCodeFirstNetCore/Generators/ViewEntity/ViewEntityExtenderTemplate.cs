@@ -35,7 +35,7 @@ using nHydrate.Generator.Common;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 {
-    public class ViewEntityExtenderTemplate : EFCodeFirstBaseTemplate
+    public class ViewEntityExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
         private StringBuilder sb = new StringBuilder();
         private CustomView _currentView = null;
