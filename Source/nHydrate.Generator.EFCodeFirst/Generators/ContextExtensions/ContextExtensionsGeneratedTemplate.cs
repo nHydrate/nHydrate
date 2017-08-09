@@ -862,6 +862,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("							else if (item.Expression.Type == typeof(DateTime))");
             sb.AppendLine("								value = CompileValue<DateTime>(item.Expression);");
             sb.AppendLine();
+            sb.AppendLine("							else if (item.Expression.Type == typeof(Guid?))");
+            sb.AppendLine("								value = CompileValue<Guid?>(item.Expression);");
+            sb.AppendLine("							else if (item.Expression.Type == typeof(Guid))");
+            sb.AppendLine("								value = CompileValue<Guid>(item.Expression);");
+            sb.AppendLine();
             sb.AppendLine("							else");
             sb.AppendLine("								throw new Exception(\"Data type is not handled '\" + item.Expression.Type.Name + \"'\");");
             sb.AppendLine();

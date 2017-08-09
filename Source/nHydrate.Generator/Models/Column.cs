@@ -682,7 +682,9 @@ namespace nHydrate.Generator.Models
                 text += "Range [" + (double.IsNaN(this.Min) ? "INF" : this.Min.ToString()) + ".." + (double.IsNaN(this.Max) ? "INF" : this.Max.ToString()) + "], ";
             }
 
-            if (!string.IsNullOrEmpty(this.Default))
+            if (!string.IsNullOrEmpty(this.Default) && this.DataType == System.Data.SqlDbType.Bit)
+                text += "Default Value: " + (this.Default == "0" || this.Default == "false" ? "false" : "true");
+            else if (!string.IsNullOrEmpty(this.Default))
                 text += "Default Value: " + this.Default;
 
             //Strip off last comma

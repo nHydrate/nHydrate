@@ -1050,6 +1050,7 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
                 foreach (var column in table.PrimaryKeyColumns)
                 {
                     sb.AppendLine("								command.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"@pk" + ii + "\", ((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity)." + column.PascalName + "));");
+                    ii++;
                 }
 
                 sb.AppendLine("							}");
