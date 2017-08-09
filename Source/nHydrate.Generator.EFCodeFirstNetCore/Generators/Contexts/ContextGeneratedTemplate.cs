@@ -356,16 +356,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             sb.AppendLine();
 
-            //For entities with security functions we need to manually set the 
-            sb.AppendLine("			//Manually set the entities that have a security function because their DbSet<> is protected and not set");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
-            {
-                if (table.Security.IsValid())
-                {
-                    sb.AppendLine("			this." + table.PascalName + "__INTERNAL = Set<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">();");
-                }
-            }
-            sb.AppendLine();
+            //NETCORE No longer use the DBFunction stuff
+            ////For entities with security functions we need to manually set the 
+            //sb.AppendLine("			//Manually set the entities that have a security function because their DbSet<> is protected and not set");
+            //foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            //{
+            //    if (table.Security.IsValid())
+            //    {
+            //        //sb.AppendLine("			this." + table.PascalName + "__INTERNAL = Set<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">();");
+            //    }
+            //}
+            //sb.AppendLine();
 
             #region Hierarchy Mapping
 
@@ -398,10 +399,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 if (table.IsTenant)
                 {
                     sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + _model.TenantPrefix + "_" + table.DatabaseName + "\", \"" + schema + "\");");
-                }
-                else if (table.DatabaseName != table.PascalName)
-                {
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\", \"" + schema + "\");");
                 }
                 else
                 {
@@ -649,11 +646,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #region Functions
             sb.AppendLine("			#region Functions");
             sb.AppendLine();
-            if (_model.Database.Functions.Any(x => x.Generated && x.IsTable) || _model.Database.Tables.Any(x => x.Security.IsValid()))
-            {
-                sb.AppendLine("			//You must add the NUGET package 'CodeFirstStoreFunctions' for this functionality");
-                sb.AppendLine("			modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<" + _model.ProjectName + "Entities>(\"dbo\"));");
-            }
+            
+            //NETCORE Removed
+            //if (_model.Database.Functions.Any(x => x.Generated && x.IsTable) || _model.Database.Tables.Any(x => x.Security.IsValid()))
+            //{
+            //    sb.AppendLine("			//You must add the NUGET package 'CodeFirstStoreFunctions' for this functionality");
+            //    sb.AppendLine("			modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<" + _model.ProjectName + "Entities>(\"dbo\"));");
+            //}
 
             foreach (var table in _model.Database.Functions.Where(x => x.Generated && x.IsTable).OrderBy(x => x.Name))
             {
@@ -979,7 +978,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("			else if (entity is " + GetLocalNamespace() + ".Entity." + table.PascalName + ")");
                 sb.AppendLine("			{");
                 if (table.Security.IsValid())
-                    sb.AppendLine("				this.ObjectContext.AddObject(entity.GetType().Name + \"__INTERNAL\", entity);");
+                    sb.AppendLine("				this." + table.PascalName + "__INTERNAL.Add((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
                 else
                     sb.AppendLine("				this." + table.PascalName + ".Add((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
                 sb.AppendLine("			}");
@@ -1255,7 +1254,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		/// " + item.Description);
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		[DbFunction(\"" + _model.ProjectName + "Entities\", \"" + item.PascalName + "\")]");
+
+                //NETCORE REMOVED
+                //sb.AppendLine("		[DbFunction(\"" + _model.ProjectName + "Entities\", \"" + item.PascalName + "\")]");
+
                 sb.Append("		public virtual IQueryable<" + item.PascalName + "> " + item.PascalName + "(");
                 var parameterList = item.GetParameters().Where(x => x.Generated).ToList();
                 foreach (var parameter in parameterList)
@@ -1272,17 +1274,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 {
                     if (parameter.IsOutputParameter)
                     {
-                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + "));");
+                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + "));");
                     }
                     else if (parameter.AllowNull)
                     {
-                        sb.AppendLine("			ObjectParameter " + parameter.CamelName + "Parameter = null;");
-                        sb.AppendLine("			if (" + parameter.CamelName + " != null) { " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + "); }");
-                        sb.AppendLine("			else { " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + ")); }");
+                        sb.AppendLine("			SqlParameter " + parameter.CamelName + "Parameter = null;");
+                        sb.AppendLine("			if (" + parameter.CamelName + " != null) { " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + "); }");
+                        sb.AppendLine("			else { " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", typeof(" + parameter.GetCodeType() + ")); }");
                     }
                     else
                     {
-                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + ");");
+                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new SqlParameter(\"" + parameter.DatabaseName + "\", " + parameter.CamelName + ");");
                     }
                 }
 
@@ -1315,7 +1317,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Security function for '" + item.PascalName + "' entity");
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		[DbFunction(\"" + _model.ProjectName + "Entities\", \"" + objectName + "\")]");
+
+                //NETCORE REMOVED
+                //sb.AppendLine("		[DbFunction(\"" + _model.ProjectName + "Entities\", \"" + objectName + "\")]");
+
                 sb.Append("		public virtual IQueryable<" + item.PascalName + "> " + item.PascalName + "(");
                 var parameterList = function.GetParameters().Where(x => x.Generated).ToList();
                 foreach (var parameter in parameterList)
@@ -1347,17 +1352,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
                     if (parameter.IsOutputParameter)
                     {
-                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(paramName" + paramIndex + ", typeof(" + parameter.GetCodeType() + "));");
+                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new SqlParameter(paramName" + paramIndex + ", typeof(" + parameter.GetCodeType() + "));");
                     }
                     else if (parameter.AllowNull)
                     {
-                        sb.AppendLine("			ObjectParameter " + parameter.CamelName + "Parameter = null;");
-                        sb.AppendLine("			if (" + parameter.CamelName + " != null) { " + parameter.CamelName + "Parameter = new ObjectParameter(paramName" + paramIndex + ", " + parameter.CamelName + "); }");
-                        sb.AppendLine("			else { " + parameter.CamelName + "Parameter = new ObjectParameter(paramName" + paramIndex + ", typeof(" + parameter.GetCodeType() + ")); }");
+                        sb.AppendLine("			SqlParameter " + parameter.CamelName + "Parameter = null;");
+                        sb.AppendLine("			if (" + parameter.CamelName + " != null) { " + parameter.CamelName + "Parameter = new SqlParameter(paramName" + paramIndex + ", " + parameter.CamelName + "); }");
+                        sb.AppendLine("			else { " + parameter.CamelName + "Parameter = new SqlParameter(paramName" + paramIndex + ", typeof(" + parameter.GetCodeType() + ")); }");
                     }
                     else
                     {
-                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new ObjectParameter(paramName" + paramIndex + ", " + parameter.CamelName + ");");
+                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new SqlParameter(paramName" + paramIndex + ", " + parameter.CamelName + ");");
                     }
                     sb.AppendLine();
                     paramIndex++;
@@ -1367,7 +1372,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 var inputParams = string.Join(", ", (parameterList.Select(x => "@\" + paramName" + paramIndex++ + " + \"")));
 
                 var inputParamVars = string.Join(", ", (parameterList.Select(x => x.CamelName + "Parameter")));
-                sb.AppendLine("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.CreateQuery<" + item.PascalName + ">(\"[\" + this.GetType().Name + \"].[" + objectName + "](" + inputParams + ")\"" + (string.IsNullOrEmpty(inputParamVars) ? string.Empty : ", " + inputParamVars) + ");");
+
+                //NETCORE Removed
+                //sb.AppendLine("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.CreateQuery<" + item.PascalName + ">(\"[\" + this.GetType().Name + \"].[" + objectName + "](" + inputParams + ")\"" + (string.IsNullOrEmpty(inputParamVars) ? string.Empty : ", " + inputParamVars) + ");");
+                sb.AppendLine("			var retval = this." + item.PascalName + "__INTERNAL.FromSql(\"SELECT * FROM [" + item.GetSQLSchema() + "].[" + objectName + "](" + inputParams + ")\"" + (string.IsNullOrEmpty(inputParamVars) ? string.Empty : ", " + inputParamVars) + ");");
 
                 //Add code here to handle output parameters
                 foreach (var parameter in parameterList.Where(x => x.IsOutputParameter))

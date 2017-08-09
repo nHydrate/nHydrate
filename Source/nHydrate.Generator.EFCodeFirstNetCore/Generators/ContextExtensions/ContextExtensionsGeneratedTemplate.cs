@@ -396,7 +396,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             //TODO: Row counts are not implemented for all providers so I turned them off
 
             var index = 0;
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables
+                .Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None) && !x.Security.IsValid())
+                .OrderBy(x => x.PascalName))
             {
                 var tableName = table.DatabaseName;
                 if (table.IsTenant)
@@ -658,7 +660,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("			#region Per table code");
 
             index = 0;
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None)).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables
+                .Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None) && !x.Security.IsValid())
+                .OrderBy(x => x.PascalName))
             {
                 var tableName = table.DatabaseName;
                 if (table.IsTenant)

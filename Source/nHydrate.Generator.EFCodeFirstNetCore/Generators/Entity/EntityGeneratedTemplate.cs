@@ -1761,6 +1761,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
         private void AppendDeleteDataScaler()
         {
             if (_item.Immutable) return;
+            //No static methods for security tables
+            if (_item.Security.IsValid()) return;
 
             sb.AppendLine("		#region DeleteData");
             sb.AppendLine();
