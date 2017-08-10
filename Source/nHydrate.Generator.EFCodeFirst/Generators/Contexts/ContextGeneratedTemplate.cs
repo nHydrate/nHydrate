@@ -530,7 +530,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                         sb.AppendLine(";");
                     }
 
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").IsConcurrencyToken(true);");
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").IsConcurrencyToken(true).IsRowVersion();");
                 }
 
                 sb.AppendLine();
