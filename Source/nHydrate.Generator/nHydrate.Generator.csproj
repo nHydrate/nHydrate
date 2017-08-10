@@ -183,6 +183,7 @@
     <Compile Include="ErrorControl.Designer.cs">
       <DependentUpon>ErrorControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExtendedList.cs" />
     <Compile Include="GenerationHelper.cs" />
     <Compile Include="IModelObjectController.cs">
       <SubType>Code</SubType>

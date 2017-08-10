@@ -571,8 +571,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     //else if (column.IsIndexed)
                     //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.Index()]");
 
-                    if (column.PrimaryKey)
-                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
+                    //NETCORE - This causes issues on a derived type
+                    //if (column.PrimaryKey)
+                    //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
 
                     //if (column.PrimaryKey || _item.Immutable || column.ComputedColumn || column.IsReadOnly)
                     //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");

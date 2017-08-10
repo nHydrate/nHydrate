@@ -333,8 +333,6 @@ namespace nHydrate.DslPackage.Objects
                     root.RemovedStoredProcedures.AddRange(model.RemovedStoredProcedures);
                     root.RemovedFunctions.AddRange(model.RemovedFunctions);
 
-                    //Remove associative tables since they cause issues if they exist
-                    root.RemovedTables.AddRange(model.Entities.Where(x => x.IsAssociative && x.IsGenerated).Select(x => x.Name));
                     //Remove non-generated items from the project
                     root.RemovedTables.AddRange(model.Entities.Where(x => !x.IsGenerated).Select(x => x.Name));
                     root.RemovedTables.AddRange(model.Views.Where(x => !x.IsGenerated).Select(x => x.Name));
@@ -366,8 +364,6 @@ namespace nHydrate.DslPackage.Objects
                 root.RemovedStoredProcedures.AddRange(model.RemovedStoredProcedures);
                 root.RemovedFunctions.AddRange(model.RemovedFunctions);
 
-                //Remove associative tables since they cause issues if they exist
-                root.RemovedTables.AddRange(model.Entities.Where(x => x.IsAssociative && x.IsGenerated).Select(x => x.Name));
                 //Remove non-generated items from the project
                 root.RemovedTables.AddRange(model.Entities.Where(x => !x.IsGenerated).Select(x => x.Name));
                 root.RemovedTables.AddRange(model.Views.Where(x => !x.IsGenerated).Select(x => x.Name));

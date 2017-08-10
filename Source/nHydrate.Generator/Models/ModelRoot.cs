@@ -92,10 +92,10 @@ namespace nHydrate.Generator.Models
             _userInterface = new UserInterface(this);
             this.Refactorizations = new List<IRefactor>();
 
-            this.RemovedTables = new List<string>();
-            this.RemovedViews = new List<string>();
-            this.RemovedStoredProcedures = new List<string>();
-            this.RemovedFunctions = new List<string>();
+            this.RemovedTables = new ExtendedList<string>();
+            this.RemovedViews = new ExtendedList<string>();
+            this.RemovedStoredProcedures = new ExtendedList<string>();
+            this.RemovedFunctions = new ExtendedList<string>();
 
             this.MetaData = new MetadataItemCollection();
         }
@@ -477,16 +477,16 @@ namespace nHydrate.Generator.Models
         }
 
         [Browsable(false)]
-        public List<string> RemovedTables { get; private set; }
+        public ExtendedList<string> RemovedTables { get; private set; }
 
         [Browsable(false)]
-        public List<string> RemovedViews { get; private set; }
+        public ExtendedList<string> RemovedViews { get; private set; }
 
         [Browsable(false)]
-        public List<string> RemovedStoredProcedures { get; private set; }
+        public ExtendedList<string> RemovedStoredProcedures { get; private set; }
 
         [Browsable(false)]
-        public List<string> RemovedFunctions { get; private set; }
+        public ExtendedList<string> RemovedFunctions { get; private set; }
 
         #endregion
 
