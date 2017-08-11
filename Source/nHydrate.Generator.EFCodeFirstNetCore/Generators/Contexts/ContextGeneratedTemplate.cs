@@ -175,9 +175,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if(BeforeSaveModifiedEntity != null)");
+            sb.AppendLine("			if(this.BeforeSaveModifiedEntity != null)");
             sb.AppendLine("			{");
-            sb.AppendLine("				BeforeSaveModifiedEntity(this, e);");
+            sb.AppendLine("				this.BeforeSaveModifiedEntity(this, e);");
             sb.AppendLine("			}");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -188,9 +188,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if(BeforeSaveAddedEntity != null)");
+            sb.AppendLine("			if(this.BeforeSaveAddedEntity != null)");
             sb.AppendLine("			{");
-            sb.AppendLine("				BeforeSaveAddedEntity(this, e);");
+            sb.AppendLine("				this.BeforeSaveAddedEntity(this, e);");
             sb.AppendLine("			}");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -201,9 +201,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnAfterSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if(AfterSaveModifiedEntity != null)");
+            sb.AppendLine("			if(this.AfterSaveModifiedEntity != null)");
             sb.AppendLine("			{");
-            sb.AppendLine("				AfterSaveModifiedEntity(this, e);");
+            sb.AppendLine("				this.AfterSaveModifiedEntity(this, e);");
             sb.AppendLine("			}");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -214,9 +214,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnAfterSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if(AfterSaveAddedEntity != null)");
+            sb.AppendLine("			if(this.AfterSaveAddedEntity != null)");
             sb.AppendLine("			{");
-            sb.AppendLine("				AfterSaveAddedEntity(this, e);");
+            sb.AppendLine("				this.AfterSaveAddedEntity(this, e);");
             sb.AppendLine("			}");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -384,14 +384,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             {
                 var schema = "dbo";
                 if (!string.IsNullOrEmpty(table.DBSchema)) schema = table.DBSchema;
+                var dbTableName = table.DatabaseName;
                 if (table.IsTenant)
-                {
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + _model.TenantPrefix + "_" + table.DatabaseName + "\", \"" + schema + "\");");
-                }
-                else
-                {
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\", \"" + schema + "\");");
-                }
+                    dbTableName = _model.TenantPrefix + "_" + table.DatabaseName;
+                sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + dbTableName + "\", \"" + schema + "\");");
             }
             sb.AppendLine("			#endregion");
             sb.AppendLine();
@@ -407,21 +403,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("			//Field setup for " + table.PascalName + " entity");
                 foreach (var column in table.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
                 {
-                    var isTypeValue = false;
                     #region Determine if this is a type table Value field and if so ignore
                     {
-                        string roleName;
-                        string pascalRoleName;
                         Table typeTable = null;
-                        if (table.IsColumnRelatedToTypeTable(column, out pascalRoleName) || (column.PrimaryKey && table.TypedTable != TypedTableConstants.None))
+                        if (table.IsColumnRelatedToTypeTable(column, out string pascalRoleName) || (column.PrimaryKey && table.TypedTable != TypedTableConstants.None))
                         {
                             typeTable = table.GetRelatedTypeTableByColumn(column, out pascalRoleName);
                             if (typeTable == null) typeTable = table;
                             if (typeTable != null)
-                            {
                                 sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Ignore(d => d." + pascalRoleName + typeTable.PascalName + "Value);");
-                                isTypeValue = true;
-                            }
                         }
                     }
                     #endregion
@@ -707,7 +697,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             #region Added Items
             sb.AppendLine("			//Get the added list");
-            sb.AppendLine("			var addedList = this.ChangeTracker.Entries().Where(x=>x.State == EntityState.Added);");
+            sb.AppendLine("			var addedList = this.ChangeTracker.Entries().Where(x => x.State == EntityState.Added);");
             sb.AppendLine("			//Process added list");
             sb.AppendLine("			foreach (var item in addedList)");
             sb.AppendLine("			{");
@@ -730,7 +720,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             #region Modified Items
             sb.AppendLine("			//Process modified list");
-            sb.AppendLine("			var modifiedList = this.ChangeTracker.Entries().Where(x=>x.State == EntityState.Modified);");
+            sb.AppendLine("			var modifiedList = this.ChangeTracker.Entries().Where(x => x.State == EntityState.Modified);");
             sb.AppendLine("			foreach (var item in modifiedList)");
             sb.AppendLine("			{");
             sb.AppendLine("				var entity = item.Entity as IAuditable;");
@@ -1204,7 +1194,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     }
                 }
                 
-                //sb.AppendLine("			this.ObjectContext.ExecuteFunction(\"" + item.PascalName + "\", parameters.ToArray());");
                 sb.Append("			var retval = this.Database.SqlQuery<" + item.PascalName + ">(\"[" + item.GetDatabaseObjectName() + "]\"");
                 if (parameterList.Count > 0)
                 {
@@ -1236,9 +1225,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		/// " + item.Description);
                 sb.AppendLine("		/// </summary>");
-
-                //NETCORE REMOVED
-                //sb.AppendLine("		[DbFunction(\"" + _model.ProjectName + "Entities\", \"" + item.PascalName + "\")]");
 
                 sb.Append("		public virtual IQueryable<" + item.PascalName + "> " + item.PascalName + "(");
                 var parameterList = item.GetParameters().Where(x => x.Generated).ToList();
@@ -1523,7 +1509,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("	}");
             sb.AppendLine("	#endregion");
             sb.AppendLine();
-
         }
 
         #endregion

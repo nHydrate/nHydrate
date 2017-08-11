@@ -193,7 +193,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             var boInterface = this.GetLocalNamespace() + ".IBusinessObject";
             if (_item.Immutable) boInterface = "" + this.GetLocalNamespace() + ".IReadOnlyBusinessObject";
 
-            if(_model.EnableCustomChangeEvents)
+            boInterface += ", " + this.GetLocalNamespace() + ".Interface.I" + _item.PascalName;
+
+            if (_model.EnableCustomChangeEvents)
             {
                 boInterface += ", System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging";
             }
