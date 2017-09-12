@@ -1565,7 +1565,7 @@ namespace PROJECTNAMESPACE
     #region Version Class
 
     /// <summary />
-    public class GeneratedVersion : IComparable<GeneratedVersion>
+    public partial class GeneratedVersion : IComparable<GeneratedVersion>
     {
         #region member variables
         private int _major = 0;
@@ -1573,6 +1573,7 @@ namespace PROJECTNAMESPACE
         private int _revision = 0;
         private int _build = 0;
         private int _generated = 0;
+        private List<int> _extra = new List<int>();
         #endregion
 
         #region Constructors
@@ -1598,6 +1599,7 @@ namespace PROJECTNAMESPACE
         }
 
         internal GeneratedVersion(GeneratedVersion version)
+            : this()
         {
             _build = version._build;
             _generated = version._generated;
@@ -1615,6 +1617,77 @@ namespace PROJECTNAMESPACE
             if (versionSplit.Length > 3) int.TryParse(versionSplit[3], out _build);
             if (versionSplit.Length > 4) int.TryParse(versionSplit[4], out _generated);
         }
+
+        partial void LoadedByFilename(string fileName);
+    
+        internal GeneratedVersion(string fileName)
+            : this()
+        {
+            try
+            {
+                if (fileName.Contains("_"))
+                {
+                    var arr1 = fileName.Split('.');
+                    if (arr1.Length >= 1)
+                    {
+                        string[] versionSplit = null;
+
+                        if (arr1.Length == 1)
+                            versionSplit = arr1[0].Split('_');
+                        else
+                            versionSplit = arr1[arr1.Length - 2].Split('_');
+
+                        if (versionSplit.Length >= 5)
+                        {
+                            if (versionSplit.Length > 0) int.TryParse(versionSplit[0], out _major);
+                            if (versionSplit.Length > 1) int.TryParse(versionSplit[1], out _minor);
+                            if (versionSplit.Length > 2) int.TryParse(versionSplit[2], out _revision);
+                            if (versionSplit.Length > 3) int.TryParse(versionSplit[3], out _build);
+                            if (versionSplit.Length > 4) int.TryParse(versionSplit[4], out _generated);
+
+                            //If there are >5 numbers then save the rest for sorting
+                            foreach (var item in versionSplit.Skip(5).ToList())
+                            {
+                                if (int.TryParse(item, out int v))
+                                    this._extra.Add(v);
+                                else break;
+                            }
+
+                            this.LoadedByFilename(fileName);
+                            return;
+                        }
+                    }
+                    _major = -45;
+                }
+                else
+                {
+                    var arr1 = fileName.Split('.');
+                    if (arr1.Length >= 5)
+                    {
+                        if (arr1.Length > 0) int.TryParse(arr1[0], out _major);
+                        if (arr1.Length > 1) int.TryParse(arr1[1], out _minor);
+                        if (arr1.Length > 2) int.TryParse(arr1[2], out _revision);
+                        if (arr1.Length > 3) int.TryParse(arr1[3], out _build);
+                        if (arr1.Length > 4) int.TryParse(arr1[4], out _generated);
+
+                        //If there are >5 numbers then save the rest for sorting
+                        foreach (var item in arr1.Skip(5).ToList())
+                        {
+                            if (int.TryParse(item, out int v))
+                                this._extra.Add(v);
+                            else break;
+                        }
+
+                        this.LoadedByFilename(fileName);
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Determines if the specified string can be parsed as a version
@@ -1638,53 +1711,6 @@ namespace PROJECTNAMESPACE
             return false;
         }
 
-        internal GeneratedVersion(string fileName)
-        {
-            try
-            {
-                if (fileName.Contains("_"))
-                {
-                    var arr1 = fileName.Split('.');
-                    if (arr1.Length >= 1)
-                    {
-                        string[] versionSplit = null;
-
-                        if (arr1.Length == 1)
-                            versionSplit = arr1[0].Split('_');
-                        else
-                            versionSplit = arr1[arr1.Length - 2].Split('_');
-
-                        if (versionSplit.Length >= 5)
-                        {
-                            if (versionSplit.Length > 0) int.TryParse(versionSplit[0], out _major);
-                            if (versionSplit.Length > 1) int.TryParse(versionSplit[1], out _minor);
-                            if (versionSplit.Length > 2) int.TryParse(versionSplit[2], out _revision);
-                            if (versionSplit.Length > 3) int.TryParse(versionSplit[3], out _build);
-                            if (versionSplit.Length > 4) int.TryParse(versionSplit[4], out _generated);
-                            return;
-                        }
-                    }
-                    _major = -45;
-                }
-                else
-                {
-                    var arr1 = fileName.Split('.');
-                    if (arr1.Length >= 5)
-                    {
-                        if (arr1.Length > 0) int.TryParse(arr1[0], out _major);
-                        if (arr1.Length > 1) int.TryParse(arr1[1], out _minor);
-                        if (arr1.Length > 2) int.TryParse(arr1[2], out _revision);
-                        if (arr1.Length > 3) int.TryParse(arr1[3], out _build);
-                        if (arr1.Length > 4) int.TryParse(arr1[4], out _generated);
-                    }
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        #endregion
 
         #region Properties
 
@@ -1740,8 +1766,27 @@ namespace PROJECTNAMESPACE
                 return this.Build.CompareTo(other.Build);
             else if (this.Generated != other.Generated)
                 return this.Generated.CompareTo(other.Generated);
-            else
-                return 0;
+
+            //Check the extra digits in the version if any exist
+            var max = System.Math.Max(this._extra.Count, other._extra.Count);
+            if (max > 0)
+            {
+                var l1 = this._extra.ToList();
+                var l2 = other._extra.ToList();
+                for (var ii = l1.Count; ii < max; ii++) l1.Add(0);
+                for (var ii = l2.Count; ii < max; ii++) l2.Add(0);
+
+                for (var ii = 0; ii < max; ii++)
+                {
+                    if (l1[ii] < l2[ii])
+                        return -1;
+                    else if (l1[ii] > l2[ii])
+                        return 1;
+                }
+
+            }
+
+            return 0;
         }
 
         #endregion
@@ -1769,8 +1814,13 @@ namespace PROJECTNAMESPACE
         /// <summary />
         public string ToString(string seperationChars)
         {
-            string retval = this.Major + seperationChars + this.Minor + seperationChars + this.Revision + seperationChars + this.Build;
-            if (this.Generated != 0) retval += seperationChars + this.Generated;
+            var retval = this.Major + seperationChars + this.Minor + seperationChars + this.Revision + seperationChars + this.Build;
+            //if (this.Generated != 0) 
+              retval += seperationChars + this.Generated;
+
+            var postfix = string.Join(seperationChars, this._extra);
+            if (!string.IsNullOrEmpty(postfix)) retval += seperationChars + postfix;
+
             return retval;
         }
 
