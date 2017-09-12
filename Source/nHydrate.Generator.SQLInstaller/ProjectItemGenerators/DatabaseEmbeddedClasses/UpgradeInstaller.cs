@@ -1625,6 +1625,7 @@ namespace PROJECTNAMESPACE
         {
             try
             {
+                this._extra.Clear();
                 if (fileName.Contains("_"))
                 {
                     var arr1 = fileName.Split('.');
