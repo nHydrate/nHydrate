@@ -1618,8 +1618,30 @@ namespace PROJECTNAMESPACE
             if (versionSplit.Length > 4) int.TryParse(versionSplit[4], out _generated);
         }
 
+        /// <summary>
+        /// Determines if the specified string can be parsed as a version
+        /// </summary>
+        public static bool IsValid(string v)
+        {
+            if (string.IsNullOrEmpty(v))
+                return false;
+
+            var arr1 = v.Split('.');
+            if (arr1.Length == 5)
+            {
+                foreach (var q in arr1)
+                {
+                    int o;
+                    if (!int.TryParse(q, out o))
+                        return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         partial void LoadedByFilename(string fileName);
-    
+
         internal GeneratedVersion(string fileName)
             : this()
         {
@@ -1690,29 +1712,6 @@ namespace PROJECTNAMESPACE
 
         #endregion
 
-        /// <summary>
-        /// Determines if the specified string can be parsed as a version
-        /// </summary>
-        public static bool IsValid(string v)
-        {
-            if (string.IsNullOrEmpty(v))
-                return false;
-
-            var arr1 = v.Split('.');
-            if (arr1.Length == 5)
-            {
-                foreach (var q in arr1)
-                {
-                    int o;
-                    if (!int.TryParse(q, out o))
-                        return false;
-                }
-                return true;
-            }
-            return false;
-        }
-
-
         #region Properties
 
         /// <summary />
@@ -1757,6 +1756,7 @@ namespace PROJECTNAMESPACE
         /// <summary />
         public int CompareTo(GeneratedVersion other)
         {
+            if ((object)other == null) return -1;
             if (this.Major != other.Major)
                 return this.Major.CompareTo(other.Major);
             else if (this.Minor != other.Minor)
@@ -1784,7 +1784,6 @@ namespace PROJECTNAMESPACE
                     else if (l1[ii] > l2[ii])
                         return 1;
                 }
-
             }
 
             return 0;
@@ -1817,7 +1816,7 @@ namespace PROJECTNAMESPACE
         {
             var retval = this.Major + seperationChars + this.Minor + seperationChars + this.Revision + seperationChars + this.Build;
             //if (this.Generated != 0) 
-              retval += seperationChars + this.Generated;
+            retval += seperationChars + this.Generated;
 
             var postfix = string.Join(seperationChars, this._extra);
             if (!string.IsNullOrEmpty(postfix)) retval += seperationChars + postfix;
@@ -1838,8 +1837,8 @@ namespace PROJECTNAMESPACE
         /// <summary />
         public static bool operator <(GeneratedVersion r1, GeneratedVersion r2)
         {
-            if ((object)r1 == null && (object)r2 == null) return false;
-            if ((object)r1 == null ^ (object)r2 == null) return false;
+            if (r1 == null && r2 == null) return false;
+            if (r1 == null ^ r2 == null) return false;
 
             if (r1.Major < r2.Major) return true;
             if (r1.Major > r2.Major) return false;
@@ -1856,12 +1855,33 @@ namespace PROJECTNAMESPACE
             if (r1.Generated < r2.Generated) return true;
             if (r1.Generated > r2.Generated) return false;
 
+            //Check the extra digits in the version if any exist
+            var max = System.Math.Max(r1._extra.Count, r2._extra.Count);
+            if (max > 0)
+            {
+                var l1 = r1._extra.ToList();
+                var l2 = r2._extra.ToList();
+                for (var ii = l1.Count; ii < max; ii++) l1.Add(0);
+                for (var ii = l2.Count; ii < max; ii++) l2.Add(0);
+
+                for (var ii = 0; ii < max; ii++)
+                {
+                    if (l1[ii] < l2[ii])
+                        return true;
+                    else if (l1[ii] > l2[ii])
+                        return false;
+                }
+            }
+
             return false;
         }
 
         /// <summary />
         public static bool operator >(GeneratedVersion r1, GeneratedVersion r2)
         {
+            if (r1 == null && r2 == null) return false;
+            if (r1 == null ^ r2 == null) return false;
+
             if ((object)r1 == null && (object)r2 == null) return false;
             if ((object)r1 == null ^ (object)r2 == null) return false;
 
@@ -1879,6 +1899,24 @@ namespace PROJECTNAMESPACE
 
             if (r1.Generated > r2.Generated) return true;
             if (r1.Generated < r2.Generated) return false;
+
+            //Check the extra digits in the version if any exist
+            var max = System.Math.Max(r1._extra.Count, r2._extra.Count);
+            if (max > 0)
+            {
+                var l1 = r1._extra.ToList();
+                var l2 = r2._extra.ToList();
+                for (var ii = l1.Count; ii < max; ii++) l1.Add(0);
+                for (var ii = l2.Count; ii < max; ii++) l2.Add(0);
+
+                for (var ii = 0; ii < max; ii++)
+                {
+                    if (l1[ii] < l2[ii])
+                        return false;
+                    else if (l1[ii] > l2[ii])
+                        return true;
+                }
+            }
 
             return false;
         }
