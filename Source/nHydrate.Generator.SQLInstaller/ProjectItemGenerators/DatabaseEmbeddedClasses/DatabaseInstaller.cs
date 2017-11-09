@@ -147,8 +147,8 @@ namespace PROJECTNAMESPACE
                 //Setup trace if need be. If showing SQL then auto trace on
                 if (commandParams.ContainsKey(PARAMKEYS_TRACE) || setup.ShowSql)
                 {
-                    var trc = new System.Diagnostics.TextWriterTraceListener(Console.Out);
-                    System.Diagnostics.Debug.Listeners.Add(trc);
+                    var trc = new System.Diagnostics.ConsoleTraceListener(Console.Out);
+                    System.Diagnostics.Trace.Listeners.Add(trc);
                     paramUICount++;
                 }
 
@@ -194,7 +194,7 @@ namespace PROJECTNAMESPACE
                     {
                         if (!DropDatabase(dbname, masterConnectionString))
                             throw new Exception("The database '" + dbname + "' could not dropped.");
-                        System.Diagnostics.Debug.WriteLine("Database successfully dropped.");
+                        System.Diagnostics.Trace.WriteLine("Database successfully dropped.");
                         return;
                     }
                     throw new Exception("Invalid drop database configuration.");
@@ -375,7 +375,7 @@ namespace PROJECTNAMESPACE
                 sb.AppendLine(ex.SQL);
                 sb.AppendLine("END ERROR SQL");
                 sb.AppendLine();
-                System.Diagnostics.Debug.WriteLine(sb.ToString());
+                System.Diagnostics.Trace.WriteLine(sb.ToString());
                 UpgradeInstaller.LogError(ex, sb.ToString());
                 throw;
             }

@@ -934,7 +934,7 @@ namespace PROJECTNAMESPACE
             var timer = Stopwatch.StartNew();
             var tempFolder = string.Empty;
             var scripts = ReadSQLFileSectionsFromResource(resourceFileName, setup);
-            System.Diagnostics.Debug.WriteLine(TheDate + " Start File=" + Extensions.StripResourceAssem(resourceFileName));
+            System.Diagnostics.Trace.WriteLine(TheDate + " Start File=" + Extensions.StripResourceAssem(resourceFileName));
 
             #region Load script hashes
             var runScript = !setup.UseHash;
@@ -976,7 +976,7 @@ namespace PROJECTNAMESPACE
             }
 
             timer.Start();
-            System.Diagnostics.Debug.WriteLine(TheDate + " End File=" + Extensions.StripResourceAssem(resourceFileName) + ", Elapsed=" + timer.FormattedTime());
+            System.Diagnostics.Trace.WriteLine(TheDate + " End File=" + Extensions.StripResourceAssem(resourceFileName) + ", Elapsed=" + timer.FormattedTime());
         }
 
         internal static void ExecuteSQL(SqlConnection connection, SqlTransaction transaction, string sql, InstallSetup setup)
@@ -1067,7 +1067,7 @@ namespace PROJECTNAMESPACE
                         debugText += sql.Substring(0, sqlLength);
                         if (sqlLength == MAX_SQL) debugText += "...";
                         debugText += "\r\n\r\n";
-                        System.Diagnostics.Debug.WriteLine(debugText);
+                        System.Diagnostics.Trace.WriteLine(debugText);
                     }
 
                     _timer.Restart();
@@ -1138,7 +1138,7 @@ namespace PROJECTNAMESPACE
                 if (methodType == null)
                     throw new Exception("Method: '" + methodName + "' not implemented");
 
-                System.Diagnostics.Debug.WriteLine(TheDate + " Start CallMethod=" + methodName);
+                System.Diagnostics.Trace.WriteLine(TheDate + " Start CallMethod=" + methodName);
                 if (methodType.GetParameters().Count() == 2)
                 {
                     methodType.Invoke(null, new object[] { connection, transaction });
@@ -1153,7 +1153,7 @@ namespace PROJECTNAMESPACE
                 }
 
                 timer.Stop();
-                System.Diagnostics.Debug.WriteLine(TheDate + " End CallMethod=" + methodName + ", Elapsed=" + timer.FormattedTime());
+                System.Diagnostics.Trace.WriteLine(TheDate + " End CallMethod=" + methodName + ", Elapsed=" + timer.FormattedTime());
             }
             catch (Exception ex)
             {
