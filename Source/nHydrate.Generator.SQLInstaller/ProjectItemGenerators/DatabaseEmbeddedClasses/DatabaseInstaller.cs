@@ -147,7 +147,7 @@ namespace PROJECTNAMESPACE
                 //Setup trace if need be. If showing SQL then auto trace on
                 if (commandParams.ContainsKey(PARAMKEYS_TRACE) || setup.ShowSql)
                 {
-                    var trc = new System.Diagnostics.ConsoleTraceListener(Console.Out);
+                    var trc = new System.Diagnostics.ConsoleTraceListener();
                     System.Diagnostics.Trace.Listeners.Add(trc);
                     paramUICount++;
                 }

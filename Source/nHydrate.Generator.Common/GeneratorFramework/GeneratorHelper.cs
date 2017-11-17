@@ -892,7 +892,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                 }
                 else
                 {
-                    EnvDTEHelper.DeleteProjectItem(project, e.ProjectItemName, out fileStateInfo);
+                    EnvDTEHelper.DeleteProjectItem(project, e.ProjectItemName, e.DeleteFile, out fileStateInfo);
                 }
                 Application.DoEvents();
 

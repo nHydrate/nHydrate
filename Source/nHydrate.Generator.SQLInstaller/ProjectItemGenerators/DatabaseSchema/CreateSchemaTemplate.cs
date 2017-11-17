@@ -59,11 +59,14 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         public override string FileName
         {
-            get
-            {
-                return string.Format("CreateSchema.sql");
-            }
+            get { return string.Format("1_CreateSchema.sql"); }
         }
+
+        internal string OldFileName
+        {
+            get { return string.Format("CreateSchema.sql"); }
+        }
+
         #endregion
 
         #region GenerateContent
@@ -83,7 +86,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 this.AppendCreatePrimaryKey();
                 this.AppendAuditTables();
                 this.AppendCreateUniqueKey();
-                this.AppendCreateForeignKey();
                 this.AppendCreateIndexes();
                 this.AppendRemoveDefaults();
                 this.AppendCreateDefaults();
@@ -302,28 +304,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             sb.AppendLine("--##SECTION END [AUDIT TABLES PK]");
             sb.AppendLine();
         }
-
-        #region Append Foreign Keys
-
-        private void AppendCreateForeignKey()
-        {
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
-            {
-                var tableName = Globals.GetTableDatabaseName(_model, table);
-                var childRoleRelations = table.ChildRoleRelations;
-                if (childRoleRelations.Count > 0)
-                {
-                    foreach (var relation in childRoleRelations.Where(x => x.Enforce))
-                    {
-                        sb.Append(SQLEmit.GetSqlAddFK(relation));
-                        sb.AppendLine("GO");
-                        sb.AppendLine();
-                    }
-                }
-            }
-        }
-
-        #endregion
 
         #region AppendCreateIndexes
 

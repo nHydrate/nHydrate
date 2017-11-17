@@ -58,11 +58,14 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.AuditTriggers
 
         public override string FileName
         {
-            get
-            {
-                return string.Format("CreateSchemaAuditTriggers.sql");
-            }
+            get { return string.Format("4_CreateSchemaAuditTriggers.sql"); }
         }
+
+        internal string OldFileName
+        {
+            get { return string.Format("CreateSchemaAuditTriggers.sql"); }
+        }
+        
         #endregion
 
         #region GenerateContent
@@ -74,7 +77,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.AuditTriggers
                 sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
                 sb.AppendLine("--Audit Triggers");
                 sb.AppendLine();
-                this.AppendAuditTriggers();
+                this.AppendAll();
             }
             catch (Exception ex)
             {
@@ -82,7 +85,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.AuditTriggers
             }
         }
 
-        private void AppendAuditTriggers()
+        private void AppendAll()
         {
             sb.AppendLine("--##SECTION BEGIN [AUDIT TRIGGERS]");
             sb.AppendLine();

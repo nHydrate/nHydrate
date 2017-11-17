@@ -163,7 +163,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 			ProjectItemGeneratedEventArgs eventArgs = null;
 
 			fileName = Path.Combine(foldername, "ReadMe.txt");
-			eventArgs = new ProjectItemGeneratedEventArgs(fileName, "Do not modify scripts in this folder.", ProjectName, this, true);
+			eventArgs = new ProjectItemGeneratedEventArgs(fileName, "Do not modify the generated scripts in this folder.", ProjectName, this, true);
 			OnProjectItemGenerated(this, eventArgs);
 
 		}

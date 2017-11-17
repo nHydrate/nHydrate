@@ -58,10 +58,16 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateDa
 			OnProjectItemGenerated(this, eventArgs);
 			var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
 			OnGenerationComplete(this, gcEventArgs);
-		}
 
-		#endregion
+            //Delete the old one
+            var delEventArgs = new ProjectItemDeletedEventArgs($@"\{PARENT_ITEM_NAME}\{template.OldFileName}", ProjectName, this);
+            delEventArgs.DeleteFile = true;
+            OnProjectItemDeleted(this, delEventArgs);
 
-	}
+        }
+
+        #endregion
+
+    }
 }
 

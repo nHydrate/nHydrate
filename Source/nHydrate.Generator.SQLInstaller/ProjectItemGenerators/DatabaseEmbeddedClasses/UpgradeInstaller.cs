@@ -729,69 +729,16 @@ namespace PROJECTNAMESPACE
         private void UpgradeFolder3(StringBuilder sb, InstallSetup setup)
         {
             const string MAIN_FOLDER = "._3_GeneratedTablesAndData.";
-            const string CREATE_SCHEMA_FILE = MAIN_FOLDER + "CreateSchema.sql";
-            const string TRIGGER_FILE = MAIN_FOLDER + "CreateSchemaAuditTriggers.sql";
-            const string STATIC_DATA_FILE = MAIN_FOLDER + "CreateData.sql";
-
-            //Do not run installation scripts if versions match
-            //if (_previousVersion.Equals(_upgradeToVersion))
-            //	return;
 
             if (setup.SkipNormalize) return;
 
+            var upgradeSchemaScripts = this.GetResourceNameUnderLocation(MAIN_FOLDER);
+            var sortByVersionScripts = new SortedDictionary<string, EmbeddedResourceName>(upgradeSchemaScripts);
+
             try
             {
-                //Run the create schema
-                var scripts = this.GetResourceNameUnderLocation(CREATE_SCHEMA_FILE);
-                foreach (EmbeddedResourceName ern in scripts.Values)
-                {
-                    var hashItem = _databaseItems.FirstOrDefault(x => x.name == ern.FullName);
-                    if (hashItem == null) _newItems.Add(ern.FullName);
-                    if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
-                    {
-                        setup.DebugScriptName = ern.FullName;
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
-                    }
-                }
-                setup.DebugScriptName = null;
-
-                //Run the static data
-                scripts = this.GetResourceNameUnderLocation(STATIC_DATA_FILE);
-                foreach (var ern in scripts.Values)
-                {
-                    var hashItem = _databaseItems.FirstOrDefault(x => x.name == ern.FullName);
-                    if (hashItem == null) _newItems.Add(ern.FullName);
-                    if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
-                    {
-                        setup.DebugScriptName = ern.FullName;
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
-                    }
-                }
-                setup.DebugScriptName = null;
-
-                //Other static data
-                scripts = this.GetResourceNameUnderLocation(MAIN_FOLDER);
-                this.GetResourceNameUnderLocation(CREATE_SCHEMA_FILE).ToList().ForEach(x => scripts.Remove(x.Key));
-                this.GetResourceNameUnderLocation(STATIC_DATA_FILE).ToList().ForEach(x => scripts.Remove(x.Key));
-                this.GetResourceNameUnderLocation(TRIGGER_FILE).ToList().ForEach(x => scripts.Remove(x.Key));
-                foreach (var ern in scripts.Values)
-                {
-                    var hashItem = _databaseItems.FirstOrDefault(x => x.name == ern.FullName);
-                    if (hashItem == null) _newItems.Add(ern.FullName);
-                    if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
-                    {
-                        setup.DebugScriptName = ern.FullName;
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
-                    }
-                }
-                setup.DebugScriptName = null;
-
-                //Run the triggers
-                scripts = this.GetResourceNameUnderLocation(TRIGGER_FILE);
-                foreach (var ern in scripts.Values)
+                //Run the create scripts
+                foreach (EmbeddedResourceName ern in sortByVersionScripts.Values)
                 {
                     var hashItem = _databaseItems.FirstOrDefault(x => x.name == ern.FullName);
                     if (hashItem == null) _newItems.Add(ern.FullName);
