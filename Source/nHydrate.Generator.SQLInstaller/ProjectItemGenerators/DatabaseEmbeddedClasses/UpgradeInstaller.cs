@@ -1997,7 +1997,7 @@ namespace PROJECTNAMESPACE
         /// <summary />
         public static byte[] ComputeHashFromFile(string fileName)
         {
-            using (Stream stream = File.OpenRead(fileName))
+            using (var stream = File.OpenRead(fileName))
             {
                 return ComputeHash(stream);
             }
@@ -2051,8 +2051,8 @@ namespace PROJECTNAMESPACE
         /// <summary />
         internal static byte[] ComputeHashFinalBlock(byte[] input, int ibStart, int cbSize, ABCDStruct ABCD, Int64 len)
         {
-            byte[] working = new byte[64];
-            byte[] length = BitConverter.GetBytes(len);
+            var working = new byte[64];
+            var length = BitConverter.GetBytes(len);
 
             //Padding is a single bit 1, followed by the number of 0s required to make size congruent to 448 modulo 512. Step 1 of RFC 1321  
             //The CLR ensures that our buffer is 0-assigned, we don't need to explicitly set it. This is why it ends up being quicker to just
