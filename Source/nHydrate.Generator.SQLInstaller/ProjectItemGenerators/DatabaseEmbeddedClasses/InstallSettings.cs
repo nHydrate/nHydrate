@@ -29,7 +29,7 @@ namespace PROJECTNAMESPACE
 		public string PrimaryUserName { get; set; }
 
 		/// <summary />
-		public string PrimaryPassword { get; set; }
+		public string PrimarySecurityPhrase { get; set; }
 
 		/// <summary />
 		public bool PrimaryUseIntegratedSecurity { get; set; }
@@ -73,7 +73,7 @@ namespace PROJECTNAMESPACE
 				this.PrimaryServer = XmlHelper.GetNodeValue(document.DocumentElement, "server", string.Empty);
 				this.PrimaryUseIntegratedSecurity = XmlHelper.GetNodeValue(document.DocumentElement, "useintegratedsecurity", false);
 				this.PrimaryUserName = XmlHelper.GetNodeValue(document.DocumentElement, "username", string.Empty);
-				this.PrimaryPassword = XmlHelper.GetNodeValue(document.DocumentElement, "password", string.Empty);
+				this.PrimarySecurityPhrase = XmlHelper.GetNodeValue(document.DocumentElement, "password", string.Empty);
 
 				var v = XmlHelper.GetNodeValue(document.DocumentElement, "username-encrypted", string.Empty).Decrypt();
 				if (!string.IsNullOrEmpty(v))
@@ -81,7 +81,7 @@ namespace PROJECTNAMESPACE
 
 				v = XmlHelper.GetNodeValue(document.DocumentElement, "password-encrypted", string.Empty).Decrypt();
 				if (!string.IsNullOrEmpty(v))
-					this.PrimaryPassword = v;
+					this.PrimarySecurityPhrase = v;
 
 				this.PrimaryDatabase = XmlHelper.GetNodeValue(document.DocumentElement, "database", string.Empty);
 			}
@@ -91,7 +91,7 @@ namespace PROJECTNAMESPACE
 				this.PrimaryServer = XmlHelper.GetNodeValue(node, "server", string.Empty);
 				this.PrimaryUseIntegratedSecurity = XmlHelper.GetNodeValue(node, "useintegratedsecurity", false);
 				this.PrimaryUserName = XmlHelper.GetNodeValue(node, "username", string.Empty);
-				this.PrimaryPassword = XmlHelper.GetNodeValue(node, "password", string.Empty);
+				this.PrimarySecurityPhrase = XmlHelper.GetNodeValue(node, "password", string.Empty);
 
 				var v = XmlHelper.GetNodeValue(node, "username-encrypted", string.Empty).Decrypt();
 				if (!string.IsNullOrEmpty(v))
@@ -99,7 +99,7 @@ namespace PROJECTNAMESPACE
 
 				v = XmlHelper.GetNodeValue(node, "password-encrypted", string.Empty).Decrypt();
 				if (!string.IsNullOrEmpty(v))
-					this.PrimaryPassword = v;
+					this.PrimarySecurityPhrase = v;
 
 				this.PrimaryDatabase = XmlHelper.GetNodeValue(node, "database", string.Empty);
 
@@ -149,7 +149,7 @@ namespace PROJECTNAMESPACE
 			XmlHelper.AddElement(node, "server", this.PrimaryServer);
 			XmlHelper.AddElement(node, "useintegratedsecurity", this.PrimaryUseIntegratedSecurity.ToString().ToLower());
 			XmlHelper.AddElement(node, "username-encrypted", (this.PrimaryUserName + string.Empty).Encrypt());
-			XmlHelper.AddElement(node, "password-encrypted", (this.PrimaryPassword + string.Empty).Encrypt());
+			XmlHelper.AddElement(node, "password-encrypted", (this.PrimarySecurityPhrase + string.Empty).Encrypt());
 			XmlHelper.AddElement(node, "database", this.PrimaryDatabase);
 
 			node = XmlHelper.AddElement(document.DocumentElement, "cloud", string.Empty) as XmlElement;
@@ -173,11 +173,11 @@ namespace PROJECTNAMESPACE
 		{
 			if (this.PrimaryUseIntegratedSecurity)
 			{
-				return "server=" + this.PrimaryServer + ";Initial Catalog=" + this.PrimaryDatabase + ";integrated Security=SSPI;Connect Timeout=604800;";
+				return "server=" + this.PrimaryServer + ";Initial Catalog=" + this.PrimaryDatabase + ";integrated Security=SSPI;Connect Timeout=30;";
 			}
 			else
 			{
-				return "server=" + this.PrimaryServer + ";Initial Catalog=" + this.PrimaryDatabase + ";user id=" + this.PrimaryUserName + ";password=" + this.PrimaryPassword + ";Connect Timeout=604800;";
+				return "server=" + this.PrimaryServer + ";Initial Catalog=" + this.PrimaryDatabase + ";user id=" + this.PrimaryUserName + ";password=" + this.PrimarySecurityPhrase + ";Connect Timeout=30;";
 			}
 		}
 
@@ -186,7 +186,7 @@ namespace PROJECTNAMESPACE
 		/// </summary>
 		public string GetCloudConnectionString()
 		{
-			return "server=" + this.CloudServer + ";Initial Catalog=" + this.CloudDatabase + ";user id=" + this.CloudUserName + ";password=" + this.CloudPassword + ";Connect Timeout=604800;";
+			return "server=" + this.CloudServer + ";Initial Catalog=" + this.CloudDatabase + ";user id=" + this.CloudUserName + ";password=" + this.CloudPassword + ";Connect Timeout=30;";
 		}
 
 	}

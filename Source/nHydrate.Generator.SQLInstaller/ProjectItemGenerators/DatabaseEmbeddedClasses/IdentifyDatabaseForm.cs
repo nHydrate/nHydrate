@@ -86,7 +86,7 @@ namespace PROJECTNAMESPACE
 				optConnectionIntegratedSecurity.Checked = this.Settings.PrimaryUseIntegratedSecurity;
 				optConnectionUserPassword.Checked = !optConnectionIntegratedSecurity.Checked;
 				txtConnectionUserName.Text = this.Settings.PrimaryUserName;
-				txtConnectionPassword.Text = this.Settings.PrimaryPassword;
+				txtConnectionPassword.Text = this.Settings.PrimarySecurityPhrase;
 				cboConnectionDatabaseName.Text = this.Settings.PrimaryDatabase;
 
 				//Tab Create
@@ -95,7 +95,7 @@ namespace PROJECTNAMESPACE
 				optCreationIntegratedSecurity.Checked = this.Settings.PrimaryUseIntegratedSecurity;
 				radioButtonCreationUserPassword.Checked = !optCreationIntegratedSecurity.Checked;
 				txtCreationUserName.Text = this.Settings.PrimaryUserName;
-				txtCreationPassword.Text = this.Settings.PrimaryPassword;
+				txtCreationPassword.Text = this.Settings.PrimarySecurityPhrase;
 				txtDiskPath.Text = this.Settings.DiskPath;
 
 				//Tab Azure Copy
@@ -368,7 +368,7 @@ namespace PROJECTNAMESPACE
 				this.Settings.PrimaryServer = cboConnectionServerName.Text;
 				this.Settings.PrimaryUseIntegratedSecurity = optConnectionIntegratedSecurity.Checked;
 				this.Settings.PrimaryUserName = txtConnectionUserName.Text;
-				this.Settings.PrimaryPassword = txtConnectionPassword.Text;
+				this.Settings.PrimarySecurityPhrase = txtConnectionPassword.Text;
 				this.Settings.PrimaryDatabase = cboConnectionDatabaseName.Text;
 			}
 			else if (tabControlChooseDatabase.SelectedTab == tabPageCreation)
@@ -377,7 +377,7 @@ namespace PROJECTNAMESPACE
 				this.Settings.PrimaryDatabase = txtCreationDatabaseName.Text;
 				this.Settings.PrimaryUseIntegratedSecurity = optCreationIntegratedSecurity.Checked;
 				this.Settings.PrimaryUserName = txtCreationUserName.Text;
-				this.Settings.PrimaryPassword = txtCreationPassword.Text;
+				this.Settings.PrimarySecurityPhrase = txtCreationPassword.Text;
 			}
 			else if (tabControlChooseDatabase.SelectedTab == tabPageAzureCopy)
 			{

@@ -160,7 +160,7 @@ namespace PROJECTNAMESPACE
 				if (settings.PrimaryUseIntegratedSecurity)
 					text += "-T";
 				else
-					text += "-S " + settings.PrimaryServer + " -U " + settings.PrimaryUserName + " -P " + settings.PrimaryPassword;
+					text += "-S " + settings.PrimaryServer + " -U " + settings.PrimaryUserName + " -P " + settings.PrimarySecurityPhrase;
 
 				System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo("bcp", text);
 				procStartInfo.RedirectStandardOutput = true;

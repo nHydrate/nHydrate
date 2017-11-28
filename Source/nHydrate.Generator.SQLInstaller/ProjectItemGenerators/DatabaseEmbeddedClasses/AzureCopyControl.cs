@@ -41,7 +41,7 @@ namespace PROJECTNAMESPACE
 			txtDestServer.Text = settings.CloudServer;
 			txtDestUserName.Text = settings.CloudUserName;
 			txtSourceDatabase.Text = settings.PrimaryDatabase;
-			txtSourcePassword.Text = settings.PrimaryPassword;
+			txtSourcePassword.Text = settings.PrimarySecurityPhrase;
 			txtSourceServer.Text = settings.PrimaryServer;
 			txtSourceUserName.Text = settings.PrimaryUserName;
 			optSourceIntegratedSecurity.Checked = settings.PrimaryUseIntegratedSecurity;
@@ -76,7 +76,7 @@ namespace PROJECTNAMESPACE
 			settings.CloudServer = txtDestServer.Text;
 			settings.CloudUserName = txtDestUserName.Text;
 			settings.PrimaryDatabase = txtSourceDatabase.Text;
-			settings.PrimaryPassword = txtSourcePassword.Text;
+			settings.PrimarySecurityPhrase = txtSourcePassword.Text;
 			settings.PrimaryServer = txtSourceServer.Text;
 			settings.PrimaryUserName = txtSourceUserName.Text;
 			settings.PrimaryUseIntegratedSecurity = optSourceIntegratedSecurity.Checked;
