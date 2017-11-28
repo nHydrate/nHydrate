@@ -574,6 +574,8 @@ namespace PROJECTNAMESPACE
             finally
             {
                 _connection.Close();
+                _connection.Dispose();
+                if (_transaction != null) _transaction.Dispose();
             }
 
         }
