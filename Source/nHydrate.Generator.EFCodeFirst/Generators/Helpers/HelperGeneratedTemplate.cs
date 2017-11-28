@@ -1046,6 +1046,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine();
                 sb.AppendLine("		private static int Execute(IContext context, List<PreCacheItem> list)");
                 sb.AppendLine("		{");
+                sb.AppendLine("			if (list == null) return 0;");
                 sb.AppendLine("			try");
                 sb.AppendLine("			{");
                 sb.AppendLine("				var count = 0;");
@@ -1054,6 +1055,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("					if (cacheItem.Optimizer == null) cacheItem.Optimizer = new QueryOptimizer();");
                 sb.AppendLine("					var affected = 0;");
                 sb.AppendLine("					var connection = (SqlConnection)(context.ObjectContext.Connection as EntityConnection).StoreConnection;");
+                sb.AppendLine("					if (connection != null)");
                 sb.AppendLine("					{");
                 sb.AppendLine("						if (connection.State == System.Data.ConnectionState.Closed)");
                 sb.AppendLine("							connection.Open();");

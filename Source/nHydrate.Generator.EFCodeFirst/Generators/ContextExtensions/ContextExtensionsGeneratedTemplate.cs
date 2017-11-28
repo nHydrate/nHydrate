@@ -491,6 +491,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		{");
             sb.AppendLine("			if (optimizer == null)");
             sb.AppendLine("				optimizer = new QueryOptimizer();");
+            sb.AppendLine("			if (query == null)");
+            sb.AppendLine("				throw new Exception(\"Query must be set\");");
             sb.AppendLine();
             sb.AppendLine("			//There is nothing to do");
             sb.AppendLine("			if (query.ToString().Replace(\"\\r\", string.Empty).Split(new char[] { '\\n' }).LastOrDefault().Trim() == \"WHERE 1 = 0\")");
@@ -526,7 +528,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("						var context = context2.GetValue(query.Provider);");
             sb.AppendLine("						objectContext = context as System.Data.Entity.Core.Objects.ObjectContext;");
             sb.AppendLine("						var qq = objectContext.InterceptionContext.DbContexts.First() as " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities;");
-            sb.AppendLine("						instanceKey = qq.InstanceKey;");
+            sb.AppendLine("						if (qq != null)");
+            sb.AppendLine("							instanceKey = qq.InstanceKey;");
             sb.AppendLine("						if (string.IsNullOrEmpty(connectionString))");
             sb.AppendLine("						{");
             sb.AppendLine("							connectionString = Util.StripEFCS2Normal(objectContext.Connection.ConnectionString);");
@@ -704,6 +707,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine();
             sb.AppendLine("			if (optimizer == null)");
             sb.AppendLine("				optimizer = new QueryOptimizer();");
+            sb.AppendLine("			if (query == null)");
+            sb.AppendLine("				throw new Exception(\"Query must be set\");");
             sb.AppendLine();
             sb.AppendLine("			//There is nothing to do");
             sb.AppendLine("			if (query.ToString().Replace(\"\\r\", string.Empty).Split(new char[] { '\\n' }).LastOrDefault().Trim() == \"WHERE 1 = 0\")");

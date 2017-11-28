@@ -307,11 +307,11 @@ namespace PROJECTNAMESPACE
                 using (var con = new System.Data.SqlClient.SqlConnection(masterConnectionString))
                 {
                     con.Open();
-                    var sqlCommandText = @"
-						ALTER DATABASE [" + dbname + @"] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-						DROP DATABASE [" + dbname + "]";
-                    var sqlCommand = new System.Data.SqlClient.SqlCommand(sqlCommandText, con);
-                    sqlCommand.ExecuteNonQuery();
+                    var sqlCommandText = @"ALTER DATABASE [" + dbname + @"] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;DROP DATABASE [" + dbname + "]";
+                    using (var sqlCommand = new System.Data.SqlClient.SqlCommand(sqlCommandText, con))
+                    {
+                        sqlCommand.ExecuteNonQuery();
+                    }
                     return true;
                 }
             }
