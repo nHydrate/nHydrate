@@ -653,7 +653,7 @@ namespace PROJECTNAMESPACE
         public GeneratedVersion Version { get; set; }
 
         /// <summary />
-        internal bool SuppressUI { get; set; }
+        public bool SuppressUI { get; set; }
 
         /// <summary>
         /// Determines if this is a database upgrade
