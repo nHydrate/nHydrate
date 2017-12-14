@@ -76,6 +76,7 @@
     <Compile Include="ProjectItemGenerators\BaseDbScriptTemplate.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\SqlErrorForm.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\InstallSettingsUI.cs" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\Program.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptGenerator.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptTemplate.cs" />
     <Compile Include="ProjectItemGenerators\ScriptOrder\ScriptOrderGenerator.cs" />

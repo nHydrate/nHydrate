@@ -78,7 +78,8 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 				GenerateSqlServersCs();
 				//GenerateArchiveReaderCs();
 				GenerateXmlHelperCs();
-				GenerateUpgradeInstaller();
+                GenerateProgramCs();
+                GenerateUpgradeInstaller();
 				GenerateAzureCopyControlCs();
 				GenerateAzureCopyControlDesigner();
 				GenerateAzureCopyControlResx();
@@ -580,15 +581,23 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 		{
 			var fileName = "XmlHelper.cs";
 			var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
-			var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
+			var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, false);
 			OnProjectItemGenerated(this, eventArgs);
 		}
 
 		#endregion
 
-		#region DatabaseInstaller
+        private void GenerateProgramCs()
+        {
+            var fileName = "Program.cs";
+            var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
+            var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
+            OnProjectItemGenerated(this, eventArgs);
+        }
 
-		private void GenerateDatabaseInstallerDesignerCs()
+        #region DatabaseInstaller
+
+        private void GenerateDatabaseInstallerDesignerCs()
 		{
 			var fullParentName = "DatabaseInstaller.cs";
 			var fileName = "DatabaseInstaller.Designer.cs";
