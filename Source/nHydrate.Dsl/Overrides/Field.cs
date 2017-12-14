@@ -631,6 +631,7 @@ namespace nHydrate.Dsl
             get
             {
                 if (this.IsCalculated) return double.NaN;
+                if (!this.IsNumericType()) return double.NaN;
                 return base.Min;
             }
             set { base.Min = value; }
@@ -641,6 +642,7 @@ namespace nHydrate.Dsl
             get
             {
                 if (this.IsCalculated) return double.NaN;
+                if (!this.IsNumericType()) return double.NaN;
                 return base.Max;
             }
             set { base.Max = value; }
