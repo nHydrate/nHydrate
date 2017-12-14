@@ -588,7 +588,7 @@ namespace nHydrate.Generator.SQLInstaller
                         if (oldStaticScript != newStaticScript)
                         {
                             sb.AppendLine(newStaticScript);
-                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlUpdateStaticData(newT));
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlUpdateStaticData(oldT, newT));
                             sb.AppendLine("GO");
                             sb.AppendLine();
                         }

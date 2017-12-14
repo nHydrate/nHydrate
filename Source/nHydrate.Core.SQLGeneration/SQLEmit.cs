@@ -1052,19 +1052,19 @@ namespace nHydrate.Core.SQLGeneration
 
         }
 
-        public static string GetSqlUpdateStaticData(Table table)
+        public static string GetSqlUpdateStaticData(Table oldT, Table newT)
         {
             try
             {
                 var sb = new StringBuilder();
-                var model = (ModelRoot)table.Root;
+                var model = newT.Root as ModelRoot;
 
                 //Generate static data
-                if (table.StaticData.Count > 0)
+                if (newT.StaticData.Count > 0)
                 {
-                    sb.AppendLine("--UPDATE STATIC DATA FOR TABLE [" + Globals.GetTableDatabaseName(model, table) + "]");
+                    sb.AppendLine("--UPDATE STATIC DATA FOR TABLE [" + Globals.GetTableDatabaseName(model, newT) + "]");
                     sb.AppendLine("--IF YOU WISH TO UPDATE THIS STATIC DATA UNCOMMENT THIS SQL");
-                    foreach (var rowEntry in table.StaticData.AsEnumerable<RowEntry>())
+                    foreach (var rowEntry in newT.StaticData.AsEnumerable<RowEntry>())
                     {
                         var fieldValues = new Dictionary<string, string>();
                         foreach (var cellEntry in rowEntry.CellEntries.ToList())
@@ -1115,7 +1115,7 @@ namespace nHydrate.Core.SQLGeneration
                         var fieldList = new List<string>();
                         var valueList = new List<string>();
                         var updateSetList = new List<string>();
-                        var primaryKeyColumnNames = table.PrimaryKeyColumns.Select(x => x.Name);
+                        var primaryKeyColumnNames = newT.PrimaryKeyColumns.Select(x => x.Name);
                         foreach (var kvp in fieldValues)
                         {
                             fieldList.Add("[" + kvp.Key + "]");
@@ -1133,16 +1133,16 @@ namespace nHydrate.Core.SQLGeneration
 
                         var ii = 0;
                         var pkWhereSb = new StringBuilder();
-                        foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
+                        foreach (var column in newT.PrimaryKeyColumns.OrderBy(x => x.Name))
                         {
                             var pkData = rowEntry.CellEntries[column.Name].GetSQLData();
                             pkWhereSb.Append("([" + column.DatabaseName + "] = " + pkData + ")");
-                            if (ii < table.PrimaryKeyColumns.Count - 1)
+                            if (ii < newT.PrimaryKeyColumns.Count - 1)
                                 pkWhereSb.Append(" AND ");
                             ii++;
                         }
 
-                        sb.AppendLine("--UPDATE [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] SET " + updateSetString + " WHERE " + pkWhereSb.ToString() + ";");
+                        sb.AppendLine("--UPDATE [" + newT.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, newT) + "] SET " + updateSetString + " WHERE " + pkWhereSb.ToString() + ";");
 
                     }
 
