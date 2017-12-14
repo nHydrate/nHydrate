@@ -87,6 +87,11 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.AuditTriggers
 
         private void AppendAll()
         {
+            //Do not emit these scripts unless need be
+            var isTracking = _model.Database.Tables.Any(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly && x.AllowAuditTracking);
+            if (!_model.EmitSafetyScripts && !isTracking)
+                return;
+
             sb.AppendLine("--##SECTION BEGIN [AUDIT TRIGGERS]");
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
