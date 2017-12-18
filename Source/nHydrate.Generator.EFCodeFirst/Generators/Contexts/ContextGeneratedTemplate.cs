@@ -1639,7 +1639,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				//If this is a tenant table then rig query plan for this specific tenant");
-            sb.AppendLine("				if (command.CommandText.Contains(\"__vw_tenant_\") || command.CommandText.Contains(\"__security\"))");
+            sb.AppendLine("				if (command.CommandText.Contains(\""+ _model.TenantPrefix + "\") || command.CommandText.Contains(\"__security\"))");
             sb.AppendLine("				{");
             sb.AppendLine("					var builder = new SqlConnectionStringBuilder(command.Connection.ConnectionString);");
             sb.AppendLine("					command.CommandText = \"--T:\" + builder.UserID + \"\\r\\n\" + command.CommandText;");

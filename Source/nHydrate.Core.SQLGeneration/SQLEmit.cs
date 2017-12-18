@@ -812,7 +812,7 @@ namespace nHydrate.Core.SQLGeneration
             return sb.ToString();
         }
 
-        public static string GetSqlDropTable(Table t)
+        public static string GetSqlDropTable(ModelRoot model, Table t)
         {
             if (t.TypedTable == TypedTableConstants.EnumOnly)
                 return string.Empty;
@@ -876,9 +876,9 @@ namespace nHydrate.Core.SQLGeneration
             #region Delete Primary Key
 
             var objectNamePK = "PK_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, t);
-            sb.AppendLine("--DELETE PRIMARY KEY FOR TABLE [" + t.DatabaseName + "]");
-            sb.AppendLine("if exists(select * from sys.objects where name = '" + objectNamePK + "' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
-            sb.AppendLine("ALTER TABLE [" + t.GetSQLSchema() + "].[" + t.DatabaseName + "] DROP CONSTRAINT [" + objectNamePK + "]");
+            sb.AppendLine($"--DELETE PRIMARY KEY FOR TABLE [{t.DatabaseName}]");
+            sb.AppendLine($"if exists(select * from sys.objects where name = '{objectNamePK}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
+            sb.AppendLine($"ALTER TABLE [{t.GetSQLSchema()}].[{t.DatabaseName}] DROP CONSTRAINT [{objectNamePK}]");
             sb.AppendLine();
 
             #endregion
@@ -904,24 +904,35 @@ namespace nHydrate.Core.SQLGeneration
                 var indexName = "IX_" + t.Name.Replace("-", "") + "_" + c.Name.Replace("-", string.Empty);
                 indexName = indexName.ToUpper();
                 sb.AppendLine("--DELETE UNIQUE CONTRAINT");
-                sb.AppendLine("if exists(select * from sysobjects where name = '" + indexName + "' and xtype = 'UQ')");
-                sb.AppendLine("ALTER TABLE [" + t.DatabaseName + "] DROP CONSTRAINT [" + indexName + "]");
+                sb.AppendLine($"if exists(select * from sysobjects where name = '{indexName}' and xtype = 'UQ')");
+                sb.AppendLine($"ALTER TABLE [{t.DatabaseName}] DROP CONSTRAINT [{indexName}]");
                 sb.AppendLine();
 
                 indexName = CreateIndexName(t, c);
                 indexName = indexName.ToUpper();
                 sb.AppendLine("--DELETE INDEX");
-                sb.AppendLine("if exists (select * from sys.indexes where name = '" + indexName + "')");
-                sb.AppendLine("DROP INDEX [" + indexName + "] ON [" + t.DatabaseName + "]");
+                sb.AppendLine($"if exists (select * from sys.indexes where name = '{indexName}')");
+                sb.AppendLine($"DROP INDEX [{indexName}] ON [{t.DatabaseName}]");
                 sb.AppendLine();
             }
 
             #endregion
 
-            //Drop the actual table
-            sb.AppendLine("--DELETE TABLE [" + t.DatabaseName + "]");
-            sb.AppendLine("if exists (select * from sysobjects where name = '" + t.DatabaseName + "' and xtype = 'U')");
-            sb.AppendLine("DROP TABLE [" + t.DatabaseName + "]");
+            #region Drop tenant view
+            if (t.IsTenant)
+            {
+                var itemName = model.TenantPrefix + "_" + t.DatabaseName;
+                sb.AppendLine($"--DROP TENANT VIEW FOR TABLE [{t.DatabaseName}]");
+                sb.AppendLine($"if exists (select name from sys.objects where name = '{itemName}'  AND type = 'V')");
+                sb.AppendLine($"DROP VIEW [{itemName}]");
+            }
+            #endregion
+
+            #region Drop the actual table
+            sb.AppendLine($"--DELETE TABLE [{t.DatabaseName}]");
+            sb.AppendLine($"if exists (select * from sysobjects where name = '{t.DatabaseName}' and xtype = 'U')");
+            sb.AppendLine($"DROP TABLE [{t.DatabaseName}]");
+            #endregion
 
             return sb.ToString();
         }
@@ -1496,21 +1507,23 @@ namespace nHydrate.Core.SQLGeneration
                 var itemName = model.TenantPrefix + "_" + table.DatabaseName;
 
                 var sb = new StringBuilder();
-                sb.AppendLine("if exists (select * from sys.objects where name = '" + itemName + "' and [type] in ('V'))");
-                sb.AppendLine("drop view [" + itemName + "]");
+                sb.AppendLine($"--DROP TENANT VIEW FOR TABLE [{table.DatabaseName}]");
+                sb.AppendLine($"if exists (select * from sys.objects where name = '{itemName}' and [type] in ('V'))");
+                sb.AppendLine($"DROP VIEW [{itemName}]");
                 sb.AppendLine("GO");
                 sb.AppendLine();
 
-                sb.AppendLine("CREATE VIEW [" + table.GetSQLSchema() + "].[" + itemName + "] ");
+                sb.AppendLine($"--CREATE TENANT VIEW FOR TABLE [{table.DatabaseName}]");
+                sb.AppendLine($"CREATE VIEW [{table.GetSQLSchema()}].[{itemName}] ");
                 sb.AppendLine("AS");
-                sb.AppendLine("select * from [" + table.DatabaseName + "]");
-                sb.AppendLine("WHERE ([" + model.TenantColumnName + "] = SYSTEM_USER)");
+                sb.AppendLine($"select * from [{table.DatabaseName}]");
+                sb.AppendLine($"WHERE ([{model.TenantColumnName}] = SYSTEM_USER)");
                 sb.AppendLine("GO");
 
                 if (!string.IsNullOrEmpty(model.Database.GrantExecUser))
                 {
-                    grantSB.AppendFormat("GRANT ALL ON [" + table.GetSQLSchema() + "].[{0}] TO [{1}]", itemName, model.Database.GrantExecUser).AppendLine();
-                    grantSB.AppendLine("--MODELID: " + table.Key);
+                    grantSB.AppendLine($"GRANT ALL ON [{table.GetSQLSchema()}].[{itemName}] TO [{model.Database.GrantExecUser}]");
+                    grantSB.AppendLine($"--MODELID: " + table.Key);
                     grantSB.AppendLine("GO");
                     grantSB.AppendLine();
                 }

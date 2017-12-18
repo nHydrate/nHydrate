@@ -128,7 +128,7 @@ namespace nHydrate.Generator.SQLInstaller
                     if (newT == null)
                     {
                         //DELETE TABLE
-                        sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlDropTable(oldT));
+                        sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlDropTable(modelOld, oldT));
                         sb.AppendLine("GO");
                         //TODO - Delete Tenant View
                         sb.AppendLine();
@@ -457,14 +457,14 @@ namespace nHydrate.Generator.SQLInstaller
                             //Drop Index
                             var indexName = "IDX_" + newT.DatabaseName.Replace("-", string.Empty) + "_" + modelNew.TenantColumnName;
                             indexName = indexName.ToUpper();
-                            sb.AppendLine("if exists (select * from sys.indexes where name = '" + indexName + "')");
-                            sb.AppendLine("DROP INDEX [" + indexName + "] ON [" + newT.DatabaseName + "]");
+                            sb.AppendLine($"if exists (select * from sys.indexes where name = '{indexName}')");
+                            sb.AppendLine($"DROP INDEX [{indexName}] ON [{newT.DatabaseName}]");
                             sb.AppendLine();
 
                             //Drop the associated view
                             var viewName = modelOld.TenantPrefix + "_" + oldT.DatabaseName;
-                            sb.AppendLine("if exists (select name from sys.objects where name = '" + viewName + "'  AND type = 'V')");
-                            sb.AppendLine("DROP VIEW [" + viewName + "]");
+                            sb.AppendLine($"if exists (select name from sys.objects where name = '{viewName}'  AND type = 'V')");
+                            sb.AppendLine($"DROP VIEW [{viewName}]");
                             sb.AppendLine();
 
                             //Drop the tenant field
@@ -476,6 +476,30 @@ namespace nHydrate.Generator.SQLInstaller
                         {
                             //Add the tenant field
                             sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlCreateTenantColumn(modelNew, newT));
+
+                            //Add tenant view
+                            var grantSB = new StringBuilder();
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlTenantView(modelNew, newT, grantSB));
+                            if (grantSB.ToString() != string.Empty)
+                                sb.AppendLine(grantSB.ToString());
+                        }
+                        else if (oldT.IsTenant && newT.IsTenant && oldT.DatabaseName != newT.DatabaseName)
+                        {
+                            //If rename tenant table then delete old view and create new view
+
+                            //Drop the old view
+                            var viewName = modelOld.TenantPrefix + "_" + oldT.DatabaseName;
+                            sb.AppendLine($"--DROP OLD TENANT VIEW FOR TABLE [{oldT.DatabaseName}]");
+                            sb.AppendLine($"if exists (select name from sys.objects where name = '{viewName}'  AND type = 'V')");
+                            sb.AppendLine($"DROP VIEW [{viewName}]");
+                            sb.AppendLine("GO");
+
+                            //Add tenant view
+                            var grantSB = new StringBuilder();
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlTenantView(modelNew, newT, grantSB));
+                            if (grantSB.ToString() != string.Empty)
+                                sb.AppendLine(grantSB.ToString());
+
                         }
                         #endregion
 
