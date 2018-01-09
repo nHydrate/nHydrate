@@ -1463,6 +1463,11 @@ namespace PROJECTNAMESPACE
             }
 
             #endregion
+
+            public override string ToString()
+            {
+                return this.FullName;
+            }
         }
 
         #endregion
