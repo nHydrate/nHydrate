@@ -35,9 +35,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyKeyFile(@"..\..\Security\nHydrate.snk")]
 
 [assembly: AssemblyCompany("nHydrate.org")]
-[assembly: AssemblyCopyright("Copyright © nHydrate.org 2006-2017")]
+[assembly: AssemblyCopyright("Copyright © nHydrate.org 2006-2018")]
 [assembly: AssemblyTrademark("Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted under the maximum extent possible under law.")]
 [assembly: NeutralResourcesLanguage("en-US")]
 
-[assembly: AssemblyVersion("6.0.0.207")]
-[assembly: AssemblyFileVersion("6.0.0.207")]
+[assembly: AssemblyVersion("6.0.0.208")]
+[assembly: AssemblyFileVersion("6.0.0.208")]
