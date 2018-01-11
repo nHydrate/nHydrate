@@ -1157,7 +1157,9 @@ namespace PROJECTNAMESPACE
                         throw;
                     }
                 }
-                return retval;
+
+                //Run in alpha order so the user can re-arrange if need be
+                return retval.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
             }
             catch
             {
