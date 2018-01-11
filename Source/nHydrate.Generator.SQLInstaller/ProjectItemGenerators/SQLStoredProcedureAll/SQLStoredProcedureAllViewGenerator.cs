@@ -97,22 +97,16 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
             {
                 if (this.UseSingleFile)
                 {
-                    //Process all views
+                    //Process views
                     var sb = new StringBuilder();
                     sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
                     sb.AppendLine();
 
+                    //Defined views
                     var grantSB = new StringBuilder();
                     foreach (var view in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
                     {
                         var template = new SQLStoredProcedureViewAllTemplate(_model, view, true, grantSB);
-                        sb.Append(template.FileContent);
-                    }
-
-                    //Tenant Views
-                    foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.IsTenant).OrderBy(x => x.Name))
-                    {
-                        var template = new SQLSelectTenantViewTemplate(_model, table, grantSB);
                         sb.Append(template.FileContent);
                     }
 

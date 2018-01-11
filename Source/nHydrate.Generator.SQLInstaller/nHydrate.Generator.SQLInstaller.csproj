@@ -107,7 +107,7 @@
     <Compile Include="ProjectItemGenerators\SQLGeneratedBodyHelper.cs" />
     <Compile Include="ProjectItemGenerators\SQLSelectStoredProcedure\SQLSelectStoredProcedureGenerator.cs" />
     <Compile Include="ProjectItemGenerators\SQLSelectStoredProcedure\SQLSelectStoredProcedureTemplate.cs" />
-    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLSelectTenantViewTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\DatabaseSchema\SQLSelectTenantViewTemplate.cs" />
     <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLSelectAuditBusinessObjectTemplate.cs" />
     <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\ISQLGenerate.cs" />
     <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLDeleteBusinessObjectTemplate.cs" />
