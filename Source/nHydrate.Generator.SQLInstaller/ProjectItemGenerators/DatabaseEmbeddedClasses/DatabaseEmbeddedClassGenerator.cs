@@ -64,7 +64,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 			try
 			{
 				GenerateDatabaseInstallerCs();
-				GenerateAzureCopy();
 				GenerateInstallSettings();
 				GenerateDatabaseInstallerDesignerCs();
 				GenerateIdentifyDatabaseFormCs();
@@ -80,9 +79,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 				GenerateXmlHelperCs();
                 GenerateProgramCs();
                 GenerateUpgradeInstaller();
-				GenerateAzureCopyControlCs();
-				GenerateAzureCopyControlDesigner();
-				GenerateAzureCopyControlResx();
 				
 				GenerateSqlErrorCs();
 				GenerateSqlErrorDesigner();
@@ -415,45 +411,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 
 		#endregion
 
-		#region AzureCopyControl
-
-		private void GenerateAzureCopyControlCs()
-		{
-			var fileName = "AzureCopyControl.cs";
-			var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
-			var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
-			OnProjectItemGenerated(this, eventArgs);
-		}
-
-		private void GenerateAzureCopyControlResx()
-		{
-			var fullParentName = "AzureCopyControl.cs";
-			var fileName = "AzureCopyControl.resx";
-			var ern = new EmbeddedResourceName();
-			ern.AsmLocation = this.GetEmbeddedPath();
-			ern.FileName = fileName + ".embed";
-			ern.FullName = this.GetEmbeddedPath() + "." + ern.FileName;
-			var fileContent = GetFileContent(ern);
-			var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, fullParentName, this, true);
-			eventArgs.Properties.Add("BuildAction", 3);
-			OnProjectItemGenerated(this, eventArgs);
-		}
-
-		private void GenerateAzureCopyControlDesigner()
-		{
-			var fullParentName = "AzureCopyControl.cs";
-			var fileName = "AzureCopyControl.Designer.cs";
-			var ern = new EmbeddedResourceName();
-			ern.AsmLocation = this.GetEmbeddedPath();
-			ern.FileName = "AzureCopyControl.Designer.embed";
-			ern.FullName = this.GetEmbeddedPath() + "." + ern.FileName;
-			var fileContent = GetFileContent(ern);
-			var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, fullParentName, this, true);
-			OnProjectItemGenerated(this, eventArgs);
-		}
-
-		#endregion
-
 		#region SqlErrorForm
 
 		private void GenerateSqlErrorCs()
@@ -619,14 +576,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 		}
 
 		#endregion
-
-		private void GenerateAzureCopy()
-		{
-			var fileName = "AzureCopy.cs";
-			var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
-			var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
-			OnProjectItemGenerated(this, eventArgs);
-		}
 
 		private void GenerateInstallSettings()
 		{

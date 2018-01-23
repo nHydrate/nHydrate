@@ -35,10 +35,6 @@ namespace PROJECTNAMESPACE
         /// 
         /// </summary>
         Upgrade,
-        /// <summary>
-        /// 
-        /// </summary>
-        AzureCopy,
     }
 
     internal partial class IdentifyDatabaseForm : Form
@@ -72,10 +68,6 @@ namespace PROJECTNAMESPACE
             optConnectionIntegratedSecurity.CheckedChanged += optConnectionIntegratedSecurity_CheckedChanged;
             buttonConnectionRefresh.Click += buttonConnectionRefresh_Click;
 
-            //Turn off features for Azure
-            //if (SqlServers.DatabaseVersion != SqlServers.SQLServerTypeConstants.SQLAzure)
-            //  tabControlChooseDatabase.TabPages.Remove(tabPageAzureCopy);
-
             this.Settings.Load();
             if (this.Settings.IsLoaded)
             {
@@ -97,9 +89,6 @@ namespace PROJECTNAMESPACE
                 txtCreationUserName.Text = this.Settings.PrimaryUserName;
                 txtCreationPassword.Text = this.Settings.PrimarySecurityPhrase;
                 txtDiskPath.Text = this.Settings.DiskPath;
-
-                //Tab Azure Copy
-                azureCopyControl1.LoadSettings(this.Settings);
             }
             this.UpdateLogin();
 
@@ -247,12 +236,6 @@ namespace PROJECTNAMESPACE
                     this.Close();
                 }
             }
-            else if (tabControlChooseDatabase.SelectedTab == this.tabPageAzureCopy)
-            {
-                this.Action = ActionTypeConstants.AzureCopy;
-                this.DialogResult = DialogResult.OK;
-                this.Close();
-            }
         }
 
         private bool CreateDatabase()
@@ -381,10 +364,6 @@ namespace PROJECTNAMESPACE
                 this.Settings.PrimaryUseIntegratedSecurity = optCreationIntegratedSecurity.Checked;
                 this.Settings.PrimaryUserName = txtCreationUserName.Text;
                 this.Settings.PrimarySecurityPhrase = txtCreationPassword.Text;
-            }
-            else if (tabControlChooseDatabase.SelectedTab == tabPageAzureCopy)
-            {
-                azureCopyControl1.SaveSettings(this.Settings);
             }
 
             if (chkSaveSettings.Checked)

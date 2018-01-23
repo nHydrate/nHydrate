@@ -56,7 +56,6 @@ namespace PROJECTNAMESPACE
         //{
         //  SQL2005 = 0,
         //  SQL2008 = 1,
-        //  SQLAzure = 2,
         //}
 
         //public static SQLServerTypeConstants DatabaseVersion = SQLServerTypeConstants.DATABASETYPE;

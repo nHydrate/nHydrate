@@ -92,12 +92,6 @@ namespace PROJECTNAMESPACE
             }
         }
 
-        public static void AzureCopyDatabase(InstallSettings settings)
-        {
-            var o = new AzureCopy();
-            o.Run(settings);
-        }
-
         #region construct / initialize
 
         private UpgradeInstaller(InstallSetup setup)

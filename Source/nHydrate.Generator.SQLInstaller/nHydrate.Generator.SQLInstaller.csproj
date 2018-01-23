@@ -85,12 +85,8 @@
     <Compile Include="ProjectItemGenerators\Functions\FunctionsTemplate.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseCreateData\CreateDataGenerator.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseCreateData\CreateDataTemplate.cs" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\AzureCopyControl.cs" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\AzureCopyControl.Designer.embed" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\AzureCopyControl.resx.embed" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\XmlHelper.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\IdentifyDatabaseForm.Designer.embed" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\AzureCopy.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\InstallSettings.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseEmbeddedClassGenerator.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.cs" />

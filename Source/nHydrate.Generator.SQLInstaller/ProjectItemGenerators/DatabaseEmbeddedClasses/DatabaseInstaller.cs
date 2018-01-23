@@ -541,10 +541,6 @@ namespace PROJECTNAMESPACE
                 {
                     UpgradeInstaller.UpgradeDatabase(setup);
                 }
-                else if (this.Action == ActionTypeConstants.AzureCopy)
-                {
-                    UpgradeInstaller.AzureCopyDatabase(this.Settings);
-                }
             }
         }
 

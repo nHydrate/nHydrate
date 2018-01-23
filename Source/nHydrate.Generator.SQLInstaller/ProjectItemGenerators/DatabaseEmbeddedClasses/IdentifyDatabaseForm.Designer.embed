@@ -71,8 +71,6 @@ namespace PROJECTNAMESPACE
             this.labelConnectionSelectDatabase = new System.Windows.Forms.Label();
             this.chkSaveSettings = new System.Windows.Forms.CheckBox();
             this.tabControlChooseDatabase = new System.Windows.Forms.TabControl();
-            this.tabPageAzureCopy = new System.Windows.Forms.TabPage();
-            this.azureCopyControl1 = new AzureCopyControl();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -80,7 +78,6 @@ namespace PROJECTNAMESPACE
             this.tabPageCreation.SuspendLayout();
             this.tabPageConnection.SuspendLayout();
             this.tabControlChooseDatabase.SuspendLayout();
-            this.tabPageAzureCopy.SuspendLayout();
             this.SuspendLayout();
             // 
             // _cbCreateDatabase
@@ -400,30 +397,11 @@ namespace PROJECTNAMESPACE
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControlChooseDatabase.Controls.Add(this.tabPageConnection);
             this.tabControlChooseDatabase.Controls.Add(this.tabPageCreation);
-            this.tabControlChooseDatabase.Controls.Add(this.tabPageAzureCopy);
             this.tabControlChooseDatabase.Location = new System.Drawing.Point(7, 9);
             this.tabControlChooseDatabase.Name = "tabControlChooseDatabase";
             this.tabControlChooseDatabase.SelectedIndex = 0;
             this.tabControlChooseDatabase.Size = new System.Drawing.Size(344, 437);
             this.tabControlChooseDatabase.TabIndex = 20;
-            // 
-            // tabPageAzureCopy
-            // 
-            this.tabPageAzureCopy.Controls.Add(this.azureCopyControl1);
-            this.tabPageAzureCopy.Location = new System.Drawing.Point(4, 22);
-            this.tabPageAzureCopy.Name = "tabPageAzureCopy";
-            this.tabPageAzureCopy.Size = new System.Drawing.Size(336, 411);
-            this.tabPageAzureCopy.TabIndex = 2;
-            this.tabPageAzureCopy.Text = "Azure Copy";
-            this.tabPageAzureCopy.UseVisualStyleBackColor = true;
-            // 
-            // azureCopyControl1
-            // 
-            this.azureCopyControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.azureCopyControl1.Location = new System.Drawing.Point(0, 0);
-            this.azureCopyControl1.Name = "azureCopyControl1";
-            this.azureCopyControl1.Size = new System.Drawing.Size(336, 411);
-            this.azureCopyControl1.TabIndex = 0;
             // 
             // cmdCancel
             // 
@@ -478,7 +456,6 @@ namespace PROJECTNAMESPACE
             this.tabPageConnection.ResumeLayout(false);
             this.tabPageConnection.PerformLayout();
             this.tabControlChooseDatabase.ResumeLayout(false);
-            this.tabPageAzureCopy.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -521,8 +498,6 @@ namespace PROJECTNAMESPACE
 		private System.Windows.Forms.TabControl tabControlChooseDatabase;
 		private System.Windows.Forms.Button cmdCancel;
 		private System.Windows.Forms.Button cmdOK;
-		private System.Windows.Forms.TabPage tabPageAzureCopy;
-		private AzureCopyControl azureCopyControl1;
 		private InstallSettingsUI InstallSettingsUI1;
         private System.Windows.Forms.TextBox txtDiskPath;
         private System.Windows.Forms.Label label1;
