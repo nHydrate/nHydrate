@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="36220dab-63c7-4daa-860c-fc548bf4d5d3" Version="6.0.0.209" Language="en-US" Publisher="nHydrate.org" />
+    <Identity Id="36220dab-63c7-4daa-860c-fc548bf4d5d3" Version="6.0.0.210" Language="en-US" Publisher="nHydrate.org" />
     <DisplayName>nHydrate ORM Modeler</DisplayName>
     <Description>This is the nHydrate Visual Modeler</Description>
   </Metadata>

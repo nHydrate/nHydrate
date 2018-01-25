@@ -68,6 +68,8 @@
     <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
       <Link>Properties\AssemblyInfoGeneratorCommon.cs</Link>
     </Compile>
+    <Compile Include="ProjectItemGenerators\GenerationDetails\GenerationDetailsGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\GenerationDetails\GenerationDetailsTemplate.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseCreateRelations\CreateRelationsGenerator.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseCreateRelations\CreateRelationsTemplate.cs" />
     <Compile Include="ProjectItemGenerators\AuditTriggers\CreateAuditTriggerGenerator.cs" />
