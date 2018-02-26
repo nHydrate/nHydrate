@@ -1080,6 +1080,11 @@ namespace PROJECTNAMESPACE
                 }
             }
             catch (Exception ex) { throw; }
+            finally
+            {
+                if (command != null)
+                    command.Dispose();
+            }
         }
 
         private static string TheDate => System.DateTime.Now.ToString("HH:mm:ss");
@@ -1632,8 +1637,10 @@ namespace PROJECTNAMESPACE
                 {
                     conn.ConnectionString = connectionString;
                     conn.Open();
-                    var command = new SqlCommand(GetVersionUpdateScript(), conn);
-                    SqlServers.ExecuteCommand(command);
+                    using (var command = new SqlCommand(GetVersionUpdateScript(), conn))
+                    {
+                        SqlServers.ExecuteCommand(command);
+                    }
                     return true;
                 }
             }
@@ -1767,38 +1774,42 @@ namespace PROJECTNAMESPACE
 
             try
             {
-                var command2 = new SqlCommand("select * from sys.tables where name = '__nhydrateobjects'", conn);
-                command2.Transaction = transaction;
-                var da = new SqlDataAdapter(command2);
-                var ds = new DataSet();
-                da.Fill(ds);
-                if (ds.Tables[0].Rows.Count > 0)
+                using (var command2 = new SqlCommand("select * from sys.tables where name = '__nhydrateobjects'", conn))
                 {
-                    var command = new SqlCommand("SELECT * FROM __nhydrateobjects where [ModelKey] = '" + modelKey + "'", conn);
-                    command.Transaction = transaction;
-                    da = new SqlDataAdapter(command);
-                    ds = new DataSet();
+                    command2.Transaction = transaction;
+                    var da = new SqlDataAdapter(command2);
+                    var ds = new DataSet();
                     da.Fill(ds);
-                    var t = ds.Tables[0];
-                    foreach (DataRow row in t.Rows)
+                    if (ds.Tables[0].Rows.Count > 0)
                     {
-                        var newItem = new nHydrateDbObject();
-                        newItem.rowid = (long)row["rowid"];
-                        if (row["id"] != System.DBNull.Value)
-                            newItem.id = (Guid)row["id"];
-                        newItem.name = (string)row["name"];
-                        newItem.ModelKey = (Guid)row["ModelKey"];
-                        newItem.type = (string)row["type"];
-                        if (row["schema"] != System.DBNull.Value)
-                            newItem.schema = (string)row["schema"];
-                        newItem.CreatedDate = (DateTime)row["CreatedDate"];
-                        newItem.ModifiedDate = (DateTime)row["ModifiedDate"];
-                        if (row["Hash"] != System.DBNull.Value)
-                            newItem.Hash = (string)row["Hash"];
-                        if (t.Columns.Contains("status") && row["status"] != System.DBNull.Value)
-                            newItem.Status = (string)row["status"];
-                        newItem.Changed = false;
-                        retval.Add(newItem);
+                        using (var command = new SqlCommand("SELECT * FROM __nhydrateobjects where [ModelKey] = '" + modelKey + "'", conn))
+                        {
+                            command.Transaction = transaction;
+                            da = new SqlDataAdapter(command);
+                            ds = new DataSet();
+                            da.Fill(ds);
+                            var t = ds.Tables[0];
+                            foreach (DataRow row in t.Rows)
+                            {
+                                var newItem = new nHydrateDbObject();
+                                newItem.rowid = (long)row["rowid"];
+                                if (row["id"] != System.DBNull.Value)
+                                    newItem.id = (Guid)row["id"];
+                                newItem.name = (string)row["name"];
+                                newItem.ModelKey = (Guid)row["ModelKey"];
+                                newItem.type = (string)row["type"];
+                                if (row["schema"] != System.DBNull.Value)
+                                    newItem.schema = (string)row["schema"];
+                                newItem.CreatedDate = (DateTime)row["CreatedDate"];
+                                newItem.ModifiedDate = (DateTime)row["ModifiedDate"];
+                                if (row["Hash"] != System.DBNull.Value)
+                                    newItem.Hash = (string)row["Hash"];
+                                if (t.Columns.Contains("status") && row["status"] != System.DBNull.Value)
+                                    newItem.Status = (string)row["status"];
+                                newItem.Changed = false;
+                                retval.Add(newItem);
+                            }
+                        }
                     }
                 }
             }
@@ -1874,22 +1885,24 @@ namespace PROJECTNAMESPACE
                 //Save items to the table
                 foreach (var item in list.Where(x => x.Changed))
                 {
-                    var command = new SqlCommand("if exists(select * from [__nhydrateobjects] where [id] = @id) " +
+                    using (var command = new SqlCommand("if exists(select * from [__nhydrateobjects] where [id] = @id) " +
                                                      "update [__nhydrateobjects] set [name] = @name, [type] = @type, [schema] = @schema, [CreatedDate] = @CreatedDate, [ModifiedDate] = @ModifiedDate, [Hash] = @Hash, [ModelKey] = @ModelKey, [Status] = @Status where [id] = @id " +
                                                      "else " +
-                                                     "insert into [__nhydrateobjects] ([id], [name], [type], [schema], [CreatedDate], [ModifiedDate], [Hash], [ModelKey], [Status]) values (@id, @name, @type, @schema, @CreatedDate, @ModifiedDate, @Hash, @ModelKey, @Status)", conn);
-                    command.Transaction = transaction;
-                    command.Parameters.Add(new SqlParameter() { DbType = DbType.Guid, Value = (item.id == Guid.Empty ? System.DBNull.Value : (object)item.id), ParameterName = "@id", IsNullable = true });
-                    command.Parameters.Add(new SqlParameter() { DbType = DbType.Int64, Value = item.rowid, ParameterName = "@rowid", IsNullable = false });
-                    command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.name, ParameterName = "@name", IsNullable = false });
-                    command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.type, ParameterName = "@type", IsNullable = false });
-                    command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = (item.schema == null ? System.DBNull.Value : (object)item.schema), ParameterName = "@schema", IsNullable = true });
-                    command.Parameters.Add(new SqlParameter() { DbType = DbType.DateTime, Value = item.CreatedDate, ParameterName = "@CreatedDate", IsNullable = false });
-                    command.Parameters.Add(new SqlParameter() { DbType = DbType.DateTime, Value = DateTime.Now, ParameterName = "@ModifiedDate", IsNullable = false });
-                    command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.Hash, ParameterName = "@Hash", IsNullable = false });
-                    command.Parameters.Add(new SqlParameter() { DbType = DbType.Guid, Value = item.ModelKey, ParameterName = "@ModelKey", IsNullable = false });
-                    command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.Status, ParameterName = "@Status", IsNullable = true });
-                    SqlServers.ExecuteCommand(command);
+                                                     "insert into [__nhydrateobjects] ([id], [name], [type], [schema], [CreatedDate], [ModifiedDate], [Hash], [ModelKey], [Status]) values (@id, @name, @type, @schema, @CreatedDate, @ModifiedDate, @Hash, @ModelKey, @Status)", conn))
+                    {
+                        command.Transaction = transaction;
+                        command.Parameters.Add(new SqlParameter() { DbType = DbType.Guid, Value = (item.id == Guid.Empty ? System.DBNull.Value : (object)item.id), ParameterName = "@id", IsNullable = true });
+                        command.Parameters.Add(new SqlParameter() { DbType = DbType.Int64, Value = item.rowid, ParameterName = "@rowid", IsNullable = false });
+                        command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.name, ParameterName = "@name", IsNullable = false });
+                        command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.type, ParameterName = "@type", IsNullable = false });
+                        command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = (item.schema == null ? System.DBNull.Value : (object)item.schema), ParameterName = "@schema", IsNullable = true });
+                        command.Parameters.Add(new SqlParameter() { DbType = DbType.DateTime, Value = item.CreatedDate, ParameterName = "@CreatedDate", IsNullable = false });
+                        command.Parameters.Add(new SqlParameter() { DbType = DbType.DateTime, Value = DateTime.Now, ParameterName = "@ModifiedDate", IsNullable = false });
+                        command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.Hash, ParameterName = "@Hash", IsNullable = false });
+                        command.Parameters.Add(new SqlParameter() { DbType = DbType.Guid, Value = item.ModelKey, ParameterName = "@ModelKey", IsNullable = false });
+                        command.Parameters.Add(new SqlParameter() { DbType = DbType.String, Value = item.Status, ParameterName = "@Status", IsNullable = true });
+                        SqlServers.ExecuteCommand(command);
+                    }
                 }
 
             }
