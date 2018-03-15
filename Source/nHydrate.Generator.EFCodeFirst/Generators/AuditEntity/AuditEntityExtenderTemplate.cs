@@ -80,7 +80,7 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
             try
             {
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Audit");
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}.Audit");
                 sb.AppendLine("{");
                 sb.AppendLine("	partial class " + _currentTable.PascalName + "Audit");
                 sb.AppendLine("	{");

@@ -77,7 +77,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("	#region Entity Context");
                 sb.AppendLine();
                 sb.AppendLine("	/// <summary />");
-                sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+                sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
                 sb.AppendLine("	public partial class " + _model.ProjectName + "MockEntities : " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities, System.IDisposable, " + this.GetLocalNamespace() + ".IContext");
                 sb.AppendLine("	{");
                 sb.AppendLine();

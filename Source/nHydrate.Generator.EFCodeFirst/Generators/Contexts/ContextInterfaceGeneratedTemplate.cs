@@ -83,7 +83,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("#pragma warning restore 0168"); //Supress variable declared not used
                 sb.AppendLine("#pragma warning restore 0108"); //Hides inherited member audit fields from IAudit
 
-                //sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+                //sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
                 //sb.AppendLine("{");
                 //this.AppendTypeTableWrappers();
                 //sb.AppendLine("}");
@@ -111,7 +111,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	#region Entity Context");
             sb.AppendLine();
             sb.AppendLine("	/// <summary />");
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+            sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
             sb.AppendLine("	public partial interface I" + _model.ProjectName + "Entities : System.IDisposable");
             sb.AppendLine("	{");
             sb.AppendLine("		/// <summary />");

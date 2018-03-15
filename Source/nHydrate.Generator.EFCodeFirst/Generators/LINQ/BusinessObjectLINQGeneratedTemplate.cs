@@ -99,7 +99,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.LINQ
             sb.AppendLine("using System.Data.Linq.Mapping;");
             sb.AppendLine("using System.Collections;");
             sb.AppendLine("using System.Collections.Generic;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ";");
+            sb.AppendLine($"using {this.GetLocalNamespace()};");
             sb.AppendLine();
         }
 
@@ -118,7 +118,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.LINQ
                     sb.AppendLine("	[Table(Name = \"" + _model.TenantPrefix + "_" + table.DatabaseName + "\")]");
                 else
                     sb.AppendLine("	[Table(Name = \"" + table.DatabaseName + "\")]");
-                sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+                sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
                 sb.AppendLine("	public partial class " + table.PascalName + "Query : IBusinessObjectLINQQuery");
                 sb.AppendLine("	{");
 

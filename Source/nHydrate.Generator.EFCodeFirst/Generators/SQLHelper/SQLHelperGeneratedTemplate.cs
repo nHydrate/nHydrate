@@ -99,9 +99,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("using System.Data.Linq;");
             sb.AppendLine("using System.Linq.Expressions;");
             sb.AppendLine("using System.Data.SqlClient;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ";");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".Exceptions;");
+            sb.AppendLine($"using {this.GetLocalNamespace()};");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.Entity;");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.Exceptions;");
             sb.AppendLine();
         }
 

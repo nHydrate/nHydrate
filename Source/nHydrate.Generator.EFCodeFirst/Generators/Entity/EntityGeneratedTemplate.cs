@@ -83,7 +83,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 sb.AppendLine("#pragma warning disable 612");
                 this.AppendUsingStatements();
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
                 sb.AppendLine("{");
                 this.AppendEntityClass();
                 sb.AppendLine("}");
@@ -107,8 +107,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Text;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ";");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".EventArguments;");
+            sb.AppendLine($"using {this.GetLocalNamespace()};");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.EventArguments;");
             sb.AppendLine("using System.Text.RegularExpressions;");
             sb.AppendLine("using System.Linq.Expressions;");
             sb.AppendLine("using System.Data.Entity;");
@@ -126,15 +126,17 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 doubleDerivedClassName = _item.PascalName + "Base";
 
                 sb.AppendLine("	/// <summary>");
-                sb.AppendLine("	/// The '" + _item.PascalName + "' entity");
+                sb.AppendLine($"	/// The '{_item.PascalName}' entity");
+                if (!string.IsNullOrEmpty(_item.CodeFacade))
+                    sb.AppendLine($"	/// Facade for '{_item.DatabaseName}' table");
                 if (!string.IsNullOrEmpty(_item.Description))
                     StringHelper.LineBreakCode(sb, _item.Description, "	/// ");
                 sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+                sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
                 if (_item.IsAbstract)
-                    sb.Append("	public abstract partial class " + _item.PascalName + " : " + doubleDerivedClassName);
+                    sb.Append($"	public abstract partial class {_item.PascalName} : {doubleDerivedClassName}");
                 else
-                    sb.Append("	public partial class " + _item.PascalName + " : " + doubleDerivedClassName + ", System.ICloneable");
+                    sb.Append($"	public partial class {_item.PascalName} : {doubleDerivedClassName}, System.ICloneable");
 
                 //If we can add this item then implement the ICreatable interface
                 if (!_item.AssociativeTable && !_item.Immutable)
@@ -159,7 +161,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("	/// </summary>");
             sb.AppendLine("	[DataContract]");
             sb.AppendLine("	[Serializable]");
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+            sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
 
             sb.AppendLine("	[FieldNameConstants(typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))]");
             sb.AppendLine("	[System.ComponentModel.DataAnnotations.MetadataType(typeof(" + this.GetLocalNamespace() + ".Entity.Metadata." + _item.PascalName + "Metadata))]");
@@ -2216,12 +2218,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
         {
             sb.AppendLine("#region Metadata Class");
             sb.AppendLine();
-            sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity.Metadata");
+            sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity.Metadata");
             sb.AppendLine("{");
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// Metadata class for the '" + _item.PascalName + "' entity");
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+            sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
             sb.Append("	public partial class " + _item.PascalName + "Metadata : ");
 
             if (_item.ParentTable != null)

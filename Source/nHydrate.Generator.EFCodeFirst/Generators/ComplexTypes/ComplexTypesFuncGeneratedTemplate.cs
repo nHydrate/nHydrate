@@ -72,7 +72,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
                 nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 this.AppendUsingStatements();
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
                 sb.AppendLine("{");
 
                 var doubleDerivedClassName = _item.PascalName;
@@ -94,7 +94,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[DataContract(IsReference = true)]");
                 sb.AppendLine("	[Serializable]");
-                sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+                sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
                 sb.AppendLine("	public partial class " + doubleDerivedClassName + " : " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject, System.ICloneable");
                 sb.AppendLine("	{");
                 this.AppendedFieldEnum();
@@ -120,7 +120,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Runtime.Serialization;");
             sb.AppendLine("using System.Collections.Generic;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.Entity;");
             sb.AppendLine("using System.Linq.Expressions;");
             sb.AppendLine();
         }

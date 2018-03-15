@@ -88,7 +88,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
             sb.AppendLine("using System.Collections.Generic;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.Entity;");
             sb.AppendLine("using System.Linq.Expressions;");
             sb.AppendLine();
         }
@@ -100,7 +100,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// Extension methods for this library");
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+            sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
             sb.AppendLine("	public static partial class " + _model.ProjectName + "EntitiesExtensions");
             sb.AppendLine("	{");
 

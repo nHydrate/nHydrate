@@ -81,7 +81,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("}");
                 sb.AppendLine();
 
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
                 sb.AppendLine("{");
                 sb.AppendLine("}");
                 sb.AppendLine("#pragma warning restore 612");
@@ -128,7 +128,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("using System.Data.SqlClient;");
             sb.AppendLine("using System.Data;");
             sb.AppendLine("using System.Data.Entity.ModelConfiguration;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.Entity;");
             sb.AppendLine("using System.Data.Entity.Core.Objects;");
             sb.AppendLine();
         }

@@ -85,7 +85,7 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
                 nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 this.AppendUsingStatements();
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Audit");
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}.Audit");
                 sb.AppendLine("{");
                 this.AppendEntityClass();
                 sb.AppendLine("}");

@@ -94,7 +94,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.IncludeTreeLINQ
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
             sb.AppendLine("using System.Data.Linq.Mapping;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ";");
+            sb.AppendLine($"using {this.GetLocalNamespace()};");
             sb.AppendLine();
         }
 
@@ -112,7 +112,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.IncludeTreeLINQ
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[Serializable]");
                 sb.AppendLine("	[Table(Name = \"" + table.DatabaseName + "\")]");
-                sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+                sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
                 sb.AppendLine("	public partial class " + table.PascalName + "Include : " + this.GetLocalNamespace() + ".IContextInclude");
                 sb.AppendLine("	{");
 

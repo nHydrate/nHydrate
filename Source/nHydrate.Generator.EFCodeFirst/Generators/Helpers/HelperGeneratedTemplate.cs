@@ -1160,7 +1160,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine();
 
                 #region EventArgs
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".EventArguments");
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}.EventArguments");
                 sb.AppendLine("{");
                 sb.AppendLine("	#region ChangedEventArgs");
                 sb.AppendLine("	/// <summary>");
@@ -1224,7 +1224,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 #endregion
 
                 #region Exceptions
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Exceptions");
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}.Exceptions");
                 sb.AppendLine("{");
 
                 sb.AppendLine("	#region ConcurrencyException");

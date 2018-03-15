@@ -77,7 +77,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.GenerationDetail
                 sb.AppendLine();
 
                 sb.AppendLine($"Version {_model.Version.ToString()}");
-                sb.AppendLine($"Generated on {DateTime.Now.ToString("yyyy-MM-dd HH:mm")}");
                 sb.AppendLine($"Table Count: {_model.Database.Tables.Count(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly)}");
                 sb.AppendLine($"Tenant Table Count: {_model.Database.Tables.Count(x => x.Generated && x.IsTenant)}");
                 sb.AppendLine($"View Count: {_model.Database.CustomViews.Count(x => x.Generated)}");

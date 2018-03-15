@@ -71,7 +71,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ComplexTypes
             try
             {
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
                 sb.AppendLine("{");
                 sb.AppendLine("	partial class " + _item.PascalName);
                 sb.AppendLine("	{");
