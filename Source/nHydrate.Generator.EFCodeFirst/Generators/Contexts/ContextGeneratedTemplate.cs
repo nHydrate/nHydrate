@@ -592,31 +592,42 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     Table childTable = relation.ChildTableRef.Object as Table;
                     if (childTable.Generated && !childTable.IsInheritedFrom(table) && !childTable.AssociativeTable)
                     {
-                        if (relation.IsOneToOne)
+                        if (relation.IsOneToOne && relation.AreAllFieldsPK)
                         {
-                            sb.AppendLine("			//Relation " + table.PascalName + " -> " + childTable.PascalName);
-                            sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
+                            sb.AppendLine($"			//Relation {table.PascalName} -> {childTable.PascalName}");
+                            sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}>()");
 
                             if (relation.IsRequired)
-                                sb.AppendLine("							 .HasRequired(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                                sb.AppendLine($"				.HasRequired(a => a.{relation.PascalRoleName}{table.PascalName})");
                             else
-                                sb.AppendLine("							 .HasOptional(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                                sb.AppendLine($"				.HasOptional(a => a.{relation.PascalRoleName}{table.PascalName})");
 
-                            sb.AppendLine("							 .WithOptional(x => x." + relation.PascalRoleName + childTable.PascalName + ")");
-                            sb.AppendLine("							 .WillCascadeOnDelete(false);");
+                            sb.AppendLine($"				.WithOptional(x => x.{relation.PascalRoleName}{childTable.PascalName})");
+                            sb.AppendLine("					.WillCascadeOnDelete(false);");
+                        }
+                        else if (relation.IsOneToOne && !relation.AreAllFieldsPK)
+                        {
+                            sb.AppendLine($"			//Relation {table.PascalName} -> {childTable.PascalName}");
+                            sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>()");
+                            sb.AppendLine($"				.HasMany(a => a.{childTable.PascalName}List)");
+                            if (relation.IsRequired)
+                                sb.AppendLine($"				.WithRequired(a => a.{relation.PascalRoleName}{table.PascalName})");
+                            else
+                                sb.AppendLine($"				.WithOptional(a => a.{relation.PascalRoleName}{table.PascalName})");
+                            sb.AppendLine("				.WillCascadeOnDelete(false);");
                         }
                         else
                         {
-                            sb.AppendLine("			//Relation " + table.PascalName + " -> " + childTable.PascalName);
-                            sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
+                            sb.AppendLine($"			//Relation {table.PascalName} -> {childTable.PascalName}");
+                            sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}>()");
 
                             if (relation.IsRequired)
-                                sb.AppendLine("							 .HasRequired(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                                sb.AppendLine($"				.HasRequired(a => a.{relation.PascalRoleName}{table.PascalName})");
                             else
-                                sb.AppendLine("							 .HasOptional(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                                sb.AppendLine($"				.HasOptional(a => a.{relation.PascalRoleName}{table.PascalName})");
 
-                            sb.AppendLine("							 .WithMany(b => b." + relation.PascalRoleName + childTable.PascalName + "List)");
-                            sb.Append("							 .HasForeignKey(u => new { ");
+                            sb.AppendLine($"				.WithMany(b => b.{relation.PascalRoleName}{childTable.PascalName}List)");
+                            sb.Append("				.HasForeignKey(u => new { ");
 
                             var index = 0;
                             foreach (var columnPacket in relation.ColumnRelationships
@@ -632,7 +643,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                             }
 
                             sb.AppendLine(" })");
-                            sb.AppendLine("							 .WillCascadeOnDelete(false);");
+                            sb.AppendLine("				.WillCascadeOnDelete(false);");
                         }
 
                         sb.AppendLine();
@@ -768,6 +779,26 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
             #endregion
 
+            #region GetTableHierarchyForUpdate
+            sb.AppendLine("        private List<Tuple<string, string>> GetTableHierarchyForUpdate(object entity)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            var retval = new List<Tuple<string, string>>();");
+            foreach (var table in _model.Database.Tables.Where(x => x.ParentTable != null).OrderBy(x => x.PascalName).ToList())
+            {
+                sb.AppendLine($"            if (entity is Entity.{table.PascalName})");
+                sb.AppendLine("            {");
+                if (table.AllowModifiedAudit)
+                    sb.AppendLine($"                retval.Add(new Tuple<string, string>(\"{table.DatabaseName}\", \"{_model.Database.ModifiedDateDatabaseName}\"));");
+                foreach (var child in table.GetParentTablesFullHierarchy().Reverse().Skip(1).Where(x => x.AllowModifiedAudit).ToList())
+                {
+                    sb.AppendLine($"                retval.Add(new Tuple<string, string>(\"{child.DatabaseName}\", \"{_model.Database.ModifiedDateDatabaseName}\"));");
+                }
+                sb.AppendLine("            }");
+            }
+            sb.AppendLine("            return retval.Distinct().ToList();");
+            sb.AppendLine("        }");
+            #endregion
+
             #region Auditing
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Persists all updates to the data source and resets change tracking in the object context.");
@@ -830,6 +861,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #endregion
 
             #region Modified Items
+            sb.AppendLine("			var extraScripts = new List<string>();");
             sb.AppendLine("			//Process modified list");
             sb.AppendLine("			var modifiedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Modified);");
             sb.AppendLine("			foreach (var item in modifiedList)");
@@ -843,6 +875,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
             sb.AppendLine("					}");
             sb.AppendLine("					audit.ModifiedDate = markedTime;");
+            sb.AppendLine("					//var updateObjects = GetTableHierarchyForUpdate(item.Entity);");
+            sb.AppendLine("					//foreach (var uo in updateObjects)");
+            sb.AppendLine("					//	extraScripts.Add($\"UPDATE [{uo.Item1}] SET [{uo.Item2}] = @__modifiedDate\");");
             sb.AppendLine("				}");
             sb.AppendLine("			}");
             sb.AppendLine("			this.OnBeforeSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
@@ -859,6 +894,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				retval += QueryPreCache.ExecuteDeletes(this);");
             sb.AppendLine("				retval += base.SaveChanges();");
             sb.AppendLine("				retval += QueryPreCache.ExecuteUpdates(this);");
+            sb.AppendLine("				QueryPreCache.ExecuteModifiedScripts(this, extraScripts, markedTime);");
             sb.AppendLine("				if (customTrans != null)");
             sb.AppendLine("					customTrans.Commit();");
             sb.AppendLine("			}");

@@ -171,9 +171,17 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.IncludeTreeLINQ
                                 sb.AppendLine("		/// </summary>");
                                 sb.AppendLine("		[Association(ThisKey = \"" + thisKey + "\", OtherKey = \"" + otherKey + "\")]");
                                 if (relation.IsOneToOne && relation.AreAllFieldsPK)
+                                {
                                     sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Include " + relation.PascalRoleName + childTable.PascalName + " { get; private set; }");
+                                }
+                                else if (relation.IsOneToOne)
+                                {
+                                    sb.AppendLine("		[EntityMap(Name = \"" + relation.PascalRoleName + childTable.PascalName + "List\")]");
+                                    sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Include " + relation.PascalRoleName + childTable.PascalName + " { get; private set; }");
+                                }
                                 else
                                     sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Include " + relation.PascalRoleName + childTable.PascalName + "List { get; private set; }");
+
                                 sb.AppendLine();
                             }
                         }

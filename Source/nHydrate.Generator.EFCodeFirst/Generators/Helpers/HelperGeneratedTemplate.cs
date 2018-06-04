@@ -530,6 +530,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
 
+                sb.AppendLine("	#region EntityMap");
+                sb.AppendLine("	/// <summary />");
+                sb.AppendLine(" [AttributeUsage(AttributeTargets.Property)]");
+                sb.AppendLine("	public class EntityMap : System.Attribute");
+                sb.AppendLine("	{");
+                sb.AppendLine("		public string Name { get; set; }");
+                sb.AppendLine("	}");
+                sb.AppendLine("	#endregion");
+                sb.AppendLine();
+
                 sb.AppendLine("	#region IContext");
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// The interface for a context object");
@@ -989,6 +999,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("					Optimizer = optimizer,");
                 sb.AppendLine("				};");
                 sb.AppendLine();
+
                 sb.AppendLine("				if (!_queryDeleteCache.ContainsKey(instanceKey))");
                 sb.AppendLine("					_queryDeleteCache.TryAdd(instanceKey, new List<PreCacheItem>());");
                 sb.AppendLine("				_queryDeleteCache[instanceKey].Add(newItem);");
@@ -999,6 +1010,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+
                 sb.AppendLine("		internal static void AddUpdate(Guid instanceKey, string sql, List<System.Data.SqlClient.SqlParameter> parameters, QueryOptimizer optimizer)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			try");
@@ -1020,6 +1032,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+
                 sb.AppendLine("		internal static int ExecuteDeletes(IContext context)");
                 sb.AppendLine("		{");
                 sb.AppendLine("				if (!_queryDeleteCache.ContainsKey(context.InstanceKey))");
@@ -1032,6 +1045,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("				return retval;");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+
                 sb.AppendLine("		internal static int ExecuteUpdates(IContext context)");
                 sb.AppendLine("		{");
                 sb.AppendLine("				if (!_queryUpdateCache.ContainsKey(context.InstanceKey))");
@@ -1044,6 +1058,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("				return retval;");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+
                 sb.AppendLine("		private static int Execute(IContext context, List<PreCacheItem> list)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			if (list == null) return 0;");
@@ -1086,6 +1101,43 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+
+                sb.AppendLine("        internal static int ExecuteModifiedScripts(IContext context, List<string> list, DateTime modifiedDate)");
+                sb.AppendLine("        {");
+                sb.AppendLine("            if (list == null || !list.Any()) return 0;");
+                sb.AppendLine("            try");
+                sb.AppendLine("            {");
+                sb.AppendLine("                var count = 0;");
+                sb.AppendLine("                foreach (var sql in list)");
+                sb.AppendLine("                {");
+                sb.AppendLine("                    var affected = 0;");
+                sb.AppendLine("                    var connection = (SqlConnection)(context.ObjectContext.Connection as EntityConnection).StoreConnection;");
+                sb.AppendLine("                    if (connection != null)");
+                sb.AppendLine("                    {");
+                sb.AppendLine("                        if (connection.State == System.Data.ConnectionState.Closed)");
+                sb.AppendLine("                            connection.Open();");
+                sb.AppendLine();
+                sb.AppendLine("                        using (var cmd = connection.CreateCommand())");
+                sb.AppendLine("                        {");
+                sb.AppendLine("                            if (!context.ContextStartup.DefaultTimeout && context.ContextStartup.CommandTimeout > 0) cmd.CommandTimeout = context.ContextStartup.CommandTimeout;");
+                sb.AppendLine("                            else if (context.ObjectContext.CommandTimeout != null) cmd.CommandTimeout = context.ObjectContext.CommandTimeout.Value;");
+                sb.AppendLine("                            cmd.CommandText = sql;");
+                sb.AppendLine("                            cmd.Transaction = FetchTransaction(connection);");
+                sb.AppendLine("                            cmd.Parameters.Add(new SqlParameter { DbType = DbType.DateTime2, Value = modifiedDate, ParameterName = \"__modifiedDate\" });");
+                sb.AppendLine("                            count = (int)cmd.ExecuteNonQuery();");
+                sb.AppendLine("                            affected += count;");
+                sb.AppendLine("                        }");
+                sb.AppendLine("                    }");
+                sb.AppendLine("                }");
+                sb.AppendLine("                return count;");
+                sb.AppendLine("            }");
+                sb.AppendLine("            catch");
+                sb.AppendLine("            {");
+                sb.AppendLine("                throw;");
+                sb.AppendLine("            }");
+                sb.AppendLine("        }");
+                sb.AppendLine();
+
                 sb.AppendLine("		internal static void RemoveDeletes(Guid instanceKey)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			try");
@@ -1099,6 +1151,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+
                 sb.AppendLine("		internal static void RemoveUpdates(Guid instanceKey)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			try");
@@ -1112,6 +1165,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+
                 sb.AppendLine("		internal static void RemoveAll(Guid instanceKey)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			try");
@@ -1125,6 +1179,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
                 sb.AppendLine();
+
                 sb.AppendLine("		private static SqlTransaction FetchTransaction(SqlConnection conn)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			try");
@@ -1145,6 +1200,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Helpers
                 sb.AppendLine("		}");
                 sb.AppendLine("	}");
                 sb.AppendLine();
+
                 sb.AppendLine("	internal class PreCacheItem");
                 sb.AppendLine("	{");
                 sb.AppendLine("		public string SQL { get; set; }");
