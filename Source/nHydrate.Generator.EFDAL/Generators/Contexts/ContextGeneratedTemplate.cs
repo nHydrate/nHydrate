@@ -373,7 +373,7 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
                 var outbondRelationList = table.GetRelations().ToList();
                 if (outbondRelationList.Any())
                 {
-                    sb.AppendLine("		/// <para> </para>"); //char 255 - not space
+                    sb.AppendLine("		/// <para>Â </para>"); //char 255 - not space
                     sb.AppendLine("		/// <para>Outbound Relations</para>");
                     foreach (var relation in outbondRelationList)
                     {
@@ -384,7 +384,7 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
                 var inbondRelationList = table.GetRelationsWhereChild().ToList();
                 if (inbondRelationList.Any())
                 {
-                    sb.AppendLine("		/// <para> </para>"); //char 255 - not space
+                    sb.AppendLine("		/// <para>Â </para>"); //char 255 - not space
                     sb.AppendLine("		/// <para>Inbound Relations</para>");
                     foreach (var relation in inbondRelationList)
                     {
@@ -1080,7 +1080,12 @@ namespace nHydrate.Generator.EFDAL.Generators.Contexts
             sb.AppendLine("				}");
             sb.AppendLine("			}");
             sb.AppendLine();
-
+            sb.AppendLine("			if (deletedList.Count(x => !x.IsRelationship) > 0)");
+            sb.AppendLine("			{");
+            sb.AppendLine("			    this.Refresh(RefreshMode.StoreWins, deletedList.Where(x => !x.IsRelationship).ToList().ConvertAll(x => x.Entity));");
+            sb.AppendLine("			    deletedList.Where(x => !x.IsRelationship).ToList().ForEach(x => x.ChangeState(EntityState.Deleted));//re-delete them;");
+            sb.AppendLine("			}");
+            sb.AppendLine();
             sb.AppendLine("			var markedTime = " + (_model.UseUTCTime ? "System.DateTime.UtcNow" : "System.DateTime.Now") + ";");
             sb.AppendLine("			//Process added list");
             sb.AppendLine("			var addedList = this.ObjectStateManager.GetObjectStateEntries(System.Data.EntityState.Added);");
