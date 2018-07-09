@@ -490,9 +490,9 @@ namespace PROJECTNAMESPACE
             var args = Environment.GetCommandLineArgs();
 
             var loopcount = 0;
-            foreach (var arg in args)
+            foreach (var arg in args.Skip(1))
             {
-                var regEx = new Regex(@"\s?[-/](\w+)(:(.*))?");
+                var regEx = new Regex(@"^\s?[-/](\w+)(:(.*))?");
                 var regExMatch = regEx.Match(arg);
                 if (regExMatch.Success)
                 {
