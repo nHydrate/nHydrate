@@ -206,7 +206,7 @@ namespace PROJECTNAMESPACE
                                                                                      "[Status] [varchar](500) NULL," +
                                                                                      "[ModelKey] [uniqueidentifier] NOT NULL)");
             sb.AppendLine("GO");
-            sb.AppendLine("if exists(select * from sys.objects where name = '__nhydrateobjects' and type = 'U') AND not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = 'status' and o.name = '__nhydrateobjects')");
+            sb.AppendLine("if exists(select * from sys.objects where name = '__nhydrateobjects' and type = 'U') AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = 'status' and o.name = '__nhydrateobjects')");
             sb.AppendLine("ALTER TABLE [dbo].[__nhydrateobjects] ADD [status] [Varchar] (500) NULL");
             sb.AppendLine("GO");
             sb.AppendLine("delete from [__nhydrateobjects] where [id] IS NULL and ModelKey = '" + UpgradeInstaller.MODELKEY + "'");
@@ -518,11 +518,6 @@ namespace PROJECTNAMESPACE
                         });
                     }
                     settings.Save(setup.ConnectionString);
-
-                    SqlServers.DeleteExtendedProperty(setup.ConnectionString, "dbVersion");
-                    SqlServers.DeleteExtendedProperty(setup.ConnectionString, "LastUpdate");
-                    SqlServers.DeleteExtendedProperty(setup.ConnectionString, "ModelKey");
-                    SqlServers.DeleteExtendedProperty(setup.ConnectionString, "History");
                 }
 
                 timer.Stop();

@@ -370,9 +370,6 @@
     <Compile Include="PropertyGrid.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SqlSchemaToModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <EmbeddedResource Include="BaseUIControl.resx">
       <DependentUpon>BaseUIControl.cs</DependentUpon>
       <SubType>Designer</SubType>

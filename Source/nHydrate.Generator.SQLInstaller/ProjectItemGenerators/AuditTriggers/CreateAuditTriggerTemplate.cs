@@ -97,13 +97,13 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.AuditTriggers
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
                 sb.AppendLine("--DROP ANY AUDIT TRIGGERS FOR [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
-                sb.AppendLine("if exists(select * from sysobjects where name = '__TR_" + table.DatabaseName + "__INSERT' AND xtype = 'TR')");
+                sb.AppendLine("if exists(select * from sys.objects where name = '__TR_" + table.DatabaseName + "__INSERT' AND type = 'TR')");
                 sb.AppendLine("DROP TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__INSERT]");
                 sb.AppendLine("GO");
-                sb.AppendLine("if exists(select * from sysobjects where name = '__TR_" + table.DatabaseName + "__UPDATE' AND xtype = 'TR')");
+                sb.AppendLine("if exists(select * from sys.objects where name = '__TR_" + table.DatabaseName + "__UPDATE' AND type = 'TR')");
                 sb.AppendLine("DROP TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__UPDATE]");
                 sb.AppendLine("GO");
-                sb.AppendLine("if exists(select * from sysobjects where name = '__TR_" + table.DatabaseName + "__DELETE' AND xtype = 'TR')");
+                sb.AppendLine("if exists(select * from sys.objects where name = '__TR_" + table.DatabaseName + "__DELETE' AND type = 'TR')");
                 sb.AppendLine("DROP TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__DELETE]");
                 sb.AppendLine("GO");
                 sb.AppendLine();

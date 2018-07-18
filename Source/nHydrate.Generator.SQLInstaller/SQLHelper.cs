@@ -147,7 +147,7 @@ namespace nHydrate.Generator.SQLInstaller
                     //else if (tList[0].DatabaseName != oldT.DatabaseName)
                     //{
                     //  //RENAME TABLE
-                    //  sb.AppendLine("if exists(select * from sysobjects where name = '" + oldT.DatabaseName + "' and xtype = 'U')");
+                    //  sb.AppendLine("if exists(select * from sys.objects where name = '" + oldT.DatabaseName + "' and type = 'U')");
                     //  sb.AppendLine("exec sp_rename [" + oldT.DatabaseName + "], [" + tList[0].DatabaseName + "]");
                     //}
                 }
@@ -209,8 +209,8 @@ namespace nHydrate.Generator.SQLInstaller
                             else if (newC.DatabaseName != oldC.DatabaseName)
                             {
                                 ////RENAME COLUMN
-                                //string sql = "if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + oldC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" +
-                                //             "AND not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + newC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" + Environment.NewLine +
+                                //string sql = "if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + oldC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" +
+                                //             "AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + newC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" + Environment.NewLine +
                                 //             "EXEC sp_rename @objname = '" + newT.DatabaseName + "." + oldC.DatabaseName + "', @newname = '" + newC.DatabaseName + "', @objtype = 'COLUMN'";
                                 //if (!querylist.Contains(sql))
                                 //{
@@ -468,7 +468,7 @@ namespace nHydrate.Generator.SQLInstaller
                             sb.AppendLine();
 
                             //Drop the tenant field
-                            sb.AppendLine("if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + modelNew.TenantColumnName + "' and o.name = '" + newT.DatabaseName + "')");
+                            sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + modelNew.TenantColumnName + "' and o.name = '" + newT.DatabaseName + "')");
                             sb.AppendLine("ALTER TABLE [" + newT.GetSQLSchema() + "].[" + newT.DatabaseName + "] DROP COLUMN [" + modelNew.TenantColumnName + "]");
                             sb.AppendLine();
                         }

@@ -223,7 +223,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                         if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
                         {
                             //Now add columns if they do not exist
-                            sb.AppendLine("if not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + column.DatabaseName + "' and o.name = '" + tableName + "')");
+                            sb.AppendLine("if not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + column.DatabaseName + "' and o.name = '" + tableName + "')");
                             sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ADD [" + column.DatabaseName + "] " + column.DatabaseType + " NULL");
                             sb.AppendLine("GO");
                             sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ALTER COLUMN [" + column.DatabaseName + "] " + column.DatabaseType + " NULL");
@@ -234,7 +234,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
                     if (table.AllowModifiedAudit)
                     {
-                        sb.AppendLine("if not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.ModifiedByDatabaseName + "' and o.name = '" + tableName + "')");
+                        sb.AppendLine("if not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + _model.Database.ModifiedByDatabaseName + "' and o.name = '" + tableName + "')");
                         sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ADD [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
                         sb.AppendLine("GO");
                         sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ALTER COLUMN [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
@@ -413,7 +413,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             sb.AppendLine("BEGIN");
             sb.AppendLine("exec(");
             sb.AppendLine("'");
-            sb.AppendLine("if exists (select * from dbo.sysobjects where id = object_id(N''' + @test + ''') and OBJECTPROPERTY(id, N''IsProcedure'') = 1)");
+            sb.AppendLine("if exists (select * from sys.objects where object_id = object_id(N''' + @test + ''') and OBJECTPROPERTY(object_id, N''IsProcedure'') = 1)");
             sb.AppendLine("drop procedure ' + @test + '");
             sb.AppendLine("')");
             sb.AppendLine("FETCH NEXT FROM @mycur INTO @test");
@@ -461,7 +461,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                     if (table.IsTenant)
                     {
                         sb.AppendLine("--APPEND TENANT FIELD FOR TABLE [" + table.DatabaseName + "]");
-                        sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.TenantColumnName + "' and o.name = '" + table.DatabaseName + "')");
+                        sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + _model.TenantColumnName + "' and o.name = '" + table.DatabaseName + "')");
                         sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + _model.TenantColumnName + "] [nvarchar] (128) NOT NULL CONSTRAINT [DF__" + table.PascalName.ToUpper() + "_" + _model.TenantColumnName.ToUpper() + "] DEFAULT (suser_sname())");
                         sb.AppendLine();
                     }

@@ -216,8 +216,8 @@ namespace nHydrate.DataImport.SqlClient
                         if (database.RelationshipList.Count(x => x.ConstraintName == constraintName) == 0)
                         {
                             newRelation = new Relationship();
-                            if (rowRelationship["id"] != System.DBNull.Value)
-                                newRelation.ImportData = rowRelationship["id"].ToString();
+                            if (rowRelationship["object_id"] != System.DBNull.Value)
+                                newRelation.ImportData = rowRelationship["object_id"].ToString();
                             newRelation.SourceEntity = parentTable;
                             newRelation.TargetEntity = childTable;
                             newRelation.ConstraintName = constraintName;
@@ -428,8 +428,8 @@ namespace nHydrate.DataImport.SqlClient
                 StoredProc customStoredProcedure = null;
                 foreach (DataRow rowSP in dsSP.Tables[0].Rows)
                 {
-                    var id = (int)rowSP["id"];
-                    var name = (string)rowSP["name"];
+                    var id = (int)rowSP["object_id"];
+                    var name = (string)rowSP["object_name"];
                     var schema = (string)rowSP["schemaname"];
                     customStoredProcedure = database.StoredProcList.FirstOrDefault(x => x.Name == name);
                     if (customStoredProcedure == null)
@@ -447,7 +447,7 @@ namespace nHydrate.DataImport.SqlClient
                 var sortOrder = 1;
                 foreach (DataRow rowSP in dsSPParameter.Tables[0].Rows)
                 {
-                    if (!DatabaseHelper.IsValidSQLDataType((SqlNativeTypes)int.Parse(rowSP["xtype"].ToString())))
+                    if (!DatabaseHelper.IsValidSQLDataType((SqlNativeTypes)int.Parse(rowSP["system_type_id"].ToString())))
                     {
                         customStoredProcedure.InError = true;
                         customStoredProcedure.ParameterList.Clear();
@@ -455,17 +455,16 @@ namespace nHydrate.DataImport.SqlClient
                         return false;
                     }
 
-                    var id = (int)rowSP["id"];
-                    var spName = (string)rowSP["name"];
-                    var name = (string)rowSP["ColName"];
-                    var typeName = (string)rowSP["ColType"];
-                    var dataType = DatabaseHelper.GetSQLDataType(rowSP["xtype"].ToString(), database.UserDefinedTypes);
-                    var length = int.Parse(rowSP["length"].ToString());
-                    var isOutput = ((int)rowSP["isoutparam"] != 0);
+                    var id = (int)rowSP["object_id"];
+                    var spName = (string)rowSP["object_name"];
+                    var name = (string)rowSP["column_name"];
+                    var typeName = (string)rowSP["column_type"];
+                    var dataType = DatabaseHelper.GetSQLDataType(rowSP["system_type_id"].ToString(), database.UserDefinedTypes);
+                    var length = int.Parse(rowSP["max_length"].ToString());
+                    var isOutput = ((int)rowSP["is_output"] != 0);
 
                     //The length is half the bytes for these types
-                    if ((dataType == SqlDbType.NChar) ||
-                        (dataType == SqlDbType.NVarChar))
+                    if ((dataType == SqlDbType.NChar) || (dataType == SqlDbType.NVarChar))
                     {
                         length = length / 2;
                     }
@@ -478,7 +477,7 @@ namespace nHydrate.DataImport.SqlClient
                         sortOrder++;
                         parameter.DataType = dataType;
                         parameter.Length = length;
-                        parameter.Nullable = (int)rowSP["isnullable"] == 1 ? true : false;
+                        parameter.Nullable = (int)rowSP["is_nullable"] == 1 ? true : false;
                         parameter.IsOutputParameter = isOutput;
                         customStoredProcedure.ParameterList.Add(parameter);
                     }
