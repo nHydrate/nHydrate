@@ -1173,13 +1173,13 @@ namespace nHydrate.Core.SQLGeneration
                 {
                     if (includeDrop)
                     {
-                        sb.AppendLine("--ADD/DROP CONSTRAINT FOR '[" + table.DatabaseName + "].[" + column.DatabaseName + "]'");
-                        sb.AppendLine("if exists(select * from sys.objects where name = '" + defaultName + "' and type = 'D' and type_desc = 'DEFAULT_CONSTRAINT')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP CONSTRAINT [" + GetDefaultValueConstraintName(column) + "]");
+                        sb.AppendLine($"--ADD/DROP CONSTRAINT FOR '[{table.DatabaseName}].[{column.DatabaseName}]'");
+                        sb.AppendLine($"if exists(select * from sys.objects where name = '{defaultName}' and type = 'D' and type_desc = 'DEFAULT_CONSTRAINT')");
+                        sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] DROP CONSTRAINT [{GetDefaultValueConstraintName(column)}]");
                         sb.AppendLine();
                     }
-                    sb.AppendLine("if not exists(select * from sys.objects where name = '" + defaultName + "' and type = 'D' and type_desc = 'DEFAULT_CONSTRAINT')");
-                    sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD " + defaultClause + " FOR [" + column.DatabaseName + "]");
+                    sb.AppendLine($"if not exists(select * from sys.objects where name = '{defaultName}' and type = 'D' and type_desc = 'DEFAULT_CONSTRAINT')");
+                    sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD {defaultClause} FOR [{column.DatabaseName}]");
                     sb.AppendLine();
                 }
             }
@@ -1193,98 +1193,98 @@ namespace nHydrate.Core.SQLGeneration
 
             var sb = new StringBuilder();
             var table = column.ParentTable;
-            var variableName = "@" + column.ParentTable.PascalName + "_" + column.PascalName;
+            var variableName = $"@{column.ParentTable.PascalName}_{column.PascalName}";
             sb.AppendLine("--NOTE: IF YOU HAVE AN NON-MANAGED DEFAULT, UNCOMMENT THIS CODE TO REMOVE IT");
-            sb.AppendLine("--DROP CONSTRAINT FOR '[" + table.DatabaseName + "].[" + column.DatabaseName + "]' if one exists");
-            sb.AppendLine("--declare " + variableName + " varchar(500)");
-            sb.AppendLine("--set " + variableName + " = (select top 1 c.name from sys.all_columns a inner join sys.tables b on a.object_id = b.object_id inner join sys.default_constraints c on a.default_object_id = c.object_id where b.name='" + table.DatabaseName + "' and a.name = '" + column.DatabaseName + "')");
-            sb.AppendLine("--if (" + variableName + " IS NOT NULL) exec ('ALTER TABLE [" + table.DatabaseName + "] DROP CONSTRAINT [' + " + variableName + " + ']')");
+            sb.AppendLine($"--DROP CONSTRAINT FOR '[{table.DatabaseName}].[{column.DatabaseName}]' if one exists");
+            sb.AppendLine($"--declare " + variableName + " varchar(500)");
+            sb.AppendLine($"--set {variableName} = (select top 1 c.name from sys.all_columns a inner join sys.tables b on a.object_id = b.object_id inner join sys.default_constraints c on a.default_object_id = c.object_id where b.name='{table.DatabaseName}' and a.name = '{column.DatabaseName}')");
+            sb.AppendLine($"--if ({variableName} IS NOT NULL) exec ('ALTER TABLE [{table.DatabaseName}] DROP CONSTRAINT [' + {variableName} + ']')");
             return sb.ToString();
         }
 
-        public static string GetSqlCreateView(CustomView view, bool isInternal)
+        public static string GetSqlCreateView(CustomView dbObject, bool isInternal)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("if exists(select * from sys.objects where name = '" + view.DatabaseName + "' and type = 'V' and type_desc = 'VIEW')");
-            sb.AppendLine("drop view [" + view.GetSQLSchema() + "].[" + view.DatabaseName + "]");
+            sb.AppendLine("if exists(select * from sys.objects where name = '" + dbObject.DatabaseName + "' and type = 'V' and type_desc = 'VIEW')");
+            sb.AppendLine("drop view [" + dbObject.GetSQLSchema() + "].[" + dbObject.DatabaseName + "]");
             if (isInternal)
             {
-                sb.AppendLine("--MODELID: " + view.Key);
+                sb.AppendLine($"--MODELID: {dbObject.Key}");
             }
             sb.AppendLine("GO");
             sb.AppendLine();
-            sb.AppendLine("CREATE VIEW [" + view.GetSQLSchema() + "].[" + view.DatabaseName + "]");
+            sb.AppendLine("CREATE VIEW [" + dbObject.GetSQLSchema() + "].[" + dbObject.DatabaseName + "]");
             sb.AppendLine("AS");
             sb.AppendLine();
-            sb.AppendLine(view.SQL);
+            sb.AppendLine(dbObject.SQL);
             if (isInternal)
             {
-                sb.AppendLine("--MODELID,BODY: " + view.Key);
+                sb.AppendLine("--MODELID,BODY: " + dbObject.Key);
             }
             sb.AppendLine("GO");
-            sb.AppendLine("exec sp_refreshview N'[" + view.GetSQLSchema() + "].[" + view.DatabaseName + "]';");
+            sb.AppendLine("exec sp_refreshview N'[" + dbObject.GetSQLSchema() + "].[" + dbObject.DatabaseName + "]';");
             if (isInternal)
             {
-                sb.AppendLine("--MODELID: " + view.Key);
+                sb.AppendLine($"--MODELID: {dbObject.Key}");
             }
             sb.AppendLine("GO");
             sb.AppendLine();
             return sb.ToString();
         }
 
-        public static string GetSQLCreateStoredProc(CustomStoredProcedure storedProcedure, bool isInternal)
+        public static string GetSQLCreateStoredProc(CustomStoredProcedure dbObject, bool isInternal)
         {
             var sb = new StringBuilder();
-            var name = storedProcedure.GetDatabaseObjectName();
+            var name = dbObject.GetDatabaseObjectName();
 
             sb.AppendLine("if exists(select * from sys.objects where name = '" + name + "' and type = 'P' and type_desc = 'SQL_STORED_PROCEDURE')");
-            sb.AppendLine("drop procedure [" + storedProcedure.GetSQLSchema() + "].[" + name + "]");
+            sb.AppendLine("drop procedure [" + dbObject.GetSQLSchema() + "].[" + name + "]");
             if (isInternal)
             {
-                sb.AppendLine("--MODELID: " + storedProcedure.Key);
+                sb.AppendLine($"--MODELID: {dbObject.Key}");
             }
             sb.AppendLine("GO");
             sb.AppendLine();
-            sb.AppendLine("CREATE PROCEDURE [" + storedProcedure.GetSQLSchema() + "].[" + name + "]");
+            sb.AppendLine("CREATE PROCEDURE [" + dbObject.GetSQLSchema() + "].[" + name + "]");
 
-            if (storedProcedure.Parameters.Count > 0)
+            if (dbObject.Parameters.Count > 0)
             {
                 sb.AppendLine("(");
-                sb.Append(BuildStoredProcParameterList(storedProcedure));
+                sb.Append(BuildStoredProcParameterList(dbObject));
                 sb.AppendLine(")");
             }
 
             sb.AppendLine("AS");
             sb.AppendLine();
-            sb.Append(storedProcedure.SQL);
+            sb.Append(dbObject.SQL);
             sb.AppendLine();
             if (isInternal)
             {
-                sb.AppendLine("--MODELID,BODY: " + storedProcedure.Key);
+                sb.AppendLine("--MODELID,BODY: " + dbObject.Key);
             }
             sb.AppendLine("GO");
             sb.AppendLine();
             return sb.ToString();
         }
 
-        private static string GetSQLCreateFunctionSPWrapper(Function function)
+        private static string GetSQLCreateFunctionSPWrapper(Function dbObject)
         {
             var sb = new StringBuilder();
-            var name = function.PascalName + "_SPWrapper";
+            var name = dbObject.PascalName + "_SPWrapper";
 
             sb.AppendLine("if exists(select * from sys.objects where name = '" + name + "' and type = 'P' and type_desc = 'SQL_STORED_PROCEDURE')");
-            sb.AppendLine("drop procedure [" + function.GetSQLSchema() + "].[" + name + "]");
-            sb.AppendLine("--MODELID: " + function.Key);
+            sb.AppendLine("drop procedure [" + dbObject.GetSQLSchema() + "].[" + name + "]");
+            sb.AppendLine($"--MODELID: {dbObject.Key}");
             sb.AppendLine("GO");
             sb.AppendLine();
-            sb.AppendLine("CREATE PROCEDURE [" + function.GetSQLSchema() + "].[" + name + "]");
+            sb.AppendLine("CREATE PROCEDURE [" + dbObject.GetSQLSchema() + "].[" + name + "]");
 
-            var parameterList = function.GetGeneratedParametersDatabaseOrder();
+            var parameterList = dbObject.GetGeneratedParametersDatabaseOrder();
             if (parameterList.Count > 0)
             {
                 sb.AppendLine("(");
 
-                var plist = function.GetGeneratedParametersDatabaseOrder().ToList();
+                var plist = dbObject.GetGeneratedParametersDatabaseOrder().ToList();
                 plist.ForEach(x => x.Length = 0);
 
                 sb.Append(BuildFunctionParameterList(plist));
@@ -1293,32 +1293,32 @@ namespace nHydrate.Core.SQLGeneration
 
             sb.AppendLine("AS");
             sb.AppendLine();
-            sb.Append("SELECT * FROM [" + function.GetSQLSchema() + "].[" + function.DatabaseName + "] (");
+            sb.Append("SELECT * FROM [" + dbObject.GetSQLSchema() + "].[" + dbObject.DatabaseName + "] (");
             sb.AppendLine(string.Join(", ", parameterList.Select(x => "@" + x.DatabaseName)) + ")");
             sb.AppendLine();
-            sb.AppendLine("--MODELID,BODY: " + function.Key);
+            sb.AppendLine("--MODELID,BODY: " + dbObject.Key);
             sb.AppendLine("GO");
             sb.AppendLine();
             return sb.ToString();
         }
 
-        public static string GetSQLCreateFunction(Function function, bool isInternal, EFVersionConstants efversion)
+        public static string GetSQLCreateFunction(Function dbObject, bool isInternal, EFVersionConstants efversion)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("if exists(select * from sys.objects where name = '" + function.PascalName + "' and type in('FN','IF','TF'))");
-            sb.AppendLine("drop function [" + function.GetSQLSchema() + "].[" + function.PascalName + "]");
+            sb.AppendLine("if exists(select * from sys.objects where name = '" + dbObject.PascalName + "' and type in('FN','IF','TF'))");
+            sb.AppendLine("drop function [" + dbObject.GetSQLSchema() + "].[" + dbObject.PascalName + "]");
             if (isInternal)
             {
-                sb.AppendLine("--MODELID: " + function.Key);
+                sb.AppendLine($"--MODELID: {dbObject.Key}");
             }
             sb.AppendLine("GO");
             sb.AppendLine();
-            sb.AppendLine("CREATE FUNCTION [" + function.GetSQLSchema() + "].[" + function.PascalName + "]");
+            sb.AppendLine("CREATE FUNCTION [" + dbObject.GetSQLSchema() + "].[" + dbObject.PascalName + "]");
 
             sb.AppendLine("(");
-            if (function.Parameters.Count > 0)
+            if (dbObject.Parameters.Count > 0)
             {
-                var plist = function.GetGeneratedParametersDatabaseOrder().ToList();
+                var plist = dbObject.GetGeneratedParametersDatabaseOrder().ToList();
                 plist.ForEach(x => x.Length = 0);
 
                 sb.Append(BuildFunctionParameterList(plist));
@@ -1327,20 +1327,20 @@ namespace nHydrate.Core.SQLGeneration
 
             sb.Append("RETURNS ");
 
-            if (function.IsTable && string.IsNullOrEmpty(function.ReturnVariable))
+            if (dbObject.IsTable && string.IsNullOrEmpty(dbObject.ReturnVariable))
             {
                 //There is NOT a returned table defined. This is a straight select
                 sb.AppendLine("TABLE AS RETURN");
                 sb.AppendLine("(");
-                sb.AppendLine(function.SQL);
+                sb.AppendLine(dbObject.SQL);
                 sb.AppendLine(")");
             }
-            else if (function.IsTable && !string.IsNullOrEmpty(function.ReturnVariable))
+            else if (dbObject.IsTable && !string.IsNullOrEmpty(dbObject.ReturnVariable))
             {
                 //There is a returned table defined
-                sb.Append("@" + function.ReturnVariable + " TABLE (");
+                sb.Append("@" + dbObject.ReturnVariable + " TABLE (");
 
-                var columnList = function.GetColumns().Where(x => x.Generated).ToList();
+                var columnList = dbObject.GetColumns().Where(x => x.Generated).ToList();
                 foreach (var column in columnList)
                 {
                     sb.Append(column.DatabaseName + " " + column.DatabaseType);
@@ -1350,32 +1350,32 @@ namespace nHydrate.Core.SQLGeneration
                 sb.AppendLine("AS");
                 sb.AppendLine();
                 sb.AppendLine("BEGIN");
-                sb.AppendLine(function.SQL);
+                sb.AppendLine(dbObject.SQL);
                 sb.AppendLine("END");
             }
             else
             {
-                var column = function.Columns.First().Object as FunctionColumn;
+                var column = dbObject.Columns.First().Object as FunctionColumn;
                 sb.AppendLine(column.DatabaseType.ToLower());
                 sb.AppendLine(")");
                 sb.AppendLine("AS");
                 sb.AppendLine();
                 sb.AppendLine("BEGIN");
-                sb.AppendLine(function.SQL);
+                sb.AppendLine(dbObject.SQL);
                 sb.AppendLine("END");
             }
 
             sb.AppendLine();
             if (isInternal)
             {
-                sb.AppendLine("--MODELID,BODY: " + function.Key);
+                sb.AppendLine("--MODELID,BODY: " + dbObject.Key);
             }
             sb.AppendLine("GO");
             sb.AppendLine();
 
             //Get the wrapper
-            if (function.IsTable && efversion == EFVersionConstants.EF4)
-                sb.Append(GetSQLCreateFunctionSPWrapper(function));
+            if (dbObject.IsTable && efversion == EFVersionConstants.EF4)
+                sb.Append(GetSQLCreateFunctionSPWrapper(dbObject));
 
             return sb.ToString();
         }

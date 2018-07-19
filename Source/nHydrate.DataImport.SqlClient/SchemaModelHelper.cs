@@ -452,7 +452,8 @@ namespace nHydrate.DataImport.SqlClient
             sb.AppendLine("		sys.parameters.name AS column_name,");
             sb.AppendLine("		sys.types.name AS column_type,");
             sb.AppendLine("		sys.parameters.max_length,");
-            sb.AppendLine("		sys.parameters.is_output");
+            sb.AppendLine("		sys.parameters.is_output,");
+            sb.AppendLine("		sys.parameters.is_nullable");
             sb.AppendLine("FROM	sys.objects INNER JOIN");
             sb.AppendLine("		sys.parameters ON sys.objects.object_id = sys.parameters.object_id INNER JOIN");
             sb.AppendLine("		sys.types ON sys.parameters.system_type_id = sys.types.system_type_id");

@@ -94,8 +94,8 @@ namespace nHydrate.DataImport.SqlClient
                             var newColumn = new Field() { Name = columnName, SortOrder = ++maxSortOrder };
                             entity.FieldList.Add(newColumn);
 
-                            newColumn.Nullable = bool.Parse(columnReader["allow_null"].ToString());
-                            if (bool.Parse(columnReader["isIdentity"].ToString()))
+                            newColumn.Nullable = (int)columnReader["allow_null"] == 1;
+                            if ((int)columnReader["is_identity"] == 1)
                                 newColumn.Identity = true;
 
                             if (columnReader["isPrimaryKey"] != System.DBNull.Value)
@@ -103,15 +103,15 @@ namespace nHydrate.DataImport.SqlClient
 
                             try
                             {
-                                newColumn.DataType = DatabaseHelper.GetSQLDataType(columnReader["xtype"].ToString(), database.UserDefinedTypes);
+                                newColumn.DataType = DatabaseHelper.GetSQLDataType(columnReader["system_type_id"].ToString(), database.UserDefinedTypes);
                             }
                             catch { }
 
-                            var defaultvalue = columnReader["defaultValue"].ToString();
+                            var defaultvalue = columnReader["default_value"].ToString();
                             SetupDefault(newColumn, defaultvalue);
                             //newColumn.ImportedDefaultName = "";
 
-                            newColumn.Length = (int)columnReader["length"];
+                            newColumn.Length = (int)columnReader["max_length"];
 
                             //Decimals are a little different
                             if (newColumn.DataType == SqlDbType.Decimal)
@@ -477,7 +477,7 @@ namespace nHydrate.DataImport.SqlClient
                         sortOrder++;
                         parameter.DataType = dataType;
                         parameter.Length = length;
-                        parameter.Nullable = (int)rowSP["allow_null"] == 1 ? true : false;
+                        parameter.Nullable = (bool)rowSP["is_nullable"];
                         parameter.IsOutputParameter = isOutput;
                         customStoredProcedure.ParameterList.Add(parameter);
                     }
