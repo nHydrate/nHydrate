@@ -94,7 +94,7 @@ namespace nHydrate.DataImport.SqlClient
                             var newColumn = new Field() { Name = columnName, SortOrder = ++maxSortOrder };
                             entity.FieldList.Add(newColumn);
 
-                            newColumn.Nullable = bool.Parse(columnReader["allowNull"].ToString());
+                            newColumn.Nullable = bool.Parse(columnReader["allow_null"].ToString());
                             if (bool.Parse(columnReader["isIdentity"].ToString()))
                                 newColumn.Identity = true;
 
@@ -288,7 +288,7 @@ namespace nHydrate.DataImport.SqlClient
                 return database;
 
             }
-            catch (Exception /*ignored*/)
+            catch (Exception ex /*ignored*/)
             {
                 throw;
             }
@@ -461,7 +461,7 @@ namespace nHydrate.DataImport.SqlClient
                     var typeName = (string)rowSP["column_type"];
                     var dataType = DatabaseHelper.GetSQLDataType(rowSP["system_type_id"].ToString(), database.UserDefinedTypes);
                     var length = int.Parse(rowSP["max_length"].ToString());
-                    var isOutput = ((int)rowSP["is_output"] != 0);
+                    var isOutput = (bool)rowSP["is_output"];
 
                     //The length is half the bytes for these types
                     if ((dataType == SqlDbType.NChar) || (dataType == SqlDbType.NVarChar))
@@ -477,7 +477,7 @@ namespace nHydrate.DataImport.SqlClient
                         sortOrder++;
                         parameter.DataType = dataType;
                         parameter.Length = length;
-                        parameter.Nullable = (int)rowSP["is_nullable"] == 1 ? true : false;
+                        parameter.Nullable = (int)rowSP["allow_null"] == 1 ? true : false;
                         parameter.IsOutputParameter = isOutput;
                         customStoredProcedure.ParameterList.Add(parameter);
                     }
@@ -832,7 +832,7 @@ namespace nHydrate.DataImport.SqlClient
                 while (tableReader.Read())
                 {
                     var newEntity = new StoredProc();
-                    newEntity.Name = tableReader["name"].ToString();
+                    newEntity.Name = tableReader["object_name"].ToString();
                     retval.Add(newEntity.Name);
                     //newEntity.Schema = tableReader["schema"].ToString();
                 }
@@ -900,8 +900,8 @@ namespace nHydrate.DataImport.SqlClient
                         var newColumn = new Field() { Name = columnName, SortOrder = ++maxSortOrder };
                         entity.FieldList.Add(newColumn);
 
-                        newColumn.Nullable = bool.Parse(columnReader["allowNull"].ToString());
-                        if (bool.Parse(columnReader["isIdentity"].ToString()))
+                        newColumn.Nullable = bool.Parse(columnReader["allow_null"].ToString());
+                        if (bool.Parse(columnReader["is_identity"].ToString()))
                             newColumn.Identity = true;
 
                         if (columnReader["isPrimaryKey"] != System.DBNull.Value)
@@ -909,14 +909,14 @@ namespace nHydrate.DataImport.SqlClient
 
                         try
                         {
-                            newColumn.DataType = DatabaseHelper.GetSQLDataType(columnReader["xtype"].ToString(), database.UserDefinedTypes);
+                            newColumn.DataType = DatabaseHelper.GetSQLDataType(columnReader["system_type_id"].ToString(), database.UserDefinedTypes);
                         }
                         catch { }
 
-                        var defaultvalue = columnReader["defaultValue"].ToString();
+                        var defaultvalue = columnReader["default_value"].ToString();
                         SetupDefault(newColumn, defaultvalue);
 
-                        newColumn.Length = (int)columnReader["length"];
+                        newColumn.Length = (int)columnReader["max_length"];
 
                         //Decimals are a little different
                         if (newColumn.DataType == SqlDbType.Decimal)

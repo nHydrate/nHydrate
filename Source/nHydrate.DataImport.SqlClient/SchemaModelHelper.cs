@@ -203,16 +203,16 @@ namespace nHydrate.DataImport.SqlClient
             sb.AppendLine(" 				foreignkeyccu.COLUMN_NAME = c.COLUMN_NAME ");
             sb.AppendLine(" 	) > 0 THEN 'true' ELSE 'false' END as isForeignKey,");
             sb.AppendLine(" 	c.DATA_TYPE as datatype,");
-            sb.AppendLine(" 	s.xtype,");
+            sb.AppendLine(" 	s.system_type_id,");
             sb.AppendLine(" 	c.numeric_precision AS [precision], c.numeric_scale AS [scale],");
-            sb.AppendLine(" 		case when	c.CHARACTER_MAXIMUM_LENGTH is null or c.CHARACTER_MAXIMUM_LENGTH > 8000 then s.length else c.CHARACTER_MAXIMUM_LENGTH end as length,");
-            sb.AppendLine(" 	case when c.IS_NULLABLE = 'No' then 'false' else 'true' end as allowNull, ");
-            sb.AppendLine(" 	case when c.COLUMN_DEFAULT is null then '' else c.COLUMN_DEFAULT end as defaultValue,");
-            sb.AppendLine(" 	case when COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA+'.'+c.TABLE_NAME), COLUMN_NAME, 'IsIdentity') = 1 then 'true' else 'false' end as isIdentity,");
+            sb.AppendLine(" 		case when	c.CHARACTER_MAXIMUM_LENGTH is null or c.CHARACTER_MAXIMUM_LENGTH > 8000 then s.max_length else c.CHARACTER_MAXIMUM_LENGTH end as max_length,");
+            sb.AppendLine(" 	case when c.IS_NULLABLE = 'No' then 0 else 1 end as allow_null, ");
+            sb.AppendLine(" 	case when c.COLUMN_DEFAULT is null then '' else c.COLUMN_DEFAULT end as default_value,");
+            sb.AppendLine(" 	case when COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA+'.'+c.TABLE_NAME), COLUMN_NAME, 'IsIdentity') = 1 then 1 else 0 end as is_identity,");
             sb.AppendLine(" 	c.COLLATION_NAME AS collation");
             sb.AppendLine(" FROM ");
             sb.AppendLine(" 	INFORMATION_SCHEMA.COLUMNS c ");
-            sb.AppendLine(" 	INNER JOIN systypes s on s.name = c.DATA_TYPE");
+            sb.AppendLine(" 	INNER JOIN sys.types s on s.name = c.DATA_TYPE");
             if (!string.IsNullOrEmpty(tableName))
                 sb.AppendLine(" WHERE c.TABLE_NAME = '" + tableName + "'");
             sb.AppendLine(" ORDER BY");
@@ -428,7 +428,7 @@ namespace nHydrate.DataImport.SqlClient
         internal static string GetSqlForStoredProcedures(string name = "")
         {
             var sb = new StringBuilder();
-            sb.AppendLine("SELECT OBJECT_SCHEMA_NAME(id) as schemaname, sys.objects.object_id, sys.objects.type, sys.objects.name");
+            sb.AppendLine("SELECT OBJECT_SCHEMA_NAME(object_id) as schemaname, sys.objects.object_id, sys.objects.type, sys.objects.name as object_name");
             sb.AppendLine("FROM	sys.objects");
             sb.AppendLine("WHERE (sys.objects.type = 'P') AND");
             sb.AppendLine("		NOT (sys.objects.name LIKE 'gen_%') AND");
