@@ -529,7 +529,7 @@ namespace PROJECTNAMESPACE
                     {
                         var dropCommand = new System.Data.SqlClient.SqlCommand(dropSQL, connection);
                         dropCommand.Transaction = transaction;
-                        dropCommand.CommandTimeout = 300;
+                        dropCommand.CommandTimeout = 0;
                         SqlServers.ExecuteCommand(dropCommand);
                     }
                 }
@@ -542,7 +542,7 @@ namespace PROJECTNAMESPACE
 
             var command = new System.Data.SqlClient.SqlCommand(sql, connection);
             command.Transaction = transaction;
-            command.CommandTimeout = Math.Max(300, connection.ConnectionTimeout);
+            command.CommandTimeout = 0;
             try
             {
                 if (!setup.CheckOnly)
