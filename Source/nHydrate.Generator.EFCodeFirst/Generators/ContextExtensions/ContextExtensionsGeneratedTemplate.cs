@@ -688,6 +688,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             #region Update Extensions
             sb.AppendLine("		#region Update Extensions");
             sb.AppendLine();
+            sb.AppendLine("	    private static readonly string[] _updateableAuditFields = new[]");
+            sb.AppendLine("	    {");
+            sb.AppendLine("	        \"" + _model.Database.ModifiedByDatabaseName + "\",");
+            sb.AppendLine("	        \"" + _model.Database.ModifiedDateDatabaseName + "\"");
+            sb.AppendLine("	    };");
+            sb.AppendLine();
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, T>> obj)");
             sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject, new()");
@@ -900,7 +906,15 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			do");
             sb.AppendLine("			{");
             sb.AppendLine("				var md = theObj.GetMetaData();");
-            sb.AppendLine("				mapping.Add(new UpdateSqlMapItem { TableName = md.GetTableName(), FieldList = md.GetFields(), Schema = md.Schema(), Metadata = md });");
+            sb.AppendLine("			    var mdFields = md.GetFields();");
+            sb.AppendLine("				var audit = theObj as IAuditable;");
+            sb.AppendLine("				if (audit != null && audit.IsModifyAuditImplemented)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					// For auditable entities, we need to include the updateable fields in the field list so that");
+            sb.AppendLine("					// the SQl generator can find them.");
+            sb.AppendLine("					mdFields.AddRange(_updateableAuditFields);");
+            sb.AppendLine("				}");
+            sb.AppendLine("				mapping.Add(new UpdateSqlMapItem { TableName = md.GetTableName(), FieldList = mdFields, Schema = md.Schema(), Metadata = md });");
             sb.AppendLine("				var newT = md.InheritsFrom();");
             sb.AppendLine("				if (newT == null)");
             sb.AppendLine("					theObj = default(T);");
