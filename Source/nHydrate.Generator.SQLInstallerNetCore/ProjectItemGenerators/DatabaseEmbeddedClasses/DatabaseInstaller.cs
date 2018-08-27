@@ -163,7 +163,7 @@ namespace PROJECTNAMESPACE
                 if (commandParams.ContainsKey(PARAMKEYS_TRACE) || setup.ShowSql)
                 {
                     var trc = new System.Diagnostics.TextWriterTraceListener(Console.Out);
-                    System.Diagnostics.Debug.Listeners.Add(trc);
+                    //System.Diagnostics.Debug.Listeners.Add(trc);
                     paramUICount++;
                 }
 
@@ -516,13 +516,14 @@ namespace PROJECTNAMESPACE
 
         private bool IdentifyDatabaseConnectionString(InstallSetup setup)
         {
-            var F = new IdentifyDatabaseForm(setup);
-            if (F.ShowDialog() == DialogResult.OK)
-            {
-                this.Action = F.Action;
-                this.Settings = F.Settings;
-                return true;
-            }
+            //TODO
+            //var F = new IdentifyDatabaseForm(setup);
+            //if (F.ShowDialog() == DialogResult.OK)
+            //{
+            //    this.Action = F.Action;
+            //    this.Settings = F.Settings;
+            //    return true;
+            //}
             return false;
         }
 

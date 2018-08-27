@@ -63,20 +63,27 @@ namespace nHydrate.Generator.SQLInstallerNetCore
 
         protected override void OnAfterGenerate()
         {
-            base.OnAfterGenerate();
+            try
+            {
+                base.OnAfterGenerate();
 
-            var project = EnvDTEHelper.Instance.GetProject(ProjectName);
+                var project = EnvDTEHelper.Instance.GetProject(ProjectName);
 
-            var preBuildProperty = project.Properties.Item("PreBuildEvent");
-            preBuildProperty.Value = "if not exist \"$(SolutionDir)bin\" mkdir \"$(SolutionDir)bin\"\r\nattrib -r \"$(SolutionDir)Bin\\*.*\"";
+                var preBuildProperty = project.Properties.Item("PreBuildEvent");
+                preBuildProperty.Value = "if not exist \"$(SolutionDir)bin\" mkdir \"$(SolutionDir)bin\"\r\nattrib -r \"$(SolutionDir)Bin\\*.*\"";
 
-            var postBuildProperty = project.Properties.Item("PostBuildEvent");
-            postBuildProperty.Value = "copy \"$(TargetDir)$(TargetName).*\" \"$(SolutionDir)Bin\\\"";
+                var postBuildProperty = project.Properties.Item("PostBuildEvent");
+                postBuildProperty.Value = "copy \"$(TargetDir)$(TargetName).*\" \"$(SolutionDir)Bin\\\"";
 
-            var config = project.ConfigurationManager.ActiveConfiguration;
-            config.Properties.Item("StartAction").Value = 1;
-            config.Properties.Item("StartProgram").Value = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory() + "InstallUtil.exe";
-            config.Properties.Item("StartArguments").Value = this.GetLocalNamespace() + ".dll";
+                var config = project.ConfigurationManager.ActiveConfiguration;
+                config.Properties.Item("StartAction").Value = 1;
+                config.Properties.Item("StartProgram").Value = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory() + "InstallUtil.exe";
+                config.Properties.Item("StartArguments").Value = this.GetLocalNamespace() + ".dll";
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         protected override void OnInitialize(IModelObject model)

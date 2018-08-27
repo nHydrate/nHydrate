@@ -128,7 +128,7 @@ namespace nHydrate.Generator.SQLInstallerNetCore
                     if (newT == null)
                     {
                         //DELETE TABLE
-                        sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlDropTable(oldT));
+                        sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlDropTable(modelOld, oldT));
                         sb.AppendLine("GO");
                         //TODO - Delete Tenant View
                         sb.AppendLine();
@@ -588,7 +588,7 @@ namespace nHydrate.Generator.SQLInstallerNetCore
                         if (oldStaticScript != newStaticScript)
                         {
                             sb.AppendLine(newStaticScript);
-                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlUpdateStaticData(newT));
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlUpdateStaticData(oldT, newT));
                             sb.AppendLine("GO");
                             sb.AppendLine();
                         }
