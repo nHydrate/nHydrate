@@ -1523,9 +1523,9 @@ namespace nHydrate.Core.SQLGeneration
         public static string GetSqlCreateTenantColumn(ModelRoot model, Table table)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("--ADD COLUMN [" + table.DatabaseName + "].[" + model.TenantColumnName + "]");
-            sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + model.TenantColumnName + "' and o.name = '" + table.DatabaseName + "')");
-            sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + model.TenantColumnName + "] [nvarchar] (128) NOT NULL CONSTRAINT [DF__" + table.DatabaseName.ToUpper() + "_" + model.TenantColumnName.ToUpper() + "] DEFAULT (suser_sname())");
+            sb.AppendLine($"--ADD COLUMN [{table.DatabaseName}].[{model.TenantColumnName}]");
+            sb.AppendLine($"if exists(select * from sys.objects where name = '{table.DatabaseName}' and type = 'U') AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '{model.TenantColumnName}' and o.name = '{table.DatabaseName}')");
+            sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [{model.TenantColumnName}] [nvarchar] (128) NOT NULL CONSTRAINT [DF__{table.DatabaseName.ToUpper()}_{model.TenantColumnName.ToUpper()}] DEFAULT (suser_sname())");
             return sb.ToString();
         }
 
@@ -1537,11 +1537,11 @@ namespace nHydrate.Core.SQLGeneration
                 var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
                 if (tableIndex != null)
                 {
-                    var indexName = "PK_" + table.DatabaseName.ToUpper();
-                    sb.AppendLine("--PRIMARY KEY FOR TABLE [" + table.DatabaseName + "]");
-                    sb.AppendLine("if not exists(select * from sys.objects where name = '" + indexName + "' and type = 'PK')");
-                    sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] WITH NOCHECK ADD ");
-                    sb.AppendLine("CONSTRAINT [" + indexName + "] PRIMARY KEY " + (tableIndex.Clustered ? "CLUSTERED" : "NONCLUSTERED"));
+                    var indexName = $"PK_{table.DatabaseName.ToUpper()}";
+                    sb.AppendLine($"--PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
+                    sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'PK')");
+                    sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] WITH NOCHECK ADD ");
+                    sb.AppendLine($"CONSTRAINT [{indexName}] PRIMARY KEY " + (tableIndex.Clustered ? "CLUSTERED" : "NONCLUSTERED"));
                     sb.AppendLine("(");
                     sb.AppendLine("\t" + Globals.GetSQLIndexField(table, tableIndex));
                     sb.Append(")");
@@ -1589,9 +1589,9 @@ namespace nHydrate.Core.SQLGeneration
             var pkName = "PK_" + tableName.ToUpper();
 
             var sb = new StringBuilder();
-            sb.AppendLine("--DROP PRIMARY KEY FOR TABLE [" + tableName + "]");
-            sb.AppendLine("if exists(select * from sys.objects where name = '" + pkName + "' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
-            sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] DROP CONSTRAINT [" + pkName + "]");
+            sb.AppendLine($"--DROP PRIMARY KEY FOR TABLE [{tableName}]");
+            sb.AppendLine($"if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
+            sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{tableName}] DROP CONSTRAINT [{pkName}]");
             sb.AppendLine("GO");
             sb.AppendLine();
             return sb.ToString();
@@ -1603,9 +1603,9 @@ namespace nHydrate.Core.SQLGeneration
             var targetTable = relation.ChildTable;
 
             var sb = new StringBuilder();
-            sb.AppendLine("--REMOVE FOREIGN KEY");
-            sb.AppendLine("if exists(select * from sys.objects where name = '" + indexName + "' and type = 'F')");
-            sb.AppendLine("ALTER TABLE [" + targetTable.GetSQLSchema() + "].[" + targetTable.DatabaseName + "] DROP CONSTRAINT [" + indexName + "]");
+            sb.AppendLine($"--REMOVE FOREIGN KEY [{relation.ParentTable.DatabaseName}->{relation.ChildTable.DatabaseName}]");
+            sb.AppendLine($"if exists(select * from sys.objects where name = '{indexName}' and type = 'F')");
+            sb.AppendLine($"ALTER TABLE [{targetTable.GetSQLSchema()}].[{targetTable.DatabaseName}] DROP CONSTRAINT [{indexName}]");
             return sb.ToString();
         }
 

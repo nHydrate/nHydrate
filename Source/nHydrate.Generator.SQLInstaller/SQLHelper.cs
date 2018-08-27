@@ -514,17 +514,27 @@ namespace nHydrate.Generator.SQLInstaller
                             var oldPKHash = oldPKINdex.CorePropertiesHash;
                             if (newPKHash != oldPKHash)
                             {
+                                sb.AppendLine();
                                 sb.AppendLine("--GENERATION NOTE **");
                                 sb.AppendLine("--THE PRIMARY KEY HAS CHANGED, THIS MAY REQUIRE MANUAL INTERVENTION");
                                 sb.AppendLine("--THE FOLLOWING SCRIPT WILL DROP AND READD THE PRIMARY KEY HOWEVER IF THERE ARE RELATIONSHIPS");
-                                sb.AppendLine("--BASED ON THIS IT, THE SCRIPT WILL FAIL. YOU MUST DROP ALL RELATIONSHIPS FIRST.");
+                                sb.AppendLine("--BASED ON THIS IT, THE SCRIPT WILL FAIL. YOU MUST DROP ALL FOREIGN KEYS FIRST.");
+                                sb.AppendLine();
+
+                                //Before drop PK remove all FK to the table
+                                foreach (var r1 in oldT.GetRelations().ToList())
+                                {
+                                    sb.Append(SQLEmit.GetSqlRemoveFK(r1));
+                                    sb.AppendLine("GO");
+                                    sb.AppendLine();
+                                }
 
                                 var tableName = Globals.GetTableDatabaseName(modelNew, newT);
                                 var pkName = "PK_" + tableName;
                                 pkName = pkName.ToUpper();
-                                sb.AppendLine("--DROP PRIMARY KEY FOR TABLE [" + tableName + "]");
-                                sb.AppendLine("--if exists(select * from sys.objects where name = '" + pkName + "' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
-                                sb.AppendLine("--ALTER TABLE [" + newT.GetSQLSchema() + "].[" + tableName + "] DROP CONSTRAINT [" + pkName + "]");
+                                sb.AppendLine($"----DROP PRIMARY KEY FOR TABLE [{tableName}]");
+                                sb.AppendLine($"--if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
+                                sb.AppendLine($"--ALTER TABLE [{newT.GetSQLSchema()}].[{tableName}] DROP CONSTRAINT [{pkName}]");
                                 sb.AppendLine("--GO");
 
                                 var sql = SQLEmit.GetSqlCreatePK(newT) + "GO\r\n";
@@ -535,8 +545,7 @@ namespace nHydrate.Generator.SQLInstaller
                                 foreach (var s in lines)
                                 {
                                     var l = s;
-                                    if (!l.StartsWith("--"))
-                                        l = "--" + l;
+                                    l = "--" + l;
                                     lines[index] = l;
                                     index++;
                                 }
