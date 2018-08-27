@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -631,6 +631,7 @@ namespace nHydrate.Dsl
             get
             {
                 if (this.IsCalculated) return double.NaN;
+                if (!this.IsNumericType()) return double.NaN;
                 return base.Min;
             }
             set { base.Min = value; }
@@ -641,6 +642,7 @@ namespace nHydrate.Dsl
             get
             {
                 if (this.IsCalculated) return double.NaN;
+                if (!this.IsNumericType()) return double.NaN;
                 return base.Max;
             }
             set { base.Max = value; }

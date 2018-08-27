@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -81,7 +81,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("}");
                 sb.AppendLine();
 
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
                 sb.AppendLine("{");
                 sb.AppendLine("}");
                 sb.AppendLine("#pragma warning restore 612");
@@ -128,7 +128,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("using System.Data.SqlClient;");
             sb.AppendLine("using System.Data;");
             sb.AppendLine("using System.Data.Entity.ModelConfiguration;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.Entity;");
             sb.AppendLine("using System.Data.Entity.Core.Objects;");
             sb.AppendLine();
         }
@@ -140,8 +140,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// The object context for the schema tied to this generated model.");
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	[DataContract]");
-            sb.AppendLine("	[Serializable]");
+            //sb.AppendLine("	[DataContract]"); //Pretty sure that this is not needed
+            //sb.AppendLine("	[Serializable]"); //Pretty sure that this is not needed
             sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : System.Data.Entity.DbContext, " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities, IContext");
             sb.AppendLine("	{");
 
@@ -592,31 +592,42 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                     Table childTable = relation.ChildTableRef.Object as Table;
                     if (childTable.Generated && !childTable.IsInheritedFrom(table) && !childTable.AssociativeTable)
                     {
-                        if (relation.IsOneToOne)
+                        if (relation.IsOneToOne && relation.AreAllFieldsPK)
                         {
-                            sb.AppendLine("			//Relation " + table.PascalName + " -> " + childTable.PascalName);
-                            sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
+                            sb.AppendLine($"			//Relation {table.PascalName} -> {childTable.PascalName}");
+                            sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}>()");
 
                             if (relation.IsRequired)
-                                sb.AppendLine("							 .HasRequired(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                                sb.AppendLine($"				.HasRequired(a => a.{relation.PascalRoleName}{table.PascalName})");
                             else
-                                sb.AppendLine("							 .HasOptional(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                                sb.AppendLine($"				.HasOptional(a => a.{relation.PascalRoleName}{table.PascalName})");
 
-                            sb.AppendLine("							 .WithOptional(x => x." + relation.PascalRoleName + childTable.PascalName + ")");
-                            sb.AppendLine("							 .WillCascadeOnDelete(false);");
+                            sb.AppendLine($"				.WithOptional(x => x.{relation.PascalRoleName}{childTable.PascalName})");
+                            sb.AppendLine("					.WillCascadeOnDelete(false);");
+                        }
+                        else if (relation.IsOneToOne && !relation.AreAllFieldsPK)
+                        {
+                            sb.AppendLine($"			//Relation {table.PascalName} -> {childTable.PascalName}");
+                            sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>()");
+                            sb.AppendLine($"				.HasMany(a => a.{childTable.PascalName}List)");
+                            if (relation.IsRequired)
+                                sb.AppendLine($"				.WithRequired(a => a.{relation.PascalRoleName}{table.PascalName})");
+                            else
+                                sb.AppendLine($"				.WithOptional(a => a.{relation.PascalRoleName}{table.PascalName})");
+                            sb.AppendLine("				.WillCascadeOnDelete(false);");
                         }
                         else
                         {
-                            sb.AppendLine("			//Relation " + table.PascalName + " -> " + childTable.PascalName);
-                            sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
+                            sb.AppendLine($"			//Relation {table.PascalName} -> {childTable.PascalName}");
+                            sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}>()");
 
                             if (relation.IsRequired)
-                                sb.AppendLine("							 .HasRequired(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                                sb.AppendLine($"				.HasRequired(a => a.{relation.PascalRoleName}{table.PascalName})");
                             else
-                                sb.AppendLine("							 .HasOptional(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                                sb.AppendLine($"				.HasOptional(a => a.{relation.PascalRoleName}{table.PascalName})");
 
-                            sb.AppendLine("							 .WithMany(b => b." + relation.PascalRoleName + childTable.PascalName + "List)");
-                            sb.Append("							 .HasForeignKey(u => new { ");
+                            sb.AppendLine($"				.WithMany(b => b.{relation.PascalRoleName}{childTable.PascalName}List)");
+                            sb.Append("				.HasForeignKey(u => new { ");
 
                             var index = 0;
                             foreach (var columnPacket in relation.ColumnRelationships
@@ -632,7 +643,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                             }
 
                             sb.AppendLine(" })");
-                            sb.AppendLine("							 .WillCascadeOnDelete(false);");
+                            sb.AppendLine("				.WillCascadeOnDelete(false);");
                         }
 
                         sb.AppendLine();
@@ -768,6 +779,26 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
             #endregion
 
+            #region GetTableHierarchyForUpdate
+            sb.AppendLine("        private List<Tuple<string, string>> GetTableHierarchyForUpdate(object entity)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            var retval = new List<Tuple<string, string>>();");
+            foreach (var table in _model.Database.Tables.Where(x => x.ParentTable != null).OrderBy(x => x.PascalName).ToList())
+            {
+                sb.AppendLine($"            if (entity is Entity.{table.PascalName})");
+                sb.AppendLine("            {");
+                if (table.AllowModifiedAudit)
+                    sb.AppendLine($"                retval.Add(new Tuple<string, string>(\"{table.DatabaseName}\", \"{_model.Database.ModifiedDateDatabaseName}\"));");
+                foreach (var child in table.GetParentTablesFullHierarchy().Reverse().Skip(1).Where(x => x.AllowModifiedAudit).ToList())
+                {
+                    sb.AppendLine($"                retval.Add(new Tuple<string, string>(\"{child.DatabaseName}\", \"{_model.Database.ModifiedDateDatabaseName}\"));");
+                }
+                sb.AppendLine("            }");
+            }
+            sb.AppendLine("            return retval.Distinct().ToList();");
+            sb.AppendLine("        }");
+            #endregion
+
             #region Auditing
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Persists all updates to the data source and resets change tracking in the object context.");
@@ -796,13 +827,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				if (entity != null)");
             sb.AppendLine("				{");
             sb.AppendLine("					var audit = entity as IAuditableSet;");
-            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
+            sb.AppendLine("					if (audit != null && entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
             sb.AppendLine("					{");
             sb.AppendLine("						if (audit != null) audit.ResetCreatedBy(this.ContextStartup.Modifer);");
             sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
             sb.AppendLine("					}");
-            sb.AppendLine("					audit.CreatedDate = markedTime;");
-            sb.AppendLine("					audit.ModifiedDate = markedTime;");
+            sb.AppendLine("					if (audit != null)");
+            sb.AppendLine("					{");
+            sb.AppendLine("						audit.CreatedDate = markedTime;");
+            sb.AppendLine("						audit.ModifiedDate = markedTime;");
+            sb.AppendLine("					}");
             sb.AppendLine("				}");
             sb.AppendLine("			}");
             sb.AppendLine("			this.OnBeforeSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
@@ -810,6 +844,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             #endregion
 
             #region Modified Items
+            sb.AppendLine("			var extraScripts = new List<string>();");
             sb.AppendLine("			//Process modified list");
             sb.AppendLine("			var modifiedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Modified);");
             sb.AppendLine("			foreach (var item in modifiedList)");
@@ -823,6 +858,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
             sb.AppendLine("					}");
             sb.AppendLine("					audit.ModifiedDate = markedTime;");
+            sb.AppendLine("					//var updateObjects = GetTableHierarchyForUpdate(item.Entity);");
+            sb.AppendLine("					//foreach (var uo in updateObjects)");
+            sb.AppendLine("					//	extraScripts.Add($\"UPDATE [{uo.Item1}] SET [{uo.Item2}] = @__modifiedDate\");");
             sb.AppendLine("				}");
             sb.AppendLine("			}");
             sb.AppendLine("			this.OnBeforeSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
@@ -839,6 +877,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				retval += QueryPreCache.ExecuteDeletes(this);");
             sb.AppendLine("				retval += base.SaveChanges();");
             sb.AppendLine("				retval += QueryPreCache.ExecuteUpdates(this);");
+            sb.AppendLine("				QueryPreCache.ExecuteModifiedScripts(this, extraScripts, markedTime);");
             sb.AppendLine("				if (customTrans != null)");
             sb.AppendLine("					customTrans.Commit();");
             sb.AppendLine("			}");
@@ -982,38 +1021,35 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public string GetDBVersion(string connectionString = null)");
             sb.AppendLine("		{");
-            sb.AppendLine("			var conn = new System.Data.SqlClient.SqlConnection();");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
-            sb.AppendLine("				if (string.IsNullOrEmpty(connectionString))");
-            sb.AppendLine("					connectionString = this.ConnectionString;");
-            sb.AppendLine("				conn.ConnectionString = connectionString;");
-            sb.AppendLine("				conn.Open();");
-            sb.AppendLine();
-            sb.AppendLine("				var da = new SqlDataAdapter(\"select * from sys.tables where name = '__nhydrateschema'\", conn);");
-            sb.AppendLine("				var ds = new DataSet();");
-            sb.AppendLine("				da.Fill(ds);");
-            sb.AppendLine("				if (ds.Tables[0].Rows.Count > 0)");
+            sb.AppendLine("				using (var conn = new System.Data.SqlClient.SqlConnection())");
             sb.AppendLine("				{");
-            sb.AppendLine("					da = new SqlDataAdapter(\"SELECT * FROM [__nhydrateschema] where [ModelKey] = '\" + this.ModelKey + \"'\", conn);");
-            sb.AppendLine("					ds = new DataSet();");
+            sb.AppendLine("					if (string.IsNullOrEmpty(connectionString))");
+            sb.AppendLine("						connectionString = this.ConnectionString;");
+            sb.AppendLine("					conn.ConnectionString = connectionString;");
+            sb.AppendLine("					conn.Open();");
+            sb.AppendLine();
+            sb.AppendLine("					var da = new SqlDataAdapter(\"select * from sys.tables where name = '__nhydrateschema'\", conn);");
+            sb.AppendLine("					var ds = new DataSet();");
             sb.AppendLine("					da.Fill(ds);");
-            sb.AppendLine("					var t = ds.Tables[0];");
-            sb.AppendLine("					if (t.Rows.Count > 0)");
+            sb.AppendLine("					if (ds.Tables[0].Rows.Count > 0)");
             sb.AppendLine("					{");
-            sb.AppendLine("						return (string) t.Rows[0][\"dbVersion\"];");
+            sb.AppendLine("						da = new SqlDataAdapter(\"SELECT * FROM [__nhydrateschema] where [ModelKey] = '\" + this.ModelKey + \"'\", conn);");
+            sb.AppendLine("						ds = new DataSet();");
+            sb.AppendLine("						da.Fill(ds);");
+            sb.AppendLine("						var t = ds.Tables[0];");
+            sb.AppendLine("						if (t.Rows.Count > 0)");
+            sb.AppendLine("						{");
+            sb.AppendLine("							return (string) t.Rows[0][\"dbVersion\"];");
+            sb.AppendLine("						}");
             sb.AppendLine("					}");
+            sb.AppendLine("					return string.Empty;");
             sb.AppendLine("				}");
-            sb.AppendLine("				return string.Empty;");
             sb.AppendLine("			}");
             sb.AppendLine("			catch (Exception)");
             sb.AppendLine("			{");
             sb.AppendLine("				return string.Empty;");
-            sb.AppendLine("			}");
-            sb.AppendLine("			finally");
-            sb.AppendLine("			{");
-            sb.AppendLine("				if (conn != null)");
-            sb.AppendLine("					conn.Close();");
             sb.AppendLine("			}");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -1623,7 +1659,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				//If this is a tenant table then rig query plan for this specific tenant");
-            sb.AppendLine("				if (command.CommandText.Contains(\"__vw_tenant_\") || command.CommandText.Contains(\"__security\"))");
+            sb.AppendLine("				if (command.CommandText.Contains(\""+ _model.TenantPrefix + "\") || command.CommandText.Contains(\"__security\"))");
             sb.AppendLine("				{");
             sb.AppendLine("					var builder = new SqlConnectionStringBuilder(command.Connection.ConnectionString);");
             sb.AppendLine("					command.CommandText = \"--T:\" + builder.UserID + \"\\r\\n\" + command.CommandText;");

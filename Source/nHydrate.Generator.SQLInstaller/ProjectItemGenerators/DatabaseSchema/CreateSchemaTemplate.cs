@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -59,11 +59,14 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         public override string FileName
         {
-            get
-            {
-                return string.Format("CreateSchema.sql");
-            }
+            get { return string.Format("1_CreateSchema.sql"); }
         }
+
+        internal string OldFileName
+        {
+            get { return string.Format("CreateSchema.sql"); }
+        }
+
         #endregion
 
         #region GenerateContent
@@ -78,12 +81,12 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
                 this.AppendCreateSchema();
                 this.AppendCreateTable();
+                this.AppendCreateTenantViews();
                 this.AppendAuditTracking();
                 this.AppendCreateAudit();
                 this.AppendCreatePrimaryKey();
                 this.AppendAuditTables();
                 this.AppendCreateUniqueKey();
-                this.AppendCreateForeignKey();
                 this.AppendCreateIndexes();
                 this.AppendRemoveDefaults();
                 this.AppendCreateDefaults();
@@ -183,6 +186,21 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 }
             }
         }
+
+        private void AppendCreateTenantViews()
+        {
+            //Tenant Views
+            var grantSB = new StringBuilder();
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.IsTenant).OrderBy(x => x.Name))
+            {
+                var template = new SQLSelectTenantViewTemplate(_model, table, grantSB);
+                sb.Append(template.FileContent);
+            }
+
+            //Add grants
+            sb.Append(grantSB.ToString());
+        }
+
         #endregion
 
         #region Append AuditTracking
@@ -205,7 +223,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                         if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
                         {
                             //Now add columns if they do not exist
-                            sb.AppendLine("if not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + column.DatabaseName + "' and o.name = '" + tableName + "')");
+                            sb.AppendLine("if not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + column.DatabaseName + "' and o.name = '" + tableName + "')");
                             sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ADD [" + column.DatabaseName + "] " + column.DatabaseType + " NULL");
                             sb.AppendLine("GO");
                             sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ALTER COLUMN [" + column.DatabaseName + "] " + column.DatabaseType + " NULL");
@@ -216,7 +234,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
                     if (table.AllowModifiedAudit)
                     {
-                        sb.AppendLine("if not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.Database.ModifiedByDatabaseName + "' and o.name = '" + tableName + "')");
+                        sb.AppendLine("if not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + _model.Database.ModifiedByDatabaseName + "' and o.name = '" + tableName + "')");
                         sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ADD [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
                         sb.AppendLine("GO");
                         sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ALTER COLUMN [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
@@ -302,28 +320,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             sb.AppendLine("--##SECTION END [AUDIT TABLES PK]");
             sb.AppendLine();
         }
-
-        #region Append Foreign Keys
-
-        private void AppendCreateForeignKey()
-        {
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
-            {
-                var tableName = Globals.GetTableDatabaseName(_model, table);
-                var childRoleRelations = table.ChildRoleRelations;
-                if (childRoleRelations.Count > 0)
-                {
-                    foreach (var relation in childRoleRelations.Where(x => x.Enforce))
-                    {
-                        sb.Append(SQLEmit.GetSqlAddFK(relation));
-                        sb.AppendLine("GO");
-                        sb.AppendLine();
-                    }
-                }
-            }
-        }
-
-        #endregion
 
         #region AppendCreateIndexes
 
@@ -417,7 +413,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             sb.AppendLine("BEGIN");
             sb.AppendLine("exec(");
             sb.AppendLine("'");
-            sb.AppendLine("if exists (select * from dbo.sysobjects where id = object_id(N''' + @test + ''') and OBJECTPROPERTY(id, N''IsProcedure'') = 1)");
+            sb.AppendLine("if exists (select * from sys.objects where object_id = object_id(N''' + @test + ''') and OBJECTPROPERTY(object_id, N''IsProcedure'') = 1)");
             sb.AppendLine("drop procedure ' + @test + '");
             sb.AppendLine("')");
             sb.AppendLine("FETCH NEXT FROM @mycur INTO @test");
@@ -465,7 +461,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                     if (table.IsTenant)
                     {
                         sb.AppendLine("--APPEND TENANT FIELD FOR TABLE [" + table.DatabaseName + "]");
-                        sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + _model.TenantColumnName + "' and o.name = '" + table.DatabaseName + "')");
+                        sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + _model.TenantColumnName + "' and o.name = '" + table.DatabaseName + "')");
                         sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + _model.TenantColumnName + "] [nvarchar] (128) NOT NULL CONSTRAINT [DF__" + table.PascalName.ToUpper() + "_" + _model.TenantColumnName.ToUpper() + "] DEFAULT (suser_sname())");
                         sb.AppendLine();
                     }

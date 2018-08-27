@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -94,8 +94,8 @@ namespace nHydrate.DataImport.SqlClient
                             var newColumn = new Field() { Name = columnName, SortOrder = ++maxSortOrder };
                             entity.FieldList.Add(newColumn);
 
-                            newColumn.Nullable = bool.Parse(columnReader["allowNull"].ToString());
-                            if (bool.Parse(columnReader["isIdentity"].ToString()))
+                            newColumn.Nullable = (int)columnReader["allow_null"] == 1;
+                            if ((int)columnReader["is_identity"] == 1)
                                 newColumn.Identity = true;
 
                             if (columnReader["isPrimaryKey"] != System.DBNull.Value)
@@ -103,15 +103,15 @@ namespace nHydrate.DataImport.SqlClient
 
                             try
                             {
-                                newColumn.DataType = DatabaseHelper.GetSQLDataType(columnReader["xtype"].ToString(), database.UserDefinedTypes);
+                                newColumn.DataType = DatabaseHelper.GetSQLDataType(columnReader["system_type_id"].ToString(), database.UserDefinedTypes);
                             }
                             catch { }
 
-                            var defaultvalue = columnReader["defaultValue"].ToString();
+                            var defaultvalue = columnReader["default_value"].ToString();
                             SetupDefault(newColumn, defaultvalue);
                             //newColumn.ImportedDefaultName = "";
 
-                            newColumn.Length = (int)columnReader["length"];
+                            newColumn.Length = (int)columnReader["max_length"];
 
                             //Decimals are a little different
                             if (newColumn.DataType == SqlDbType.Decimal)
@@ -216,8 +216,8 @@ namespace nHydrate.DataImport.SqlClient
                         if (database.RelationshipList.Count(x => x.ConstraintName == constraintName) == 0)
                         {
                             newRelation = new Relationship();
-                            if (rowRelationship["id"] != System.DBNull.Value)
-                                newRelation.ImportData = rowRelationship["id"].ToString();
+                            if (rowRelationship["object_id"] != System.DBNull.Value)
+                                newRelation.ImportData = rowRelationship["object_id"].ToString();
                             newRelation.SourceEntity = parentTable;
                             newRelation.TargetEntity = childTable;
                             newRelation.ConstraintName = constraintName;
@@ -288,7 +288,7 @@ namespace nHydrate.DataImport.SqlClient
                 return database;
 
             }
-            catch (Exception /*ignored*/)
+            catch (Exception ex /*ignored*/)
             {
                 throw;
             }
@@ -428,8 +428,8 @@ namespace nHydrate.DataImport.SqlClient
                 StoredProc customStoredProcedure = null;
                 foreach (DataRow rowSP in dsSP.Tables[0].Rows)
                 {
-                    var id = (int)rowSP["id"];
-                    var name = (string)rowSP["name"];
+                    var id = (int)rowSP["object_id"];
+                    var name = (string)rowSP["object_name"];
                     var schema = (string)rowSP["schemaname"];
                     customStoredProcedure = database.StoredProcList.FirstOrDefault(x => x.Name == name);
                     if (customStoredProcedure == null)
@@ -447,7 +447,7 @@ namespace nHydrate.DataImport.SqlClient
                 var sortOrder = 1;
                 foreach (DataRow rowSP in dsSPParameter.Tables[0].Rows)
                 {
-                    if (!DatabaseHelper.IsValidSQLDataType((SqlNativeTypes)int.Parse(rowSP["xtype"].ToString())))
+                    if (!DatabaseHelper.IsValidSQLDataType((SqlNativeTypes)int.Parse(rowSP["system_type_id"].ToString())))
                     {
                         customStoredProcedure.InError = true;
                         customStoredProcedure.ParameterList.Clear();
@@ -455,17 +455,16 @@ namespace nHydrate.DataImport.SqlClient
                         return false;
                     }
 
-                    var id = (int)rowSP["id"];
-                    var spName = (string)rowSP["name"];
-                    var name = (string)rowSP["ColName"];
-                    var typeName = (string)rowSP["ColType"];
-                    var dataType = DatabaseHelper.GetSQLDataType(rowSP["xtype"].ToString(), database.UserDefinedTypes);
-                    var length = int.Parse(rowSP["length"].ToString());
-                    var isOutput = ((int)rowSP["isoutparam"] != 0);
+                    var id = (int)rowSP["object_id"];
+                    var spName = (string)rowSP["object_name"];
+                    var name = (string)rowSP["column_name"];
+                    var typeName = (string)rowSP["column_type"];
+                    var dataType = DatabaseHelper.GetSQLDataType(rowSP["system_type_id"].ToString(), database.UserDefinedTypes);
+                    var length = int.Parse(rowSP["max_length"].ToString());
+                    var isOutput = (bool)rowSP["is_output"];
 
                     //The length is half the bytes for these types
-                    if ((dataType == SqlDbType.NChar) ||
-                        (dataType == SqlDbType.NVarChar))
+                    if ((dataType == SqlDbType.NChar) || (dataType == SqlDbType.NVarChar))
                     {
                         length = length / 2;
                     }
@@ -478,7 +477,7 @@ namespace nHydrate.DataImport.SqlClient
                         sortOrder++;
                         parameter.DataType = dataType;
                         parameter.Length = length;
-                        parameter.Nullable = (int)rowSP["isnullable"] == 1 ? true : false;
+                        parameter.Nullable = (bool)rowSP["is_nullable"];
                         parameter.IsOutputParameter = isOutput;
                         customStoredProcedure.ParameterList.Add(parameter);
                     }
@@ -833,7 +832,7 @@ namespace nHydrate.DataImport.SqlClient
                 while (tableReader.Read())
                 {
                     var newEntity = new StoredProc();
-                    newEntity.Name = tableReader["name"].ToString();
+                    newEntity.Name = tableReader["object_name"].ToString();
                     retval.Add(newEntity.Name);
                     //newEntity.Schema = tableReader["schema"].ToString();
                 }
@@ -901,8 +900,8 @@ namespace nHydrate.DataImport.SqlClient
                         var newColumn = new Field() { Name = columnName, SortOrder = ++maxSortOrder };
                         entity.FieldList.Add(newColumn);
 
-                        newColumn.Nullable = bool.Parse(columnReader["allowNull"].ToString());
-                        if (bool.Parse(columnReader["isIdentity"].ToString()))
+                        newColumn.Nullable = bool.Parse(columnReader["allow_null"].ToString());
+                        if (bool.Parse(columnReader["is_identity"].ToString()))
                             newColumn.Identity = true;
 
                         if (columnReader["isPrimaryKey"] != System.DBNull.Value)
@@ -910,14 +909,14 @@ namespace nHydrate.DataImport.SqlClient
 
                         try
                         {
-                            newColumn.DataType = DatabaseHelper.GetSQLDataType(columnReader["xtype"].ToString(), database.UserDefinedTypes);
+                            newColumn.DataType = DatabaseHelper.GetSQLDataType(columnReader["system_type_id"].ToString(), database.UserDefinedTypes);
                         }
                         catch { }
 
-                        var defaultvalue = columnReader["defaultValue"].ToString();
+                        var defaultvalue = columnReader["default_value"].ToString();
                         SetupDefault(newColumn, defaultvalue);
 
-                        newColumn.Length = (int)columnReader["length"];
+                        newColumn.Length = (int)columnReader["max_length"];
 
                         //Decimals are a little different
                         if (newColumn.DataType == SqlDbType.Decimal)

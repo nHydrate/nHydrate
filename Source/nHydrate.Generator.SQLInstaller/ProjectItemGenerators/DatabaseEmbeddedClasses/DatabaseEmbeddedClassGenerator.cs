@@ -7,10 +7,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -64,7 +64,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 			try
 			{
 				GenerateDatabaseInstallerCs();
-				GenerateAzureCopy();
 				GenerateInstallSettings();
 				GenerateDatabaseInstallerDesignerCs();
 				GenerateIdentifyDatabaseFormCs();
@@ -78,10 +77,8 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 				GenerateSqlServersCs();
 				//GenerateArchiveReaderCs();
 				GenerateXmlHelperCs();
-				GenerateUpgradeInstaller();
-				GenerateAzureCopyControlCs();
-				GenerateAzureCopyControlDesigner();
-				GenerateAzureCopyControlResx();
+                GenerateProgramCs();
+                GenerateUpgradeInstaller();
 				
 				GenerateSqlErrorCs();
 				GenerateSqlErrorDesigner();
@@ -163,7 +160,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 			ProjectItemGeneratedEventArgs eventArgs = null;
 
 			fileName = Path.Combine(foldername, "ReadMe.txt");
-			eventArgs = new ProjectItemGeneratedEventArgs(fileName, "Do not modify scripts in this folder.", ProjectName, this, true);
+			eventArgs = new ProjectItemGeneratedEventArgs(fileName, "Do not modify the generated scripts in this folder.", ProjectName, this, true);
 			OnProjectItemGenerated(this, eventArgs);
 
 		}
@@ -414,45 +411,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 
 		#endregion
 
-		#region AzureCopyControl
-
-		private void GenerateAzureCopyControlCs()
-		{
-			var fileName = "AzureCopyControl.cs";
-			var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
-			var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
-			OnProjectItemGenerated(this, eventArgs);
-		}
-
-		private void GenerateAzureCopyControlResx()
-		{
-			var fullParentName = "AzureCopyControl.cs";
-			var fileName = "AzureCopyControl.resx";
-			var ern = new EmbeddedResourceName();
-			ern.AsmLocation = this.GetEmbeddedPath();
-			ern.FileName = fileName + ".embed";
-			ern.FullName = this.GetEmbeddedPath() + "." + ern.FileName;
-			var fileContent = GetFileContent(ern);
-			var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, fullParentName, this, true);
-			eventArgs.Properties.Add("BuildAction", 3);
-			OnProjectItemGenerated(this, eventArgs);
-		}
-
-		private void GenerateAzureCopyControlDesigner()
-		{
-			var fullParentName = "AzureCopyControl.cs";
-			var fileName = "AzureCopyControl.Designer.cs";
-			var ern = new EmbeddedResourceName();
-			ern.AsmLocation = this.GetEmbeddedPath();
-			ern.FileName = "AzureCopyControl.Designer.embed";
-			ern.FullName = this.GetEmbeddedPath() + "." + ern.FileName;
-			var fileContent = GetFileContent(ern);
-			var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, fullParentName, this, true);
-			OnProjectItemGenerated(this, eventArgs);
-		}
-
-		#endregion
-
 		#region SqlErrorForm
 
 		private void GenerateSqlErrorCs()
@@ -580,15 +538,23 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 		{
 			var fileName = "XmlHelper.cs";
 			var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
-			var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
+			var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, false);
 			OnProjectItemGenerated(this, eventArgs);
 		}
 
 		#endregion
 
-		#region DatabaseInstaller
+        private void GenerateProgramCs()
+        {
+            var fileName = "Program.cs";
+            var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
+            var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
+            OnProjectItemGenerated(this, eventArgs);
+        }
 
-		private void GenerateDatabaseInstallerDesignerCs()
+        #region DatabaseInstaller
+
+        private void GenerateDatabaseInstallerDesignerCs()
 		{
 			var fullParentName = "DatabaseInstaller.cs";
 			var fileName = "DatabaseInstaller.Designer.cs";
@@ -610,14 +576,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 		}
 
 		#endregion
-
-		private void GenerateAzureCopy()
-		{
-			var fileName = "AzureCopy.cs";
-			var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
-			var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
-			OnProjectItemGenerated(this, eventArgs);
-		}
 
 		private void GenerateInstallSettings()
 		{

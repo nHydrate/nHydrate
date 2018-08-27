@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -88,7 +88,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
             sb.AppendLine("using System.Collections.Generic;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.Entity;");
             sb.AppendLine("using System.Linq.Expressions;");
             sb.AppendLine();
         }
@@ -100,7 +100,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// Extension methods for this library");
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+            sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
             sb.AppendLine("	public static partial class " + _model.ProjectName + "EntitiesExtensions");
             sb.AppendLine("	{");
 
@@ -113,10 +113,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			where T : BaseEntity");
             sb.AppendLine("			where R : IContextInclude");
             sb.AppendLine("		{");
-            sb.AppendLine("			var strings = new List<string>(query.Body.ToString().Split('.'));");
-            sb.AppendLine("			strings.RemoveAt(0);");
+            sb.AppendLine("			var builder = new List<string>();");
+            sb.AppendLine("			var zz = query.Body as MemberExpression;");
+            sb.AppendLine("			while (zz != null)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var tt = zz.Member.GetCustomAttributes(typeof(EntityMap), true).FirstOrDefault() as EntityMap;");
+            sb.AppendLine("				if (tt != null) builder.Add(tt.Name);");
+            sb.AppendLine("				else builder.Add(zz.Member.Name);");
+            sb.AppendLine("				zz = zz.Expression as MemberExpression;");
+            sb.AppendLine("			}");
+            sb.AppendLine("			builder.Reverse();");
+            sb.AppendLine();
             sb.AppendLine("			var compoundString = string.Empty;");
-            sb.AppendLine("			foreach (var s in strings)");
+            sb.AppendLine("			foreach (var s in builder)");
             sb.AppendLine("			{");
             sb.AppendLine("				if (!string.IsNullOrEmpty(compoundString)) compoundString += \".\";");
             sb.AppendLine("				compoundString += s;");
@@ -491,6 +500,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("		{");
             sb.AppendLine("			if (optimizer == null)");
             sb.AppendLine("				optimizer = new QueryOptimizer();");
+            sb.AppendLine("			if (query == null)");
+            sb.AppendLine("				throw new Exception(\"Query must be set\");");
             sb.AppendLine();
             sb.AppendLine("			//There is nothing to do");
             sb.AppendLine("			if (query.ToString().Replace(\"\\r\", string.Empty).Split(new char[] { '\\n' }).LastOrDefault().Trim() == \"WHERE 1 = 0\")");
@@ -526,7 +537,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("						var context = context2.GetValue(query.Provider);");
             sb.AppendLine("						objectContext = context as System.Data.Entity.Core.Objects.ObjectContext;");
             sb.AppendLine("						var qq = objectContext.InterceptionContext.DbContexts.First() as " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities;");
-            sb.AppendLine("						instanceKey = qq.InstanceKey;");
+            sb.AppendLine("						if (qq != null)");
+            sb.AppendLine("							instanceKey = qq.InstanceKey;");
             sb.AppendLine("						if (string.IsNullOrEmpty(connectionString))");
             sb.AppendLine("						{");
             sb.AppendLine("							connectionString = Util.StripEFCS2Normal(objectContext.Connection.ConnectionString);");
@@ -676,6 +688,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             #region Update Extensions
             sb.AppendLine("		#region Update Extensions");
             sb.AppendLine();
+            sb.AppendLine("	    private static readonly string[] _updateableAuditFields = new[]");
+            sb.AppendLine("	    {");
+            sb.AppendLine("	        \"" + _model.Database.ModifiedByDatabaseName + "\",");
+            sb.AppendLine("	        \"" + _model.Database.ModifiedDateDatabaseName + "\"");
+            sb.AppendLine("	    };");
+            sb.AppendLine();
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public static void Update<T>(this IQueryable<T> query, Expression<Func<T, T>> obj)");
             sb.AppendLine("			where T : " + GetLocalNamespace() + ".IBusinessObject, new()");
@@ -705,6 +723,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine();
             sb.AppendLine("			if (optimizer == null)");
             sb.AppendLine("				optimizer = new QueryOptimizer();");
+            sb.AppendLine("			if (query == null)");
+            sb.AppendLine("				throw new Exception(\"Query must be set\");");
             sb.AppendLine();
             sb.AppendLine("			//There is nothing to do");
             sb.AppendLine("			if (query.ToString().Replace(\"\\r\", string.Empty).Split(new char[] { '\\n' }).LastOrDefault().Trim() == \"WHERE 1 = 0\")");
@@ -887,7 +907,15 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
             sb.AppendLine("			do");
             sb.AppendLine("			{");
             sb.AppendLine("				var md = theObj.GetMetaData();");
-            sb.AppendLine("				mapping.Add(new UpdateSqlMapItem { TableName = md.GetTableName(), FieldList = md.GetFields(), Schema = md.Schema(), Metadata = md });");
+            sb.AppendLine("			    var mdFields = md.GetFields();");
+            sb.AppendLine("				var audit = theObj as IAuditable;");
+            sb.AppendLine("				if (audit != null && audit.IsModifyAuditImplemented)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					// For auditable entities, we need to include the updateable fields in the field list so that");
+            sb.AppendLine("					// the SQl generator can find them.");
+            sb.AppendLine("					mdFields.AddRange(_updateableAuditFields);");
+            sb.AppendLine("				}");
+            sb.AppendLine("				mapping.Add(new UpdateSqlMapItem { TableName = md.GetTableName(), FieldList = mdFields, Schema = md.Schema(), Metadata = md });");
             sb.AppendLine("				var newT = md.InheritsFrom();");
             sb.AppendLine("				if (newT == null)");
             sb.AppendLine("					theObj = default(T);");

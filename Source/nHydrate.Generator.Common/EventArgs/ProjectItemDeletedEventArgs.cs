@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -29,55 +29,46 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Common.EventArgs
 {
-	public class ProjectItemDeletedEventArgs : System.EventArgs
-	{
-		#region Constructors
+    public class ProjectItemDeletedEventArgs : System.EventArgs
+    {
+        #region Constructors
 
-		private ProjectItemDeletedEventArgs()
-		{
-			this.ParentItemType = ProjectItemType.File;
-			this.Properties = new Hashtable();
-			this.ProjectItemName = string.Empty;
-			this.ProjectName = string.Empty;
-			this.ParentItemName = string.Empty;
-			this.ContentType = ProjectItemContentType.String;
-			this.FileState = EnvDTEHelper.FileStateConstants.Success;
-			this.FullName = string.Empty;
-			this.BaseGenerator = null;
-		}
+        private ProjectItemDeletedEventArgs()
+        {
+        }
 
-		public ProjectItemDeletedEventArgs(string projectItemName, string projectName, IProjectItemGenerator baseGenerator)
-			: this()
-		{
-			this.BaseGenerator = baseGenerator;
-			this.ProjectItemName = projectItemName;
-			this.ProjectName = projectName;
-		}
+        public ProjectItemDeletedEventArgs(string projectItemName, string projectName, IProjectItemGenerator baseGenerator)
+            : this()
+        {
+            this.BaseGenerator = baseGenerator;
+            this.ProjectItemName = projectItemName;
+            this.ProjectName = projectName;
+        }
 
-		#endregion
+        #endregion
 
-		#region Property Implementations
+        #region Property Implementations
+        public bool DeleteFile { get; set; } = false;
 
-		public EnvDTEHelper.FileStateConstants FileState { get; set; }
+        public EnvDTEHelper.FileStateConstants FileState { get; set; } = EnvDTEHelper.FileStateConstants.Success;
 
-		public string FullName { get; set; }
+        public string FullName { get; set; } = string.Empty;
 
-		public IProjectItemGenerator BaseGenerator { get; private set; }
+        public IProjectItemGenerator BaseGenerator { get; private set; } = null;
 
-		public ProjectItemType ParentItemType { get; private set; }
+        public ProjectItemType ParentItemType { get; private set; } = ProjectItemType.File;
 
-		public ProjectItemContentType ContentType { get; set; }
+        public ProjectItemContentType ContentType { get; set; } = ProjectItemContentType.String;
 
-		public string ParentItemName { get; private set; }
+        public string ParentItemName { get; private set; } = string.Empty;
 
-		public string ProjectName { get; private set; }
+        public string ProjectName { get; private set; } = string.Empty;
 
-		public string ProjectItemName { get; private set; }
+        public string ProjectItemName { get; private set; } = string.Empty;
 
-		public Hashtable Properties { get; set; }
+        public Hashtable Properties { get; set; } = new Hashtable();
 
-		#endregion
+        #endregion
 
-	}
+    }
 }
-

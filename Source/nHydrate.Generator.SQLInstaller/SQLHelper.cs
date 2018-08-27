@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -128,7 +128,7 @@ namespace nHydrate.Generator.SQLInstaller
                     if (newT == null)
                     {
                         //DELETE TABLE
-                        sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlDropTable(oldT));
+                        sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlDropTable(modelOld, oldT));
                         sb.AppendLine("GO");
                         //TODO - Delete Tenant View
                         sb.AppendLine();
@@ -147,7 +147,7 @@ namespace nHydrate.Generator.SQLInstaller
                     //else if (tList[0].DatabaseName != oldT.DatabaseName)
                     //{
                     //  //RENAME TABLE
-                    //  sb.AppendLine("if exists(select * from sysobjects where name = '" + oldT.DatabaseName + "' and xtype = 'U')");
+                    //  sb.AppendLine("if exists(select * from sys.objects where name = '" + oldT.DatabaseName + "' and type = 'U')");
                     //  sb.AppendLine("exec sp_rename [" + oldT.DatabaseName + "], [" + tList[0].DatabaseName + "]");
                     //}
                 }
@@ -209,8 +209,8 @@ namespace nHydrate.Generator.SQLInstaller
                             else if (newC.DatabaseName != oldC.DatabaseName)
                             {
                                 ////RENAME COLUMN
-                                //string sql = "if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + oldC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" +
-                                //             "AND not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + newC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" + Environment.NewLine +
+                                //string sql = "if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + oldC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" +
+                                //             "AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + newC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" + Environment.NewLine +
                                 //             "EXEC sp_rename @objname = '" + newT.DatabaseName + "." + oldC.DatabaseName + "', @newname = '" + newC.DatabaseName + "', @objtype = 'COLUMN'";
                                 //if (!querylist.Contains(sql))
                                 //{
@@ -457,18 +457,18 @@ namespace nHydrate.Generator.SQLInstaller
                             //Drop Index
                             var indexName = "IDX_" + newT.DatabaseName.Replace("-", string.Empty) + "_" + modelNew.TenantColumnName;
                             indexName = indexName.ToUpper();
-                            sb.AppendLine("if exists (select * from sys.indexes where name = '" + indexName + "')");
-                            sb.AppendLine("DROP INDEX [" + indexName + "] ON [" + newT.DatabaseName + "]");
+                            sb.AppendLine($"if exists (select * from sys.indexes where name = '{indexName}')");
+                            sb.AppendLine($"DROP INDEX [{indexName}] ON [{newT.DatabaseName}]");
                             sb.AppendLine();
 
                             //Drop the associated view
                             var viewName = modelOld.TenantPrefix + "_" + oldT.DatabaseName;
-                            sb.AppendLine("if exists (select name from sys.objects where name = '" + viewName + "'  AND type = 'V')");
-                            sb.AppendLine("DROP VIEW [" + viewName + "]");
+                            sb.AppendLine($"if exists (select name from sys.objects where name = '{viewName}'  AND type = 'V')");
+                            sb.AppendLine($"DROP VIEW [{viewName}]");
                             sb.AppendLine();
 
                             //Drop the tenant field
-                            sb.AppendLine("if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + modelNew.TenantColumnName + "' and o.name = '" + newT.DatabaseName + "')");
+                            sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + modelNew.TenantColumnName + "' and o.name = '" + newT.DatabaseName + "')");
                             sb.AppendLine("ALTER TABLE [" + newT.GetSQLSchema() + "].[" + newT.DatabaseName + "] DROP COLUMN [" + modelNew.TenantColumnName + "]");
                             sb.AppendLine();
                         }
@@ -476,6 +476,30 @@ namespace nHydrate.Generator.SQLInstaller
                         {
                             //Add the tenant field
                             sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlCreateTenantColumn(modelNew, newT));
+
+                            //Add tenant view
+                            var grantSB = new StringBuilder();
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlTenantView(modelNew, newT, grantSB));
+                            if (grantSB.ToString() != string.Empty)
+                                sb.AppendLine(grantSB.ToString());
+                        }
+                        else if (oldT.IsTenant && newT.IsTenant && oldT.DatabaseName != newT.DatabaseName)
+                        {
+                            //If rename tenant table then delete old view and create new view
+
+                            //Drop the old view
+                            var viewName = modelOld.TenantPrefix + "_" + oldT.DatabaseName;
+                            sb.AppendLine($"--DROP OLD TENANT VIEW FOR TABLE [{oldT.DatabaseName}]");
+                            sb.AppendLine($"if exists (select name from sys.objects where name = '{viewName}'  AND type = 'V')");
+                            sb.AppendLine($"DROP VIEW [{viewName}]");
+                            sb.AppendLine("GO");
+
+                            //Add tenant view
+                            var grantSB = new StringBuilder();
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlTenantView(modelNew, newT, grantSB));
+                            if (grantSB.ToString() != string.Empty)
+                                sb.AppendLine(grantSB.ToString());
+
                         }
                         #endregion
 
@@ -588,7 +612,7 @@ namespace nHydrate.Generator.SQLInstaller
                         if (oldStaticScript != newStaticScript)
                         {
                             sb.AppendLine(newStaticScript);
-                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlUpdateStaticData(newT));
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlUpdateStaticData(oldT, newT));
                             sb.AppendLine("GO");
                             sb.AppendLine();
                         }

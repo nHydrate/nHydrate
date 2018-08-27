@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -58,10 +58,16 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateDa
 			OnProjectItemGenerated(this, eventArgs);
 			var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
 			OnGenerationComplete(this, gcEventArgs);
-		}
 
-		#endregion
+            //Delete the old one
+            var delEventArgs = new ProjectItemDeletedEventArgs($@"\{PARENT_ITEM_NAME}\{template.OldFileName}", ProjectName, this);
+            delEventArgs.DeleteFile = true;
+            OnProjectItemDeleted(this, delEventArgs);
 
-	}
+        }
+
+        #endregion
+
+    }
 }
 

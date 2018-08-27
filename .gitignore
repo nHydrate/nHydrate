@@ -58,6 +58,7 @@ dlldata.c
 *.pidb
 *.svclog
 *.scc
+*.ide
 
 # Chutzpah Test files
 _Chutzpah*
@@ -74,6 +75,9 @@ ipch/
 *.psess
 *.vsp
 *.vspx
+
+# Visual Studio 2015 cache/options directory
+.vs/
 
 # TFS 2012 Local Workspace
 $tf/

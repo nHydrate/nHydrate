@@ -7,10 +7,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -147,8 +147,8 @@ namespace PROJECTNAMESPACE
                 //Setup trace if need be. If showing SQL then auto trace on
                 if (commandParams.ContainsKey(PARAMKEYS_TRACE) || setup.ShowSql)
                 {
-                    var trc = new System.Diagnostics.TextWriterTraceListener(Console.Out);
-                    System.Diagnostics.Debug.Listeners.Add(trc);
+                    var trc = new System.Diagnostics.ConsoleTraceListener();
+                    System.Diagnostics.Trace.Listeners.Add(trc);
                     paramUICount++;
                 }
 
@@ -194,7 +194,7 @@ namespace PROJECTNAMESPACE
                     {
                         if (!DropDatabase(dbname, masterConnectionString))
                             throw new Exception("The database '" + dbname + "' could not dropped.");
-                        System.Diagnostics.Debug.WriteLine("Database successfully dropped.");
+                        System.Diagnostics.Trace.WriteLine("Database successfully dropped.");
                         return;
                     }
                     throw new Exception("Invalid drop database configuration.");
@@ -307,11 +307,11 @@ namespace PROJECTNAMESPACE
                 using (var con = new System.Data.SqlClient.SqlConnection(masterConnectionString))
                 {
                     con.Open();
-                    var sqlCommandText = @"
-						ALTER DATABASE [" + dbname + @"] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-						DROP DATABASE [" + dbname + "]";
-                    var sqlCommand = new System.Data.SqlClient.SqlCommand(sqlCommandText, con);
-                    sqlCommand.ExecuteNonQuery();
+                    var sqlCommandText = @"ALTER DATABASE [" + dbname + @"] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;DROP DATABASE [" + dbname + "]";
+                    using (var sqlCommand = new System.Data.SqlClient.SqlCommand(sqlCommandText, con))
+                    {
+                        sqlCommand.ExecuteNonQuery();
+                    }
                     return true;
                 }
             }
@@ -375,7 +375,7 @@ namespace PROJECTNAMESPACE
                 sb.AppendLine(ex.SQL);
                 sb.AppendLine("END ERROR SQL");
                 sb.AppendLine();
-                System.Diagnostics.Debug.WriteLine(sb.ToString());
+                System.Diagnostics.Trace.WriteLine(sb.ToString());
                 UpgradeInstaller.LogError(ex, sb.ToString());
                 throw;
             }
@@ -490,9 +490,9 @@ namespace PROJECTNAMESPACE
             var args = Environment.GetCommandLineArgs();
 
             var loopcount = 0;
-            foreach (var arg in args)
+            foreach (var arg in args.Skip(1))
             {
-                var regEx = new Regex(@"\s?[-/](\w+)(:(.*))?");
+                var regEx = new Regex(@"^\s?[-/](\w+)(:(.*))?");
                 var regExMatch = regEx.Match(arg);
                 if (regExMatch.Success)
                 {
@@ -540,10 +540,6 @@ namespace PROJECTNAMESPACE
                 else if (this.Action == ActionTypeConstants.Upgrade)
                 {
                     UpgradeInstaller.UpgradeDatabase(setup);
-                }
-                else if (this.Action == ActionTypeConstants.AzureCopy)
-                {
-                    UpgradeInstaller.AzureCopyDatabase(this.Settings);
                 }
             }
         }
@@ -653,7 +649,7 @@ namespace PROJECTNAMESPACE
         public GeneratedVersion Version { get; set; }
 
         /// <summary />
-        internal bool SuppressUI { get; set; }
+        public bool SuppressUI { get; set; }
 
         /// <summary>
         /// Determines if this is a database upgrade

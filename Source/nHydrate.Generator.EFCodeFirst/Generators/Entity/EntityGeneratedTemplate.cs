@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -83,7 +83,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 sb.AppendLine("#pragma warning disable 612");
                 this.AppendUsingStatements();
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
                 sb.AppendLine("{");
                 this.AppendEntityClass();
                 sb.AppendLine("}");
@@ -107,8 +107,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Text;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ";");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".EventArguments;");
+            sb.AppendLine($"using {this.GetLocalNamespace()};");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.EventArguments;");
             sb.AppendLine("using System.Text.RegularExpressions;");
             sb.AppendLine("using System.Linq.Expressions;");
             sb.AppendLine("using System.Data.Entity;");
@@ -126,15 +126,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                 doubleDerivedClassName = _item.PascalName + "Base";
 
                 sb.AppendLine("	/// <summary>");
-                sb.AppendLine("	/// The '" + _item.PascalName + "' entity");
-                if (!string.IsNullOrEmpty(_item.Description))
-                    StringHelper.LineBreakCode(sb, _item.Description, "	/// ");
+                sb.AppendLine($"	/// The '{_item.PascalName}' entity");
                 sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+                sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
                 if (_item.IsAbstract)
-                    sb.Append("	public abstract partial class " + _item.PascalName + " : " + doubleDerivedClassName);
+                    sb.Append($"	public abstract partial class {_item.PascalName} : {doubleDerivedClassName}");
                 else
-                    sb.Append("	public partial class " + _item.PascalName + " : " + doubleDerivedClassName + ", System.ICloneable");
+                    sb.Append($"	public partial class {_item.PascalName} : {doubleDerivedClassName}, System.ICloneable");
 
                 //If we can add this item then implement the ICreatable interface
                 if (!_item.AssociativeTable && !_item.Immutable)
@@ -151,15 +149,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
             sb.AppendLine("	/// <summary>");
             if (_item.GeneratesDoubleDerived)
-                sb.AppendLine("	/// The base for the double derived '" + _item.PascalName + "' entity");
+                sb.AppendLine($"	/// The base for the double derived '{_item.PascalName}' entity");
             else
-                sb.AppendLine("	/// The '" + _item.PascalName + "' entity");
+                sb.AppendLine($"	/// The '{_item.PascalName}' entity");
+            if (!string.IsNullOrEmpty(_item.CodeFacade))
+                sb.AppendLine($"	/// Facade for '{_item.DatabaseName}' database table");
+            if(_item.IsTenant)
+                sb.AppendLine($"	/// This is a tenant table");
             if (!string.IsNullOrEmpty(_item.Description))
-                sb.AppendLine("	/// " + _item.Description);
+                sb.AppendLine($"	/// {_item.Description}");
             sb.AppendLine("	/// </summary>");
             sb.AppendLine("	[DataContract]");
             sb.AppendLine("	[Serializable]");
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+            sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
 
             sb.AppendLine("	[FieldNameConstants(typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))]");
             sb.AppendLine("	[System.ComponentModel.DataAnnotations.MetadataType(typeof(" + this.GetLocalNamespace() + ".Entity.Metadata." + _item.PascalName + "Metadata))]");
@@ -522,7 +524,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                         StringHelper.LineBreakCode(sb, column.Description, "		/// ");
                     }
                     else
-                        sb.AppendLine("		/// The property that maps back to the database '" + (column.ParentTableRef.Object as Table).DatabaseName + "." + column.DatabaseName + "' field.");
+                        sb.AppendLine("		/// The property that maps back to the database '" + column.ParentTable.DatabaseName + "." + column.DatabaseName + "' field.");
 
 
                     //If this field has a related convenience property then explain it
@@ -621,8 +623,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     else if (column.DataType == System.Data.SqlDbType.DateTime)
                     {
                         //Error check date value
-                        sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value < GlobalValues.MIN_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(\"yyyy-MM-dd HH:mm:ss\") + \") cannot be less than \" + GlobalValues.MIN_DATETIME.ToString());");
-                        sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value > GlobalValues.MAX_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(\"yyyy-MM-dd HH:mm:ss\") + \") cannot be greater than \" + GlobalValues.MAX_DATETIME.ToString());");
+                        sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value < GlobalValues.MIN_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(GlobalValues.YMDHMS_FORMAT) + \") cannot be less than \" + GlobalValues.MIN_DATETIME.ToString());");
+                        sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value > GlobalValues.MAX_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(GlobalValues.YMDHMS_FORMAT) + \") cannot be greater than \" + GlobalValues.MAX_DATETIME.ToString());");
                     }
 
                     //If this column is related to a type table then add additional validation
@@ -711,27 +713,23 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             #region Parent Relations
             {
                 var relationList = _item.GetRelations().Where(x => x.IsValidEFRelation);
-                foreach (Relation relation in relationList)
+                foreach (var relation in relationList.OrderBy(x => x.ChildTable.PascalName))
                 {
-                    var parentTable = (Table)relation.ParentTableRef.Object;
-                    var childTable = (Table)relation.ChildTableRef.Object;
-                    var isPublic = true;
                     var scope = "public";
-                    if (childTable.Security.IsValid())
+                    if (relation.ChildTable.Security.IsValid())
                     {
                         scope = "protected internal";
-                        isPublic = false;
                     }
 
                     //If not both generated then do not process this code block
-                    if (!parentTable.Generated || !childTable.Generated)
+                    if (!relation.ParentTable.Generated || !relation.ChildTable.Generated)
                     {
                         //Do Nothing
                         //One or both is not generated or there is a security function on the child so no gen
                     }
 
                     //inheritance relationship
-                    else if (parentTable == childTable.ParentTable && relation.IsOneToOne)
+                    else if (relation.ParentTable == relation.ChildTable.ParentTable && relation.IsOneToOne)
                     {
                         //Do Nothing
                     }
@@ -743,42 +741,61 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     //}
 
                     //1-1 relations
+                    else if (relation.IsOneToOne && !relation.AreAllFieldsPK)
+                    {
+                        sb.AppendLine("		/// <summary>");
+                        sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + relation.ChildTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
+                        sb.AppendLine("		/// </summary>");
+                        sb.AppendLine("		[DataMember]");
+                        sb.AppendLine("		[XmlIgnore]");
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
+                        //sb.AppendLine("		" + scope + " virtual " + relation.ChildTable.PascalName + " " + relation.PascalRoleName + relation.ChildTable.PascalName + " { get; set; }");
+
+                        var listName = relation.PascalRoleName + relation.ChildTable.PascalName + "List";
+                        sb.AppendLine("		" + scope + " virtual " + relation.ChildTable.PascalName + " " + relation.PascalRoleName + relation.ChildTable.PascalName);
+                        sb.AppendLine("		{");
+                        sb.AppendLine("			get { return this." + listName + "?.FirstOrDefault(); }");
+                        sb.AppendLine("			set");
+                        sb.AppendLine("			{");
+                        sb.AppendLine("				lock (this)");
+                        sb.AppendLine("				{");
+                        sb.AppendLine("					if (this." + listName + " == null)");
+                        sb.AppendLine("					this." + listName + " = new List<" + relation.ChildTable.PascalName + ">();");
+                        sb.AppendLine("					this." + listName + ".Clear();");
+                        sb.AppendLine("					this." + listName + ".Add(value);");
+                        sb.AppendLine("				}");
+                        sb.AppendLine("			}");
+                        sb.AppendLine("		}");
+                        sb.AppendLine();
+
+                        sb.AppendLine("		/// <summary />");
+                        sb.AppendLine("		protected internal virtual List<" + relation.ChildTable.PascalName + "> " + listName + " { get; set; }");
+                    }
                     else if (relation.IsOneToOne)
                     {
                         sb.AppendLine("		/// <summary>");
-                        sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
+                        sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + relation.ChildTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
                         sb.AppendLine("		[XmlIgnore]");
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
-                        sb.AppendLine("		" + scope + " virtual " + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; set; }");
+                        sb.AppendLine("		" + scope + " virtual " + relation.ChildTable.PascalName + " " + relation.PascalRoleName + relation.ChildTable.PascalName + " { get; set; }");
                         sb.AppendLine();
-
-                        //if (isPublic)
-                        //{
-                        //    //Add interface map
-                        //    sb.AppendLine("		" + this.InterfaceAssemblyNamespace + ".Entity.I" + childTable.PascalName + " " + this.InterfaceAssemblyNamespace + ".Entity.I" + _item.PascalName + "." + relation.PascalRoleName + childTable.PascalName + "");
-                        //    sb.AppendLine("		{");
-                        //    sb.AppendLine("			get { return this." + relation.PascalRoleName + childTable.PascalName + "; }");
-                        //    sb.AppendLine("			set { this." + relation.PascalRoleName + childTable.PascalName + " = (" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ")value; }");
-                        //    sb.AppendLine("		}");
-                        //    sb.AppendLine();
-                        //}
                     }
 
                     //Process the associative tables
-                    else if (childTable.AssociativeTable)
+                    else if (relation.ChildTable.AssociativeTable)
                     {
-                        var associativeRelations = childTable.GetRelationsWhereChild();
+                        var associativeRelations = relation.ChildTable.GetRelationsWhereChild();
                         Relation targetRelation = null;
                         Relation otherRelation = null;
                         var relation1 = associativeRelations.First();
                         var relation2 = associativeRelations.Last();
-                        if (_item == ((Table)relation1.ParentTableRef.Object)) targetRelation = relation2;
+                        if (_item == relation1.ParentTable) targetRelation = relation2;
                         else targetRelation = relation1;
                         if (targetRelation == relation2) otherRelation = relation1;
                         else otherRelation = relation2;
-                        var targetTable = targetRelation.ParentTableRef.Object as Table;
+                        var targetTable = targetRelation.ParentTable;
 
                         if (targetTable.Generated && (targetTable.TypedTable != TypedTableConstants.EnumOnly))
                         {
@@ -803,24 +820,24 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                     }
 
                     //Process relations where Current Table is the parent
-                    else if (parentTable == _item && parentTable.Generated && childTable.Generated && (childTable.TypedTable != TypedTableConstants.EnumOnly) && !childTable.AssociativeTable)
+                    else if (relation.ParentTable == _item && relation.ParentTable.Generated && relation.ChildTable.Generated && (relation.ChildTable.TypedTable != TypedTableConstants.EnumOnly) && !relation.ChildTable.AssociativeTable)
                     {
                         sb.AppendLine("		/// <summary>");
-                        sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
+                        sb.AppendLine("		/// The navigation definition for walking " + relation.ParentTable.PascalName + "->" + relation.ChildTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
                         sb.AppendLine("		[XmlIgnore]");
-                        sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + relation.PascalRoleName + childTable.PascalName + "List");
+                        sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + relation.ChildTable.PascalName + "> " + relation.PascalRoleName + relation.ChildTable.PascalName + "List");
                         sb.AppendLine("		{");
                         sb.AppendLine("			get");
                         sb.AppendLine("			{");
-                        sb.AppendLine("				if (_" + relation.PascalRoleName + childTable.PascalName + "List == null) _" + relation.PascalRoleName + childTable.PascalName + "List = new List<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">();");
-                        sb.AppendLine("				return _" + relation.PascalRoleName + childTable.PascalName + "List;");
+                        sb.AppendLine("				if (_" + relation.PascalRoleName + relation.ChildTable.PascalName + "List == null) _" + relation.PascalRoleName + relation.ChildTable.PascalName + "List = new List<" + this.GetLocalNamespace() + ".Entity." + relation.ChildTable.PascalName + ">();");
+                        sb.AppendLine("				return _" + relation.PascalRoleName + relation.ChildTable.PascalName + "List;");
                         sb.AppendLine("			}");
-                        sb.AppendLine("			set { _" + relation.PascalRoleName + childTable.PascalName + "List = value; }");
+                        sb.AppendLine("			set { _" + relation.PascalRoleName + relation.ChildTable.PascalName + "List = value; }");
                         sb.AppendLine("		}");
                         sb.AppendLine("		/// <summary />");
-                        sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> _" + relation.PascalRoleName + childTable.PascalName + "List { get; set; }");
+                        sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + relation.ChildTable.PascalName + "> _" + relation.PascalRoleName + relation.ChildTable.PascalName + "List { get; set; }");
                         sb.AppendLine();
 
                         //if (isPublic)
@@ -841,35 +858,31 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             #region Child Relations
             {
                 var relationList = _item.GetRelationsWhereChild().Where(x => x.IsValidEFRelation).AsEnumerable();
-                foreach (Relation relation in relationList)
+                foreach (var relation in relationList.OrderBy(x => x.ParentTable.PascalName))
                 {
-                    Table parentTable = (Table)relation.ParentTableRef.Object;
-                    Table childTable = (Table)relation.ChildTableRef.Object;
-
                     //Do not walk to associative
-                    if ((parentTable.TypedTable == TypedTableConstants.EnumOnly) || (childTable.TypedTable == TypedTableConstants.EnumOnly))
+                    if ((relation.ParentTable.TypedTable == TypedTableConstants.EnumOnly) || (relation.ChildTable.TypedTable == TypedTableConstants.EnumOnly))
                     {
                         //Do Nothing
                     }
 
                     //inheritance relationship
-                    else if (parentTable == childTable.ParentTable && relation.IsOneToOne)
+                    else if (relation.ParentTable == relation.ChildTable.ParentTable && relation.IsOneToOne)
                     {
                         //Do Nothing
                     }
 
                     //Process relations where Current Table is the child
-                    else if (childTable == _item && parentTable.Generated && childTable.Generated && !parentTable.IsInheritedFrom(_item))
+                    else if (relation.ChildTable == _item && relation.ParentTable.Generated && relation.ChildTable.Generated && !relation.ParentTable.IsInheritedFrom(_item))
                     {
                         sb.AppendLine("		/// <summary>");
-                        sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
+                        sb.AppendLine("		/// The navigation definition for walking " + relation.ParentTable.PascalName + "->" + relation.ChildTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "')"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[DataMember]");
                         sb.AppendLine("		[XmlIgnore]");
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
-                        sb.AppendLine("		public virtual " + parentTable.PascalName + " " + relation.PascalRoleName + parentTable.PascalName + " { get; set; }");
+                        sb.AppendLine("		public virtual " + relation.ParentTable.PascalName + " " + relation.PascalRoleName + relation.ParentTable.PascalName + " { get; set; }");
                         sb.AppendLine();
-
                         ////Add interface map
                         //sb.AppendLine("		" + this.InterfaceAssemblyNamespace + ".Entity.I" + parentTable.PascalName + " " + this.InterfaceAssemblyNamespace + ".Entity.I" + _item.PascalName + "." + relation.PascalRoleName + parentTable.PascalName + "");
                         //sb.AppendLine("		{");
@@ -1210,7 +1223,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             var allColumns = _item.GetColumnsFullHierarchy(true).Where(x => x.Generated).ToList();
             foreach (var column in allColumns.OrderBy(x => x.Name))
             {
-                var relationParentTable = (Table)column.ParentTableRef.Object;
+                var relationParentTable = column.ParentTable;
                 var childColumnList = relationParentTable.AllRelationships.FindByChildColumn(column);
                 sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")");
                 if (column.AllowNull)
@@ -1352,12 +1365,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
                             sb.AppendLine("				}");
                             sb.AppendLine("				else");
                             sb.AppendLine("				{");
-                            var relationParentTable = (Table)column.ParentTableRef.Object;
+                            var relationParentTable = column.ParentTable;
                             var list = relationParentTable.AllRelationships.FindByChildColumn(column).ToList();
                             if (list.Count > 0)
                             {
                                 var relation = list.First() as Relation;
-                                var pTable = relation.ParentTableRef.Object as Table;
+                                var pTable = relation.ParentTable;
                                 if (pTable.Generated && pTable.TypedTable != TypedTableConstants.EnumOnly)
                                 {
                                     var cTable = relation.ChildTableRef.Object as Table;
@@ -2113,7 +2126,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
             foreach (var column in allColumns.OrderBy(x => x.Name))
             {
-                var table = column.ParentTableRef.Object as Table;
+                var table = column.ParentTable;
                 if (table.IsTenant)
                     sb.AppendLine("				case \"" + column.PascalName.ToLower() + "\": return \"" + _model.TenantPrefix + "_" + table.DatabaseName + "\";");
                 else
@@ -2153,7 +2166,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
 
             foreach (var column in allColumns.OrderBy(x => x.Name))
             {
-                var table = column.ParentTableRef.Object as Table;
+                var table = column.ParentTable;
                 if (table.IsTenant)
                     sb.AppendLine("				case \"" + column.DatabaseName.ToLower() + "\": return \"" + _model.TenantPrefix + "_" + table.DatabaseName + "\";");
                 else
@@ -2186,8 +2199,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		{");
             foreach (var column in allColumns.OrderBy(x => x.Name))
             {
-                //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + column.DatabaseName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + ((Table)column.ParentTableRef.Object).DatabaseName + "\") + \"].[" + column.DatabaseName.ToLower() + "]\");");
-                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + column.DatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + ((Table)column.ParentTableRef.Object).DatabaseName + "\") + \"].[" + column.DatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
+                //sb.AppendLine("			sql = sql.Replace(\"[\" + parentAlias + \"].[" + column.DatabaseName.ToLower() + "]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + column.ParentTable.DatabaseName + "\") + \"].[" + column.DatabaseName.ToLower() + "]\");");
+                sb.AppendLine("			sql = System.Text.RegularExpressions.Regex.Replace(sql, \"\\\\[\" + parentAlias + \"\\\\]\\\\.\\\\[" + column.DatabaseName.ToLower() + "\\\\]\", \"[\" + childTables.GetBaseAliasTable(parentAlias, \"" + column.ParentTable.DatabaseName + "\") + \"].[" + column.DatabaseName.ToLower() + "]\", RegexOptions.IgnoreCase);");
             }
             if (_item.AllowCreateAudit)
             {
@@ -2223,12 +2236,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
         {
             sb.AppendLine("#region Metadata Class");
             sb.AppendLine();
-            sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity.Metadata");
+            sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity.Metadata");
             sb.AppendLine("{");
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// Metadata class for the '" + _item.PascalName + "' entity");
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+            sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
             sb.Append("	public partial class " + _item.PascalName + "Metadata : ");
 
             if (_item.ParentTable != null)

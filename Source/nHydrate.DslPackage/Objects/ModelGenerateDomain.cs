@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -360,12 +360,14 @@ namespace nHydrate.DslPackage.Objects
                 ProcessRenamed(genProject.FileName + ".sql.lastgen", root);
 
                 root.RemovedTables.AddRange(model.RemovedTables);
+
+                //NOTE: This caused diff scripts to be generated EVERY time so removed for now
+                //Remove associative tables since they cause issues if they exist
+                //root.RemovedTables.AddRange(model.Entities.Where(x => x.IsAssociative && x.IsGenerated).Select(x => x.Name));
+
                 root.RemovedViews.AddRange(model.RemovedViews);
                 root.RemovedStoredProcedures.AddRange(model.RemovedStoredProcedures);
                 root.RemovedFunctions.AddRange(model.RemovedFunctions);
-
-                //Remove non-generated items from the project
-                root.RemovedTables.AddRange(model.Entities.Where(x => !x.IsGenerated).Select(x => x.Name));
                 root.RemovedTables.AddRange(model.Views.Where(x => !x.IsGenerated).Select(x => x.Name));
                 root.RemovedTables.AddRange(model.StoredProcedures.Where(x => !x.IsGenerated).Select(x => x.Name));
                 root.RemovedTables.AddRange(model.Functions.Where(x => !x.IsGenerated).Select(x => x.Name));
@@ -415,6 +417,14 @@ namespace nHydrate.DslPackage.Objects
                     var renamedItem = oldRoot.Database.Functions.FirstOrDefault(x => x.Key == t.Key && x.PascalName.ToLower() != t.PascalName.ToLower());
                     if (renamedItem != null)
                         root.RemovedFunctions.Add(renamedItem.Name);
+                }
+
+                //Find tables that WERE generated last time but NOT generated this time, remove the tables
+                {
+                    var item1 = oldRoot.Database.Tables.FirstOrDefault(x => x.Key == t.Key && x.PascalName.ToLower() == t.PascalName.ToLower() && x.Generated);
+                    var item2 = root.Database.Tables.FirstOrDefault(x => x.Key == t.Key && x.PascalName.ToLower() == t.PascalName.ToLower() && !x.Generated);
+                    if (item1 != null && item2 != null)
+                        root.RemovedTables.Add(item2.Name);
                 }
 
             }
@@ -850,6 +860,7 @@ namespace nHydrate.DslPackage.Objects
                     {
                         var b = connector.ToShape.ModelElement as Entity;
                         var d = connector.FromShape.ModelElement as Entity;
+                        var relation = connector.ModelElement as EntityHasEntities;
                         var baseTable = root.Database.Tables.FirstOrDefault(x => x.Name == b.Name);
                         var derivedTable = root.Database.Tables.FirstOrDefault(x => x.Name == d.Name);
                         if (derivedTable != null && baseTable != null)

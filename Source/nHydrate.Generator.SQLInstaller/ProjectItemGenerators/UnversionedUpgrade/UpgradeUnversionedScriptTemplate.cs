@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -90,20 +90,20 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.UnversionedUpgra
                 sb.AppendLine("--DROP ALL DEFAULTS");
                 sb.AppendLine("--DECLARE @SqlCmd varchar(4000); SET @SqlCmd = ''");
                 sb.AppendLine("--DECLARE @Cnt int; SET @Cnt = 0");
-                sb.AppendLine("--select @Cnt = count(*) from sysobjects d");
-                sb.AppendLine("--join  sysobjects o on d.parent_obj = o.id");
-                sb.AppendLine("--where d.xtype = 'D'");
+                sb.AppendLine("--select @Cnt = count(*) from sys.objects d");
+                sb.AppendLine("--join  sys.objects o on d.parent_object_id = o.object_id");
+                sb.AppendLine("--where d.type = 'D'");
                 sb.AppendLine(" ");
                 sb.AppendLine("--WHILE @Cnt > 0");
                 sb.AppendLine("--BEGIN");
                 sb.AppendLine("--      select TOP 1 @SqlCmd = 'ALTER TABLE ' + o.name + ' DROP CONSTRAINT ' + d.name");
-                sb.AppendLine("--      from sysobjects d");
-                sb.AppendLine("--      join sysobjects o on d.parent_obj = o.id");
-                sb.AppendLine("--      where d.xtype = 'D'");
+                sb.AppendLine("--      from sys.objects d");
+                sb.AppendLine("--      join sys.objects o on d.parent_object_id = o.object_id");
+                sb.AppendLine("--      where d.type = 'D'");
                 sb.AppendLine("--      EXEC(@SqlCmd) --SELECT @SqlCmd --view the command only");
-                sb.AppendLine("--      select @Cnt = count(*) from   sysobjects d");
-                sb.AppendLine("--      join  sysobjects o on d.parent_obj = o.id");
-                sb.AppendLine("--      where d.xtype = 'D'");
+                sb.AppendLine("--      select @Cnt = count(*) from sys.objects d");
+                sb.AppendLine("--      join  sys.objects o on d.parent_object_id = o.object_id");
+                sb.AppendLine("--      where d.type = 'D'");
                 sb.AppendLine("--END");
                 sb.AppendLine("--GO");
                 sb.AppendLine();
@@ -120,7 +120,8 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.UnversionedUpgra
                             var indexName = nHydrate.Core.SQLGeneration.SQLEmit.GetIndexName(table, index);
                             if (index.ImportedName != indexName)
                             {
-                                sb.AppendLine("if exists(select * from sysobjects where name = '" + table.DatabaseName + "' and xtype = 'U')");
+                                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U')");
+                                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U')");
                                 sb.AppendLine("BEGIN");
                                 sb.AppendLine("if exists(select * from sys.indexes where name = '" + index.ImportedName + "')");
                                 sb.AppendLine("EXEC sp_rename N'" + table.DatabaseName + "." + index.ImportedName + "', N'" + indexName + "', N'INDEX';");

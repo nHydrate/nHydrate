@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -99,9 +99,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("using System.Data.Linq;");
             sb.AppendLine("using System.Linq.Expressions;");
             sb.AppendLine("using System.Data.SqlClient;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ";");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".Exceptions;");
+            sb.AppendLine($"using {this.GetLocalNamespace()};");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.Entity;");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.Exceptions;");
             sb.AppendLine();
         }
 
@@ -1057,6 +1057,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("		public const string ERROR_DATA_TOO_BIG = \"The data '{0}' is too large for the {1} field which has a length of {2}.\";");
             sb.AppendLine("		public const string ERROR_INVALID_ENUM = \"The value '{0}' set to the '{1}' field is not valid based on the backing enumeration.\";");
             sb.AppendLine("		public static readonly DateTime MIN_DATETIME = new DateTime(1753, 1, 1);");
+            sb.AppendLine("		public const string YMDHMS_FORMAT = \"yyyy-MM-dd HH:mm:ss\";");
             sb.AppendLine("		public static readonly DateTime MAX_DATETIME = new DateTime(9999, 12, 31, 23, 59, 59);");
             sb.AppendLine("		private const string INVALID_BUSINIESSOBJECT = \"An invalid object of type 'IBusinessObject' was passed in. Perhaps a relationship was not enforced correctly.\";");
             sb.AppendLine();

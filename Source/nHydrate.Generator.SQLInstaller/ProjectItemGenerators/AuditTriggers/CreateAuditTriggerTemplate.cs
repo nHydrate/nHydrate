@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -58,11 +58,14 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.AuditTriggers
 
         public override string FileName
         {
-            get
-            {
-                return string.Format("CreateSchemaAuditTriggers.sql");
-            }
+            get { return string.Format("4_CreateSchemaAuditTriggers.sql"); }
         }
+
+        internal string OldFileName
+        {
+            get { return string.Format("CreateSchemaAuditTriggers.sql"); }
+        }
+        
         #endregion
 
         #region GenerateContent
@@ -74,7 +77,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.AuditTriggers
                 sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
                 sb.AppendLine("--Audit Triggers");
                 sb.AppendLine();
-                this.AppendAuditTriggers();
+                this.AppendAll();
             }
             catch (Exception ex)
             {
@@ -82,20 +85,25 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.AuditTriggers
             }
         }
 
-        private void AppendAuditTriggers()
+        private void AppendAll()
         {
+            //Do not emit these scripts unless need be
+            var isTracking = _model.Database.Tables.Any(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly && x.AllowAuditTracking);
+            if (!_model.EmitSafetyScripts && !isTracking)
+                return;
+
             sb.AppendLine("--##SECTION BEGIN [AUDIT TRIGGERS]");
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
                 sb.AppendLine("--DROP ANY AUDIT TRIGGERS FOR [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
-                sb.AppendLine("if exists(select * from sysobjects where name = '__TR_" + table.DatabaseName + "__INSERT' AND xtype = 'TR')");
+                sb.AppendLine("if exists(select * from sys.objects where name = '__TR_" + table.DatabaseName + "__INSERT' AND type = 'TR')");
                 sb.AppendLine("DROP TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__INSERT]");
                 sb.AppendLine("GO");
-                sb.AppendLine("if exists(select * from sysobjects where name = '__TR_" + table.DatabaseName + "__UPDATE' AND xtype = 'TR')");
+                sb.AppendLine("if exists(select * from sys.objects where name = '__TR_" + table.DatabaseName + "__UPDATE' AND type = 'TR')");
                 sb.AppendLine("DROP TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__UPDATE]");
                 sb.AppendLine("GO");
-                sb.AppendLine("if exists(select * from sysobjects where name = '__TR_" + table.DatabaseName + "__DELETE' AND xtype = 'TR')");
+                sb.AppendLine("if exists(select * from sys.objects where name = '__TR_" + table.DatabaseName + "__DELETE' AND type = 'TR')");
                 sb.AppendLine("DROP TRIGGER [" + table.GetSQLSchema() + "].[__TR_" + table.DatabaseName + "__DELETE]");
                 sb.AppendLine("GO");
                 sb.AppendLine();

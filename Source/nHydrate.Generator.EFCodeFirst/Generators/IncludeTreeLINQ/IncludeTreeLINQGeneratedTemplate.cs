@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -94,7 +94,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.IncludeTreeLINQ
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
             sb.AppendLine("using System.Data.Linq.Mapping;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ";");
+            sb.AppendLine($"using {this.GetLocalNamespace()};");
             sb.AppendLine();
         }
 
@@ -112,7 +112,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.IncludeTreeLINQ
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[Serializable]");
                 sb.AppendLine("	[Table(Name = \"" + table.DatabaseName + "\")]");
-                sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+                sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
                 sb.AppendLine("	public partial class " + table.PascalName + "Include : " + this.GetLocalNamespace() + ".IContextInclude");
                 sb.AppendLine("	{");
 
@@ -171,9 +171,17 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.IncludeTreeLINQ
                                 sb.AppendLine("		/// </summary>");
                                 sb.AppendLine("		[Association(ThisKey = \"" + thisKey + "\", OtherKey = \"" + otherKey + "\")]");
                                 if (relation.IsOneToOne && relation.AreAllFieldsPK)
+                                {
                                     sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Include " + relation.PascalRoleName + childTable.PascalName + " { get; private set; }");
+                                }
+                                else if (relation.IsOneToOne)
+                                {
+                                    sb.AppendLine("		[EntityMap(Name = \"" + relation.PascalRoleName + childTable.PascalName + "List\")]");
+                                    sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Include " + relation.PascalRoleName + childTable.PascalName + " { get; private set; }");
+                                }
                                 else
                                     sb.AppendLine("		public " + this.GetLocalNamespace() + "." + childTable.PascalName + "Include " + relation.PascalRoleName + childTable.PascalName + "List { get; private set; }");
+
                                 sb.AppendLine();
                             }
                         }

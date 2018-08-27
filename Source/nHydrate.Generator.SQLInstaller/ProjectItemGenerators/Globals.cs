@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2018 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -265,11 +265,11 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
             {
                 var dateTimeString = (model.SQLServerType == Common.GeneratorFramework.SQLServerTypeConstants.SQL2005) ? "[DateTime]" : "[DateTime2]";
                 sb.AppendLine("--APPEND AUDIT TRAIL CREATE FOR TABLE [" + table.DatabaseName + "]");
-                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + model.Database.CreatedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
+                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + model.Database.CreatedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
                 sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + model.Database.CreatedByColumnName + "] [NVarchar] (50) NULL");
                 var dfName = "DF__" + table.DatabaseName + "_" + model.Database.CreatedDateColumnName;
                 dfName = dfName.ToUpper();
-                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + model.Database.CreatedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
+                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + model.Database.CreatedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
                 sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + model.Database.CreatedDateColumnName + "] " + dateTimeString + " CONSTRAINT [" + dfName + "] DEFAULT " + model.GetSQLDefaultDate() + " NULL");
                 sb.AppendLine("GO");
                 sb.AppendLine();
@@ -286,11 +286,11 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
             {
                 var dateTimeString = (model.SQLServerType == Common.GeneratorFramework.SQLServerTypeConstants.SQL2005) ? "[DateTime]" : "[DateTime2]";
                 sb.AppendLine("--APPEND AUDIT TRAIL MODIFY FOR TABLE [" + table.DatabaseName + "]");
-                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + model.Database.ModifiedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
+                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + model.Database.ModifiedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
                 sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + model.Database.ModifiedByColumnName + "] [NVarchar] (50) NULL");
                 var dfName = "DF__" + table.DatabaseName + "_" + model.Database.ModifiedDateColumnName;
                 dfName = dfName.ToUpper();
-                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + model.Database.ModifiedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
+                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + model.Database.ModifiedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
                 sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + model.Database.ModifiedDateColumnName + "] " + dateTimeString + " CONSTRAINT [" + dfName + "] DEFAULT " + model.GetSQLDefaultDate() + " NULL");
                 sb.AppendLine("GO");
                 sb.AppendLine();
@@ -306,7 +306,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
             try
             {
                 sb.AppendLine("--APPEND AUDIT TRAIL TIMESTAMP FOR TABLE [" + table.DatabaseName + "]");
-                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + model.Database.TimestampColumnName + "' and o.name = '" + table.DatabaseName + "')");
+                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + model.Database.TimestampColumnName + "' and o.name = '" + table.DatabaseName + "')");
                 sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + model.Database.TimestampColumnName + "] [ROWVERSION] NOT NULL");
                 sb.AppendLine("GO");
                 sb.AppendLine();
@@ -320,13 +320,13 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
         public static void DropCreateAudit(Table table, ModelRoot model, StringBuilder sb)
         {
             sb.AppendLine("--REMOVE AUDIT TRAIL CREATE FOR TABLE [" + table.DatabaseName + "]");
-            sb.AppendLine("if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + model.Database.CreatedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
+            sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + model.Database.CreatedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
             sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP COLUMN [" + model.Database.CreatedByColumnName + "]");
             var dfName = "DF__" + table.DatabaseName + "_" + model.Database.CreatedDateColumnName;
             dfName = dfName.ToUpper();
             sb.AppendLine("if exists (select * from sys.objects where name = '" + dfName + "' and [type] = 'D')");
             sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP CONSTRAINT [" + dfName + "]");
-            sb.AppendLine("if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + model.Database.CreatedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
+            sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + model.Database.CreatedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
             sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP COLUMN [" + model.Database.CreatedDateColumnName + "]");
             sb.AppendLine("GO");
             sb.AppendLine();
@@ -335,13 +335,13 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
         public static void DropModifiedAudit(Table table, ModelRoot model, StringBuilder sb)
         {
             sb.AppendLine("--REMOVE AUDIT TRAIL MODIFY FOR TABLE [" + table.DatabaseName + "]");
-            sb.AppendLine("if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + model.Database.ModifiedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
+            sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + model.Database.ModifiedByColumnName + "' and o.name = '" + table.DatabaseName + "')");
             sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP COLUMN [" + model.Database.ModifiedByColumnName + "]");
             var dfName = "DF__" + table.DatabaseName + "_" + model.Database.ModifiedDateColumnName;
             dfName = dfName.ToUpper();
             sb.AppendLine("if exists (select * from sys.objects where name = '" + dfName + "' and [type] = 'D')");
             sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP CONSTRAINT [" + dfName + "]");
-            sb.AppendLine("if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + model.Database.ModifiedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
+            sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + model.Database.ModifiedDateColumnName + "' and o.name = '" + table.DatabaseName + "')");
             sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP COLUMN [" + model.Database.ModifiedDateColumnName + "]");
             sb.AppendLine("GO");
             sb.AppendLine();
@@ -350,7 +350,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
         public static void DropTimestampAudit(Table table, ModelRoot model, StringBuilder sb)
         {
             sb.AppendLine("--REMOVE AUDIT TRAIL TIMESTAMP FOR TABLE [" + table.DatabaseName + "]");
-            sb.AppendLine("if exists (select * from syscolumns c inner join sysobjects o on c.id = o.id where c.name = '" + model.Database.TimestampColumnName + "' and o.name = '" + table.DatabaseName + "')");
+            sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + model.Database.TimestampColumnName + "' and o.name = '" + table.DatabaseName + "')");
             sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] DROP COLUMN [" + model.Database.TimestampColumnName + "]");
             sb.AppendLine("GO");
             sb.AppendLine();
