@@ -38,7 +38,7 @@ namespace PROJECTNAMESPACE
         private System.Data.SqlClient.SqlConnection _connection;
         private System.Data.SqlClient.SqlTransaction _transaction;
         private List<EmbeddedResourceName> _resourceNames = new List<EmbeddedResourceName>();
-        private List<nHydrateDbObject> _databaseItems = new List<nHydrateDbObject>();
+        private nHydrateDbObjectList _databaseItems = new nHydrateDbObjectList();
         private List<string> _newItems = new List<string>();
 
         private const string UPGRADE_GENERATED_FOLDER = "._2_Upgrade_Scripts.";
@@ -1205,7 +1205,7 @@ namespace PROJECTNAMESPACE
             return reorderedScripts;
         }
 
-        private void ReinstallUserDefinedScripts(Dictionary<string, List<string>> allScripts, List<KeyValuePair<Guid, string>> failedScripts, List<Guid> successOrderScripts, List<nHydrateDbObject> _databaseItems, InstallSetup setup)
+        private void ReinstallUserDefinedScripts(Dictionary<string, List<string>> allScripts, List<KeyValuePair<Guid, string>> failedScripts, List<Guid> successOrderScripts, nHydrateDbObjectList _databaseItems, InstallSetup setup)
         {
             //Run all the scripts
             var newHashList = new Dictionary<nHydrateDbObject, string>();

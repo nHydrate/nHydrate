@@ -407,17 +407,17 @@ namespace PROJECTNAMESPACE
             return retval;
         }
 
-        public static void RunEmbeddedFile(SqlConnection connection, SqlTransaction transaction, string resourceFileName, List<nHydrateDbObject> _databaseItems, InstallSetup setup)
+        public static void RunEmbeddedFile(SqlConnection connection, SqlTransaction transaction, string resourceFileName, nHydrateDbObjectList _databaseItems, InstallSetup setup)
         {
             RunEmbeddedFile(connection, transaction, resourceFileName, null, _databaseItems, setup);
         }
 
-        public static void RunEmbeddedFile(SqlConnection connection, SqlTransaction transaction, string resourceFileName, List<KeyValuePair<Guid, string>> failedScripts, List<nHydrateDbObject> _databaseItems, InstallSetup setup)
+        public static void RunEmbeddedFile(SqlConnection connection, SqlTransaction transaction, string resourceFileName, List<KeyValuePair<Guid, string>> failedScripts, nHydrateDbObjectList _databaseItems, InstallSetup setup)
         {
             RunEmbeddedFile(connection, transaction, resourceFileName, failedScripts, null, _databaseItems, setup);
         }
 
-        public static void RunEmbeddedFile(SqlConnection connection, SqlTransaction transaction, string resourceFileName, List<KeyValuePair<Guid, string>> failedScripts, List<Guid> successOrderScripts, List<nHydrateDbObject> _databaseItems, InstallSetup setup)
+        public static void RunEmbeddedFile(SqlConnection connection, SqlTransaction transaction, string resourceFileName, List<KeyValuePair<Guid, string>> failedScripts, List<Guid> successOrderScripts, nHydrateDbObjectList _databaseItems, InstallSetup setup)
         {
             var timer = Stopwatch.StartNew();
             var tempFolder = string.Empty;
@@ -1135,9 +1135,9 @@ namespace PROJECTNAMESPACE
             return this.name + " / " + this.Hash;
         }
 
-        public static List<nHydrateDbObject> Load(string connectionString, string modelKey, System.Data.SqlClient.SqlTransaction transaction)
+        public static nHydrateDbObjectList Load(string connectionString, string modelKey, System.Data.SqlClient.SqlTransaction transaction)
         {
-            var retval = new List<nHydrateDbObject>();
+            var retval = new nHydrateDbObjectList();
             System.Data.SqlClient.SqlConnection conn = null;
             if (transaction == null)
             {
@@ -1296,6 +1296,11 @@ namespace PROJECTNAMESPACE
                 }
             }
         }
+
+    }
+
+    internal class nHydrateDbObjectList : List<nHydrateDbObject>
+    {
 
     }
 
