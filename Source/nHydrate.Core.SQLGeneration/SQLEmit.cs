@@ -50,7 +50,7 @@ namespace nHydrate.Core.SQLGeneration
                     tableName = tableAliasName;
 
                 sb.AppendLine("--CREATE TABLE [" + tableName + "]");
-                sb.AppendLine("if not exists(select * from sys.objects where name = '" + tableName + "' and type = 'U')");
+                sb.AppendLine($"if not exists(select * from sys.objects inner join sys.schemas on sys.schemas.schema_id = sys.objects.schema_id where sys.objects.name = '{tableName}' and sys.objects.type = 'U' and sys.schemas.name = '{table.GetSQLSchema()}')");
                 sb.AppendLine("CREATE TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] (");
 
                 var firstLoop = true;
@@ -290,7 +290,7 @@ namespace nHydrate.Core.SQLGeneration
             //sb.AppendLine("SET @defaultName = (select top 1 o.name FROM sysconstraints sc left join sys.objects o on sc.constid = o.object_id where sc.id=OBJECT_ID('" + column.ParentTable.DatabaseName + "') AND COL_NAME(sc.id,sc.colid)='" + column.DatabaseName + "' AND OBJECTPROPERTY(sc.constid, 'IsDefaultCnst') = 1)");
             sb.AppendLine("SET @defaultName = (SELECT d.name FROM sys.columns c inner join sys.default_constraints d on c.column_id = d.parent_column_id and c.object_id = d.parent_object_id inner join sys.objects o on d.parent_object_id = o.object_id where o.name = '" + column.ParentTable.DatabaseName + "' and c.name = '" + column.DatabaseName + "')");
             sb.AppendLine("if @defaultName IS NOT NULL");
-            sb.AppendLine("exec('ALTER TABLE ["+column.ParentTable.DatabaseName+"] DROP CONSTRAINT ' + @defaultName)");
+            sb.AppendLine($"exec('ALTER TABLE [{column.ParentTable.GetSQLSchema()}].[{column.ParentTable.DatabaseName}] DROP CONSTRAINT ' + @defaultName)");
             if (upgradeScript)
                 sb.AppendLine("GO");
             return sb.ToString();
