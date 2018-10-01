@@ -447,10 +447,10 @@ namespace nHydrate.Generator.SQLInstaller
                             if (newT.PascalName != newT.DatabaseName)
                             {
                                 //This is for the mistake in name when released. Remove this default June 2013
-                                defaultName = "DF__" + newT.PascalName.ToUpper() + "_" + modelNew.TenantColumnName.ToUpper();
-                                sb.AppendLine("--DELETE TENANT DEFAULT FOR [" + newT.DatabaseName + "]");
-                                sb.AppendLine("if exists (select name from sys.objects where name = '" + defaultName + "'  AND type = 'D')");
-                                sb.AppendLine("ALTER TABLE [" + newT.GetSQLSchema() + "].[" + newT.DatabaseName + "] DROP CONSTRAINT [" + defaultName + "]");
+                                defaultName = $"DF__{newT.PascalName}_{modelNew.TenantColumnName}".ToUpper();
+                                sb.AppendLine($"--DELETE TENANT DEFAULT FOR [{newT.DatabaseName}]");
+                                sb.AppendLine($"if exists (select name from sys.objects where name = '{defaultName}'  AND type = 'D')");
+                                sb.AppendLine($"ALTER TABLE [{newT.GetSQLSchema()}].[{newT.DatabaseName}] DROP CONSTRAINT [{defaultName}]");
                                 sb.AppendLine();
                             }
 
@@ -458,18 +458,18 @@ namespace nHydrate.Generator.SQLInstaller
                             var indexName = "IDX_" + newT.DatabaseName.Replace("-", string.Empty) + "_" + modelNew.TenantColumnName;
                             indexName = indexName.ToUpper();
                             sb.AppendLine($"if exists (select * from sys.indexes where name = '{indexName}')");
-                            sb.AppendLine($"DROP INDEX [{indexName}] ON [{newT.DatabaseName}]");
+                            sb.AppendLine($"DROP INDEX [{indexName}] ON [{newT.GetSQLSchema()}].[{newT.DatabaseName}]");
                             sb.AppendLine();
 
                             //Drop the associated view
-                            var viewName = modelOld.TenantPrefix + "_" + oldT.DatabaseName;
+                            var viewName = $"{modelOld.TenantPrefix}_{oldT.DatabaseName}";
                             sb.AppendLine($"if exists (select name from sys.objects where name = '{viewName}'  AND type = 'V')");
                             sb.AppendLine($"DROP VIEW [{viewName}]");
                             sb.AppendLine();
 
                             //Drop the tenant field
-                            sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + modelNew.TenantColumnName + "' and o.name = '" + newT.DatabaseName + "')");
-                            sb.AppendLine("ALTER TABLE [" + newT.GetSQLSchema() + "].[" + newT.DatabaseName + "] DROP COLUMN [" + modelNew.TenantColumnName + "]");
+                            sb.AppendLine($"if exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id where c.name = '{modelNew.TenantColumnName}' and t.name = '{newT.DatabaseName}')");
+                            sb.AppendLine($"ALTER TABLE [{newT.GetSQLSchema()}].[{newT.DatabaseName}] DROP COLUMN [{modelNew.TenantColumnName}]");
                             sb.AppendLine();
                         }
                         else if (!oldT.IsTenant && newT.IsTenant)
@@ -573,27 +573,27 @@ namespace nHydrate.Generator.SQLInstaller
                         #region Rename audit columns if necessary
                         if (modelOld.Database.CreatedByColumnName != modelNew.Database.CreatedByColumnName)
                         {
-                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT.DatabaseName, modelOld.Database.CreatedByColumnName, modelNew.Database.CreatedByColumnName));
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.CreatedByColumnName, modelNew.Database.CreatedByColumnName));
                             sb.AppendLine("GO");
                         }
                         if (modelOld.Database.CreatedDateColumnName != modelNew.Database.CreatedDateColumnName)
                         {
-                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT.DatabaseName, modelOld.Database.CreatedDateColumnName, modelNew.Database.CreatedDateColumnName));
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.CreatedDateColumnName, modelNew.Database.CreatedDateColumnName));
                             sb.AppendLine("GO");
                         }
                         if (modelOld.Database.ModifiedByColumnName != modelNew.Database.ModifiedByColumnName)
                         {
-                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT.DatabaseName, modelOld.Database.ModifiedByColumnName, modelNew.Database.ModifiedByColumnName));
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ModifiedByColumnName, modelNew.Database.ModifiedByColumnName));
                             sb.AppendLine("GO");
                         }
                         if (modelOld.Database.ModifiedDateColumnName != modelNew.Database.ModifiedDateColumnName)
                         {
-                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT.DatabaseName, modelOld.Database.ModifiedDateColumnName, modelNew.Database.ModifiedDateColumnName));
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ModifiedDateColumnName, modelNew.Database.ModifiedDateColumnName));
                             sb.AppendLine("GO");
                         }
                         if (modelOld.Database.TimestampColumnName != modelNew.Database.TimestampColumnName)
                         {
-                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT.DatabaseName, modelOld.Database.TimestampColumnName, modelNew.Database.TimestampColumnName));
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.TimestampColumnName, modelNew.Database.TimestampColumnName));
                             sb.AppendLine("GO");
                         }
                         #endregion
@@ -883,10 +883,10 @@ namespace nHydrate.Generator.SQLInstaller
                             if (oldC != null && oldC.Formula != newC.Formula)
                             {
                                 tChanged = true;
-                                sb.AppendLine("if exists(select o.name, c.name from sys.columns c inner join sys.objects o on c.object_id = o.object_id where o.type = 'U' and o.name = '" + newT.DatabaseName + "' and c.name = '" + newC.DatabaseName + "')");
-                                sb.AppendLine("ALTER TABLE [" + newT.DatabaseName + "] DROP COLUMN [" + newC.DatabaseName + "]");
+                                sb.AppendLine($"if exists(select t.name, c.name from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where and t.name = '{newT.DatabaseName}' and c.name = '{newC.DatabaseName}' and s.name = '{newT.GetSQLSchema()}')");
+                                sb.AppendLine($"ALTER TABLE [{newT.GetSQLSchema()}].[{newT.DatabaseName}] DROP COLUMN [{newC.DatabaseName}]");
                                 sb.AppendLine("GO");
-                                sb.AppendLine("ALTER TABLE [" + newT.DatabaseName + "] ADD [" + newC.DatabaseName + "] AS (" + newC.Formula + ")");
+                                sb.AppendLine($"ALTER TABLE [{newT.GetSQLSchema()}].[{newT.DatabaseName}] ADD [{newC.DatabaseName}] AS ({newC.Formula})");
                                 sb.AppendLine("GO");
                                 sb.AppendLine();
                             }

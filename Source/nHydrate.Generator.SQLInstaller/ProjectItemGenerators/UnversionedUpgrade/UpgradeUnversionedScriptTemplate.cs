@@ -120,11 +120,10 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.UnversionedUpgra
                             var indexName = nHydrate.Core.SQLGeneration.SQLEmit.GetIndexName(table, index);
                             if (index.ImportedName != indexName)
                             {
-                                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U')");
-                                sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U')");
+                                sb.AppendLine($"if exists(select * from sys.tables where name = '{table.DatabaseName}')");
                                 sb.AppendLine("BEGIN");
-                                sb.AppendLine("if exists(select * from sys.indexes where name = '" + index.ImportedName + "')");
-                                sb.AppendLine("EXEC sp_rename N'" + table.DatabaseName + "." + index.ImportedName + "', N'" + indexName + "', N'INDEX';");
+                                sb.AppendLine($"if exists(select * from sys.indexes where name = '{index.ImportedName}')");
+                                sb.AppendLine($"EXEC sp_rename N'[{table.GetSQLSchema()}].[{table.DatabaseName}].[{index.ImportedName}]', N'{indexName}', N'INDEX';");
                                 sb.AppendLine("END");
                                 sb.AppendLine("GO");
                                 sb.AppendLine();

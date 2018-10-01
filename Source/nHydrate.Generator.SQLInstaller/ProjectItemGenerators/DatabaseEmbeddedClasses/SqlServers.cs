@@ -984,7 +984,7 @@ namespace PROJECTNAMESPACE
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine("if not exists(select * from sys.objects where [name] = '__nhydrateschema' and [type] = 'U')");
+            sb.AppendLine("if not exists(select * from sys.tables where [name] = '__nhydrateschema')");
             sb.AppendLine("BEGIN");
             sb.AppendLine("CREATE TABLE [__nhydrateschema] (");
             sb.AppendLine("[dbVersion] [varchar] (50) NOT NULL,");
@@ -1220,7 +1220,7 @@ namespace PROJECTNAMESPACE
             try
             {
                 //Create the table if need be
-                using (var command3 = new SqlCommand("if not exists(select * from sys.objects where name = '__nhydrateobjects'and type = 'U')" + Environment.NewLine +
+                using (var command3 = new SqlCommand("if not exists(select * from sys.tables where name = '__nhydrateobjects')" + Environment.NewLine +
                                                                                          "CREATE TABLE [dbo].[__nhydrateobjects]" +
                                                                                          "([rowid] [bigint] IDENTITY(1,1) NOT NULL," +
                                                                                          "[id] [uniqueidentifier] NULL," +
@@ -1240,7 +1240,7 @@ namespace PROJECTNAMESPACE
                 //Add columns if missing
                 {
                     var sql = new StringBuilder();
-                    sql.AppendLine("if exists(select * from sys.objects where name = '__nhydrateobjects' and type = 'U') AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = 'status' and o.name = '__nhydrateobjects')");
+                    sql.AppendLine("if exists(select * from sys.tables where name = '__nhydrateobjects') AND not exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id where c.name = 'status' and t.name = '__nhydrateobjects')");
                     sql.AppendLine("ALTER TABLE [dbo].[__nhydrateobjects] ADD [status] [Varchar] (500) NULL");
                     using (var command3 = new SqlCommand(sql.ToString(), conn))
                     {
