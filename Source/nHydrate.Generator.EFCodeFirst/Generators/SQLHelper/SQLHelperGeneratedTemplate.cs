@@ -930,6 +930,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
                 foreach (var item in _model.Database.Tables.Where(x => x.Generated).OrderBy(x => x.Name))
                 {
                     sb.AppendLine("				case \"" + item.DatabaseName + "\": return \"" + item.GetSQLSchema() + "\";");
+                    if (item.IsTenant)
+                        sb.AppendLine("				case \"" + _model.TenantPrefix + "_" + item.DatabaseName + "\": return \"" + item.GetSQLSchema() + "\";");
                 }
 
                 foreach (var item in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
