@@ -963,17 +963,19 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.ContextExtensions
                 if (table.Security.IsValid())
                     innerQueryToString = "((System.Data.Entity.Core.Objects.ObjectQuery)(((System.Data.Entity.Core.Objects.ObjectQuery<" + GetLocalNamespace() + ".Entity." + table.PascalName + ">)query).Select(x => new { " + string.Join(", ", table.PrimaryKeyColumns.Select(x => "x." + x.PascalName).ToList()) + " }))).ToTraceString()";
 
+                var pkSql = string.Join(" AND ", table.PrimaryKeyColumns.Select(x => $"[X].[{x.Name}] = [Extent2].[{x.Name}]"));
+
                 sb.AppendLine("			" + (index == 0 ? string.Empty : "else ") + "if (typeof(T) == typeof(" + GetLocalNamespace() + ".Entity." + table.PascalName + "))");
                 sb.AppendLine("			{");
-                sb.AppendLine("				sb.AppendLine(\"set rowcount \" + optimizer.ChunkSize + \";\");");
+                sb.AppendLine("				sb.AppendLine(\"SET ROWCOUNT \" + optimizer.ChunkSize + \";\");");
                 sb.AppendLine("				foreach (var item in mapping.Where(x => x.SqlList.Any()).ToList())");
                 sb.AppendLine("				{");
                 sb.AppendLine("					sb.AppendLine(\"UPDATE [X] SET\");");
                 sb.AppendLine("					sb.AppendLine(string.Join(\", \", item.SqlList));");
-                sb.AppendLine("					sb.AppendLine(\"FROM [\" + item.Schema + \"].[\" + item.TableName + \"] AS [X] INNER JOIN (\");");
+                sb.AppendLine("					sb.AppendLine(\"FROM [\" + item.Schema + \"].[\" + LinqSQLParser.GetTableAlias(item.TableName) + \"] AS [X] INNER JOIN (\");");
                 sb.AppendLine("					sb.AppendLine(" + innerQueryToString + ");");
                 sb.AppendLine("					sb.AppendLine(\") AS [Extent2]\");");
-                sb.AppendLine("					sb.AppendLine(\"on " + string.Join(" AND ", table.PrimaryKeyColumns.Select(x => "[X].[" + x.Name + "] = [Extent2].[" + x.Name + "]").ToList()) + "\");");
+                sb.AppendLine($"					sb.AppendLine(\"ON {pkSql}\");");
                 sb.AppendLine("					sb.AppendLine(\"select @@ROWCOUNT\");");
                 sb.AppendLine("				}");
                 sb.AppendLine("			}");
