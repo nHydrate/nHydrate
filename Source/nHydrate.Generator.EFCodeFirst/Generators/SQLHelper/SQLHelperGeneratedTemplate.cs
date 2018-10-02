@@ -1001,7 +1001,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("			tableName = tableName.Replace(\"[\", string.Empty).Replace(\"]\", string.Empty);");
             sb.AppendLine("			switch (tableName)");
             sb.AppendLine("			{");
-            foreach (var item in _model.Database.Tables.Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var item in _model.Database.Tables.Where(x => x.Generated && x.IsTenant).OrderBy(x => x.Name))
             {
                 sb.AppendLine($"				case \"{item.DatabaseName}\": tableName = \"{_model.TenantPrefix + "_" + item.DatabaseName}\"; break;");
             }
