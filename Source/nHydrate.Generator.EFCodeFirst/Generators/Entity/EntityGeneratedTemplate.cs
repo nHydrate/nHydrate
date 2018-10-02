@@ -1822,18 +1822,18 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
             //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, QueryOptimizer optimizer, ContextStartup startup, string connectionString)");
+            sb.AppendLine($"		public static int DeleteData(Expression<Func<{this.GetLocalNamespace()}.{_item.PascalName}Query, bool>> where, QueryOptimizer optimizer, ContextStartup startup, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			if (optimizer == null)");
             sb.AppendLine("				optimizer = new QueryOptimizer();");
             sb.AppendLine("				if (startup == null) startup = new ContextStartup(null);");
             sb.AppendLine();
-            sb.AppendLine("			using (var connection = " + this.GetLocalNamespace() + ".DBHelper.GetConnection(" + this.GetLocalNamespace() + ".Util.StripEFCS2Normal(connectionString)))");
+            sb.AppendLine($"			using (var connection = {this.GetLocalNamespace()}.DBHelper.GetConnection({this.GetLocalNamespace()}.Util.StripEFCS2Normal(connectionString)))");
             sb.AppendLine("			{");
             sb.AppendLine("				using (var dc = new DataContext(connection))");
             sb.AppendLine("				{");
-            sb.AppendLine("					var template = dc.GetTable<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query>();");
-            sb.AppendLine("					using (var cmd = BusinessEntityQuery.GetCommand<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query>(dc, template, where))");
+            sb.AppendLine($"					var template = dc.GetTable<{this.GetLocalNamespace()}.{_item.PascalName}Query>();");
+            sb.AppendLine($"					using (var cmd = BusinessEntityQuery.GetCommand<{this.GetLocalNamespace()}.{_item.PascalName}Query>(dc, template, where))");
             sb.AppendLine("					{");
             sb.AppendLine("						if (!startup.DefaultTimeout && startup.CommandTimeout > 0) cmd.CommandTimeout = startup.CommandTimeout;");
             sb.AppendLine("						else");
@@ -1848,7 +1848,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             var ii = 0;
             foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
             {
-                sb.Append("[" + column.DatabaseName + "] " + column.DatabaseType);
+                sb.Append($"[{column.DatabaseName}] {column.DatabaseType}");
                 if (column.IsTextType) sb.Append(" COLLATE database_default");
                 if (ii < _item.PrimaryKeyColumns.Count - 1) sb.Append(", ");
                 ii++;
