@@ -346,6 +346,9 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		partial void OnAfterSaveChanges();");
             sb.AppendLine();
 
+            sb.AppendLine("		private static List<Tuple<string, string>> _tableMappings = new List<Tuple<string, string>>();");
+            sb.AppendLine("		protected internal static List<Tuple<string, string>> _TableMappings => _tableMappings;");
+
             #region OnModelCreating
 
             sb.AppendLine("		/// <summary>");
@@ -405,7 +408,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             #endregion
 
-            #region Rename Tables
+            #region Map Tables
             sb.AppendLine("			#region Map Tables");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
@@ -423,6 +426,16 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 {
                     sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\", \"" + schema + "\");");
                 }
+            }
+            sb.AppendLine("			#endregion");
+            sb.AppendLine();
+            #endregion
+
+            #region Load Mapper
+            sb.AppendLine("			#region Load Mapper");
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            {
+                sb.AppendLine("			_tableMappings.Add(new Tuple<string, string>(\"" + table.GetSQLSchema() + "\", \"" + table.DatabaseName + "\"));");
             }
             sb.AppendLine("			#endregion");
             sb.AppendLine();
@@ -1654,24 +1667,42 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("	#region DbInterceptor");
-            sb.AppendLine("	internal class DbInterceptor : System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor");
+            sb.AppendLine("	public partial class DbInterceptor : System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor");
             sb.AppendLine("	{");
+
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		partial void OnNonQueryExecuting(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<int> interceptionContext);");
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		partial void OnNonQueryExecuted(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<int> interceptionContext);");
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		partial void OnReaderExecuting(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<System.Data.Common.DbDataReader> interceptionContext);");
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		partial void OnReaderExecuted(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<System.Data.Common.DbDataReader> interceptionContext);");
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		partial void OnScalarExecuting(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<object> interceptionContext);");
+            sb.AppendLine("		/// <summary />");
+            sb.AppendLine("		partial void OnScalarExecuted(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<object> interceptionContext);");
+
             sb.AppendLine("		#region IDbCommandInterceptor Members");
             sb.AppendLine();
             sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.NonQueryExecuted(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<int> interceptionContext)");
             sb.AppendLine("		{");
+            sb.AppendLine("			this.OnNonQueryExecuted(command, interceptionContext);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.NonQueryExecuting(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<int> interceptionContext)");
             sb.AppendLine("		{");
+            sb.AppendLine("			this.OnNonQueryExecuting(command, interceptionContext);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.ReaderExecuted(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<System.Data.Common.DbDataReader> interceptionContext)");
             sb.AppendLine("		{");
+            sb.AppendLine("			this.OnReaderExecuted(command, interceptionContext);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.ReaderExecuting(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<System.Data.Common.DbDataReader> interceptionContext)");
             sb.AppendLine("		{");
+            sb.AppendLine("			this.OnReaderExecuting(command, interceptionContext);");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
             sb.AppendLine("				//If this is a tenant table then rig query plan for this specific tenant");
@@ -1691,10 +1722,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine();
             sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.ScalarExecuted(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<object> interceptionContext)");
             sb.AppendLine("		{");
+            sb.AppendLine("			this.OnScalarExecuted(command, interceptionContext);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		void System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor.ScalarExecuting(System.Data.Common.DbCommand command, System.Data.Entity.Infrastructure.Interception.DbCommandInterceptionContext<object> interceptionContext)");
             sb.AppendLine("		{");
+            sb.AppendLine("			this.OnScalarExecuting(command, interceptionContext);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
