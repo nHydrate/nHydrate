@@ -341,7 +341,7 @@ namespace PROJECTNAMESPACE
         {
             if (setup.InstallStatus == InstallStatusConstants.Create)
             {
-                //Conection cannot reference an existing database
+                //Connection cannot reference an existing database
                 if (SqlServers.TestConnectionString(setup.ConnectionString))
                     throw new Exception("The connection string references an existing database.");
 

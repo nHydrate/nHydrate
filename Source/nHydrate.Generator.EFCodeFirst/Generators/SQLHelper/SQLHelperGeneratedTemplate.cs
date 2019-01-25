@@ -368,7 +368,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("					}");
             sb.AppendLine();
             sb.AppendLine("					sql += \"select @totalcount\";");
-            sb.AppendLine("					sql = \"set ansi_nulls off;\" + sql;");
+            //sb.AppendLine("					sql = \"set ansi_nulls off;\" + sql;");
             sb.AppendLine("					cmd.CommandText = sql;");
             sb.AppendLine("					");
             sb.AppendLine("					object p = cmd.ExecuteScalar();");
@@ -485,7 +485,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("					sql += parser.GetFromClause(new QueryOptimizer()) + \"\\r\\n\";");
             sb.AppendLine("					sql += parser.GetWhereClause();");
             sb.AppendLine("					sql += \";select @@rowcount\";");
-            sb.AppendLine("					sql = \"set ansi_nulls off;\" + sql;");
+            //sb.AppendLine("					sql = \"set ansi_nulls off;\" + sql;");
             sb.AppendLine("					cmd.CommandText = sql;");
             sb.AppendLine("					if (newValue == null) cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"newValue\", System.DBNull.Value));");
             sb.AppendLine("					else cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"newValue\", newValue));");

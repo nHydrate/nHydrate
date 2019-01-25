@@ -1868,7 +1868,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             else
             {
                 //There is a table hierarchy then need to choose a group of ID's and remove from all tables
-                sb.AppendLine("						sb.AppendLine(\"set ansi_nulls off;\");");
+                //sb.AppendLine("						sb.AppendLine(\"set ansi_nulls off;\");");
                 sb.Append("						sb.AppendLine(\"CREATE TABLE #t (");
                 var ii = 0;
                 foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
