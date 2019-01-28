@@ -165,6 +165,11 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 sb.AppendLine("		public " + _model.ProjectName + "MockEntities()");
                 sb.AppendLine("		{");
                 sb.AppendLine("			InstanceKey = Guid.NewGuid();");
+                sb.AppendLine();
+                sb.AppendLine("			foreach (var v in Enum.GetValues(typeof(EntityMappingConstants)))");
+                sb.AppendLine("			{");
+                sb.AppendLine("				_identityMapper.Add((EntityMappingConstants)v, 0);");
+                sb.AppendLine("			}");
 
                 //Create objects for type tables
                 foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && x.TypedTable == TypedTableConstants.DatabaseTable).OrderBy(x => x.PascalName))
@@ -245,9 +250,17 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
                 sb.AppendLine("		private static Dictionary<string, SequentialIdGenerator> _sequentialIdGeneratorCache = new Dictionary<string, SequentialIdGenerator>();");
                 sb.AppendLine("		private static object _seqCacheLock = new object();");
+                sb.AppendLine("		private Dictionary<IBusinessObject, EntityItemState> _entityState = new Dictionary<IBusinessObject, EntityItemState>();");
+                sb.AppendLine("		private Dictionary<EntityMappingConstants, int> _identityMapper = new Dictionary<EntityMappingConstants, int>();");
                 sb.AppendLine();
 
-                sb.AppendLine("		#region I" + _model.ProjectName + "Entities Members");
+                sb.AppendLine("        private class EntityItemState");
+                sb.AppendLine("        {");
+                sb.AppendLine("            public System.Data.Entity.EntityState State { get; set; }");
+                sb.AppendLine("        }");
+                sb.AppendLine();
+
+                sb.AppendLine($"		#region I{_model.ProjectName}Entities Members");
                 sb.AppendLine();
                 AppendAddDelete();
                 AppendProperties();
@@ -460,6 +473,35 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public int SaveChanges()");
             sb.AppendLine("		{");
+
+            //Reset identity fields for Added objects
+            sb.AppendLine("			lock (_entityState)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				foreach (var entity in _entityState.Keys)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					var state = _entityState[entity];");
+            sb.AppendLine("					if (state.State == System.Data.Entity.EntityState.Added)");
+            sb.AppendLine("					{");
+            sb.AppendLine("						//Set Identity");
+
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.PascalName))
+            {
+                var column = table.GetColumns().FirstOrDefault(x => x.Identity == IdentityTypeConstants.Database);
+                if (column != null)
+                {
+                    sb.AppendLine($"						if (entity is EFDAL.Entity.{table.PascalName})");
+                    sb.AppendLine($"							(entity as EFDAL.Entity.{table.PascalName}).{column.PascalName} = ++_identityMapper[EntityMappingConstants.{table.PascalName}];");
+                }
+            }
+
+            sb.AppendLine("					}");
+            sb.AppendLine("				}");
+            sb.AppendLine();
+            sb.AppendLine("				//Clear all");
+            sb.AppendLine("				_entityState.Clear();");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+
             sb.AppendLine("			return 1;");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -483,14 +525,27 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// <param name=\"entity\">The entity to add</param>");
             sb.AppendLine("		public virtual " + this.GetLocalNamespace() + ".IBusinessObject AddItem(" + this.GetLocalNamespace() + ".IBusinessObject entity)");
             sb.AppendLine("		{");
+
+            sb.AppendLine("			lock (_entityState)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				if (!_entityState.ContainsKey(entity))");
+            sb.AppendLine("				{");
+            sb.AppendLine("					_entityState.Add(entity, new EntityItemState");
+            sb.AppendLine("					{");
+            sb.AppendLine("						State = System.Data.Entity.EntityState.Added,");
+            sb.AppendLine("					});");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+
             sb.AppendLine("			if (false) { }");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.PascalName))
             {
                 var name = table.PascalName;
                 if (table.Security.IsValid()) name += "__INTERNAL";
 
-                sb.AppendLine("			else if (entity is " + GetLocalNamespace() + ".Entity." + table.PascalName + ")");
-                sb.AppendLine("				this." + name + ".AddObject((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
+                sb.AppendLine($"			else if (entity is {GetLocalNamespace()}.Entity.{table.PascalName})");
+                sb.AppendLine($"				this.{name}.AddObject(({GetLocalNamespace()}.Entity.{table.PascalName})entity);");
             }
             sb.AppendLine("			return entity;");
             sb.AppendLine("		}");
@@ -507,14 +562,24 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// <param name=\"entity\">The entity to Delete</param>");
             sb.AppendLine("		public virtual void DeleteItem(" + this.GetLocalNamespace() + ".IBusinessObject entity)");
             sb.AppendLine("		{");
+
+            sb.AppendLine("			lock (_entityState)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				if (_entityState.ContainsKey(entity))");
+            sb.AppendLine("				{");
+            sb.AppendLine("					_entityState.Remove(entity);");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+
             sb.AppendLine("			if (false) { }");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.PascalName))
             {
                 var name = table.PascalName;
                 if (table.Security.IsValid()) name += "__INTERNAL";
 
-                sb.AppendLine("			else if (entity is " + GetLocalNamespace() + ".Entity." + table.PascalName + ")");
-                sb.AppendLine("				this." + name + ".DeleteObject((" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
+                sb.AppendLine($"			else if (entity is {GetLocalNamespace()}.Entity.{table.PascalName})");
+                sb.AppendLine($"				this.{name}.DeleteObject(({this.GetLocalNamespace()}.Entity.{table.PascalName})entity);");
             }
             sb.AppendLine("		}");
             sb.AppendLine();
