@@ -519,7 +519,30 @@ namespace nHydrate.Generator.EFDAL.Generators.AuditEntity
 			sb.AppendLine("			var retval = new nHydrate.EFCore.DataAccess.AuditResult<" + _item.PascalName + "Audit>(item1, item2);");
 			sb.AppendLine("			var differences = new List<I" + _item.PascalName + "AuditResultFieldCompare>();");
 			sb.AppendLine();
-
+			sb.AppendLine("			if(item1 == null || item2 == null){");
+			sb.AppendLine("			    item1 = item1 ?? item2;");
+			sb.AppendLine("			    item2 = item2 ?? item1;");			
+			foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+			{
+				if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
+				{
+					if (column.IsBinaryType) //Binary is a difference comparison
+					{
+						sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ", item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
+						sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ", item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
+					}
+					else
+					{
+						if (column.PrimaryKey)
+							sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">((" + column.GetCodeType(false) + ")item1." + column.PascalName + ", (" + column.GetCodeType(false) + ")item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
+						else if (column.IsTextType || column.IsBinaryType)
+							sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ", item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
+						else
+							sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ".GetValueOrDefault(), item2." + column.PascalName + ".GetValueOrDefault(), " + this.GetLocalNamespace() + ".Interfaces.Entity." + _item.PascalName + "FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
+					}
+				}
+			}
+			sb.AppendLine("			}else{");
 			foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
 			{
 				if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
@@ -544,7 +567,7 @@ namespace nHydrate.Generator.EFDAL.Generators.AuditEntity
 					}
 				}
 			}
-
+			sb.AppendLine("			}");
 			sb.AppendLine();
 			sb.AppendLine("			retval.Differences = differences;");
 			sb.AppendLine("			return retval;");
