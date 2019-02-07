@@ -433,9 +433,9 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
             sb.AppendLine("			var retval = new " + this.GetLocalNamespace() + ".AuditResult<" + _item.PascalName + "Audit>(item1, item2);");
             sb.AppendLine("			var differences = new List<I" + _item.PascalName + "AuditResultFieldCompare>();");
             sb.AppendLine();
-			sb.AppendLine("			if(item1 == null || item2 == null){");
-			sb.AppendLine("			    item1 = item1 ?? item2;");
-			sb.AppendLine("			    item2 = item2 ?? item1;");			
+            sb.AppendLine("			if (item1 == null || item2 == null) {");
+            sb.AppendLine("				item1 = item1 ?? item2;");
+            sb.AppendLine("				item2 = item2 ?? item1;");
 
             foreach (Column column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
             {
@@ -444,18 +444,20 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
                     sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ", item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
                 }
             }
-			sb.AppendLine("			}else{");
-			foreach (Column column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+
+            sb.AppendLine("			} else {");
+
+            foreach (Column column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
             {
                 if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
                 {
-                    sb.AppendLine("			if (item1." + column.PascalName + " != item2." + column.PascalName + ")");
-                    sb.AppendLine("				differences.Add(new " + _item.PascalName + "AuditResultFieldCompare<" + column.GetCodeType(true) + ">(item1." + column.PascalName + ", item2." + column.PascalName + ", " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ", typeof(" + column.GetCodeType(false) + ")));");
+                    sb.AppendLine($"				if (item1.{column.PascalName} != item2.{column.PascalName})");
+                    sb.AppendLine($"					differences.Add(new {_item.PascalName}AuditResultFieldCompare<{column.GetCodeType(true)}>(item1.{column.PascalName}, item2.{column.PascalName}, {this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants.{column.PascalName}, typeof(" + column.GetCodeType(false) + ")));");
                 }
             }
-			sb.AppendLine("			}");
+            sb.AppendLine("			}");
             sb.AppendLine();
-            sb.AppendLine("			retval.Differences = (IEnumerable<" + this.GetLocalNamespace() + ".IAuditResultFieldCompare>)differences;");
+            sb.AppendLine($"			retval.Differences = (IEnumerable<{this.GetLocalNamespace()}.IAuditResultFieldCompare>)differences;");
             sb.AppendLine("			return retval;");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -466,7 +468,7 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"other\">An object to compare with this object.</param>");
             sb.AppendLine("		/// <returns></returns>");
-            sb.AppendLine("		public int CompareTo(" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit other)");
+            sb.AppendLine($"		public int CompareTo({this.GetLocalNamespace()}.Audit.{_item.PascalName}Audit other)");
             sb.AppendLine("		{");
             sb.AppendLine("			if (other.AuditDate < this.AuditDate) return -1;");
             sb.AppendLine("			else if (this.AuditDate < other.AuditDate) return 1;");

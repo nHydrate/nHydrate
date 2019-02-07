@@ -519,9 +519,10 @@ namespace nHydrate.Generator.EFDAL.Generators.AuditEntity
 			sb.AppendLine("			var retval = new nHydrate.EFCore.DataAccess.AuditResult<" + _item.PascalName + "Audit>(item1, item2);");
 			sb.AppendLine("			var differences = new List<I" + _item.PascalName + "AuditResultFieldCompare>();");
 			sb.AppendLine();
-			sb.AppendLine("			if(item1 == null || item2 == null){");
-			sb.AppendLine("			    item1 = item1 ?? item2;");
-			sb.AppendLine("			    item2 = item2 ?? item1;");			
+			sb.AppendLine("			if (item1 == null || item2 == null) {");
+			sb.AppendLine("				item1 = item1 ?? item2;");
+			sb.AppendLine("				item2 = item2 ?? item1;");
+
 			foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
 			{
 				if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
@@ -542,7 +543,9 @@ namespace nHydrate.Generator.EFDAL.Generators.AuditEntity
 					}
 				}
 			}
-			sb.AppendLine("			}else{");
+
+			sb.AppendLine("			} else {");
+
 			foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
 			{
 				if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
@@ -567,6 +570,7 @@ namespace nHydrate.Generator.EFDAL.Generators.AuditEntity
 					}
 				}
 			}
+
 			sb.AppendLine("			}");
 			sb.AppendLine();
 			sb.AppendLine("			retval.Differences = differences;");
