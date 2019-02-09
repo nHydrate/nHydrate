@@ -7,10 +7,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2019 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2019 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -65,6 +65,7 @@ namespace nHydrate.Generator.SQLInstallerNetCore.ProjectItemGenerators.DatabaseE
             {
                 GenerateDatabaseInstallerCs();
                 GenerateInstallSettings();
+                GenerateDatabaseInstallerDesignerCs();
                 GenerateSqlServersCs();
                 GenerateXmlHelperCs();
                 GenerateUpgradeInstaller();
@@ -379,6 +380,19 @@ namespace nHydrate.Generator.SQLInstallerNetCore.ProjectItemGenerators.DatabaseE
         #endregion
 
         #region DatabaseInstaller
+
+        private void GenerateDatabaseInstallerDesignerCs()
+        {
+            var fullParentName = "DatabaseInstaller.cs";
+            var fileName = "DatabaseInstaller.Designer.cs";
+            var ern = new EmbeddedResourceName();
+            ern.AsmLocation = this.GetEmbeddedPath();
+            ern.FileName = "DatabaseInstaller.Designer.embed";
+            ern.FullName = this.GetEmbeddedPath() + "." + ern.FileName;
+            var fileContent = GetFileContent(ern);
+            var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, fullParentName, this, true);
+            OnProjectItemGenerated(this, eventArgs);
+        }
 
         private void GenerateDatabaseInstallerCs()
         {

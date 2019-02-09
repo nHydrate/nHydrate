@@ -7,10 +7,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-#region Copyright (c) 2006-2017 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2019 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2017 All Rights reserved                   *
+//              Copyright (c) 2006-2019 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -37,7 +37,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration.Install;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Text;
@@ -66,7 +65,7 @@ namespace PROJECTNAMESPACE
     /// <summary>
     /// The database installer class
     /// </summary>
-    public partial class DatabaseInstaller
+    public partial class DatabaseInstaller : System.Configuration.Install.Installer
     {
         #region Members
         private string[] PARAMKEYS_DROP = new string[] { "drop" };

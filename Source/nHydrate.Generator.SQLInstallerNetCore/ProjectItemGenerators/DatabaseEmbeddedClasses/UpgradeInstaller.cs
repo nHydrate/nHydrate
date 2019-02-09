@@ -521,11 +521,6 @@ namespace PROJECTNAMESPACE
                         });
                     }
                     settings.Save(setup.ConnectionString);
-
-                    SqlServers.DeleteExtendedProperty(setup.ConnectionString, "dbVersion");
-                    SqlServers.DeleteExtendedProperty(setup.ConnectionString, "LastUpdate");
-                    SqlServers.DeleteExtendedProperty(setup.ConnectionString, "ModelKey");
-                    SqlServers.DeleteExtendedProperty(setup.ConnectionString, "History");
                 }
 
                 timer.Stop();
