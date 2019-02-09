@@ -69,6 +69,7 @@ namespace nHydrate.Generator.SQLInstallerNetCore.ProjectItemGenerators.DatabaseE
                 GenerateSqlServersCs();
                 GenerateXmlHelperCs();
                 GenerateUpgradeInstaller();
+                GenerateProgramCs();
 
                 //Folder structure
                 GenerateFolder1();
@@ -378,6 +379,14 @@ namespace nHydrate.Generator.SQLInstallerNetCore.ProjectItemGenerators.DatabaseE
         }
 
         #endregion
+
+        private void GenerateProgramCs()
+        {
+            var fileName = "Program.cs";
+            var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
+            var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
+            OnProjectItemGenerated(this, eventArgs);
+        }
 
         #region DatabaseInstaller
 

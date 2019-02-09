@@ -61,7 +61,7 @@ namespace PROJECTNAMESPACE
         /// <summary />
         public bool Load()
         {
-            var assembly = typeof(UpgradeInstaller).GetTypeInfo().Assembly;
+            var assembly = typeof(UpgradeInstaller).Assembly;
             var fi = new FileInfo(assembly.Location);
             fi = new FileInfo(Path.Combine(fi.DirectoryName, "installsettings.xml"));
             if (!fi.Exists) return false;
@@ -129,7 +129,7 @@ namespace PROJECTNAMESPACE
 
         public void Kill()
         {
-            var assembly = typeof(UpgradeInstaller).GetTypeInfo().Assembly;
+            var assembly = typeof(UpgradeInstaller).Assembly;
             var fi = new FileInfo(assembly.Location);
             fi = new FileInfo(Path.Combine(fi.DirectoryName, "installsettings.xml"));
             if (fi.Exists) fi.Delete();
@@ -139,7 +139,7 @@ namespace PROJECTNAMESPACE
         /// <summary />
         public bool Save()
         {
-            var assembly = typeof(UpgradeInstaller).GetTypeInfo().Assembly;
+            var assembly = typeof(UpgradeInstaller).Assembly;
             var fi = new FileInfo(assembly.Location);
             fi = new FileInfo(Path.Combine(fi.DirectoryName, "installsettings.xml"));
             if (fi.Exists) fi.Delete();

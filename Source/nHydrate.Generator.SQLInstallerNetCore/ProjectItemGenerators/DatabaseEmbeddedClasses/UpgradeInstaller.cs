@@ -1070,7 +1070,7 @@ namespace PROJECTNAMESPACE
 #if (DEBUG)
 				if (System.Diagnostics.Debugger.IsAttached)
 				{
-                    var assembly = typeof(UpgradeInstaller).GetTypeInfo().Assembly;
+                    var assembly = typeof(UpgradeInstaller).Assembly;
 					var nOrderFile = System.IO.Path.Combine(new System.IO.FileInfo(assembly.Location).DirectoryName, "installer.norder");
 					//If there are no failures then ensure that there is no "norder" file
 					if (System.IO.File.Exists(nOrderFile))
@@ -1510,7 +1510,7 @@ namespace PROJECTNAMESPACE
         {
             try
             {
-                var assembly = typeof(UpgradeInstaller).GetTypeInfo().Assembly;
+                var assembly = typeof(UpgradeInstaller).Assembly;
                 var fileName = Path.Combine(Path.GetDirectoryName(assembly.Location),
                                                                         Path.GetFileNameWithoutExtension(assembly.Location) + ".log");
 
@@ -1527,7 +1527,7 @@ namespace PROJECTNAMESPACE
         {
             try
             {
-                var assembly = typeof(UpgradeInstaller).GetTypeInfo().Assembly;
+                var assembly = typeof(UpgradeInstaller).Assembly;
                 var fileName = Path.Combine(Path.GetDirectoryName(assembly.Location), Path.GetFileNameWithoutExtension(assembly.Location) + ".errorlog.txt");
                 var text = string.Empty;
                 if (exception != null)
@@ -2271,7 +2271,7 @@ namespace PROJECTNAMESPACE
             var orig = resource;
             try
             {
-                var assembly = typeof(UpgradeInstaller).GetTypeInfo().Assembly;
+                var assembly = typeof(UpgradeInstaller).Assembly;
                 var fi = new FileInfo(assembly.Location);
                 var s1 = fi.Directory.FullName;
                 var s2 = assembly.GetName().Name;

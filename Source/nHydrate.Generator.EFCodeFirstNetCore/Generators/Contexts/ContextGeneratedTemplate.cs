@@ -1342,8 +1342,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 var inputParamVars = string.Join(", ", (parameterList.Select(x => x.CamelName + "Parameter")));
 
                 //NETCORE Removed
-                //sb.AppendLine("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.CreateQuery<" + item.PascalName + ">(\"[\" + this.GetType().Name + \"].[" + objectName + "](" + inputParams + ")\"" + (string.IsNullOrEmpty(inputParamVars) ? string.Empty : ", " + inputParamVars) + ");");
+                sb.AppendLine("#pragma warning disable EF1000");
                 sb.AppendLine("			var retval = this." + item.PascalName + "__INTERNAL.FromSql(\"SELECT * FROM [" + item.GetSQLSchema() + "].[" + objectName + "](" + inputParams + ")\"" + (string.IsNullOrEmpty(inputParamVars) ? string.Empty : ", " + inputParamVars) + ");");
+                sb.AppendLine("#pragma warning restore EF1000");
 
                 //Add code here to handle output parameters
                 foreach (var parameter in parameterList.Where(x => x.IsOutputParameter))

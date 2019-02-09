@@ -707,7 +707,7 @@ namespace PROJECTNAMESPACE
             var retval = string.Empty;
             var sb = new StringBuilder();
 
-            var asm = typeof(UpgradeInstaller).GetTypeInfo().Assembly;
+            var asm = typeof(UpgradeInstaller).Assembly;
             using (var manifestStream = asm.GetManifestResourceStream(resourceFileName))
             {
                 try
@@ -734,7 +734,7 @@ namespace PROJECTNAMESPACE
             var fullScript = string.Empty;
             if (resourceFileName.ToLower().EndsWith(".sql"))
             {
-                var asm = typeof(UpgradeInstaller).GetTypeInfo().Assembly;
+                var asm = typeof(UpgradeInstaller).Assembly;
                 using (var manifestStream = asm.GetManifestResourceStream(resourceFileName))
                 {
                     try
@@ -753,7 +753,7 @@ namespace PROJECTNAMESPACE
                 Directory.CreateDirectory(tempPath);
                 var zipPath = Path.Combine(tempPath, Guid.NewGuid().ToString());
 
-                var asm = typeof(UpgradeInstaller).GetTypeInfo().Assembly;
+                var asm = typeof(UpgradeInstaller).Assembly;
                 using (var manifestStream = asm.GetManifestResourceStream(resourceFileName))
                 {
                     try

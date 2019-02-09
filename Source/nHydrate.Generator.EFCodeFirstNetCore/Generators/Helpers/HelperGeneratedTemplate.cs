@@ -91,15 +91,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine();
                 #endregion
 
-                #region  This is a Polyfill/Shim that does nothing but allows Serializable to compile
-                sb.AppendLine("namespace System");
-                sb.AppendLine("{");
-                sb.AppendLine("	public interface ICloneable");
-                sb.AppendLine("	{");
-                sb.AppendLine("	}");
-                sb.AppendLine("}");
-                sb.AppendLine();
-
+                #region Metadata
                 sb.AppendLine("namespace " + this.GetLocalNamespace());
                 sb.AppendLine("{");
 

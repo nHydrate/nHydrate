@@ -72,6 +72,7 @@
     <Compile Include="ProjectItemGenerators\AuditTriggers\CreateAuditTriggerTemplate.cs" />
     <Compile Include="ProjectItemGenerators\BaseDbScriptGenerator.cs" />
     <Compile Include="ProjectItemGenerators\BaseDbScriptTemplate.cs" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\Program.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptGenerator.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptTemplate.cs" />
     <Compile Include="ProjectItemGenerators\ScriptOrder\ScriptOrderGenerator.cs" />

@@ -193,7 +193,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             var boInterface = this.GetLocalNamespace() + ".IBusinessObject";
             if (_item.Immutable) boInterface = "" + this.GetLocalNamespace() + ".IReadOnlyBusinessObject";
 
-            boInterface += ", " + this.GetLocalNamespace() + ".Interface.I" + _item.PascalName;
+            if (!_item.AssociativeTable)
+            {
+                boInterface += $", {this.GetLocalNamespace()}.Interface.I{_item.PascalName}";
+            }
 
             if (_model.EnableCustomChangeEvents)
             {
@@ -203,9 +206,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             if (_item.IsAbstract)
             {
                 if (_item.ParentTable == null)
-                    sb.Append("	public abstract partial class " + doubleDerivedClassName + " : BaseEntity, " + boInterface + "");
+                    sb.Append($"	public abstract partial class {doubleDerivedClassName} : BaseEntity, {boInterface}");
                 else
-                    sb.Append("	public abstract partial class " + doubleDerivedClassName + " : " + this.GetLocalNamespace() + ".Entity." + _item.ParentTable.PascalName + ", " + boInterface);
+                    sb.Append($"	public abstract partial class {doubleDerivedClassName} : {this.GetLocalNamespace()}.Entity.{_item.ParentTable.PascalName}, {boInterface}");
             }
             else //NON-Abstract
             {

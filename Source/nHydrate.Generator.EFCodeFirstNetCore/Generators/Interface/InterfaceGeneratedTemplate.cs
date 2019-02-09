@@ -115,9 +115,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Interface
             if (_item.Immutable) boInterface = "" + this.GetLocalNamespace() + ".IReadOnlyBusinessObject";
 
             if (_item.ParentTable == null)
-                sb.Append("	public partial interface I" + _item.PascalName);
+                sb.Append($"	public partial interface I{_item.PascalName}");
             else
-                sb.Append("	public partial interface I" + _item.PascalName + " : " + this.GetLocalNamespace() + ".Interface.I" + _item.ParentTable.PascalName);
+                sb.Append($"	public partial interface I{_item.PascalName} : {this.GetLocalNamespace()}.Interface.I{_item.ParentTable.PascalName}");
 
             sb.AppendLine();
 
