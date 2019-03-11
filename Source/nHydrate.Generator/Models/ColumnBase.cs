@@ -463,13 +463,13 @@ namespace nHydrate.Generator.Models
                 case System.Data.SqlDbType.NText:
                     return 1073741823;
                 case System.Data.SqlDbType.Text:
-                    return 2147483647;
+                    return int.MaxValue;
                 case System.Data.SqlDbType.Image:
-                    return 2147483647;
+                    return int.MaxValue;
             }
 
             if (ModelHelper.SupportsMax(this.DataType) && this.Length == 0)
-                return 2147483647;
+                return int.MaxValue;
             else
                 return this.Length;
         }

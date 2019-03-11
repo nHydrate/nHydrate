@@ -224,9 +224,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                         {
                             //Now add columns if they do not exist
                             sb.AppendLine("if not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + column.DatabaseName + "' and o.name = '" + tableName + "')");
-                            sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ADD [" + column.DatabaseName + "] " + column.DatabaseType + " NULL");
+                            sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{tableName}] ADD [" + column.DatabaseName + "] " + column.DatabaseType + " NULL");
                             sb.AppendLine("GO");
-                            sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ALTER COLUMN [" + column.DatabaseName + "] " + column.DatabaseType + " NULL");
+                            sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{tableName}] ALTER COLUMN [" + column.DatabaseName + "] " + column.DatabaseType + " NULL");
                             sb.AppendLine("GO");
                             sb.AppendLine();
                         }
@@ -235,9 +235,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                     if (table.AllowModifiedAudit)
                     {
                         sb.AppendLine("if not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + _model.Database.ModifiedByDatabaseName + "' and o.name = '" + tableName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ADD [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
+                        sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{tableName}] ADD [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
                         sb.AppendLine("GO");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ALTER COLUMN [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
+                        sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{tableName}] ALTER COLUMN [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
                         sb.AppendLine("GO");
                         sb.AppendLine();
                     }
@@ -378,7 +378,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
                         sb.AppendLine("--UNIQUE COLUMN TABLE [" + tableName + "].[" + column.DatabaseName + "] (NON-PRIMARY KEY)");
                         sb.AppendLine("if not exists(select * from sys.indexes where name = '" + indexName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] ADD CONSTRAINT [" + indexName + "] UNIQUE ([" + column.DatabaseName + "]) ");
+                        sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{tableName}] ADD CONSTRAINT [" + indexName + "] UNIQUE ([" + column.DatabaseName + "]) ");
                         sb.AppendLine("GO");
                         sb.AppendLine();
                     }
@@ -460,9 +460,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
                     if (table.IsTenant)
                     {
-                        sb.AppendLine("--APPEND TENANT FIELD FOR TABLE [" + table.DatabaseName + "]");
-                        sb.AppendLine("if exists(select * from sys.objects where name = '" + table.DatabaseName + "' and type = 'U') and not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + _model.TenantColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                        sb.AppendLine("ALTER TABLE [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] ADD [" + _model.TenantColumnName + "] [nvarchar] (128) NOT NULL CONSTRAINT [DF__" + table.PascalName.ToUpper() + "_" + _model.TenantColumnName.ToUpper() + "] DEFAULT (suser_sname())");
+                        sb.AppendLine($"--APPEND TENANT FIELD FOR TABLE [{table.DatabaseName}]");
+                        sb.AppendLine($"if exists(select * from sys.tables t inner join sys.schemas s on t.schema_id = s.schema_id where t.name = '{table.DatabaseName}' and s.name = '{table.GetSQLSchema()}') and not exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id where c.name = '{_model.TenantColumnName}' and t.name = '{table.DatabaseName}')");
+                        sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [{_model.TenantColumnName}] [nvarchar] (128) NOT NULL CONSTRAINT [DF__" + table.PascalName.ToUpper() + "_" + _model.TenantColumnName.ToUpper() + "] DEFAULT (suser_sname())");
                         sb.AppendLine();
                     }
 
@@ -639,7 +639,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
         private void AppendVersionTable()
         {
             #region Add the schema table
-            sb.AppendLine("if not exists(select * from sys.objects where [name] = '__nhydrateschema' and [type] = 'U')");
+            sb.AppendLine("if not exists(select * from sys.tables where [name] = '__nhydrateschema')");
             sb.AppendLine("BEGIN");
             sb.AppendLine("CREATE TABLE [__nhydrateschema] (");
             sb.AppendLine("[dbVersion] [varchar] (50) NOT NULL,");
@@ -663,7 +663,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             #endregion
 
             #region Add the objects table
-            sb.AppendLine("if not exists(select * from sys.objects where name = '__nhydrateobjects' and [type] = 'U')");
+            sb.AppendLine("if not exists(select * from sys.tables where name = '__nhydrateobjects')");
             sb.AppendLine("CREATE TABLE [dbo].[__nhydrateobjects]");
             sb.AppendLine("(");
             sb.AppendLine("	[rowid] [bigint] IDENTITY(1,1) NOT NULL,");
@@ -715,33 +715,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 sb.AppendLine("GO");
                 sb.AppendLine();
             }
-
-            #endregion
-
-            #region Add Metadata table
-
-            ////Add the objects table
-            //sb.AppendLine("if not exists(select * from sys.objects where name = '__nhydratemetadata' and [type] = 'U')");
-            //sb.AppendLine("CREATE TABLE [dbo].[__nhydratemetadata]");
-            //sb.AppendLine("(");
-            //sb.AppendLine("	[rowid] [bigint] IDENTITY(1,1) NOT NULL,");
-            //sb.AppendLine("	[name] [varchar](500) NOT NULL,");
-            //sb.AppendLine("	[type] [int] NOT NULL,");
-            //sb.AppendLine("	[codefacade] [varchar](500) NULL,");
-            //sb.AppendLine("	[immutable] [bit] NOT NULL,");
-            //sb.AppendLine("	[isassociative] [bit] NOT NULL,");
-            //sb.AppendLine("	[parent] [varchar](500) NULL,");
-            //sb.AppendLine("	[summary] [varchar](max) NOT NULL,");
-            //sb.AppendLine("	[typedtable] [int] NOT NULL,");
-            //sb.AppendLine(")");
-            //sb.AppendLine();
-
-            //if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))
-            //{
-            //  sb.AppendLine("GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON [__nhydratemetadata] TO [" + _model.Database.GrantExecUser + "]");
-            //  sb.AppendLine("GO");
-            //  sb.AppendLine();
-            //}
 
             #endregion
 

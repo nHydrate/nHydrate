@@ -695,7 +695,7 @@ namespace PROJECTNAMESPACE
             var sortByVersionScripts = new SortedDictionary<string, EmbeddedResourceName>(upgradeSchemaScripts, new UpgradeFileNameComparer());
 
             //Run the generated upgrades
-            foreach (EmbeddedResourceName ern in sortByVersionScripts.Values)
+            foreach (var ern in sortByVersionScripts.Values)
             {
                 if (new GeneratedVersion(ern.FileName).CompareTo(_previousVersion) > 0)
                 {
@@ -729,11 +729,15 @@ namespace PROJECTNAMESPACE
             try
             {
                 //Run the create scripts
-                foreach (EmbeddedResourceName ern in sortByVersionScripts.Values)
+                foreach (var ern in sortByVersionScripts.Values)
                 {
                     var hashItem = _databaseItems.FirstOrDefault(x => x.name == ern.FullName);
                     if (hashItem == null) _newItems.Add(ern.FullName);
-                    if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
+
+                    //Always run relations in case removed in upgrade scripts
+                    var skipHash = (ern.FileName == "3_CreateRelations");
+
+                    if (!setup.UseHash || skipHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
                     {
                         setup.DebugScriptName = ern.FullName;
                         if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);

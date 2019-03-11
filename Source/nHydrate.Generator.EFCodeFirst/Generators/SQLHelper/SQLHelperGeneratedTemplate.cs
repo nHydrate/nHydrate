@@ -351,14 +351,12 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("					var sql = \"declare @totalcount int ; set @totalcount = 0;\";");
             sb.AppendLine("					foreach (var field in parser.FieldList)");
             sb.AppendLine("					{");
-            sb.AppendLine("						sql += \"UPDATE [\" + parser.GetTableAlias(field.Name, leafTable) + \"]\\r\\n\";");
+            sb.AppendLine("						sql += \"UPDATE [\" + parser.GetTableFromField(field.Name, leafTable) + \"]\\r\\n\";");
             sb.AppendLine("						var value = newValue.GetType().GetProperty(field.Name).GetValue(newValue, null);");
-            sb.AppendLine("						sql += \"SET [\" + parser.GetTableAlias(field.Name, leafTable) + \"].[\" + field.Name + \"] = @newValue\" + index + \"\\r\\n\";");
+            sb.AppendLine("						sql += \"SET [\" + parser.GetTableFromField(field.Name, leafTable) + \"].[\" + field.Name + \"] = @newValue\" + index + \"\\r\\n\";");
             sb.AppendLine();
-            var fieldName = _model.Database.ModifiedByColumnName;
-            sb.AppendLine("						if (hasModifyAudit && (field.Name != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(field.Name, leafTable) + \"].[" + fieldName + "] = NULL\\r\\n\";");
-            fieldName = _model.Database.ModifiedDateColumnName;
-            sb.AppendLine("						if (hasModifyAudit && (field.Name != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(field.Name, leafTable) + \"].[" + fieldName + "] = sysdatetime()\\r\\n\";");
+            sb.AppendLine("						if (hasModifyAudit && (field.Name != \"" + _model.Database.ModifiedByColumnName + "\")) sql += \", [\" + parser.GetTableFromField(field.Name, leafTable) + \"].[" + _model.Database.ModifiedByColumnName + "] = NULL\\r\\n\";");
+            sb.AppendLine("						if (hasModifyAudit && (field.Name != \"" + _model.Database.ModifiedDateColumnName + "\")) sql += \", [\" + parser.GetTableFromField(field.Name, leafTable) + \"].[" + _model.Database.ModifiedDateColumnName + "] = sysdatetime()\\r\\n\";");
             sb.AppendLine("						sql += parser.GetFromClause(new QueryOptimizer()) + \"\\r\\n\";");
             sb.AppendLine("						sql += parser.GetWhereClause() + \";\";");
             sb.AppendLine("						if (value == null) cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"newValue\" + index, System.DBNull.Value));");
@@ -370,7 +368,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("					}");
             sb.AppendLine();
             sb.AppendLine("					sql += \"select @totalcount\";");
-            sb.AppendLine("					sql = \"set ansi_nulls off;\" + sql;");
+            //sb.AppendLine("					sql = \"set ansi_nulls off;\" + sql;");
             sb.AppendLine("					cmd.CommandText = sql;");
             sb.AppendLine("					");
             sb.AppendLine("					object p = cmd.ExecuteScalar();");
@@ -480,16 +478,14 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("						cmd.Transaction = transaction;");
             sb.AppendLine("					var parser = LinqSQLParser.Create(cmd.CommandText, LinqSQLParser.ObjectTypeConstants.Table);");
             sb.AppendLine("					var fieldName = parser.GetSelectClause();");
-            sb.AppendLine("					var sql = \"UPDATE [\" + parser.GetTableAlias(fieldName, leafTable) + \"]\\r\\n\";");
-            sb.AppendLine("					sql += \"SET [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[\" + fieldName + \"] = @newValue\\r\\n\";");
-            fieldName = _model.Database.ModifiedByColumnName;
-            sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[" + fieldName + "] = NULL\\r\\n\";");
-            fieldName = _model.Database.ModifiedDateColumnName;
-            sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + fieldName + "\")) sql += \", [\" + parser.GetTableAlias(fieldName, leafTable) + \"].[" + fieldName + "] = " + (_model.UseUTCTime ? "sysutcdatetime" : "sysdatetime") + "()\\r\\n\";");
+            sb.AppendLine("					var sql = \"UPDATE [\" + parser.GetTableFromField(fieldName, leafTable) + \"]\\r\\n\";");
+            sb.AppendLine("					sql += \"SET [\" + parser.GetTableFromField(fieldName, leafTable) + \"].[\" + fieldName + \"] = @newValue\\r\\n\";");
+            sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + _model.Database.ModifiedByColumnName + "\")) sql += \", [\" + parser.GetTableFromField(fieldName, leafTable) + \"].[" + _model.Database.ModifiedByColumnName + "] = NULL\\r\\n\";");
+            sb.AppendLine("					if (hasModifyAudit && (fieldName != \"" + _model.Database.ModifiedDateColumnName + "\")) sql += \", [\" + parser.GetTableFromField(fieldName, leafTable) + \"].[" + _model.Database.ModifiedDateColumnName + "] = " + (_model.UseUTCTime ? "sysutcdatetime" : "sysdatetime") + "()\\r\\n\";");
             sb.AppendLine("					sql += parser.GetFromClause(new QueryOptimizer()) + \"\\r\\n\";");
             sb.AppendLine("					sql += parser.GetWhereClause();");
             sb.AppendLine("					sql += \";select @@rowcount\";");
-            sb.AppendLine("					sql = \"set ansi_nulls off;\" + sql;");
+            //sb.AppendLine("					sql = \"set ansi_nulls off;\" + sql;");
             sb.AppendLine("					cmd.CommandText = sql;");
             sb.AppendLine("					if (newValue == null) cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"newValue\", System.DBNull.Value));");
             sb.AppendLine("					else cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter(\"newValue\", newValue));");
@@ -930,6 +926,8 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
                 foreach (var item in _model.Database.Tables.Where(x => x.Generated).OrderBy(x => x.Name))
                 {
                     sb.AppendLine("				case \"" + item.DatabaseName + "\": return \"" + item.GetSQLSchema() + "\";");
+                    if (item.IsTenant)
+                        sb.AppendLine("				case \"" + _model.TenantPrefix + "_" + item.DatabaseName + "\": return \"" + item.GetSQLSchema() + "\";");
                 }
 
                 foreach (var item in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
@@ -993,9 +991,22 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.SQLHelper
             sb.AppendLine("			else return string.Empty;");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		public string GetTableAlias(string fieldName, string tableName)");
+            sb.AppendLine("		public string GetTableFromField(string fieldName, string tableName)");
             sb.AppendLine("		{");
-            sb.AppendLine("			return (from x in this.FieldList where x.Name == fieldName select x).FirstOrDefault().Table;");
+            sb.AppendLine("			return GetTableAlias((from x in this.FieldList where x.Name == fieldName select x).FirstOrDefault().Table);");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		public static string GetTableAlias(string tableName)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			tableName = tableName.Replace(\"[\", string.Empty).Replace(\"]\", string.Empty);");
+            sb.AppendLine("			switch (tableName)");
+            sb.AppendLine("			{");
+            foreach (var item in _model.Database.Tables.Where(x => x.Generated && x.IsTenant).OrderBy(x => x.Name))
+            {
+                sb.AppendLine($"				case \"{item.DatabaseName}\": tableName = \"{_model.TenantPrefix + "_" + item.DatabaseName}\"; break;");
+            }
+            sb.AppendLine("			}");
+            sb.AppendLine(" 		return tableName;");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");

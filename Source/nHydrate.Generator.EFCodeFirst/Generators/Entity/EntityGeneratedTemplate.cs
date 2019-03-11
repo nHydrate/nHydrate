@@ -1822,18 +1822,18 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
             sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
             //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, QueryOptimizer optimizer, ContextStartup startup, string connectionString)");
+            sb.AppendLine($"		public static int DeleteData(Expression<Func<{this.GetLocalNamespace()}.{_item.PascalName}Query, bool>> where, QueryOptimizer optimizer, ContextStartup startup, string connectionString)");
             sb.AppendLine("		{");
             sb.AppendLine("			if (optimizer == null)");
             sb.AppendLine("				optimizer = new QueryOptimizer();");
             sb.AppendLine("				if (startup == null) startup = new ContextStartup(null);");
             sb.AppendLine();
-            sb.AppendLine("			using (var connection = " + this.GetLocalNamespace() + ".DBHelper.GetConnection(" + this.GetLocalNamespace() + ".Util.StripEFCS2Normal(connectionString)))");
+            sb.AppendLine($"			using (var connection = {this.GetLocalNamespace()}.DBHelper.GetConnection({this.GetLocalNamespace()}.Util.StripEFCS2Normal(connectionString)))");
             sb.AppendLine("			{");
             sb.AppendLine("				using (var dc = new DataContext(connection))");
             sb.AppendLine("				{");
-            sb.AppendLine("					var template = dc.GetTable<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query>();");
-            sb.AppendLine("					using (var cmd = BusinessEntityQuery.GetCommand<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query>(dc, template, where))");
+            sb.AppendLine($"					var template = dc.GetTable<{this.GetLocalNamespace()}.{_item.PascalName}Query>();");
+            sb.AppendLine($"					using (var cmd = BusinessEntityQuery.GetCommand<{this.GetLocalNamespace()}.{_item.PascalName}Query>(dc, template, where))");
             sb.AppendLine("					{");
             sb.AppendLine("						if (!startup.DefaultTimeout && startup.CommandTimeout > 0) cmd.CommandTimeout = startup.CommandTimeout;");
             sb.AppendLine("						else");
@@ -1843,69 +1843,68 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Entity
             sb.AppendLine("						}");
             sb.AppendLine();
             sb.AppendLine("						var parser = LinqSQLParser.Create(cmd.CommandText, LinqSQLParser.ObjectTypeConstants.Table);");
-            sb.Append("						var sql = \"CREATE TABLE #t (");
-
-            var ii = 0;
-            foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
-            {
-                sb.Append("[" + column.DatabaseName + "] " + column.DatabaseType);
-                if (column.IsTextType) sb.Append(" COLLATE database_default");
-                if (ii < _item.PrimaryKeyColumns.Count - 1) sb.Append(", ");
-                ii++;
-            }
-
-            sb.AppendLine(")\";");
-            sb.AppendLine("						sql += \"set rowcount \" + optimizer.ChunkSize + \";\";");
-            sb.Append("						sql += \"INSERT INTO #t (");
-
-            ii = 0;
-            foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
-            {
-                sb.Append("[" + column.DatabaseName + "]");
-                if (ii < _item.PrimaryKeyColumns.Count - 1) sb.Append(", ");
-                ii++;
-            }
-
-            sb.AppendLine(")\";");
-
-            sb.Append("						sql += \"SELECT ");
-
-            ii = 0;
-            foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
-            {
-                sb.Append("[t0].[" + column.DatabaseName + "]");
-                if (ii < _item.PrimaryKeyColumns.Count - 1)
-                    sb.Append(", ");
-                ii++;
-            }
-            sb.AppendLine(" #t\\r\\n\";");
-            sb.AppendLine("						sql += parser.GetFromClause(optimizer) + \"\\r\\n\";");
-            sb.AppendLine("						sql += parser.GetWhereClause();");
-            sb.AppendLine("						sql += \"\\r\\n\";");
-            sb.AppendLine();
+            sb.AppendLine("                        var sb = new StringBuilder();");
 
             var tableList = new List<Table>(_item.GetTableHierarchy());
-            tableList.Reverse();
-            sb.AppendLine("						var noLock = string.Empty;");
-            foreach (var table in tableList)
+            if (tableList.Count == 1)
             {
-                sb.AppendLine("						noLock = (optimizer.NoLocking ? \"WITH (READUNCOMMITTED) \" : string.Empty);");
-                sb.Append("						sql += \"DELETE [" + table.DatabaseName + "] FROM [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] \" + noLock + \"INNER JOIN #t ON ");
+                //This will use the PK when deleting and is faster
+                var table = tableList.First();
+                var fieldSql = string.Join(", ", _item.PrimaryKeyColumns.OrderBy(x => x.Name).Select(x => $"[t0].[{x.DatabaseName}]"));
+                var pkSql = string.Join(" AND ", _item.PrimaryKeyColumns.OrderBy(x => x.Name).Select(x => $"[X].[{x.DatabaseName}] = [Extent2].[{x.DatabaseName}]"));
+                var tableName = table.DatabaseName;
+                if (table.IsTenant)
+                    tableName = _model.TenantPrefix + "_" + table.DatabaseName;
 
-                ii = 0;
+                sb.AppendLine("                        sb.AppendLine(\"SET ROWCOUNT \" + optimizer.ChunkSize + \";\");");
+                sb.AppendLine($"                        sb.AppendLine(\"delete [X] from [{table.GetSQLSchema()}].[{tableName}] [X] inner join (\");");
+                sb.AppendLine($"                        sb.AppendLine(\"SELECT {fieldSql}\");");
+                sb.AppendLine("                        sb.AppendLine(parser.GetFromClause(optimizer));");
+                sb.AppendLine("                        sb.AppendLine(parser.GetWhereClause());");
+                sb.AppendLine("                        sb.AppendLine(\") AS [Extent2]\");");
+                sb.AppendLine($"                        sb.AppendLine(\"ON {pkSql}\");");
+                sb.AppendLine("                        sb.AppendLine(\"select @@ROWCOUNT\");");
+            }
+            else
+            {
+                //There is a table hierarchy then need to choose a group of ID's and remove from all tables
+                //sb.AppendLine("						sb.AppendLine(\"set ansi_nulls off;\");");
+                sb.Append("						sb.AppendLine(\"CREATE TABLE #t (");
+                var ii = 0;
                 foreach (var column in _item.PrimaryKeyColumns.OrderBy(x => x.Name))
                 {
-                    sb.Append("[" + table.GetSQLSchema() + "].[" + table.DatabaseName + "].[" + column.DatabaseName + "] = #t.[" + column.DatabaseName + "]");
-                    if (ii < _item.PrimaryKeyColumns.Count - 1)
-                        sb.Append(" AND ");
+                    sb.Append("[" + column.DatabaseName + "] " + column.DatabaseType);
+                    if (column.IsTextType) sb.Append(" COLLATE database_default");
+                    if (ii < _item.PrimaryKeyColumns.Count - 1) sb.Append(", ");
                     ii++;
                 }
-                sb.AppendLine("\\r\\n\";");
+                sb.AppendLine(")\");");
+                sb.AppendLine("						sb.AppendLine(\"SET ROWCOUNT \" + optimizer.ChunkSize + \";\");");
+                sb.Append("						sb.AppendLine(\"INSERT INTO #t (");
+                sb.Append(string.Join(", ", _item.PrimaryKeyColumns.OrderBy(x => x.Name).Select(x => $"[{x.DatabaseName}]")));
+                sb.AppendLine(")\");");
+                sb.Append("						sb.AppendLine(\"SELECT ");
+                sb.Append(string.Join(", ", _item.PrimaryKeyColumns.OrderBy(x => x.Name).Select(x => $"[t0].[{x.DatabaseName}]")));
+                sb.AppendLine(" #t\");");
+                sb.AppendLine("						sb.AppendLine(parser.GetFromClause(optimizer));");
+                sb.AppendLine("						sb.AppendLine(parser.GetWhereClause());");
+                sb.AppendLine("						sb.AppendLine();");
+                sb.AppendLine();
+
+                tableList.Reverse();
+                sb.AppendLine("						var noLock = (optimizer.NoLocking ? \"WITH (READUNCOMMITTED) \" : string.Empty);");
+                foreach (var table in tableList)
+                {
+                    sb.Append($"						sb.AppendLine(\"DELETE [{table.DatabaseName}] FROM [{table.GetSQLSchema()}].[{table.DatabaseName}] \" + noLock + \"INNER JOIN #t ON ");
+                    sb.Append(string.Join(" AND ", _item.PrimaryKeyColumns.OrderBy(x => x.Name).Select(x => $"[{table.GetSQLSchema()}].[{table.DatabaseName}].[{x.DatabaseName}] = #t.[{x.DatabaseName}]")));
+                    sb.AppendLine("\");");
+                }
+
+                sb.AppendLine("						sb.AppendLine(\"select @@rowcount\");");
+                sb.AppendLine("						sb.AppendLine(\"drop table #t;\");");
             }
 
-            sb.AppendLine("						sql += \";select @@rowcount\";");
-            sb.AppendLine("						sql = \"set ansi_nulls off;\" + sql + \";drop table #t;\";");
-            sb.AppendLine("						cmd.CommandText = sql;");
+            sb.AppendLine("						cmd.CommandText = sb.ToString();");
             sb.AppendLine("						dc.Connection.Open();");
             sb.AppendLine("						var startTime = DateTime.Now;");
             sb.AppendLine("						var affected = 0;");
