@@ -142,21 +142,21 @@ namespace nHydrate.Dsl
 			base.OnDeleting();
 		}
 
-		public override string ToString()
-		{
-			var retval = string.Empty;
-			foreach (var ic in this.IndexColumns)
-			{
-				var f = this.Entity.Fields.FirstOrDefault(x => x.Id == ic.FieldID);
-				if (retval.Length > 0)
-					retval += ",";
-				if (f == null)
-					retval += "(Unknown)";
-				else
-					retval += f;
-			}
-			return retval;
-		}
+        public override string ToString()
+        {
+            var retval = string.Empty;
+            foreach (var ic in this.IndexColumns.OrderBy(x => x.SortOrder).ThenBy(x => x.Field.Name))
+            {
+                var f = this.Entity.Fields.FirstOrDefault(x => x.Id == ic.FieldID);
+                if (retval.Length > 0)
+                    retval += ",";
+                if (f == null)
+                    retval += "(Unknown)";
+                else
+                    retval += f;
+            }
+            return retval;
+        }
 
 		#region IModuleLink
 
