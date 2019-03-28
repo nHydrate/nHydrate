@@ -1,7 +1,7 @@
-﻿#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
+﻿#region Copyright (c) 2006-2019 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2018 All Rights reserved                   *
+//              Copyright (c) 2006-2019 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -35,9 +35,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyKeyFile(@"..\..\Security\nHydrate.snk")]
 
 [assembly: AssemblyCompany("nHydrate.org")]
-[assembly: AssemblyCopyright("Copyright © nHydrate.org 2006-2018")]
+[assembly: AssemblyCopyright("Copyright © nHydrate.org 2006-2019")]
 [assembly: AssemblyTrademark("Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted under the maximum extent possible under law.")]
 [assembly: NeutralResourcesLanguage("en-US")]
 
-[assembly: AssemblyVersion("6.0.0.219")]
-[assembly: AssemblyFileVersion("6.0.0.219")]
+[assembly: AssemblyVersion("6.0.0.220")]
+[assembly: AssemblyFileVersion("6.0.0.220")]
