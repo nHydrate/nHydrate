@@ -74,13 +74,13 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 sb.AppendLine("#pragma warning disable 612");
                 this.AppendUsingStatements();
-                sb.AppendLine("namespace " + this.GetLocalNamespace());
+                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Audit");
                 sb.AppendLine("{");
                 this.AppendClass();
                 sb.AppendLine("}");
                 sb.AppendLine();
 
-                sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}" + ".Audit");
                 sb.AppendLine("{");
                 sb.AppendLine("}");
                 sb.AppendLine("#pragma warning restore 612");
@@ -147,6 +147,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		{");
             sb.AppendLine("			base.OnModelCreating(modelBuilder);");
             sb.AppendLine("			modelBuilder.Conventions.Remove<System.Data.Entity.ModelConfiguration.Conventions.PluralizingTableNameConvention>();");
+            sb.AppendLine();
 
             #region Map Tables
             sb.AppendLine("			#region Map Tables");
@@ -196,6 +197,27 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             }
 
             sb.AppendLine("		#endregion");
+            sb.AppendLine();
+            #endregion
+
+            #region Override write functionality so cannot call it
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Write-only object. This should never be called.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public override int SaveChanges()");
+            sb.AppendLine("		{");
+            sb.AppendLine("		    ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.AcceptAllChanges();");
+            sb.AppendLine("		    return 0;");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Write-only object. This should never be called.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public override System.Threading.Tasks.Task<int> SaveChangesAsync()");
+            sb.AppendLine("		{");
+            sb.AppendLine("		    ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.AcceptAllChanges();");
+            sb.AppendLine("		    return System.Threading.Tasks.Task.Run(() => { return 0; });");
+            sb.AppendLine("		}");
             sb.AppendLine();
             #endregion
 
