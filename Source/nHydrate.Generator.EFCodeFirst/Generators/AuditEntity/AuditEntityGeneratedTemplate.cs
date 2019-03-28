@@ -171,12 +171,12 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
             sb.AppendLine("		#region Properties");
             sb.AppendLine();
 
-            Dictionary<string, Column> columnList = new Dictionary<string, Column>();
-            List<Table> tableList = new List<Table>(new Table[] { _item });
+            var columnList = new Dictionary<string, Column>();
+            var tableList = new List<Table>(new Table[] { _item });
 
             //This is for inheritance which is NOT supported right now
             //List<Table> tableList = new List<Table>(_currentTable.GetTableHierarchy().Where(x => x.AllowAuditTracking).Reverse());
-            foreach (Table table in tableList)
+            foreach (var table in tableList)
             {
                 foreach (Column column in table.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
                 {
@@ -188,6 +188,13 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
                 }
             }
 
+            //Add the primary key
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// The primary key for this record");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public int __RowId { get; internal set; }");
+            sb.AppendLine();
+
             foreach (Column column in columnList.Values)
             {
                 sb.AppendLine("		/// <summary>");
@@ -197,25 +204,26 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
                     sb.AppendLine("		/// The property that maps back to the database '" + (column.ParentTableRef.Object as Table).DatabaseName + "." + column.DatabaseName + "' field");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		public " + column.GetCodeType() + " " + column.PascalName + " { get; internal set; }");
+                sb.AppendLine();
             }
 
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// The type of audit");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public " + this.GetLocalNamespace() + ".AuditTypeConstants AuditType { get; internal set; }");
+            sb.AppendLine();
+
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// The date of the audit");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public DateTime AuditDate { get; internal set; }");
+            sb.AppendLine();
 
-            //if (_item.AllowModifiedAudit)
-            {
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// The modifier value of the audit");
-                sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		public string ModifiedBy { get; internal set; }");
-                sb.AppendLine();
-            }
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// The modifier value of the audit");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public string ModifiedBy { get; internal set; }");
+            sb.AppendLine();
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
@@ -268,6 +276,7 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
             sb.AppendLine("		/// <param name=\"recordsPerPage\">The number of records to be returned on a page.</param>");
             sb.AppendLine("		/// <param name=\"startDate\">The starting date used when searching for records.</param>");
             sb.AppendLine("		/// <param name=\"endDate\">The ending date used when searching for records.</param>");
+            sb.AppendLine("		/// <param name=\"connectionString\">The optional connection string to use.</param>");
             foreach (Column column in _item.PrimaryKeyColumns)
             {
                 sb.AppendLine("		/// <param name=\"" + column.CamelName + "\">A primary key field to use when searching for records.</param>");
