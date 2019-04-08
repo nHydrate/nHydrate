@@ -156,6 +156,13 @@ namespace Widgetsphere.Generator.EFCodeFirst.Generators.AuditEntity
 
         private void AppendConstructors()
         {
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// IF THIS DOES NOT COMPILE THEN THERE IS NO AUDIT FUNCTIONALITY. PLEASE REMOVE THIS FILE.");
+            sb.AppendLine("		/// THIS VARIABLE IS ONLY USED FOR COMPILE TIME VERIFICATION");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		private " + _model.ProjectName + "AuditEntities _dummy = null;");
+            sb.AppendLine();
+
             sb.AppendLine("		#region Constructors");
             sb.AppendLine();
             sb.AppendLine("		internal " + _item.PascalName + "Audit()");
