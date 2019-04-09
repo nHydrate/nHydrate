@@ -486,7 +486,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.PascalName))
             {
-                var column = table.GetColumns().FirstOrDefault(x => x.Identity == IdentityTypeConstants.Database);
+                var column = table.GetColumns().FirstOrDefault(x => x.Identity == IdentityTypeConstants.Database && (x.DataType == SqlDbType.Int || x.DataType == SqlDbType.BigInt));
                 if (column != null)
                 {
                     sb.AppendLine($"						if (entity is EFDAL.Entity.{table.PascalName})");
