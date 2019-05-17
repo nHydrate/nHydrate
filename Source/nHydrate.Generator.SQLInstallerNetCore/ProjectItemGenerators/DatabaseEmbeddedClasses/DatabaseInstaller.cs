@@ -104,7 +104,7 @@ namespace PROJECTNAMESPACE
         /// <summary>
         /// Performs an install of a database
         /// </summary>
-        public void Install()
+        public override void Install(IDictionary stateSaver)
         {
             var commandParams = GetCommandLineParameters();
 
@@ -221,6 +221,11 @@ namespace PROJECTNAMESPACE
                 if (commandParams.Any(x => PARAMKEYS_CREATE.Contains(x.Key)))
                     setup.InstallStatus = InstallStatusConstants.Create;
 
+                if (HasSetting(commandParams, PARAMKEYS_APPDB)) paramUICount++;
+                if (HasSetting(commandParams, PARAMKEYS_MASTERDB)) paramUICount++;
+                if (HasSetting(commandParams, PARAMKEYS_UPGRADE)) paramUICount++;
+                if (HasSetting(commandParams, PARAMKEYS_CREATE)) paramUICount++;
+
                 if (commandParams.Any(x => PARAMKEYS_UPGRADE.Contains(x.Key)) && commandParams.Any(x => PARAMKEYS_CREATE.Contains(x.Key)))
                     throw new Exception("You cannot specify both the create and update action.");
                 if (commandParams.Count(x => PARAMKEYS_NEWNAME.Contains(x.Key)) > 1)
@@ -301,16 +306,19 @@ namespace PROJECTNAMESPACE
                     return;
                 }
 
-                //If we processed all parameters and they were UI then we need to show UI
-                if ((paramUICount < commandParams.Count) || setup.SuppressUI)
+                setup.NewDatabaseName = GetSetting(commandParams, PARAMKEYS_NEWNAME, string.Empty);
+                if (HasSetting(commandParams, PARAMKEYS_NEWNAME))
+                    paramUICount++;
+
+                //If we processed all parameters then run the installer
+                if (paramUICount == commandParams.Count)
                 {
-                    setup.NewDatabaseName = commandParams.Where(x => PARAMKEYS_NEWNAME.Contains(x.Key)).Select(x => x.Value).FirstOrDefault();
                     Install(setup);
                     return;
                 }
             }
 
-            UIInstall(setup);
+            throw new Exception("The configuration is incorrect.");
 
         }
 
@@ -452,6 +460,18 @@ namespace PROJECTNAMESPACE
 
         #region Helpers
 
+        private bool HasSetting(Dictionary<string, string> commandParams, string[] keys)
+        {
+            foreach (var s in keys)
+            {
+                if (commandParams.ContainsKey(s))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private bool GetSetting(Dictionary<string, string> commandParams, string[] keys, bool defaultValue)
         {
             foreach (var s in keys)
@@ -511,43 +531,6 @@ namespace PROJECTNAMESPACE
             }
 
             return retVal;
-        }
-
-        private bool IdentifyDatabaseConnectionString(InstallSetup setup)
-        {
-            //TODO
-            //var F = new IdentifyDatabaseForm(setup);
-            //if (F.ShowDialog() == DialogResult.OK)
-            //{
-            //    this.Action = F.Action;
-            //    this.Settings = F.Settings;
-            //    return true;
-            //}
-            return false;
-        }
-
-        /// <summary />
-        private void UIInstall(InstallSetup setup)
-        {
-            if (IdentifyDatabaseConnectionString(setup))
-            {
-                setup.ConnectionString = this.Settings.GetPrimaryConnectionString();
-                setup.InstallStatus = InstallStatusConstants.Upgrade;
-
-                if (this.Action == ActionTypeConstants.Create)
-                {
-                    setup.InstallStatus = InstallStatusConstants.Create;
-                    UpgradeInstaller.UpgradeDatabase(setup);
-                }
-                else if (this.Action == ActionTypeConstants.Upgrade)
-                {
-                    UpgradeInstaller.UpgradeDatabase(setup);
-                }
-                else if (this.Action == ActionTypeConstants.AzureCopy)
-                {
-                    //TODO
-                }
-            }
         }
 
         #endregion

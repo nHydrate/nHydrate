@@ -382,14 +382,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("			if (optimizer == null)");
             sb.AppendLine("				optimizer = new QueryOptimizer();");
             sb.AppendLine();
-            sb.AppendLine("			var obj1 = ((Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider)(query).Provider);");
-            sb.AppendLine("			var obj2 = obj1.GetType().GetFieldInfo(\"_queryCompiler\").GetValue(obj1);");
-            sb.AppendLine("			var obj3 = obj2.GetType().GetFieldInfo(\"_database\").GetValue(obj2);");
-            sb.AppendLine("			var obj4 = obj3.GetType().GetFieldInfo(\"_batchExecutor\").GetValue(obj3);");
-            sb.AppendLine("			var obj5 = obj4.GetType().GetRuntimeProperty(\"CurrentContext\").GetValue(obj4) as Microsoft.EntityFrameworkCore.Internal.CurrentDbContext;");
-            sb.AppendLine("			var context = obj5.Context as IContext;");
+            sb.AppendLine("         var obj1 = ((Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider)(query).Provider);");
+            sb.AppendLine("         var obj2 = obj1.GetType().GetFieldInfo(\"_queryCompiler\").GetValue(obj1);");
+            sb.AppendLine("         var obj3 = obj2.GetType().GetFieldInfo(\"_database\").GetValue(obj2);");
+            sb.AppendLine("         var obj4 = obj3.GetType().GetRuntimeProperties().First(x => x.Name == \"Dependencies\").GetValue(obj3);");
+            sb.AppendLine("         var obj5 = obj4.GetType().GetProperty(\"QueryCompilationContextFactory\").GetValue(obj4);");
+            sb.AppendLine("         var obj6 = obj5.GetType().GetProperty(\"Dependencies\", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(obj5);");
+            sb.AppendLine("         var obj7 = obj6.GetType().GetRuntimeProperty(\"CurrentContext\").GetValue(obj6) as Microsoft.EntityFrameworkCore.Internal.CurrentDbContext;");
+            sb.AppendLine("         var context = obj7.Context as IContext;");
             sb.AppendLine();
-
             sb.AppendLine("			var sb = new System.Text.StringBuilder();");
             sb.AppendLine("			#region Per table code");
 
@@ -909,6 +910,44 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("            return sql;");
             sb.AppendLine("        }");
             sb.AppendLine("    }");
+
+            sb.AppendLine("    internal static class IQueryableUtils");
+            sb.AppendLine("    {");
+            sb.AppendLine("        private static readonly TypeInfo QueryCompilerTypeInfo = typeof(QueryCompiler).GetTypeInfo();");
+            sb.AppendLine();
+            sb.AppendLine("        private static readonly FieldInfo QueryCompilerField = typeof(EntityQueryProvider).GetTypeInfo().DeclaredFields.First(x => x.Name == \"_queryCompiler\");");
+            sb.AppendLine();
+            sb.AppendLine("        private static readonly FieldInfo QueryModelGeneratorField = QueryCompilerTypeInfo.DeclaredFields.First(x => x.Name == \"_queryModelGenerator\");");
+            sb.AppendLine("        private static readonly FieldInfo queryContextFactoryField = QueryCompilerTypeInfo.DeclaredFields.First(x => x.Name == \"_queryContextFactory\");");
+            sb.AppendLine("        private static readonly FieldInfo loggerField = QueryCompilerTypeInfo.DeclaredFields.First(x => x.Name == \"_logger\");");
+            sb.AppendLine("        private static readonly FieldInfo DataBaseField = QueryCompilerTypeInfo.DeclaredFields.Single(x => x.Name == \"_database\");");
+            sb.AppendLine();
+            sb.AppendLine("        private static readonly PropertyInfo DatabaseDependenciesField = typeof(Database).GetTypeInfo().DeclaredProperties.Single(x => x.Name == \"Dependencies\");");
+            sb.AppendLine();
+            sb.AppendLine("        //public static (string sql, IReadOnlyDictionary<string, object> parameters) ToSql2<TEntity>(this IQueryable<TEntity> query) where TEntity : class");
+            sb.AppendLine("        public static string ToSql2<TEntity>(this IQueryable<TEntity> query) where TEntity : class");
+            sb.AppendLine("        {");
+            sb.AppendLine("            var queryCompiler = (QueryCompiler)QueryCompilerField.GetValue(query.Provider);");
+            sb.AppendLine("            var queryContextFactory = (IQueryContextFactory)queryContextFactoryField.GetValue(queryCompiler);");
+            sb.AppendLine("            var logger = (Microsoft.EntityFrameworkCore.Diagnostics.IDiagnosticsLogger<DbLoggerCategory.Query>)loggerField.GetValue(queryCompiler);");
+            sb.AppendLine("            var queryContext = queryContextFactory.Create();");
+            sb.AppendLine("            var modelGenerator = (QueryModelGenerator)QueryModelGeneratorField.GetValue(queryCompiler);");
+            sb.AppendLine("            var newQueryExpression = modelGenerator.ExtractParameters(logger, query.Expression, queryContext);");
+            sb.AppendLine("            var queryModel = modelGenerator.ParseQuery(newQueryExpression);");
+            sb.AppendLine("            var database = (IDatabase)DataBaseField.GetValue(queryCompiler);");
+            sb.AppendLine("            var databaseDependencies = (DatabaseDependencies)DatabaseDependenciesField.GetValue(database);");
+            sb.AppendLine("            var queryCompilationContext = databaseDependencies.QueryCompilationContextFactory.Create(false);");
+            sb.AppendLine("            var modelVisitor = (RelationalQueryModelVisitor)queryCompilationContext.CreateQueryModelVisitor();");
+            sb.AppendLine();
+            sb.AppendLine("            modelVisitor.CreateQueryExecutor<TEntity>(queryModel);");
+            sb.AppendLine("            var command = modelVisitor.Queries.First().CreateDefaultQuerySqlGenerator()");
+            sb.AppendLine("                .GenerateSql(queryContext.ParameterValues);");
+            sb.AppendLine();
+            sb.AppendLine("            //return (command.CommandText, queryContext.ParameterValues);");
+            sb.AppendLine("            return command.CommandText;");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+
         }
 
         #endregion

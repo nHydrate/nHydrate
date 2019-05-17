@@ -540,27 +540,27 @@ namespace nHydrate.Generator.SQLInstallerNetCore
                         #region Rename audit columns if necessary
                         if (modelOld.Database.CreatedByColumnName != modelNew.Database.CreatedByColumnName)
                         {
-                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT.DatabaseName, modelOld.Database.CreatedByColumnName, modelNew.Database.CreatedByColumnName));
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.CreatedByColumnName, modelNew.Database.CreatedByColumnName));
                             sb.AppendLine("GO");
                         }
                         if (modelOld.Database.CreatedDateColumnName != modelNew.Database.CreatedDateColumnName)
                         {
-                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT.DatabaseName, modelOld.Database.CreatedDateColumnName, modelNew.Database.CreatedDateColumnName));
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.CreatedDateColumnName, modelNew.Database.CreatedDateColumnName));
                             sb.AppendLine("GO");
                         }
                         if (modelOld.Database.ModifiedByColumnName != modelNew.Database.ModifiedByColumnName)
                         {
-                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT.DatabaseName, modelOld.Database.ModifiedByColumnName, modelNew.Database.ModifiedByColumnName));
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ModifiedByColumnName, modelNew.Database.ModifiedByColumnName));
                             sb.AppendLine("GO");
                         }
                         if (modelOld.Database.ModifiedDateColumnName != modelNew.Database.ModifiedDateColumnName)
                         {
-                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT.DatabaseName, modelOld.Database.ModifiedDateColumnName, modelNew.Database.ModifiedDateColumnName));
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ModifiedDateColumnName, modelNew.Database.ModifiedDateColumnName));
                             sb.AppendLine("GO");
                         }
                         if (modelOld.Database.TimestampColumnName != modelNew.Database.TimestampColumnName)
                         {
-                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT.DatabaseName, modelOld.Database.TimestampColumnName, modelNew.Database.TimestampColumnName));
+                            sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.TimestampColumnName, modelNew.Database.TimestampColumnName));
                             sb.AppendLine("GO");
                         }
                         #endregion
