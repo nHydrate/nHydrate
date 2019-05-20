@@ -557,6 +557,10 @@ namespace PROJECTNAMESPACE
                         debugText += "\r\n\r\n";
                         System.Diagnostics.Trace.WriteLine(debugText);
                     }
+                    if (!string.IsNullOrEmpty(setup.LogFilename))
+                    {
+                        LoadSql(setup.LogFilename, sql);
+                    }
 
                     _timer.Restart();
                     SqlServers.ExecuteCommand(command);
@@ -598,6 +602,37 @@ namespace PROJECTNAMESPACE
             {
                 if (command != null)
                     command.Dispose();
+            }
+        }
+
+        private static void LoadSql(string fileName, string sql)
+        {
+            try
+            {
+                System.Xml.Linq.XDocument xmlDoc = null;
+                System.Xml.Linq.XElement rootElement = null;
+                const string RootName = "SQL";
+                if (File.Exists(fileName))
+                {
+                    xmlDoc = System.Xml.Linq.XDocument.Load(fileName);
+                    rootElement = xmlDoc.Element(RootName);
+                }
+                else
+                {
+                    xmlDoc = new System.Xml.Linq.XDocument();
+                    rootElement = new System.Xml.Linq.XElement(RootName);
+                    xmlDoc.Add(rootElement);
+                }
+
+                var parentElement = new System.Xml.Linq.XElement("Entry", new System.Xml.Linq.XAttribute("datetime", DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.ff")));
+                parentElement.Add(new System.Xml.Linq.XElement("sql", new System.Xml.Linq.XCData(sql)));
+                rootElement.Add(parentElement);
+                xmlDoc.Save(fileName);
+
+            }
+            catch (Exception ex)
+            {
+                //Do Nothing
             }
         }
 
