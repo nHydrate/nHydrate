@@ -65,6 +65,7 @@ namespace PROJECTNAMESPACE
         private string PARAMKEYS_DBVERSION = "dbversion";
         private string PARAMKEYS_VERSIONWARN = "acceptwarnings";
         private string PARAMKEYS_SHOWSQL = "showsql";
+        private string PARAMKEYS_LOGSQL = "logsql";
         private string[] PARAMKEYS_TRAN = new string[] { "tranaction", "transaction" };
         private string PARAMKEYS_SKIPNORMALIZE = "skipnormalize";
         private string PARAMKEYS_HASH = "usehash";
@@ -106,6 +107,20 @@ namespace PROJECTNAMESPACE
                         setup.ShowSql = false;
                     else
                         throw new Exception("The /" + PARAMKEYS_SHOWSQL + " parameter must be set to 'true or false'.");
+                    paramUICount++;
+                }
+
+                if (commandParams.ContainsKey(PARAMKEYS_LOGSQL))
+                {
+                    var logFile = commandParams[PARAMKEYS_LOGSQL];
+                    if (!string.IsNullOrEmpty(logFile))
+                    {
+                        //var isValid = !string.IsNullOrEmpty(logFile) && logFile.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
+                        //if (!isValid)
+                        //    throw new Exception("The /" + PARAMKEYS_LOGSQL + " parameter must have a valid file name.");
+                        if (File.Exists(logFile)) File.Delete(logFile);
+                        setup.LogFilename = logFile;
+                    }
                     paramUICount++;
                 }
 
@@ -682,6 +697,9 @@ namespace PROJECTNAMESPACE
         /// <summary />
         public bool ShowSql { get; set; }
 
+        /// <summary />
+        public string LogFilename { get; set; }
+        
         /// <summary />
         public bool CheckOnly { get; set; }
 
