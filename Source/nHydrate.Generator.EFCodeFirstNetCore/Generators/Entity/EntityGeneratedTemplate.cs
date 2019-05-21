@@ -178,12 +178,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             if (_item.Immutable && _item.TypedTable == TypedTableConstants.None)
                 sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
 
-            sb.AppendLine("	[EntityMetadata(\"" + _item.PascalName + "\", " + _item.AllowAuditTracking.ToString().ToLower() + ", " + _item.AllowCreateAudit.ToString().ToLower() + ", " + _item.AllowModifiedAudit.ToString().ToLower() + ", " + _item.AllowTimestamp.ToString().ToLower() + ", \"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\", " + _item.EnforcePrimaryKey.ToString().ToLower() + ", " + _item.Immutable.ToString().ToLower() + ", " + (_item.TypedTable != TypedTableConstants.None).ToString().ToLower() + ", \"" + _item.GetSQLSchema() + "\")]");
+            //NO AUDIT TRACKING FOR NOW
+            //sb.AppendLine("	[EntityMetadata(\"" + _item.PascalName + "\", " + _item.AllowAuditTracking.ToString().ToLower() + ", " + _item.AllowCreateAudit.ToString().ToLower() + ", " + _item.AllowModifiedAudit.ToString().ToLower() + ", " + _item.AllowTimestamp.ToString().ToLower() + ", \"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\", " + _item.EnforcePrimaryKey.ToString().ToLower() + ", " + _item.Immutable.ToString().ToLower() + ", " + (_item.TypedTable != TypedTableConstants.None).ToString().ToLower() + ", \"" + _item.GetSQLSchema() + "\")]");
+            sb.AppendLine("	[EntityMetadata(\"" + _item.PascalName + "\", false," + _item.AllowCreateAudit.ToString().ToLower() + ", " + _item.AllowModifiedAudit.ToString().ToLower() + ", " + _item.AllowTimestamp.ToString().ToLower() + ", \"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\", " + _item.EnforcePrimaryKey.ToString().ToLower() + ", " + _item.Immutable.ToString().ToLower() + ", " + (_item.TypedTable != TypedTableConstants.None).ToString().ToLower() + ", \"" + _item.GetSQLSchema() + "\")]");
             sb.AppendLine("	[MetadataTypeAttribute(typeof(" + this.GetLocalNamespace() + ".Entity.Metadata." + _item.PascalName + "Metadata))]");
 
+            //NO AUDIT TRACKING FOR NOW
             //Auditing
-            if (_item.AllowAuditTracking)
-                sb.AppendLine("	[EntityHistory(typeof(" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit))]");
+            //if (_item.AllowAuditTracking)
+            //    sb.AppendLine("	[EntityHistory(typeof(" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit))]");
 
             foreach (var meta in _item.MetaData)
             {
@@ -1657,6 +1660,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         private void AppendAuditQuery()
         {
+            //NO AUDIT TRACKING FOR NOW
+            return;
+
             if (!_item.AllowAuditTracking) return;
 
             sb.AppendLine("		#region GetAuditRecords");
