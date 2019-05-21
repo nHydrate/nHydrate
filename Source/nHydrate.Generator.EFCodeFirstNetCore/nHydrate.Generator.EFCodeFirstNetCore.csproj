@@ -78,10 +78,6 @@
     <Compile Include="Generators\Helpers\HelperExtenderTemplate.cs" />
     <Compile Include="Generators\Helpers\HelperGeneratedGenerator.cs" />
     <Compile Include="Generators\Helpers\HelperGeneratedTemplate.cs" />
-    <Compile Include="Generators\Interface\InterfaceExtenderGenerator.cs" />
-    <Compile Include="Generators\Interface\InterfaceExtenderTemplate.cs" />
-    <Compile Include="Generators\Interface\InterfaceGeneratedGenerator.cs" />
-    <Compile Include="Generators\Interface\InterfaceGeneratedTemplate.cs" />
     <Compile Include="Generators\ViewEntity\ViewEntityExtenderGenerator.cs" />
     <Compile Include="Generators\ViewEntity\ViewEntityExtenderTemplate.cs" />
     <Compile Include="Generators\ViewEntity\ViewEntityGeneratedGenerator.cs" />

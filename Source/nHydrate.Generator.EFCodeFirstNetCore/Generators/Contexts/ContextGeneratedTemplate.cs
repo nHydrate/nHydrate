@@ -547,24 +547,33 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     Table childTable = relation.ChildTableRef.Object as Table;
                     if (childTable.Generated && !childTable.IsInheritedFrom(table) && !childTable.AssociativeTable)
                     {
-                        if (relation.IsOneToOne)
+                        //if (relation.IsOneToOne)
+                        //{
+                        //    sb.AppendLine("			//Relation " + table.PascalName + " -> " + childTable.PascalName);
+                        //    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
+                        //    sb.AppendLine("							 .HasOne(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                        //    sb.AppendLine("							 .WithOne(x => x." + relation.PascalRoleName + childTable.PascalName + ");");
+                        //    if (!relation.IsRequired)
+                        //        sb.AppendLine("							 .IsRequired(false)");
+                        //}
+                        //else
                         {
                             sb.AppendLine("			//Relation " + table.PascalName + " -> " + childTable.PascalName);
                             sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
                             sb.AppendLine("							 .HasOne(a => a." + relation.PascalRoleName + table.PascalName + ")");
-                            sb.AppendLine("							 .WithOne(x => x." + relation.PascalRoleName + childTable.PascalName + ");");
+
+                            if (relation.IsOneToOne)
+                                sb.AppendLine("							 .WithOne(x => x." + relation.PascalRoleName + childTable.PascalName + ")");
+                            else
+                                sb.AppendLine("							 .WithMany(b => b." + relation.PascalRoleName + childTable.PascalName + "List)");
+
                             if (!relation.IsRequired)
                                 sb.AppendLine("							 .IsRequired(false)");
-                        }
-                        else
-                        {
-                            sb.AppendLine("			//Relation " + table.PascalName + " -> " + childTable.PascalName);
-                            sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
-                            sb.AppendLine("							 .HasOne(a => a." + relation.PascalRoleName + table.PascalName + ")");
-                            sb.AppendLine("							 .WithMany(b => b." + relation.PascalRoleName + childTable.PascalName + "List)");
-                            if (!relation.IsRequired)
-                                sb.AppendLine("							 .IsRequired(false)");
-                            sb.Append("							 .HasForeignKey(u => new { ");
+
+                            if (relation.IsOneToOne)
+                                sb.Append("							 .HasForeignKey<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(u => new { ");
+                            else
+                                sb.Append("							 .HasForeignKey(u => new { ");
 
                             var index = 0;
                             foreach (var columnPacket in relation.ColumnRelationships
@@ -642,7 +651,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			#region Primary Keys");
             sb.AppendLine();
             foreach (var table in _model.Database.Tables
-                .Where(x => x.Generated && x.ParentTable == null && (x.TypedTable != Models.TypedTableConstants.EnumOnly))
+                .Where(x => x.Generated && (x.TypedTable != Models.TypedTableConstants.EnumOnly))
                 .OrderBy(x => x.Name))
             {
                 sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
