@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2016 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2019 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2016 All Rights reserved                   *
+//              Copyright (c) 2006-2019 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -31,7 +31,7 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.LINQ
 {
-    class LINQGeneratedTemplate : EFCodeFirstBaseTemplate
+    class LINQGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
         private readonly StringBuilder sb = new StringBuilder();
 
@@ -94,9 +94,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.LINQ
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Data;");
             sb.AppendLine("using System.Linq;");
-            sb.AppendLine("using System.Data.Linq;");
+            //sb.AppendLine("using System.Data.Linq;");
             sb.AppendLine("using System.Linq.Expressions;");
-            sb.AppendLine("using System.Data.Linq.Mapping;");
+            //sb.AppendLine("using System.Data.Linq.Mapping;");
+            sb.AppendLine("using System.ComponentModel.DataAnnotations.Schema;");
+            sb.AppendLine("using System.ComponentModel.DataAnnotations;");
             sb.AppendLine("using System.Collections;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ";");
@@ -115,9 +117,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.LINQ
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[Serializable]");
                 if (table.IsTenant)
-                    sb.AppendLine("	[Table(Name = \"" + _model.TenantPrefix + "_" + table.DatabaseName + "\")]");
+                    sb.AppendLine("	[Table(\"" + _model.TenantPrefix + "_" + table.DatabaseName + "\")]");
                 else
-                    sb.AppendLine("	[Table(Name = \"" + table.DatabaseName + "\")]");
+                    sb.AppendLine("	[Table(\"" + table.DatabaseName + "\")]");
                 sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
                 sb.AppendLine("	public partial class " + table.PascalName + "Query : IBusinessObjectLINQQuery");
                 sb.AppendLine("	{");
@@ -136,10 +138,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.LINQ
                     StringHelper.LineBreakCode(sb, description, "		/// ");
                     sb.AppendLine("		/// </summary>");
                     sb.Append("		[Column(");
-                    sb.Append("Name = \"" + c.DatabaseName + "\", ");
-                    sb.Append("DbType = \"" + c.DatabaseTypeRaw + "\", ");
-                    sb.Append("CanBeNull = " + c.AllowNull.ToString().ToLower() + ", ");
-                    sb.Append("IsPrimaryKey = " + table.PrimaryKeyColumns.Contains(c).ToString().ToLower());
+                    sb.Append("\"" + c.DatabaseName + "\", ");
+                    sb.Append("TypeName = \"" + c.DatabaseTypeRaw + "\"");
                     sb.AppendLine(")]");
                     sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                     sb.AppendLine("		public virtual " + c.GetCodeType(true) + " " + c.PascalName + " { get; set; }");
@@ -150,14 +150,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.LINQ
                     sb.AppendLine("		/// <summary>");
                     sb.AppendLine("		/// The date of creation");
                     sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		[Column(Name = \"" + _model.Database.CreatedDateColumnName + "\", DbType = \"DateTime\", CanBeNull = true)]");
+                    sb.AppendLine("		[Column(\"" + _model.Database.CreatedDateColumnName + "\", TypeName = \"DateTime\")]");
                     sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                     sb.AppendLine("		public virtual DateTime? " + _model.Database.CreatedDatePascalName + " { get; set; }");
 
                     sb.AppendLine("		/// <summary>");
                     sb.AppendLine("		/// The name of the creating entity");
                     sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		[Column(Name = \"" + _model.Database.CreatedByColumnName + "\", DbType = \"VarChar(100)\", CanBeNull = true)]");
+                    sb.AppendLine("		[Column(\"" + _model.Database.CreatedByColumnName + "\", TypeName = \"VarChar(100)\")]");
                     sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                     sb.AppendLine("		public virtual string " + _model.Database.CreatedByPascalName + " { get; set; }");
                 }
@@ -167,13 +167,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.LINQ
                     sb.AppendLine("		/// <summary>");
                     sb.AppendLine("		/// The date of last modification");
                     sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		[Column(Name = \"" + _model.Database.ModifiedDateColumnName + "\", DbType = \"DateTime\", CanBeNull = true)]");
+                    sb.AppendLine("		[Column(\"" + _model.Database.ModifiedDateColumnName + "\", TypeName = \"DateTime\")]");
                     sb.AppendLine("		public virtual DateTime? " + _model.Database.ModifiedDatePascalName + " { get; set; }");
 
                     sb.AppendLine("		/// <summary>");
                     sb.AppendLine("		/// The name of the last modifing entity");
                     sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		[Column(Name = \"" + _model.Database.ModifiedByColumnName + "\", DbType = \"VarChar(100)\", CanBeNull = true)]");
+                    sb.AppendLine("		[Column(\"" + _model.Database.ModifiedByColumnName + "\", TypeName = \"VarChar(100)\")]");
                     sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                     sb.AppendLine("		public virtual string " + _model.Database.ModifiedByPascalName + " { get; set; }");
                 }
@@ -183,7 +183,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.LINQ
                     sb.AppendLine("		/// <summary>");
                     sb.AppendLine("		/// This is an internal field and is not to be used.");
                     sb.AppendLine("		/// </summary>");
-                    sb.AppendLine("		[Column(Name = \"" + _model.Database.TimestampColumnName + "\", DbType = \"Binary\", CanBeNull = false)]");
+                    sb.AppendLine("		[Column(\"" + _model.Database.TimestampColumnName + "\", TypeName = \"Binary\")]");
                     sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                     sb.AppendLine("		public virtual byte[] " + _model.Database.TimestampPascalName + " { get; set; }");
                 }
@@ -245,7 +245,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.LINQ
                             sb.AppendLine("		/// <summary>");
                             sb.AppendLine("		/// This is a mapping of the relationship with the " + parentTable.PascalName + " entity." + (relation.PascalRoleName == "" ? "" : " (Role: '" + relation.RoleName + "')"));
                             sb.AppendLine("		/// </summary>");
-                            sb.AppendLine("		[Association(ThisKey = \"" + thisKey + "\", OtherKey = \"" + otherKey + "\")]");
+                            sb.AppendLine("		[Association(\"\", \"" + thisKey + "\", \"" + otherKey + "\")]");
                             sb.AppendLine("		public " + this.GetLocalNamespace() + "." + parentTable.PascalName + "Query " + relation.PascalRoleName + parentTable.PascalName + " { get; private set; }");
                             sb.AppendLine();
                         }

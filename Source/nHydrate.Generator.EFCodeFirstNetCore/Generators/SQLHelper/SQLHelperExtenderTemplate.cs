@@ -29,7 +29,7 @@ using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.SQLHelper
 {
-    class SQLHelperExtenderTemplate : EFCodeFirstBaseTemplate
+    class SQLHelperExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
         private readonly StringBuilder sb = new StringBuilder();
 

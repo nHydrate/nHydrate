@@ -28,8 +28,8 @@ using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.SQLHelper
 {
-    [GeneratorItem("SQLHelperExtender", typeof(EFCodeFirstProjectGenerator))]
-    class SQLHelperExtenderGenerator : EFCodeFirstProjectItemGenerator
+    [GeneratorItem("SQLHelperExtender", typeof(EFCodeFirstNetCoreProjectGenerator))]
+    class SQLHelperExtenderGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
         #region Class Members
 

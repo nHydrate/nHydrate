@@ -31,7 +31,7 @@ using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.SQLHelper
 {
-    internal class SQLHelperGeneratedTemplate : EFCodeFirstBaseTemplate
+    internal class SQLHelperGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
         private readonly StringBuilder sb = new StringBuilder();
 

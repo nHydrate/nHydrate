@@ -29,7 +29,7 @@ using nHydrate.Generator.Common.GeneratorFramework;
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.SQLHelper
 {
     [GeneratorItem("SQLHelperGenerated", typeof(SQLHelperExtenderGenerator))]
-    class SQLHelperGeneratedGenerator : EFCodeFirstProjectItemGenerator
+    class SQLHelperGeneratedGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
 
         #region Class Members
