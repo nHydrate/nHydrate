@@ -405,7 +405,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
                 if (table.IsTenant)
                     tableName = _model.TenantPrefix + "_" + table.DatabaseName;
 
-                var innerQueryToString = "((IQueryable<" + GetLocalNamespace() + ".Entity." + table.PascalName + ">)query).ToSql()";
+                //var innerQueryToString = "((IQueryable<" + GetLocalNamespace() + ".Entity." + table.PascalName + ">)query).ToSql()";
+                var innerQueryToString = "query.ToSql()";
                 if (table.Security.IsValid())
                     innerQueryToString = "((System.Data.Entity.Core.Objects.ObjectQuery)(((System.Data.Entity.Core.Objects.ObjectQuery<" + GetLocalNamespace() + ".Entity." + table.PascalName + ">)query))).ToSql()";
 
@@ -876,78 +877,29 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
         {
             sb.AppendLine("    internal static class IQueryableExtensions");
             sb.AppendLine("    {");
-            sb.AppendLine("        private static readonly TypeInfo QueryCompilerTypeInfo = typeof(QueryCompiler).GetTypeInfo();");
+            sb.AppendLine("        private static readonly FieldInfo _queryCompilerField = typeof(EntityQueryProvider).GetTypeInfo().DeclaredFields.Single(x => x.Name == \"_queryCompiler\");");
+            sb.AppendLine("        private static readonly TypeInfo _queryCompilerTypeInfo = typeof(QueryCompiler).GetTypeInfo();");
+            sb.AppendLine("        private static readonly FieldInfo _queryModelGeneratorField = _queryCompilerTypeInfo.DeclaredFields.Single(x => x.Name == \"_queryModelGenerator\");");
+            sb.AppendLine("        private static readonly FieldInfo _databaseField = _queryCompilerTypeInfo.DeclaredFields.Single(x => x.Name == \"_database\");");
+            sb.AppendLine("        private static readonly PropertyInfo _dependenciesProperty = typeof(Database).GetTypeInfo().DeclaredProperties.Single(x => x.Name == \"Dependencies\");");
             sb.AppendLine();
-            sb.AppendLine("        private static readonly FieldInfo QueryCompilerField = typeof(EntityQueryProvider).GetTypeInfo().DeclaredFields.First(x => x.Name == \"_queryCompiler\");");
-            sb.AppendLine();
-            sb.AppendLine("        private static readonly PropertyInfo NodeTypeProviderField = QueryCompilerTypeInfo.DeclaredProperties.Single(x => x.Name == \"NodeTypeProvider\");");
-            sb.AppendLine();
-            sb.AppendLine("        private static readonly MethodInfo CreateQueryParserMethod = QueryCompilerTypeInfo.DeclaredMethods.First(x => x.Name == \"CreateQueryParser\");");
-            sb.AppendLine();
-            sb.AppendLine("        private static readonly FieldInfo DataBaseField = QueryCompilerTypeInfo.DeclaredFields.Single(x => x.Name == \"_database\");");
-            sb.AppendLine();
-            sb.AppendLine("        private static readonly FieldInfo QueryCompilationContextFactoryField = typeof(Database).GetTypeInfo().DeclaredFields.Single(x => x.Name == \"_queryCompilationContextFactory\");");
-            sb.AppendLine();
-            sb.AppendLine("        public static string ToSql<TEntity>(this IQueryable<TEntity> query)");
-            sb.AppendLine("          where TEntity : class, EFDAL.IBusinessObject, new()");
+            sb.AppendLine("        public static string ToSql<TEntity>(this IQueryable<TEntity> queryable)");
+            sb.AppendLine("            where TEntity : class");
             sb.AppendLine("        {");
-            sb.AppendLine("            if (!(query is EntityQueryable<TEntity>) && !(query is InternalDbSet<TEntity>))");
-            sb.AppendLine("            {");
-            sb.AppendLine("                throw new ArgumentException(\"Invalid query\");");
-            sb.AppendLine("            }");
+            sb.AppendLine("            if (!(queryable is EntityQueryable<TEntity>) && !(queryable is InternalDbSet<TEntity>))");
+            sb.AppendLine("                throw new ArgumentException();");
             sb.AppendLine();
-            sb.AppendLine("            var queryCompiler = (IQueryCompiler)QueryCompilerField.GetValue(query.Provider);");
-            sb.AppendLine("            var nodeTypeProvider = (INodeTypeProvider)NodeTypeProviderField.GetValue(queryCompiler);");
-            sb.AppendLine("            var parser = (IQueryParser)CreateQueryParserMethod.Invoke(queryCompiler, new object[] { nodeTypeProvider });");
-            sb.AppendLine("            var queryModel = parser.GetParsedQuery(query.Expression);");
-            sb.AppendLine("            var database = DataBaseField.GetValue(queryCompiler);");
-            sb.AppendLine("            var queryCompilationContextFactory = (IQueryCompilationContextFactory)QueryCompilationContextFactoryField.GetValue(database);");
+            sb.AppendLine("            var queryCompiler = (IQueryCompiler)_queryCompilerField.GetValue(queryable.Provider);");
+            sb.AppendLine("            var queryModelGenerator = (IQueryModelGenerator)_queryModelGeneratorField.GetValue(queryCompiler);");
+            sb.AppendLine("            var queryModel = queryModelGenerator.ParseQuery(queryable.Expression);");
+            sb.AppendLine("            var database = _databaseField.GetValue(queryCompiler);");
+            sb.AppendLine("            var queryCompilationContextFactory = ((DatabaseDependencies)_dependenciesProperty.GetValue(database)).QueryCompilationContextFactory;");
             sb.AppendLine("            var queryCompilationContext = queryCompilationContextFactory.Create(false);");
             sb.AppendLine("            var modelVisitor = (RelationalQueryModelVisitor)queryCompilationContext.CreateQueryModelVisitor();");
             sb.AppendLine("            modelVisitor.CreateQueryExecutor<TEntity>(queryModel);");
-            sb.AppendLine("            var sql = modelVisitor.Queries.First().ToString();");
-            sb.AppendLine();
-            sb.AppendLine("            return sql;");
+            sb.AppendLine("            return modelVisitor.Queries.Join(Environment.NewLine + Environment.NewLine);");
             sb.AppendLine("        }");
             sb.AppendLine("    }");
-
-            sb.AppendLine("    internal static class IQueryableUtils");
-            sb.AppendLine("    {");
-            sb.AppendLine("        private static readonly TypeInfo QueryCompilerTypeInfo = typeof(QueryCompiler).GetTypeInfo();");
-            sb.AppendLine();
-            sb.AppendLine("        private static readonly FieldInfo QueryCompilerField = typeof(EntityQueryProvider).GetTypeInfo().DeclaredFields.First(x => x.Name == \"_queryCompiler\");");
-            sb.AppendLine();
-            sb.AppendLine("        private static readonly FieldInfo QueryModelGeneratorField = QueryCompilerTypeInfo.DeclaredFields.First(x => x.Name == \"_queryModelGenerator\");");
-            sb.AppendLine("        private static readonly FieldInfo queryContextFactoryField = QueryCompilerTypeInfo.DeclaredFields.First(x => x.Name == \"_queryContextFactory\");");
-            sb.AppendLine("        private static readonly FieldInfo loggerField = QueryCompilerTypeInfo.DeclaredFields.First(x => x.Name == \"_logger\");");
-            sb.AppendLine("        private static readonly FieldInfo DataBaseField = QueryCompilerTypeInfo.DeclaredFields.Single(x => x.Name == \"_database\");");
-            sb.AppendLine();
-            sb.AppendLine("        private static readonly PropertyInfo DatabaseDependenciesField = typeof(Database).GetTypeInfo().DeclaredProperties.Single(x => x.Name == \"Dependencies\");");
-            sb.AppendLine();
-            sb.AppendLine("        //public static (string sql, IReadOnlyDictionary<string, object> parameters) ToSql2<TEntity>(this IQueryable<TEntity> query) where TEntity : class");
-            sb.AppendLine("        public static string ToSql2<TEntity>(this IQueryable<TEntity> query) where TEntity : class");
-            sb.AppendLine("        {");
-            sb.AppendLine("            var queryCompiler = (QueryCompiler)QueryCompilerField.GetValue(query.Provider);");
-            sb.AppendLine("            var queryContextFactory = (IQueryContextFactory)queryContextFactoryField.GetValue(queryCompiler);");
-            sb.AppendLine("            var logger = (Microsoft.EntityFrameworkCore.Diagnostics.IDiagnosticsLogger<DbLoggerCategory.Query>)loggerField.GetValue(queryCompiler);");
-            sb.AppendLine("            var queryContext = queryContextFactory.Create();");
-            sb.AppendLine("            var modelGenerator = (QueryModelGenerator)QueryModelGeneratorField.GetValue(queryCompiler);");
-            sb.AppendLine("            var newQueryExpression = modelGenerator.ExtractParameters(logger, query.Expression, queryContext);");
-            sb.AppendLine("            var queryModel = modelGenerator.ParseQuery(newQueryExpression);");
-            sb.AppendLine("            var database = (IDatabase)DataBaseField.GetValue(queryCompiler);");
-            sb.AppendLine("            var databaseDependencies = (DatabaseDependencies)DatabaseDependenciesField.GetValue(database);");
-            sb.AppendLine("            var queryCompilationContext = databaseDependencies.QueryCompilationContextFactory.Create(false);");
-            sb.AppendLine("            var modelVisitor = (RelationalQueryModelVisitor)queryCompilationContext.CreateQueryModelVisitor();");
-            sb.AppendLine();
-            sb.AppendLine("            modelVisitor.CreateQueryExecutor<TEntity>(queryModel);");
-            sb.AppendLine("            var command = modelVisitor.Queries.First().CreateDefaultQuerySqlGenerator()");
-            sb.AppendLine("                .GenerateSql(queryContext.ParameterValues);");
-            sb.AppendLine();
-            sb.AppendLine("            //return (command.CommandText, queryContext.ParameterValues);");
-            sb.AppendLine("            return command.CommandText;");
-            sb.AppendLine("        }");
-            sb.AppendLine("    }");
-
         }
 
         #endregion
