@@ -380,15 +380,27 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             #region Rename Tables
             sb.AppendLine("			#region Map Tables");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+
+            //Tables
+            foreach (var item in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 var schema = "dbo";
-                if (!string.IsNullOrEmpty(table.DBSchema)) schema = table.DBSchema;
-                var dbTableName = table.DatabaseName;
-                if (table.IsTenant)
-                    dbTableName = _model.TenantPrefix + "_" + table.DatabaseName;
-                sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().ToTable(\"" + dbTableName + "\", \"" + schema + "\");");
+                if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
+                var dbTableName = item.DatabaseName;
+                if (item.IsTenant)
+                    dbTableName = _model.TenantPrefix + "_" + item.DatabaseName;
+                sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + dbTableName + "\", \"" + schema + "\");");
             }
+
+            //Views
+            foreach (var item in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.DatabaseName))
+            {
+                var schema = "dbo";
+                if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
+                var dbTableName = item.DatabaseName;
+                sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + dbTableName + "\", \"" + schema + "\");");
+            }
+
             sb.AppendLine("			#endregion");
             sb.AppendLine();
             #endregion

@@ -1408,6 +1408,8 @@ namespace nHydrate.Core.SQLGeneration
             {
                 if (includeDrop)
                 {
+                    sb.AppendLine("--##SECTION BEGIN [SAFETY INDEX TYPE]");
+
                     //If this is to be a clustered index then check if it exists and is non-clustered and remove it
                     //If this is to be a non-clustered index then check if it exists and is clustered and remove it
                     sb.AppendLine("--DELETE INDEX");
@@ -1417,6 +1419,7 @@ namespace nHydrate.Core.SQLGeneration
                         sb.AppendLine($"if exists(select * from sys.indexes where name = '{indexName}' and type_desc = 'CLUSTERED')");
                     sb.AppendLine($"DROP INDEX [{indexName}] ON [{table.GetSQLSchema()}].[{tableName}]");
                     sb.AppendLine("GO");
+                    sb.AppendLine("--##SECTION END [SAFETY INDEX TYPE]");
                     sb.AppendLine();
                 }
 
