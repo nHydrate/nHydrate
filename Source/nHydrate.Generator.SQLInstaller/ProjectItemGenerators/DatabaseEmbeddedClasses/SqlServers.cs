@@ -485,13 +485,20 @@ namespace PROJECTNAMESPACE
                 return;
             }
 
+            //Test for empty statements
             var originalSQL = sql.Trim();
             sql = originalSQL;
             if (string.IsNullOrEmpty(sql)) return;
 
+            //Test for noop statements (all comments/empty strings)
+            var lines = sql.BreakLines().TrimAll();
+            lines.RemoveAll(x => x.StartsWith("--"));
+            lines.RemoveAll(x => x == "");
+            if (!@lines.Any()) return;
+            lines = sql.BreakLines().TrimAll(); //Reset
+
             #region Get Script Key
             var isBody = false;
-            var lines = sql.Split(new char[] { '\n' }, StringSplitOptions.None).ToList();
             var key = Guid.NewGuid();
             var l = lines.FirstOrDefault(x => x.StartsWith("--MODELID: "));
             if (l != null)
@@ -557,15 +564,15 @@ namespace PROJECTNAMESPACE
                         debugText += "\r\n\r\n";
                         System.Diagnostics.Trace.WriteLine(debugText);
                     }
-                    if (!string.IsNullOrEmpty(setup.LogFilename))
-                    {
-                        LoadSql(setup.LogFilename, sql);
-                    }
 
                     _timer.Restart();
                     SqlServers.ExecuteCommand(command);
                     _timer.Stop();
-                    //System.Diagnostics.Debug.WriteLine("Elapsed: " + _timer.ElapsedMilliseconds + " / " + sql.Split('\n').First()); //Alert user of what is running
+
+                    if (!string.IsNullOrEmpty(setup.LogFilename))
+                    {
+                        LoadSql(setup.LogFilename, sql, _timer.ElapsedMilliseconds);
+                    }
 
                     if (successOrderScripts != null && isBody)
                         successOrderScripts.Add(key);
@@ -605,7 +612,7 @@ namespace PROJECTNAMESPACE
             }
         }
 
-        private static void LoadSql(string fileName, string sql)
+        private static void LoadSql(string fileName, string sql, long elapsed)
         {
             try
             {
@@ -624,7 +631,9 @@ namespace PROJECTNAMESPACE
                     xmlDoc.Add(rootElement);
                 }
 
-                var parentElement = new System.Xml.Linq.XElement("Entry", new System.Xml.Linq.XAttribute("datetime", DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.ff")));
+                var parentElement = new System.Xml.Linq.XElement("Entry",
+                    new System.Xml.Linq.XAttribute("datetime", DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fff")),
+                    new System.Xml.Linq.XAttribute("elapsed", elapsed.ToString()));
                 parentElement.Add(new System.Xml.Linq.XElement("sql", new System.Xml.Linq.XCData(sql)));
                 rootElement.Add(parentElement);
                 xmlDoc.Save(fileName);
