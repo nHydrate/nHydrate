@@ -2237,6 +2237,22 @@ namespace PROJECTNAMESPACE
     internal static class Extensions
     {
         /// <summary />
+        internal static List<string> BreakLines(this string text)
+        {
+            if (string.IsNullOrEmpty(text)) return new List<string>();
+            return text.Replace("\x01", string.Empty).Split(new[] { "\r\n" }, StringSplitOptions.None).ToList();
+        }
+
+        /// <summary />
+        internal static List<string> TrimAll(this IEnumerable<string> strArray)
+        {
+            var retval = new List<string>();
+            foreach (var s in strArray)
+                retval.Add(s.Trim().Trim(new char[] { '\t', ' ' }).Trim());
+            return retval;
+        }
+
+        /// <summary />
         public static string CalculateMD5Hash(this string input)
         {
             var q = new EncryptionLibrary();

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{7BA68AA2-CE9F-401D-9388-CA9F851F19EC}"
 	ProjectSection(SolutionItems) = preProject
@@ -24,8 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VSADDIN", "VSADDIN", "{F041
 		VSADDIN\AssemblyInfo.cs = VSADDIN\AssemblyInfo.cs
 		VSADDIN\database.csproj = VSADDIN\database.csproj
 		VSADDIN\database.vstemplate = VSADDIN\database.vstemplate
-		VSADDIN\databasenetcore.csproj = VSADDIN\databasenetcore.csproj
-		VSADDIN\databasenetcore.vstemplate = VSADDIN\databasenetcore.vstemplate
 		VSADDIN\documentation.csproj = VSADDIN\documentation.csproj
 		VSADDIN\documentation.vstemplate = VSADDIN\documentation.vstemplate
 		VSADDIN\efcodefirst.csproj = VSADDIN\efcodefirst.csproj
@@ -115,30 +113,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.DataImport.SqlClient", "Source\nHydrate.DataImport.SqlClient\nHydrate.DataImport.SqlClient.csproj", "{22C3BCFF-9471-4A27-909C-70563D9BD09D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.Generator.Resources", "Source\nHydrate.Generator.Resources\nHydrate.Generator.Resources.csproj", "{7AFCBF23-3095-4767-8E46-9CAAC73F47DB}"
-	ProjectSection(ProjectDependencies) = postProject
-		{21A2E517-10EC-4145-9B7E-62D97DE222C7} = {21A2E517-10EC-4145-9B7E-62D97DE222C7}
-		{51A03D20-6B95-4540-8213-08100259F129} = {51A03D20-6B95-4540-8213-08100259F129}
-		{97136026-3D75-4830-AECB-8E364AFF0B01} = {97136026-3D75-4830-AECB-8E364AFF0B01}
-		{C5A1072D-97CF-46C2-9140-154DA1EE5042} = {C5A1072D-97CF-46C2-9140-154DA1EE5042}
-		{BB94AD78-8402-4169-A220-246F374057DC} = {BB94AD78-8402-4169-A220-246F374057DC}
-		{726A187D-8651-4FA9-BFAB-21BFC7C6C401} = {726A187D-8651-4FA9-BFAB-21BFC7C6C401}
-		{14355B82-9A25-4E1D-A12C-EAAC252CECDC} = {14355B82-9A25-4E1D-A12C-EAAC252CECDC}
-		{804DA583-5EB6-4F1C-BFA8-39DC81F4CB98} = {804DA583-5EB6-4F1C-BFA8-39DC81F4CB98}
-		{312A9CAA-0EC3-4F68-B8C6-08F16A3F905E} = {312A9CAA-0EC3-4F68-B8C6-08F16A3F905E}
-		{958A56B9-1817-4944-B41F-38F28A2DF622} = {958A56B9-1817-4944-B41F-38F28A2DF622}
-		{2730EDD0-982F-4B67-9519-09E1AC591C04} = {2730EDD0-982F-4B67-9519-09E1AC591C04}
-		{EDFC82E3-6266-4BFC-8B90-A43A9CE91D57} = {EDFC82E3-6266-4BFC-8B90-A43A9CE91D57}
-		{164CE6E3-E0BD-4DD1-9308-28B841B2E3EC} = {164CE6E3-E0BD-4DD1-9308-28B841B2E3EC}
-		{E2040FE8-13C7-4A6B-860B-E612A0FDBEFF} = {E2040FE8-13C7-4A6B-860B-E612A0FDBEFF}
-		{5388DCEC-909E-4800-A895-DB1D34C54AAB} = {5388DCEC-909E-4800-A895-DB1D34C54AAB}
-		{22C3BCFF-9471-4A27-909C-70563D9BD09D} = {22C3BCFF-9471-4A27-909C-70563D9BD09D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.Generator.EFCodeFirst", "Source\nHydrate.Generator.EFCodeFirst\nHydrate.Generator.EFCodeFirst.csproj", "{726A187D-8651-4FA9-BFAB-21BFC7C6C401}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.Generator.EFCodeFirstNetCore", "Source\nHydrate.Generator.EFCodeFirstNetCore\nHydrate.Generator.EFCodeFirstNetCore.csproj", "{14355B82-9A25-4E1D-A12C-EAAC252CECDC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.Generator.SQLInstallerNetCore", "Source\nHydrate.Generator.SQLInstallerNetCore\nHydrate.Generator.SQLInstallerNetCore.csproj", "{21A2E517-10EC-4145-9B7E-62D97DE222C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -277,19 +255,16 @@ Global
 		{14355B82-9A25-4E1D-A12C-EAAC252CECDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{14355B82-9A25-4E1D-A12C-EAAC252CECDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14355B82-9A25-4E1D-A12C-EAAC252CECDC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{14355B82-9A25-4E1D-A12C-EAAC252CECDC}.Debug|x86.Build.0 = Debug|Any CPU
 		{14355B82-9A25-4E1D-A12C-EAAC252CECDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14355B82-9A25-4E1D-A12C-EAAC252CECDC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{14355B82-9A25-4E1D-A12C-EAAC252CECDC}.Release|x86.ActiveCfg = Release|Any CPU
-		{21A2E517-10EC-4145-9B7E-62D97DE222C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{21A2E517-10EC-4145-9B7E-62D97DE222C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{21A2E517-10EC-4145-9B7E-62D97DE222C7}.Debug|x86.ActiveCfg = Debug|x86
-		{21A2E517-10EC-4145-9B7E-62D97DE222C7}.Debug|x86.Build.0 = Debug|x86
-		{21A2E517-10EC-4145-9B7E-62D97DE222C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{21A2E517-10EC-4145-9B7E-62D97DE222C7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{21A2E517-10EC-4145-9B7E-62D97DE222C7}.Release|x86.ActiveCfg = Release|x86
-		{21A2E517-10EC-4145-9B7E-62D97DE222C7}.Release|x86.Build.0 = Release|x86
+		{14355B82-9A25-4E1D-A12C-EAAC252CECDC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1352B2B-68AF-4FA3-8C7E-2972C51FDD68}
 	EndGlobalSection
 EndGlobal

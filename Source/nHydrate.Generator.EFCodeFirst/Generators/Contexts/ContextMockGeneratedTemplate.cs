@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2018 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2019 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2018 All Rights reserved                   *
+//              Copyright (c) 2006-2019 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
@@ -486,7 +486,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
 
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.PascalName))
             {
-                var column = table.GetColumns().FirstOrDefault(x => x.Identity == IdentityTypeConstants.Database);
+                var column = table.GetColumns().FirstOrDefault(x => x.Identity == IdentityTypeConstants.Database && (x.DataType == SqlDbType.Int || x.DataType == SqlDbType.BigInt));
                 if (column != null)
                 {
                     sb.AppendLine($"						if (entity is EFDAL.Entity.{table.PascalName})");
