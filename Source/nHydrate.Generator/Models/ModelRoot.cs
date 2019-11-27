@@ -49,7 +49,6 @@ namespace nHydrate.Generator.Models
         protected const string _def_defaultNamespace = "";
         protected const SQLServerTypeConstants _def_sQLServerType = SQLServerTypeConstants.SQL2005;
         protected const EFVersionConstants _def_efVersion = EFVersionConstants.EF6;
-        protected const FrameworkVersionConstants _def_frameworkVersion = FrameworkVersionConstants.v35;
         protected const string _def_storedProcedurePrefix = "gen";
         protected const string _def_tenantColumnName = "__tenant_user";
         protected const string _def_tenantPrefix = "__vw_tenant";
@@ -72,7 +71,6 @@ namespace nHydrate.Generator.Models
         //private DateTime _createdDate = DateTime.Now;
         private SQLServerTypeConstants _sQLServerType = _def_sQLServerType;
         private EFVersionConstants _efVersion = _def_efVersion;
-        private FrameworkVersionConstants _frameworkVersion = _def_frameworkVersion;
         private string _storedProcedurePrefix = _def_storedProcedurePrefix;
         private readonly VersionHistoryCollection _versionHistoryList = new VersionHistoryCollection();
         private string _moduleName = string.Empty;
@@ -269,22 +267,6 @@ namespace nHydrate.Generator.Models
             {
                 _efVersion = value;
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("EFVersionConstants"));
-            }
-        }
-
-        [
-        Browsable(false),
-        Description("Determines the target .NET Framework"),
-        DefaultValue(typeof(FrameworkVersionConstants), "v35"),
-        Category("Data"),
-        ]
-        public FrameworkVersionConstants FrameworkVersion
-        {
-            get { return _frameworkVersion; }
-            set
-            {
-                _frameworkVersion = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("FrameworkVersion"));
             }
         }
 
@@ -569,7 +551,6 @@ namespace nHydrate.Generator.Models
 
                 XmlHelper.AddAttribute(node, "sqlType", this.SQLServerType.ToString());
                 XmlHelper.AddAttribute(node, "efversion", this.EFVersion.ToString());
-                XmlHelper.AddAttribute(node, "frameworkVersion", this.FrameworkVersion.ToString());
 
                 if (this.MetaData.Count > 0)
                 {
@@ -598,7 +579,6 @@ namespace nHydrate.Generator.Models
                 this.UseUTCTime = XmlHelper.GetAttributeValue(node, "useUTCTime", this.UseUTCTime);
                 this.SQLServerType = (SQLServerTypeConstants)Enum.Parse(typeof(SQLServerTypeConstants), XmlHelper.GetAttributeValue(node, "sqlType", _def_sQLServerType.ToString()));
                 this.EFVersion = (EFVersionConstants)Enum.Parse(typeof(EFVersionConstants), XmlHelper.GetAttributeValue(node, "efversion", _def_efVersion.ToString()));
-                this.FrameworkVersion = (FrameworkVersionConstants)Enum.Parse(typeof(FrameworkVersionConstants), XmlHelper.GetAttributeValue(node, "frameworkVersion", _def_frameworkVersion.ToString()));
                 this.StoredProcedurePrefix = XmlHelper.GetAttributeValue(node, "storedProcedurePrefix", _def_storedProcedurePrefix);
                 this.TenantColumnName = XmlHelper.GetAttributeValue(node, "tenantColumnName", _def_tenantColumnName);
                 this.TenantPrefix = XmlHelper.GetAttributeValue(node, "tenantPrefix", _def_tenantPrefix);
