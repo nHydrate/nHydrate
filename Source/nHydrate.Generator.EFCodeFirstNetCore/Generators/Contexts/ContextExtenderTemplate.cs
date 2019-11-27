@@ -73,6 +73,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             try
             {
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
+                sb.AppendLine("using Microsoft.EntityFrameworkCore;");
+                sb.AppendLine();
                 sb.AppendLine("namespace " + this.GetLocalNamespace());
                 sb.AppendLine("{");
                 sb.AppendLine("	partial class " + _model.ProjectName + "Entities");
