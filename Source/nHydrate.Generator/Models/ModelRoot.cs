@@ -68,7 +68,6 @@ namespace nHydrate.Generator.Models
         protected bool _supportLegacySearchObject = _def_supportLegacySearchObject;
         protected string _defaultNamespace = _def_defaultNamespace;
         protected IGenerator _generatorProject = null;
-        //private DateTime _createdDate = DateTime.Now;
         private SQLServerTypeConstants _sQLServerType = _def_sQLServerType;
         private EFVersionConstants _efVersion = _def_efVersion;
         private string _storedProcedurePrefix = _def_storedProcedurePrefix;
@@ -413,15 +412,6 @@ namespace nHydrate.Generator.Models
             set { _database = value; }
         }
 
-        //[Browsable(true)]
-        //[Category("Data")]
-        //[Description("The date that this object was created.")]
-        //[ReadOnlyAttribute(true)]
-        //public DateTime CreatedDate
-        //{
-        //  get { return _createdDate; }
-        //}
-
         [Browsable(true)]
         [Category("Design")]
         [ReadOnlyAttribute(true)]
@@ -543,8 +533,6 @@ namespace nHydrate.Generator.Models
                 this.Database.XmlAppend(databaseNode);
                 node.AppendChild(databaseNode);
 
-                //XmlHelper.AddAttribute(node, "createdDate", _createdDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
-
                 var versionHistoryListNode = oDoc.CreateElement("versionHistoryList");
                 node.AppendChild(versionHistoryListNode);
                 _versionHistoryList.XmlAppend(versionHistoryListNode);
@@ -599,8 +587,6 @@ namespace nHydrate.Generator.Models
                 var databaseNode = node.SelectSingleNode("database");
                 if (databaseNode != null)
                     this.Database.XmlLoad(databaseNode);
-
-                //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
 
                 var copyrightNode = node.SelectSingleNode("copyright");
                 if (copyrightNode != null)
