@@ -110,6 +110,7 @@ namespace nHydrate.Generator.EFCodeFirst
         {
         }
 
+        public override IModelConfiguration ModelConfiguration { get; set; }
     }
 
 }

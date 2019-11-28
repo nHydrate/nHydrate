@@ -110,6 +110,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore
         {
         }
 
+        public override IModelConfiguration ModelConfiguration { get; set; } = new EFCodeFirstNetCore.ModelConfiguration();
     }
 
 }

@@ -101,6 +101,8 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
+        public Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; } = new Dictionary<string, IModelConfiguration>();
+
         public bool AllowMocks
         {
             get { return _allowMocks; }
@@ -136,12 +138,6 @@ namespace nHydrate.Generator.Models
         /// </summary>
         [Browsable(false)]
         public int GeneratedVersion { get; set; }
-
-        /// <summary>
-        /// The URL to the SyncServer service
-        /// </summary>
-        public string SyncServerURL { get; set; }
-        public Guid SyncServerToken { get; set; }
 
         public string OutputTarget { get; set; }
 
@@ -675,4 +671,5 @@ namespace nHydrate.Generator.Models
         #endregion
 
     }
+
 }

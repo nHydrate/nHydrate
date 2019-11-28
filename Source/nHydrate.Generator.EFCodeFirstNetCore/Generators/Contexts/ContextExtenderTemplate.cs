@@ -45,7 +45,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
         #region BaseClassTemplate overrides
         public override string FileName
         {
-            get { return _model.ProjectName + "Entities.cs"; }
+            get { return $"{_model.ProjectName}Entities.cs"; }
         }
 
         public override string FileContent
@@ -54,7 +54,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             {
                 try
                 {
-                    GenerateContent();
+                    this.GenerateContent();
                     return sb.ToString();
                 }
                 catch (Exception ex)
@@ -73,12 +73,34 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             try
             {
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
+                sb.AppendLine("using System;");
                 sb.AppendLine("using Microsoft.EntityFrameworkCore;");
                 sb.AppendLine();
-                sb.AppendLine("namespace " + this.GetLocalNamespace());
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}");
                 sb.AppendLine("{");
-                sb.AppendLine("	partial class " + _model.ProjectName + "Entities");
+                sb.AppendLine($"	partial class {_model.ProjectName}Entities");
                 sb.AppendLine("	{");
+                sb.AppendLine("		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			//READ ME!!!!");
+                sb.AppendLine("			//Depending on your database provider add one of the following libraries in Nuget");
+                sb.AppendLine("			//SQLServer: Microsoft.EntityFrameworkCore.SqlServer");
+                sb.AppendLine("			//Postgres: Npgsql.EntityFrameworkCore.PostgreSQL");
+                sb.AppendLine("			//Sqlite: Microsoft.EntityFrameworkCore.Sqlite");
+                sb.AppendLine();
+                sb.AppendLine("			if (string.IsNullOrEmpty(_connectionString?.Trim()))");
+                sb.AppendLine("					throw new Exception(\"Missing connection string\");");
+                sb.AppendLine();
+                sb.AppendLine("			if (this.ContextStartup.AllowLazyLoading)");
+                sb.AppendLine("				optionsBuilder = optionsBuilder.UseLazyLoadingProxies();");
+                sb.AppendLine();
+                sb.AppendLine("			//Add the appropriate line based on your database provider and delete the exception line below");
+                sb.AppendLine("			throw new Exception(\"Object not configured!\");");
+                sb.AppendLine("			//optionsBuilder.UseSqlServer(_connectionString); //Sql Server");
+                sb.AppendLine("			//optionsBuilder.UseNpgsql(_connectionString); //Postgres");
+                sb.AppendLine("			//optionsBuilder.UseSqlite(_connectionString); //Sqlite");
+                sb.AppendLine("		}");
+                sb.AppendLine();
                 sb.AppendLine("	}");
                 sb.AppendLine("}");
             }

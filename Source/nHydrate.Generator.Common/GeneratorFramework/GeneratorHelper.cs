@@ -225,45 +225,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                 return true;
         }
 
-        //public static IDictionary<ModelUIAttribute, IModelEditor> GetModelEditors(string loadingFile)
-        //{
-        //  var retVal = new Dictionary<ModelUIAttribute, IModelEditor>();
-        //  var fi = new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
-        //  var types = ReflectionHelper.GetCreatableObjectImplementsInterface(typeof(IModelEditor), fi.DirectoryName);
-        //  foreach (var currentType in types)
-        //  {
-        //    var customAttributes = currentType.GetCustomAttributes(typeof(ModelUIAttribute), true);
-        //    var attribute = customAttributes.FirstOrDefault() as ModelUIAttribute;
-        //    var fileToLoad = new FileInfo(loadingFile);
-        //    if (!fileToLoad.Exists)
-        //      throw new Exception("File To Load Does Not Exist: " + loadingFile);
-
-        //    if (fileToLoad.Length < 5)
-        //    {
-        //      //CreateNewModelFile(loadingFile);
-        //    }
-
-        //    var modelFileGuid = GeneratorHelper.ModelFileGuid(loadingFile);
-        //    if (attribute != null && modelFileGuid == attribute.ProjectGuid)
-        //    {
-        //      retVal.Add(attribute, (IModelEditor)ReflectionHelper.CreateInstance(currentType));
-        //    }
-        //  }
-        //  return retVal;
-        //}
-
-        //public static void ShowSettings()
-        //{
-        //  var F = new SettingsForm();
-        //  F.ShowDialog();
-        //}
-
-        //public static void ShowNagScreen()
-        //{
-        //  var nsf = new NagScreenForm();
-        //  nsf.ShowDialog();
-        //}
-
         private static Guid ModelFileGuid(string fileName)
         {
             var retVal = Guid.Empty;
@@ -576,7 +537,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
             }
         }
 
-        private IProjectGenerator GetProjectGenerator(Type projectGeneratorType)
+        public IProjectGenerator GetProjectGenerator(Type projectGeneratorType)
         {
             try
             {
@@ -966,7 +927,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
                 if (generatorTypes.Length == 0)
                 {
-                    MessageBox.Show("There are no generators installed or there was an error loading the installed generators from the following path. '" + AddinAppData.Instance.ExtensionDirectory + "'", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show($"There are no generators installed or there was an error loading the installed generators from the following path. '{AddinAppData.Instance.ExtensionDirectory}'", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
 
                 foreach (var type in generatorTypes)

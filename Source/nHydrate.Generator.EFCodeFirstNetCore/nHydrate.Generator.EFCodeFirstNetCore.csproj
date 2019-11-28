@@ -82,6 +82,7 @@
     <Compile Include="Generators\ViewEntity\ViewEntityExtenderTemplate.cs" />
     <Compile Include="Generators\ViewEntity\ViewEntityGeneratedGenerator.cs" />
     <Compile Include="Generators\ViewEntity\ViewEntityGeneratedTemplate.cs" />
+    <Compile Include="ModelConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

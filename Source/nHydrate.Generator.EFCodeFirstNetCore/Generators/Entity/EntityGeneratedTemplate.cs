@@ -232,7 +232,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             this.AppendRegionSetValue();
             this.AppendNavigationProperties();
             this.AppendAuditQuery();
-            this.AppendDeleteDataScaler();
+
+            //TODO: need to make this work for all databases
+            //Remove for now in EF Core
+            //this.AppendDeleteDataScaler();
+
             //this.AppendUpdateDataScaler(); //Not handled yet
             this.AppendRegionGetDatabaseFieldName();
             this.AppendIAuditable();

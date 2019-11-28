@@ -90,5 +90,7 @@ namespace nHydrate.Generator.SQLInstaller
         {
             //nHydrateGeneratorProject.AddICSharpDllToBinFolder();
         }
+
+        public override IModelConfiguration ModelConfiguration { get; set; }
     }
 }

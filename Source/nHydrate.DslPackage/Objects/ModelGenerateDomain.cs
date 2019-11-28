@@ -146,12 +146,26 @@ namespace nHydrate.DslPackage.Objects
             nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper genHelper,
             List<string> generateModuleList)
         {
+            if (!genList.Any())
+            {
+                MessageBox.Show("There are no generators defined", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
 
             var cacheFile = new nHydrate.Generator.Common.ModelCacheFile(genList.First());
             if (cacheFile.ModelerVersion > System.Reflection.Assembly.GetExecutingAssembly().GetName().Version)
             {
-                if (MessageBox.Show("This model schema was last generated with a newer modeler version (" + cacheFile.ModelerVersion + "). Your current version is " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ". Generating with an older modeler may cause many files to change unexpectedly. Do you wish to proceed with the generation?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                if (MessageBox.Show($"This model schema was last generated with a newer modeler version ({cacheFile.ModelerVersion}). Your current version is {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}. Generating with an older modeler may cause many files to change unexpectedly. Do you wish to proceed with the generation?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                     return false;
+            }
+
+            //Initalize all the model configuration objects
+            var modelRoot = genList.First().Model as ModelRoot;
+            modelRoot.ModelConfigurations = new Dictionary<string, IModelConfiguration>();
+            foreach (var genType in generatorTypeList)
+            {
+                var generator = genHelper.GetProjectGenerator(genType);
+                modelRoot.ModelConfigurations.Add(generator.GetType().Name, generator.ModelConfiguration);
             }
 
             //Show generator list
@@ -192,7 +206,6 @@ namespace nHydrate.DslPackage.Objects
             {
                 var startTime = DateTime.Now;
                 var isLicenseError = false;
-                var generationProcessing = false;
                 var fullModuleGenList = genList.Select(x => new ModuleVersionInfo() { ModuleName = (x.Model as nHydrate.Generator.Models.ModelRoot).ModuleName }).ToList();
 
                 try
@@ -205,14 +218,17 @@ namespace nHydrate.DslPackage.Objects
                     var generatedVersion = cachedGeneratedVersion + 1;
 
                     pkey = ProgressHelper.ProgressingStarted("Generating...", false, 240000); //Put a 4 minute timer on it
-                    foreach (var item in genList)
+                    foreach (var generator in genList)
                     {
-                        (item.Model as nHydrate.Generator.Models.ModelRoot).GeneratedVersion = generatedVersion;
-                        //(item.Model as nHydrate.Generator.Models.ModelRoot).SyncServerToken = model.SyncServerToken;
-                        //(item.Model as nHydrate.Generator.Models.ModelRoot).SyncServerURL = model.SyncServerURL;
-                        _totalFileCount += genHelper.GetFileCount(item, excludeList);
+                        var modelRoot = (generator.Model as nHydrate.Generator.Models.ModelRoot);
+                        modelRoot.GeneratedVersion = generatedVersion;
+                        _totalFileCount += genHelper.GetFileCount(generator, excludeList);
+
+                        //var projectGen = genHelper.GetProjectGenerators(generator);
+                        //modelRoot.ModelConfigurations.Add(projectGen.GetType().Name, projectGen.mode)
+                        //model.Modelco
                     }
-                    System.Diagnostics.Debug.WriteLine("File count: " + _totalFileCount);
+                    System.Diagnostics.Debug.WriteLine($"File count: {_totalFileCount}");
 
                     //Save document
                     var isDirty = 0;
