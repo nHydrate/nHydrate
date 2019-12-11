@@ -495,9 +495,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                 sb.AppendLine("		/// <summary>");
                 if (!string.IsNullOrEmpty(column.Description))
-                {
                     StringHelper.LineBreakCode(sb, column.Description, "		/// ");
-                }
                 else
                     sb.AppendLine("		/// The property that maps back to the database '" + (column.ParentTableRef.Object as Table).DatabaseName + "." + column.DatabaseName + "' field.");
 
@@ -521,9 +519,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 else
                     sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]");
 
-                //NETCORE Removed
-                //if (!string.IsNullOrEmpty(column.Category))
-                //    sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
+                if (!string.IsNullOrEmpty(column.Category))
+                    sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
 
                 sb.AppendLine("		[System.ComponentModel.DataAnnotations.Display(Name = \"" + column.GetFriendlyName() + "\")]");
 
@@ -591,10 +588,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                 var codeType = column.GetCodeType();
 
-                sb.AppendLine("		public virtual " + codeType + " " + column.PascalName);
+                sb.AppendLine($"		public virtual {codeType} {column.PascalName}");
                 sb.AppendLine("		{");
                 sb.AppendLine("			get { return _" + column.CamelName + "; }");
-                sb.AppendLine("			" + propertySetterScope + "set");
+                sb.AppendLine($"			{propertySetterScope}set");
                 sb.AppendLine("			{");
 
                 #region Validation
@@ -609,6 +606,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     //Error check date value
                     sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value < GlobalValues.MIN_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(\"yyyy-MM-dd HH:mm:ss\") + \") cannot be less than \" + GlobalValues.MIN_DATETIME.ToString());");
                     sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value > GlobalValues.MAX_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(\"yyyy-MM-dd HH:mm:ss\") + \") cannot be greater than \" + GlobalValues.MAX_DATETIME.ToString());");
+                }
+                else if (ModelHelper.IsBinaryType(column.DataType))
+                {
+                    sb.Append("				if ((value != null) && (value.Length > GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")))");
+                    sb.AppendLine(" throw new Exception(string.Format(GlobalValues.ERROR_DATA_TOO_BIG, value, \"" + _item.PascalName + "." + column.PascalName + "\", GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")));");
                 }
 
                 //If this column is related to a type table then add additional validation
@@ -975,6 +977,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             sb.AppendLine("					return int.MaxValue;");
                             break;
                         case System.Data.SqlDbType.Image:
+                        case System.Data.SqlDbType.VarBinary:
+                        case System.Data.SqlDbType.Binary:
                             sb.AppendLine("					return int.MaxValue;");
                             break;
                         case System.Data.SqlDbType.Xml:
@@ -990,7 +994,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                                 sb.AppendLine("					return " + column.Length + ";");
                             break;
                         default:
-                            sb.AppendLine("					return 0;");
+                            sb.AppendLine($"					return 0; //Type={column.DataType}");
                             break;
                     }
                 }

@@ -652,7 +652,7 @@ namespace nHydrate.Generator.Models
                 this.DataType == System.Data.SqlDbType.VarChar)
             {
                 if (this.DataType == System.Data.SqlDbType.Decimal)
-                    return this.Length + " (scale:" + this.Scale + ")";
+                    return this.Length + $" (scale:{this.Scale})";
                 else if (this.DataType == System.Data.SqlDbType.DateTime2)
                     return this.Length.ToString();
                 else

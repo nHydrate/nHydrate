@@ -661,7 +661,7 @@ namespace nHydrate.Generator.Models
 
             var length = this.GetCommentLengthString();
             if (!string.IsNullOrEmpty(length))
-                text += "Field Length: " + length + ", ";
+                text += $"Field Length: {length}, ";
 
             text += (this.AllowNull ? "" : "Not ") + "Nullable, ";
 
