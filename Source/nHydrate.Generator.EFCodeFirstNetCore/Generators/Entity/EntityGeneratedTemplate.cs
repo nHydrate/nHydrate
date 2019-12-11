@@ -768,15 +768,16 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             sb.AppendLine("		[DataMember]");
                             sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + otherRelation.PascalRoleName + childTable.PascalName + "List");
                             sb.AppendLine("		{");
-                            sb.AppendLine("			get");
-                            sb.AppendLine("			{");
-                            sb.AppendLine("				if (_" + otherRelation.PascalRoleName + childTable.PascalName + "List == null) _" + otherRelation.PascalRoleName + childTable.PascalName + "List = new List<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">();");
-                            sb.AppendLine("				return _" + otherRelation.PascalRoleName + childTable.PascalName + "List;");
-                            sb.AppendLine("			}");
-                            sb.AppendLine("			set { _" + otherRelation.PascalRoleName + childTable.PascalName + "List = value; }");
+                            //sb.AppendLine("			get");
+                            //sb.AppendLine("			{");
+                            //sb.AppendLine("				if (_" + otherRelation.PascalRoleName + childTable.PascalName + "List == null) _" + otherRelation.PascalRoleName + childTable.PascalName + "List = new List<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">();");
+                            //sb.AppendLine("				return _" + otherRelation.PascalRoleName + childTable.PascalName + "List;");
+                            //sb.AppendLine("			}");
+                            //sb.AppendLine("			set { _" + otherRelation.PascalRoleName + childTable.PascalName + "List = value; }");
+                            sb.AppendLine("			get; set;");
                             sb.AppendLine("		}");
-                            sb.AppendLine("		/// <summary />");
-                            sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> _" + otherRelation.PascalRoleName + childTable.PascalName + "List { get; set; }");
+                            //sb.AppendLine("		/// <summary />");
+                            //sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> _" + otherRelation.PascalRoleName + childTable.PascalName + "List { get; set; }");
                             sb.AppendLine();
                         }
                     }
@@ -790,15 +791,16 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		[DataMember]");
                         sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + relation.PascalRoleName + childTable.PascalName + "List");
                         sb.AppendLine("		{");
-                        sb.AppendLine("			get");
-                        sb.AppendLine("			{");
-                        sb.AppendLine("				if (_" + relation.PascalRoleName + childTable.PascalName + "List == null) _" + relation.PascalRoleName + childTable.PascalName + "List = new List<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">();");
-                        sb.AppendLine("				return _" + relation.PascalRoleName + childTable.PascalName + "List;");
-                        sb.AppendLine("			}");
-                        sb.AppendLine("			set { _" + relation.PascalRoleName + childTable.PascalName + "List = value; }");
+                        //sb.AppendLine("			get");
+                        //sb.AppendLine("			{");
+                        //sb.AppendLine("				if (_" + relation.PascalRoleName + childTable.PascalName + "List == null) _" + relation.PascalRoleName + childTable.PascalName + "List = new List<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">();");
+                        //sb.AppendLine("				return _" + relation.PascalRoleName + childTable.PascalName + "List;");
+                        //sb.AppendLine("			}");
+                        //sb.AppendLine("			set { _" + relation.PascalRoleName + childTable.PascalName + "List = value; }");
+                        sb.AppendLine("			get; set;");
                         sb.AppendLine("		}");
-                        sb.AppendLine("		/// <summary />");
-                        sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> _" + relation.PascalRoleName + childTable.PascalName + "List { get; set; }");
+                        //sb.AppendLine("		/// <summary />");
+                        //sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> _" + relation.PascalRoleName + childTable.PascalName + "List { get; set; }");
                         sb.AppendLine();
 
                         //if (isPublic)
