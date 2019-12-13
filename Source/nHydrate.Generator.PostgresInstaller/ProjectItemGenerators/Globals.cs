@@ -291,7 +291,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
             sb.AppendLine("--REMOVE AUDIT TRAIL CREATE FOR TABLE [" + table.DatabaseName + "]");
             sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.CreatedByColumnName}\";");
             var dfName = $"DF__{table.DatabaseName}_{model.Database.CreatedDateColumnName}".ToUpper();
-            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{dfName}\"");
+            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{dfName}\";");
             sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.CreatedDateColumnName}\";");
             sb.AppendLine("--GO");
             sb.AppendLine();
@@ -302,7 +302,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
             sb.AppendLine($"--REMOVE AUDIT TRAIL MODIFY FOR TABLE [{table.DatabaseName}]");
             sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.ModifiedByColumnName}\";");
             var dfName = $"DF__{table.DatabaseName}_{model.Database.ModifiedDateColumnName}".ToUpper();
-            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{dfName}\"");
+            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{dfName}\";");
             sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.ModifiedDateColumnName}\";");
             sb.AppendLine("--GO");
             sb.AppendLine();

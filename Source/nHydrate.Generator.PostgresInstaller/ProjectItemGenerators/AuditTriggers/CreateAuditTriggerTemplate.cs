@@ -97,14 +97,11 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.AuditTrigge
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
                 sb.AppendLine("--DROP ANY AUDIT TRIGGERS FOR [" + table.GetPostgresSchema() + "].[" + table.DatabaseName + "]");
-                sb.AppendLine("if exists(select * from sys.objects where name = '__TR_" + table.DatabaseName + "__INSERT' AND type = 'TR')");
-                sb.AppendLine("DROP TRIGGER [" + table.GetPostgresSchema() + "].[__TR_" + table.DatabaseName + "__INSERT]");
+                sb.AppendLine($"DROP TRIGGER IF EXISTS \"__TR_{table.DatabaseName}__INSERT\" ON \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\"");
                 sb.AppendLine("--GO");
-                sb.AppendLine("if exists(select * from sys.objects where name = '__TR_" + table.DatabaseName + "__UPDATE' AND type = 'TR')");
-                sb.AppendLine("DROP TRIGGER [" + table.GetPostgresSchema() + "].[__TR_" + table.DatabaseName + "__UPDATE]");
+                sb.AppendLine($"DROP TRIGGER IF EXISTS \"__TR_{table.DatabaseName}__UPDATE\" ON \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\"");
                 sb.AppendLine("--GO");
-                sb.AppendLine("if exists(select * from sys.objects where name = '__TR_" + table.DatabaseName + "__DELETE' AND type = 'TR')");
-                sb.AppendLine("DROP TRIGGER [" + table.GetPostgresSchema() + "].[__TR_" + table.DatabaseName + "__DELETE]");
+                sb.AppendLine($"DROP TRIGGER IF EXISTS \"__TR_{table.DatabaseName}__DELETE\" ON \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\"");
                 sb.AppendLine("--GO");
                 sb.AppendLine();
 
@@ -124,30 +121,31 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.AuditTrigge
                     columnText += "[__insertdate]";
                     columnValues += "current_timestamp";
 
-                    sb.AppendLine("--CREATE TRIGGER INSERT FOR [" + table.GetPostgresSchema() + "].[" + table.DatabaseName + "]");
-                    sb.AppendLine("CREATE TRIGGER [" + table.GetPostgresSchema() + "].[__TR_" + table.DatabaseName + "__INSERT]");
-                    sb.AppendLine("ON [" + table.GetPostgresSchema() + "].[" + table.DatabaseName + "]");
-                    sb.AppendLine("FOR INSERT AS");
-                    sb.AppendLine("INSERT INTO [" + table.GetPostgresSchema() + "].[__AUDIT__" + table.DatabaseName + "] ([__action]," + columnText + ")");
-                    sb.AppendLine("SELECT 1, " + columnValues + " FROM [inserted]");
-                    sb.AppendLine("--GO");
-                    sb.AppendLine();
-                    sb.AppendLine("--CREATE TRIGGER UPDATE FOR [" + table.GetPostgresSchema() + "].[" + table.DatabaseName + "]");
-                    sb.AppendLine("CREATE TRIGGER [" + table.GetPostgresSchema() + "].[__TR_" + table.DatabaseName + "__UPDATE]");
-                    sb.AppendLine("ON [" + table.GetPostgresSchema() + "].[" + table.DatabaseName + "]");
-                    sb.AppendLine("FOR UPDATE AS");
-                    sb.AppendLine("INSERT INTO [" + table.GetPostgresSchema() + "].[__AUDIT__" + table.DatabaseName + "] ([__action]," + columnText + ")");
-                    sb.AppendLine("SELECT 2, " + columnValues + " FROM [inserted]");
-                    sb.AppendLine("--GO");
-                    sb.AppendLine();
-                    sb.AppendLine("--CREATE TRIGGER DELETE FOR [" + table.GetPostgresSchema() + "].[" + table.DatabaseName + "]");
-                    sb.AppendLine("CREATE TRIGGER [" + table.GetPostgresSchema() + "].[__TR_" + table.DatabaseName + "__DELETE]");
-                    sb.AppendLine("ON [" + table.GetPostgresSchema() + "].[" + table.DatabaseName + "]");
-                    sb.AppendLine("FOR DELETE AS");
-                    sb.AppendLine("INSERT INTO [" + table.GetPostgresSchema() + "].[__AUDIT__" + table.DatabaseName + "] ([__action]," + columnText + ")");
-                    sb.AppendLine("SELECT 3, " + columnValues + " FROM [deleted]");
-                    sb.AppendLine("--GO");
-                    sb.AppendLine();
+                    //TODO: Audit tables
+                    //sb.AppendLine("--CREATE TRIGGER INSERT FOR [" + table.GetPostgresSchema() + "].[" + table.DatabaseName + "]");
+                    //sb.AppendLine("CREATE TRIGGER \"" + table.GetPostgresSchema() + "\".\"__TR_" + table.DatabaseName + "__INSERT\"");
+                    //sb.AppendLine($"AFTER ON \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\"");
+                    //sb.AppendLine("FOR INSERT AS");
+                    //sb.AppendLine("INSERT INTO [" + table.GetPostgresSchema() + "].[__AUDIT__" + table.DatabaseName + "] ([__action]," + columnText + ")");
+                    //sb.AppendLine("SELECT 1, " + columnValues + " FROM [inserted]");
+                    //sb.AppendLine("--GO");
+                    //sb.AppendLine();
+                    //sb.AppendLine("--CREATE TRIGGER UPDATE FOR [" + table.GetPostgresSchema() + "].[" + table.DatabaseName + "]");
+                    //sb.AppendLine("CREATE TRIGGER [" + table.GetPostgresSchema() + "].[__TR_" + table.DatabaseName + "__UPDATE]");
+                    //sb.AppendLine($"AFTER ON \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\"");
+                    //sb.AppendLine("FOR UPDATE AS");
+                    //sb.AppendLine("INSERT INTO [" + table.GetPostgresSchema() + "].[__AUDIT__" + table.DatabaseName + "] ([__action]," + columnText + ")");
+                    //sb.AppendLine("SELECT 2, " + columnValues + " FROM [inserted]");
+                    //sb.AppendLine("--GO");
+                    //sb.AppendLine();
+                    //sb.AppendLine("--CREATE TRIGGER DELETE FOR [" + table.GetPostgresSchema() + "].[" + table.DatabaseName + "]");
+                    //sb.AppendLine("CREATE TRIGGER [" + table.GetPostgresSchema() + "].[__TR_" + table.DatabaseName + "__DELETE]");
+                    //sb.AppendLine($"AFTER ON \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\"");
+                    //sb.AppendLine("FOR DELETE AS");
+                    //sb.AppendLine("INSERT INTO [" + table.GetPostgresSchema() + "].[__AUDIT__" + table.DatabaseName + "] ([__action]," + columnText + ")");
+                    //sb.AppendLine("SELECT 3, " + columnValues + " FROM [deleted]");
+                    //sb.AppendLine("--GO");
+                    //sb.AppendLine();
                 }
 
             }

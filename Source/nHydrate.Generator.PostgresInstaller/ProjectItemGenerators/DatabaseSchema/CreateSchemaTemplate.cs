@@ -80,7 +80,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
 
                 //this.AppendCreateSchema();
                 this.AppendCreateTable();
-                //this.AppendCreateTenantViews();
+                this.AppendCreateTenantViews();
                 //this.AppendAuditTracking();
                 this.AppendCreateAudit();
                 //this.AppendCreatePrimaryKey(); //do not add this. user can handle this in upgrade

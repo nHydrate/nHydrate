@@ -94,7 +94,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
                     foreach (var relation in childRoleRelations.Where(x => x.Enforce))
                     {
                         sb.Append(SQLEmit.GetSqlAddFK(relation));
-                        sb.AppendLine("GO");
+                        sb.AppendLine("--GO");
                         sb.AppendLine();
                     }
                 }

@@ -106,7 +106,7 @@ namespace PROJECTNAMESPACE
                     var fileInfo = string.Empty;
                     if (!string.IsNullOrEmpty(setup.DiskPath))
                         fileInfo = " WITH LOCATION '" + Path.Combine(setup.DiskPath, setup.NewDatabaseName) + "')";
-                    cmdCreateDb.CommandText = $"CREATE DATABASE {setup.NewDatabaseName}" + fileInfo;
+                    cmdCreateDb.CommandText = $"CREATE DATABASE \"{setup.NewDatabaseName}\"" + fileInfo;
                     cmdCreateDb.CommandType = System.Data.CommandType.Text;
                     cmdCreateDb.Connection = conn;
                     SqlServers.ExecuteCommand(cmdCreateDb);
@@ -462,39 +462,41 @@ namespace PROJECTNAMESPACE
         /// </summary>
         private static string GetSQLDropScript(string sql)
         {
-            try
-            {
-                //Strip out comments
-                var regexObj = new System.Text.RegularExpressions.Regex(@"/\*(?>(?:(?!\*/|/\*).)*)(?>(?:/\*(?>(?:(?!\*/|/\*).)*)\*/(?>(?:(?!\*/|/\*).)*))*).*?\*/|--.*?\r?[\n]", System.Text.RegularExpressions.RegexOptions.Singleline);
-                var matchResult = regexObj.Match(sql);
-                while (matchResult.Success)
-                {
-                    sql = sql.Remove(matchResult.Index, matchResult.Length).Insert(matchResult.Index, new string(' ', matchResult.Length));
-                    matchResult = matchResult.NextMatch();
-                }
+            //TODO
+            return null;
+            //try
+            //{
+            //    //Strip out comments
+            //    var regexObj = new System.Text.RegularExpressions.Regex(@"/\*(?>(?:(?!\*/|/\*).)*)(?>(?:/\*(?>(?:(?!\*/|/\*).)*)\*/(?>(?:(?!\*/|/\*).)*))*).*?\*/|--.*?\r?[\n]", System.Text.RegularExpressions.RegexOptions.Singleline);
+            //    var matchResult = regexObj.Match(sql);
+            //    while (matchResult.Success)
+            //    {
+            //        sql = sql.Remove(matchResult.Index, matchResult.Length).Insert(matchResult.Index, new string(' ', matchResult.Length));
+            //        matchResult = matchResult.NextMatch();
+            //    }
 
-                var dropObjectName = SQLStripObjectName(sql, "CREATE PROCEDURE");
-                if (!string.IsNullOrEmpty(dropObjectName))
-                    return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type = 'P')" + Environment.NewLine + "drop procedure " + dropObjectName;
+            //    var dropObjectName = SQLStripObjectName(sql, "CREATE PROCEDURE");
+            //    if (!string.IsNullOrEmpty(dropObjectName))
+            //        return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type = 'P')" + Environment.NewLine + "drop procedure " + dropObjectName;
 
-                dropObjectName = SQLStripObjectName(sql, "CREATE PROC");
-                if (!string.IsNullOrEmpty(dropObjectName))
-                    return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type = 'P')" + Environment.NewLine + "drop procedure " + dropObjectName;
+            //    dropObjectName = SQLStripObjectName(sql, "CREATE PROC");
+            //    if (!string.IsNullOrEmpty(dropObjectName))
+            //        return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type = 'P')" + Environment.NewLine + "drop procedure " + dropObjectName;
 
-                dropObjectName = SQLStripObjectName(sql, "CREATE FUNCTION");
-                if (!string.IsNullOrEmpty(dropObjectName))
-                    return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type in('FN','IF','TF'))" + Environment.NewLine + "drop function " + dropObjectName;
+            //    dropObjectName = SQLStripObjectName(sql, "CREATE FUNCTION");
+            //    if (!string.IsNullOrEmpty(dropObjectName))
+            //        return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type in('FN','IF','TF'))" + Environment.NewLine + "drop function " + dropObjectName;
 
-                dropObjectName = SQLStripObjectName(sql, "CREATE VIEW");
-                if (!string.IsNullOrEmpty(dropObjectName))
-                    return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type = 'V')" + Environment.NewLine + "drop view " + dropObjectName;
+            //    dropObjectName = SQLStripObjectName(sql, "CREATE VIEW");
+            //    if (!string.IsNullOrEmpty(dropObjectName))
+            //        return "if exists (select * from sys.objects where name = '" + dropObjectName + "' and type = 'V')" + Environment.NewLine + "drop view " + dropObjectName;
 
-                return null;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            //    return null;
+            //}
+            //catch (Exception ex)
+            //{
+            //    return null;
+            //}
         }
 
         private static string SQLStripObjectName(string sql, string objectHeader)
@@ -1044,7 +1046,7 @@ namespace PROJECTNAMESPACE
                 //Save items to the table
                 foreach (var item in list.Where(x => x.Changed))
                 {
-                    using (var command = new NpgsqlCommand("insert into __nhydrateobjects (id, name, type, schema, CreatedDate, ModifiedDate, Hash, ModelKey, Status) values (@id, @name, @type, @schema, @CreatedDate, @ModifiedDate, @Hash, @ModelKey, @Status)", conn))
+                    using (var command = new NpgsqlCommand("insert into __nhydrateobjects (\"id\", \"name\", \"type\", \"schema\", \"CreatedDate\", \"ModifiedDate\", \"Hash\", \"ModelKey\", \"Status\") values (@id, @name, @type, @schema, @CreatedDate, @ModifiedDate, @Hash, @ModelKey, @Status)", conn))
                     {
                         command.Transaction = transaction;
                         command.Parameters.Add(new NpgsqlParameter { DbType = DbType.Guid, Value = (item.id == Guid.Empty ? System.DBNull.Value : (object)item.id), ParameterName = "@id", IsNullable = true });
