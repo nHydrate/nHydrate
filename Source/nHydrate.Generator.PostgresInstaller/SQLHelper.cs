@@ -980,6 +980,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 AppendModifiedAudit(model, table, sb);
                 AppendCreateAudit(model, table, sb);
                 AppendTimestamp(model, table, sb);
+                AppendTenantField(model, table, sb);
 
                 //Emit PK
                 var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
@@ -1323,7 +1324,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 defaultName = defaultName.ToUpper();
                 sb.AppendLine(",");
                 sb.AppendLine("\t\"" + model.Database.CreatedByColumnName + "\" Varchar (50) NULL,");
-                sb.Append("\t\"" + model.Database.CreatedDateColumnName + "\" timestamp CONSTRAINT " + defaultName + " DEFAULT current_timestamp NULL");
+                sb.Append("\t\"" + model.Database.CreatedDateColumnName + "\" timestamp CONSTRAINT " + defaultName + " NOT NULL DEFAULT current_timestamp");
             }
         }
 
@@ -1335,7 +1336,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 defaultName = defaultName.ToUpper();
                 sb.AppendLine(",");
                 sb.AppendLine("\t\"" + model.Database.ModifiedByColumnName + "\" Varchar (50) NULL,");
-                sb.Append("\t\"" + model.Database.ModifiedDateColumnName + "\" timestamp CONSTRAINT " + defaultName + " DEFAULT current_timestamp NULL");
+                sb.Append("\t\"" + model.Database.ModifiedDateColumnName + "\" timestamp CONSTRAINT " + defaultName + " NOT NULL DEFAULT current_timestamp");
             }
         }
 
@@ -1344,7 +1345,7 @@ namespace nHydrate.Generator.PostgresInstaller
             if (table.AllowTimestamp)
             {
                 sb.AppendLine(",");
-                sb.Append("\t\"" + model.Database.TimestampColumnName + "\" timestamp NOT NULL");
+                sb.Append("\t\"" + model.Database.TimestampColumnName + "\" timestamp NOT NULL DEFAULT current_timestamp");
             }
         }
 
@@ -1447,25 +1448,23 @@ namespace nHydrate.Generator.PostgresInstaller
 
                 var sb = new StringBuilder();
                 sb.AppendLine($"--DROP TENANT VIEW FOR TABLE [{table.DatabaseName}]");
-                sb.AppendLine($"if exists (select * from sys.objects where name = '{itemName}' and [type] in ('V'))");
-                sb.AppendLine($"DROP VIEW [{itemName}]");
+                sb.AppendLine($"DROP VIEW IF EXISTS \"{itemName}\"");
                 sb.AppendLine("--GO");
                 sb.AppendLine();
 
                 sb.AppendLine($"--CREATE TENANT VIEW FOR TABLE [{table.DatabaseName}]");
-                sb.AppendLine($"CREATE VIEW [{table.GetPostgresSchema()}].[{itemName}] ");
-                sb.AppendLine("AS");
-                sb.AppendLine($"select * from [{table.DatabaseName}]");
-                sb.AppendLine($"WHERE ([{model.TenantColumnName}] = SYSTEM_USER)");
+                sb.AppendLine($"CREATE VIEW \"{table.GetPostgresSchema()}\".\"{itemName}\" AS");
+                sb.AppendLine($"select * from \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\"");
+                sb.AppendLine($"WHERE (\"{model.TenantColumnName}\" = current_user)");
                 sb.AppendLine("--GO");
 
-                if (!string.IsNullOrEmpty(model.Database.GrantExecUser))
-                {
-                    grantSB.AppendLine($"GRANT ALL ON [{table.GetPostgresSchema()}].[{itemName}] TO [{model.Database.GrantExecUser}]");
-                    grantSB.AppendLine($"--MODELID: " + table.Key);
-                    grantSB.AppendLine("--GO");
-                    grantSB.AppendLine();
-                }
+                //if (!string.IsNullOrEmpty(model.Database.GrantExecUser))
+                //{
+                //    grantSB.AppendLine($"GRANT ALL ON [{table.GetPostgresSchema()}].[{itemName}] TO [{model.Database.GrantExecUser}]");
+                //    grantSB.AppendLine($"--MODELID: " + table.Key);
+                //    grantSB.AppendLine("--GO");
+                //    grantSB.AppendLine();
+                //}
                 return sb.ToString();
             }
             catch (Exception ex)
@@ -2540,6 +2539,15 @@ namespace nHydrate.Generator.PostgresInstaller
             catch (Exception ex)
             {
                 throw;
+            }
+        }
+
+        private static void AppendTenantField(ModelRoot model, Table table, StringBuilder sb)
+        {
+            if (table.IsTenant)
+            {
+                sb.AppendLine(",");
+                sb.Append("\t\"" + model.TenantColumnName + "\" varchar (128) NOT NULL CONSTRAINT \"DF__" + table.DatabaseName.ToUpper() + "_" + model.TenantColumnName.ToUpper() + "\" DEFAULT (current_user)");
             }
         }
 

@@ -677,9 +677,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             //Audit Fields
             if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedByPascalName, "string", "The audit field for the 'Created By' parameter.", "public");
-            if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedDatePascalName, "DateTime?", "The audit field for the 'Created Date' parameter.", "public");
+            if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedDatePascalName, "DateTime", "The audit field for the 'Created Date' parameter.", "public");
             if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedByPascalName, "string", "The audit field for the 'Modified By' parameter.", "public");
-            if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedDatePascalName, "DateTime?", "The audit field for the 'Modified Date' parameter.", "public");
+            if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedDatePascalName, "DateTime", "The audit field for the 'Modified Date' parameter.", "public");
             if (_item.AllowTimestamp) GenerateAuditField(_model.Database.TimestampPascalName, "byte[]", "The audit field for the 'Timestamp' parameter.", "public");
 
             sb.AppendLine("		#endregion");
@@ -882,9 +882,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             //Audit Fields
             if (_item.AllowCreateAudit) this.AppendPropertyEventDeclarations(_model.Database.CreatedByPascalName, "string");
-            if (_item.AllowCreateAudit) this.AppendPropertyEventDeclarations(_model.Database.CreatedDatePascalName, "DateTime?");
+            if (_item.AllowCreateAudit) this.AppendPropertyEventDeclarations(_model.Database.CreatedDatePascalName, "DateTime");
             if (_item.AllowModifiedAudit) this.AppendPropertyEventDeclarations(_model.Database.ModifiedByPascalName, "string");
-            if (_item.AllowModifiedAudit) this.AppendPropertyEventDeclarations(_model.Database.ModifiedDatePascalName, "DateTime?");
+            if (_item.AllowModifiedAudit) this.AppendPropertyEventDeclarations(_model.Database.ModifiedDatePascalName, "DateTime");
             if (_item.AllowTimestamp) this.AppendPropertyEventDeclarations(_model.Database.TimestampPascalName, "byte[]");
 
             sb.AppendLine();
@@ -1500,7 +1500,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("			get { return null; }");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		System.DateTime? " + this.GetLocalNamespace() + ".IAuditable.CreatedDate");
+            sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditable.CreatedDate");
             sb.AppendLine("		{");
             if (_item.AllowCreateAudit)
                 sb.AppendLine("			get { return this." + _model.Database.CreatedDatePascalName + "; }");
@@ -1532,7 +1532,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		System.DateTime? " + this.GetLocalNamespace() + ".IAuditable.ModifiedDate");
+            sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditable.ModifiedDate");
             sb.AppendLine("		{");
             if (_item.AllowModifiedAudit)
                 sb.AppendLine("			get { return this." + _model.Database.ModifiedDatePascalName + "; }");
@@ -1570,7 +1570,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		System.DateTime? " + this.GetLocalNamespace() + ".IAuditableSet.CreatedDate");
+            sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditableSet.CreatedDate");
             sb.AppendLine("		{");
             if (_item.AllowCreateAudit)
             {
@@ -1585,7 +1585,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		System.DateTime? " + this.GetLocalNamespace() + ".IAuditableSet.ModifiedDate");
+            sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditableSet.ModifiedDate");
             sb.AppendLine("		{");
             if (_item.AllowModifiedAudit)
             {
