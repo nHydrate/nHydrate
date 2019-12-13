@@ -920,49 +920,6 @@ namespace nHydrate.Generator.Models
             return retval.Tables[0];
         }
 
-        public string GetFullHierarchyTableJoin()
-        {
-            return GetFullHierarchyTableJoin(false);
-        }
-
-        public string GetFullHierarchyTableJoin(bool useLinqAlias)
-        {
-            var t1Name = "[" + this.GetSQLSchema() + "].[" + this.DatabaseName + "]";
-            var t1NameClause = string.Empty;
-            var t1Alias = "[t0]";
-            if (useLinqAlias) t1NameClause = t1Name + " AS " + t1Alias;
-            else t1NameClause = t1Name;
-
-            var tableIndex = 1;
-            var retval = t1NameClause;
-            var t = this.ParentTable;
-            while (t != null)
-            {
-                var t2Name = "[" + t.GetSQLSchema() + "].[" + t.DatabaseName + "]";
-                var t2NameClause = string.Empty;
-                var t2Alias = "[z" + tableIndex + "]";
-
-                if (useLinqAlias) t2NameClause = t2Name + " AS " + t2Alias;
-                else t2NameClause = t2Name;
-                retval += " INNER JOIN " + t2NameClause + " ON ";
-                var index = 0;
-                foreach (var c in t.PrimaryKeyColumns.OrderBy(x => x.Name))
-                {
-                    index++;
-                    retval += " " + (useLinqAlias ? t1Alias : t1Name) + ".[" + c.DatabaseName + "] = " + (useLinqAlias ? t2Alias : t2Name) + ".[" + c.DatabaseName + "]";
-                    if (index < t.PrimaryKeyColumns.Count)
-                        retval += ", ";
-                }
-                t = t.ParentTable;
-                tableIndex++;
-
-                t1Name = t2Name;
-                t1NameClause = t2NameClause;
-                t1Alias = t2Alias;
-            }
-            return retval;
-        }
-
         /// <summary>
         /// Determines if the specified table is an ancestor of the this table object
         /// </summary>
