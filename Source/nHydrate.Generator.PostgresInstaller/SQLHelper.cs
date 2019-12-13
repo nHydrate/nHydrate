@@ -41,883 +41,883 @@ namespace nHydrate.Generator.PostgresInstaller
     {
         #region GetModelDifferenceSQL
 
-        public static string GetModelDifferenceSql(ModelRoot modelOld, ModelRoot modelNew)
-        {
-            return "NOT IMPLEMENTED";
-        }
-
-        #region TODO
         //public static string GetModelDifferenceSql(ModelRoot modelOld, ModelRoot modelNew)
         //{
-        //    try
-        //    {
-        //        var sb = new StringBuilder();
-
-        //        #region Loop and Add tables
-
-        //        foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
-        //        {
-        //            var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
-        //            if (oldT == null)
-        //            {
-        //                //Add table, indexes
-        //                sb.AppendLine(SQLEmit.GetSQLCreateTable(modelNew, newT));
-        //                sb.AppendLine("--GO");
-        //                sb.AppendLine(SQLEmit.GetSqlCreatePK(newT));
-        //                sb.AppendLine("--GO");
-
-        //                //DO NOT process primary keys
-        //                foreach (var index in newT.TableIndexList.Where(x => !x.PrimaryKey))
-        //                {
-        //                    sb.Append(SQLEmit.GetSQLCreateIndex(newT, index, false));
-        //                    sb.AppendLine("--GO");
-        //                    sb.AppendLine();
-        //                }
-
-        //                if (newT.StaticData.Count > 0)
-        //                {
-        //                    sb.Append(SQLEmit.GetSqlInsertStaticData(newT));
-        //                    sb.AppendLine("--GO");
-        //                    sb.AppendLine();
-        //                }
-
-        //                //If this is a tenant table then add the view as well
-        //                if (newT.IsTenant)
-        //                {
-        //                    var grantSB = new StringBuilder();
-        //                    var q1 = SQLEmit.GetSqlTenantView(modelNew, newT, grantSB);
-        //                    sb.AppendLine(q1);
-        //                    if (grantSB.ToString() != string.Empty)
-        //                        sb.AppendLine(grantSB.ToString());
-        //                }
-
-        //            }
-        //        }
-
-        //        #endregion
-
-        //        #region Delete Indexes
-        //        foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
-        //        {
-        //            var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
-        //            if (oldT != null)
-        //            {
-        //                //If old exists new does NOT, so delete index
-        //                foreach (var oldIndex in oldT.TableIndexList)
-        //                {
-        //                    var newIndex = newT.TableIndexList.FirstOrDefault(x => x.Key == oldIndex.Key);
-        //                    if (newIndex == null)
-        //                    {
-        //                        sb.AppendLine(SQLEmit.GetSQLDropIndex(newT, oldIndex));
-        //                        sb.AppendLine("--GO");
-        //                    }
-        //                }
-
-        //                //Both exist, so if different, drop and re-create
-        //                foreach (var newIndex in newT.TableIndexList)
-        //                {
-        //                    var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Key == newIndex.Key);
-        //                    if (oldIndex != null && oldIndex.CorePropertiesHashNoNames != newIndex.CorePropertiesHashNoNames)
-        //                    {
-        //                        sb.AppendLine(SQLEmit.GetSQLDropIndex(newT, oldIndex));
-        //                        sb.AppendLine("--GO");
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        #endregion
-
-        //        #region Loop and DELETE tables
-        //        foreach (var oldT in modelOld.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly))
-        //        {
-        //            var newT = modelNew.Database.Tables.FirstOrDefault(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly) && x.Key.ToLower() == oldT.Key.ToLower());
-        //            if (newT == null)
-        //            {
-        //                //DELETE TABLE
-        //                sb.Append(SQLEmit.GetSqlDropTable(modelOld, oldT));
-        //                sb.AppendLine("--GO");
-        //                //TODO - Delete Tenant View
-        //                sb.AppendLine();
-        //            }
-        //            else if (newT != null && oldT.AllowAuditTracking && !newT.AllowAuditTracking)
-        //            {
-        //                //If the old model had audit tracking and the new one does not, add a TODO in the script
-        //                var tableName = "__AUDIT__" + Globals.GetTableDatabaseName(modelOld, oldT);
-        //                sb.AppendLine("--TODO: REMOVE AUDIT TABLE '" + tableName + "'");
-        //                sb.AppendLine("--The previous model had audit tracking turn on for table '" + Globals.GetTableDatabaseName(modelOld, oldT) + "' and now it is turned off.");
-        //                sb.AppendLine("--The audit table will not be removed automatically. If you want to remove it, uncomment the following script.");
-        //                sb.AppendLine("--DROP TABLE [" + tableName + "]");
-        //                sb.AppendLine("--GO");
-        //                sb.AppendLine();
-        //            }
-        //            //else if (tList[0].DatabaseName != oldT.DatabaseName)
-        //            //{
-        //            //  //RENAME TABLE
-        //            //  sb.AppendLine("if exists(select * from sys.objects where name = '" + oldT.DatabaseName + "' and type = 'U')");
-        //            //  sb.AppendLine("exec sp_rename [" + oldT.DatabaseName + "], [" + tList[0].DatabaseName + "]");
-        //            //}
-        //        }
-        //        #endregion
-
-        //        #region Loop and Modify tables
-        //        foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
-        //        {
-        //            var schemaChanged = false;
-        //            var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
-        //            if (oldT != null)
-        //            {
-        //                var querylist = new List<string>();
-
-        //                #region Rename table if need be
-        //                if (oldT.DatabaseName != newT.DatabaseName)
-        //                {
-        //                    sb.AppendLine(SQLEmit.GetSqlRenameTable(oldT, newT));
-        //                    sb.AppendLine("--GO");
-        //                }
-        //                #endregion
-
-        //                #region Add columns
-        //                foreach (var newC in newT.GetColumns())
-        //                {
-        //                    var oldC = Globals.GetColumnByKey(oldT.Columns, newC.Key);
-        //                    if (oldC == null)
-        //                    {
-        //                        //ADD COLUMN
-        //                        sb.AppendLine(SQLEmit.GetSqlAddColumn(newC));
-        //                        sb.AppendLine("--GO");
-        //                        sb.AppendLine();
-        //                        schemaChanged = true;
-        //                    }
-        //                    //else if (newC.DatabaseName != oldC.DatabaseName)
-        //                    //{
-        //                    //  //RENAME COLUMN
-        //                    //  sb.AppendLine(SQLEmit.GetSQLRenameColumn(oldC, newC));
-        //                    //  sb.AppendLine("--GO");
-        //                    //  sb.AppendLine();
-        //                    //}
-
-        //                }
-        //                #endregion
-
-        //                #region Delete Columns
-        //                foreach (Reference oldRef in oldT.Columns)
-        //                {
-        //                    var oldC = oldRef.Object as Column;
-        //                    var newC = Globals.GetColumnByKey(newT.Columns, oldC.Key);
-        //                    if (newC == null)
-        //                    {
-        //                        //DELETE COLUMN
-        //                        sb.AppendLine(SQLEmit.GetSqlDropColumn(modelNew, oldC));
-        //                        sb.AppendLine("--GO");
-        //                        sb.AppendLine();
-        //                        schemaChanged = true;
-        //                    }
-        //                    else if (newC.DatabaseName != oldC.DatabaseName)
-        //                    {
-        //                        ////RENAME COLUMN
-        //                        //string sql = "if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + oldC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" +
-        //                        //             "AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + newC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" + Environment.NewLine +
-        //                        //             "EXEC sp_rename @objname = '" + newT.DatabaseName + "." + oldC.DatabaseName + "', @newname = '" + newC.DatabaseName + "', @objtype = 'COLUMN'";
-        //                        //if (!querylist.Contains(sql))
-        //                        //{
-        //                        //  querylist.Add(sql);
-        //                        //  sb.AppendLine(sql);
-        //                        //  sb.AppendLine("--GO");
-        //                        //  sb.AppendLine();
-        //                        //}
-        //                    }
-
-        //                }
-        //                #endregion
-
-        //                #region Modify Columns
-        //                foreach (var newC in newT.GetColumns())
-        //                {
-        //                    var oldC = Globals.GetColumnByKey(oldT.Columns, newC.Key);
-        //                    if (oldC != null)
-        //                    {
-        //                        var document = new XmlDocument();
-        //                        document.LoadXml("<a></a>");
-        //                        var n1 = XmlHelper.AddElement(document.DocumentElement, "q");
-        //                        var n2 = XmlHelper.AddElement(document.DocumentElement, "q");
-        //                        oldC.XmlAppend(n1);
-        //                        newC.XmlAppend(n2);
-
-        //                        //Check column, ignore defaults
-        //                        if (newC.CorePropertiesHashNoPK != oldC.CorePropertiesHashNoPK)
-        //                        {
-        //                            //MODIFY COLUMN
-        //                            sb.AppendLine(SQLEmit.GetSqlModifyColumn(oldC, newC));
-        //                            sb.AppendLine("--GO");
-        //                            sb.AppendLine();
-        //                            schemaChanged = true;
-        //                        }
-
-        //                        //Drop add defaults if column
-        //                        //if ((newC.CorePropertiesHashNoPK != oldC.CorePropertiesHashNoPK) || (oldC.Default != newC.Default))
-        //                        //{
-        //                        //		if (!string.IsNullOrEmpty(oldC.Default))
-        //                        //		{
-        //                        //			//Old default was something so drop it
-        //                        //			sb.AppendLine(SQLEmit.GetSqlDropColumnDefault(newC));
-        //                        //			sb.AppendLine("--GO");
-        //                        //			sb.AppendLine();
-        //                        //		}
-
-        //                        //	if (!string.IsNullOrEmpty(newC.Default))
-        //                        //	{
-        //                        //		//New default is something so add it
-        //                        //		sb.AppendLine(SQLEmit.GetSqlCreateColumnDefault(modelNew, newC));
-        //                        //		sb.AppendLine("--GO");
-        //                        //		sb.AppendLine();
-        //                        //	}
-        //                        //}
-
-        //                        if (!string.IsNullOrEmpty(newC.Default) && ((oldC.Default != newC.Default) || (oldC.DataType != newC.DataType) || (oldC.DatabaseName != newC.DatabaseName)))
-        //                        {
-        //                            //New default is something so add it
-        //                            sb.AppendLine(SQLEmit.GetSqlCreateColumnDefault(modelNew, newC));
-        //                            sb.AppendLine("--GO");
-        //                            sb.AppendLine();
-        //                        }
-
-        //                    }
-        //                }
-        //                #endregion
-
-        //                #region Process Table Splits
-        //                {
-        //                    var splits = modelNew.Refactorizations
-        //                        .Where(x => x is RefactorTableSplit)
-        //                        .Cast<RefactorTableSplit>()
-        //                        .Where(x => x.EntityKey1 == new Guid(newT.Key))
-        //                        .ToList();
-
-        //                    foreach (var split in splits)
-        //                    {
-        //                        var splitTable = modelNew.Database.Tables.FirstOrDefault(x => new Guid(x.Key) == split.EntityKey2);
-        //                        var origFields = oldT.GeneratedColumns.Where(x => split.ReMappedFieldIDList.Keys.Contains(new Guid(x.Key))).ToList();
-        //                        if (splitTable != null && origFields.Count > 0)
-        //                        {
-        //                            var newFields = new List<Column>();
-        //                            foreach (var item in origFields)
-        //                            {
-        //                                var newF = splitTable.GeneratedColumns.FirstOrDefault(x => new Guid(x.Key) == split.ReMappedFieldIDList[new Guid(item.Key)]);
-        //                                if (newF != null)
-        //                                    newFields.Add(newF);
-        //                            }
-
-        //                            newFields = newFields.Distinct().ToList();
-
-        //                            //If there are columns then process
-        //                            if (newFields.Count > 0)
-        //                            {
-        //                                sb.AppendLine("--PROCESS TABLE SPLIT [" + newT.DatabaseName + "] -> [" + splitTable.DatabaseName + "]");
-
-        //                                //Get the fields for generation
-        //                                //This may be a different number than original split since user can remove fields
-        //                                var genFields = new Dictionary<Column, Column>();
-        //                                foreach (var f in origFields)
-        //                                {
-        //                                    //Get the new column from the new table as the name might have changed
-        //                                    var newID = split.ReMappedFieldIDList[new Guid(f.Key)];
-        //                                    var newF = splitTable.GeneratedColumns.FirstOrDefault(x => new Guid(x.Key) == newID);
-        //                                    if (newF != null)
-        //                                    {
-        //                                        genFields.Add(f, newF);
-        //                                    }
-        //                                }
-
-        //                                //Process the actual script fields
-        //                                if (genFields.Count > 0)
-        //                                {
-        //                                    //Turn on identity insert if necessary
-        //                                    if (splitTable.PrimaryKeyColumns.Count(x => x.Identity == IdentityTypeConstants.Database) > 0)
-        //                                        sb.AppendLine("SET identity_insert [" + splitTable.GetPostgresSchema() + "].[" + Globals.GetTableDatabaseName(modelNew, splitTable) + "] on");
-
-        //                                    sb.Append("INSERT INTO [" + splitTable.GetPostgresSchema() + "].[" + splitTable.DatabaseName + "] (");
-        //                                    foreach (var f in genFields.Keys)
-        //                                    {
-        //                                        //Get the new column from the new table as the name might have changed
-        //                                        var newF = genFields[f];
-        //                                        sb.Append("[" + newF.DatabaseName + "]");
-        //                                        if (genFields.Keys.IndexOf(f) < genFields.Keys.Count - 1) sb.Append(", ");
-        //                                    }
-        //                                    sb.AppendLine(")");
-        //                                    sb.Append("SELECT ");
-        //                                    foreach (var f in genFields.Keys)
-        //                                    {
-        //                                        sb.Append("[" + f.DatabaseName + "]");
-        //                                        if (genFields.Keys.IndexOf(f) < genFields.Keys.Count - 1) sb.Append(", ");
-        //                                    }
-
-        //                                    sb.AppendLine(" FROM [" + newT.GetPostgresSchema() + "].[" + newT.DatabaseName + "]");
-
-        //                                    //Turn off identity insert if necessary
-        //                                    if (splitTable.PrimaryKeyColumns.Count(x => x.Identity == IdentityTypeConstants.Database) > 0)
-        //                                        sb.AppendLine("SET identity_insert [" + splitTable.GetPostgresSchema() + "].[" + Globals.GetTableDatabaseName(modelNew, splitTable) + "] off");
-
-        //                                    sb.AppendLine("--GO");
-        //                                    sb.AppendLine();
-        //                                }
-        //                            }
-        //                        }
-        //                    }
-        //                } //Table Splits
-        //                #endregion
-
-        //                #region Process Table Combines
-        //                {
-        //                    var splits = modelNew.Refactorizations
-        //                        .Where(x => x is RefactorTableCombine)
-        //                        .Cast<RefactorTableCombine>()
-        //                        .Where(x => x.EntityKey1 == new Guid(newT.Key))
-        //                        .ToList();
-
-        //                    foreach (var split in splits)
-        //                    {
-        //                        var deletedTable = modelOld.Database.Tables.FirstOrDefault(x => new Guid(x.Key) == split.EntityKey2);
-        //                        if (deletedTable != null)
-        //                        {
-        //                            var deletedOrigDeletedT = modelOld.Database.Tables.GetByKey(deletedTable.Key).FirstOrDefault();
-        //                            if (deletedOrigDeletedT != null)
-        //                            {
-        //                                var deletedFields = deletedOrigDeletedT.GeneratedColumns.Where(x => split.ReMappedFieldIDList.Keys.Contains(new Guid(x.Key))).ToList();
-        //                                if (deletedFields.Count > 0)
-        //                                {
-        //                                    var targetFields = new List<Column>();
-        //                                    foreach (var item in deletedFields)
-        //                                    {
-        //                                        var newF = newT.GeneratedColumns.FirstOrDefault(x => new Guid(x.Key) == split.ReMappedFieldIDList[new Guid(item.Key)]);
-        //                                        if (newF != null)
-        //                                            targetFields.Add(newF);
-        //                                    }
-
-        //                                    targetFields = targetFields.Distinct().ToList();
-
-        //                                    //If there are columns then process
-        //                                    if (targetFields.Count > 0)
-        //                                    {
-        //                                        //Get the fields for generation
-        //                                        //This may be a different number than original combine since user can remove fields
-        //                                        var genFields = new Dictionary<Column, Column>();
-        //                                        foreach (var f in deletedFields)
-        //                                        {
-        //                                            //Get the new column from the new table as the name might have changed
-        //                                            var newID = split.ReMappedFieldIDList[new Guid(f.Key)];
-        //                                            var newF = newT.GeneratedColumns.FirstOrDefault(x => new Guid(x.Key) == newID);
-        //                                            if (newF != null)
-        //                                            {
-        //                                                genFields.Add(f, newF);
-        //                                            }
-        //                                        }
-
-        //                                        //Process the actual script fields
-        //                                        if (genFields.Count > 0)
-        //                                        {
-        //                                            sb.AppendLine("--PROCESS TABLE COMBINE [" + deletedTable.DatabaseName + "] into [" + newT.DatabaseName + "]");
-        //                                            sb.Append("UPDATE [" + newT.GetPostgresSchema() + "].[" + newT.DatabaseName + "] SET ");
-        //                                            foreach (var f in genFields.Keys)
-        //                                            {
-        //                                                //Get the new column from the new table as the name might have changed
-        //                                                var newF = genFields[f];
-        //                                                sb.Append("[" + newF.DatabaseName + "] = [_deleted].[" + f.DatabaseName + "]");
-        //                                                if (genFields.Keys.IndexOf(f) < genFields.Keys.Count - 1) sb.Append(", ");
-        //                                            }
-        //                                            sb.Append(" FROM [" + newT.GetPostgresSchema() + "].[" + newT.DatabaseName + "] AS [_A] INNER JOIN ");
-        //                                            sb.Append("[" + deletedTable.GetPostgresSchema() + "].[" + deletedTable.DatabaseName + "] AS [_deleted] ON ");
-        //                                            sb.Append("[_A].[" + newT.PrimaryKeyColumns.First().DatabaseName + "] = [_deleted].[" + deletedTable.PrimaryKeyColumns.First().DatabaseName + "]");
-        //                                            sb.AppendLine();
-        //                                            sb.AppendLine("--GO");
-        //                                            sb.AppendLine();
-        //                                        }
-
-        //                                    }
-        //                                }
-        //                            }
-        //                        }
-        //                    }
-        //                } //Table Combine
-        //                #endregion
-
-        //                #region Tenant
-        //                if (oldT.IsTenant && !newT.IsTenant)
-        //                {
-        //                    //Drop default
-        //                    var defaultName = "DF__" + newT.DatabaseName.ToUpper() + "_" + modelNew.TenantColumnName.ToUpper();
-        //                    sb.AppendLine("--DELETE TENANT DEFAULT FOR [" + newT.DatabaseName + "]");
-        //                    sb.AppendLine("if exists (select name from sys.objects where name = '" + defaultName + "'  AND type = 'D')");
-        //                    sb.AppendLine("ALTER TABLE [" + newT.GetPostgresSchema() + "].[" + newT.DatabaseName + "] DROP CONSTRAINT [" + defaultName + "]");
-        //                    sb.AppendLine();
-
-        //                    if (newT.PascalName != newT.DatabaseName)
-        //                    {
-        //                        //This is for the mistake in name when released. Remove this default June 2013
-        //                        defaultName = $"DF__{newT.PascalName}_{modelNew.TenantColumnName}".ToUpper();
-        //                        sb.AppendLine($"--DELETE TENANT DEFAULT FOR [{newT.DatabaseName}]");
-        //                        sb.AppendLine($"if exists (select name from sys.objects where name = '{defaultName}'  AND type = 'D')");
-        //                        sb.AppendLine($"ALTER TABLE [{newT.GetPostgresSchema()}].[{newT.DatabaseName}] DROP CONSTRAINT [{defaultName}]");
-        //                        sb.AppendLine();
-        //                    }
-
-        //                    //Drop Index
-        //                    var indexName = "IDX_" + newT.DatabaseName.Replace("-", string.Empty) + "_" + modelNew.TenantColumnName;
-        //                    indexName = indexName.ToUpper();
-        //                    sb.AppendLine($"if exists (select * from sys.indexes where name = '{indexName}')");
-        //                    sb.AppendLine($"DROP INDEX [{indexName}] ON [{newT.GetPostgresSchema()}].[{newT.DatabaseName}]");
-        //                    sb.AppendLine();
-
-        //                    //Drop the associated view
-        //                    var viewName = $"{modelOld.TenantPrefix}_{oldT.DatabaseName}";
-        //                    sb.AppendLine($"if exists (select name from sys.objects where name = '{viewName}'  AND type = 'V')");
-        //                    sb.AppendLine($"DROP VIEW [{viewName}]");
-        //                    sb.AppendLine();
-
-        //                    //Drop the tenant field
-        //                    sb.AppendLine($"if exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id where c.name = '{modelNew.TenantColumnName}' and t.name = '{newT.DatabaseName}')");
-        //                    sb.AppendLine($"ALTER TABLE [{newT.GetPostgresSchema()}].[{newT.DatabaseName}] DROP COLUMN [{modelNew.TenantColumnName}]");
-        //                    sb.AppendLine();
-        //                }
-        //                else if (!oldT.IsTenant && newT.IsTenant)
-        //                {
-        //                    //Add the tenant field
-        //                    sb.AppendLine(SQLEmit.GetSqlCreateTenantColumn(modelNew, newT));
-
-        //                    //Add tenant view
-        //                    var grantSB = new StringBuilder();
-        //                    sb.AppendLine(SQLEmit.GetSqlTenantView(modelNew, newT, grantSB));
-        //                    if (grantSB.ToString() != string.Empty)
-        //                        sb.AppendLine(grantSB.ToString());
-        //                }
-        //                else if (oldT.IsTenant && newT.IsTenant && oldT.DatabaseName != newT.DatabaseName)
-        //                {
-        //                    //If rename tenant table then delete old view and create new view
-
-        //                    //Drop the old view
-        //                    var viewName = modelOld.TenantPrefix + "_" + oldT.DatabaseName;
-        //                    sb.AppendLine($"--DROP OLD TENANT VIEW FOR TABLE [{oldT.DatabaseName}]");
-        //                    sb.AppendLine($"if exists (select name from sys.objects where name = '{viewName}'  AND type = 'V')");
-        //                    sb.AppendLine($"DROP VIEW [{viewName}]");
-        //                    sb.AppendLine("--GO");
-
-        //                    //Add tenant view
-        //                    var grantSB = new StringBuilder();
-        //                    sb.AppendLine(SQLEmit.GetSqlTenantView(modelNew, newT, grantSB));
-        //                    if (grantSB.ToString() != string.Empty)
-        //                        sb.AppendLine(grantSB.ToString());
-
-        //                }
-        //                #endregion
-
-        //                #region Primary Key Changed
-
-        //                //If the primary key changed, then generate a commented script that marks where the user can manually intervene
-        //                var newPKINdex = newT.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
-        //                var oldPKINdex = oldT.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
-        //                if (newPKINdex != null && oldPKINdex != null)
-        //                {
-        //                    var newPKHash = newPKINdex.CorePropertiesHash;
-        //                    var oldPKHash = oldPKINdex.CorePropertiesHash;
-        //                    if (newPKHash != oldPKHash)
-        //                    {
-        //                        sb.AppendLine();
-        //                        sb.AppendLine("--GENERATION NOTE **");
-        //                        sb.AppendLine("--THE PRIMARY KEY HAS CHANGED, THIS MAY REQUIRE MANUAL INTERVENTION");
-        //                        sb.AppendLine("--THE FOLLOWING SCRIPT WILL DROP AND READD THE PRIMARY KEY HOWEVER IF THERE ARE RELATIONSHIPS");
-        //                        sb.AppendLine("--BASED ON THIS IT, THE SCRIPT WILL FAIL. YOU MUST DROP ALL FOREIGN KEYS FIRST.");
-        //                        sb.AppendLine();
-
-        //                        //Before drop PK remove all FK to the table
-        //                        foreach (var r1 in oldT.GetRelations().ToList())
-        //                        {
-        //                            sb.Append(SQLEmit.GetSqlRemoveFK(r1));
-        //                            sb.AppendLine("--GO");
-        //                            sb.AppendLine();
-        //                        }
-
-        //                        var tableName = Globals.GetTableDatabaseName(modelNew, newT);
-        //                        var pkName = "PK_" + tableName;
-        //                        pkName = pkName.ToUpper();
-        //                        sb.AppendLine($"----DROP PRIMARY KEY FOR TABLE [{tableName}]");
-        //                        sb.AppendLine($"--if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
-        //                        sb.AppendLine($"--ALTER TABLE [{newT.GetPostgresSchema()}].[{tableName}] DROP CONSTRAINT [{pkName}]");
-        //                        sb.AppendLine("--GO");
-
-        //                        var sql = SQLEmit.GetSqlCreatePK(newT) + "GO\r\n";
-        //                        var lines = sql.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
-        //                        //Comment the whole SQL block
-        //                        var index = 0;
-        //                        foreach (var s in lines)
-        //                        {
-        //                            var l = s;
-        //                            l = "--" + l;
-        //                            lines[index] = l;
-        //                            index++;
-        //                        }
-
-        //                        sb.AppendLine(string.Join("\r\n", lines));
-        //                        sb.AppendLine();
-        //                    }
-        //                }
-
-        //                #endregion
-
-        //                #region Drop Foreign Keys
-        //                foreach (var r1 in oldT.GetRelations().ToList())
-        //                {
-        //                    var r2 = newT.Relationships.FirstOrDefault(x => x.Key == r1.Key);
-        //                    if (r2 == null)
-        //                    {
-        //                        sb.Append(SQLEmit.GetSqlRemoveFK(r1));
-        //                        sb.AppendLine("--GO");
-        //                        sb.AppendLine();
-        //                    }
-        //                }
-        //                #endregion
-
-        //                #region Rename audit columns if necessary
-        //                if (modelOld.Database.CreatedByColumnName != modelNew.Database.CreatedByColumnName)
-        //                {
-        //                    sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.CreatedByColumnName, modelNew.Database.CreatedByColumnName));
-        //                    sb.AppendLine("--GO");
-        //                }
-        //                if (modelOld.Database.CreatedDateColumnName != modelNew.Database.CreatedDateColumnName)
-        //                {
-        //                    sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.CreatedDateColumnName, modelNew.Database.CreatedDateColumnName));
-        //                    sb.AppendLine("--GO");
-        //                }
-        //                if (modelOld.Database.ModifiedByColumnName != modelNew.Database.ModifiedByColumnName)
-        //                {
-        //                    sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ModifiedByColumnName, modelNew.Database.ModifiedByColumnName));
-        //                    sb.AppendLine("--GO");
-        //                }
-        //                if (modelOld.Database.ModifiedDateColumnName != modelNew.Database.ModifiedDateColumnName)
-        //                {
-        //                    sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ModifiedDateColumnName, modelNew.Database.ModifiedDateColumnName));
-        //                    sb.AppendLine("--GO");
-        //                }
-        //                if (modelOld.Database.TimestampColumnName != modelNew.Database.TimestampColumnName)
-        //                {
-        //                    sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.TimestampColumnName, modelNew.Database.TimestampColumnName));
-        //                    sb.AppendLine("--GO");
-        //                }
-        //                #endregion
-
-        //                #region Emit Tenant View if need be
-
-        //                //If the table schema has changed then emit the Tenant view
-        //                if (schemaChanged && newT.IsTenant)
-        //                {
-        //                    var grantSB = new StringBuilder();
-        //                    var q1 = SQLEmit.GetSqlTenantView(modelNew, newT, grantSB);
-        //                    sb.AppendLine(q1);
-        //                    if (grantSB.ToString() != string.Empty)
-        //                        sb.AppendLine(grantSB.ToString());
-        //                }
-
-        //                #endregion
-
-        //                #region Static Data
-
-        //                //For right now just emit NEW if different.
-        //                //TODO: Generate difference scripts for delete and change too.
-        //                var oldStaticScript = SQLEmit.GetSqlInsertStaticData(oldT);
-        //                var newStaticScript = SQLEmit.GetSqlInsertStaticData(newT);
-        //                if (oldStaticScript != newStaticScript)
-        //                {
-        //                    sb.AppendLine(newStaticScript);
-        //                    sb.AppendLine(SQLEmit.GetSqlUpdateStaticData(oldT, newT));
-        //                    sb.AppendLine("--GO");
-        //                    sb.AppendLine();
-        //                }
-
-        //                #endregion
-
-        //                //TODO - Check hash porperties and if changed recompile tenant view
-
-        //            }
-        //        }
-
-        //        //Do another look for second pass at changes.
-        //        //These things can only be done after the above loop
-        //        foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
-        //        {
-        //            var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
-        //            if (oldT != null)
-        //            {
-        //                #region Add Foreign Keys
-
-        //                foreach (var r1 in newT.GetRelations().ToList())
-        //                {
-        //                    var r2 = oldT.GetRelations().ToList().FirstOrDefault(x => x.Key == r1.Key);
-        //                    if (r2 == null)
-        //                    {
-        //                        //There is no OLD relation so it is new so add it
-        //                        sb.Append(SQLEmit.GetSqlAddFK(r1));
-        //                        sb.AppendLine("--GO");
-        //                        sb.AppendLine();
-        //                    }
-        //                    else if (r1.CorePropertiesHash != r2.CorePropertiesHash)
-        //                    {
-        //                        //The relation already exists and it has changed, so drop and re-add
-        //                        sb.Append(SQLEmit.GetSqlRemoveFK(r2));
-        //                        sb.AppendLine("--GO");
-        //                        sb.AppendLine();
-        //                        sb.Append(SQLEmit.GetSqlAddFK(r1));
-        //                        sb.AppendLine("--GO");
-        //                        sb.AppendLine();
-        //                    }
-        //                }
-
-        //                #endregion
-        //            }
-        //        }
-
-        //        #endregion
-
-        //        #region Move tables between schemas
-
-        //        var reschema = 0;
-        //        foreach (Table newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly))
-        //        {
-        //            var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
-        //            if (oldT != null)
-        //            {
-        //                if (string.Compare(oldT.GetPostgresSchema(), newT.GetPostgresSchema(), true) != 0)
-        //                {
-        //                    if (reschema == 0)
-        //                        sb.AppendLine("--MOVE TABLES TO PROPER SCHEMA IF NEED BE");
-
-        //                    //This table has changed schema so script it
-        //                    sb.AppendLine("--CREATE DATABASE SCHEMAS");
-        //                    sb.AppendLine("if not exists(select * from sys.schemas where name = '" + newT.GetPostgresSchema() + "')");
-        //                    sb.AppendLine("exec('CREATE SCHEMA [" + newT.GetPostgresSchema() + "]')");
-        //                    sb.AppendLine("--GO");
-        //                    sb.AppendLine("if exists (select * from sys.tables t inner join sys.schemas s on t.schema_id = s.schema_id where t.name = '" + newT.DatabaseName + "' and s.name = '" + oldT.GetPostgresSchema() + "')");
-        //                    sb.AppendLine("	ALTER SCHEMA [" + newT.GetPostgresSchema() + "] TRANSFER [" + oldT.GetPostgresSchema() + "].[" + newT.DatabaseName + "];");
-        //                    sb.AppendLine("--GO");
-        //                    reschema++;
-        //                }
-        //            }
-        //        }
-
-        //        if (reschema > 0) sb.AppendLine();
-
-        //        #endregion
-
-        //        #region Add Indexes
-        //        foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
-        //        {
-        //            var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
-        //            if (oldT != null)
-        //            {
-        //                //If old exists and does old NOT, so create index
-        //                foreach (var newIndex in newT.TableIndexList)
-        //                {
-        //                    var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Key == newIndex.Key);
-        //                    if (oldIndex == null)
-        //                    {
-        //                        sb.AppendLine(SQLEmit.GetSQLCreateIndex(newT, newIndex, false));
-        //                        sb.AppendLine("--GO");
-        //                        sb.AppendLine();
-        //                    }
-        //                }
-
-        //                //Both exist, so if different, drop and re-create
-        //                foreach (var newIndex in newT.TableIndexList)
-        //                {
-        //                    var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Key == newIndex.Key);
-        //                    if (oldIndex != null && oldIndex.CorePropertiesHashNoNames != newIndex.CorePropertiesHashNoNames)
-        //                    {
-        //                        sb.AppendLine(SQLEmit.GetSQLCreateIndex(newT, newIndex, false));
-        //                        sb.AppendLine("--GO");
-        //                        sb.AppendLine();
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        #endregion
-
-        //        #region Add/Remove deleted SP, Views, and Funcs
-
-        //        //Stored procedures
-        //        var removedItems = 0;
-        //        foreach (var oldT in modelOld.Database.CustomStoredProcedures.OrderBy(x => x.Name))
-        //        {
-        //            var newT = modelNew.Database.CustomStoredProcedures.FirstOrDefault(x => x.Key == oldT.Key);
-        //            if (newT == null)
-        //            {
-        //                sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('P'))");
-        //                sb.AppendLine("drop procedure [" + oldT.DatabaseName + "]");
-        //                removedItems++;
-        //            }
-        //            else if (newT.DatabaseName != oldT.DatabaseName)
-        //            {
-        //                //Name changed so remove old
-        //                sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('P'))");
-        //                sb.AppendLine("drop procedure [" + oldT.DatabaseName + "]");
-        //                removedItems++;
-        //            }
-        //        }
-
-        //        if (removedItems > 0)
-        //        {
-        //            sb.AppendLine("--GO");
-        //            sb.AppendLine();
-        //        }
-
-        //        foreach (var newT in modelNew.Database.CustomStoredProcedures.OrderBy(x => x.Name))
-        //        {
-        //            var oldT = modelOld.Database.CustomStoredProcedures.FirstOrDefault(x => x.Key == newT.Key);
-        //            if (oldT == null || (oldT.CorePropertiesHash != newT.CorePropertiesHash))
-        //            {
-        //                sb.Append(SQLEmit.GetSQLCreateStoredProc(newT, false));
-        //            }
-        //        }
-
-        //        //Views
-        //        removedItems = 0;
-        //        foreach (var oldT in modelOld.Database.CustomViews.OrderBy(x => x.Name))
-        //        {
-        //            var newT = modelNew.Database.CustomViews.FirstOrDefault(x => x.Key == oldT.Key);
-        //            if (newT == null)
-        //            {
-        //                sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('V'))");
-        //                sb.AppendLine("drop view [" + oldT.DatabaseName + "]");
-        //                removedItems++;
-        //            }
-        //            else if (newT.DatabaseName != oldT.DatabaseName)
-        //            {
-        //                //Name changed so remove old
-        //                sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('V'))");
-        //                sb.AppendLine("drop view [" + oldT.DatabaseName + "]");
-        //                removedItems++;
-        //            }
-        //        }
-
-        //        if (removedItems > 0)
-        //        {
-        //            sb.AppendLine("--GO");
-        //            sb.AppendLine();
-        //        }
-
-        //        foreach (var newT in modelNew.Database.CustomViews.OrderBy(x => x.Name))
-        //        {
-        //            var oldT = modelOld.Database.CustomViews.FirstOrDefault(x => x.Key == newT.Key);
-        //            if (oldT == null || (oldT.CorePropertiesHash != newT.CorePropertiesHash))
-        //            {
-        //                sb.Append(SQLEmit.GetSqlCreateView(newT, false));
-        //            }
-        //        }
-
-        //        //Functions
-        //        removedItems = 0;
-        //        foreach (var oldT in modelOld.Database.Functions.OrderBy(x => x.Name))
-        //        {
-        //            var newT = modelNew.Database.Functions.FirstOrDefault(x => x.Key == oldT.Key);
-        //            if (newT == null)
-        //            {
-        //                sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('FN','IF','TF','FS','FT'))");
-        //                sb.AppendLine("drop function [" + oldT.DatabaseName + "]");
-        //                removedItems++;
-        //            }
-        //            else if (newT.DatabaseName != oldT.DatabaseName)
-        //            {
-        //                //Name changed so remove old
-        //                sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('FN','IF','TF','FS','FT'))");
-        //                sb.AppendLine("drop function [" + oldT.DatabaseName + "]");
-        //                removedItems++;
-        //            }
-        //        }
-
-        //        if (removedItems > 0)
-        //        {
-        //            sb.AppendLine("--GO");
-        //            sb.AppendLine();
-        //        }
-
-        //        foreach (var newT in modelNew.Database.Functions.OrderBy(x => x.Name))
-        //        {
-        //            var oldT = modelOld.Database.Functions.FirstOrDefault(x => x.Key == newT.Key);
-        //            if (oldT == null || (oldT.CorePropertiesHash != newT.CorePropertiesHash))
-        //            {
-        //                sb.Append(SQLEmit.GetSQLCreateFunction(newT, false, modelNew.EFVersion));
-        //            }
-        //        }
-
-        //        #endregion
-
-        //        #region Add/Remove Audit fields
-
-        //        foreach (var newT in modelNew.Database.Tables.OrderBy(x => x.Name))
-        //        {
-        //            var oldT = modelOld.Database.Tables.FirstOrDefault(x => x.Key == newT.Key);
-        //            if (oldT != null)
-        //            {
-        //                if (!oldT.AllowCreateAudit && newT.AllowCreateAudit)
-        //                    Globals.AppendCreateAudit(newT, modelNew, sb);
-        //                if (!oldT.AllowModifiedAudit && newT.AllowModifiedAudit)
-        //                    Globals.AppendModifiedAudit(newT, modelNew, sb);
-        //                if (!oldT.AllowTimestamp && newT.AllowTimestamp)
-        //                    Globals.AppendTimestampAudit(newT, modelNew, sb);
-
-        //                if (oldT.AllowCreateAudit && !newT.AllowCreateAudit)
-        //                    Globals.DropCreateAudit(newT, modelNew, sb);
-        //                if (oldT.AllowModifiedAudit && !newT.AllowModifiedAudit)
-        //                    Globals.DropModifiedAudit(newT, modelNew, sb);
-        //                if (oldT.AllowTimestamp && !newT.AllowTimestamp)
-        //                    Globals.DropTimestampAudit(newT, modelNew, sb);
-        //            }
-        //        }
-
-        //        #endregion
-
-        //        #region Loop and change computed fields
-
-        //        foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
-        //        {
-        //            //If the table exists...
-        //            var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
-        //            if (oldT != null)
-        //            {
-        //                var tChanged = false;
-        //                //If there is a computed field with a different value
-        //                foreach (var newC in newT.GetColumns().Where(x => x.ComputedColumn).ToList())
-        //                {
-        //                    var oldC = Globals.GetColumnByKey(oldT.Columns, newC.Key);
-        //                    if (oldC != null && oldC.Formula != newC.Formula)
-        //                    {
-        //                        tChanged = true;
-        //                        sb.AppendLine($"if exists(select t.name, c.name from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where and t.name = '{newT.DatabaseName}' and c.name = '{newC.DatabaseName}' and s.name = '{newT.GetPostgresSchema()}')");
-        //                        sb.AppendLine($"ALTER TABLE [{newT.GetPostgresSchema()}].[{newT.DatabaseName}] DROP COLUMN [{newC.DatabaseName}]");
-        //                        sb.AppendLine("--GO");
-        //                        sb.AppendLine($"ALTER TABLE [{newT.GetPostgresSchema()}].[{newT.DatabaseName}] ADD [{newC.DatabaseName}] AS ({newC.Formula})");
-        //                        sb.AppendLine("--GO");
-        //                        sb.AppendLine();
-        //                    }
-        //                }
-
-        //                if (newT.IsTenant && tChanged)
-        //                {
-        //                    var grantSB = new StringBuilder();
-        //                    var q1 = SQLEmit.GetSqlTenantView(modelNew, newT, grantSB);
-        //                    sb.AppendLine(q1);
-        //                    if (grantSB.ToString() != string.Empty)
-        //                        sb.AppendLine(grantSB.ToString());
-        //                }
-        //            }
-        //        }
-
-        //        #endregion
-
-        //        return sb.ToString();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw;
-        //    }
+        //    return "NOT IMPLEMENTED";
         //}
+
+        #region TODO
+        public static string GetModelDifferenceSql(ModelRoot modelOld, ModelRoot modelNew)
+        {
+            try
+            {
+                var sb = new StringBuilder();
+
+                #region Loop and Add tables
+
+                foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+                {
+                    var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                    if (oldT == null)
+                    {
+                        //Add table, indexes
+                        sb.AppendLine(SQLEmit.GetSQLCreateTable(modelNew, newT));
+                        sb.AppendLine("--GO");
+                        sb.AppendLine(SQLEmit.GetSqlCreatePK(newT));
+                        sb.AppendLine("--GO");
+
+                        //DO NOT process primary keys
+                        foreach (var index in newT.TableIndexList.Where(x => !x.PrimaryKey))
+                        {
+                            sb.Append(SQLEmit.GetSQLCreateIndex(newT, index, false));
+                            sb.AppendLine("--GO");
+                            sb.AppendLine();
+                        }
+
+                        if (newT.StaticData.Count > 0)
+                        {
+                            sb.Append(SQLEmit.GetSqlInsertStaticData(newT));
+                            sb.AppendLine("--GO");
+                            sb.AppendLine();
+                        }
+
+                        //If this is a tenant table then add the view as well
+                        if (newT.IsTenant)
+                        {
+                            var grantSB = new StringBuilder();
+                            var q1 = SQLEmit.GetSqlTenantView(modelNew, newT, grantSB);
+                            sb.AppendLine(q1);
+                            if (grantSB.ToString() != string.Empty)
+                                sb.AppendLine(grantSB.ToString());
+                        }
+
+                    }
+                }
+
+                #endregion
+
+                //        #region Delete Indexes
+                //        foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+                //        {
+                //            var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                //            if (oldT != null)
+                //            {
+                //                //If old exists new does NOT, so delete index
+                //                foreach (var oldIndex in oldT.TableIndexList)
+                //                {
+                //                    var newIndex = newT.TableIndexList.FirstOrDefault(x => x.Key == oldIndex.Key);
+                //                    if (newIndex == null)
+                //                    {
+                //                        sb.AppendLine(SQLEmit.GetSQLDropIndex(newT, oldIndex));
+                //                        sb.AppendLine("--GO");
+                //                    }
+                //                }
+
+                //                //Both exist, so if different, drop and re-create
+                //                foreach (var newIndex in newT.TableIndexList)
+                //                {
+                //                    var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Key == newIndex.Key);
+                //                    if (oldIndex != null && oldIndex.CorePropertiesHashNoNames != newIndex.CorePropertiesHashNoNames)
+                //                    {
+                //                        sb.AppendLine(SQLEmit.GetSQLDropIndex(newT, oldIndex));
+                //                        sb.AppendLine("--GO");
+                //                    }
+                //                }
+                //            }
+                //        }
+                //        #endregion
+
+                //        #region Loop and DELETE tables
+                //        foreach (var oldT in modelOld.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly))
+                //        {
+                //            var newT = modelNew.Database.Tables.FirstOrDefault(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly) && x.Key.ToLower() == oldT.Key.ToLower());
+                //            if (newT == null)
+                //            {
+                //                //DELETE TABLE
+                //                sb.Append(SQLEmit.GetSqlDropTable(modelOld, oldT));
+                //                sb.AppendLine("--GO");
+                //                //TODO - Delete Tenant View
+                //                sb.AppendLine();
+                //            }
+                //            else if (newT != null && oldT.AllowAuditTracking && !newT.AllowAuditTracking)
+                //            {
+                //                //If the old model had audit tracking and the new one does not, add a TODO in the script
+                //                var tableName = "__AUDIT__" + Globals.GetTableDatabaseName(modelOld, oldT);
+                //                sb.AppendLine("--TODO: REMOVE AUDIT TABLE '" + tableName + "'");
+                //                sb.AppendLine("--The previous model had audit tracking turn on for table '" + Globals.GetTableDatabaseName(modelOld, oldT) + "' and now it is turned off.");
+                //                sb.AppendLine("--The audit table will not be removed automatically. If you want to remove it, uncomment the following script.");
+                //                sb.AppendLine("--DROP TABLE [" + tableName + "]");
+                //                sb.AppendLine("--GO");
+                //                sb.AppendLine();
+                //            }
+                //            //else if (tList[0].DatabaseName != oldT.DatabaseName)
+                //            //{
+                //            //  //RENAME TABLE
+                //            //  sb.AppendLine("if exists(select * from sys.objects where name = '" + oldT.DatabaseName + "' and type = 'U')");
+                //            //  sb.AppendLine("exec sp_rename [" + oldT.DatabaseName + "], [" + tList[0].DatabaseName + "]");
+                //            //}
+                //        }
+                //        #endregion
+
+                //        #region Loop and Modify tables
+                //        foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+                //        {
+                //            var schemaChanged = false;
+                //            var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                //            if (oldT != null)
+                //            {
+                //                var querylist = new List<string>();
+
+                //                #region Rename table if need be
+                //                if (oldT.DatabaseName != newT.DatabaseName)
+                //                {
+                //                    sb.AppendLine(SQLEmit.GetSqlRenameTable(oldT, newT));
+                //                    sb.AppendLine("--GO");
+                //                }
+                //                #endregion
+
+                //                #region Add columns
+                //                foreach (var newC in newT.GetColumns())
+                //                {
+                //                    var oldC = Globals.GetColumnByKey(oldT.Columns, newC.Key);
+                //                    if (oldC == null)
+                //                    {
+                //                        //ADD COLUMN
+                //                        sb.AppendLine(SQLEmit.GetSqlAddColumn(newC));
+                //                        sb.AppendLine("--GO");
+                //                        sb.AppendLine();
+                //                        schemaChanged = true;
+                //                    }
+                //                    //else if (newC.DatabaseName != oldC.DatabaseName)
+                //                    //{
+                //                    //  //RENAME COLUMN
+                //                    //  sb.AppendLine(SQLEmit.GetSQLRenameColumn(oldC, newC));
+                //                    //  sb.AppendLine("--GO");
+                //                    //  sb.AppendLine();
+                //                    //}
+
+                //                }
+                //                #endregion
+
+                //                #region Delete Columns
+                //                foreach (Reference oldRef in oldT.Columns)
+                //                {
+                //                    var oldC = oldRef.Object as Column;
+                //                    var newC = Globals.GetColumnByKey(newT.Columns, oldC.Key);
+                //                    if (newC == null)
+                //                    {
+                //                        //DELETE COLUMN
+                //                        sb.AppendLine(SQLEmit.GetSqlDropColumn(modelNew, oldC));
+                //                        sb.AppendLine("--GO");
+                //                        sb.AppendLine();
+                //                        schemaChanged = true;
+                //                    }
+                //                    else if (newC.DatabaseName != oldC.DatabaseName)
+                //                    {
+                //                        ////RENAME COLUMN
+                //                        //string sql = "if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + oldC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" +
+                //                        //             "AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + newC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" + Environment.NewLine +
+                //                        //             "EXEC sp_rename @objname = '" + newT.DatabaseName + "." + oldC.DatabaseName + "', @newname = '" + newC.DatabaseName + "', @objtype = 'COLUMN'";
+                //                        //if (!querylist.Contains(sql))
+                //                        //{
+                //                        //  querylist.Add(sql);
+                //                        //  sb.AppendLine(sql);
+                //                        //  sb.AppendLine("--GO");
+                //                        //  sb.AppendLine();
+                //                        //}
+                //                    }
+
+                //                }
+                //                #endregion
+
+                //                #region Modify Columns
+                //                foreach (var newC in newT.GetColumns())
+                //                {
+                //                    var oldC = Globals.GetColumnByKey(oldT.Columns, newC.Key);
+                //                    if (oldC != null)
+                //                    {
+                //                        var document = new XmlDocument();
+                //                        document.LoadXml("<a></a>");
+                //                        var n1 = XmlHelper.AddElement(document.DocumentElement, "q");
+                //                        var n2 = XmlHelper.AddElement(document.DocumentElement, "q");
+                //                        oldC.XmlAppend(n1);
+                //                        newC.XmlAppend(n2);
+
+                //                        //Check column, ignore defaults
+                //                        if (newC.CorePropertiesHashNoPK != oldC.CorePropertiesHashNoPK)
+                //                        {
+                //                            //MODIFY COLUMN
+                //                            sb.AppendLine(SQLEmit.GetSqlModifyColumn(oldC, newC));
+                //                            sb.AppendLine("--GO");
+                //                            sb.AppendLine();
+                //                            schemaChanged = true;
+                //                        }
+
+                //                        //Drop add defaults if column
+                //                        //if ((newC.CorePropertiesHashNoPK != oldC.CorePropertiesHashNoPK) || (oldC.Default != newC.Default))
+                //                        //{
+                //                        //		if (!string.IsNullOrEmpty(oldC.Default))
+                //                        //		{
+                //                        //			//Old default was something so drop it
+                //                        //			sb.AppendLine(SQLEmit.GetSqlDropColumnDefault(newC));
+                //                        //			sb.AppendLine("--GO");
+                //                        //			sb.AppendLine();
+                //                        //		}
+
+                //                        //	if (!string.IsNullOrEmpty(newC.Default))
+                //                        //	{
+                //                        //		//New default is something so add it
+                //                        //		sb.AppendLine(SQLEmit.GetSqlCreateColumnDefault(modelNew, newC));
+                //                        //		sb.AppendLine("--GO");
+                //                        //		sb.AppendLine();
+                //                        //	}
+                //                        //}
+
+                //                        if (!string.IsNullOrEmpty(newC.Default) && ((oldC.Default != newC.Default) || (oldC.DataType != newC.DataType) || (oldC.DatabaseName != newC.DatabaseName)))
+                //                        {
+                //                            //New default is something so add it
+                //                            sb.AppendLine(SQLEmit.GetSqlCreateColumnDefault(modelNew, newC));
+                //                            sb.AppendLine("--GO");
+                //                            sb.AppendLine();
+                //                        }
+
+                //                    }
+                //                }
+                //                #endregion
+
+                //                #region Process Table Splits
+                //                {
+                //                    var splits = modelNew.Refactorizations
+                //                        .Where(x => x is RefactorTableSplit)
+                //                        .Cast<RefactorTableSplit>()
+                //                        .Where(x => x.EntityKey1 == new Guid(newT.Key))
+                //                        .ToList();
+
+                //                    foreach (var split in splits)
+                //                    {
+                //                        var splitTable = modelNew.Database.Tables.FirstOrDefault(x => new Guid(x.Key) == split.EntityKey2);
+                //                        var origFields = oldT.GeneratedColumns.Where(x => split.ReMappedFieldIDList.Keys.Contains(new Guid(x.Key))).ToList();
+                //                        if (splitTable != null && origFields.Count > 0)
+                //                        {
+                //                            var newFields = new List<Column>();
+                //                            foreach (var item in origFields)
+                //                            {
+                //                                var newF = splitTable.GeneratedColumns.FirstOrDefault(x => new Guid(x.Key) == split.ReMappedFieldIDList[new Guid(item.Key)]);
+                //                                if (newF != null)
+                //                                    newFields.Add(newF);
+                //                            }
+
+                //                            newFields = newFields.Distinct().ToList();
+
+                //                            //If there are columns then process
+                //                            if (newFields.Count > 0)
+                //                            {
+                //                                sb.AppendLine("--PROCESS TABLE SPLIT [" + newT.DatabaseName + "] -> [" + splitTable.DatabaseName + "]");
+
+                //                                //Get the fields for generation
+                //                                //This may be a different number than original split since user can remove fields
+                //                                var genFields = new Dictionary<Column, Column>();
+                //                                foreach (var f in origFields)
+                //                                {
+                //                                    //Get the new column from the new table as the name might have changed
+                //                                    var newID = split.ReMappedFieldIDList[new Guid(f.Key)];
+                //                                    var newF = splitTable.GeneratedColumns.FirstOrDefault(x => new Guid(x.Key) == newID);
+                //                                    if (newF != null)
+                //                                    {
+                //                                        genFields.Add(f, newF);
+                //                                    }
+                //                                }
+
+                //                                //Process the actual script fields
+                //                                if (genFields.Count > 0)
+                //                                {
+                //                                    //Turn on identity insert if necessary
+                //                                    if (splitTable.PrimaryKeyColumns.Count(x => x.Identity == IdentityTypeConstants.Database) > 0)
+                //                                        sb.AppendLine("SET identity_insert [" + splitTable.GetPostgresSchema() + "].[" + Globals.GetTableDatabaseName(modelNew, splitTable) + "] on");
+
+                //                                    sb.Append("INSERT INTO [" + splitTable.GetPostgresSchema() + "].[" + splitTable.DatabaseName + "] (");
+                //                                    foreach (var f in genFields.Keys)
+                //                                    {
+                //                                        //Get the new column from the new table as the name might have changed
+                //                                        var newF = genFields[f];
+                //                                        sb.Append("[" + newF.DatabaseName + "]");
+                //                                        if (genFields.Keys.IndexOf(f) < genFields.Keys.Count - 1) sb.Append(", ");
+                //                                    }
+                //                                    sb.AppendLine(")");
+                //                                    sb.Append("SELECT ");
+                //                                    foreach (var f in genFields.Keys)
+                //                                    {
+                //                                        sb.Append("[" + f.DatabaseName + "]");
+                //                                        if (genFields.Keys.IndexOf(f) < genFields.Keys.Count - 1) sb.Append(", ");
+                //                                    }
+
+                //                                    sb.AppendLine(" FROM [" + newT.GetPostgresSchema() + "].[" + newT.DatabaseName + "]");
+
+                //                                    //Turn off identity insert if necessary
+                //                                    if (splitTable.PrimaryKeyColumns.Count(x => x.Identity == IdentityTypeConstants.Database) > 0)
+                //                                        sb.AppendLine("SET identity_insert [" + splitTable.GetPostgresSchema() + "].[" + Globals.GetTableDatabaseName(modelNew, splitTable) + "] off");
+
+                //                                    sb.AppendLine("--GO");
+                //                                    sb.AppendLine();
+                //                                }
+                //                            }
+                //                        }
+                //                    }
+                //                } //Table Splits
+                //                #endregion
+
+                //                #region Process Table Combines
+                //                {
+                //                    var splits = modelNew.Refactorizations
+                //                        .Where(x => x is RefactorTableCombine)
+                //                        .Cast<RefactorTableCombine>()
+                //                        .Where(x => x.EntityKey1 == new Guid(newT.Key))
+                //                        .ToList();
+
+                //                    foreach (var split in splits)
+                //                    {
+                //                        var deletedTable = modelOld.Database.Tables.FirstOrDefault(x => new Guid(x.Key) == split.EntityKey2);
+                //                        if (deletedTable != null)
+                //                        {
+                //                            var deletedOrigDeletedT = modelOld.Database.Tables.GetByKey(deletedTable.Key).FirstOrDefault();
+                //                            if (deletedOrigDeletedT != null)
+                //                            {
+                //                                var deletedFields = deletedOrigDeletedT.GeneratedColumns.Where(x => split.ReMappedFieldIDList.Keys.Contains(new Guid(x.Key))).ToList();
+                //                                if (deletedFields.Count > 0)
+                //                                {
+                //                                    var targetFields = new List<Column>();
+                //                                    foreach (var item in deletedFields)
+                //                                    {
+                //                                        var newF = newT.GeneratedColumns.FirstOrDefault(x => new Guid(x.Key) == split.ReMappedFieldIDList[new Guid(item.Key)]);
+                //                                        if (newF != null)
+                //                                            targetFields.Add(newF);
+                //                                    }
+
+                //                                    targetFields = targetFields.Distinct().ToList();
+
+                //                                    //If there are columns then process
+                //                                    if (targetFields.Count > 0)
+                //                                    {
+                //                                        //Get the fields for generation
+                //                                        //This may be a different number than original combine since user can remove fields
+                //                                        var genFields = new Dictionary<Column, Column>();
+                //                                        foreach (var f in deletedFields)
+                //                                        {
+                //                                            //Get the new column from the new table as the name might have changed
+                //                                            var newID = split.ReMappedFieldIDList[new Guid(f.Key)];
+                //                                            var newF = newT.GeneratedColumns.FirstOrDefault(x => new Guid(x.Key) == newID);
+                //                                            if (newF != null)
+                //                                            {
+                //                                                genFields.Add(f, newF);
+                //                                            }
+                //                                        }
+
+                //                                        //Process the actual script fields
+                //                                        if (genFields.Count > 0)
+                //                                        {
+                //                                            sb.AppendLine("--PROCESS TABLE COMBINE [" + deletedTable.DatabaseName + "] into [" + newT.DatabaseName + "]");
+                //                                            sb.Append("UPDATE [" + newT.GetPostgresSchema() + "].[" + newT.DatabaseName + "] SET ");
+                //                                            foreach (var f in genFields.Keys)
+                //                                            {
+                //                                                //Get the new column from the new table as the name might have changed
+                //                                                var newF = genFields[f];
+                //                                                sb.Append("[" + newF.DatabaseName + "] = [_deleted].[" + f.DatabaseName + "]");
+                //                                                if (genFields.Keys.IndexOf(f) < genFields.Keys.Count - 1) sb.Append(", ");
+                //                                            }
+                //                                            sb.Append(" FROM [" + newT.GetPostgresSchema() + "].[" + newT.DatabaseName + "] AS [_A] INNER JOIN ");
+                //                                            sb.Append("[" + deletedTable.GetPostgresSchema() + "].[" + deletedTable.DatabaseName + "] AS [_deleted] ON ");
+                //                                            sb.Append("[_A].[" + newT.PrimaryKeyColumns.First().DatabaseName + "] = [_deleted].[" + deletedTable.PrimaryKeyColumns.First().DatabaseName + "]");
+                //                                            sb.AppendLine();
+                //                                            sb.AppendLine("--GO");
+                //                                            sb.AppendLine();
+                //                                        }
+
+                //                                    }
+                //                                }
+                //                            }
+                //                        }
+                //                    }
+                //                } //Table Combine
+                //                #endregion
+
+                //                #region Tenant
+                //                if (oldT.IsTenant && !newT.IsTenant)
+                //                {
+                //                    //Drop default
+                //                    var defaultName = "DF__" + newT.DatabaseName.ToUpper() + "_" + modelNew.TenantColumnName.ToUpper();
+                //                    sb.AppendLine("--DELETE TENANT DEFAULT FOR [" + newT.DatabaseName + "]");
+                //                    sb.AppendLine("if exists (select name from sys.objects where name = '" + defaultName + "'  AND type = 'D')");
+                //                    sb.AppendLine("ALTER TABLE [" + newT.GetPostgresSchema() + "].[" + newT.DatabaseName + "] DROP CONSTRAINT [" + defaultName + "]");
+                //                    sb.AppendLine();
+
+                //                    if (newT.PascalName != newT.DatabaseName)
+                //                    {
+                //                        //This is for the mistake in name when released. Remove this default June 2013
+                //                        defaultName = $"DF__{newT.PascalName}_{modelNew.TenantColumnName}".ToUpper();
+                //                        sb.AppendLine($"--DELETE TENANT DEFAULT FOR [{newT.DatabaseName}]");
+                //                        sb.AppendLine($"if exists (select name from sys.objects where name = '{defaultName}'  AND type = 'D')");
+                //                        sb.AppendLine($"ALTER TABLE [{newT.GetPostgresSchema()}].[{newT.DatabaseName}] DROP CONSTRAINT [{defaultName}]");
+                //                        sb.AppendLine();
+                //                    }
+
+                //                    //Drop Index
+                //                    var indexName = "IDX_" + newT.DatabaseName.Replace("-", string.Empty) + "_" + modelNew.TenantColumnName;
+                //                    indexName = indexName.ToUpper();
+                //                    sb.AppendLine($"if exists (select * from sys.indexes where name = '{indexName}')");
+                //                    sb.AppendLine($"DROP INDEX [{indexName}] ON [{newT.GetPostgresSchema()}].[{newT.DatabaseName}]");
+                //                    sb.AppendLine();
+
+                //                    //Drop the associated view
+                //                    var viewName = $"{modelOld.TenantPrefix}_{oldT.DatabaseName}";
+                //                    sb.AppendLine($"if exists (select name from sys.objects where name = '{viewName}'  AND type = 'V')");
+                //                    sb.AppendLine($"DROP VIEW [{viewName}]");
+                //                    sb.AppendLine();
+
+                //                    //Drop the tenant field
+                //                    sb.AppendLine($"if exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id where c.name = '{modelNew.TenantColumnName}' and t.name = '{newT.DatabaseName}')");
+                //                    sb.AppendLine($"ALTER TABLE [{newT.GetPostgresSchema()}].[{newT.DatabaseName}] DROP COLUMN [{modelNew.TenantColumnName}]");
+                //                    sb.AppendLine();
+                //                }
+                //                else if (!oldT.IsTenant && newT.IsTenant)
+                //                {
+                //                    //Add the tenant field
+                //                    sb.AppendLine(SQLEmit.GetSqlCreateTenantColumn(modelNew, newT));
+
+                //                    //Add tenant view
+                //                    var grantSB = new StringBuilder();
+                //                    sb.AppendLine(SQLEmit.GetSqlTenantView(modelNew, newT, grantSB));
+                //                    if (grantSB.ToString() != string.Empty)
+                //                        sb.AppendLine(grantSB.ToString());
+                //                }
+                //                else if (oldT.IsTenant && newT.IsTenant && oldT.DatabaseName != newT.DatabaseName)
+                //                {
+                //                    //If rename tenant table then delete old view and create new view
+
+                //                    //Drop the old view
+                //                    var viewName = modelOld.TenantPrefix + "_" + oldT.DatabaseName;
+                //                    sb.AppendLine($"--DROP OLD TENANT VIEW FOR TABLE [{oldT.DatabaseName}]");
+                //                    sb.AppendLine($"if exists (select name from sys.objects where name = '{viewName}'  AND type = 'V')");
+                //                    sb.AppendLine($"DROP VIEW [{viewName}]");
+                //                    sb.AppendLine("--GO");
+
+                //                    //Add tenant view
+                //                    var grantSB = new StringBuilder();
+                //                    sb.AppendLine(SQLEmit.GetSqlTenantView(modelNew, newT, grantSB));
+                //                    if (grantSB.ToString() != string.Empty)
+                //                        sb.AppendLine(grantSB.ToString());
+
+                //                }
+                //                #endregion
+
+                //                #region Primary Key Changed
+
+                //                //If the primary key changed, then generate a commented script that marks where the user can manually intervene
+                //                var newPKINdex = newT.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
+                //                var oldPKINdex = oldT.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
+                //                if (newPKINdex != null && oldPKINdex != null)
+                //                {
+                //                    var newPKHash = newPKINdex.CorePropertiesHash;
+                //                    var oldPKHash = oldPKINdex.CorePropertiesHash;
+                //                    if (newPKHash != oldPKHash)
+                //                    {
+                //                        sb.AppendLine();
+                //                        sb.AppendLine("--GENERATION NOTE **");
+                //                        sb.AppendLine("--THE PRIMARY KEY HAS CHANGED, THIS MAY REQUIRE MANUAL INTERVENTION");
+                //                        sb.AppendLine("--THE FOLLOWING SCRIPT WILL DROP AND READD THE PRIMARY KEY HOWEVER IF THERE ARE RELATIONSHIPS");
+                //                        sb.AppendLine("--BASED ON THIS IT, THE SCRIPT WILL FAIL. YOU MUST DROP ALL FOREIGN KEYS FIRST.");
+                //                        sb.AppendLine();
+
+                //                        //Before drop PK remove all FK to the table
+                //                        foreach (var r1 in oldT.GetRelations().ToList())
+                //                        {
+                //                            sb.Append(SQLEmit.GetSqlRemoveFK(r1));
+                //                            sb.AppendLine("--GO");
+                //                            sb.AppendLine();
+                //                        }
+
+                //                        var tableName = Globals.GetTableDatabaseName(modelNew, newT);
+                //                        var pkName = "PK_" + tableName;
+                //                        pkName = pkName.ToUpper();
+                //                        sb.AppendLine($"----DROP PRIMARY KEY FOR TABLE [{tableName}]");
+                //                        sb.AppendLine($"--if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
+                //                        sb.AppendLine($"--ALTER TABLE [{newT.GetPostgresSchema()}].[{tableName}] DROP CONSTRAINT [{pkName}]");
+                //                        sb.AppendLine("--GO");
+
+                //                        var sql = SQLEmit.GetSqlCreatePK(newT) + "GO\r\n";
+                //                        var lines = sql.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+                //                        //Comment the whole SQL block
+                //                        var index = 0;
+                //                        foreach (var s in lines)
+                //                        {
+                //                            var l = s;
+                //                            l = "--" + l;
+                //                            lines[index] = l;
+                //                            index++;
+                //                        }
+
+                //                        sb.AppendLine(string.Join("\r\n", lines));
+                //                        sb.AppendLine();
+                //                    }
+                //                }
+
+                //                #endregion
+
+                //                #region Drop Foreign Keys
+                //                foreach (var r1 in oldT.GetRelations().ToList())
+                //                {
+                //                    var r2 = newT.Relationships.FirstOrDefault(x => x.Key == r1.Key);
+                //                    if (r2 == null)
+                //                    {
+                //                        sb.Append(SQLEmit.GetSqlRemoveFK(r1));
+                //                        sb.AppendLine("--GO");
+                //                        sb.AppendLine();
+                //                    }
+                //                }
+                //                #endregion
+
+                //                #region Rename audit columns if necessary
+                //                if (modelOld.Database.CreatedByColumnName != modelNew.Database.CreatedByColumnName)
+                //                {
+                //                    sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.CreatedByColumnName, modelNew.Database.CreatedByColumnName));
+                //                    sb.AppendLine("--GO");
+                //                }
+                //                if (modelOld.Database.CreatedDateColumnName != modelNew.Database.CreatedDateColumnName)
+                //                {
+                //                    sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.CreatedDateColumnName, modelNew.Database.CreatedDateColumnName));
+                //                    sb.AppendLine("--GO");
+                //                }
+                //                if (modelOld.Database.ModifiedByColumnName != modelNew.Database.ModifiedByColumnName)
+                //                {
+                //                    sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ModifiedByColumnName, modelNew.Database.ModifiedByColumnName));
+                //                    sb.AppendLine("--GO");
+                //                }
+                //                if (modelOld.Database.ModifiedDateColumnName != modelNew.Database.ModifiedDateColumnName)
+                //                {
+                //                    sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ModifiedDateColumnName, modelNew.Database.ModifiedDateColumnName));
+                //                    sb.AppendLine("--GO");
+                //                }
+                //                if (modelOld.Database.TimestampColumnName != modelNew.Database.TimestampColumnName)
+                //                {
+                //                    sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.TimestampColumnName, modelNew.Database.TimestampColumnName));
+                //                    sb.AppendLine("--GO");
+                //                }
+                //                #endregion
+
+                //                #region Emit Tenant View if need be
+
+                //                //If the table schema has changed then emit the Tenant view
+                //                if (schemaChanged && newT.IsTenant)
+                //                {
+                //                    var grantSB = new StringBuilder();
+                //                    var q1 = SQLEmit.GetSqlTenantView(modelNew, newT, grantSB);
+                //                    sb.AppendLine(q1);
+                //                    if (grantSB.ToString() != string.Empty)
+                //                        sb.AppendLine(grantSB.ToString());
+                //                }
+
+                //                #endregion
+
+                //                #region Static Data
+
+                //                //For right now just emit NEW if different.
+                //                //TODO: Generate difference scripts for delete and change too.
+                //                var oldStaticScript = SQLEmit.GetSqlInsertStaticData(oldT);
+                //                var newStaticScript = SQLEmit.GetSqlInsertStaticData(newT);
+                //                if (oldStaticScript != newStaticScript)
+                //                {
+                //                    sb.AppendLine(newStaticScript);
+                //                    sb.AppendLine(SQLEmit.GetSqlUpdateStaticData(oldT, newT));
+                //                    sb.AppendLine("--GO");
+                //                    sb.AppendLine();
+                //                }
+
+                //                #endregion
+
+                //                //TODO - Check hash porperties and if changed recompile tenant view
+
+                //            }
+                //        }
+
+                //        //Do another look for second pass at changes.
+                //        //These things can only be done after the above loop
+                //        foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+                //        {
+                //            var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                //            if (oldT != null)
+                //            {
+                //                #region Add Foreign Keys
+
+                //                foreach (var r1 in newT.GetRelations().ToList())
+                //                {
+                //                    var r2 = oldT.GetRelations().ToList().FirstOrDefault(x => x.Key == r1.Key);
+                //                    if (r2 == null)
+                //                    {
+                //                        //There is no OLD relation so it is new so add it
+                //                        sb.Append(SQLEmit.GetSqlAddFK(r1));
+                //                        sb.AppendLine("--GO");
+                //                        sb.AppendLine();
+                //                    }
+                //                    else if (r1.CorePropertiesHash != r2.CorePropertiesHash)
+                //                    {
+                //                        //The relation already exists and it has changed, so drop and re-add
+                //                        sb.Append(SQLEmit.GetSqlRemoveFK(r2));
+                //                        sb.AppendLine("--GO");
+                //                        sb.AppendLine();
+                //                        sb.Append(SQLEmit.GetSqlAddFK(r1));
+                //                        sb.AppendLine("--GO");
+                //                        sb.AppendLine();
+                //                    }
+                //                }
+
+                //                #endregion
+                //            }
+                //        }
+
+                //        #endregion
+
+                //        #region Move tables between schemas
+
+                //        var reschema = 0;
+                //        foreach (Table newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly))
+                //        {
+                //            var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                //            if (oldT != null)
+                //            {
+                //                if (string.Compare(oldT.GetPostgresSchema(), newT.GetPostgresSchema(), true) != 0)
+                //                {
+                //                    if (reschema == 0)
+                //                        sb.AppendLine("--MOVE TABLES TO PROPER SCHEMA IF NEED BE");
+
+                //                    //This table has changed schema so script it
+                //                    sb.AppendLine("--CREATE DATABASE SCHEMAS");
+                //                    sb.AppendLine("if not exists(select * from sys.schemas where name = '" + newT.GetPostgresSchema() + "')");
+                //                    sb.AppendLine("exec('CREATE SCHEMA [" + newT.GetPostgresSchema() + "]')");
+                //                    sb.AppendLine("--GO");
+                //                    sb.AppendLine("if exists (select * from sys.tables t inner join sys.schemas s on t.schema_id = s.schema_id where t.name = '" + newT.DatabaseName + "' and s.name = '" + oldT.GetPostgresSchema() + "')");
+                //                    sb.AppendLine("	ALTER SCHEMA [" + newT.GetPostgresSchema() + "] TRANSFER [" + oldT.GetPostgresSchema() + "].[" + newT.DatabaseName + "];");
+                //                    sb.AppendLine("--GO");
+                //                    reschema++;
+                //                }
+                //            }
+                //        }
+
+                //        if (reschema > 0) sb.AppendLine();
+
+                //        #endregion
+
+                //        #region Add Indexes
+                //        foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+                //        {
+                //            var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                //            if (oldT != null)
+                //            {
+                //                //If old exists and does old NOT, so create index
+                //                foreach (var newIndex in newT.TableIndexList)
+                //                {
+                //                    var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Key == newIndex.Key);
+                //                    if (oldIndex == null)
+                //                    {
+                //                        sb.AppendLine(SQLEmit.GetSQLCreateIndex(newT, newIndex, false));
+                //                        sb.AppendLine("--GO");
+                //                        sb.AppendLine();
+                //                    }
+                //                }
+
+                //                //Both exist, so if different, drop and re-create
+                //                foreach (var newIndex in newT.TableIndexList)
+                //                {
+                //                    var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Key == newIndex.Key);
+                //                    if (oldIndex != null && oldIndex.CorePropertiesHashNoNames != newIndex.CorePropertiesHashNoNames)
+                //                    {
+                //                        sb.AppendLine(SQLEmit.GetSQLCreateIndex(newT, newIndex, false));
+                //                        sb.AppendLine("--GO");
+                //                        sb.AppendLine();
+                //                    }
+                //                }
+                //            }
+                //        }
+                //        #endregion
+
+                //        #region Add/Remove deleted SP, Views, and Funcs
+
+                //        //Stored procedures
+                //        var removedItems = 0;
+                //        foreach (var oldT in modelOld.Database.CustomStoredProcedures.OrderBy(x => x.Name))
+                //        {
+                //            var newT = modelNew.Database.CustomStoredProcedures.FirstOrDefault(x => x.Key == oldT.Key);
+                //            if (newT == null)
+                //            {
+                //                sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('P'))");
+                //                sb.AppendLine("drop procedure [" + oldT.DatabaseName + "]");
+                //                removedItems++;
+                //            }
+                //            else if (newT.DatabaseName != oldT.DatabaseName)
+                //            {
+                //                //Name changed so remove old
+                //                sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('P'))");
+                //                sb.AppendLine("drop procedure [" + oldT.DatabaseName + "]");
+                //                removedItems++;
+                //            }
+                //        }
+
+                //        if (removedItems > 0)
+                //        {
+                //            sb.AppendLine("--GO");
+                //            sb.AppendLine();
+                //        }
+
+                //        foreach (var newT in modelNew.Database.CustomStoredProcedures.OrderBy(x => x.Name))
+                //        {
+                //            var oldT = modelOld.Database.CustomStoredProcedures.FirstOrDefault(x => x.Key == newT.Key);
+                //            if (oldT == null || (oldT.CorePropertiesHash != newT.CorePropertiesHash))
+                //            {
+                //                sb.Append(SQLEmit.GetSQLCreateStoredProc(newT, false));
+                //            }
+                //        }
+
+                //        //Views
+                //        removedItems = 0;
+                //        foreach (var oldT in modelOld.Database.CustomViews.OrderBy(x => x.Name))
+                //        {
+                //            var newT = modelNew.Database.CustomViews.FirstOrDefault(x => x.Key == oldT.Key);
+                //            if (newT == null)
+                //            {
+                //                sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('V'))");
+                //                sb.AppendLine("drop view [" + oldT.DatabaseName + "]");
+                //                removedItems++;
+                //            }
+                //            else if (newT.DatabaseName != oldT.DatabaseName)
+                //            {
+                //                //Name changed so remove old
+                //                sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('V'))");
+                //                sb.AppendLine("drop view [" + oldT.DatabaseName + "]");
+                //                removedItems++;
+                //            }
+                //        }
+
+                //        if (removedItems > 0)
+                //        {
+                //            sb.AppendLine("--GO");
+                //            sb.AppendLine();
+                //        }
+
+                //        foreach (var newT in modelNew.Database.CustomViews.OrderBy(x => x.Name))
+                //        {
+                //            var oldT = modelOld.Database.CustomViews.FirstOrDefault(x => x.Key == newT.Key);
+                //            if (oldT == null || (oldT.CorePropertiesHash != newT.CorePropertiesHash))
+                //            {
+                //                sb.Append(SQLEmit.GetSqlCreateView(newT, false));
+                //            }
+                //        }
+
+                //        //Functions
+                //        removedItems = 0;
+                //        foreach (var oldT in modelOld.Database.Functions.OrderBy(x => x.Name))
+                //        {
+                //            var newT = modelNew.Database.Functions.FirstOrDefault(x => x.Key == oldT.Key);
+                //            if (newT == null)
+                //            {
+                //                sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('FN','IF','TF','FS','FT'))");
+                //                sb.AppendLine("drop function [" + oldT.DatabaseName + "]");
+                //                removedItems++;
+                //            }
+                //            else if (newT.DatabaseName != oldT.DatabaseName)
+                //            {
+                //                //Name changed so remove old
+                //                sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('FN','IF','TF','FS','FT'))");
+                //                sb.AppendLine("drop function [" + oldT.DatabaseName + "]");
+                //                removedItems++;
+                //            }
+                //        }
+
+                //        if (removedItems > 0)
+                //        {
+                //            sb.AppendLine("--GO");
+                //            sb.AppendLine();
+                //        }
+
+                //        foreach (var newT in modelNew.Database.Functions.OrderBy(x => x.Name))
+                //        {
+                //            var oldT = modelOld.Database.Functions.FirstOrDefault(x => x.Key == newT.Key);
+                //            if (oldT == null || (oldT.CorePropertiesHash != newT.CorePropertiesHash))
+                //            {
+                //                sb.Append(SQLEmit.GetSQLCreateFunction(newT, false, modelNew.EFVersion));
+                //            }
+                //        }
+
+                //        #endregion
+
+                //        #region Add/Remove Audit fields
+
+                //        foreach (var newT in modelNew.Database.Tables.OrderBy(x => x.Name))
+                //        {
+                //            var oldT = modelOld.Database.Tables.FirstOrDefault(x => x.Key == newT.Key);
+                //            if (oldT != null)
+                //            {
+                //                if (!oldT.AllowCreateAudit && newT.AllowCreateAudit)
+                //                    Globals.AppendCreateAudit(newT, modelNew, sb);
+                //                if (!oldT.AllowModifiedAudit && newT.AllowModifiedAudit)
+                //                    Globals.AppendModifiedAudit(newT, modelNew, sb);
+                //                if (!oldT.AllowTimestamp && newT.AllowTimestamp)
+                //                    Globals.AppendTimestampAudit(newT, modelNew, sb);
+
+                //                if (oldT.AllowCreateAudit && !newT.AllowCreateAudit)
+                //                    Globals.DropCreateAudit(newT, modelNew, sb);
+                //                if (oldT.AllowModifiedAudit && !newT.AllowModifiedAudit)
+                //                    Globals.DropModifiedAudit(newT, modelNew, sb);
+                //                if (oldT.AllowTimestamp && !newT.AllowTimestamp)
+                //                    Globals.DropTimestampAudit(newT, modelNew, sb);
+                //            }
+                //        }
+
+                //        #endregion
+
+                //        #region Loop and change computed fields
+
+                //        foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+                //        {
+                //            //If the table exists...
+                //            var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                //            if (oldT != null)
+                //            {
+                //                var tChanged = false;
+                //                //If there is a computed field with a different value
+                //                foreach (var newC in newT.GetColumns().Where(x => x.ComputedColumn).ToList())
+                //                {
+                //                    var oldC = Globals.GetColumnByKey(oldT.Columns, newC.Key);
+                //                    if (oldC != null && oldC.Formula != newC.Formula)
+                //                    {
+                //                        tChanged = true;
+                //                        sb.AppendLine($"if exists(select t.name, c.name from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where and t.name = '{newT.DatabaseName}' and c.name = '{newC.DatabaseName}' and s.name = '{newT.GetPostgresSchema()}')");
+                //                        sb.AppendLine($"ALTER TABLE [{newT.GetPostgresSchema()}].[{newT.DatabaseName}] DROP COLUMN [{newC.DatabaseName}]");
+                //                        sb.AppendLine("--GO");
+                //                        sb.AppendLine($"ALTER TABLE [{newT.GetPostgresSchema()}].[{newT.DatabaseName}] ADD [{newC.DatabaseName}] AS ({newC.Formula})");
+                //                        sb.AppendLine("--GO");
+                //                        sb.AppendLine();
+                //                    }
+                //                }
+
+                //                if (newT.IsTenant && tChanged)
+                //                {
+                //                    var grantSB = new StringBuilder();
+                //                    var q1 = SQLEmit.GetSqlTenantView(modelNew, newT, grantSB);
+                //                    sb.AppendLine(q1);
+                //                    if (grantSB.ToString() != string.Empty)
+                //                        sb.AppendLine(grantSB.ToString());
+                //                }
+                //            }
+                //        }
+
+                //        #endregion
+
+                return sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
         #endregion
 
         #endregion
@@ -1508,6 +1508,100 @@ namespace nHydrate.Generator.PostgresInstaller
             var defaultName = "DF__" + table.DatabaseName + "_" + column.DatabaseName;
             defaultName = defaultName.ToUpper();
             return defaultName;
+        }
+
+        public static string GetSqlInsertStaticData(Table table)
+        {
+            try
+            {
+                var sb = new StringBuilder();
+                var model = (ModelRoot)table.Root;
+
+                //Generate static data
+                if (table.StaticData.Count > 0)
+                {
+                    var isIdentity = false;
+                    foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
+                        isIdentity |= (column.Identity == IdentityTypeConstants.Database);
+
+                    sb.AppendLine("--INSERT STATIC DATA FOR TABLE [" + Globals.GetTableDatabaseName(model, table) + "]");
+
+                    foreach (var rowEntry in table.StaticData.AsEnumerable<RowEntry>())
+                    {
+
+                        var fieldValues = new Dictionary<string, string>();
+                        foreach (var cellEntry in rowEntry.CellEntries.ToList())
+                        {
+                            var column = cellEntry.ColumnRef.Object as Column;
+                            var sqlValue = cellEntry.GetSQLData();
+                            if (sqlValue == null) //Null is actually returned if the value can be null
+                            {
+                                if (!string.IsNullOrEmpty(column.Default))
+                                {
+                                    if (ModelHelper.IsTextType(column.DataType) || ModelHelper.IsDateType(column.DataType))
+                                    {
+                                        if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
+                                            fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
+                                        else
+                                            fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
+                                    }
+                                    else
+                                    {
+                                        fieldValues.Add(column.Name, column.Default);
+                                    }
+                                }
+                                else
+                                {
+                                    fieldValues.Add(column.Name, "NULL");
+                                }
+                            }
+                            else
+                            {
+                                if (column.DataType == SqlDbType.Bit)
+                                {
+                                    sqlValue = sqlValue.ToLower().Trim();
+                                    if (sqlValue == "true") sqlValue = "1";
+                                    else if (sqlValue == "false") sqlValue = "0";
+                                    else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
+                                }
+
+                                if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
+                                    fieldValues.Add(column.Name, "N" + sqlValue);
+                                else
+                                    fieldValues.Add(column.Name, sqlValue);
+
+                            }
+                        }
+
+                        // this could probably be done smarter
+                        // but I am concerned about the order of the keys and values coming out right
+                        var fieldList = new List<string>();
+                        var valueList = new List<string>();
+                        var primaryKeyColumnNames = table.PrimaryKeyColumns.Select(x => x.Name);
+                        foreach (var kvp in fieldValues)
+                        {
+                            fieldList.Add("\"" + kvp.Key + "\"");
+                            valueList.Add(kvp.Value);
+                        }
+
+                        var fieldListString = string.Join(",", fieldList);
+                        var valueListString = string.Join(",", valueList);
+
+                        sb.AppendLine("INSERT INTO \"" + table.GetSQLSchema() + "\".\"" + Globals.GetTableDatabaseName(model, table) + "\" (" + fieldListString + ") OVERRIDING SYSTEM VALUE values (" + valueListString + ") ON CONFLICT DO NOTHING;");
+                    }
+
+                    sb.AppendLine();
+                    sb.AppendLine("--GO");
+                    sb.AppendLine();
+                }
+
+                return sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
 
     }
