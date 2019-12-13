@@ -86,7 +86,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                 //this.AppendCreatePrimaryKey(); //do not add this. user can handle this in upgrade
                 //this.AppendAuditTables();
                 //this.AppendCreateUniqueKey();
-                //this.AppendCreateIndexes();
+                this.AppendCreateIndexes();
                 this.AppendRemoveDefaults();
                 this.AppendCreateDefaults();
                 //this.AppendFixNulls();

@@ -1254,14 +1254,10 @@ namespace nHydrate.Generator.PostgresInstaller
                 {
                     sb.AppendLine("--##SECTION BEGIN [SAFETY INDEX TYPE]");
 
-                    //If this is to be a clustered index then check if it exists and is non-clustered and remove it
-                    //If this is to be a non-clustered index then check if it exists and is clustered and remove it
+                    //TODO: If this is to be a clustered index then check if it exists and is non-clustered and remove it
+                    //TODO: If this is to be a non-clustered index then check if it exists and is clustered and remove it
                     sb.AppendLine("--DELETE INDEX");
-                    if (index.Clustered)
-                        sb.AppendLine($"if exists(select * from sys.indexes where name = '{indexName}' and type_desc = 'NONCLUSTERED')");
-                    else
-                        sb.AppendLine($"if exists(select * from sys.indexes where name = '{indexName}' and type_desc = 'CLUSTERED')");
-                    sb.AppendLine($"DROP INDEX [{indexName}] ON [{table.GetPostgresSchema()}].[{tableName}]");
+                    sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\"");
                     sb.AppendLine("--GO");
                     sb.AppendLine("--##SECTION END [SAFETY INDEX TYPE]");
                     sb.AppendLine();
@@ -1270,16 +1266,12 @@ namespace nHydrate.Generator.PostgresInstaller
                 //Do not create unique index for PK (it is already unique)
                 if (!index.PrimaryKey)
                 {
-                    var checkSqlList = new List<string>();
-                    foreach (var c in columnList)
-                    {
-                        checkSqlList.Add($"exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where c.name = '{c.Value.DatabaseName}' and t.name = '{table.DatabaseName}' and s.name = '{table.GetPostgresSchema()}')");
-                    }
+                    //TODO: handle UNIQUE
+                    //TODO: handle CLUSTERED
 
                     sb.AppendLine($"--INDEX FOR TABLE [{table.DatabaseName}] COLUMNS:" + string.Join(", ", columnList.Select(x => "[" + x.Value.DatabaseName + "]")));
-                    sb.AppendLine($"if not exists(select * from sys.indexes where name = '{indexName}') and " + string.Join(" and ", checkSqlList));
-                    sb.Append($"CREATE " + (index.IsUnique ? "UNIQUE " : string.Empty) + (index.Clustered ? "CLUSTERED " : "NONCLUSTERED ") + "INDEX [" + indexName + "] ON [" + table.GetPostgresSchema() + "].[" + tableName + "] (");
-                    sb.Append(string.Join(",", columnList.Select(x => "[" + x.Value.DatabaseName + "] " + (x.Key.Ascending ? "ASC" : "DESC"))));
+                    sb.Append($"CREATE INDEX IF NOT EXISTS \"" + indexName + "\" ON \"" + table.GetPostgresSchema() + "\".\"" + tableName + "\" (");
+                    sb.Append(string.Join(",", columnList.Select(x => "\"" + x.Value.DatabaseName + "\" " + (x.Key.Ascending ? "ASC" : "DESC"))));
                     sb.AppendLine(")");
                 }
 
