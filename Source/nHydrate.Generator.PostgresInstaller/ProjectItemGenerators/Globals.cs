@@ -69,30 +69,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
             }
         }
 
-        public static void AppendBusinessEntryCatch(StringBuilder sb)
-        {
-            sb.AppendLine("			catch (System.Data.DBConcurrencyException dbcex)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				throw new ConcurrencyException(\"Concurrency failure\", dbcex);");
-            sb.AppendLine("			}");
-            sb.AppendLine("			catch (System.Data.SqlClient.SqlException sqlexp)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				if (sqlexp.Number == 547 || sqlexp.Number == 2627)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					throw new UniqueConstraintViolatedException(\"Constraint Failure\", sqlexp);");
-            sb.AppendLine("				}");
-            sb.AppendLine("				else");
-            sb.AppendLine("				{");
-            sb.AppendLine("					throw;");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("			catch(Exception ex)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				System.Diagnostics.Debug.WriteLine(ex.ToString());");
-            sb.AppendLine("				throw;");
-            sb.AppendLine("			}");
-        }
-
         public static string BuildSelectList(TableComponent component, ModelRoot model)
         {
             var index = 0;
@@ -313,10 +289,10 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
         public static void DropCreateAudit(Table table, ModelRoot model, StringBuilder sb)
         {
             sb.AppendLine("--REMOVE AUDIT TRAIL CREATE FOR TABLE [" + table.DatabaseName + "]");
-            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.CreatedByColumnName}\"");
+            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.CreatedByColumnName}\";");
             var dfName = $"DF__{table.DatabaseName}_{model.Database.CreatedDateColumnName}".ToUpper();
             sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{dfName}\"");
-            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.CreatedDateColumnName}\"");
+            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.CreatedDateColumnName}\";");
             sb.AppendLine("--GO");
             sb.AppendLine();
         }
@@ -324,10 +300,10 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
         public static void DropModifiedAudit(Table table, ModelRoot model, StringBuilder sb)
         {
             sb.AppendLine($"--REMOVE AUDIT TRAIL MODIFY FOR TABLE [{table.DatabaseName}]");
-            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.ModifiedByColumnName}\"");
+            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.ModifiedByColumnName}\";");
             var dfName = $"DF__{table.DatabaseName}_{model.Database.ModifiedDateColumnName}".ToUpper();
             sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{dfName}\"");
-            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.ModifiedDateColumnName}\"");
+            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.ModifiedDateColumnName}\";");
             sb.AppendLine("--GO");
             sb.AppendLine();
         }
@@ -335,7 +311,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
         public static void DropTimestampAudit(Table table, ModelRoot model, StringBuilder sb)
         {
             sb.AppendLine($"--REMOVE AUDIT TRAIL TIMESTAMP FOR TABLE [{table.DatabaseName}]");
-            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.TimestampColumnName}\"");
+            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.TimestampColumnName}\";");
             sb.AppendLine("--GO");
             sb.AppendLine();
         }
