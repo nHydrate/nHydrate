@@ -967,7 +967,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 if (!string.IsNullOrEmpty(tableAliasName))
                     tableName = tableAliasName;
 
-                sb.AppendLine("--CREATE TABLE [" + tableName + "]");
+                sb.AppendLine($"--CREATE TABLE [{tableName}]");
                 sb.AppendLine($"CREATE TABLE IF NOT EXISTS \"{table.GetPostgresSchema()}\".\"{tableName}\" (");
 
                 var firstLoop = true;
@@ -977,6 +977,7 @@ namespace nHydrate.Generator.PostgresInstaller
                     else firstLoop = false;
                     sb.Append("\t" + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true));
                 }
+
                 AppendModifiedAudit(model, table, sb);
                 AppendCreateAudit(model, table, sb);
                 AppendTimestamp(model, table, sb);
@@ -1170,9 +1171,9 @@ namespace nHydrate.Generator.PostgresInstaller
             {
                 var d = defaultValue.ToLower();
                 if ((d == "false") || (d == "0"))
-                    tempBuilder.Append("0");
+                    tempBuilder.Append("false");
                 else if ((d == "true") || (d == "1"))
-                    tempBuilder.Append("1");
+                    tempBuilder.Append("true");
             }
             else if (column.IsBinaryType)
             {
@@ -1213,7 +1214,7 @@ namespace nHydrate.Generator.PostgresInstaller
             var retVal = modelDefault;
             if (StringHelper.Match(modelDefault, "newid") || StringHelper.Match(modelDefault, "newid()"))
             {
-                retVal = "uuid_generate_v4";
+                retVal = "uuid_generate_v4()";
             }
             else if (StringHelper.Match(modelDefault, "getdate") || StringHelper.Match(modelDefault, "getdate()") ||
                 StringHelper.Match(modelDefault, "sysdatetime") || StringHelper.Match(modelDefault, "sysdatetime()"))
@@ -1259,7 +1260,7 @@ namespace nHydrate.Generator.PostgresInstaller
                     //TODO: If this is to be a clustered index then check if it exists and is non-clustered and remove it
                     //TODO: If this is to be a non-clustered index then check if it exists and is clustered and remove it
                     sb.AppendLine("--DELETE INDEX");
-                    sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\"");
+                    sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\";");
                     sb.AppendLine("--GO");
                     sb.AppendLine("--##SECTION END [SAFETY INDEX TYPE]");
                     sb.AppendLine();
@@ -1274,7 +1275,7 @@ namespace nHydrate.Generator.PostgresInstaller
                     sb.AppendLine($"--INDEX FOR TABLE [{table.DatabaseName}] COLUMNS:" + string.Join(", ", columnList.Select(x => "[" + x.Value.DatabaseName + "]")));
                     sb.Append($"CREATE INDEX IF NOT EXISTS \"" + indexName + "\" ON \"" + table.GetPostgresSchema() + "\".\"" + tableName + "\" (");
                     sb.Append(string.Join(",", columnList.Select(x => "\"" + x.Value.DatabaseName + "\" " + (x.Key.Ascending ? "ASC" : "DESC"))));
-                    sb.AppendLine(")");
+                    sb.AppendLine(");");
                 }
 
             }
@@ -1515,7 +1516,7 @@ namespace nHydrate.Generator.PostgresInstaller
                     foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
                         isIdentity |= (column.Identity == IdentityTypeConstants.Database);
 
-                    sb.AppendLine("--INSERT STATIC DATA FOR TABLE [" + Globals.GetTableDatabaseName(model, table) + "]");
+                    sb.AppendLine($"--INSERT STATIC DATA FOR TABLE [{Globals.GetTableDatabaseName(model, table)}]");
 
                     foreach (var rowEntry in table.StaticData.AsEnumerable<RowEntry>())
                     {
@@ -1551,9 +1552,9 @@ namespace nHydrate.Generator.PostgresInstaller
                                 if (column.DataType == SqlDbType.Bit)
                                 {
                                     sqlValue = sqlValue.ToLower().Trim();
-                                    if (sqlValue == "true") sqlValue = "1";
-                                    else if (sqlValue == "false") sqlValue = "0";
-                                    else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
+                                    if (sqlValue == "true" || sqlValue == "1") sqlValue = "true";
+                                    else if (sqlValue == "false" || sqlValue == "0") sqlValue = "false";
+                                    else if (sqlValue != "1") sqlValue = "false"; //catch all, must be true/false
                                 }
 
                                 if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
@@ -1572,7 +1573,7 @@ namespace nHydrate.Generator.PostgresInstaller
                         var primaryKeyColumnNames = table.PrimaryKeyColumns.Select(x => x.Name);
                         foreach (var kvp in fieldValues)
                         {
-                            fieldList.Add("\"" + kvp.Key + "\"");
+                            fieldList.Add($"\"{kvp.Key}\"");
                             valueList.Add(kvp.Value);
                         }
 
@@ -1681,16 +1682,14 @@ namespace nHydrate.Generator.PostgresInstaller
                 (parentTable.TypedTable != TypedTableConstants.EnumOnly) &&
                 (childTable.TypedTable != TypedTableConstants.EnumOnly))
             {
-                sb.AppendLine("--FOREIGN KEY RELATIONSHIP [" + parentTable.DatabaseName + "] -> [" + childTable.DatabaseName + "] (" + GetFieldNames(relation) + ")");
-                //sb.AppendLine("if not exists(select * from sys.objects where name = '" + indexName + "' and type = 'F')");
-                sb.AppendLine("ALTER TABLE \"" + childTable.GetPostgresSchema() + "\".\"" + childTable.DatabaseName + "\" ADD ");
-                sb.AppendLine("CONSTRAINT \"" + indexName + "\" FOREIGN KEY ");
+                sb.AppendLine($"--FOREIGN KEY RELATIONSHIP [{parentTable.DatabaseName}] -> [{childTable.DatabaseName}] ({GetFieldNames(relation)})");
+                sb.AppendLine($"ALTER TABLE \"{childTable.GetPostgresSchema()}\".\"{childTable.DatabaseName}\" ADD ");
+                sb.AppendLine($"CONSTRAINT \"{indexName}\" FOREIGN KEY ");
                 sb.AppendLine("(");
                 sb.Append(AppendChildTableColumns(relation));
-                sb.AppendLine(") REFERENCES \"" + parentTable.GetPostgresSchema() + "\".\"" +
-                              parentTable.DatabaseName + "\" (");
+                sb.AppendLine($") REFERENCES \"{parentTable.GetPostgresSchema()}\".\"{parentTable.DatabaseName}\" (");
                 sb.Append(AppendParentTableColumns(relation, childTable));
-                sb.AppendLine(")");
+                sb.AppendLine(");");
             }
             return sb.ToString();
         }
@@ -1706,7 +1705,7 @@ namespace nHydrate.Generator.PostgresInstaller
             if (columnList.Count > 0)
             {
                 sb.AppendLine("--DELETE INDEX");
-                sb.AppendLine("DROP INDEX IF EXISTS \"" + indexName + "\"");
+                sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\";");
             }
             return sb.ToString();
         }
@@ -1844,8 +1843,8 @@ namespace nHydrate.Generator.PostgresInstaller
         {
             //RENAME TABLE
             var sb = new StringBuilder();
-            sb.AppendLine("--RENAME TABLE '" + oldTable.DatabaseName + "' TO '" + newTable.DatabaseName + "'");
-            sb.AppendLine("ALTER TABLE IF EXISTS \"" + oldTable.GetPostgresSchema() + "\".\"" + oldTable.DatabaseName + "\" RENAME TO \"" + newTable.GetPostgresSchema() + "\".\"" + newTable.DatabaseName + "\";");
+            sb.AppendLine($"--RENAME TABLE '{oldTable.DatabaseName}' TO '{newTable.DatabaseName}'");
+            sb.AppendLine($"ALTER TABLE IF EXISTS \"{oldTable.GetPostgresSchema()}\".\"{oldTable.DatabaseName}\" RENAME TO \"{newTable.GetPostgresSchema()}\".\"{newTable.DatabaseName}\";");
             sb.AppendLine("--GO");
             sb.AppendLine();
 
@@ -1854,7 +1853,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 //RENAME PRIMARY KEY (it will be readded in create script)
                 var oldIndexName = "PK_" + oldTable.DatabaseName.ToUpper();
                 var newIndexName = "PK_" + newTable.DatabaseName.ToUpper();
-                sb.AppendLine("--RENAME PRIMARY KEY FOR TABLE '" + oldTable.DatabaseName + "'");
+                sb.AppendLine($"--RENAME PRIMARY KEY FOR TABLE '{oldTable.DatabaseName}'");
                 sb.AppendLine($"ALTER INDEX IF EXISTS \"{oldIndexName}\" RENAME TO \"{newIndexName}\";");
                 sb.AppendLine();
             }
@@ -2064,13 +2063,13 @@ namespace nHydrate.Generator.PostgresInstaller
                     var indexName = "IX_" + t.Name.Replace("-", "") + "_" + c.Name.Replace("-", string.Empty);
                     indexName = indexName.ToUpper();
                     sb.AppendLine("--DELETE UNIQUE CONTRAINT");
-                    sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\"");
+                    sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\";");
                     sb.AppendLine();
 
                     indexName = CreateIndexName(t, c);
                     indexName = indexName.ToUpper();
                     sb.AppendLine("--DELETE INDEX");
-                    sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\"");
+                    sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\";");
                     sb.AppendLine();
                 }
             }
@@ -2229,7 +2228,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 indexName = CreateIndexName(newTable, newColumn);
                 indexName = indexName.ToUpper();
                 sb.AppendLine("--DELETE INDEX");
-                sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\"");
+                sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\";");
                 sb.AppendLine();
             }
 
@@ -2481,9 +2480,9 @@ namespace nHydrate.Generator.PostgresInstaller
                                 if (column.DataType == SqlDbType.Bit)
                                 {
                                     sqlValue = sqlValue.ToLower().Trim();
-                                    if (sqlValue == "true") sqlValue = "1";
-                                    else if (sqlValue == "false") sqlValue = "0";
-                                    else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
+                                    if (sqlValue == "true") sqlValue = "true";
+                                    else if (sqlValue == "false") sqlValue = "false";
+                                    else if (sqlValue != "1") sqlValue = "false"; //catch all, must be true/false
                                 }
 
                                 if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
