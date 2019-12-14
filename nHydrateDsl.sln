@@ -139,6 +139,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.Generator.EFCodeFi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.Generator.PostgresInstaller", "Source\nHydrate.Generator.PostgresInstaller\nHydrate.Generator.PostgresInstaller.csproj", "{17196B08-31CE-4B0F-BC86-9FE31781B53C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.Tools.PostgresImporter", "Source\nHydrate.Tools.PostgresImporter\nHydrate.Tools.PostgresImporter.csproj", "{A8F46545-0A38-4F55-B7E2-FD6418646C7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -289,6 +291,14 @@ Global
 		{17196B08-31CE-4B0F-BC86-9FE31781B53C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{17196B08-31CE-4B0F-BC86-9FE31781B53C}.Release|x86.ActiveCfg = Release|x86
 		{17196B08-31CE-4B0F-BC86-9FE31781B53C}.Release|x86.Build.0 = Release|x86
+		{A8F46545-0A38-4F55-B7E2-FD6418646C7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8F46545-0A38-4F55-B7E2-FD6418646C7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8F46545-0A38-4F55-B7E2-FD6418646C7A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A8F46545-0A38-4F55-B7E2-FD6418646C7A}.Debug|x86.Build.0 = Debug|Any CPU
+		{A8F46545-0A38-4F55-B7E2-FD6418646C7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8F46545-0A38-4F55-B7E2-FD6418646C7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8F46545-0A38-4F55-B7E2-FD6418646C7A}.Release|x86.ActiveCfg = Release|Any CPU
+		{A8F46545-0A38-4F55-B7E2-FD6418646C7A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
