@@ -639,12 +639,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	internal partial interface IAuditableSet");
                 sb.AppendLine("	{");
-                sb.AppendLine("		DateTime CreatedDate { get; set; }");
-                sb.AppendLine("		DateTime ModifiedDate { get; set; }");
-                sb.AppendLine("		string ModifiedBy { get; set; }");
-                sb.AppendLine("		string CreatedBy { get; set; }");
-                sb.AppendLine("		void ResetCreatedBy(string modifier);");
-                sb.AppendLine("		void ResetModifiedBy(string modifier);");
+                sb.AppendLine("		DateTime CreatedDate { set; }");
+                sb.AppendLine("		DateTime ModifiedDate { set; }");
+                sb.AppendLine("		string ModifiedBy { set; }");
+                sb.AppendLine("		string CreatedBy { set; }");
+                //sb.AppendLine("		void ResetCreatedBy(string modifier);");
+                //sb.AppendLine("		void ResetModifiedBy(string modifier);");
                 sb.AppendLine("	}");
                 sb.AppendLine();
 
@@ -661,11 +661,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		string CreatedBy { get; }");
                 sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		DateTime CreatedDate { get; }");
+                sb.AppendLine("		DateTime? CreatedDate { get; }");
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		string ModifiedBy { get; }");
                 sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		DateTime ModifiedDate { get; }");
+                sb.AppendLine("		DateTime? ModifiedDate { get; }");
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		byte[] TimeStamp { get; }");
                 sb.AppendLine("	}");

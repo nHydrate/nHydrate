@@ -718,8 +718,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("					var audit = entity as IAuditableSet;");
             sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
             sb.AppendLine("					{");
-            sb.AppendLine("						if (audit != null) audit.ResetCreatedBy(this.ContextStartup.Modifer);");
-            sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
+            sb.AppendLine("						if (audit != null) audit.CreatedBy = this.ContextStartup.Modifer;");
+            sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifer;");
             sb.AppendLine("					}");
             sb.AppendLine("					audit.CreatedDate = markedTime;");
             sb.AppendLine("					audit.ModifiedDate = markedTime;");
@@ -740,7 +740,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("					var audit = entity as IAuditableSet;");
             sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
             sb.AppendLine("					{");
-            sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
+            sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifer;");
             sb.AppendLine("					}");
             sb.AppendLine("					audit.ModifiedDate = markedTime;");
             sb.AppendLine("				}");
@@ -943,7 +943,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		{");
 
             sb.AppendLine("			if (entity == null) throw new NullReferenceException();");
-            sb.AppendLine("			var audit = entity as " + this.GetLocalNamespace() + ".IAuditableSet;");
+            sb.AppendLine($"			var audit = entity as {this.GetLocalNamespace()}.IAuditableSet;");
             sb.AppendLine("			if (audit != null)");
             sb.AppendLine("			{");
             sb.AppendLine("				audit.CreatedBy = _contextStartup.Modifer;");

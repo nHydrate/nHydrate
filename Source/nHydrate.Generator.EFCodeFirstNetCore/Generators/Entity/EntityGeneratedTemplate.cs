@@ -1469,10 +1469,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             sb.AppendLine("		string " + this.GetLocalNamespace() + ".IAuditableSet.CreatedBy");
             sb.AppendLine("		{");
-            if (_item.AllowCreateAudit)
-                sb.AppendLine("			get { return this." + _model.Database.CreatedByPascalName + "; }");
-            else
-                sb.AppendLine("			get { return null; }");
+            //if (_item.AllowCreateAudit)
+            //    sb.AppendLine("			get { return this." + _model.Database.CreatedByPascalName + "; }");
+            //else
+            //    sb.AppendLine("			get { return null; }");
             if (_item.AllowCreateAudit)
                 sb.AppendLine("			set { this." + _model.Database.CreatedByPascalName + " = value; }");
             else
@@ -1482,15 +1482,16 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             sb.AppendLine("		string " + this.GetLocalNamespace() + ".IAuditableSet.ModifiedBy");
             sb.AppendLine("		{");
-            if (_item.AllowModifiedAudit)
-                sb.AppendLine("			get { return this." + _model.Database.ModifiedByPascalName + "; }");
-            else
-                sb.AppendLine("			get { return null; }");
+            //if (_item.AllowModifiedAudit)
+            //    sb.AppendLine("			get { return this." + _model.Database.ModifiedByPascalName + "; }");
+            //else
+            //    sb.AppendLine("			get { return null; }");
             if (_item.AllowModifiedAudit)
                 sb.AppendLine("			set { this." + _model.Database.ModifiedByPascalName + " = value; }");
             else
                 sb.AppendLine("			set { ; }");
             sb.AppendLine("		}");
+            sb.AppendLine();
 
             sb.AppendLine("		string " + this.GetLocalNamespace() + ".IAuditable.CreatedBy");
             sb.AppendLine("		{");
@@ -1500,7 +1501,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("			get { return null; }");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditable.CreatedDate");
+            sb.AppendLine("		System.DateTime? " + this.GetLocalNamespace() + ".IAuditable.CreatedDate");
             sb.AppendLine("		{");
             if (_item.AllowCreateAudit)
                 sb.AppendLine("			get { return this." + _model.Database.CreatedDatePascalName + "; }");
@@ -1532,7 +1533,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditable.ModifiedDate");
+            sb.AppendLine("		System.DateTime? " + this.GetLocalNamespace() + ".IAuditable.ModifiedDate");
             sb.AppendLine("		{");
             if (_item.AllowModifiedAudit)
                 sb.AppendLine("			get { return this." + _model.Database.ModifiedDatePascalName + "; }");
@@ -1550,36 +1551,36 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		void IAuditableSet.ResetModifiedBy(string modifier)");
-            sb.AppendLine("		{");
-            if (_item.AllowModifiedAudit)
-            {
-                sb.AppendLine("			if (this." + _model.Database.ModifiedByPascalName + " != modifier)");
-                sb.AppendLine("				this." + _model.Database.ModifiedByPascalName + " = modifier;");
-            }
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		void IAuditableSet.ResetCreatedBy(string modifier)");
-            sb.AppendLine("		{");
-            if (_item.AllowCreateAudit)
-            {
-                sb.AppendLine("			if (this." + _model.Database.CreatedByPascalName + " != modifier)");
-                sb.AppendLine("				this." + _model.Database.CreatedByPascalName + " = modifier;");
-            }
-            sb.AppendLine("			((IAuditableSet)this).ResetModifiedBy(modifier);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            //sb.AppendLine("		void IAuditableSet.ResetModifiedBy(string modifier)");
+            //sb.AppendLine("		{");
+            //if (_item.AllowModifiedAudit)
+            //{
+            //    sb.AppendLine("			if (this." + _model.Database.ModifiedByPascalName + " != modifier)");
+            //    sb.AppendLine("				this." + _model.Database.ModifiedByPascalName + " = modifier;");
+            //}
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
+            //sb.AppendLine("		void IAuditableSet.ResetCreatedBy(string modifier)");
+            //sb.AppendLine("		{");
+            //if (_item.AllowCreateAudit)
+            //{
+            //    sb.AppendLine("			if (this." + _model.Database.CreatedByPascalName + " != modifier)");
+            //    sb.AppendLine("				this." + _model.Database.CreatedByPascalName + " = modifier;");
+            //}
+            //sb.AppendLine("			((IAuditableSet)this).ResetModifiedBy(modifier);");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
 
             sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditableSet.CreatedDate");
             sb.AppendLine("		{");
             if (_item.AllowCreateAudit)
             {
-                sb.AppendLine("			get { return this." + _model.Database.CreatedDatePascalName + "; }");
+                //sb.AppendLine("			get { return this." + _model.Database.CreatedDatePascalName + "; }");
                 sb.AppendLine("			set { this." + _model.Database.CreatedDatePascalName + " = value; }");
             }
             else
             {
-                sb.AppendLine("			get { return null; }");
+                //sb.AppendLine("			get { return null; }");
                 sb.AppendLine("			set { ; }");
             }
             sb.AppendLine("		}");
@@ -1589,17 +1590,16 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		{");
             if (_item.AllowModifiedAudit)
             {
-                sb.AppendLine("			get { return this." + _model.Database.ModifiedDatePascalName + "; }");
+                //sb.AppendLine("			get { return this." + _model.Database.ModifiedDatePascalName + "; }");
                 sb.AppendLine("			set { this." + _model.Database.ModifiedDatePascalName + " = value; }");
             }
             else
             {
-                sb.AppendLine("			get { return null; }");
+                //sb.AppendLine("			get { return null; }");
                 sb.AppendLine("			set { ; }");
             }
             sb.AppendLine("		}");
             sb.AppendLine();
-
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();

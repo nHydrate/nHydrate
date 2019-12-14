@@ -794,7 +794,7 @@ namespace PROJECTNAMESPACE
             sb.AppendLine("\"LastUpdate\" timestamp NOT NULL,");
             sb.AppendLine("\"ModelKey\" UUID PRIMARY KEY,");
             sb.AppendLine("\"History\" text NOT NULL");
-            sb.AppendLine(")");
+            sb.AppendLine(");");
             sb.AppendLine();
 
             sb.AppendLine("--ADD/UPDATE THE VERSION METADATA FOR THIS MODEL");
