@@ -81,7 +81,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredPr
                     sb.AppendLine();
                 }
 
-                sb.AppendLine("--This SQL is generated for the model defined view [" + _view.DatabaseName + "]");
+                sb.AppendLine($"--This SQL is generated for the model defined view [{_view.DatabaseName}]");
                 sb.AppendLine();
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInSQL(sb, _model);
 

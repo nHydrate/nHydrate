@@ -2103,7 +2103,7 @@ namespace nHydrate.Generator.PostgresInstaller
             {
                 //RENAME COLUMN
                 sb.AppendLine(SQLEmit.GetSqlRenameColumn(oldColumn, newColumn));
-                sb.AppendLine("GO");
+                sb.AppendLine("--GO");
                 sb.AppendLine();
 
                 //rename all indexes for this table (later we can select just for this column)
@@ -2311,24 +2311,24 @@ namespace nHydrate.Generator.PostgresInstaller
                 sb.AppendLine();
                 sb.AppendLine("--CREATE A NEW TEMP COLUMN AND MOVE THE DATA THERE");
                 sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] ADD [__TCOL] " + oldColumn.DatabaseType);
-                sb.AppendLine("GO");
+                sb.AppendLine("--GO");
                 sb.AppendLine("UPDATE [" + newTable.DatabaseName + "] SET [__TCOL] = [" + oldColumn.DatabaseName + "]");
-                sb.AppendLine("GO");
+                sb.AppendLine("--GO");
                 sb.AppendLine();
                 sb.AppendLine("--DROP THE ORIGINAL COLUMN WITH THE IDENTITY");
                 sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] DROP COLUMN [" + oldColumn.DatabaseName + "]");
-                sb.AppendLine("GO");
+                sb.AppendLine("--GO");
                 sb.AppendLine();
                 sb.AppendLine("--RENAME THE TEMP COLUMN TO THE ORIGINAL NAME");
                 sb.AppendLine("EXEC sp_rename '" + newTable.DatabaseName + ".__TCOL', '" + newColumn.DatabaseName + "', 'COLUMN';");
-                sb.AppendLine("GO");
+                sb.AppendLine("--GO");
                 sb.AppendLine();
 
                 if (!newColumn.AllowNull)
                 {
                     sb.AppendLine("--MAKE THE NEW COLUMN NOT NULL AS THE ORIGINAL WAS");
                     sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] ALTER COLUMN [" + newColumn.DatabaseName + "] " + newColumn.DatabaseType + " NOT NULL");
-                    sb.AppendLine("GO");
+                    sb.AppendLine("--GO");
                     sb.AppendLine();
                 }
             }
@@ -2353,16 +2353,16 @@ namespace nHydrate.Generator.PostgresInstaller
                 sb.AppendLine("WHERE c.[type] IN ('D','C','F','PK','UQ') AND t.name = '" + tableName + "'");
                 sb.AppendLine("ORDER BY c.[type];");
                 sb.AppendLine("EXEC(@sql);");
-                sb.AppendLine("GO");
+                sb.AppendLine("--GO");
                 sb.AppendLine();
 
                 //Create temp table
                 sb.AppendLine("--CREATE A TEMP TABLE TO COPY DATA");
                 sb.AppendLine(GetSQLCreateTable(model, newTable, tempTableName, false));
-                sb.AppendLine("GO");
+                sb.AppendLine("--GO");
                 sb.AppendLine();
                 sb.AppendLine("ALTER TABLE [" + tempTableName + "] SET (LOCK_ESCALATION = TABLE)");
-                sb.AppendLine("GO");
+                sb.AppendLine("--GO");
                 sb.AppendLine("SET IDENTITY_INSERT [" + tempTableName + "] ON");
                 sb.AppendLine();
 
@@ -2382,15 +2382,15 @@ namespace nHydrate.Generator.PostgresInstaller
 
                 sb.AppendLine("EXEC('INSERT INTO [" + tempTableName + "] (" + fieldSql + ")");
                 sb.AppendLine("    SELECT " + fieldSql + " FROM [" + tableName + "] WITH (HOLDLOCK TABLOCKX)')");
-                sb.AppendLine("GO");
+                sb.AppendLine("--GO");
                 sb.AppendLine();
                 sb.AppendLine("SET IDENTITY_INSERT [" + tempTableName + "] OFF");
-                sb.AppendLine("GO");
+                sb.AppendLine("--GO");
                 sb.AppendLine("DROP TABLE [" + tableName + "]");
-                sb.AppendLine("GO");
+                sb.AppendLine("--GO");
                 sb.AppendLine("--RENAME THE TEMP TABLE TO THE ORIGINAL TABLE NAME");
                 sb.AppendLine("EXEC sp_rename '" + tempTableName + "', '" + tableName + "';");
-                sb.AppendLine("GO");
+                sb.AppendLine("--GO");
             }
 
             #endregion
@@ -2549,5 +2549,85 @@ namespace nHydrate.Generator.PostgresInstaller
             }
         }
 
+        public static string GetSqlCreateView(CustomView dbObject, bool isInternal)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"CREATE OR REPLACE VIEW \"{dbObject.GetPostgresSchema()}\".\"{dbObject.DatabaseName}\"");
+            sb.AppendLine("AS");
+            sb.AppendLine();
+            sb.AppendLine(dbObject.SQL);
+            if (isInternal)
+            {
+                sb.AppendLine($"--MODELID,BODY: {dbObject.Key}");
+            }
+            if (isInternal)
+            {
+                sb.AppendLine($"--MODELID: {dbObject.Key}");
+            }
+            sb.AppendLine("--GO");
+            sb.AppendLine();
+            return sb.ToString();
+        }
+
+        public static string GetSQLCreateStoredProc(CustomStoredProcedure dbObject, bool isInternal)
+        {
+            var sb = new StringBuilder();
+            var name = dbObject.GetDatabaseObjectName();
+
+            sb.AppendLine("if exists(select * from sys.objects where name = '" + name + "' and type = 'P' and type_desc = 'SQL_STORED_PROCEDURE')");
+            sb.AppendLine("drop procedure [" + dbObject.GetSQLSchema() + "].[" + name + "]");
+            if (isInternal)
+            {
+                sb.AppendLine($"--MODELID: {dbObject.Key}");
+            }
+            sb.AppendLine("GO");
+            sb.AppendLine();
+            sb.AppendLine("CREATE PROCEDURE [" + dbObject.GetSQLSchema() + "].[" + name + "]");
+
+            if (dbObject.Parameters.Count > 0)
+            {
+                sb.AppendLine("(");
+                sb.Append(BuildStoredProcParameterList(dbObject));
+                sb.AppendLine(")");
+            }
+
+            sb.AppendLine("AS");
+            sb.AppendLine();
+            sb.Append(dbObject.SQL);
+            sb.AppendLine();
+            if (isInternal)
+            {
+                sb.AppendLine("--MODELID,BODY: " + dbObject.Key);
+            }
+            sb.AppendLine("GO");
+            sb.AppendLine();
+            return sb.ToString();
+        }
+
+        private static string BuildStoredProcParameterList(CustomStoredProcedure storedProcedure)
+        {
+            var output = new StringBuilder();
+            var parameterList = storedProcedure.GetParameters().Where(x => x.Generated && x.SortOrder > 0).OrderBy(x => x.SortOrder).ToList();
+            parameterList.AddRange(storedProcedure.GetParameters().Where(x => x.Generated && x.SortOrder == 0).OrderBy(x => x.Name).ToList());
+
+            var ii = 0;
+            foreach (var parameter in parameterList)
+            {
+                //Get the default value and make it null if none exists
+                var defaultValue = parameter.GetSQLDefault();
+                if (string.IsNullOrEmpty(defaultValue))
+                    defaultValue = "null";
+
+                ii++;
+                output.Append("\t@" + ValidationHelper.MakeDatabaseScriptIdentifier(parameter.DatabaseName) + " " +
+                    parameter.DatabaseType.ToLower() +
+                    (parameter.GetPredefinedSize() == -1 ? "(" + parameter.GetLengthString() + ") " : string.Empty) + (parameter.IsOutputParameter ? " out " : " = " + defaultValue));
+
+                if (ii != parameterList.Count)
+                    output.Append(",");
+                output.AppendLine();
+            }
+            return output.ToString();
+        }
     }
 }

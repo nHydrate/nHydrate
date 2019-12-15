@@ -185,6 +185,10 @@
       <Link>efcorepostgresinstaller.vstemplate</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\VSADDIN\efcoresqliteinstaller.vstemplate">
+      <Link>efcoresqliteinstaller.vstemplate</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Microsoft.VisualStudio.Shell.Interop.10.0.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -330,6 +334,12 @@
   <ItemGroup>
     <Content Include="..\..\VSADDIN\efcorepostgresinstaller.csproj">
       <Link>efcorepostgresinstaller.csproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\VSADDIN\efcoresqliteinstaller.csproj">
+      <Link>efcoresqliteinstaller.csproj</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

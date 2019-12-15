@@ -35,7 +35,7 @@ using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredProcedureAll
 {
-    [GeneratorItemAttribute("SQLStoredProcedureAllViewGenerator", typeof(DatabaseProjectGenerator))]
+    [GeneratorItemAttribute("SQLStoredProcedureAllViewGenerator", typeof(PostgresDatabaseProjectGenerator))]
     public class SQLStoredProcedureAllViewGenerator : BaseDbScriptGenerator
     {
         #region Properties

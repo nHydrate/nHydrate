@@ -34,7 +34,7 @@ using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLSelectStoredProcedure
 {
-	[GeneratorItemAttribute("SqlSelectDefinedStoredProcedure", typeof(DatabaseProjectGenerator))]
+	[GeneratorItemAttribute("SqlSelectDefinedStoredProcedure", typeof(PostgresDatabaseProjectGenerator))]
 	public class SQLSelectStoredProcedureGenerator : BaseDbScriptGenerator
 	{
 		#region Properties

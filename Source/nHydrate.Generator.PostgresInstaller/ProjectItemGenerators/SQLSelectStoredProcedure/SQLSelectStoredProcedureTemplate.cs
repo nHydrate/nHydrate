@@ -119,13 +119,13 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLSelectSt
 
                 sb.Append(SQLEmit.GetSQLCreateStoredProc(_currentStoredProcedure, true));
 
-                if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))
-                {
-                    _grantSB.AppendFormat("GRANT EXECUTE ON [" + _currentStoredProcedure.GetSQLSchema() + "].[{0}] TO [{1}]", _currentStoredProcedure.GetDatabaseObjectName(), _model.Database.GrantExecUser).AppendLine();
-                    _grantSB.AppendLine("--MODELID: " + _currentStoredProcedure.Key);
-                    _grantSB.AppendLine("GO");
-                    _grantSB.AppendLine();
-                }
+                //if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))
+                //{
+                //    _grantSB.AppendFormat("GRANT EXECUTE ON [" + _currentStoredProcedure.GetSQLSchema() + "].[{0}] TO [{1}]", _currentStoredProcedure.GetDatabaseObjectName(), _model.Database.GrantExecUser).AppendLine();
+                //    _grantSB.AppendLine("--MODELID: " + _currentStoredProcedure.Key);
+                //    _grantSB.AppendLine("GO");
+                //    _grantSB.AppendLine();
+                //}
             }
             catch (Exception ex)
             {

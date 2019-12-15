@@ -88,15 +88,15 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredPr
 			{
 				sb.Append(SQLEmit.GetSqlCreateView(_currentView, true));
 
-				if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))
-				{
-					_grantSB.AppendFormat("GRANT ALL ON [" + _currentView.GetSQLSchema() + "].[{0}] TO [{1}]", _currentView.DatabaseName, _model.Database.GrantExecUser).AppendLine();
-					_grantSB.AppendLine("--MODELID: " + _currentView.Key);
-					_grantSB.AppendLine("GO");
-					_grantSB.AppendLine();
-				}
-			}
-			catch (Exception ex)
+                //if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))
+                //{
+                //	_grantSB.AppendFormat("GRANT ALL ON [" + _currentView.GetPostgresSchema() + "].[{0}] TO [{1}]", _currentView.DatabaseName, _model.Database.GrantExecUser).AppendLine();
+                //	_grantSB.AppendLine("--MODELID: " + _currentView.Key);
+                //	_grantsb.AppendLine("--GO");
+                //	_grantSB.AppendLine();
+                //}
+            }
+            catch (Exception ex)
 			{
 				throw;
 			}
