@@ -98,9 +98,8 @@ namespace PROJECTNAMESPACE
         {
             try
             {
-                using (var conn = new NpgsqlConnection())
+                using (var conn = new NpgsqlConnection(setup.MasterConnectionString))
                 {
-                    conn.ConnectionString = setup.MasterConnectionString;
                     conn.Open();
                     var cmdCreateDb = new NpgsqlCommand();
                     var fileInfo = string.Empty;
@@ -111,6 +110,18 @@ namespace PROJECTNAMESPACE
                     cmdCreateDb.Connection = conn;
                     SqlServers.ExecuteCommand(cmdCreateDb);
                 }
+
+                using (var conn = new NpgsqlConnection(setup.ConnectionString))
+                {
+                    conn.Open();
+                    //Add UUID generator
+                    var command = new NpgsqlCommand();
+                    command.CommandText = "CREATE EXTENSION \"uuid-ossp\";";
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.Connection = conn;
+                    SqlServers.ExecuteCommand(command);
+                }
+
             }
             catch { throw; }
             finally

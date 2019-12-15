@@ -172,23 +172,30 @@ namespace nHydrate.DslPackage
 
         private void OnMenuCommandImportDatabase(object sender, EventArgs e)
         {
-            var command = sender as MenuCommand;
-            var store = this.CurrentDocData.Store;
-            var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
-            var postArrange = (this.CurrentDocView.CurrentDiagram.NestedChildShapes.Count == 0);
-
-            var database = nHydrate.DslPackage.Objects.DatabaseImportDomain.Convert(model, this.CurrentDocView.CurrentDiagram);
-            var importDatabaseForm = new ImportDatabaseForm(model, store, this.CurrentDocView.CurrentDiagram, database, this.CurrentDocData);
-            if (importDatabaseForm.ShowDialog() == DialogResult.OK)
+            try
             {
-                var module = model.Modules.FirstOrDefault(x => x.Name == importDatabaseForm.ModuleName);
+                var command = sender as MenuCommand;
+                var store = this.CurrentDocData.Store;
+                var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
+                var postArrange = (this.CurrentDocView.CurrentDiagram.NestedChildShapes.Count == 0);
 
-                ((nHydrateDocData)this.CurrentDocData).IsImporting = true;
-                nHydrate.DslPackage.Objects.DatabaseImportDomain.ImportDatabase(model, store, this.CurrentDocView.CurrentDiagram, importDatabaseForm.NewDatabase, module);
-                if (postArrange) this.ArrangeDiagram();
-                this.CurrentDocView.CurrentDiagram.Reroute();
-                ((nHydrateDocData)this.CurrentDocData).IsImporting = false;
-                MessageBox.Show("The database has finished importing.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var database = nHydrate.DslPackage.Objects.DatabaseImportDomain.Convert(model, this.CurrentDocView.CurrentDiagram);
+                var importDatabaseForm = new ImportDatabaseForm(model, store, this.CurrentDocView.CurrentDiagram, database, this.CurrentDocData);
+                if (importDatabaseForm.ShowDialog() == DialogResult.OK)
+                {
+                    var module = model.Modules.FirstOrDefault(x => x.Name == importDatabaseForm.ModuleName);
+
+                    ((nHydrateDocData)this.CurrentDocData).IsImporting = true;
+                    nHydrate.DslPackage.Objects.DatabaseImportDomain.ImportDatabase(model, store, this.CurrentDocView.CurrentDiagram, importDatabaseForm.NewDatabase, module);
+                    if (postArrange) this.ArrangeDiagram();
+                    this.CurrentDocView.CurrentDiagram.Reroute();
+                    ((nHydrateDocData)this.CurrentDocData).IsImporting = false;
+                    MessageBox.Show("The database has finished importing.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
         #endregion

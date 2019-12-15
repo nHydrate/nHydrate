@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace nHydrate.Tools.PostgresImporter
+namespace nHydrate.DslPackage.Objects.Postgres
 {
     public class PKModel : SchemaTableBaseModel
     {
@@ -66,5 +66,13 @@ namespace nHydrate.Tools.PostgresImporter
         {
             return $"{this.ColumnName}";
         }
+    }
+
+    public class RelationModel : SchemaTableBaseModel
+    {
+        public string IndexName { get; set; }
+        public string ColumnName { get; set; }
+        public string FKTableName { get; set; }
+        public string FKColumnName { get; set; }
     }
 }

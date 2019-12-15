@@ -78,6 +78,22 @@ namespace nHydrate.DslPackage.Forms
             contetextMenu.MenuItems.Add(menu);
             //txtChanged.ContextMenu = contetextMenu;
             tvwRefresh.AfterSelect += new TreeViewEventHandler(tvwRefresh_AfterSelect);
+
+            grpConnectionStringPostgres.Location = DatabaseConnectionControl1.Location;
+            optDatabaseTypeSQL.Click += OptDatabaseTypeSQL_Click;
+            optDatabaseTypePostgres.Click += OptDatabaseTypePostgres_Click;
+        }
+
+        private void OptDatabaseTypePostgres_Click(object sender, EventArgs e)
+        {
+            DatabaseConnectionControl1.Visible = false;
+            grpConnectionStringPostgres.Visible = true;
+        }
+
+        private void OptDatabaseTypeSQL_Click(object sender, EventArgs e)
+        {
+            DatabaseConnectionControl1.Visible = true;
+            grpConnectionStringPostgres.Visible = false;
         }
 
         public ImportDatabaseForm(
@@ -886,20 +902,6 @@ namespace nHydrate.DslPackage.Forms
                 this.Cursor = Cursors.WaitCursor;
                 try
                 {
-                    DatabaseConnectionControl1.PersistSettings();
-                    var connectionString = DatabaseConnectionControl1.ImportOptions.GetConnectionString();
-                    var schemaModelHelper = new nHydrate.DataImport.SqlClient.SchemaModelHelper();
-
-                    if (!schemaModelHelper.IsValidConnectionString(connectionString))
-                    {
-                        this.Cursor = Cursors.Default;
-                        e.Cancel = true;
-                        MessageBox.Show("This not a valid connection string!", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    //Setup new model
-                    var project = new nHydrate.DataImport.Database();
                     var auditFields = new List<SpecialField>();
                     auditFields.Add(new SpecialField { Name = _model.CreatedByColumnName, Type = SpecialFieldTypeConstants.CreatedBy });
                     auditFields.Add(new SpecialField { Name = _model.CreatedDateColumnName, Type = SpecialFieldTypeConstants.CreatedDate });
@@ -908,29 +910,50 @@ namespace nHydrate.DslPackage.Forms
                     auditFields.Add(new SpecialField { Name = _model.TimestampColumnName, Type = SpecialFieldTypeConstants.Timestamp });
                     auditFields.Add(new SpecialField { Name = _model.TenantColumnName, Type = SpecialFieldTypeConstants.Tenant });
 
+                    //Setup new model
+                    var project = new nHydrate.DataImport.Database();
+
                     var pkey = ProgressHelper.ProgressingStarted("Importing...", true);
                     try
                     {
-                        var importDomain = new nHydrate.DataImport.SqlClient.ImportDomain();
+                        if (optDatabaseTypeSQL.Checked)
+                        {
+                            DatabaseConnectionControl1.PersistSettings();
+                            var connectionString = DatabaseConnectionControl1.ImportOptions.GetConnectionString();
+                            var schemaModelHelper = new nHydrate.DataImport.SqlClient.SchemaModelHelper();
 
-                        this.NewDatabase = importDomain.Import(connectionString, auditFields);
-                        this.NewDatabase.CleanUp();
-                        this.NewDatabase.SetupIdMap(this.CurrentDatabase);
-                        //nHydrate.DataImport.ImportDomain.ReMapIDs(this.CurrentDatabase, this.NewDatabase);
+                            if (!schemaModelHelper.IsValidConnectionString(connectionString))
+                            {
+                                this.Cursor = Cursors.Default;
+                                e.Cancel = true;
+                                MessageBox.Show("This not a valid connection string!", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
 
-                        //Remove tenant views
-                        NewDatabase.ViewList.Remove(x => x.Name.ToLower().StartsWith(_model.TenantPrefix.ToLower() + "_"));
+                            var errorCount = LoadSqlServer(connectionString, auditFields);
+                            ProgressHelper.ProgressingComplete(pkey);
+                            if (errorCount > 0)
+                                MessageBox.Show("There were " + errorCount + " stored procedure(s) that could not be imported.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        else if (optDatabaseTypePostgres.Checked)
+                        {
+                            var connectionString = txtConnectionStringPostgres.Text;
 
-                        var errorCount = NewDatabase.StoredProcList.Count(x => x.InError);
-                        NewDatabase.StoredProcList.Remove(x => x.InError);
+                            if (!DslPackage.Objects.Postgres.ImportDomain.TestConnection(connectionString))
+                            {
+                                this.Cursor = Cursors.Default;
+                                e.Cancel = true;
+                                MessageBox.Show("This not a valid connection string!", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
 
-                        //Load the tree
-                        this.Populate();
-
-                        ProgressHelper.ProgressingComplete(pkey);
-                        if (errorCount > 0)
-                            MessageBox.Show("There were " + errorCount + " stored procedure(s) that could not be imported.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
+                            var errorCount = LoadPostgres(connectionString, auditFields);
+                            ProgressHelper.ProgressingComplete(pkey);
+                            if (errorCount > 0)
+                                MessageBox.Show("There were " + errorCount + " error on import.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        else
+                            MessageBox.Show("Unknown database", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     catch (Exception ex)
                     {
@@ -990,6 +1013,131 @@ namespace nHydrate.DslPackage.Forms
                 CreateSummary();
             }
 
+        }
+
+        private int LoadSqlServer(string connectionString, List<SpecialField> auditFields)
+        {
+            var importDomain = new nHydrate.DataImport.SqlClient.ImportDomain();
+            this.NewDatabase = importDomain.Import(connectionString, auditFields);
+            this.NewDatabase.CleanUp();
+            this.NewDatabase.SetupIdMap(this.CurrentDatabase);
+            //nHydrate.DataImport.ImportDomain.ReMapIDs(this.CurrentDatabase, this.NewDatabase);
+
+            //Remove tenant views
+            NewDatabase.ViewList.Remove(x => x.Name.ToLower().StartsWith(_model.TenantPrefix.ToLower() + "_"));
+
+            var errorCount = NewDatabase.StoredProcList.Count(x => x.InError);
+            NewDatabase.StoredProcList.Remove(x => x.InError);
+
+            //Load the tree
+            this.Populate();
+
+            return errorCount;
+        }
+
+        private int LoadPostgres(string connectionString, List<SpecialField> auditFields)
+        {
+            var tlist = DslPackage.Objects.Postgres.ImportDomain.GetTables(connectionString);
+            var db = new DataImport.Database();
+            this.NewDatabase = db;
+
+            var allIndexes = DslPackage.Objects.Postgres.ImportDomain.GetIndexes(connectionString);
+            var allRelations = DslPackage.Objects.Postgres.ImportDomain.GetRelations(connectionString);
+
+            foreach (var entity in tlist)
+            {
+                //Create table
+                var newEntity = new DataImport.Entity
+                {
+                    AllowCreateAudit = entity.Columns.Any(x => x.ColumnName == _model.CreatedByColumnName),
+                    AllowModifyAudit = entity.Columns.Any(x => x.ColumnName == _model.ModifiedByColumnName),
+                    AllowTimestamp = entity.Columns.Any(x => x.ColumnName == _model.TimestampColumnName),
+                    IsTenant = entity.Columns.Any(x => x.ColumnName == _model.TenantColumnName),
+                    Name = entity.TableName,
+                    Schema = entity.SchemaName,
+                };
+                db.EntityList.Add(newEntity);
+
+                //Load fields
+                foreach(var column in entity.Columns)
+                {
+                    var isIndexed = allIndexes.Any(x => x.TableName == newEntity.Name && newEntity.FieldList.Any(z => z.Name == column.ColumnName) && newEntity.FieldList.Count == 1);
+                    newEntity.FieldList.Add(new DataImport.Field
+                    {
+                        DataType = SqlDbType.BigInt,
+                        Identity = column.IsIdentity,
+                        IsIndexed = isIndexed,
+                        Name = column.ColumnName,
+                        Nullable = column.AllowNull,
+                        PrimaryKey = false,
+                    });
+                }
+
+                //TODO: Add multi-column indexes
+
+                #region Load relations
+
+                foreach (var rowRelationship in allRelations)
+                {
+                    var constraintName = rowRelationship.IndexName;
+                    var parentTableName = rowRelationship.TableName;
+                    var childTableName = rowRelationship.FKTableName;
+                    var parentTable = db.EntityList.FirstOrDefault(x => x.Name == parentTableName);
+                    var childTable = db.EntityList.FirstOrDefault(x => x.Name == childTableName);
+                    if (parentTable != null && childTable != null)
+                    {
+                        Relationship newRelation = null;
+                        var isAdd = false;
+                        if (db.RelationshipList.Count(x => x.ConstraintName == constraintName) == 0)
+                        {
+                            newRelation = new Relationship();
+                            //if (rowRelationship["object_id"] != System.DBNull.Value)
+                            //    newRelation.ImportData = rowRelationship["object_id"].ToString();
+                            newRelation.SourceEntity = parentTable;
+                            newRelation.TargetEntity = childTable;
+                            newRelation.ConstraintName = constraintName;
+                            var search = ("_" + childTable.Name + "_" + parentTable.Name).ToLower();
+                            var roleName = constraintName.ToLower().Replace(search, string.Empty);
+                            if (roleName.Length >= 3) roleName = roleName.Remove(0, 3);
+                            var v = roleName.ToLower();
+                            if (v != "fk") newRelation.RoleName = v;
+                            isAdd = true;
+                        }
+                        else
+                        {
+                            newRelation = db.RelationshipList.First(x => x.ConstraintName == constraintName);
+                        }
+
+                        //add the column relationship to the relation
+                        var columnRelationship = new RelationshipDetail();
+                        var parentColumnName = rowRelationship.ColumnName;
+                        var childColumnName = rowRelationship.FKColumnName;
+                        if (parentTable.FieldList.Count(x => x.Name == parentColumnName) == 1 && (childTable.FieldList.Count(x => x.Name == childColumnName) == 1))
+                        {
+                            columnRelationship.ParentField = parentTable.FieldList.First(x => x.Name == parentColumnName);
+                            columnRelationship.ChildField = childTable.FieldList.First(x => x.Name == childColumnName);
+                            newRelation.RelationshipColumnList.Add(columnRelationship);
+
+                            //ONLY ADD THIS RELATION IF ALL WENT WELL
+                            if (isAdd)
+                                parentTable.RelationshipList.Add(newRelation);
+                        }
+                    }
+                }
+                #endregion
+
+                this.NewDatabase.CleanUp();
+                this.NewDatabase.SetupIdMap(this.CurrentDatabase);
+
+                //Remove tenant views
+                NewDatabase.ViewList.Remove(x => x.Name.ToLower().StartsWith(_model.TenantPrefix.ToLower() + "_"));
+                NewDatabase.StoredProcList.Remove(x => x.InError);
+
+                //Load the tree
+                this.Populate();
+            }
+
+            return 0;
         }
 
         private void wizard1_AfterSwitchPages(object sender, nHydrate.Wizard.Wizard.AfterSwitchPagesEventArgs e)
@@ -1161,19 +1309,45 @@ namespace nHydrate.DslPackage.Forms
 
         private void cmdTestConnection_Click(object sender, EventArgs e)
         {
-            DatabaseConnectionControl1.RefreshOptions();
-            var connectString = DatabaseConnectionControl1.ImportOptions.GetConnectionString();
-            var importDomain = new nHydrate.DataImport.SqlClient.ImportDomain();
-            var databaseHelper = importDomain.DatabaseDomain;
+            try
+            {
+                //SQL
+                if (optDatabaseTypeSQL.Checked)
+                {
+                    DatabaseConnectionControl1.RefreshOptions();
+                    var connectString = DatabaseConnectionControl1.ImportOptions.GetConnectionString();
+                    var importDomain = new nHydrate.DataImport.SqlClient.ImportDomain();
+                    var databaseHelper = importDomain.DatabaseDomain;
 
-            var valid = databaseHelper.TestConnectionString(connectString);
-            if (valid)
-            {
-                MessageBox.Show("Connection Succeeded.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    var valid = databaseHelper.TestConnectionString(connectString);
+                    if (valid)
+                    {
+                        MessageBox.Show("Connection Succeeded.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("The information does not describe a valid connection string.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else if (optDatabaseTypePostgres.Checked) //Postgres
+                {
+                    if (DslPackage.Objects.Postgres.ImportDomain.TestConnection(txtConnectionStringPostgres.Text))
+                    {
+                        MessageBox.Show("Connection Succeeded.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("The information does not describe a valid connection string.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Unknown database type.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("The information does not describe a valid connection string.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("An error has occurred.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

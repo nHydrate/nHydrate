@@ -4,14 +4,14 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
-namespace nHydrate.Tools.PostgresImporter
+namespace nHydrate.DslPackage.Objects.Postgres
 {
-    public class Importer
+    public class ImportDomain
     {
         public static List<PKModel> GetPk(string connectionString)
         {
             var result = new List<PKModel>();
-            using (var connection = new NpgsqlConnection())
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 var sb = new StringBuilder();
@@ -72,6 +72,10 @@ namespace nHydrate.Tools.PostgresImporter
                     }
                 }
             }
+
+            //Remove the internal tables
+            result.RemoveAll(x => x.TableName?.ToLower() == "__nhydrateschema");
+            result.RemoveAll(x => x.TableName?.ToLower() == "__nhydrateobjects");
 
             //Find all columns
             foreach (var table in result)
@@ -162,6 +166,66 @@ namespace nHydrate.Tools.PostgresImporter
                 }
             }
             return result;
+        }
+
+        public static List<RelationModel> GetRelations(string connectionString)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("SELECT");
+            sb.AppendLine("tc.constraint_name,");
+            sb.AppendLine("tc.table_schema,");
+            sb.AppendLine("tc.table_name, kcu.column_name,");
+            sb.AppendLine("ccu.table_name AS foreign_table_name,");
+            sb.AppendLine("ccu.column_name AS foreign_column_name");
+            sb.AppendLine("FROM");
+            sb.AppendLine("information_schema.table_constraints AS tc");
+            sb.AppendLine("JOIN information_schema.key_column_usage");
+            sb.AppendLine("AS kcu ON tc.constraint_name = kcu.constraint_name");
+            sb.AppendLine("JOIN information_schema.constraint_column_usage");
+            sb.AppendLine("AS ccu ON ccu.constraint_name = tc.constraint_name");
+            sb.AppendLine("WHERE constraint_type = 'FOREIGN KEY';");
+
+            var result = new List<RelationModel>();
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+
+                //Load indexes first
+                var command = new NpgsqlCommand(sb.ToString(), connection);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var pk = new RelationModel
+                        {
+                            SchemaName = reader["table_schema"] as string,
+                            TableName = reader["table_name"] as string,
+                            IndexName = reader["constraint_name"] as string,
+                            ColumnName = reader["column_name"] as string,
+                            FKTableName = reader["foreign_table_name"] as string,
+                            FKColumnName = reader["foreign_column_name"] as string,
+                        };
+                        result.Add(pk);
+                    }
+                }
+            }
+            return result;
+        }
+
+        public static bool TestConnection(string connectionString)
+        {
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionString))
+                {
+                    connection.Open();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
     }

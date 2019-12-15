@@ -12,9 +12,9 @@ namespace PostgresImport
 
         static void Main(string[] args)
         {
-            var a = nHydrate.Tools.PostgresImporter.Importer.GetPk(_connectionString);
-            var b = nHydrate.Tools.PostgresImporter.Importer.GetTables(_connectionString);
-            var c = nHydrate.Tools.PostgresImporter.Importer.GetIndexes(_connectionString);
+            var a = nHydrate.Tools.PostgresImporter.ImportDomain.GetPk(_connectionString);
+            var b = nHydrate.Tools.PostgresImporter.ImportDomain.GetTables(_connectionString);
+            var c = nHydrate.Tools.PostgresImporter.ImportDomain.GetIndexes(_connectionString);
         }
 
     }
