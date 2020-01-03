@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2019 nHydrate.org, All Rights Reserved
+#region Copyright (c) 2006-2020 nHydrate.org, All Rights Reserved
 // -------------------------------------------------------------------------- *
 //                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2019 All Rights reserved                   *
+//              Copyright (c) 2006-2020 All Rights reserved                   *
 //                                                                            *
 //                                                                            *
 // Permission is hereby granted, free of charge, to any person obtaining a    *
