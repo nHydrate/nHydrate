@@ -432,6 +432,7 @@ namespace nHydrate.Dsl
 		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/SQLServerType.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/SQLServerType.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[global::System.ComponentModel.DefaultValue(DatabaseTypeConstants.SQL2008)]
+		[global::System.ComponentModel.Browsable(false)]
 		[DslModeling::DomainObjectId("e309bd8d-ce4c-4995-a73e-b6aaeb070c3d")]
 		public virtual DatabaseTypeConstants SQLServerType
 		{
@@ -524,6 +525,7 @@ namespace nHydrate.Dsl
 		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/StoredProcedurePrefix.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/StoredProcedurePrefix.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[global::System.ComponentModel.DefaultValue("gen")]
+		[global::System.ComponentModel.Browsable(false)]
 		[DslModeling::DomainObjectId("bc3b0b9e-6e90-4e4c-a859-e11747c420fc")]
 		public virtual global::System.String StoredProcedurePrefix
 		{
@@ -1351,6 +1353,7 @@ namespace nHydrate.Dsl
 		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/TransformNames.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/TransformNames.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/TransformNames.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[global::System.ComponentModel.Browsable(false)]
 		[DslModeling::DomainObjectId("f4344b62-7cd9-4937-b07a-7056d72fc1fa")]
 		public virtual global::System.Boolean TransformNames
 		{
@@ -1809,6 +1812,7 @@ namespace nHydrate.Dsl
 		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/Collate.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/Collate.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/Collate.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[global::System.ComponentModel.Browsable(false)]
 		[DslModeling::DomainObjectId("b677c102-9e9a-4944-81e2-58029dcf4667")]
 		public virtual global::System.String Collate
 		{
@@ -2361,6 +2365,7 @@ namespace nHydrate.Dsl
 		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/UseGeneratedCRUD.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/UseGeneratedCRUD.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/UseGeneratedCRUD.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[global::System.ComponentModel.Browsable(false)]
 		[DslModeling::DomainObjectId("4138a1c1-4bbf-4195-aba3-1c32aad51a0e")]
 		public virtual global::System.Boolean UseGeneratedCRUD
 		{
@@ -2822,6 +2827,7 @@ namespace nHydrate.Dsl
 		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/EFVersion.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/EFVersion.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[global::System.ComponentModel.DefaultValue(EFVersionConstants.EF6)]
+		[global::System.ComponentModel.Browsable(false)]
 		[DslModeling::DomainObjectId("faacbca6-ce50-4101-846f-3b6a55e61bce")]
 		public virtual EFVersionConstants EFVersion
 		{
@@ -3005,6 +3011,7 @@ namespace nHydrate.Dsl
 		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/AllowMocks.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/AllowMocks.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/AllowMocks.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[global::System.ComponentModel.Browsable(false)]
 		[DslModeling::DomainObjectId("ef57a476-64d2-47a8-9e7f-562a41dd6be1")]
 		public virtual global::System.Boolean AllowMocks
 		{

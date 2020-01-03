@@ -31,12 +31,12 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="e309bd8d-ce4c-4995-a73e-b6aaeb070c3d" Description="Determines the target SQL Server version" Name="SQLServerType" DisplayName="SQLServer Type" DefaultValue="SQL2008" Category="Database">
+        <DomainProperty Id="e309bd8d-ce4c-4995-a73e-b6aaeb070c3d" Description="Determines the target SQL Server version" Name="SQLServerType" DisplayName="SQLServer Type" DefaultValue="SQL2008" Category="Database" IsBrowsable="false">
           <Type>
             <DomainEnumerationMoniker Name="DatabaseTypeConstants" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="bc3b0b9e-6e90-4e4c-a859-e11747c420fc" Description="Determines the prefix for generated stored procedures" Name="StoredProcedurePrefix" DisplayName="Stored Procedure Prefix" DefaultValue="gen" Category="Database">
+        <DomainProperty Id="bc3b0b9e-6e90-4e4c-a859-e11747c420fc" Description="Determines the prefix for generated stored procedures" Name="StoredProcedurePrefix" DisplayName="Stored Procedure Prefix" DefaultValue="gen" Category="Database" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
@@ -88,7 +88,7 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="f4344b62-7cd9-4937-b07a-7056d72fc1fa" Description="Determines if all tokens are transformed from a lower case/undescore format to title case tokens on generation" Name="TransformNames" DisplayName="Transform Names" DefaultValue="false" Category="Code">
+        <DomainProperty Id="f4344b62-7cd9-4937-b07a-7056d72fc1fa" Description="Determines if all tokens are transformed from a lower case/undescore format to title case tokens on generation" Name="TransformNames" DisplayName="Transform Names" DefaultValue="false" Category="Code" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
@@ -113,7 +113,7 @@
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="b677c102-9e9a-4944-81e2-58029dcf4667" Description="Determines the database collation" Name="Collate" DisplayName="Collate" Category="Database">
+        <DomainProperty Id="b677c102-9e9a-4944-81e2-58029dcf4667" Description="Determines the database collation" Name="Collate" DisplayName="Collate" Category="Database" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
@@ -143,7 +143,7 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="4138a1c1-4bbf-4195-aba3-1c32aad51a0e" Description="Determines if generated stored procedures are used for the CRUD layer." Name="UseGeneratedCRUD" DisplayName="Use Generated CRUD" DefaultValue="" Category="Database">
+        <DomainProperty Id="4138a1c1-4bbf-4195-aba3-1c32aad51a0e" Description="Determines if generated stored procedures are used for the CRUD layer." Name="UseGeneratedCRUD" DisplayName="Use Generated CRUD" DefaultValue="" Category="Database" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
@@ -182,7 +182,7 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="faacbca6-ce50-4101-846f-3b6a55e61bce" Description="Determines the target Entity Framework version" Name="EFVersion" DisplayName="EF Version" DefaultValue="EF6" Category="Code">
+        <DomainProperty Id="faacbca6-ce50-4101-846f-3b6a55e61bce" Description="Determines the target Entity Framework version" Name="EFVersion" DisplayName="EF Version" DefaultValue="EF6" Category="Code" IsBrowsable="false">
           <Type>
             <DomainEnumerationMoniker Name="EFVersionConstants" />
           </Type>
@@ -192,7 +192,7 @@
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="ef57a476-64d2-47a8-9e7f-562a41dd6be1" Description="Determines if mock objects are generated" Name="AllowMocks" DisplayName="Allow Mocks" DefaultValue="false" Category="Code">
+        <DomainProperty Id="ef57a476-64d2-47a8-9e7f-562a41dd6be1" Description="Determines if mock objects are generated" Name="AllowMocks" DisplayName="Allow Mocks" DefaultValue="false" Category="Code" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>

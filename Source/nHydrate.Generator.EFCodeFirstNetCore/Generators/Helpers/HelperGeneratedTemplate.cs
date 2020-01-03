@@ -887,16 +887,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine();
                 #endregion
 
-                #region IContextInclude
-                sb.AppendLine("	#region IContextInclude");
-                sb.AppendLine("	/// <summary />");
-                sb.AppendLine("	public partial interface IContextInclude");
-                sb.AppendLine("	{");
-                sb.AppendLine("	}");
-                sb.AppendLine("	#endregion");
-                sb.AppendLine();
-                #endregion
-
                 #region IContext
                 sb.AppendLine("	#region IContext");
                 sb.AppendLine("	/// <summary>");
@@ -976,7 +966,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// The base class for all entity objects using EF 6");
                 sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	[Serializable]");
                 sb.AppendLine("	[System.Runtime.Serialization.DataContract(IsReference = true)]");
                 sb.AppendLine("	public abstract partial class BaseEntity");
                 sb.AppendLine("	{");
@@ -1545,7 +1534,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// Summary description for ConcurrencyException.");
                 sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	[Serializable]");
                 sb.AppendLine("	public partial class ConcurrencyException : nHydrateException");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary />");
@@ -1565,7 +1553,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
 
                 sb.AppendLine("	#region nHydrateException");
                 sb.AppendLine("	/// <summary />");
-                sb.AppendLine("	[Serializable]");
                 sb.AppendLine("	public partial class nHydrateException : System.Exception");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary />");
@@ -1622,7 +1609,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// Summary description for UniqueConstraintViolatedException.");
                 sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	[Serializable]");
                 sb.AppendLine("	public partial class UniqueConstraintViolatedException : nHydrateException");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary />");

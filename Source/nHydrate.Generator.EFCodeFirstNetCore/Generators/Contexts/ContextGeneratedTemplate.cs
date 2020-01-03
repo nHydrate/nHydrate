@@ -143,8 +143,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// The object context for the schema tied to this generated model.");
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	[DataContract]");
-            sb.AppendLine("	[Serializable]");
             sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : Microsoft.EntityFrameworkCore.DbContext, " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities, IContext");
             sb.AppendLine("	{");
 

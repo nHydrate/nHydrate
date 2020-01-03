@@ -186,8 +186,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             if (!string.IsNullOrEmpty(_item.Description))
                 sb.AppendLine("	/// " + _item.Description);
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	[DataContract]");
-            sb.AppendLine("	[Serializable]");
             //sb.AppendLine("	[System.Data.Linq.Mapping.Table(Name = \"" + _item.PascalName + "\")]");
             sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
             //sb.AppendLine("	[System.Data.Objects.DataClasses.EdmEntityType(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _item.PascalName + "\")]");
@@ -244,7 +242,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
                 sb.AppendLine("		/// </summary>");
                 if (column.IsPrimaryKey)
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key]");
-                sb.AppendLine("		[DataMember]");
                 sb.AppendLine("		[System.ComponentModel.Browsable(" + column.IsBrowsable.ToString().ToLower() + ")]");
                 if (!string.IsNullOrEmpty(column.Category))
                     sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
