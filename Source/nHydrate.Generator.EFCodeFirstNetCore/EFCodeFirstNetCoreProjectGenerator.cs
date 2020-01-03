@@ -36,7 +36,7 @@ using nHydrate.Generator.ProjectItemGenerators;
 namespace nHydrate.Generator.EFCodeFirstNetCore
 {
     [GeneratorProject(
-        "EF Data Access Layer (.NET Standard)",
+        "EF Data Access Layer Code First (.NET Standard)",
         "A data access layer built on top of Entity Framework (.NET Standard)",
         "d8156b27-b9f2-4291-82e8-88e1295eef05",
         typeof(nHydrateGeneratorProject),
@@ -110,6 +110,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore
         {
         }
 
+        public override IModelConfiguration ModelConfiguration { get; set; } = new EFCodeFirstNetCore.ModelConfiguration();
     }
 
 }

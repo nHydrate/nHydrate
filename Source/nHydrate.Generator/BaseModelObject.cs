@@ -24,6 +24,7 @@
 // -------------------------------------------------------------------------- *
 #endregion
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace nHydrate.Generator.Common.GeneratorFramework
@@ -75,6 +76,8 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         #endregion
 
         #region Property Implementations
+
+        public Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; }
 
         [Browsable(false)]
         public virtual INHydrateModelObjectController Controller

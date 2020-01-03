@@ -58,6 +58,8 @@ namespace nHydrate.Generator.XSDSchema
             get { return "XSDSchema"; }
         }
 
+        public override IModelConfiguration ModelConfiguration { get; set; }
+
     }
 
 }

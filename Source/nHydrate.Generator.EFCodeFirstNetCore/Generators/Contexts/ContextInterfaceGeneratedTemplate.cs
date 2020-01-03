@@ -101,7 +101,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Runtime.Serialization;");
             sb.AppendLine("using System.Collections.Generic;");
-            sb.AppendLine("using " + GetLocalNamespace() + ".Entity;");
+            sb.AppendLine($"using {GetLocalNamespace()}.Entity;");
             sb.AppendLine();
         }
 

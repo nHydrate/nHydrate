@@ -158,7 +158,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// A unique key for this object instance");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public Guid InstanceKey { get; private set; }");
+            sb.AppendLine("		public Guid InstanceKey { get; private set; } = Guid.NewGuid();");
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary />");
@@ -550,7 +550,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
                         sb.AppendLine(";");
                     }
 
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").IsConcurrencyToken(true);");
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").IsConcurrencyToken(true).IsRowVersion();");
                 }
 
                 sb.AppendLine();
@@ -836,23 +836,6 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("			this.ChangeTracker.Entries().Any();");
             sb.AppendLine();
 
-            //sb.AppendLine("			//Process deleted list");
-            //sb.AppendLine("			var deletedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Deleted);");
-            //sb.AppendLine("			foreach (var item in deletedList)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				var entity = item.Entity as IAuditable;");
-            //sb.AppendLine("				if (entity != null)");
-            //sb.AppendLine("				{");
-            //sb.AppendLine("					var audit = entity as IAuditableSet;");
-            //sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
-            //sb.AppendLine("					{");
-            //sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
-            //sb.AppendLine("					}");
-            //sb.AppendLine("					audit.ModifiedDate = markedTime;");
-            //sb.AppendLine("				}");
-            //sb.AppendLine("			}");
-            //sb.AppendLine();
-
             #region Added Items
             sb.AppendLine("			//Get the added list");
             sb.AppendLine("			var addedList = this.ObjectContext.ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added);");
@@ -939,6 +922,7 @@ namespace nHydrate.Generator.EFCodeFirst.Generators.Contexts
             sb.AppendLine("				if (customTrans != null)");
             sb.AppendLine("					customTrans.Dispose();");
             sb.AppendLine("			}");
+
             sb.AppendLine("			this.OnAfterSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
             sb.AppendLine("			this.OnAfterSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
             sb.AppendLine("			OnAfterSaveChanges();");

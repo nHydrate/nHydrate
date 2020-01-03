@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{21A2E517-10EC-4145-9B7E-62D97DE222C7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>nHydrate.Generator.SQLInstallerNetCore</RootNamespace>
+    <AssemblyName>nHydrate.Generator.SQLInstallerNetCore</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
+      <Link>Properties\AssemblyInfoGeneratorCommon.cs</Link>
+    </Compile>
+    <Compile Include="ProjectItemGenerators\AuditTriggers\CreateAuditTriggerGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\AuditTriggers\CreateAuditTriggerTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\BaseDbScriptGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\BaseDbScriptTemplate.cs" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\Program.cs" />
+    <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\ScriptOrder\ScriptOrderGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\ScriptOrder\ScriptOrderTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\Functions\FunctionsGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\Functions\FunctionsTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\DatabaseCreateData\CreateDataGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\DatabaseCreateData\CreateDataTemplate.cs" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\InstallSettings.cs" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\XmlHelper.cs" />
+    <Compile Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseEmbeddedClassGenerator.cs" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.cs" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\SqlServers.cs" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\UpgradeInstaller.cs" />
+    <Compile Include="DatabaseProjectGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\DatabaseSchema\CreateSchemaGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\DatabaseSchema\CreateSchemaTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\DatabaseUpgrade\UpgradeVersionedScriptGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\DatabaseUpgrade\UpgradeVersionedScriptTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\Globals.cs" />
+    <Compile Include="ProjectItemGenerators\SQLGeneratedBodyHelper.cs" />
+    <Compile Include="ProjectItemGenerators\SQLSelectStoredProcedure\SQLSelectStoredProcedureGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\SQLSelectStoredProcedure\SQLSelectStoredProcedureTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLSelectTenantViewTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLSelectAuditBusinessObjectTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\ISQLGenerate.cs" />
+    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLDeleteBusinessObjectTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLInsertBusinessObjectTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLSelectRetrieveRuleTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLSelectViewTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLStoredProcedureAllTableGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLStoredProcedureAllViewGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLStoredProcedureTableAllTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLStoredProcedureViewAllTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLUpdateBusinessObjectTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLUpdateComponentTemplate.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SQLHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Build\postbuild.targets.xml" />
+    <Content Include="Build\prebuild.targets.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\nHydrate.Core.SQLGeneration\nHydrate.Core.SQLGeneration.csproj">
+      <Project>{804DA583-5EB6-4F1C-BFA8-39DC81F4CB98}</Project>
+      <Name>nHydrate.Core.SQLGeneration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\nHydrate.Generator.Common\nHydrate.Generator.Common.csproj">
+      <Project>{97136026-3D75-4830-AECB-8E364AFF0B01}</Project>
+      <Name>nHydrate.Generator.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\nHydrate.Generator\nHydrate.Generator.csproj">
+      <Project>{E2040FE8-13C7-4A6B-860B-E612A0FDBEFF}</Project>
+      <Name>nHydrate.Generator</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.Designer.embed" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+			 Other similar extension points exist, see Microsoft.Common.targets.
+	<Target Name="BeforeBuild">
+	</Target>
+	<Target Name="AfterBuild">
+	</Target>
+	-->
+  <PropertyGroup>
+    <PreBuildEvent>"%25SystemRoot%25\Microsoft.NET\Framework\v3.5\msbuild" "$(ProjectDir)Build\prebuild.targets.xml" /property:TargetPath=$(TargetExt);TargetPath=$(TargetPath);TargetDir=$(TargetDir);TargetFileName=$(TargetFileName);TargetName=$(TargetName)</PreBuildEvent>
+    <PostBuildEvent>"%25SystemRoot%25\Microsoft.NET\Framework\v3.5\msbuild" "$(ProjectDir)Build\postbuild.targets.xml" /property:TargetPath=$(TargetExt);TargetPath=$(TargetPath);TargetDir=$(TargetDir);TargetFileName=$(TargetFileName);TargetName=$(TargetName)</PostBuildEvent>
+  </PropertyGroup>
+</Project>

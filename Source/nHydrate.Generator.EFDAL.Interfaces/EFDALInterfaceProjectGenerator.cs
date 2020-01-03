@@ -99,6 +99,7 @@ namespace nHydrate.Generator.EFDAL.Interfaces
             nHydrateGeneratorProject.AddEFCoreToBinFolder();
         }
 
+        public override IModelConfiguration ModelConfiguration { get; set; }
     }
 
 }

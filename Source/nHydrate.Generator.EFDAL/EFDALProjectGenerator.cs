@@ -107,6 +107,7 @@ namespace nHydrate.Generator.EFDAL
             nHydrateGeneratorProject.AddEFCoreToBinFolder();
         }
 
+        public override IModelConfiguration ModelConfiguration { get; set; }
     }
 
 }

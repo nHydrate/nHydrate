@@ -49,7 +49,6 @@ namespace nHydrate.Generator.Models
         protected const string _def_defaultNamespace = "";
         protected const SQLServerTypeConstants _def_sQLServerType = SQLServerTypeConstants.SQL2005;
         protected const EFVersionConstants _def_efVersion = EFVersionConstants.EF6;
-        protected const FrameworkVersionConstants _def_frameworkVersion = FrameworkVersionConstants.v35;
         protected const string _def_storedProcedurePrefix = "gen";
         protected const string _def_tenantColumnName = "__tenant_user";
         protected const string _def_tenantPrefix = "__vw_tenant";
@@ -69,10 +68,8 @@ namespace nHydrate.Generator.Models
         protected bool _supportLegacySearchObject = _def_supportLegacySearchObject;
         protected string _defaultNamespace = _def_defaultNamespace;
         protected IGenerator _generatorProject = null;
-        //private DateTime _createdDate = DateTime.Now;
         private SQLServerTypeConstants _sQLServerType = _def_sQLServerType;
         private EFVersionConstants _efVersion = _def_efVersion;
-        private FrameworkVersionConstants _frameworkVersion = _def_frameworkVersion;
         private string _storedProcedurePrefix = _def_storedProcedurePrefix;
         private readonly VersionHistoryCollection _versionHistoryList = new VersionHistoryCollection();
         private string _moduleName = string.Empty;
@@ -92,10 +89,10 @@ namespace nHydrate.Generator.Models
             _userInterface = new UserInterface(this);
             this.Refactorizations = new List<IRefactor>();
 
-            this.RemovedTables = new List<string>();
-            this.RemovedViews = new List<string>();
-            this.RemovedStoredProcedures = new List<string>();
-            this.RemovedFunctions = new List<string>();
+            this.RemovedTables = new ExtendedList<string>();
+            this.RemovedViews = new ExtendedList<string>();
+            this.RemovedStoredProcedures = new ExtendedList<string>();
+            this.RemovedFunctions = new ExtendedList<string>();
 
             this.MetaData = new MetadataItemCollection();
         }
@@ -103,6 +100,8 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region Property Implementations
+
+        public Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; } = new Dictionary<string, IModelConfiguration>();
 
         public bool AllowMocks
         {
@@ -139,12 +138,6 @@ namespace nHydrate.Generator.Models
         /// </summary>
         [Browsable(false)]
         public int GeneratedVersion { get; set; }
-
-        /// <summary>
-        /// The URL to the SyncServer service
-        /// </summary>
-        public string SyncServerURL { get; set; }
-        public Guid SyncServerToken { get; set; }
 
         public string OutputTarget { get; set; }
 
@@ -269,22 +262,6 @@ namespace nHydrate.Generator.Models
             {
                 _efVersion = value;
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("EFVersionConstants"));
-            }
-        }
-
-        [
-        Browsable(false),
-        Description("Determines the target .NET Framework"),
-        DefaultValue(typeof(FrameworkVersionConstants), "v35"),
-        Category("Data"),
-        ]
-        public FrameworkVersionConstants FrameworkVersion
-        {
-            get { return _frameworkVersion; }
-            set
-            {
-                _frameworkVersion = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("FrameworkVersion"));
             }
         }
 
@@ -431,15 +408,6 @@ namespace nHydrate.Generator.Models
             set { _database = value; }
         }
 
-        //[Browsable(true)]
-        //[Category("Data")]
-        //[Description("The date that this object was created.")]
-        //[ReadOnlyAttribute(true)]
-        //public DateTime CreatedDate
-        //{
-        //  get { return _createdDate; }
-        //}
-
         [Browsable(true)]
         [Category("Design")]
         [ReadOnlyAttribute(true)]
@@ -477,16 +445,16 @@ namespace nHydrate.Generator.Models
         }
 
         [Browsable(false)]
-        public List<string> RemovedTables { get; private set; }
+        public ExtendedList<string> RemovedTables { get; private set; }
 
         [Browsable(false)]
-        public List<string> RemovedViews { get; private set; }
+        public ExtendedList<string> RemovedViews { get; private set; }
 
         [Browsable(false)]
-        public List<string> RemovedStoredProcedures { get; private set; }
+        public ExtendedList<string> RemovedStoredProcedures { get; private set; }
 
         [Browsable(false)]
-        public List<string> RemovedFunctions { get; private set; }
+        public ExtendedList<string> RemovedFunctions { get; private set; }
 
         #endregion
 
@@ -561,15 +529,12 @@ namespace nHydrate.Generator.Models
                 this.Database.XmlAppend(databaseNode);
                 node.AppendChild(databaseNode);
 
-                //XmlHelper.AddAttribute(node, "createdDate", _createdDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
-
                 var versionHistoryListNode = oDoc.CreateElement("versionHistoryList");
                 node.AppendChild(versionHistoryListNode);
                 _versionHistoryList.XmlAppend(versionHistoryListNode);
 
                 XmlHelper.AddAttribute(node, "sqlType", this.SQLServerType.ToString());
                 XmlHelper.AddAttribute(node, "efversion", this.EFVersion.ToString());
-                XmlHelper.AddAttribute(node, "frameworkVersion", this.FrameworkVersion.ToString());
 
                 if (this.MetaData.Count > 0)
                 {
@@ -598,7 +563,6 @@ namespace nHydrate.Generator.Models
                 this.UseUTCTime = XmlHelper.GetAttributeValue(node, "useUTCTime", this.UseUTCTime);
                 this.SQLServerType = (SQLServerTypeConstants)Enum.Parse(typeof(SQLServerTypeConstants), XmlHelper.GetAttributeValue(node, "sqlType", _def_sQLServerType.ToString()));
                 this.EFVersion = (EFVersionConstants)Enum.Parse(typeof(EFVersionConstants), XmlHelper.GetAttributeValue(node, "efversion", _def_efVersion.ToString()));
-                this.FrameworkVersion = (FrameworkVersionConstants)Enum.Parse(typeof(FrameworkVersionConstants), XmlHelper.GetAttributeValue(node, "frameworkVersion", _def_frameworkVersion.ToString()));
                 this.StoredProcedurePrefix = XmlHelper.GetAttributeValue(node, "storedProcedurePrefix", _def_storedProcedurePrefix);
                 this.TenantColumnName = XmlHelper.GetAttributeValue(node, "tenantColumnName", _def_tenantColumnName);
                 this.TenantPrefix = XmlHelper.GetAttributeValue(node, "tenantPrefix", _def_tenantPrefix);
@@ -619,8 +583,6 @@ namespace nHydrate.Generator.Models
                 var databaseNode = node.SelectSingleNode("database");
                 if (databaseNode != null)
                     this.Database.XmlLoad(databaseNode);
-
-                //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
 
                 var copyrightNode = node.SelectSingleNode("copyright");
                 if (copyrightNode != null)
@@ -709,4 +671,5 @@ namespace nHydrate.Generator.Models
         #endregion
 
     }
+
 }

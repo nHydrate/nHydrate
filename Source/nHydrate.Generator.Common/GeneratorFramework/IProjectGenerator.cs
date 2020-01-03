@@ -34,5 +34,11 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         string DefaultNamespace { get; }
         string LocalNamespaceExtension { get; }
         string GetLocalNamespace();
+        IModelConfiguration ModelConfiguration { get; set; }
     }
+
+    public interface IModelConfiguration
+    {
+    }
+
 }

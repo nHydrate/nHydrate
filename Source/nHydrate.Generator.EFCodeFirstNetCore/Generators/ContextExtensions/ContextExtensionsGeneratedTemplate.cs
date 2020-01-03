@@ -72,7 +72,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
                 nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 this.AppendUsingStatements();
-                sb.AppendLine("namespace " + this.GetLocalNamespace());
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}");
                 sb.AppendLine("{");
                 this.AppendExtensions();
                 this.AppendQueryableExtensions();
@@ -89,7 +89,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
             sb.AppendLine("using System.Collections.Generic;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.Entity;");
             sb.AppendLine("using System.Linq.Expressions;");
             sb.AppendLine("using System.Reflection;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
@@ -341,6 +341,176 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine();
             #endregion
 
+            //TODO: make these work for all databases
+            //this.CreateDeleteExtensions();
+            //this.CreateUpdateExtensions();
+
+            //Main one for base IReadOnlyBusinessObject object
+            sb.AppendLine("		#region Metadata Extension Methods");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Creates and returns a metadata object for an entity type");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"entity\">The source class</param>");
+            sb.AppendLine("		/// <returns>A metadata object for the entity types in this assembly</returns>");
+            sb.AppendLine("		public static " + this.GetLocalNamespace() + ".IMetadata GetMetaData(this " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject entity)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			var a = entity.GetType().GetTypeInfo().GetCustomAttributes(typeof(MetadataTypeAttribute), true).FirstOrDefault();");
+            sb.AppendLine("			if (a == null) return null;");
+            sb.AppendLine("			var t = ((MetadataTypeAttribute)a).MetadataClassType;");
+            sb.AppendLine("			if (t == null) return null;");
+            sb.AppendLine("			return Activator.CreateInstance(t) as " + this.GetLocalNamespace() + ".IMetadata;");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
+
+            sb.AppendLine("	}");
+            sb.AppendLine();
+
+            #region SequentialId
+
+            sb.AppendLine("	#region SequentialIdGenerator");
+            sb.AppendLine();
+            sb.AppendLine("	/// <summary>");
+            sb.AppendLine("	/// Generates Sequential Guid values that can be used for Sql Server UniqueIdentifiers to improve performance.");
+            sb.AppendLine("	/// </summary>");
+            sb.AppendLine("	internal class SequentialIdGenerator");
+            sb.AppendLine("	{");
+            sb.AppendLine("		private readonly object _lock;");
+            sb.AppendLine("		private Guid _lastGuid;");
+            sb.AppendLine("		// 3 - the least significant byte in Guid ByteArray [for SQL Server ORDER BY clause]");
+            sb.AppendLine("		// 10 - the most significant byte in Guid ByteArray [for SQL Server ORDERY BY clause]");
+            sb.AppendLine("		private static readonly int[] SqlOrderMap = new int[] { 3, 2, 1, 0, 5, 4, 7, 6, 9, 8, 15, 14, 13, 12, 11, 10 };");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Creates a new SequentialId class to generate sequential GUID values.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public SequentialIdGenerator() : this(Guid.NewGuid()) { }");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Creates a new SequentialId class to generate sequential GUID values.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"seed\">Starting seed value.</param>");
+            sb.AppendLine("		/// <remarks>You can save the last generated value <see cref=\"LastValue\"/> and then ");
+            sb.AppendLine("		/// use this as the new seed value to pick up where you left off.</remarks>");
+            sb.AppendLine("		public SequentialIdGenerator(Guid seed)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			_lock = new object();");
+            sb.AppendLine("			_lastGuid = seed;");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Last generated guid value.  If no values have been generated, this will be the seed value.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public Guid LastValue");
+            sb.AppendLine("		{");
+            sb.AppendLine("			get {");
+            sb.AppendLine("				lock (_lock)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					return _lastGuid;");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine("			set");
+            sb.AppendLine("			{");
+            sb.AppendLine("				lock (_lock)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					_lastGuid = value;");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// Generate a new sequential id.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <returns>New sequential id value.</returns>");
+            sb.AppendLine("		public Guid NewId()");
+            sb.AppendLine("		{");
+            sb.AppendLine("			Guid newId;");
+            sb.AppendLine("			lock (_lock)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				var guidBytes = _lastGuid.ToByteArray();");
+            sb.AppendLine("				ReorderToSqlOrder(ref guidBytes);");
+            sb.AppendLine("				newId = new Guid(guidBytes);");
+            sb.AppendLine("				_lastGuid = newId;");
+            sb.AppendLine("			}");
+            sb.AppendLine();
+            sb.AppendLine("			return newId;");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		private static void ReorderToSqlOrder(ref byte[] bytes)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			foreach (var bytesIndex in SqlOrderMap)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				bytes[bytesIndex]++;");
+            sb.AppendLine("				if (bytes[bytesIndex] != 0)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					break;");
+            sb.AppendLine("				}");
+            sb.AppendLine("			}");
+            sb.AppendLine("		}");
+            sb.AppendLine();
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// IComparer.Compare compatible method to order Guid values the same way as MS Sql Server.");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		/// <param name=\"x\">The first guid to compare</param>");
+            sb.AppendLine("		/// <param name=\"y\">The second guid to compare</param>");
+            sb.AppendLine("		/// <returns><see cref=\"System.Collections.IComparer.Compare\"/></returns>");
+            sb.AppendLine("		public static int SqlCompare(Guid x, Guid y)");
+            sb.AppendLine("		{");
+            sb.AppendLine("			var result = 0;");
+            sb.AppendLine("			var index = SqlOrderMap.Length - 1;");
+            sb.AppendLine("			var xBytes = x.ToByteArray();");
+            sb.AppendLine("			var yBytes = y.ToByteArray();");
+            sb.AppendLine();
+            sb.AppendLine("			while (result == 0 && index >= 0)");
+            sb.AppendLine("			{");
+            sb.AppendLine("				result = xBytes[SqlOrderMap[index]].CompareTo(yBytes[SqlOrderMap[index]]);");
+            sb.AppendLine("				index--;");
+            sb.AppendLine("			}");
+            sb.AppendLine("			return result;");
+            sb.AppendLine("		}");
+            sb.AppendLine("	}");
+            sb.AppendLine();
+            sb.AppendLine("	#endregion");
+            sb.AppendLine();
+            #endregion
+
+            sb.AppendLine("	#endregion");
+            sb.AppendLine();
+        }
+
+        private void AppendQueryableExtensions()
+        {
+            sb.AppendLine("    internal static class IQueryableExtensions");
+            sb.AppendLine("    {");
+            sb.AppendLine("        private static readonly FieldInfo _queryCompilerField = typeof(EntityQueryProvider).GetTypeInfo().DeclaredFields.Single(x => x.Name == \"_queryCompiler\");");
+            sb.AppendLine("        private static readonly TypeInfo _queryCompilerTypeInfo = typeof(QueryCompiler).GetTypeInfo();");
+            sb.AppendLine("        private static readonly FieldInfo _queryModelGeneratorField = _queryCompilerTypeInfo.DeclaredFields.Single(x => x.Name == \"_queryModelGenerator\");");
+            sb.AppendLine("        private static readonly FieldInfo _databaseField = _queryCompilerTypeInfo.DeclaredFields.Single(x => x.Name == \"_database\");");
+            sb.AppendLine("        private static readonly PropertyInfo _dependenciesProperty = typeof(Database).GetTypeInfo().DeclaredProperties.Single(x => x.Name == \"Dependencies\");");
+            sb.AppendLine();
+            sb.AppendLine("        public static string ToSql<TEntity>(this IQueryable<TEntity> queryable)");
+            sb.AppendLine("            where TEntity : class");
+            sb.AppendLine("        {");
+            sb.AppendLine("            if (!(queryable is EntityQueryable<TEntity>) && !(queryable is InternalDbSet<TEntity>))");
+            sb.AppendLine("                throw new ArgumentException();");
+            sb.AppendLine();
+            sb.AppendLine("            var queryCompiler = (IQueryCompiler)_queryCompilerField.GetValue(queryable.Provider);");
+            sb.AppendLine("            var queryModelGenerator = (IQueryModelGenerator)_queryModelGeneratorField.GetValue(queryCompiler);");
+            sb.AppendLine("            var queryModel = queryModelGenerator.ParseQuery(queryable.Expression);");
+            sb.AppendLine("            var database = _databaseField.GetValue(queryCompiler);");
+            sb.AppendLine("            var queryCompilationContextFactory = ((DatabaseDependencies)_dependenciesProperty.GetValue(database)).QueryCompilationContextFactory;");
+            sb.AppendLine("            var queryCompilationContext = queryCompilationContextFactory.Create(false);");
+            sb.AppendLine("            var modelVisitor = (RelationalQueryModelVisitor)queryCompilationContext.CreateQueryModelVisitor();");
+            sb.AppendLine("            modelVisitor.CreateQueryExecutor<TEntity>(queryModel);");
+            sb.AppendLine("            return modelVisitor.Queries.Join(Environment.NewLine + Environment.NewLine);");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+        }
+
+        private void CreateDeleteExtensions()
+        {
             #region Delete Extensions
             sb.AppendLine("		#region Delete Extensions");
             sb.AppendLine("		/// <summary>");
@@ -481,7 +651,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		#endregion");
             sb.AppendLine();
             #endregion
+        }
 
+        private void CreateUpdateExtensions()
+        {
             #region Update Extensions
             sb.AppendLine("		#region Update Extensions");
             sb.AppendLine();
@@ -661,7 +834,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("			var sb = new System.Text.StringBuilder();");
             sb.AppendLine("			#region Per table code");
 
-            index = 0;
+            var index = 0;
             foreach (var table in _model.Database.Tables
                 .Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable == TypedTableConstants.None) && !x.Security.IsValid())
                 .OrderBy(x => x.PascalName))
@@ -735,171 +908,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
+            sb.AppendLine();
 
             #endregion
 
-            //Main one for base IReadOnlyBusinessObject object
-            sb.AppendLine("		#region Metadata Extension Methods");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Creates and returns a metadata object for an entity type");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"entity\">The source class</param>");
-            sb.AppendLine("		/// <returns>A metadata object for the entity types in this assembly</returns>");
-            sb.AppendLine("		public static " + this.GetLocalNamespace() + ".IMetadata GetMetaData(this " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject entity)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			var a = entity.GetType().GetTypeInfo().GetCustomAttributes(typeof(MetadataTypeAttribute), true).FirstOrDefault();");
-            sb.AppendLine("			if (a == null) return null;");
-            sb.AppendLine("			var t = ((MetadataTypeAttribute)a).MetadataClassType;");
-            sb.AppendLine("			if (t == null) return null;");
-            sb.AppendLine("			return Activator.CreateInstance(t) as " + this.GetLocalNamespace() + ".IMetadata;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-
-            sb.AppendLine("	}");
-            sb.AppendLine();
-
-            #region SequentialId
-
-            sb.AppendLine("	#region SequentialIdGenerator");
-            sb.AppendLine();
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// Generates Sequential Guid values that can be used for Sql Server UniqueIdentifiers to improve performance.");
-            sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	internal class SequentialIdGenerator");
-            sb.AppendLine("	{");
-            sb.AppendLine("		private readonly object _lock;");
-            sb.AppendLine("		private Guid _lastGuid;");
-            sb.AppendLine("		// 3 - the least significant byte in Guid ByteArray [for SQL Server ORDER BY clause]");
-            sb.AppendLine("		// 10 - the most significant byte in Guid ByteArray [for SQL Server ORDERY BY clause]");
-            sb.AppendLine("		private static readonly int[] SqlOrderMap = new int[] { 3, 2, 1, 0, 5, 4, 7, 6, 9, 8, 15, 14, 13, 12, 11, 10 };");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Creates a new SequentialId class to generate sequential GUID values.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public SequentialIdGenerator() : this(Guid.NewGuid()) { }");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Creates a new SequentialId class to generate sequential GUID values.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"seed\">Starting seed value.</param>");
-            sb.AppendLine("		/// <remarks>You can save the last generated value <see cref=\"LastValue\"/> and then ");
-            sb.AppendLine("		/// use this as the new seed value to pick up where you left off.</remarks>");
-            sb.AppendLine("		public SequentialIdGenerator(Guid seed)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			_lock = new object();");
-            sb.AppendLine("			_lastGuid = seed;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Last generated guid value.  If no values have been generated, this will be the seed value.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public Guid LastValue");
-            sb.AppendLine("		{");
-            sb.AppendLine("			get {");
-            sb.AppendLine("				lock (_lock)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					return _lastGuid;");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("			set");
-            sb.AppendLine("			{");
-            sb.AppendLine("				lock (_lock)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					_lastGuid = value;");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Generate a new sequential id.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <returns>New sequential id value.</returns>");
-            sb.AppendLine("		public Guid NewId()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			Guid newId;");
-            sb.AppendLine("			lock (_lock)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var guidBytes = _lastGuid.ToByteArray();");
-            sb.AppendLine("				ReorderToSqlOrder(ref guidBytes);");
-            sb.AppendLine("				newId = new Guid(guidBytes);");
-            sb.AppendLine("				_lastGuid = newId;");
-            sb.AppendLine("			}");
-            sb.AppendLine();
-            sb.AppendLine("			return newId;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		private static void ReorderToSqlOrder(ref byte[] bytes)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			foreach (var bytesIndex in SqlOrderMap)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				bytes[bytesIndex]++;");
-            sb.AppendLine("				if (bytes[bytesIndex] != 0)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					break;");
-            sb.AppendLine("				}");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// IComparer.Compare compatible method to order Guid values the same way as MS Sql Server.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"x\">The first guid to compare</param>");
-            sb.AppendLine("		/// <param name=\"y\">The second guid to compare</param>");
-            sb.AppendLine("		/// <returns><see cref=\"System.Collections.IComparer.Compare\"/></returns>");
-            sb.AppendLine("		public static int SqlCompare(Guid x, Guid y)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			var result = 0;");
-            sb.AppendLine("			var index = SqlOrderMap.Length - 1;");
-            sb.AppendLine("			var xBytes = x.ToByteArray();");
-            sb.AppendLine("			var yBytes = y.ToByteArray();");
-            sb.AppendLine();
-            sb.AppendLine("			while (result == 0 && index >= 0)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				result = xBytes[SqlOrderMap[index]].CompareTo(yBytes[SqlOrderMap[index]]);");
-            sb.AppendLine("				index--;");
-            sb.AppendLine("			}");
-            sb.AppendLine("			return result;");
-            sb.AppendLine("		}");
-            sb.AppendLine("	}");
-            sb.AppendLine();
-            sb.AppendLine("	#endregion");
-            sb.AppendLine();
-            #endregion
-
-            sb.AppendLine("	#endregion");
-            sb.AppendLine();
-        }
-
-        private void AppendQueryableExtensions()
-        {
-            sb.AppendLine("    internal static class IQueryableExtensions");
-            sb.AppendLine("    {");
-            sb.AppendLine("        private static readonly FieldInfo _queryCompilerField = typeof(EntityQueryProvider).GetTypeInfo().DeclaredFields.Single(x => x.Name == \"_queryCompiler\");");
-            sb.AppendLine("        private static readonly TypeInfo _queryCompilerTypeInfo = typeof(QueryCompiler).GetTypeInfo();");
-            sb.AppendLine("        private static readonly FieldInfo _queryModelGeneratorField = _queryCompilerTypeInfo.DeclaredFields.Single(x => x.Name == \"_queryModelGenerator\");");
-            sb.AppendLine("        private static readonly FieldInfo _databaseField = _queryCompilerTypeInfo.DeclaredFields.Single(x => x.Name == \"_database\");");
-            sb.AppendLine("        private static readonly PropertyInfo _dependenciesProperty = typeof(Database).GetTypeInfo().DeclaredProperties.Single(x => x.Name == \"Dependencies\");");
-            sb.AppendLine();
-            sb.AppendLine("        public static string ToSql<TEntity>(this IQueryable<TEntity> queryable)");
-            sb.AppendLine("            where TEntity : class");
-            sb.AppendLine("        {");
-            sb.AppendLine("            if (!(queryable is EntityQueryable<TEntity>) && !(queryable is InternalDbSet<TEntity>))");
-            sb.AppendLine("                throw new ArgumentException();");
-            sb.AppendLine();
-            sb.AppendLine("            var queryCompiler = (IQueryCompiler)_queryCompilerField.GetValue(queryable.Provider);");
-            sb.AppendLine("            var queryModelGenerator = (IQueryModelGenerator)_queryModelGeneratorField.GetValue(queryCompiler);");
-            sb.AppendLine("            var queryModel = queryModelGenerator.ParseQuery(queryable.Expression);");
-            sb.AppendLine("            var database = _databaseField.GetValue(queryCompiler);");
-            sb.AppendLine("            var queryCompilationContextFactory = ((DatabaseDependencies)_dependenciesProperty.GetValue(database)).QueryCompilationContextFactory;");
-            sb.AppendLine("            var queryCompilationContext = queryCompilationContextFactory.Create(false);");
-            sb.AppendLine("            var modelVisitor = (RelationalQueryModelVisitor)queryCompilationContext.CreateQueryModelVisitor();");
-            sb.AppendLine("            modelVisitor.CreateQueryExecutor<TEntity>(queryModel);");
-            sb.AppendLine("            return modelVisitor.Queries.Join(Environment.NewLine + Environment.NewLine);");
-            sb.AppendLine("        }");
-            sb.AppendLine("    }");
         }
 
         #endregion

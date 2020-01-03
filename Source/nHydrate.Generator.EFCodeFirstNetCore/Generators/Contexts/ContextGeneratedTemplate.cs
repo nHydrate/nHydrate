@@ -37,10 +37,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
     public class ContextGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
         private StringBuilder sb = new StringBuilder();
+        private ModelConfiguration _modelConfiguration = null;
 
         public ContextGeneratedTemplate(ModelRoot model)
             : base(model)
         {
+            if (model.ModelConfigurations.ContainsKey(typeof(EFCodeFirstNetCoreProjectGenerator).Name))
+                _modelConfiguration = model.ModelConfigurations[typeof(EFCodeFirstNetCoreProjectGenerator).Name] as ModelConfiguration;
+            if (_modelConfiguration == null)
+                _modelConfiguration = new ModelConfiguration();
         }
 
         #region BaseClassTemplate overrides
@@ -81,7 +86,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("}");
                 sb.AppendLine();
 
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
                 sb.AppendLine("{");
                 sb.AppendLine("}");
                 sb.AppendLine("#pragma warning restore 612");
@@ -106,9 +111,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// A mapping for the the " + table.PascalName + " entity");
+                sb.AppendLine($"		/// A mapping for the the {table.PascalName} entity");
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		" + table.PascalName + ",");
+                sb.AppendLine($"		{table.PascalName},");
             }
 
             sb.AppendLine("	}");
@@ -125,8 +130,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("using System.Runtime.Serialization;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".Entity;");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.Entity;");
             sb.AppendLine("using System.Data.SqlClient;");
+            sb.AppendLine("using System.Configuration;");
             sb.AppendLine();
         }
 
@@ -165,12 +171,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             // Create consts for version and modelKey
             sb.AppendLine("		private const string _version = \"" + _model.Version + "." + _model.GeneratedVersion + "\";");
             sb.AppendLine("		private const string _modelKey = \"" + _model.Key + "\";");
+            sb.AppendLine("		protected string _connectionString = null;");
             sb.AppendLine();
 
             //NETCORE REMOVED
             //Events
             sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		[field:NonSerialized]");
             sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
@@ -183,7 +189,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		[field:NonSerialized]");
             sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
@@ -196,7 +201,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		[field:NonSerialized]");
             sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveModifiedEntity;");
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnAfterSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
@@ -209,7 +213,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		[field:NonSerialized]");
             sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveAddedEntity;");
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnAfterSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
@@ -226,96 +229,57 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Initializes a new " + _model.ProjectName + "Entities object using the connection string found in the '" + _model.ProjectName + "Entities' section of the application configuration file.");
+            sb.AppendLine($"		/// Initializes a new {_model.ProjectName}Entities object using the connection string found in the '{_model.ProjectName}Entities' section of the application configuration file.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + _model.ProjectName + "Entities() :");
-            //NETCORE REMOVED
-            //sb.AppendLine("			base(Util.ConvertNormalCS2EFFromConfig(\"name=" + _model.ProjectName + "Entities\"))");
+            sb.AppendLine($"		public {_model.ProjectName}Entities() :");
             sb.AppendLine("			base()");
             sb.AppendLine("		{");
+            sb.AppendLine("			_connectionString = ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"]?.ConnectionString;");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
             sb.AppendLine("			_contextStartup = new ContextStartup(null, true);");
-            //NETCORE REMOVED
-            //sb.AppendLine("			try");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Database.Connection.ConnectionString));");
-            //sb.AppendLine("				var timeoutValue = \"30\";");
-            //sb.AppendLine("				if (builder.ContainsKey(\"connect timeout\"))");
-            //sb.AppendLine("					timeoutValue = (string) builder[\"connect timeout\"];");
-            //sb.AppendLine("				else if (builder.ContainsKey(\"connection timeout\"))");
-            //sb.AppendLine("					timeoutValue = (string) builder[\"connection timeout\"];");
-            //sb.AppendLine("				var v = Convert.ToInt32(timeoutValue);");
-            //sb.AppendLine("				if (v > 0)");
-            //sb.AppendLine("					this.CommandTimeout = v;");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			catch { }");
+            sb.AppendLine("			this.CommandTimeout = _contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
             sb.AppendLine("		}");
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Initialize a new " + _model.ProjectName + "Entities object with an audit modifier.");
+            sb.AppendLine($"		/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + _model.ProjectName + "Entities(ContextStartup contextStartup) :");
-            //NETCORE REMOVED
-            //sb.AppendLine("			base(Util.ConvertNormalCS2EFFromConfig(\"name=" + _model.ProjectName + "Entities\", contextStartup))");
+            sb.AppendLine($"		public {_model.ProjectName}Entities(ContextStartup contextStartup) :");
             sb.AppendLine("				base()");
             sb.AppendLine("		{");
+            sb.AppendLine("			_connectionString = ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"]?.ConnectionString;");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
             sb.AppendLine("			_contextStartup = contextStartup;");
-            //NETCORE REMOVED
-            //sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
-            sb.AppendLine("			this.CommandTimeout = contextStartup.CommandTimeout;");
+            sb.AppendLine("			this.CommandTimeout = _contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
             sb.AppendLine("		}");
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Initialize a new " + _model.ProjectName + "Entities object with an audit modifier.");
+            sb.AppendLine($"		/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + _model.ProjectName + "Entities(ContextStartup contextStartup, string connectionString) :");
-            //NETCORE REMOVED
-            //sb.AppendLine("			base(Util.ConvertNormalCS2EF(connectionString, contextStartup))");
-            sb.AppendLine("				this(connectionString)");
+            sb.AppendLine($"		public {_model.ProjectName}Entities(ContextStartup contextStartup, string connectionString) :");
+            sb.AppendLine("				base()");
             sb.AppendLine("		{");
+            sb.AppendLine("			_connectionString = connectionString;");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
             sb.AppendLine("			_contextStartup = contextStartup;");
-            //NETCORE REMOVED
-            //sb.AppendLine("			this.ContextOptions.LazyLoadingEnabled = contextStartup.AllowLazyLoading;");
-            sb.AppendLine("			this.CommandTimeout = contextStartup.CommandTimeout;");
+            sb.AppendLine("			this.CommandTimeout = _contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
             sb.AppendLine("		}");
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Initialize a new " + _model.ProjectName + "Entities object.");
+            sb.AppendLine($"		/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + _model.ProjectName + "Entities(string connectionString) :");
-            //NETCORE REMOVED
-            //sb.AppendLine("			base(Util.ConvertNormalCS2EF(connectionString))");
-            sb.AppendLine("			base (((Func<DbContextOptions>)(() =>");
-            sb.AppendLine("			{");
-            sb.AppendLine("				var optionsBuilder = new DbContextOptionsBuilder<" + _model.ProjectName + "Entities>();");
-            sb.AppendLine("				optionsBuilder.UseSqlServer(connectionString);");
-            sb.AppendLine("				return optionsBuilder.Options;");
-            sb.AppendLine("			}))())");
+            sb.AppendLine($"		public {_model.ProjectName}Entities(string connectionString) :");
+            sb.AppendLine("				base()");
             sb.AppendLine("		{");
+            sb.AppendLine("			_connectionString = connectionString;");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
             sb.AppendLine("			_contextStartup = new ContextStartup(null, true);");
-            //NETCORE REMOVED
-            //sb.AppendLine("			try");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				var builder = new System.Data.Odbc.OdbcConnectionStringBuilder(Util.StripEFCS2Normal(this.Database.Connection.ConnectionString));");
-            //sb.AppendLine("				var timeoutValue = \"30\";");
-            //sb.AppendLine("				if (builder.ContainsKey(\"connect timeout\"))");
-            //sb.AppendLine("					timeoutValue = (string) builder[\"connect timeout\"];");
-            //sb.AppendLine("				else if (builder.ContainsKey(\"connection timeout\"))");
-            //sb.AppendLine("					timeoutValue = (string) builder[\"connection timeout\"];");
-            //sb.AppendLine("				var v = Convert.ToInt32(timeoutValue);");
-            //sb.AppendLine("				if (v > 0)");
-            //sb.AppendLine("					this.CommandTimeout = v;");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			catch { }");
+            sb.AppendLine("			this.CommandTimeout = _contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -337,9 +301,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		protected override void OnModelCreating(ModelBuilder modelBuilder)");
             sb.AppendLine("		{");
             sb.AppendLine("			base.OnModelCreating(modelBuilder);");
-
-            //NETCORE REMOVED
-            //sb.AppendLine("			modelBuilder.Conventions.Remove<System.Data.Entity.ModelConfiguration.Conventions.PluralizingTableNameConvention>();");
 
             if (_model.EFVersion == EFVersionConstants.EF6 && _model.Database.UseGeneratedCRUD)
             {
@@ -369,9 +330,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			#region Hierarchy Mapping");
             foreach (var table in hierarchyList)
             {
-                var schema = "dbo";
+                string schema = null;
                 if (!string.IsNullOrEmpty(table.DBSchema)) schema = table.DBSchema;
-                sb.AppendLine("			modelBuilder.Entity<EFDAL.Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\", \"" + schema + "\");");
+
+                if (string.IsNullOrEmpty(schema))
+                    sb.AppendLine("			modelBuilder.Entity<EFDAL.Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\");");
+                else
+                    sb.AppendLine("			modelBuilder.Entity<EFDAL.Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\", \"" + schema + "\");");
             }
             sb.AppendLine("			#endregion");
             sb.AppendLine();
@@ -384,21 +349,29 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             //Tables
             foreach (var item in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
-                var schema = "dbo";
+                string schema = null;
                 if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
                 var dbTableName = item.DatabaseName;
                 if (item.IsTenant)
                     dbTableName = _model.TenantPrefix + "_" + item.DatabaseName;
-                sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + dbTableName + "\", \"" + schema + "\");");
+
+                if (string.IsNullOrEmpty(schema))
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + dbTableName + "\");");
+                else
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + dbTableName + "\", \"" + schema + "\");");
             }
 
             //Views
             foreach (var item in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.DatabaseName))
             {
-                var schema = "dbo";
+                string schema = null;
                 if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
                 var dbTableName = item.DatabaseName;
-                sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + dbTableName + "\", \"" + schema + "\");");
+
+                if (string.IsNullOrEmpty(schema))
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + dbTableName + "\");");
+                else
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + dbTableName + "\", \"" + schema + "\");");
             }
 
             sb.AppendLine("			#endregion");
@@ -437,10 +410,23 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         if (!column.AllowNull)
                             sb.Append(".IsRequired()");
                         if (column.Identity == IdentityTypeConstants.Database && column.IsIntegerType)
-                            sb.Append(".UseSqlServerIdentityColumn()");
+                        {
+                            switch(_modelConfiguration.DatabaseType )
+                            {
+                                case DatabaseTypeConstants.SqlServer:
+                                    sb.Append(".ValueGeneratedOnAdd()");
+                                    break;
+                                case DatabaseTypeConstants.Postgress:
+                                    sb.Append(".ValueGeneratedOnAdd()");
+                                    break;
+                                case DatabaseTypeConstants.Sqlite:
+                                    sb.Append(".ValueGeneratedOnAdd()");
+                                    break;
+                            }
+                        }
 
-                        if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
-                        if (column.DataType == System.Data.SqlDbType.VarChar) sb.Append(".HasColumnType(\"VARCHAR(" + column.GetAnnotationStringLength() + ")\")");
+                        if (column.IsTextType && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
+                        //if (column.DataType == System.Data.SqlDbType.VarChar) sb.Append(".HasColumnType(\"VARCHAR(" + column.GetAnnotationStringLength() + ")\")");
                         if (column.DatabaseName != column.PascalName) sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
                         sb.AppendLine(";");
                     }
@@ -487,6 +473,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 //    }
                 //}
 
+                if (table.AllowCreateAudit)
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.CreatedDateColumnName + ").IsRequired();");
+                if (table.AllowModifiedAudit)
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.ModifiedDateColumnName + ").IsRequired();");
+
                 if (table.AllowTimestamp)
                 {
                     if (!String.Equals(_model.Database.TimestampDatabaseName, _model.Database.TimestampPascalName, StringComparison.OrdinalIgnoreCase))
@@ -496,8 +487,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         sb.Append(".HasColumnName(\"" + _model.Database.TimestampDatabaseName + "\")");
                         sb.AppendLine(";");
                     }
-
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").IsConcurrencyToken(true).IsRowVersion();");
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").IsRowVersion();");
                 }
 
                 sb.AppendLine();
@@ -514,7 +504,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     if (!column.AllowNull)
                         sb.Append(".IsRequired()");
 
-                    if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
+                    if (column.IsTextType && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
                     if (column.DatabaseName != column.PascalName) sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
                     sb.AppendLine(";");
                 }
@@ -728,8 +718,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("					var audit = entity as IAuditableSet;");
             sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
             sb.AppendLine("					{");
-            sb.AppendLine("						if (audit != null) audit.ResetCreatedBy(this.ContextStartup.Modifer);");
-            sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
+            sb.AppendLine("						if (audit != null) audit.CreatedBy = this.ContextStartup.Modifer;");
+            sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifer;");
             sb.AppendLine("					}");
             sb.AppendLine("					audit.CreatedDate = markedTime;");
             sb.AppendLine("					audit.ModifiedDate = markedTime;");
@@ -750,7 +740,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("					var audit = entity as IAuditableSet;");
             sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
             sb.AppendLine("					{");
-            sb.AppendLine("						if (audit != null) audit.ResetModifiedBy(this.ContextStartup.Modifer);");
+            sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifer;");
             sb.AppendLine("					}");
             sb.AppendLine("					audit.ModifiedDate = markedTime;");
             sb.AppendLine("				}");
@@ -842,14 +832,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		}");
             sb.AppendLine();
             
-            //NETCORE REMOVED
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		public virtual System.Data.Entity.Core.Objects.ObjectContextOptions ContextOptions");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			get { return this.ContextOptions; }");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-
             #region Configuration API/Database verification
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Determines the version of the model that created this library.");
@@ -910,38 +892,41 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             //sb.AppendLine("			return true;");
             //sb.AppendLine("		}");
             //sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Retrieves the latest database version for the current model");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public string GetDBVersion(string connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			var conn = new System.Data.SqlClient.SqlConnection();");
-            sb.AppendLine("			try");
-            sb.AppendLine("			{");
-            sb.AppendLine("				conn.ConnectionString = connectionString;");
-            sb.AppendLine("				conn.Open();");
-            sb.AppendLine();
-            sb.AppendLine("				var command = new SqlCommand(\"SELECT dbVersion FROM [__nhydrateschema] where [ModelKey] = '\" + this.ModelKey + \"'\", conn);");
-            sb.AppendLine("				using (var reader = command.ExecuteReader())");
-            sb.AppendLine("				{");
-            sb.AppendLine("					while (reader.Read())");
-            sb.AppendLine("					{");
-            sb.AppendLine("						return (string)reader[0];");
-            sb.AppendLine("					}");
-            sb.AppendLine("				}");
-            sb.AppendLine("				return string.Empty;");
-            sb.AppendLine("			}");
-            sb.AppendLine("			catch (Exception)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				return string.Empty;");
-            sb.AppendLine("			}");
-            sb.AppendLine("			finally");
-            sb.AppendLine("			{");
-            sb.AppendLine("				if (conn != null)");
-            sb.AppendLine("					conn.Close();");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+
+            //TODO: Make for all databases
+            //Removed for EF core because it is SQL Server specific
+            //sb.AppendLine("		/// <summary>");
+            //sb.AppendLine("		/// Retrieves the latest database version for the current model");
+            //sb.AppendLine("		/// </summary>");
+            //sb.AppendLine("		public string GetDBVersion(string connectionString)");
+            //sb.AppendLine("		{");
+            //sb.AppendLine("			var conn = new System.Data.SqlClient.SqlConnection();");
+            //sb.AppendLine("			try");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				conn.ConnectionString = connectionString;");
+            //sb.AppendLine("				conn.Open();");
+            //sb.AppendLine();
+            //sb.AppendLine("				var command = new SqlCommand(\"SELECT dbVersion FROM [__nhydrateschema] where [ModelKey] = '\" + this.ModelKey + \"'\", conn);");
+            //sb.AppendLine("				using (var reader = command.ExecuteReader())");
+            //sb.AppendLine("				{");
+            //sb.AppendLine("					while (reader.Read())");
+            //sb.AppendLine("					{");
+            //sb.AppendLine("						return (string)reader[0];");
+            //sb.AppendLine("					}");
+            //sb.AppendLine("				}");
+            //sb.AppendLine("				return string.Empty;");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("			catch (Exception)");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				return string.Empty;");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("			finally");
+            //sb.AppendLine("			{");
+            //sb.AppendLine("				if (conn != null)");
+            //sb.AppendLine("					conn.Close();");
+            //sb.AppendLine("			}");
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
             #endregion
 
             #region Add Functionality
@@ -958,7 +943,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		{");
 
             sb.AppendLine("			if (entity == null) throw new NullReferenceException();");
-            sb.AppendLine("			var audit = entity as " + this.GetLocalNamespace() + ".IAuditableSet;");
+            sb.AppendLine($"			var audit = entity as {this.GetLocalNamespace()}.IAuditableSet;");
             sb.AppendLine("			if (audit != null)");
             sb.AppendLine("			{");
             sb.AppendLine("				audit.CreatedBy = _contextStartup.Modifer;");

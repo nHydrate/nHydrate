@@ -66,6 +66,8 @@ namespace nHydrate.Generator.ProjectItemGenerators
             //Implement base functionality if needed
         }
 
+        public abstract IModelConfiguration ModelConfiguration { get; set; }
+
         #region IProjectGenerator Members
 
         public void Initialize(IModelObject model)

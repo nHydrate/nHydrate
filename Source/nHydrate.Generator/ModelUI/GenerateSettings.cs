@@ -81,7 +81,7 @@ namespace nHydrate.Generator.ModelUI
                         _generatorMap.Add(attribute.Name, v);
                     }
                 }
-                LoadGenerators(true);
+                this.LoadGenerators(true);
 
                 //Add modules
                 foreach (var s in moduleList.OrderBy(x => x))
@@ -268,6 +268,10 @@ namespace nHydrate.Generator.ModelUI
                     }
                 }
             }
+
+            //TODO: add property grid and can see this config object
+            //may not need anymore as was being used to set database type and this might not even be needed for EF core
+            //propertyGrid1.SelectedObject = _generator.Model.ModelConfigurations[attribute.CurrentType.Name];
         }
 
         private void tvwProjects_AfterCheck(object sender, TreeViewEventArgs e)

@@ -69,5 +69,7 @@ namespace nHydrate.Generator.Datasite
         protected override void OnInitialize(IModelObject model)
         {
         }
+
+        public override IModelConfiguration ModelConfiguration { get; set; }
     }
 }
