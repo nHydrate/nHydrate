@@ -9,7 +9,7 @@ https://visualstudiogallery.msdn.microsoft.com/d641354e-b15f-437c-b7eb-83c6ac423
 Installation
 ========
 
-To load and compile this project you need Visual Studio 2017 or greater. When installer Visual Studio, be sure to include the Modeling SDK.
+To load and compile this project you need Visual Studio 2017 or greater. When installing Visual Studio, be sure to include the Modeling SDK.
 
 You can then load and build the solution.
 
