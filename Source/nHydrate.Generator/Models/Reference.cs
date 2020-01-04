@@ -37,7 +37,6 @@ namespace nHydrate.Generator.Models
         Table = 1,
         Relation = 2,
         CustomViewColumn = 3,
-        CustomRetrieveRule = 4,
         Parameter = 5,
         CustomStoredProcedureColumn = 6,
         CustomAggregateColumn = 7,
@@ -109,9 +108,6 @@ namespace nHydrate.Generator.Models
                             break;
                         case ReferenceType.CustomViewColumn:
                             retVal = modelRoot.Database.CustomViewColumns[Ref];
-                            break;
-                        case ReferenceType.CustomRetrieveRule:
-                            retVal = modelRoot.Database.CustomRetrieveRules[Ref];
                             break;
                         case ReferenceType.Parameter:
                             retVal = modelRoot.Database.CustomRetrieveRuleParameters[Ref];
@@ -200,9 +196,6 @@ namespace nHydrate.Generator.Models
                     break;
                 case ReferenceType.CustomViewColumn:
                     retval = modelRoot.Database.CustomViewColumns[Ref].ToString();
-                    break;
-                case ReferenceType.CustomRetrieveRule:
-                    retval = modelRoot.Database.CustomRetrieveRules[Ref].ToString();
                     break;
                 case ReferenceType.Parameter:
                     retval = modelRoot.Database.CustomRetrieveRuleParameters[Ref].ToString();

@@ -958,31 +958,6 @@ namespace nHydrate.Generator.SQLInstaller
 
             var tableIndex = 1;
             var retval = t1NameClause;
-            var t = item.ParentTable;
-            while (t != null)
-            {
-                var t2Name = "[" + t.GetSQLSchema() + "].[" + t.DatabaseName + "]";
-                var t2NameClause = string.Empty;
-                var t2Alias = "[z" + tableIndex + "]";
-
-                if (useLinqAlias) t2NameClause = t2Name + " AS " + t2Alias;
-                else t2NameClause = t2Name;
-                retval += " INNER JOIN " + t2NameClause + " ON ";
-                var index = 0;
-                foreach (var c in t.PrimaryKeyColumns.OrderBy(x => x.Name))
-                {
-                    index++;
-                    retval += " " + (useLinqAlias ? t1Alias : t1Name) + ".[" + c.DatabaseName + "] = " + (useLinqAlias ? t2Alias : t2Name) + ".[" + c.DatabaseName + "]";
-                    if (index < t.PrimaryKeyColumns.Count)
-                        retval += ", ";
-                }
-                t = t.ParentTable;
-                tableIndex++;
-
-                t1Name = t2Name;
-                t1NameClause = t2NameClause;
-                t1Alias = t2Alias;
-            }
             return retval;
         }
     }

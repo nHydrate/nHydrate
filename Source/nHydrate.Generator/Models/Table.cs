@@ -92,7 +92,6 @@ namespace nHydrate.Generator.Models
         protected ReferenceCollection _columns = null;
         protected ReferenceCollection _relationships = null;
         protected ReferenceCollection _viewRelationships = null;
-        protected ReferenceCollection _customRetrieveRules = null;
         protected List<TableIndex> _tableIndexList = new List<TableIndex>();
         private bool _isMetaData = false;
         private bool _isMetaDataDefinition = false;
@@ -130,8 +129,6 @@ namespace nHydrate.Generator.Models
             _staticData = new RowEntryCollection(this.Root);
             _columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
             _columns.ResetKey(Guid.Empty.ToString());
-            _customRetrieveRules = new ReferenceCollection(this.Root, this, ReferenceType.CustomRetrieveRule);
-            _customRetrieveRules.ResetKey(Guid.Empty.ToString());
             _relationships = new ReferenceCollection(this.Root, this, ReferenceType.Relation);
             _relationships.ResetKey(Guid.Empty.ToString());
             _viewRelationships = new ReferenceCollection(this.Root, this, ReferenceType.Relation);
@@ -141,11 +138,6 @@ namespace nHydrate.Generator.Models
             _columns.ObjectSingular = "Field";
             _columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
             _columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
-
-            _customRetrieveRules.ObjectPlural = "RetrieveRules";
-            _customRetrieveRules.ObjectSingular = "RetrieveRule";
-            _customRetrieveRules.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
-            _customRetrieveRules.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
 
             _relationships.ObjectPlural = "Relationships";
             _relationships.ObjectSingular = "Relationship";
@@ -253,58 +245,58 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if there is a parent table from which this object is inherited."),
-        Category("Data"),
-        ]
-        public Table ParentTable
-        {
-            get
-            {
-                var arr = ((ModelRoot)this.Root).Database.Tables.GetByKey(_parentTableKey);
-                if (arr.Length == 0) return null;
-                else return arr[0];
-            }
-            set
-            {
-                if (value == null)
-                {
-                    if (_parentTableKey != null)
-                    {
-                        _parentTableKey = null;
-                        this.OnPropertyChanged(this, new PropertyChangedEventArgs("ParentTable"));
-                    }
-                }
-                else
-                {
-                    //Ensure that there are no circles
-                    var tList = value.GetTableHierarchy();
-                    if (tList.Contains(this))
-                    {
-                        throw new Exception("This table cannot inherit from the specified table as it would create a circular inheritance.");
-                    }
+        //[
+        //Browsable(true),
+        //Description("Determines if there is a parent table from which this object is inherited."),
+        //Category("Data"),
+        //]
+        //public Table ParentTable
+        //{
+        //    get
+        //    {
+        //        var arr = ((ModelRoot)this.Root).Database.Tables.GetByKey(_parentTableKey);
+        //        if (arr.Length == 0) return null;
+        //        else return arr[0];
+        //    }
+        //    set
+        //    {
+        //        if (value == null)
+        //        {
+        //            if (_parentTableKey != null)
+        //            {
+        //                _parentTableKey = null;
+        //                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ParentTable"));
+        //            }
+        //        }
+        //        else
+        //        {
+        //            //Ensure that there are no circles
+        //            var tList = value.GetTableHierarchy();
+        //            if (tList.Contains(this))
+        //            {
+        //                throw new Exception("This table cannot inherit from the specified table as it would create a circular inheritance.");
+        //            }
 
-                    if (_parentTableKey != value.Key)
-                    {
-                        _parentTableKey = value.Key;
-                        this.OnPropertyChanged(this, new PropertyChangedEventArgs("ParentTable"));
-                    }
-                }
+        //            if (_parentTableKey != value.Key)
+        //            {
+        //                _parentTableKey = value.Key;
+        //                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ParentTable"));
+        //            }
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
-        [Browsable(false)]
-        public string ParentTableKey
-        {
-            get { return _parentTableKey; }
-            private set
-            {
-                _parentTableKey = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ParentTableKey"));
-            }
-        }
+        //[Browsable(false)]
+        //public string ParentTableKey
+        //{
+        //    get { return _parentTableKey; }
+        //    private set
+        //    {
+        //        _parentTableKey = value;
+        //        this.OnPropertyChanged(this, new PropertyChangedEventArgs("ParentTableKey"));
+        //    }
+        //}
 
         [
         Browsable(true),
@@ -486,18 +478,6 @@ namespace nHydrate.Generator.Models
             get { return _columns; }
         }
 
-        [
-        Browsable(false),
-        Description("A list of custom retrieve rules that can be run against this table."),
-        Category("Relations"),
-            //TypeConverter(typeof(nHydrate.Generator.Design.Converters.ColumnReferenceCollectionConverter)),
-            //Editor(typeof(nHydrate.Generator.Design.Editors.ColumnReferenceCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))
-        ]
-        public ReferenceCollection CustomRetrieveRules
-        {
-            get { return _customRetrieveRules; }
-        }
-
         /// <summary>
         /// Returns the generated columns for this table only (not hierarchy)
         /// </summary>
@@ -523,24 +503,6 @@ namespace nHydrate.Generator.Models
                 return this.GetColumnsFullHierarchy()
                     .Where(x => x.Generated)
                     .OrderBy(x => x.Name);
-            }
-        }
-
-        [Browsable(false)]
-        public ReferenceCollection GeneratedRetrieveRules
-        {
-            get
-            {
-                var retVal = new ReferenceCollection(this.Root);
-                foreach (Reference reference in _customRetrieveRules)
-                {
-                    var dc = (CustomRetrieveRule)reference.Object;
-                    if (dc.Generated)
-                        retVal.Add(dc.CreateRef());
-                    else
-                        System.Diagnostics.Debug.Write("");
-                }
-                return retVal;
             }
         }
 
@@ -820,7 +782,8 @@ namespace nHydrate.Generator.Models
                     if (column.Identity == IdentityTypeConstants.Database)
                         return true;
                 }
-                t = t.ParentTable;
+                //t = t.ParentTable;
+                t = null;
             }
             return false;
         }
@@ -927,12 +890,6 @@ namespace nHydrate.Generator.Models
         /// <returns></returns>
         public bool IsInheritedFrom(Table table)
         {
-            var t = this.ParentTable;
-            while (t != null)
-            {
-                if (t == table) return true;
-                t = t.ParentTable;
-            }
             return false;
         }
 
@@ -958,29 +915,6 @@ namespace nHydrate.Generator.Models
         public IEnumerable<Table> GetTablesInheritedFromHierarchy()
         {
             var retval = new List<Table>();
-            retval.Add(this);
-            var count = retval.Count;
-
-            do
-            {
-                count = retval.Count;
-                foreach (Table t in ((ModelRoot)this.Root).Database.Tables)
-                {
-                    var addedItems = new List<Table>();
-                    foreach (var t2 in retval)
-                    {
-                        if (t.ParentTable == t2)
-                        {
-                            if (!retval.Contains(t))
-                                addedItems.Add(t);
-                        }
-                    }
-                    retval.AddRange(addedItems);
-                }
-            } while (count != retval.Count);
-
-            //Remove this table
-            retval.RemoveAt(0);
             return retval;
         }
 
@@ -1104,13 +1038,7 @@ namespace nHydrate.Generator.Models
         public IEnumerable<Table> GetTableHierarchy()
         {
             var retval = new List<Table>();
-            var t = this;
-            while (t != null)
-            {
-                retval.Add(t);
-                t = t.ParentTable;
-            }
-            retval.Reverse();
+            retval.Add(this);
             return retval;
         }
 
@@ -1134,12 +1062,6 @@ namespace nHydrate.Generator.Models
 
         public bool PropertyExistsInBase(string columnName)
         {
-            var cList = GetColumnsFullHierarchy(false);
-            foreach (var c in cList.ToList())
-            {
-                if (string.Compare(c.Name, columnName, true) == 0)
-                    return true;
-            }
             return false;
         }
 
@@ -1149,22 +1071,12 @@ namespace nHydrate.Generator.Models
         /// <returns></returns>
         public ColumnCollection GetColumnsFullHierarchy()
         {
-            return GetColumnsFullHierarchy(true);
-        }
-
-        /// <summary>
-        /// This gets all columns from this and all base classes
-        /// </summary>
-        /// <returns></returns>
-        public ColumnCollection GetColumnsFullHierarchy(bool includeCurrent)
-        {
             try
             {
                 var nameList = new List<string>();
                 var retval = new ColumnCollection(this.Root);
 
                 var t = this;
-                if (!includeCurrent) t = t.ParentTable;
                 while (t != null)
                 {
                     foreach (var r in t.Columns.ToList())
@@ -1176,7 +1088,8 @@ namespace nHydrate.Generator.Models
                             retval.Add(c);
                         }
                     }
-                    t = t.ParentTable;
+                    //t = t.ParentTable;
+                    t = null;
                 }
                 return retval;
 
@@ -1191,21 +1104,21 @@ namespace nHydrate.Generator.Models
         /// This gets all table composites from this and all base classes
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<TableComposite> GetTableCompositesFullHierarchy(bool includeCurrent)
+        public IEnumerable<TableComposite> GetTableCompositesFullHierarchy()
         {
             try
             {
                 var retval = new List<TableComposite>();
 
                 var t = this;
-                if (!includeCurrent) t = t.ParentTable;
                 while (t != null)
                 {
                     foreach (var tableComposite in t.CompositeList.ToList())
                     {
                         retval.Add(tableComposite);
                     }
-                    t = t.ParentTable;
+                    //t = t.ParentTable;
+                    t = null;
                 }
                 return retval;
 
@@ -1220,21 +1133,21 @@ namespace nHydrate.Generator.Models
         /// This gets all table components from this and all base classes
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<TableComponent> GetTableComponentsFullHierarchy(bool includeCurrent)
+        public IEnumerable<TableComponent> GetTableComponentsFullHierarchy()
         {
             try
             {
                 var retval = new List<TableComponent>();
 
                 var t = this;
-                if (!includeCurrent) t = t.ParentTable;
                 while (t != null)
                 {
                     foreach (var tableComponent in t.ComponentList.ToList())
                     {
                         retval.Add(tableComponent);
                     }
-                    t = t.ParentTable;
+                    //t = t.ParentTable;
+                    t = null;
                 }
                 return retval;
 
@@ -1254,25 +1167,10 @@ namespace nHydrate.Generator.Models
             try
             {
                 var nameList = new List<string>();
-                var fullList = GetColumnsFullHierarchy(false);
 
                 var currentList = new List<Column>();
                 foreach (var c in this.GetColumns())
                     currentList.Add(c);
-
-                var delList = new List<Column>();
-                foreach (var c in currentList)
-                {
-                    if (fullList[c.Name] != null)
-                    {
-                        delList.Add(c);
-                    }
-                }
-
-                foreach (var c in delList)
-                {
-                    currentList.Remove(c);
-                }
 
                 var retval = new ColumnCollection(this.Root);
                 foreach (var c in currentList)
@@ -1510,11 +1408,7 @@ namespace nHydrate.Generator.Models
 
         public bool IsColumnInherited(Column column)
         {
-            var allInheritedColumns = this.GetColumnsFullHierarchy(false);
-            var q = from x in allInheritedColumns
-                    where x.PascalName == column.PascalName
-                    select x;
-            return q.FirstOrDefault() != null;
+            return false;
         }
 
         public string ToDatabaseIdentifier()
@@ -1631,13 +1525,6 @@ namespace nHydrate.Generator.Models
                     node.AppendChild(componentsNode);
                 }
 
-                if (this.CustomRetrieveRules.Count > 0)
-                {
-                    var customRetrieveRulesNode = oDoc.CreateElement("customretrieverules");
-                    this.CustomRetrieveRules.XmlAppend(customRetrieveRulesNode);
-                    node.AppendChild(customRetrieveRulesNode);
-                }
-
                 if (this.Generated != _def_generated)
                     XmlHelper.AddAttribute(node, "generated", this.Generated);
 
@@ -1697,11 +1584,6 @@ namespace nHydrate.Generator.Models
                 if (this.AllowAuditTracking != _def_allowAuditTracking)
                     XmlHelper.AddAttribute(node, "allowAuditTracking", this.AllowAuditTracking);
 
-                if (this.ParentTable != null)
-                {
-                    XmlHelper.AddAttribute(node, "parentTableKey", this.ParentTableKey);
-                }
-
                 if (this.MetaData.Count > 0)
                 {
                     var metadataNode = oDoc.CreateElement("metadata");
@@ -1742,10 +1624,6 @@ namespace nHydrate.Generator.Models
                 var componentsNode = node.SelectSingleNode("components");
                 if (componentsNode != null)
                     this.ComponentList.XmlLoad(componentsNode);
-
-                var customRetrieveRulesNode = node.SelectSingleNode("customretrieverules");
-                if (customRetrieveRulesNode != null)
-                    this.CustomRetrieveRules.XmlLoad(customRetrieveRulesNode);
 
                 var tableIndexListNode = node.SelectSingleNode("til");
                 if (tableIndexListNode != null)

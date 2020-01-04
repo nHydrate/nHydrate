@@ -262,8 +262,6 @@
     <Compile Include="Models\CustomStoredProcedureCollection.cs" />
     <Compile Include="Models\CustomStoredProcedureColumn.cs" />
     <Compile Include="Models\CustomStoredProcedureColumnCollection.cs" />
-    <Compile Include="Models\CustomRetrieveRuleCollection.cs" />
-    <Compile Include="Models\CustomRetrieveRule.cs" />
     <Compile Include="Models\CustomView.cs" />
     <Compile Include="Models\CustomViewCollection.cs" />
     <Compile Include="Models\CustomViewColumn.cs" />

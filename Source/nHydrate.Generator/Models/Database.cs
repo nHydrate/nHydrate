@@ -67,7 +67,6 @@ namespace nHydrate.Generator.Models
         protected CustomStoredProcedureColumnCollection _customStoredProcedureColumns = null;
         protected FunctionCollection _functions = null;
         protected FunctionColumnCollection _functionColumns = null;
-        protected CustomRetrieveRuleCollection _customRetrieveRules = null;
         protected ParameterCollection _customRetrieveRuleParameters = null;
         protected ParameterCollection _functionParameters = null;
         private string _tablePrefix = string.Empty;
@@ -101,8 +100,6 @@ namespace nHydrate.Generator.Models
             _customAggregateColumns.ResetKey(Guid.Empty.ToString());
             _customStoredProcedureColumns = new CustomStoredProcedureColumnCollection(root);
             _customStoredProcedureColumns.ResetKey(Guid.Empty.ToString());
-            _customRetrieveRules = new CustomRetrieveRuleCollection(root);
-            _customRetrieveRules.ResetKey(Guid.Empty.ToString());
             _customRetrieveRuleParameters = new ParameterCollection(root);
             _customRetrieveRuleParameters.ResetKey(Guid.Empty.ToString());
             _functionParameters = new ParameterCollection(root);
@@ -397,12 +394,6 @@ namespace nHydrate.Generator.Models
         }
 
         [Browsable(false)]
-        public CustomRetrieveRuleCollection CustomRetrieveRules
-        {
-            get { return _customRetrieveRules; }
-        }
-
-        [Browsable(false)]
         public ParameterCollection CustomRetrieveRuleParameters
         {
             get { return _customRetrieveRuleParameters; }
@@ -562,10 +553,6 @@ namespace nHydrate.Generator.Models
                 this.FunctionColumns.XmlAppend(functionColumnsNode);
                 node.AppendChild(functionColumnsNode);
 
-                var customRetrieveRulesNode = oDoc.CreateElement("customretrieverules");
-                this.CustomRetrieveRules.XmlAppend(customRetrieveRulesNode);
-                node.AppendChild(customRetrieveRulesNode);
-
                 var customRetrieveRuleParameterNode = oDoc.CreateElement("customretrieveruleparameters");
                 this.CustomRetrieveRuleParameters.XmlAppend(customRetrieveRuleParameterNode);
                 node.AppendChild(customRetrieveRuleParameterNode);
@@ -658,10 +645,6 @@ namespace nHydrate.Generator.Models
                 if (customStoredProceduresNode != null)
                     this.CustomStoredProcedures.XmlLoad(customStoredProceduresNode);
 
-                var customRetrieveRulesNode = node.SelectSingleNode("customretrieverules");
-                if (customRetrieveRulesNode != null)
-                    this.CustomRetrieveRules.XmlLoad(customRetrieveRulesNode);
-
                 var customRetrieveRulesParameterNode = node.SelectSingleNode("customretrieveruleparameters");
                 if (customRetrieveRulesParameterNode != null)
                     this.CustomRetrieveRuleParameters.XmlLoad(customRetrieveRulesParameterNode);
@@ -706,51 +689,6 @@ namespace nHydrate.Generator.Models
                 //Clean all tables that are dead
                 foreach (Column column in this.Columns)
                 {
-                }
-
-                #region Global RetrieveRules
-                var deletedRules = new List<CustomRetrieveRule>();
-                foreach (CustomRetrieveRule rule in this.CustomRetrieveRules)
-                {
-                    var table = (Table)rule.ParentTableRef.Object;
-                    if (table == null)
-                    {
-                        deletedRules.Add(rule);
-                    }
-                    else if (!table.CustomRetrieveRules.Contains(rule.Key))
-                    {
-                        deletedRules.Add(rule);
-                    }
-                }
-
-                foreach (var rule in deletedRules)
-                {
-                    this.CustomRetrieveRules.Remove(rule);
-                }
-                #endregion
-
-                #region Table RetrieveRules
-                foreach (Table table in this.Tables)
-                {
-                    var deletedReferences = new List<Reference>();
-                    foreach (Reference reference in table.CustomRetrieveRules)
-                    {
-                        if (reference.Object == null)
-                        {
-                            deletedReferences.Add(reference);
-                        }
-                        else if (!this.CustomRetrieveRules.Contains(reference.Object.Key))
-                        {
-                            deletedReferences.Add(reference);
-                        }
-                    }
-
-                    foreach (var reference in deletedReferences)
-                    {
-                        table.CustomRetrieveRules.Remove(reference);
-                    }
-                    #endregion
-
                 }
 
                 //Clean all tables that are dead

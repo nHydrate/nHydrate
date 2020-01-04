@@ -4689,30 +4689,6 @@
     <value>Entity Association Connector</value>
     <comment>DisplayName for DomainClass &apos;EntityAssociationConnector&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.EntityInheritanceConnector.Description" xml:space="preserve">
-    <value>Creates an inheritance relationship between two entities</value>
-    <comment>Description for DomainClass &apos;EntityInheritanceConnector&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityInheritanceConnector.DisplayName" xml:space="preserve">
-    <value>Entity Inheritance Connector</value>
-    <comment>DisplayName for DomainClass &apos;EntityInheritanceConnector&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityInheritanceConnector/BaseType.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainProperty &apos;BaseType&apos; on DomainClass &apos;EntityInheritanceConnector&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityInheritanceConnector/BaseType.DisplayName" xml:space="preserve">
-    <value>Base Type</value>
-    <comment>DisplayName for DomainProperty &apos;BaseType&apos; on DomainClass &apos;EntityInheritanceConnector&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityInheritanceConnector/DerivedType.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainProperty &apos;DerivedType&apos; on DomainClass &apos;EntityInheritanceConnector&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityInheritanceConnector/DerivedType.DisplayName" xml:space="preserve">
-    <value>Derived Type</value>
-    <comment>DisplayName for DomainProperty &apos;DerivedType&apos; on DomainClass &apos;EntityInheritanceConnector&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.EntityCompositeConnector.Description" xml:space="preserve">
     <value></value>
     <comment>Description for DomainClass &apos;EntityCompositeConnector&apos;</comment>

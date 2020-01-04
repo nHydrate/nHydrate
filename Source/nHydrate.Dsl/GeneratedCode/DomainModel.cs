@@ -128,7 +128,6 @@ namespace nHydrate.Dsl
 				typeof(SecurityFunctionHasSecurityFunctionParameters),
 				typeof(nHydrateDiagram),
 				typeof(EntityAssociationConnector),
-				typeof(EntityInheritanceConnector),
 				typeof(EntityCompositeConnector),
 				typeof(EntityViewAssociationConnector),
 				typeof(EntityShape),
@@ -382,8 +381,6 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(EntityHasViews), "ImportData", EntityHasViews.ImportDataDomainPropertyId, typeof(EntityHasViews.ImportDataPropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasViews), "Summary", EntityHasViews.SummaryDomainPropertyId, typeof(EntityHasViews.SummaryPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateDiagram), "DisplayType", nHydrateDiagram.DisplayTypeDomainPropertyId, typeof(nHydrateDiagram.DisplayTypePropertyHandler)),
-				new DomainMemberInfo(typeof(EntityInheritanceConnector), "BaseType", EntityInheritanceConnector.BaseTypeDomainPropertyId, typeof(EntityInheritanceConnector.BaseTypePropertyHandler)),
-				new DomainMemberInfo(typeof(EntityInheritanceConnector), "DerivedType", EntityInheritanceConnector.DerivedTypeDomainPropertyId, typeof(EntityInheritanceConnector.DerivedTypePropertyHandler)),
 				new DomainMemberInfo(typeof(EntityShape), "FillColor", EntityShape.FillColorDomainPropertyId, typeof(EntityShape.FillColorPropertyHandler)),
 				new DomainMemberInfo(typeof(EntityShape), "TextColor", EntityShape.TextColorDomainPropertyId, typeof(EntityShape.TextColorPropertyHandler)),
 				new DomainMemberInfo(typeof(EntityShape), "OutlineColor", EntityShape.OutlineColorDomainPropertyId, typeof(EntityShape.OutlineColorPropertyHandler)),
@@ -485,7 +482,7 @@ namespace nHydrate.Dsl
 	
 			if (createElementMap == null)
 			{
-				createElementMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(36);
+				createElementMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(35);
 				createElementMap.Add(typeof(nHydrateModel), 0);
 				createElementMap.Add(typeof(Entity), 1);
 				createElementMap.Add(typeof(Field), 2);
@@ -514,14 +511,13 @@ namespace nHydrate.Dsl
 				createElementMap.Add(typeof(SecurityFunctionParameter), 25);
 				createElementMap.Add(typeof(nHydrateDiagram), 26);
 				createElementMap.Add(typeof(EntityAssociationConnector), 27);
-				createElementMap.Add(typeof(EntityInheritanceConnector), 28);
-				createElementMap.Add(typeof(EntityCompositeConnector), 29);
-				createElementMap.Add(typeof(EntityViewAssociationConnector), 30);
-				createElementMap.Add(typeof(EntityShape), 31);
-				createElementMap.Add(typeof(StoredProcedureShape), 32);
-				createElementMap.Add(typeof(ViewShape), 33);
-				createElementMap.Add(typeof(EntityCompositeShape), 34);
-				createElementMap.Add(typeof(FunctionShape), 35);
+				createElementMap.Add(typeof(EntityCompositeConnector), 28);
+				createElementMap.Add(typeof(EntityViewAssociationConnector), 29);
+				createElementMap.Add(typeof(EntityShape), 30);
+				createElementMap.Add(typeof(StoredProcedureShape), 31);
+				createElementMap.Add(typeof(ViewShape), 32);
+				createElementMap.Add(typeof(EntityCompositeShape), 33);
+				createElementMap.Add(typeof(FunctionShape), 34);
 			}
 			int index;
 			if (!createElementMap.TryGetValue(elementType, out index))
@@ -585,22 +581,19 @@ namespace nHydrate.Dsl
 				// A constructor was not generated for EntityAssociationConnector because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
 				case 27: return new EntityAssociationConnector(partition, propertyAssignments);
-				// A constructor was not generated for EntityInheritanceConnector because it had HasCustomConstructor
-				// set to true. Please provide the constructor below.
-				case 28: return new EntityInheritanceConnector(partition, propertyAssignments);
-				case 29: return new EntityCompositeConnector(partition, propertyAssignments);
-				case 30: return new EntityViewAssociationConnector(partition, propertyAssignments);
+				case 28: return new EntityCompositeConnector(partition, propertyAssignments);
+				case 29: return new EntityViewAssociationConnector(partition, propertyAssignments);
 				// A constructor was not generated for EntityShape because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 31: return new EntityShape(partition, propertyAssignments);
+				case 30: return new EntityShape(partition, propertyAssignments);
 				// A constructor was not generated for StoredProcedureShape because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 32: return new StoredProcedureShape(partition, propertyAssignments);
-				case 33: return new ViewShape(partition, propertyAssignments);
-				case 34: return new EntityCompositeShape(partition, propertyAssignments);
+				case 31: return new StoredProcedureShape(partition, propertyAssignments);
+				case 32: return new ViewShape(partition, propertyAssignments);
+				case 33: return new EntityCompositeShape(partition, propertyAssignments);
 				// A constructor was not generated for FunctionShape because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 35: return new FunctionShape(partition, propertyAssignments);
+				case 34: return new FunctionShape(partition, propertyAssignments);
 				default: return null;
 			}
 		}

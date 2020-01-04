@@ -1292,16 +1292,6 @@ namespace nHydrate.DslPackage.Objects
 
                         }
 
-                        foreach (var table in oldModel.Database.Tables.ToList())
-                        {
-                            if (table.ParentTable != null)
-                            {
-                                var child = model.Entities.FirstOrDefault(x => x.Name == table.Name);
-                                var parent = model.Entities.FirstOrDefault(x => x.Name == table.ParentTable.Name);
-                                child.ParentInheritedEntity = parent;
-                            }
-                        }
-
                         #endregion
 
                         #region Load Relations

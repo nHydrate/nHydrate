@@ -198,7 +198,7 @@ namespace nHydrate.Generator.Models
             if (fullHierarchy)
                 TableCompositeList.AddRange(this);
             else
-                TableCompositeList.AddRange(this.Parent.GetTableCompositesFullHierarchy(true));
+                TableCompositeList.AddRange(this.Parent.GetTableCompositesFullHierarchy());
 
             var retval = new List<Column>();
             foreach (var item in TableCompositeList)

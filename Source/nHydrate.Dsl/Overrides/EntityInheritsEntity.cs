@@ -105,50 +105,6 @@ namespace nHydrate.Dsl
 
 	}
 
-	partial class EntityInheritanceConnector
-	{
-		#region Constructors
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="store">Store where new element is to be created.</param>
-		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
-		public EntityInheritanceConnector(Microsoft.VisualStudio.Modeling.Store store, params Microsoft.VisualStudio.Modeling.PropertyAssignment[] propertyAssignments)
-			: this(store != null ? store.DefaultPartitionForClass(DomainClassId) : null, propertyAssignments)
-		{
-		}
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="partition">Partition where new element is to be created.</param>
-		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
-		public EntityInheritanceConnector(Microsoft.VisualStudio.Modeling.Partition partition, params Microsoft.VisualStudio.Modeling.PropertyAssignment[] propertyAssignments)
-			: base(partition, propertyAssignments)
-		{
-		}
-		#endregion
-
-		public override void OnDoubleClick(Microsoft.VisualStudio.Modeling.Diagrams.DiagramPointEventArgs e)
-		{
-			base.OnDoubleClick(e);
-			((nHydrateDiagram)this.Diagram).NotifyShapeDoubleClick(this);
-		}
-	}
-
-	partial class EntityInheritanceConnectorBase
-	{
-		public string GetBaseTypeValue()
-		{
-			return "";
-		}
-
-		public string GetDerivedTypeValue()
-		{
-			return "";
-		}
-
-	}
 
 	partial class EntityInheritsEntityBase
 	{

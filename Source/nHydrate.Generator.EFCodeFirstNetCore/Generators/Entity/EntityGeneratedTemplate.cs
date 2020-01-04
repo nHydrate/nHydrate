@@ -710,12 +710,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         //One or both is not generated or there is a security function on the child so no gen
                     }
 
-                    //inheritance relationship
-                    else if (parentTable == childTable.ParentTable && relation.IsOneToOne)
-                    {
-                        //Do Nothing
-                    }
-
                     //Do not walk to type tables
                     //else if ((parentTable.TypedTable != TypedTableConstants.None) || (childTable.TypedTable != TypedTableConstants.None))
                     //{
@@ -824,12 +818,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                     //Do not walk to associative
                     if ((parentTable.TypedTable == TypedTableConstants.EnumOnly) || (childTable.TypedTable == TypedTableConstants.EnumOnly))
-                    {
-                        //Do Nothing
-                    }
-
-                    //inheritance relationship
-                    else if (parentTable == childTable.ParentTable && relation.IsOneToOne)
                     {
                         //Do Nothing
                     }

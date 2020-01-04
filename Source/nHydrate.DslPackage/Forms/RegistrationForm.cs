@@ -340,7 +340,7 @@ namespace nHydrate.DslPackage.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("There was an error trying to register. Please visit the main nHydrate site to register: https://github.com/nHydrate/nHydrate.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("There was an error trying to register. Please visit the main nHydrate site: https://github.com/nHydrate/nHydrate.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

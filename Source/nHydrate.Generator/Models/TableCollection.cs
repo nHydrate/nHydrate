@@ -214,7 +214,7 @@ namespace nHydrate.Generator.Models
             var retval = new List<TableComponent>();
             foreach (Table table in this)
             {
-                retval.AddRange(table.GetTableComponentsFullHierarchy(true));
+                retval.AddRange(table.GetTableComponentsFullHierarchy());
             }
             return retval;
         }

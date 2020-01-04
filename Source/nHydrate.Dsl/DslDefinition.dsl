@@ -2630,20 +2630,6 @@
         <TextDecorator Name="DestEntityRelationTextDecorator" DisplayName="DESTINATION" DefaultText="" FontStyle="Italic" />
       </ConnectorHasDecorators>
     </Connector>
-    <Connector Id="1d2aa755-243b-474b-8208-5b11989ecba1" Description="Creates an inheritance relationship between two entities" Name="EntityInheritanceConnector" DisplayName="Entity Inheritance Connector" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true" TooltipType="Variable" FixedTooltipText="Creates an inheritance relationship between two entities" Color="DimGray" TargetEndStyle="HollowArrow" Thickness="0.01">
-      <Properties>
-        <DomainProperty Id="3837e412-7144-401b-8572-41adddba839f" Description="" Name="BaseType" DisplayName="Base Type" Kind="Calculated">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="f3452069-aecf-4f34-9660-84941860f476" Description="" Name="DerivedType" DisplayName="Derived Type" Kind="Calculated">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-    </Connector>
     <Connector Id="62c983a8-9996-45b6-8c2a-56a8f9b40e04" Description="" Name="EntityCompositeConnector" DisplayName="Composite Connector" Namespace="nHydrate.Dsl" GeneratesDoubleDerived="true" TooltipType="Variable" FixedTooltipText="" Color="DimGray" DashStyle="Dash" SourceEndStyle="FilledDiamond" Thickness="0.01" />
     <Connector Id="1715d1db-8274-453b-8248-a36e795c89b8" Description="Connect an entity and a view" Name="EntityViewAssociationConnector" DisplayName="Entity View Association Connector" Namespace="nHydrate.Dsl" TooltipType="Variable" FixedTooltipText="Entity View Association Connector" TextColor="DimGray" Color="DimGray" SourceEndStyle="EmptyDiamond" TargetEndStyle="EmptyArrow" Thickness="0.01" />
   </Connectors>
@@ -3280,17 +3266,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="summary">
             <DomainPropertyMoniker Name="EntityInheritsEntity/Summary" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="EntityInheritanceConnector" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityInheritanceConnectorMoniker" ElementName="entityInheritanceConnector" MonikerTypeName="EntityInheritanceConnectorMoniker">
-        <ConnectorMoniker Name="EntityInheritanceConnector" />
-        <ElementData>
-          <XmlPropertyData XmlName="baseType" Representation="Ignore">
-            <DomainPropertyMoniker Name="EntityInheritanceConnector/BaseType" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="derivedType" Representation="Ignore">
-            <DomainPropertyMoniker Name="EntityInheritanceConnector/DerivedType" />
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>
@@ -4172,10 +4147,6 @@
             </PropertyPath>
           </PropertyDisplayed>
         </DecoratorMap>
-      </ConnectorMap>
-      <ConnectorMap>
-        <ConnectorMoniker Name="EntityInheritanceConnector" />
-        <DomainRelationshipMoniker Name="EntityInheritsEntity" />
       </ConnectorMap>
       <ConnectorMap>
         <ConnectorMoniker Name="EntityCompositeConnector" />

@@ -930,11 +930,6 @@ namespace nHydrate.DslPackage
                         command.Visible = true;
                         return;
                     }
-                    else if (selectedObject is EntityInheritanceConnector)
-                    {
-                        command.Visible = true;
-                        return;
-                    }
                 }
             }
             catch (Exception ex)
@@ -955,12 +950,6 @@ namespace nHydrate.DslPackage
                     {
                         var shape = selectedObject as EntityAssociationConnector;
                         this.CurrentDocView.SelectObjects(1, new object[] { shape.FromShape }, 0);
-                        return;
-                    }
-                    else if (selectedObject is EntityInheritanceConnector)
-                    {
-                        var shape = selectedObject as EntityInheritanceConnector;
-                        this.CurrentDocView.SelectObjects(1, new object[] { shape.ToShape }, 0);
                         return;
                     }
                 }
@@ -987,11 +976,6 @@ namespace nHydrate.DslPackage
                         command.Visible = true;
                         return;
                     }
-                    else if (selectedObject is EntityInheritanceConnector)
-                    {
-                        command.Visible = true;
-                        return;
-                    }
                 }
             }
             catch (Exception ex)
@@ -1012,12 +996,6 @@ namespace nHydrate.DslPackage
                     {
                         var shape = selectedObject as EntityAssociationConnector;
                         var r = this.CurrentDocView.SelectObjects(1, new object[] { shape.ToShape }, Microsoft.VisualStudio.VSConstants.SELECTED);
-                        return;
-                    }
-                    else if (selectedObject is EntityInheritanceConnector)
-                    {
-                        var shape = selectedObject as EntityInheritanceConnector;
-                        var r = this.CurrentDocView.SelectObjects(1, new object[] { shape.FromShape }, Microsoft.VisualStudio.VSConstants.SELECTED);
                         return;
                     }
                 }

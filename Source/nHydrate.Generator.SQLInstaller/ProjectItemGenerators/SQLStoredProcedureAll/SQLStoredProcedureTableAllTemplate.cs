@@ -96,62 +96,8 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
                 sb.AppendLine("--This SQL is generated for internal stored procedures for table [" + _table.DatabaseName + "]");
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInSQL(sb, _model);
 
-                generator = new SQLDeleteBusinessObjectTemplate(_model, _table);
-                generator.GenerateContent(sb);
-
-                generator = new SQLInsertBusinessObjectTemplate(_model, _table);
-                generator.GenerateContent(sb);
-
                 generator = new SQLSelectAuditBusinessObjectTemplate(_model, _table);
                 generator.GenerateContent(sb);
-
-                generator = new SQLUpdateBusinessObjectTemplate(_model, _table);
-                generator.GenerateContent(sb);
-
-                //All Components for this table
-                foreach (TableComponent component in _table.ComponentList)
-                {
-                    //generator = new SQLPagedSelectComponentTemplate(_model, component);
-                    //generator.GenerateContent(sb);
-
-                    //generator = new SQLSelectComponentByPrimaryKeyTemplate(_model, component);
-                    //generator.GenerateContent(sb);
-
-                    //generator = new SQLSelectComponentByFieldTemplate(_model, component);
-                    //generator.GenerateContent(sb);
-
-                    //if (component.Parent.AllowCreateAudit)
-                    //{
-                    //  generator = new SQLSelectComponentByCreatedDateTemplate(_model, component);
-                    //  generator.GenerateContent(sb);
-                    //}
-
-                    //if (component.Parent.AllowModifiedAudit)
-                    //{
-                    //  generator = new SQLSelectComponentByModifiedDateTemplate(_model, component);
-                    //  generator.GenerateContent(sb);
-                    //}
-
-                    //generator = new SqlSelectComponentTemplate(_model, component);
-                    //generator.GenerateContent(sb);
-
-                    generator = new SQLUpdateComponentTemplate(_model, component);
-                    generator.GenerateContent(sb);
-                }
-
-
-                foreach (var rule in _model.Database.CustomRetrieveRules.ToList())
-                {
-                    var table = (Table)rule.ParentTableRef.Object;
-                    if (table == _table)
-                    {
-                        if (rule.Generated && table.Generated)
-                        {
-                            generator = new SQLSelectRetrieveRuleTemplate(_model, rule);
-                            generator.GenerateContent(sb);
-                        }
-                    }
-                }
 
             }
             catch (Exception ex)

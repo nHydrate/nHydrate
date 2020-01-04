@@ -582,40 +582,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
 
                 sb.AppendLine("			" + (index == 0 ? string.Empty : "else ") + "if (typeof(T) == typeof(" + GetLocalNamespace() + ".Entity." + table.PascalName + "))");
                 sb.AppendLine("			{");
-                if (table.ParentTable == null)
-                {
-                    //Single table no parent, so no special code, easy delete
-                    //sb.AppendLine("				sb.AppendLine(\"set rowcount \" + optimizer.ChunkSize + \";\");");
-                    sb.AppendLine("				sb.AppendLine(\"delete [X] from [" + table.GetSQLSchema() + "].[" + tableName + "] [X] inner join (\");");
-                    sb.AppendLine("				sb.AppendLine(" + innerQueryToString + ");");
-                    sb.AppendLine("				sb.AppendLine(\") AS [Extent2]\");");
-                    sb.AppendLine("				sb.AppendLine(\"on " + string.Join(" AND ", table.PrimaryKeyColumns.Select(x => "[X].[" + x.Name + "] = [Extent2].[" + x.Name + "]").ToList()) + "\");");
-                    //sb.AppendLine("				sb.AppendLine(\"select @@ROWCOUNT\");");
-                }
-                else
-                {
-                    //For parented tables the hierarchy must be deleted
-                    var tableParams = string.Join(", ", table.PrimaryKeyColumns.Select(x => "[" + x.DatabaseName + "] " + x.DatabaseType));
-                    sb.AppendLine("				sb.AppendLine(\"create table #t (" + tableParams + ")\");");
-                    sb.AppendLine("				sb.AppendLine(\"insert into #t\");");
-                    sb.AppendLine("				sb.AppendLine(" + innerQueryToString + " + \";\");");
-                    sb.AppendLine("				var joinQuery = \"select " + string.Join(", ", table.PrimaryKeyColumns.Select(x => "[" + x.DatabaseName + "]")) + " from #t\";");
-                    //sb.AppendLine("				sb.AppendLine(\"set rowcount \" + optimizer.ChunkSize + \";\");");
 
-                    var allTables = table.GetParentTablesFullHierarchy().ToList();
-                    allTables.Insert(0, table);
-                    foreach (var tt in allTables)
-                    {
-                        sb.AppendLine("				sb.AppendLine(\"delete [X] from [" + tt.GetSQLSchema() + "].[" + tt.DatabaseName + "] [X] inner join (\");");
-                        sb.AppendLine("				sb.AppendLine(joinQuery);");
-                        sb.AppendLine("				sb.AppendLine(\") AS [Extent2]\");");
-                        sb.AppendLine("				sb.AppendLine(\"on " + string.Join(" AND ", tt.PrimaryKeyColumns.Select(x => "[X].[" + x.Name + "] = [Extent2].[" + x.Name + "]").ToList()) + "\");");
-                        //if (tt == table)
-                        //    sb.AppendLine("				sb.AppendLine(\"select @@ROWCOUNT\");");
-                    }
+                //Single table no parent, so no special code, easy delete
+                //sb.AppendLine("				sb.AppendLine(\"set rowcount \" + optimizer.ChunkSize + \";\");");
+                sb.AppendLine("				sb.AppendLine(\"delete [X] from [" + table.GetSQLSchema() + "].[" + tableName + "] [X] inner join (\");");
+                sb.AppendLine("				sb.AppendLine(" + innerQueryToString + ");");
+                sb.AppendLine("				sb.AppendLine(\") AS [Extent2]\");");
+                sb.AppendLine("				sb.AppendLine(\"on " + string.Join(" AND ", table.PrimaryKeyColumns.Select(x => "[X].[" + x.Name + "] = [Extent2].[" + x.Name + "]").ToList()) + "\");");
+                //sb.AppendLine("				sb.AppendLine(\"select @@ROWCOUNT\");");
 
-                    sb.AppendLine("				sb.AppendLine(\"drop table #t;\");");
-                }
                 sb.AppendLine("			}");
                 index++;
             }

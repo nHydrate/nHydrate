@@ -349,11 +349,6 @@ namespace nHydrate.Dsl
 				global::nHydrate.Dsl.EntityAssociationConnector newShape = new global::nHydrate.Dsl.EntityAssociationConnector(this.Partition);
 				return newShape;
 			}
-			if(element is global::nHydrate.Dsl.EntityInheritsEntity)
-			{
-				global::nHydrate.Dsl.EntityInheritanceConnector newShape = new global::nHydrate.Dsl.EntityInheritanceConnector(this.Partition);
-				return newShape;
-			}
 			if(element is global::nHydrate.Dsl.EntityHasComposites)
 			{
 				global::nHydrate.Dsl.EntityCompositeConnector newShape = new global::nHydrate.Dsl.EntityCompositeConnector(this.Partition);
@@ -880,7 +875,6 @@ namespace nHydrate.Dsl
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedure), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.Function), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasEntities), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityInheritsEntity), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasComposites), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasViews), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		internal sealed partial class FixUpDiagram : FixUpDiagramBase
@@ -1640,7 +1634,6 @@ namespace nHydrate.Dsl
 		/// Reroute a connector when the role players of its underlying relationship change
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasEntities), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityInheritsEntity), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasComposites), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasViews), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		internal sealed class ConnectorRolePlayerChanged : DslModeling::RolePlayerChangeRule

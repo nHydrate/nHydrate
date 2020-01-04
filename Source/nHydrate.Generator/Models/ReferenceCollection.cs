@@ -247,10 +247,6 @@ namespace nHydrate.Generator.Models
                         if (((CustomView)element.Object).Name == name)
                             return element;
                         break;
-                    case ReferenceType.CustomRetrieveRule:
-                        if (((CustomRetrieveRule)element.Object).Name == name)
-                            return element;
-                        break;
                     case ReferenceType.Parameter:
                         if (((Parameter)element.Object).Name == name)
                             return element;

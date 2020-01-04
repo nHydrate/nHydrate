@@ -132,10 +132,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     var paramString = string.Join(", ", paramset.Select(x => x.GetCodeType(true) + " " + x.CamelName).ToList());
                     sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "(" + paramString + ");");
                 }
-                else if (item.ParentTable != null)
-                {
-                    sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + " { get ; }");
-                }
                 else
                 {
                     sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + " { get ; }");

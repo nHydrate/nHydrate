@@ -760,22 +760,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
                 sb.AppendLine();
                 sb.AppendLine("if (@@RowCount = 0) return;");
                 sb.AppendLine();
-
-                if (table.ParentTable != null)
-                {
-                    var moduleName = (string.IsNullOrEmpty(model.ModuleName) ? string.Empty : "_" + model.ModuleName);
-                    sb.Append("exec [" + table.ParentTable.GetSQLSchema() + "].[" + model.GetStoredProcedurePrefix() + "_" + table.ParentTable.PascalName + moduleName + "_Delete]");
-
-                    var pkIndex = 0;
-                    foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
-                    {
-                        sb.Append(" @Original_" + column.ToDatabaseCodeIdentifier() + " = @Original_" + column.ToDatabaseCodeIdentifier());
-                        pkIndex++;
-                        if (pkIndex < table.PrimaryKeyColumns.Count)
-                            sb.Append(",");
-                    }
-                }
-                sb.AppendLine();
                 return sb.ToString();
 
             }

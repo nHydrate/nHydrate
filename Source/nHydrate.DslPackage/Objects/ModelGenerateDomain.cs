@@ -524,8 +524,6 @@ namespace nHydrate.DslPackage.Objects
                     .Select(x => x.ID)
                     .ToList();
 
-                var inheritanceConnectors = diagram.NestedChildShapes.Where(x => x is EntityInheritanceConnector).Cast<EntityInheritanceConnector>().ToList();
-
                 #region Load the entities
                 foreach (var entity in model.Entities.Where(x => x.IsGenerated).Where(x => ownerModule == null || x.Modules.Contains(ownerModule)))
                 {
@@ -756,19 +754,6 @@ namespace nHydrate.DslPackage.Objects
                     #endregion
                 }
 
-                //Setup inheritance
-                foreach (var connector in inheritanceConnectors)
-                {
-                    var d = connector.FromShape.ModelElement as Entity;
-                    var b = connector.ToShape.ModelElement as Entity;
-                    var baseTable = root.Database.Tables.FirstOrDefault(x => x.Name == b.Name);
-                    var derivedTable = root.Database.Tables.FirstOrDefault(x => x.Name == d.Name);
-                    if (d != null && b != null && derivedTable != null && baseTable != null)
-                    {
-                        derivedTable.ParentTable = baseTable;
-                    }
-                }
-
                 #endregion
 
                 #region Relations
@@ -871,37 +856,6 @@ namespace nHydrate.DslPackage.Objects
                         }
                     }
 
-                    //Setup inheritance relationships
-                    foreach (var connector in inheritanceConnectors)
-                    {
-                        var b = connector.ToShape.ModelElement as Entity;
-                        var d = connector.FromShape.ModelElement as Entity;
-                        var relation = connector.ModelElement as EntityHasEntities;
-                        var baseTable = root.Database.Tables.FirstOrDefault(x => x.Name == b.Name);
-                        var derivedTable = root.Database.Tables.FirstOrDefault(x => x.Name == d.Name);
-                        if (derivedTable != null && baseTable != null)
-                        {
-                            var newRelation = root.Database.Relations.Add();
-                            newRelation.ResetKey((connector.ModelElement as EntityInheritsEntity).InternalId.ToString());
-                            newRelation.ParentTableRef = baseTable.CreateRef(baseTable.Key);
-                            newRelation.ChildTableRef = derivedTable.CreateRef(derivedTable.Key);
-                            newRelation.Enforce = true; //Hard-wired for now
-
-                            //Loop through the primary keys of each table and map
-                            foreach (var pk in baseTable.PrimaryKeyColumns)
-                            {
-                                var fk = derivedTable.GetColumns().FirstOrDefault(x => x.Name == pk.Name);
-                                if (fk != null)
-                                {
-                                    newRelation.ColumnRelationships.Add(new nHydrate.Generator.Models.ColumnRelationship(root)
-                                    {
-                                        ParentColumnRef = pk.CreateRef(pk.Key),
-                                        ChildColumnRef = fk.CreateRef(fk.Key),
-                                    });
-                                }
-                            }
-                        }
-                    }
                 } //inner block
 
                 #endregion

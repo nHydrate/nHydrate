@@ -164,7 +164,7 @@ namespace nHydrate.Generator.Models
 				tableList.AddRange(new List<Table>(table.GetTableHierarchy()));
 				foreach (var t in tableList)
 				{
-					foreach (var column in (from x in t.GetColumnsFullHierarchy(true) select x))
+					foreach (var column in (from x in t.GetColumnsFullHierarchy() select x))
 					{
 						columnList.Add(column);
 					}

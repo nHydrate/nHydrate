@@ -315,32 +315,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             sb.AppendLine();
 
-            #region Hierarchy Mapping
-
-            var hierarchyList = new List<Table>();
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly) && x.ParentTable != null).OrderBy(x => x.Name).ToList())
-            {
-                hierarchyList.Add(table);
-                hierarchyList.Add(table.ParentTable);
-            }
-            hierarchyList = hierarchyList.Distinct().ToList();
-
-            sb.AppendLine("			#region Hierarchy Mapping");
-            foreach (var table in hierarchyList)
-            {
-                string schema = null;
-                if (!string.IsNullOrEmpty(table.DBSchema)) schema = table.DBSchema;
-
-                if (string.IsNullOrEmpty(schema))
-                    sb.AppendLine("			modelBuilder.Entity<EFDAL.Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\");");
-                else
-                    sb.AppendLine("			modelBuilder.Entity<EFDAL.Entity." + table.PascalName + ">().ToTable(\"" + table.DatabaseName + "\", \"" + schema + "\");");
-            }
-            sb.AppendLine("			#endregion");
-            sb.AppendLine();
-
-            #endregion
-
             #region Rename Tables
             sb.AppendLine("			#region Map Tables");
 
@@ -399,9 +373,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     }
                     #endregion
 
-                    //If this is a base table OR the column is not a PK then process it
-                    //Primary key code should be emited ONLY for base tables
-                    if (table.ParentTable == null || !column.PrimaryKey)
+                    //If the column is not a PK then process it
+                    if (!column.PrimaryKey)
                     {
                         sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
                         sb.Append(".Property(d => d." + column.PascalName + ")");
