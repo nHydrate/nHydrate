@@ -1301,25 +1301,22 @@ namespace nHydrate.DslPackage.Objects
                             {
                                 var entity1 = model.Entities.First(x => x.Name == relation.ParentTable.Name);
                                 var entity2 = model.Entities.First(x => x.Name == relation.ChildTable.Name);
-                                if (entity2.ParentInheritedEntity != entity1)
-                                {
-                                    entity1.ChildEntities.Add(entity2);
-                                    var newRelation = entity1.RelationshipList.First(x =>
-                                        x.SourceEntity == entity1 &&
-                                        x.TargetEntity == entity2 &&
-                                        !x.FieldMapList().Any());
-                                    newRelation.RoleName = relation.RoleName;
+                                entity1.ChildEntities.Add(entity2);
+                                var newRelation = entity1.RelationshipList.First(x =>
+                                    x.SourceEntity == entity1 &&
+                                    x.TargetEntity == entity2 &&
+                                    !x.FieldMapList().Any());
+                                newRelation.RoleName = relation.RoleName;
 
-                                    foreach (nHydrate.Generator.Models.ColumnRelationship relationColumn in relation.ColumnRelationships)
-                                    {
-                                        var column1 = entity1.Fields.First(x => x.Name == relationColumn.ParentColumn.Name);
-                                        var column2 = entity2.Fields.First(x => x.Name == relationColumn.ChildColumn.Name);
-                                        var newRelationField = new RelationField(model.Partition);
-                                        model.RelationFields.Add(newRelationField);
-                                        newRelationField.SourceFieldId = column1.Id;
-                                        newRelationField.TargetFieldId = column2.Id;
-                                        newRelationField.RelationID = newRelation.Id;
-                                    }
+                                foreach (nHydrate.Generator.Models.ColumnRelationship relationColumn in relation.ColumnRelationships)
+                                {
+                                    var column1 = entity1.Fields.First(x => x.Name == relationColumn.ParentColumn.Name);
+                                    var column2 = entity2.Fields.First(x => x.Name == relationColumn.ChildColumn.Name);
+                                    var newRelationField = new RelationField(model.Partition);
+                                    model.RelationFields.Add(newRelationField);
+                                    newRelationField.SourceFieldId = column1.Id;
+                                    newRelationField.TargetFieldId = column2.Id;
+                                    newRelationField.RelationID = newRelation.Id;
                                 }
                             }
                         }

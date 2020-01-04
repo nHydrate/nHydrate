@@ -74,7 +74,8 @@ namespace nHydrate.Dsl
             while (t != null)
             {
                 retval.Add(t);
-                t = t.ParentInheritedEntity;
+                //t = t.ParentInheritedEntity;
+                t = null;
             }
             retval.Reverse();
             return retval;
@@ -122,18 +123,18 @@ namespace nHydrate.Dsl
             }
         }
 
-        public IList<EntityInheritsEntity> ParentRelationshipList
-        {
-            get
-            {
-                return this.Store.ElementDirectory.AllElements
-                    .Where(x => x is EntityInheritsEntity)
-                    .ToList()
-                    .Cast<EntityInheritsEntity>()
-                    .Where(x => x.ChildDerivedEntities == this)
-                    .ToList();
-            }
-        }
+        //public IList<EntityInheritsEntity> ParentRelationshipList
+        //{
+        //    get
+        //    {
+        //        return this.Store.ElementDirectory.AllElements
+        //            .Where(x => x is EntityInheritsEntity)
+        //            .ToList()
+        //            .Cast<EntityInheritsEntity>()
+        //            .Where(x => x.ChildDerivedEntities == this)
+        //            .ToList();
+        //    }
+        //}
 
         public IList<EntityHasViews> RelationshipViewList
         {
@@ -153,32 +154,8 @@ namespace nHydrate.Dsl
         /// </summary>
         public IEnumerable<EntityHasEntities> GetRelationsWhereChild()
         {
-            return GetRelationsWhereChild(false);
-        }
-
-        /// <summary>
-        /// Returns generated relations for this table
-        /// </summary>
-        public IEnumerable<EntityHasEntities> GetRelationsWhereChild(bool fullHierarchy)
-        {
-            var retval = this.nHydrateModel.GetRelationsWhereChild(this, fullHierarchy);
+            var retval = this.nHydrateModel.GetRelationsWhereChild(this);
             return retval.Where(x => x.TargetEntity.IsGenerated && x.SourceEntity.IsGenerated);
-        }
-
-        /// <summary>
-        /// Determines if the specified table is an ancestor of the this table object
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        public bool IsInheritedFrom(Entity entity)
-        {
-            var t = this.ParentInheritedEntity;
-            while (t != null)
-            {
-                if (t == entity) return true;
-                t = t.ParentInheritedEntity;
-            }
-            return false;
         }
 
         /// <summary>
@@ -209,21 +186,11 @@ namespace nHydrate.Dsl
         /// <returns></returns>
         public IEnumerable<Field> GetColumnsFullHierarchy()
         {
-            return GetColumnsFullHierarchy(true);
-        }
-
-        /// <summary>
-        /// This gets all columns from this and all base classes
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<Field> GetColumnsFullHierarchy(bool includeCurrent)
-        {
             try
             {
                 var nameList = new List<string>();
                 var retval = new List<Field>();
                 var t = this;
-                if (!includeCurrent) t = t.ParentInheritedEntity;
                 while (t != null)
                 {
                     foreach (var c in t.Fields)
@@ -234,7 +201,8 @@ namespace nHydrate.Dsl
                             retval.Add(c);
                         }
                     }
-                    t = t.ParentInheritedEntity;
+                    //t = t.ParentInheritedEntity;
+                    t = null;
                 }
                 return retval;
 

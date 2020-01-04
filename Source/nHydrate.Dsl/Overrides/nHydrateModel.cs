@@ -75,15 +75,13 @@ namespace nHydrate.Dsl
 
         public bool IsSaving { get; set; }
 
-        public IEnumerable<EntityHasEntities> GetRelationsWhereChild(Entity entity, bool fullHierarchy)
+        public IEnumerable<EntityHasEntities> GetRelationsWhereChild(Entity entity)
         {
             var retval = new List<EntityHasEntities>();
             foreach (var relation in this.AllRelations)
             {
                 var childTable = relation.TargetEntity;
                 if (childTable == entity)
-                    retval.Add(relation);
-                else if (fullHierarchy && entity.IsInheritedFrom(childTable))
                     retval.Add(relation);
             }
             return retval;
@@ -121,7 +119,7 @@ namespace nHydrate.Dsl
                 tableList.AddRange(new List<Entity>(entity.GetTableHierarchy()));
                 foreach (var t in tableList)
                 {
-                    foreach (var column in (from x in t.GetColumnsFullHierarchy(true) select x))
+                    foreach (var column in (from x in t.GetColumnsFullHierarchy() select x))
                     {
                         columnList.Add(column);
                     }
@@ -177,7 +175,7 @@ namespace nHydrate.Dsl
                     tableList.AddRange(entity.GetTableHierarchy());
                     foreach (var t in tableList)
                     {
-                        foreach (var column in (from x in t.GetColumnsFullHierarchy(true) select x))
+                        foreach (var column in (from x in t.GetColumnsFullHierarchy() select x))
                         {
                             columnList.Add(column);
                         }

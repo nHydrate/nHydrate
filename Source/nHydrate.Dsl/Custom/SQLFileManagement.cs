@@ -492,7 +492,6 @@ namespace nHydrate.Dsl.Custom
                 XmlHelper.AddAttribute(relationNode, "id", relation.InternalId);
                 XmlHelper.AddAttribute(relationNode, "childid", relation.ChildEntity.Id);
                 XmlHelper.AddAttribute(relationNode, "isenforced", relation.IsEnforced);
-                XmlHelper.AddAttribute(relationNode, "isinherited", false);
                 XmlHelper.AddAttribute(relationNode, "rolename", relation.RoleName);
 
                 XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
@@ -509,22 +508,6 @@ namespace nHydrate.Dsl.Custom
 
                     XmlHelper.AddLineBreak((XmlElement)relationColumnsNodes);
                 }
-            }
-
-            foreach (var relation in item.ParentRelationshipList)
-            {
-                var relationNode = XmlHelper.AddElement(document.DocumentElement, "relation");
-
-                XmlHelper.AddLineBreak((XmlElement)relationNode);
-                XmlHelper.AddCData((XmlElement)relationNode, "summary", relation.Summary);
-                XmlHelper.AddLineBreak((XmlElement)relationNode);
-
-                XmlHelper.AddAttribute(relationNode, "id", relation.InternalId);
-                XmlHelper.AddAttribute(relationNode, "parentid", relation.ParentInheritedEntity.Id);
-                XmlHelper.AddAttribute(relationNode, "isenforced", relation.IsEnforced);
-                XmlHelper.AddAttribute(relationNode, "isinherited", true);
-                XmlHelper.AddAttribute(relationNode, "rolename", relation.RoleName);
-                XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
             }
 
             foreach (var relation in item.RelationshipViewList)
@@ -1237,7 +1220,6 @@ namespace nHydrate.Dsl.Custom
             foreach (XmlNode n in document.DocumentElement)
             {
                 var isViewRelation = XmlHelper.GetAttributeValue(n, "isviewrelation", false);
-                var isInherited = XmlHelper.GetAttributeValue(n, "isinherited", false);
                 if (isViewRelation) //View Relation
                 {
                     var childid = XmlHelper.GetAttributeValue(n, "childid", Guid.Empty);
@@ -1269,20 +1251,6 @@ namespace nHydrate.Dsl.Custom
                                 }
                             }
                         }
-                    }
-
-                }
-                else if (isInherited) //Inheritence Relation
-                {
-                    var parentid = XmlHelper.GetAttributeValue(n, "parentid", Guid.Empty);
-                    var parent = entity.nHydrateModel.Entities.FirstOrDefault(x => x.Id == parentid);
-                    if (parent != null)
-                    {
-                        entity.ChildDerivedEntities.Add(parent);
-                        var connection = entity.Store.CurrentContext.Partitions.First().Value.ElementDirectory.AllElements.Last() as EntityInheritsEntity;
-                        connection.InternalId = XmlHelper.GetAttributeValue(n, "id", Guid.Empty);
-                        connection.IsEnforced = XmlHelper.GetAttributeValue(n, "isenforced", connection.IsEnforced);
-                        connection.RoleName = XmlHelper.GetAttributeValue(n, "rolename", connection.RoleName);
                     }
 
                 }

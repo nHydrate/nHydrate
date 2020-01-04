@@ -47,17 +47,6 @@ namespace nHydrate.DslPackage
             return null;
         }
 
-        public static bool IsDerivedFrom(this nHydrate.Dsl.Entity entity, Entity parent)
-        {
-            var p = entity.ParentInheritedEntity;
-            while (p != null)
-            {
-                if (p == parent) return true;
-                p = p.ParentInheritedEntity;
-            }
-            return false;
-        }
-
         public static string GetCorePropertiesHash(this IEnumerable<nHydrate.DataImport.Field> list)
         {
             var sortedList = new SortedDictionary<string, nHydrate.DataImport.Field>();

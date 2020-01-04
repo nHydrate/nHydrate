@@ -213,7 +213,6 @@
     <Compile Include="Overrides\Index.cs" />
     <Compile Include="Overrides\FunctionField.cs" />
     <Compile Include="Overrides\FunctionParameter.cs" />
-    <Compile Include="Overrides\EntityInheritsEntity.cs" />
     <Compile Include="Overrides\Entity.cs">
       <SubType>Code</SubType>
     </Compile>

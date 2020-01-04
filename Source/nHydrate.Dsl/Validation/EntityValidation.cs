@@ -243,26 +243,6 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                #region Verify that parent/child relation have only one identity in hierarchy
-
-                if (this.ParentInheritedEntity != null)
-                {
-                    foreach (var column in this.PrimaryKeyFields)
-                    {
-                        var list = this.GetBasePKColumnList(column);
-                        if (list.Count(x => x.Identity == IdentityTypeConstants.Database) > 1)
-                            context.LogError(string.Format(ValidationHelper.ErrorTextInheritFieldOnly1Identity, this.Name, column.Name), string.Empty, this);
-
-                        var identityColumn = list.FirstOrDefault(x => x.Identity == IdentityTypeConstants.Database);
-                        if (identityColumn != null && identityColumn.Entity.ParentInheritedEntity != null)
-                        {
-                            context.LogError(string.Format(ValidationHelper.ErrorTextInheritTopMostMustBeIndentity, this.Name, column.Name, list.Last().Entity.Name), string.Empty, this);
-                        }
-                    }
-                }
-
-                #endregion
-
                 nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer5, "Entity Validate [" + this.Name + "] - D");
                 var timer6 = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
 
@@ -534,37 +514,6 @@ namespace nHydrate.Dsl
 
                 }
 
-                //Look for duplication relations based on child tables too
-                //Check the full table hierarchy for relations
-                if (this.ParentInheritedEntity != null)
-                {
-                    relationKeyList.Clear();
-                    var anscestorRelationList = this.GetRelationsFullHierarchy().Where(x => (x.TargetEntity != this)).ToList();
-                    foreach (var relation in anscestorRelationList)
-                    {
-                        var key = string.Empty;
-                        var parentTable = relation.SourceEntity;
-                        var childTable = relation.TargetEntity;
-
-                        if (!this.IsInheritedFrom(childTable))
-                        {
-                            if (relation.IsOneToOne) key = relation.PascalRoleName + childTable.PascalName;
-                            else key = relation.PascalRoleName + childTable.PascalName + "List";
-
-                            //Verify that relations are not duplicated (T1.C1 -> T2.C2)
-                            if (!relationKeyList.Contains(key))
-                            {
-                                relationKeyList.Add(key);
-                            }
-                            else
-                            {
-                                context.LogError(string.Format(ValidationHelper.ErrorTextDuplicateRelationFullHierarchy, this.Name, childTable.Name), string.Empty, this);
-                            }
-                        }
-
-                    }
-                }
-
                 //Verify M:N relations have same role name on both sides
                 foreach (var relation in relationManyMany)
                 {
@@ -684,9 +633,6 @@ namespace nHydrate.Dsl
                         context.LogError(string.Format(ValidationHelper.ErrorTextAssociativeTableMustHave2Relations, this.Name, count), string.Empty, this);
                     }
 
-                    //Associative tables cannot be inherited
-                    if (this.ParentInheritedEntity != null)
-                        context.LogError(string.Format(ValidationHelper.ErrorTextAssociativeTableNotInherited, this.Name), string.Empty, this);
                 }
 
                 #endregion

@@ -441,21 +441,6 @@
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
-          <!-- Relationship: EntityInheritsEntity -->
-          <xsd:element name="parentInheritedEntity" minOccurs="0" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>Instance of EntityInheritsEntity</xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element ref="entityInheritsEntity" minOccurs="0" maxOccurs="1">
-                  <xsd:annotation>
-                    <xsd:documentation>[Instance of EntityInheritsEntity needs to be serialized in full-form]</xsd:documentation>
-                  </xsd:annotation>
-                </xsd:element>
-              </xsd:sequence>
-            </xsd:complexType>
-          </xsd:element>
           <!-- Relationship: EntityHasComposites -->
           <xsd:element name="composites" minOccurs="0" maxOccurs="1">
             <xsd:annotation>
@@ -3018,64 +3003,6 @@
   <xsd:complexType name="EntityHasStaticDatumMoniker">
     <xsd:annotation>
       <xsd:documentation>Moniker for EntityHasStaticDatum instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- EntityInheritsEntity -->
-  <xsd:element name="entityInheritsEntity" type="EntityInheritsEntity" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="EntityInheritsEntity">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Target end Entity -->
-          <xsd:element ref="entityMoniker" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>[Target role-player]</xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: RoleName -->
-        <xsd:attribute name="roleName" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>The named relation necessary when there is more than one relation between two entities</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: IsEnforced -->
-        <xsd:attribute name="isEnforced" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this relationship is enfored in the database or just in code</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Summary -->
-        <xsd:attribute name="summary" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines summary text were applicable</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- EntityInheritsEntity Moniker -->
-  <xsd:element name="entityInheritsEntityMoniker" type="EntityInheritsEntityMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="EntityInheritsEntityMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for EntityInheritsEntity instance.</xsd:documentation>
     </xsd:annotation>
     <xsd:complexContent>
       <xsd:extension base="core:ModelElementMoniker">

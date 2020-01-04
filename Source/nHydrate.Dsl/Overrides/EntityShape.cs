@@ -299,7 +299,7 @@ namespace nHydrate.Dsl
                         image = _images["field"];
 
                     //Foreign Key
-                    var relationList = field.Entity.nHydrateModel.GetRelationsWhereChild(field.Entity, true).ToList();
+                    var relationList = field.Entity.nHydrateModel.GetRelationsWhereChild(field.Entity).ToList();
                     if (relationList.Count(x => x.FieldMapList().Count(q => q.GetTargetField(x) == field) > 0) > 0)
                     {
                         image = _images["fkey"];

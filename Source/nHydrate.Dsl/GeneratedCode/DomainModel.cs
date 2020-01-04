@@ -103,7 +103,6 @@ namespace nHydrate.Dsl
 				typeof(ViewHasFields),
 				typeof(nHydrateModelHasRelationFields),
 				typeof(EntityHasStaticDatum),
-				typeof(EntityInheritsEntity),
 				typeof(EntityHasComposites),
 				typeof(CompositeHasFields),
 				typeof(EntityHasMetadata),
@@ -374,9 +373,6 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(EntityHasEntities), "ImportData", EntityHasEntities.ImportDataDomainPropertyId, typeof(EntityHasEntities.ImportDataPropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasEntities), "Summary", EntityHasEntities.SummaryDomainPropertyId, typeof(EntityHasEntities.SummaryPropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasEntities), "ImportedConstraintName", EntityHasEntities.ImportedConstraintNameDomainPropertyId, typeof(EntityHasEntities.ImportedConstraintNamePropertyHandler)),
-				new DomainMemberInfo(typeof(EntityInheritsEntity), "RoleName", EntityInheritsEntity.RoleNameDomainPropertyId, typeof(EntityInheritsEntity.RoleNamePropertyHandler)),
-				new DomainMemberInfo(typeof(EntityInheritsEntity), "IsEnforced", EntityInheritsEntity.IsEnforcedDomainPropertyId, typeof(EntityInheritsEntity.IsEnforcedPropertyHandler)),
-				new DomainMemberInfo(typeof(EntityInheritsEntity), "Summary", EntityInheritsEntity.SummaryDomainPropertyId, typeof(EntityInheritsEntity.SummaryPropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasViews), "RoleName", EntityHasViews.RoleNameDomainPropertyId, typeof(EntityHasViews.RoleNamePropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasViews), "ImportData", EntityHasViews.ImportDataDomainPropertyId, typeof(EntityHasViews.ImportDataPropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasViews), "Summary", EntityHasViews.SummaryDomainPropertyId, typeof(EntityHasViews.SummaryPropertyHandler)),
@@ -415,8 +411,6 @@ namespace nHydrate.Dsl
 				new DomainRolePlayerInfo(typeof(nHydrateModelHasRelationFields), "RelationField", nHydrateModelHasRelationFields.RelationFieldDomainRoleId),
 				new DomainRolePlayerInfo(typeof(EntityHasStaticDatum), "Entity", EntityHasStaticDatum.EntityDomainRoleId),
 				new DomainRolePlayerInfo(typeof(EntityHasStaticDatum), "StaticData", EntityHasStaticDatum.StaticDataDomainRoleId),
-				new DomainRolePlayerInfo(typeof(EntityInheritsEntity), "ParentInheritedEntity", EntityInheritsEntity.ParentInheritedEntityDomainRoleId),
-				new DomainRolePlayerInfo(typeof(EntityInheritsEntity), "ChildDerivedEntities", EntityInheritsEntity.ChildDerivedEntitiesDomainRoleId),
 				new DomainRolePlayerInfo(typeof(EntityHasComposites), "Entity", EntityHasComposites.EntityDomainRoleId),
 				new DomainRolePlayerInfo(typeof(EntityHasComposites), "Composite", EntityHasComposites.CompositeDomainRoleId),
 				new DomainRolePlayerInfo(typeof(CompositeHasFields), "Composite", CompositeHasFields.CompositeDomainRoleId),
@@ -616,7 +610,7 @@ namespace nHydrate.Dsl
 	
 			if (createElementLinkMap == null)
 			{
-				createElementLinkMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(33);
+				createElementLinkMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(32);
 				createElementLinkMap.Add(typeof(nHydrateModelHasEntities), 0);
 				createElementLinkMap.Add(typeof(EntityHasEntities), 1);
 				createElementLinkMap.Add(typeof(EntityHasFields), 2);
@@ -627,29 +621,28 @@ namespace nHydrate.Dsl
 				createElementLinkMap.Add(typeof(ViewHasFields), 7);
 				createElementLinkMap.Add(typeof(nHydrateModelHasRelationFields), 8);
 				createElementLinkMap.Add(typeof(EntityHasStaticDatum), 9);
-				createElementLinkMap.Add(typeof(EntityInheritsEntity), 10);
-				createElementLinkMap.Add(typeof(EntityHasComposites), 11);
-				createElementLinkMap.Add(typeof(CompositeHasFields), 12);
-				createElementLinkMap.Add(typeof(EntityHasMetadata), 13);
-				createElementLinkMap.Add(typeof(FieldHasMetadata), 14);
-				createElementLinkMap.Add(typeof(nHydrateModelHasFunctions), 15);
-				createElementLinkMap.Add(typeof(FunctionHasParameters), 16);
-				createElementLinkMap.Add(typeof(FunctionHasFields), 17);
-				createElementLinkMap.Add(typeof(nHydrateModelHasModules), 18);
-				createElementLinkMap.Add(typeof(FunctionReferencesModules), 19);
-				createElementLinkMap.Add(typeof(ViewReferencesModules), 20);
-				createElementLinkMap.Add(typeof(StoredProcedureReferencesModules), 21);
-				createElementLinkMap.Add(typeof(EntityReferencesModules), 22);
-				createElementLinkMap.Add(typeof(FieldReferencesModules), 23);
-				createElementLinkMap.Add(typeof(nHydrateModelHasRelationModules), 24);
-				createElementLinkMap.Add(typeof(ModuleHasModuleRules), 25);
-				createElementLinkMap.Add(typeof(EntityHasIndexes), 26);
-				createElementLinkMap.Add(typeof(IndexHasIndexColumns), 27);
-				createElementLinkMap.Add(typeof(nHydrateModelHasModelMetadata), 28);
-				createElementLinkMap.Add(typeof(EntityHasViews), 29);
-				createElementLinkMap.Add(typeof(nHydrateModelHasIndexModules), 30);
-				createElementLinkMap.Add(typeof(EntityHasSecurityFunction), 31);
-				createElementLinkMap.Add(typeof(SecurityFunctionHasSecurityFunctionParameters), 32);
+				createElementLinkMap.Add(typeof(EntityHasComposites), 10);
+				createElementLinkMap.Add(typeof(CompositeHasFields), 11);
+				createElementLinkMap.Add(typeof(EntityHasMetadata), 12);
+				createElementLinkMap.Add(typeof(FieldHasMetadata), 13);
+				createElementLinkMap.Add(typeof(nHydrateModelHasFunctions), 14);
+				createElementLinkMap.Add(typeof(FunctionHasParameters), 15);
+				createElementLinkMap.Add(typeof(FunctionHasFields), 16);
+				createElementLinkMap.Add(typeof(nHydrateModelHasModules), 17);
+				createElementLinkMap.Add(typeof(FunctionReferencesModules), 18);
+				createElementLinkMap.Add(typeof(ViewReferencesModules), 19);
+				createElementLinkMap.Add(typeof(StoredProcedureReferencesModules), 20);
+				createElementLinkMap.Add(typeof(EntityReferencesModules), 21);
+				createElementLinkMap.Add(typeof(FieldReferencesModules), 22);
+				createElementLinkMap.Add(typeof(nHydrateModelHasRelationModules), 23);
+				createElementLinkMap.Add(typeof(ModuleHasModuleRules), 24);
+				createElementLinkMap.Add(typeof(EntityHasIndexes), 25);
+				createElementLinkMap.Add(typeof(IndexHasIndexColumns), 26);
+				createElementLinkMap.Add(typeof(nHydrateModelHasModelMetadata), 27);
+				createElementLinkMap.Add(typeof(EntityHasViews), 28);
+				createElementLinkMap.Add(typeof(nHydrateModelHasIndexModules), 29);
+				createElementLinkMap.Add(typeof(EntityHasSecurityFunction), 30);
+				createElementLinkMap.Add(typeof(SecurityFunctionHasSecurityFunctionParameters), 31);
 			}
 			int index;
 			if (!createElementLinkMap.TryGetValue(elementLinkType, out index))
@@ -676,33 +669,30 @@ namespace nHydrate.Dsl
 				case 7: return new ViewHasFields(partition, roleAssignments, propertyAssignments);
 				case 8: return new nHydrateModelHasRelationFields(partition, roleAssignments, propertyAssignments);
 				case 9: return new EntityHasStaticDatum(partition, roleAssignments, propertyAssignments);
-				// A constructor was not generated for EntityInheritsEntity because it had HasCustomConstructor
-				// set to true. Please provide the constructor below.
-				case 10: return new EntityInheritsEntity(partition, roleAssignments, propertyAssignments);
-				case 11: return new EntityHasComposites(partition, roleAssignments, propertyAssignments);
-				case 12: return new CompositeHasFields(partition, roleAssignments, propertyAssignments);
-				case 13: return new EntityHasMetadata(partition, roleAssignments, propertyAssignments);
-				case 14: return new FieldHasMetadata(partition, roleAssignments, propertyAssignments);
-				case 15: return new nHydrateModelHasFunctions(partition, roleAssignments, propertyAssignments);
-				case 16: return new FunctionHasParameters(partition, roleAssignments, propertyAssignments);
-				case 17: return new FunctionHasFields(partition, roleAssignments, propertyAssignments);
-				case 18: return new nHydrateModelHasModules(partition, roleAssignments, propertyAssignments);
-				case 19: return new FunctionReferencesModules(partition, roleAssignments, propertyAssignments);
-				case 20: return new ViewReferencesModules(partition, roleAssignments, propertyAssignments);
-				case 21: return new StoredProcedureReferencesModules(partition, roleAssignments, propertyAssignments);
-				case 22: return new EntityReferencesModules(partition, roleAssignments, propertyAssignments);
-				case 23: return new FieldReferencesModules(partition, roleAssignments, propertyAssignments);
-				case 24: return new nHydrateModelHasRelationModules(partition, roleAssignments, propertyAssignments);
-				case 25: return new ModuleHasModuleRules(partition, roleAssignments, propertyAssignments);
-				case 26: return new EntityHasIndexes(partition, roleAssignments, propertyAssignments);
-				case 27: return new IndexHasIndexColumns(partition, roleAssignments, propertyAssignments);
-				case 28: return new nHydrateModelHasModelMetadata(partition, roleAssignments, propertyAssignments);
+				case 10: return new EntityHasComposites(partition, roleAssignments, propertyAssignments);
+				case 11: return new CompositeHasFields(partition, roleAssignments, propertyAssignments);
+				case 12: return new EntityHasMetadata(partition, roleAssignments, propertyAssignments);
+				case 13: return new FieldHasMetadata(partition, roleAssignments, propertyAssignments);
+				case 14: return new nHydrateModelHasFunctions(partition, roleAssignments, propertyAssignments);
+				case 15: return new FunctionHasParameters(partition, roleAssignments, propertyAssignments);
+				case 16: return new FunctionHasFields(partition, roleAssignments, propertyAssignments);
+				case 17: return new nHydrateModelHasModules(partition, roleAssignments, propertyAssignments);
+				case 18: return new FunctionReferencesModules(partition, roleAssignments, propertyAssignments);
+				case 19: return new ViewReferencesModules(partition, roleAssignments, propertyAssignments);
+				case 20: return new StoredProcedureReferencesModules(partition, roleAssignments, propertyAssignments);
+				case 21: return new EntityReferencesModules(partition, roleAssignments, propertyAssignments);
+				case 22: return new FieldReferencesModules(partition, roleAssignments, propertyAssignments);
+				case 23: return new nHydrateModelHasRelationModules(partition, roleAssignments, propertyAssignments);
+				case 24: return new ModuleHasModuleRules(partition, roleAssignments, propertyAssignments);
+				case 25: return new EntityHasIndexes(partition, roleAssignments, propertyAssignments);
+				case 26: return new IndexHasIndexColumns(partition, roleAssignments, propertyAssignments);
+				case 27: return new nHydrateModelHasModelMetadata(partition, roleAssignments, propertyAssignments);
 				// A constructor was not generated for EntityHasViews because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 29: return new EntityHasViews(partition, roleAssignments, propertyAssignments);
-				case 30: return new nHydrateModelHasIndexModules(partition, roleAssignments, propertyAssignments);
-				case 31: return new EntityHasSecurityFunction(partition, roleAssignments, propertyAssignments);
-				case 32: return new SecurityFunctionHasSecurityFunctionParameters(partition, roleAssignments, propertyAssignments);
+				case 28: return new EntityHasViews(partition, roleAssignments, propertyAssignments);
+				case 29: return new nHydrateModelHasIndexModules(partition, roleAssignments, propertyAssignments);
+				case 30: return new EntityHasSecurityFunction(partition, roleAssignments, propertyAssignments);
+				case 31: return new SecurityFunctionHasSecurityFunctionParameters(partition, roleAssignments, propertyAssignments);
 				default: return null;
 			}
 		}

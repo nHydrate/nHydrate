@@ -5333,38 +5333,6 @@ namespace nHydrate.Dsl
 			}
 		}
 		#endregion
-		#region ParentInheritedEntity opposite domain role accessor
-		/// <summary>
-		/// Gets or sets ParentInheritedEntity.
-		/// </summary>
-		public virtual Entity ParentInheritedEntity
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return DslModeling::DomainRoleInfo.GetLinkedElement(this, global::nHydrate.Dsl.EntityInheritsEntity.ParentInheritedEntityDomainRoleId) as Entity;
-			}
-			[global::System.Diagnostics.DebuggerStepThrough]
-			set
-			{
-				DslModeling::DomainRoleInfo.SetLinkedElement(this, global::nHydrate.Dsl.EntityInheritsEntity.ParentInheritedEntityDomainRoleId, value);
-			}
-		}
-		#endregion
-		#region ChildDerivedEntities opposite domain role accessor
-		
-		/// <summary>
-		/// Gets a list of ChildDerivedEntities.
-		/// </summary>
-		public virtual DslModeling::LinkedElementCollection<Entity> ChildDerivedEntities
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return GetRoleCollection<DslModeling::LinkedElementCollection<Entity>, Entity>(global::nHydrate.Dsl.EntityInheritsEntity.ChildDerivedEntitiesDomainRoleId);
-			}
-		}
-		#endregion
 		#region Composites opposite domain role accessor
 		
 		/// <summary>

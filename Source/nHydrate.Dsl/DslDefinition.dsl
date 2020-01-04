@@ -1979,46 +1979,6 @@
         </DomainRole>
       </Target>
     </DomainRelationship>
-    <DomainRelationship Id="e18bfada-9d87-480c-bbc9-adb50d39ef74" Description="" Name="EntityInheritsEntity" DisplayName="Entity Inherits Entity" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
-      <Properties>
-        <DomainProperty Id="e1d48068-bba9-4ddc-a5cd-37f7a461bbde" Description="The named relation necessary when there is more than one relation between two entities" Name="RoleName" DisplayName="Role Name" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="1a54f2fc-fb88-49a9-b4dc-7c59f0a3c280" Description="Determines if this relationship is enfored in the database or just in code" Name="IsEnforced" DisplayName="Is Enforced" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="d7e7ea0c-5374-408b-9470-088bb8467c0a" Description="Determines summary text were applicable" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-      <Source>
-        <DomainRole Id="e28724cf-d273-4d1e-8292-4ef20e159afb" Description="" Name="ParentInheritedEntity" DisplayName="Parent Inherited Entity" PropertyName="ParentInheritedEntity" Multiplicity="ZeroOne" Category="Definition" PropertyDisplayName="Parent Inherited Entity">
-          <RolePlayer>
-            <DomainClassMoniker Name="Entity" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="2095e234-5112-4a60-a3de-f6ad40712a46" Description="" Name="ChildDerivedEntities" DisplayName="Child Derived Entities" PropertyName="ChildDerivedEntities" Category="Definition" IsPropertyBrowsable="false" PropertyDisplayName="Child Derived Entities">
-          <RolePlayer>
-            <DomainClassMoniker Name="Entity" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
     <DomainRelationship Id="196f7f0d-bf28-494a-916f-17f515856f7e" Description="" Name="EntityHasComposites" DisplayName="Entity Has Composites" Namespace="nHydrate.Dsl" IsEmbedding="true">
       <Source>
         <DomainRole Id="7c3a4c96-7c33-4e7c-80e1-905a7c15a248" Description="" Name="Entity" DisplayName="Entity" PropertyName="Composites" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Composites">
@@ -2817,9 +2777,6 @@
           <XmlRelationshipData UseFullForm="true" RoleElementName="staticDatum">
             <DomainRelationshipMoniker Name="EntityHasStaticDatum" />
           </XmlRelationshipData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="parentInheritedEntity">
-            <DomainRelationshipMoniker Name="EntityInheritsEntity" />
-          </XmlRelationshipData>
           <XmlRelationshipData UseFullForm="true" RoleElementName="composites">
             <DomainRelationshipMoniker Name="EntityHasComposites" />
           </XmlRelationshipData>
@@ -3252,20 +3209,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="orderKey">
             <DomainPropertyMoniker Name="StaticData/OrderKey" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="EntityInheritsEntity" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityInheritsEntityMoniker" ElementName="entityInheritsEntity" MonikerTypeName="EntityInheritsEntityMoniker">
-        <DomainRelationshipMoniker Name="EntityInheritsEntity" />
-        <ElementData>
-          <XmlPropertyData XmlName="roleName">
-            <DomainPropertyMoniker Name="EntityInheritsEntity/RoleName" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="isEnforced">
-            <DomainPropertyMoniker Name="EntityInheritsEntity/IsEnforced" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="EntityInheritsEntity/Summary" />
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>
