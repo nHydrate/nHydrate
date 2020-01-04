@@ -224,18 +224,6 @@
     <Compile Include="Models\FunctionColumnCollection.cs" />
     <Compile Include="Models\Function.cs" />
     <Compile Include="Models\MetadataItemCollection.cs" />
-    <Compile Include="Models\CustomAggregate.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\CustomAggregateCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\CustomAggregateColumn.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\CustomAggregateColumnCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Models\Extensions.cs" />
     <Compile Include="Models\MetadataItem.cs" />
     <Compile Include="Models\ModelRootController.cs">
@@ -253,9 +241,6 @@
     <Compile Include="Models\TableCompositeCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\UserInterface.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Models\VersionHistoryCollection.cs" />
     <Compile Include="Models\VersionHistory.cs" />
     <Compile Include="Models\CustomStoredProcedure.cs" />
@@ -266,8 +251,6 @@
     <Compile Include="Models\CustomViewCollection.cs" />
     <Compile Include="Models\CustomViewColumn.cs" />
     <Compile Include="Models\CustomViewColumnCollection.cs" />
-    <Compile Include="Models\Package.cs" />
-    <Compile Include="Models\PackageCollection.cs" />
     <Compile Include="Models\Parameter.cs" />
     <Compile Include="Models\ParameterCollection.cs" />
     <Compile Include="ModelUI\GenerateSettings.cs">

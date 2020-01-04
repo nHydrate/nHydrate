@@ -60,10 +60,8 @@ namespace nHydrate.Generator.Models
         protected RelationCollection _relations = null;
         protected ViewRelationCollection _viewRelations = null;
         protected CustomViewCollection _customViews = null;
-        protected CustomAggregateCollection _customAggregates = null;
         protected CustomStoredProcedureCollection _customStoredProcedures = null;
         protected CustomViewColumnCollection _customViewColumns = null;
-        protected CustomAggregateColumnCollection _customAggregateColumns = null;
         protected CustomStoredProcedureColumnCollection _customStoredProcedureColumns = null;
         protected FunctionCollection _functions = null;
         protected FunctionColumnCollection _functionColumns = null;
@@ -90,14 +88,10 @@ namespace nHydrate.Generator.Models
             _viewRelations.ResetKey(Guid.Empty.ToString());
             _customViews = new CustomViewCollection(root);
             _customViews.ResetKey(Guid.Empty.ToString());
-            _customAggregates = new CustomAggregateCollection(root);
-            _customAggregates.ResetKey(Guid.Empty.ToString());
             _customStoredProcedures = new CustomStoredProcedureCollection(root);
             _customStoredProcedures.ResetKey(Guid.Empty.ToString());
             _customViewColumns = new CustomViewColumnCollection(root);
             _customViewColumns.ResetKey(Guid.Empty.ToString());
-            _customAggregateColumns = new CustomAggregateColumnCollection(root);
-            _customAggregateColumns.ResetKey(Guid.Empty.ToString());
             _customStoredProcedureColumns = new CustomStoredProcedureColumnCollection(root);
             _customStoredProcedureColumns.ResetKey(Guid.Empty.ToString());
             _customRetrieveRuleParameters = new ParameterCollection(root);
@@ -353,15 +347,6 @@ namespace nHydrate.Generator.Models
             get { return _customViews; }
         }
 
-        [
-        Browsable(false),
-        Category("Data"),
-        ]
-        public CustomAggregateCollection CustomAggregates
-        {
-            get { return _customAggregates; }
-        }
-
         [Browsable(false)]
         [Category("Data")]
         public CustomStoredProcedureCollection CustomStoredProcedures
@@ -373,12 +358,6 @@ namespace nHydrate.Generator.Models
         public CustomViewColumnCollection CustomViewColumns
         {
             get { return _customViewColumns; }
-        }
-
-        [Browsable(false)]
-        public CustomAggregateColumnCollection CustomAggregateColumns
-        {
-            get { return _customAggregateColumns; }
         }
 
         [Browsable(false)]
@@ -541,10 +520,6 @@ namespace nHydrate.Generator.Models
                 this.CustomViewColumns.XmlAppend(customViewColumnsNode);
                 node.AppendChild(customViewColumnsNode);
 
-                var customAggregateColumnsNode = oDoc.CreateElement("customaggregatecolumns");
-                this.CustomAggregateColumns.XmlAppend(customAggregateColumnsNode);
-                node.AppendChild(customAggregateColumnsNode);
-
                 var customStoredProcedureColumnsNode = oDoc.CreateElement("customstoredprocedurecolumns");
                 this.CustomStoredProcedureColumns.XmlAppend(customStoredProcedureColumnsNode);
                 node.AppendChild(customStoredProcedureColumnsNode);
@@ -582,10 +557,6 @@ namespace nHydrate.Generator.Models
                 var customViewsNode = oDoc.CreateElement("customviews");
                 this.CustomViews.XmlAppend(customViewsNode);
                 node.AppendChild(customViewsNode);
-
-                var customAggregatesNode = oDoc.CreateElement("customaggregates");
-                this.CustomAggregates.XmlAppend(customAggregatesNode);
-                node.AppendChild(customAggregatesNode);
 
                 var customStoredProceduresNode = oDoc.CreateElement("customstoredprocedures");
                 this.CustomStoredProcedures.XmlAppend(customStoredProceduresNode);
@@ -637,10 +608,6 @@ namespace nHydrate.Generator.Models
                 if (customViewsNode != null)
                     this.CustomViews.XmlLoad(customViewsNode);
 
-                var customAggregatesNode = node.SelectSingleNode("customaggregates");
-                if (customAggregatesNode != null)
-                    this.CustomAggregates.XmlLoad(customAggregatesNode);
-
                 var customStoredProceduresNode = node.SelectSingleNode("customstoredprocedures");
                 if (customStoredProceduresNode != null)
                     this.CustomStoredProcedures.XmlLoad(customStoredProceduresNode);
@@ -673,10 +640,6 @@ namespace nHydrate.Generator.Models
                 var customviewcolumnsNode = node.SelectSingleNode("customviewcolumns");
                 if (customviewcolumnsNode != null)
                     this.CustomViewColumns.XmlLoad(customviewcolumnsNode);
-
-                var customAggregatecolumnsNode = node.SelectSingleNode("customaggregatecolumns");
-                if (customAggregatecolumnsNode != null)
-                    this.CustomAggregateColumns.XmlLoad(customAggregatecolumnsNode);
 
                 var customstoredprocedurecolumnsNode = node.SelectSingleNode("customstoredprocedurecolumns");
                 if (customstoredprocedurecolumnsNode != null)

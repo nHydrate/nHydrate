@@ -55,7 +55,6 @@ namespace nHydrate.Generator.Models
         protected const bool _def_allowMocks = false;
 
         protected Database _database = null;
-        protected UserInterface _userInterface = null;
         protected string _companyName = string.Empty;
         protected bool _emitSafetyScripts = true;
         protected string _companyAbbreviation = string.Empty;
@@ -86,7 +85,6 @@ namespace nHydrate.Generator.Models
             : base(root)
         {
             _database = new Database(this);
-            _userInterface = new UserInterface(this);
             this.Refactorizations = new List<IRefactor>();
 
             this.RemovedTables = new ExtendedList<string>();
@@ -338,13 +336,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
-        public UserInterface UserInterface
-        {
-            get { return _userInterface; }
-            set { _userInterface = value; }
-        }
-
         [
         Browsable(true),
         Description("Specifies the company name that will be used to build namespaces."),
@@ -515,10 +506,6 @@ namespace nHydrate.Generator.Models
                 XmlHelper.AddAttribute(node, "defaultNamespace", this.DefaultNamespace);
                 XmlHelper.AddAttribute(node, "storedProcedurePrefix", this.StoredProcedurePrefix);
 
-                //var userInterfaceNode = oDoc.CreateElement("userInterface");
-                //this.UserInterface.XmlAppend(userInterfaceNode);
-                //node.AppendChild(userInterfaceNode);
-
                 var copyright = oDoc.CreateNode(XmlNodeType.Element, "copyright", string.Empty);
                 var copyright2 = oDoc.CreateCDataSection("copyright");
                 copyright2.Value = this.Copyright;
@@ -567,11 +554,6 @@ namespace nHydrate.Generator.Models
                 this.TenantColumnName = XmlHelper.GetAttributeValue(node, "tenantColumnName", _def_tenantColumnName);
                 this.TenantPrefix = XmlHelper.GetAttributeValue(node, "tenantPrefix", _def_tenantPrefix);
                 this.AllowMocks = XmlHelper.GetAttributeValue(node, "allowMocks", _def_allowMocks);
-
-                var uiNode = node.SelectSingleNode("userInterface");
-                if (uiNode != null)
-                    this.UserInterface.XmlLoad(uiNode);
-
                 this.CompanyName = XmlHelper.GetAttributeValue(node, "companyName", this.CompanyName);
                 this.EmitSafetyScripts = XmlHelper.GetAttributeValue(node, "emitSafetyScripts", this.EmitSafetyScripts);
                 this.CompanyAbbreviation = XmlHelper.GetAttributeValue(node, "companyAbbreviation", this.CompanyAbbreviation);
