@@ -186,6 +186,7 @@
             this.cmdCheckUpdate.TabIndex = 3;
             this.cmdCheckUpdate.Text = "Check Updates";
             this.cmdCheckUpdate.UseVisualStyleBackColor = true;
+            this.cmdCheckUpdate.Visible = false;
             this.cmdCheckUpdate.Click += new System.EventHandler(this.cmdCheckUpdate_Click);
             // 
             // linkReleaseNotes

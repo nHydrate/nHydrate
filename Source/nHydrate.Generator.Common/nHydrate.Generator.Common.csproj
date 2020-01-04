@@ -342,11 +342,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ValidationHelper.cs" />
-    <Compile Include="Web References\nhydrateservice\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.map</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="Forms\CollectionEditorForm.resx">
       <DependentUpon>CollectionEditorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -380,14 +375,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Web References\nhydrateservice\MainService.wsdl" />
-    <None Include="Web References\nhydrateservice\Reference.map">
-      <Generator>MSDiscoCodeGenerator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Web References\nhydrateservice\VersionNumber1.datasource">
-      <DependentUpon>Reference.map</DependentUpon>
-    </None>
     <None Include="WidgetSphere.snk" />
   </ItemGroup>
   <ItemGroup>
@@ -414,26 +401,9 @@
     <Content Include="Build\postbuild.targets.xml" />
     <Content Include="Build\prebuild.targets.xml" />
     <Content Include="Logging\ExampleLogConfig.xml" />
-    <None Include="Web References\nhydrateservice\MainService.disco" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WebReferences Include="Web References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WebReferenceUrl Include="http://www.nhydrate.org/Webservice/MainService.asmx">
-      <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\nhydrateservice\</RelPath>
-      <UpdateFromURL>http://www.nhydrate.org/Webservice/MainService.asmx</UpdateFromURL>
-      <ServiceLocationURL>
-      </ServiceLocationURL>
-      <CachedDynamicPropName>
-      </CachedDynamicPropName>
-      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
-      <CachedSettingsPropName>Widgetsphere_Generator_Common_nhydrateservice_MainService</CachedSettingsPropName>
-    </WebReferenceUrl>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

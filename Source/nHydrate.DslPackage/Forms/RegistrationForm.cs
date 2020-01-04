@@ -35,6 +35,7 @@ using System.Xml;
 using nHydrate.Generator.Common.Util;
 using nHydrate.DslPackage.Objects;
 using nHydrate.Generator.Common.GeneratorFramework;
+using nHydrate.ServerObjects;
 
 namespace nHydrate.DslPackage.Forms
 {
@@ -44,6 +45,8 @@ namespace nHydrate.DslPackage.Forms
         {
             InitializeComponent();
             this.SetupScreen();
+
+            var model = new UserAccount();
 
             #region Add Countries
             cboCountry.Items.Add("(Choose One)");
@@ -316,27 +319,23 @@ namespace nHydrate.DslPackage.Forms
                 return;
             }
 
-            var message = string.Empty;
-            nHydrate.Generator.Common.nhydrateservice.MainService service = null;
+            ResultModel result = null;
             try
             {
-                service = new nHydrate.Generator.Common.nhydrateservice.MainService();
-                service.Url = VersionHelper.SERVICE_URL;
-                var document = new XmlDocument();
-                document.LoadXml("<a></a>");
-                XmlHelper.AddElement(document.DocumentElement, "firstname", txtFirstName.Text);
-                XmlHelper.AddElement(document.DocumentElement, "lastname", txtLastName.Text);
-                XmlHelper.AddElement(document.DocumentElement, "city", txtCity.Text);
-                XmlHelper.AddElement(document.DocumentElement, "region", txtRegion.Text);
-                XmlHelper.AddElement(document.DocumentElement, "postcode", txtPostalCode.Text);
-                XmlHelper.AddElement(document.DocumentElement, "country", cboCountry.SelectedItem.ToString());
-                XmlHelper.AddElement(document.DocumentElement, "email", txtEmail.Text);
-                XmlHelper.AddElement(document.DocumentElement, "premiumkey", txtPremium.Text);
-                XmlHelper.AddElement(document.DocumentElement, "password", txtPassword.Text);
-                XmlHelper.AddElement(document.DocumentElement, "machinekey", SecurityHelper.GetMachineID());
-                XmlHelper.AddElement(document.DocumentElement, "version", VersionHelper.GetCurrentVersion());
-                XmlHelper.AddElement(document.DocumentElement, "allowstats", chkStat.Checked.ToString().ToLower());
-                message = service.RegisterUser2(document.OuterXml);
+                var model = new UserAccount();
+                model.FirstName = txtFirstName.Text;
+                model.LastName = txtLastName.Text;
+                model.City = txtCity.Text;
+                model.Region = txtRegion.Text;
+                model.Postcode = txtPostalCode.Text;
+                model.Country = cboCountry.SelectedItem.ToString();
+                model.Email = txtEmail.Text;
+                model.PremiumKey = txtPremium.Text;
+                model.Password = txtPassword.Text;
+                model.MachineKey = SecurityHelper.GetMachineID();
+                model.Version = VersionHelper.GetCurrentVersion();
+                model.AllowStats = chkStat.Checked;
+                result = VersionHelper.RegisterUser(model);
             }
             catch (Exception ex)
             {
@@ -344,39 +343,30 @@ namespace nHydrate.DslPackage.Forms
                 return;
             }
 
-            if (!string.IsNullOrEmpty(message))
+            if (!result.Success)
             {
-                MessageBox.Show(message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(result.Text, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            var key = string.Empty;
-            try
-            {
-                key = service.GetKey(txtEmail.Text);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("There was an error trying to retrieve the key. Please visit the main nHydrate site to register: https://github.com/nHydrate/nHydrate.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            var key = result.Text;
 
             //Validate premium key
             AddinAppData.Instance.PremiumValidated = false;
-            if (!string.IsNullOrEmpty(txtPremium.Text))
-            {
-                var result = service.VerifyPremiumKey(txtEmail.Text, txtPassword.Text, SecurityHelper.GetMachineID(), txtPremium.Text);
-                if (string.IsNullOrEmpty(result))
-                {
-                    AddinAppData.Instance.PremiumValidated = true;
-                    MessageBox.Show("The premium key has been verified and applied. All application features have been enabled.", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    //Display the reason for the error
-                    MessageBox.Show("An error has occurred while verifing your premium key. The failure reason is listed below.\n\n'" + result + "'", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
+            //if (!string.IsNullOrEmpty(txtPremium.Text))
+            //{
+            //    var result = service.VerifyPremiumKey(txtEmail.Text, txtPassword.Text, SecurityHelper.GetMachineID(), txtPremium.Text);
+            //    if (string.IsNullOrEmpty(result))
+            //    {
+            //        AddinAppData.Instance.PremiumValidated = true;
+            //        MessageBox.Show("The premium key has been verified and applied. All application features have been enabled.", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //    }
+            //    else
+            //    {
+            //        //Display the reason for the error
+            //        MessageBox.Show("An error has occurred while verifing your premium key. The failure reason is listed below.\n\n'" + result + "'", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    }
+            //}
 
             AddinAppData.Instance.Key = key;
             AddinAppData.Instance.PremiumKey = txtPremium.Text;
@@ -397,33 +387,34 @@ namespace nHydrate.DslPackage.Forms
         {
             try
             {
-                nHydrate.Generator.Common.nhydrateservice.MainService service = null;
-                service = new nHydrate.Generator.Common.nhydrateservice.MainService();
-                service.Url = VersionHelper.SERVICE_URL;
-                if (service.AuthenticateUser2(txtLoginEMail.Text, txtLoginPassword.Text, SecurityHelper.GetMachineID()))
+                var model = new LoginModel();
+                model.Email = txtLoginEMail.Text;
+                model.Password = txtLoginPassword.Text;
+                model.MachineID = SecurityHelper.GetMachineID();
+                var result = VersionHelper.AuthenticateUser(model);
+                if (result.Success)
                 {
                     AddinAppData.Instance.PremiumValidated = false;
-                    if (!string.IsNullOrEmpty(txtPremium.Text))
-                    {
-                        var result = service.VerifyPremiumKey(txtLoginEMail.Text, txtLoginPassword.Text, SecurityHelper.GetMachineID(), txtPremium.Text);
-                        if (string.IsNullOrEmpty(result))
-                        {
-                            AddinAppData.Instance.PremiumValidated = true;
-                            MessageBox.Show("The premium key has been verified and applied. All application features have been enabled.", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            //Display the reason for the error
-                            MessageBox.Show("An error has occurred while verifing your premium key. The failure reason is listed below.\n\n'" + result + "'", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                    }
+                    //if (!string.IsNullOrEmpty(txtPremium.Text))
+                    //{
+                    //    var result = service.VerifyPremiumKey(txtLoginEMail.Text, txtLoginPassword.Text, SecurityHelper.GetMachineID(), txtPremium.Text);
+                    //    if (string.IsNullOrEmpty(result))
+                    //    {
+                    //        AddinAppData.Instance.PremiumValidated = true;
+                    //        MessageBox.Show("The premium key has been verified and applied. All application features have been enabled.", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //    }
+                    //    else
+                    //    {
+                    //        //Display the reason for the error
+                    //        MessageBox.Show("An error has occurred while verifing your premium key. The failure reason is listed below.\n\n'" + result + "'", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //        return;
+                    //    }
+                    //}
 
-                    MessageBox.Show("The login has been validated. Your machine has been verified.", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("The login has been validated.", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    service.ResetStatistics(txtLoginEMail.Text, chkStat.Checked);
-                    var key = service.GetKey(txtLoginEMail.Text);
-                    AddinAppData.Instance.Key = key;
+                    //service.ResetStatistics(txtLoginEMail.Text, chkStat.Checked);
+                    AddinAppData.Instance.Key = result.Text;
                     AddinAppData.Instance.PremiumKey = txtPremium.Text;
                     AddinAppData.Instance.AllowStats = chkStat.Checked;
                     AddinAppData.Instance.Save();

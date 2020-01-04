@@ -900,7 +900,7 @@ namespace nHydrate.DataImport.SqlClient
                         var newColumn = new Field() { Name = columnName, SortOrder = ++maxSortOrder };
                         entity.FieldList.Add(newColumn);
 
-                        newColumn.Nullable = bool.Parse(columnReader["allow_null"].ToString());
+                        newColumn.Nullable = (int)columnReader["allow_null"] == 1;
                         if (bool.Parse(columnReader["is_identity"].ToString()))
                             newColumn.Identity = true;
 

@@ -336,7 +336,7 @@
             this.grpLogin.Controls.Add(this.label11);
             this.grpLogin.Controls.Add(this.txtLoginEMail);
             this.grpLogin.Controls.Add(this.label12);
-            this.grpLogin.Location = new System.Drawing.Point(286, 12);
+            this.grpLogin.Location = new System.Drawing.Point(99, 10);
             this.grpLogin.Name = "grpLogin";
             this.grpLogin.Size = new System.Drawing.Size(385, 110);
             this.grpLogin.TabIndex = 16;

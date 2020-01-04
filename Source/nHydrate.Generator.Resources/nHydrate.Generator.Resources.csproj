@@ -56,6 +56,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -67,6 +70,10 @@
   <ItemGroup>
     <Content Include="..\..\bin\nHydrate.Generator.PostgresInstaller.dll">
       <Link>nHydrate.Generator.PostgresInstaller.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll">
+      <Link>Newtonsoft.Json.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.CoreUtility.dll">
@@ -163,6 +170,10 @@
     </Content>
     <Content Include="..\..\ThirdParty\Microsoft.VisualStudio.XmlEditor.dll">
       <Link>Microsoft.VisualStudio.XmlEditor.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ThirdParty\nHydrate.ServerObjectsNet.dll">
+      <Link>nHydrate.ServerObjectsNet.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\VSADDIN\AssemblyInfo.cs">
@@ -290,6 +301,9 @@
       <Link>efcoresqliteinstaller.csproj</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
