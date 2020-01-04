@@ -1,26 +1,17 @@
-nHydrate
+nHydrate ORM
 ========
 
-This platform creates strongly-typed, extendable classes for Entity Framework.
-
-You can always download the latest version from the Visual Studio Gallery
-https://visualstudiogallery.msdn.microsoft.com/d641354e-b15f-437c-b7eb-83c6ac423651
+This platform creates strongly-typed, extendable classes for Entity Framework. **The generated code is Entity Framework. There is no difference.** This is not a replacement for EF or a custom ORM. It is a visual, modeling layer that allows a team to manage complex database schemas. It works well with SCM software like Git, allowing multi-user access to your model with minimal conflicts.
 
 Installation
 ========
 
-To load and compile this project you need Visual Studio 2013 or greater.
+The plug-in is available in the Visual Studio Gallery. You can install it from the Tools menu under "Extensions and Updates". You can also  download the latest version from the Visual Studio Gallery
+https://visualstudiogallery.msdn.microsoft.com/d641354e-b15f-437c-b7eb-83c6ac423651
 
-Then install the SDK from the following URL.
+Running the code
+========
 
-  Microsoft Visual Studio 2013 SDK
-  http://www.microsoft.com/en-us/download/details.aspx?id=40758
+To load and compile this project you need Visual Studio 2017 or greater. When installing Visual Studio, be sure to include the Modeling SDK. You can then load and build the solution.
 
-Then install the DSL toolkit from the following URL.
-
-  Modeling SDK for Microsoft Visual Studio 2013
-  http://www.microsoft.com/en-us/download/details.aspx?id=40754
-
-You can now load and build the solution.
-
-When you build the extension will be automatically installed as an extension in the Experimental Hive. You will not see the extension in the main Visual Studio setup. You must open Visual Studio as Experimental Hive. After you install the SDK above this will be a menu item named "Start Experimental Instance of Visual Studio 2013". This will open VS.NET with fresh settings that can be reset if needed.
+When you build, the plugin will be automatically be installed as an extension in the Experimental Hive. You will not see the extension in the main Visual Studio setup. You must open Visual Studio as Experimental Hive. The Experimental Hive is a copy of Visual Studio with fresh settings that can be reset if needed. It is automatically installed and configured when you have the Modeling SDK on your machine.
