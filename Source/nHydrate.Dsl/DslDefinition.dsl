@@ -3837,25 +3837,6 @@
         </TargetDirectives>
       </LinkConnectDirective>
     </ConnectionBuilder>
-    <ConnectionBuilder Name="EntityInheritsEntityBuilder">
-      <LinkConnectDirective>
-        <DomainRelationshipMoniker Name="EntityInheritsEntity" />
-        <SourceDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="Entity" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </SourceDirectives>
-        <TargetDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="Entity" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </TargetDirectives>
-      </LinkConnectDirective>
-    </ConnectionBuilder>
     <ConnectionBuilder Name="FunctionReferencesModulesBuilder">
       <LinkConnectDirective>
         <DomainRelationshipMoniker Name="FunctionReferencesModules" />
@@ -4171,9 +4152,6 @@
       </ElementTool>
       <ConnectionTool Name="Association" ToolboxIcon="resources\exampleconnectortoolbitmap.bmp" Caption="Association" Tooltip="Create a relation between two entities" HelpKeyword="">
         <ConnectionBuilderMoniker Name="nHydrate/EntityHasEntitiesBuilder" />
-      </ConnectionTool>
-      <ConnectionTool Name="Inheritance" ToolboxIcon="resources\exampleconnectortoolbitmap.bmp" Caption="Inheritance" Tooltip="Create an inheritance relation between two entities" HelpKeyword="">
-        <ConnectionBuilderMoniker Name="nHydrate/EntityInheritsEntityBuilder" />
       </ConnectionTool>
       <ElementTool Name="View" ToolboxIcon="Resources\view.bmp" Caption="View" Tooltip="Create a View" HelpKeyword="View">
         <DomainClassMoniker Name="View" />

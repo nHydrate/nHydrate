@@ -43,13 +43,6 @@ namespace nHydrate.DslPackage
 					"@AssociationToolboxBitmap;nHydrate.Dsl.dll", 
 					0xff00ff)]
 	[VSShell::ProvideStaticToolboxItem("nHydrate.DslPackage.nHydrateToolboxTab",
-					"@InheritanceToolboxItem;nHydrate.Dsl.dll", 
-					"nHydrate.DslPackage.InheritanceToolboxItem", 
-					"CF_TOOLBOXITEMCONTAINER,CF_TOOLBOXITEMCONTAINER_HASH,CF_TOOLBOXITEMCONTAINER_CONTENTS", 
-					"", 
-					"@InheritanceToolboxBitmap;nHydrate.Dsl.dll", 
-					0xff00ff)]
-	[VSShell::ProvideStaticToolboxItem("nHydrate.DslPackage.nHydrateToolboxTab",
 					"@ViewToolboxItem;nHydrate.Dsl.dll", 
 					"nHydrate.DslPackage.ViewToolboxItem", 
 					"CF_TOOLBOXITEMCONTAINER,CF_TOOLBOXITEMCONTAINER_HASH,CF_TOOLBOXITEMCONTAINER_CONTENTS", 

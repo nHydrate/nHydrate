@@ -52,10 +52,6 @@ namespace nHydrate.Dsl
 		/// </summary>
 		public const string AssociationFilterString = "Association.7.0";
 		/// <summary>
-		/// Toolbox item filter string used to identify Inheritance connector tool.
-		/// </summary>
-		public const string InheritanceFilterString = "Inheritance.7.0";
-		/// <summary>
 		/// Toolbox item filter string used to identify ViewLink connector tool.
 		/// </summary>
 		public const string ViewLinkFilterString = "ViewLink.7.0";
@@ -106,7 +102,7 @@ namespace nHydrate.Dsl
 		{
 			get
 			{
-				return 7;
+				return 6;
 			}
 		}
 		
@@ -189,29 +185,11 @@ namespace nHydrate.Dsl
 							new global::System.ComponentModel.ToolboxItemFilterAttribute(AssociationFilterString)
 						});
 					break;
-				case "nHydrate.DslPackage.InheritanceToolboxItem":
-
-					// Add Inheritance connector tool.
-					result = new DslDesign::ModelingToolboxItem(
-						"nHydrate.DslPackage.InheritanceToolboxItem", // Unique identifier (non-localized) for the toolbox item.
-						3, // Position relative to other items in the same toolbox tab.
-						resourceManager.GetString("InheritanceToolboxItem", resourceCulture), // Localized display name for the item.
-						(global::System.Drawing.Bitmap)DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("InheritanceToolboxBitmap", resourceCulture)), // Image displayed next to the toolbox item.				
-						"nHydrate.DslPackage.nHydrateToolboxTab", // Unique identifier (non-localized) for the toolbox item tab.
-						resourceManager.GetString("nHydrateToolboxTab", resourceCulture), // Localized display name for the toolbox tab.
-						"", // F1 help keyword for the toolbox item.
-						resourceManager.GetString("InheritanceToolboxTooltip", resourceCulture), // Localized tooltip text for the toolbox item.
-						null, // Connector toolbox items do not have an underlying data object.
-						new global::System.ComponentModel.ToolboxItemFilterAttribute[] { // Collection of ToolboxItemFilterAttribute objects that determine visibility of the toolbox item.
-							new global::System.ComponentModel.ToolboxItemFilterAttribute(ToolboxFilterString, global::System.ComponentModel.ToolboxItemFilterType.Require), 
-							new global::System.ComponentModel.ToolboxItemFilterAttribute(InheritanceFilterString)
-						});
-					break;
 				case "nHydrate.DslPackage.ViewToolboxItem":
 					// Add View shape tool.
 					result = new DslDesign::ModelingToolboxItem(
 						"nHydrate.DslPackage.ViewToolboxItem", // Unique identifier (non-localized) for the toolbox item.
-						4, // Position relative to other items in the same toolbox tab.
+						3, // Position relative to other items in the same toolbox tab.
 						resourceManager.GetString("ViewToolboxItem", resourceCulture), // Localized display name for the item.
 						(global::System.Drawing.Bitmap)DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("ViewToolboxBitmap", resourceCulture)), // Image displayed next to the toolbox item.
 						"nHydrate.DslPackage.nHydrateToolboxTab", // Unique identifier (non-localized) for the toolbox item tab.
@@ -227,7 +205,7 @@ namespace nHydrate.Dsl
 					// Add Function shape tool.
 					result = new DslDesign::ModelingToolboxItem(
 						"nHydrate.DslPackage.FunctionToolboxItem", // Unique identifier (non-localized) for the toolbox item.
-						5, // Position relative to other items in the same toolbox tab.
+						4, // Position relative to other items in the same toolbox tab.
 						resourceManager.GetString("FunctionToolboxItem", resourceCulture), // Localized display name for the item.
 						(global::System.Drawing.Bitmap)DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("FunctionToolboxBitmap", resourceCulture)), // Image displayed next to the toolbox item.
 						"nHydrate.DslPackage.nHydrateToolboxTab", // Unique identifier (non-localized) for the toolbox item tab.
@@ -243,7 +221,7 @@ namespace nHydrate.Dsl
 					// Add StoredProcedure shape tool.
 					result = new DslDesign::ModelingToolboxItem(
 						"nHydrate.DslPackage.StoredProcedureToolboxItem", // Unique identifier (non-localized) for the toolbox item.
-						6, // Position relative to other items in the same toolbox tab.
+						5, // Position relative to other items in the same toolbox tab.
 						resourceManager.GetString("StoredProcedureToolboxItem", resourceCulture), // Localized display name for the item.
 						(global::System.Drawing.Bitmap)DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("StoredProcedureToolboxBitmap", resourceCulture)), // Image displayed next to the toolbox item.
 						"nHydrate.DslPackage.nHydrateToolboxTab", // Unique identifier (non-localized) for the toolbox item tab.
@@ -260,7 +238,7 @@ namespace nHydrate.Dsl
 					// Add ViewLink connector tool.
 					result = new DslDesign::ModelingToolboxItem(
 						"nHydrate.DslPackage.ViewLinkToolboxItem", // Unique identifier (non-localized) for the toolbox item.
-						7, // Position relative to other items in the same toolbox tab.
+						6, // Position relative to other items in the same toolbox tab.
 						resourceManager.GetString("ViewLinkToolboxItem", resourceCulture), // Localized display name for the item.
 						(global::System.Drawing.Bitmap)DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("ViewLinkToolboxBitmap", resourceCulture)), // Image displayed next to the toolbox item.				
 						"nHydrate.DslPackage.nHydrateToolboxTab", // Unique identifier (non-localized) for the toolbox item tab.

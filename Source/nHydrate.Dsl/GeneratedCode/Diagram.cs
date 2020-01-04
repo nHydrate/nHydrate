@@ -572,7 +572,6 @@ namespace nHydrate.Dsl
 		#region Connect actions
 		private bool changingMouseAction;
 		private global::nHydrate.Dsl.AssociationConnectAction associationConnectAction;
-		private global::nHydrate.Dsl.InheritanceConnectAction inheritanceConnectAction;
 		private global::nHydrate.Dsl.ViewLinkConnectAction viewLinkConnectAction;
 		/// <summary>
 		/// Virtual method to provide a filter when to select the mouse action
@@ -604,15 +603,6 @@ namespace nHydrate.Dsl
 						this.associationConnectAction.MouseActionDeactivated += new DslDiagrams::MouseAction.MouseActionDeactivatedEventHandler(OnConnectActionDeactivated);
 					}
 					action = this.associationConnectAction;
-				} 
-				else if (SelectedToolboxItemSupportsFilterString(activeView, global::nHydrate.Dsl.nHydrateToolboxHelper.InheritanceFilterString))
-				{
-					if (this.inheritanceConnectAction == null)
-					{
-						this.inheritanceConnectAction = new global::nHydrate.Dsl.InheritanceConnectAction(this);
-						this.inheritanceConnectAction.MouseActionDeactivated += new DslDiagrams::MouseAction.MouseActionDeactivatedEventHandler(OnConnectActionDeactivated);
-					}
-					action = this.inheritanceConnectAction;
 				} 
 				else if (SelectedToolboxItemSupportsFilterString(activeView, global::nHydrate.Dsl.nHydrateToolboxHelper.ViewLinkFilterString))
 				{
@@ -684,11 +674,6 @@ namespace nHydrate.Dsl
 					{
 						this.associationConnectAction.Dispose();
 						this.associationConnectAction = null;
-					}
-					if(this.inheritanceConnectAction != null)
-					{
-						this.inheritanceConnectAction.Dispose();
-						this.inheritanceConnectAction = null;
 					}
 					if(this.viewLinkConnectAction != null)
 					{

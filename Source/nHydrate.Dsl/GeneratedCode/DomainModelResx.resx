@@ -4749,14 +4749,6 @@
     <value>Create a relation between two entities</value>
     <comment>Toolbox tooltip text</comment>
   </data>
-  <data name="InheritanceToolboxItem" xml:space="preserve">
-    <value>Inheritance</value>
-    <comment>Toolbox item name</comment>
-  </data>
-  <data name="InheritanceToolboxTooltip" xml:space="preserve">
-    <value>Create an inheritance relation between two entities</value>
-    <comment>Toolbox tooltip text</comment>
-  </data>
   <data name="ViewToolboxItem" xml:space="preserve">
     <value>View</value>
     <comment>Toolbox item name</comment>
@@ -5003,10 +4995,6 @@ A DomainClass can be serialized as a moniker only if
     <comment>Toolbox item image</comment>
   </data>
   <data name="AssociationToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
-    <value>..\resources\exampleconnectortoolbitmap.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-    <comment>Toolbox item image</comment>
-  </data>
-  <data name="InheritanceToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
     <value>..\resources\exampleconnectortoolbitmap.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Toolbox item image</comment>
   </data>
