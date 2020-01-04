@@ -34,7 +34,11 @@ namespace nHydrate.DslPackage.Objects
 {
     internal static class VersionHelper
     {
+#if DEBUG
         public const string SERVICE_URL = "http://www.nhydrate.org/Webservice/MainService.asmx";
+#else
+        public const string SERVICE_URL = "http://www.nhydrate.local/Webservice/MainService.asmx";
+#endif
 
         public static bool CanConnect()
         {
