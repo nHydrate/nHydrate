@@ -63,6 +63,8 @@ namespace nHydrate.Dsl
             this.RemovedFunctions = new List<string>();
         }
 
+        public override bool ModelToDisk { get => true; }
+
         public List<nHydrate.Dsl.Objects.IRefactor> Refactorizations { get; set; }
 
         //protected internal bool IsLoading { get; set; }

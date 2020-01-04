@@ -41,7 +41,7 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="5be892eb-5e4f-4065-ad4a-ee6b1c65c8d4" Description="Specifies whether UTC or local time is used for the created and modified audits" Name="UseUTCTime" DisplayName="Use UTCTime" DefaultValue="false" Category="Definition">
+        <DomainProperty Id="5be892eb-5e4f-4065-ad4a-ee6b1c65c8d4" Description="Specifies whether UTC or local time is used for the created and modified audits" Name="UseUTCTime" DisplayName="Use UTCTime" DefaultValue="false" Category="Definition" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
@@ -118,7 +118,7 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="6fbe9eae-bebb-4ede-b0df-3f8ea4153633" Description="Determines if model objects are duplicated on disk for easy editing" Name="ModelToDisk" DisplayName="Model To Disk" DefaultValue="false" Category="Behavior">
+        <DomainProperty Id="6fbe9eae-bebb-4ede-b0df-3f8ea4153633" Description="Determines if model objects are duplicated on disk for easy editing" Name="ModelToDisk" DisplayName="Model To Disk" DefaultValue="false" Category="Behavior" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>

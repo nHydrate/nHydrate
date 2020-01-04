@@ -617,6 +617,7 @@ namespace nHydrate.Dsl
 		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/UseUTCTime.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/UseUTCTime.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/UseUTCTime.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[global::System.ComponentModel.Browsable(false)]
 		[DslModeling::DomainObjectId("5be892eb-5e4f-4065-ad4a-ee6b1c65c8d4")]
 		public virtual global::System.Boolean UseUTCTime
 		{
@@ -1904,6 +1905,7 @@ namespace nHydrate.Dsl
 		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/ModelToDisk.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/ModelToDisk.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/ModelToDisk.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[global::System.ComponentModel.Browsable(false)]
 		[DslModeling::DomainObjectId("6fbe9eae-bebb-4ede-b0df-3f8ea4153633")]
 		public virtual global::System.Boolean ModelToDisk
 		{
