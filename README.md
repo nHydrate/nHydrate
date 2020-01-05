@@ -8,8 +8,7 @@ The main home page is [nHydrate.com](https://nHydrate.com)
 Installation
 ========
 
-The plug-in is available in the Visual Studio Gallery. You can install it from the Tools menu under "Extensions and Updates". You can also  download the latest version from the Visual Studio Gallery
-https://visualstudiogallery.msdn.microsoft.com/d641354e-b15f-437c-b7eb-83c6ac423651
+The plug-in is available in the Visual Studio Gallery. You can install it from the Tools menu under "Extensions and Updates". You can also  download the latest version from the [Visual Studio Gallery](https://visualstudiogallery.msdn.microsoft.com/d641354e-b15f-437c-b7eb-83c6ac423651)
 
 Running the code
 ========
