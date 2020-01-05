@@ -167,7 +167,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("	[KnownType(typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "))]");
             }
 
-            if (_item.Immutable && _item.TypedTable == TypedTableConstants.None)
+            if (_item.Immutable) // && _item.TypedTable == TypedTableConstants.None
                 sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
 
             //NO AUDIT TRACKING FOR NOW
@@ -179,6 +179,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             //Auditing
             //if (_item.AllowAuditTracking)
             //    sb.AppendLine("	[EntityHistory(typeof(" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit))]");
+
+            if (!_item.PrimaryKeyColumns.Any())
+                sb.AppendLine("	[HasNoKey]");
+
+            if (_item.IsTenant)
+                sb.AppendLine("	[TenantEntity]");
 
             foreach (var meta in _item.MetaData)
             {
@@ -555,6 +561,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     sb.AppendLine("	[CustomMetadata(Key = \"" + StringHelper.ConvertTextToSingleLineCodeString(meta.Key) + "\", Value = \"" + meta.Value.Replace("\"", "\\\"") + "\")]");
                 }
 
+                if (column.IsTextType && column.IsMaxLength())
+                    sb.AppendLine("		[StringLengthUnbounded]");
+                else if (column.IsTextType && !column.IsMaxLength())
+                    sb.AppendLine($"		[System.ComponentModel.DataAnnotations.StringLength({column.Length})]");
+
                 sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 
                 if (column.Obsolete)
@@ -673,11 +684,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             }
 
             //Audit Fields
-            if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedByPascalName, "string", "The audit field for the 'Created By' parameter.", "public");
-            if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedDatePascalName, "DateTime", "The audit field for the 'Created Date' parameter.", "public");
-            if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedByPascalName, "string", "The audit field for the 'Modified By' parameter.", "public");
-            if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedDatePascalName, "DateTime", "The audit field for the 'Modified Date' parameter.", "public");
-            if (_item.AllowTimestamp) GenerateAuditField(_model.Database.TimestampPascalName, "byte[]", "The audit field for the 'Timestamp' parameter.", "public");
+            if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedByPascalName, "string","The audit field for the 'Created By' parameter.", "public", "AuditCreatedBy");
+            if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedDatePascalName, "DateTime", "The audit field for the 'Created Date' parameter.", "public", "AuditCreatedDate");
+            if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedByPascalName, "string", "The audit field for the 'Modified By' parameter.", "public", "AuditModifiedBy");
+            if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedDatePascalName, "DateTime", "The audit field for the 'Modified Date' parameter.", "public", "AuditModifiedDate");
+            if (_item.AllowTimestamp) GenerateAuditField(_model.Database.TimestampPascalName, "byte[]", "The audit field for the 'Timestamp' parameter.", "public", "AuditTimestamp");
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
@@ -972,7 +983,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             if ((column.Length == 0) && (ModelHelper.SupportsMax(column.DataType)))
                                 sb.AppendLine("					return int.MaxValue;");
                             else
-                                sb.AppendLine("					return " + column.Length + ";");
+                                sb.AppendLine($"					return {column.Length};");
                             break;
                         default:
                             sb.AppendLine($"					return 0; //Type={column.DataType}");
@@ -1079,7 +1090,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Generic primary key for this object");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		" + this.GetLocalNamespace() + ".IPrimaryKey " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.PrimaryKey");
+            sb.AppendLine($"		{this.GetLocalNamespace()}.IPrimaryKey {this.GetLocalNamespace()}.IReadOnlyBusinessObject.PrimaryKey");
             sb.AppendLine("		{");
             sb.AppendLine("			get { return new PrimaryKey(Util.HashPK(\"" + _item.PascalName + "\", " + pkList + ")); }");
             sb.AppendLine("		}");
@@ -1355,9 +1366,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             }
 
                             if (column.GetCodeType() == "string")
-                                sb.AppendLine("					this." + column.PascalName + " = newValue.ToString();");
+                                sb.AppendLine($"					this.{column.PascalName} = newValue.ToString();");
                             else
-                                sb.AppendLine("					this." + column.PascalName + " = (" + column.GetCodeType() + ")newValue;");
+                                sb.AppendLine($"					this.{column.PascalName} = ({column.GetCodeType()})newValue;");
 
                             sb.AppendLine("				}");
                             //sb.AppendLine("				return;");
@@ -1382,12 +1393,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
         {
             sb.AppendLine("		#region Equals");
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Compares two objects of '" + _item.PascalName + "' type and determines if all properties match");
+            sb.AppendLine($"		/// Compares two objects of '{_item.PascalName}' type and determines if all properties match");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <returns>True if all properties match, false otherwise</returns>");
             sb.AppendLine("		public override bool Equals(object obj)");
             sb.AppendLine("		{");
-            sb.AppendLine("			var other = obj as " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ";");
+            sb.AppendLine($"			var other = obj as {this.GetLocalNamespace()}.Entity.{_item.PascalName};");
             sb.AppendLine("			if (other == null) return false;");
             sb.AppendLine("			return (");
 
@@ -1395,7 +1406,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             var index = 0;
             foreach (var column in allColumns)
             {
-                sb.Append("				other." + column.PascalName + " == this." + column.PascalName);
+                sb.Append($"				other.{column.PascalName} == this.{column.PascalName}");
                 if (index < allColumns.Count - 1) sb.Append(" &&");
                 sb.AppendLine();
                 index++;
@@ -1643,7 +1654,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         }
 
-        private void GenerateAuditField(string columnName, string codeType, string description, string propertyScope, bool isConcurrency = false)
+        private void GenerateAuditField(string columnName, string codeType, string description, string propertyScope, string attributeType, bool isConcurrency = false)
         {
             if (!string.IsNullOrEmpty(description))
             {
@@ -1653,6 +1664,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             }
             sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]");
             sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
+
+            if (!string.IsNullOrEmpty(attributeType))
+                sb.AppendLine($"		[{attributeType}]");
 
             if (isConcurrency)
                 sb.AppendLine("		[System.ComponentModel.DataAnnotations.ConcurrencyCheck()]");

@@ -87,12 +87,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("using System.Collections.Concurrent;");
                 sb.AppendLine("using System.Reflection;");
                 sb.AppendLine("using Microsoft.EntityFrameworkCore;");
+                sb.AppendLine("using System.ComponentModel;");
 
                 sb.AppendLine();
                 #endregion
 
                 #region Metadata
-                sb.AppendLine("namespace " + this.GetLocalNamespace());
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}");
                 sb.AppendLine("{");
 
                 sb.AppendLine("	/// <summary />");
@@ -1131,6 +1132,79 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
+
+                #region Audit Attributes
+                sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
+                sb.AppendLine("	public partial class AuditTimestampAttribute : System.Attribute");
+                sb.AppendLine("	{");
+                sb.AppendLine("	}");
+                sb.AppendLine();
+
+                sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
+                sb.AppendLine("	public partial class AuditCreatedByAttribute : System.Attribute");
+                sb.AppendLine("	{");
+                sb.AppendLine("	}");
+                sb.AppendLine();
+
+                sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
+                sb.AppendLine("	public partial class AuditCreatedDateAttribute : System.Attribute");
+                sb.AppendLine("	{");
+                sb.AppendLine("	}");
+                sb.AppendLine();
+
+                sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
+                sb.AppendLine("	public partial class AuditModifiedByAttribute : System.Attribute");
+                sb.AppendLine("	{");
+                sb.AppendLine("	}");
+                sb.AppendLine();
+
+                sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
+                sb.AppendLine("	public partial class AuditModifiedDateAttribute : System.Attribute");
+                sb.AppendLine("	{");
+                sb.AppendLine("	}");
+                #endregion
+
+                #region HasNoKeyAttribute
+                sb.AppendLine("    /// <summary>");
+                sb.AppendLine("    /// Indicates that a table has no primary key");
+                sb.AppendLine("    /// </summary>");
+                sb.AppendLine("    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)]");
+                sb.AppendLine("    public class HasNoKeyAttribute : System.Attribute");
+                sb.AppendLine("    {");
+                sb.AppendLine("    }");
+                sb.AppendLine();
+                #endregion
+
+                #region StringLengthUnboundedAttribute
+                sb.AppendLine("    /// <summary>");
+                sb.AppendLine("    /// Indicates that a string has no set maximum length");
+                sb.AppendLine("    /// </summary>");
+                sb.AppendLine("    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]");
+                sb.AppendLine("    public class StringLengthUnboundedAttribute : System.Attribute");
+                sb.AppendLine("    {");
+                sb.AppendLine("    }");
+                sb.AppendLine();
+                #endregion
+
+                #region Tenant Attributes
+                sb.AppendLine("    /// <summary>");
+                sb.AppendLine("    /// Indicates that a database table is tenant based");
+                sb.AppendLine("    /// </summary>");
+                sb.AppendLine("    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)]");
+                sb.AppendLine("    public class TenantEntityAttribute : System.Attribute");
+                sb.AppendLine("    {");
+                sb.AppendLine("    }");
+                sb.AppendLine();
+
+                //sb.AppendLine("    /// <summary>");
+                //sb.AppendLine("    /// Identifies the SQL user column for a tenant");
+                //sb.AppendLine("    /// </summary>");
+                //sb.AppendLine("    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]");
+                //sb.AppendLine("    public class SqlUserAttribute : System.Attribute");
+                //sb.AppendLine("    {");
+                //sb.AppendLine("    }");
+                //sb.AppendLine();
                 #endregion
 
                 #region IReadOnlyBusinessObject
