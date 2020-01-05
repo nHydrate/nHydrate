@@ -2674,6 +2674,12 @@
             <xsd:documentation>The imported database constraint name</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
+        <!-- Property: DeleteAction -->
+        <xsd:attribute name="deleteAction" type="DeleteActionConstants" >
+          <xsd:annotation>
+            <xsd:documentation>Determines the action on chld objects when principal entity is deleted</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
@@ -4114,6 +4120,27 @@
         </xsd:annotation>
       </xsd:enumeration>
       <xsd:enumeration value="EF6"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <!-- Enum DeleteActionConstants -->
+  <xsd:simpleType name="DeleteActionConstants">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="NoAction">
+        <xsd:annotation>
+          <xsd:documentation>Take no action on principal entity deletion</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Cascade">
+        <xsd:annotation>
+          <xsd:documentation>Case delete of child objects</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="SetNull">
+        <xsd:annotation>
+          <xsd:documentation>On principal entity deletion, set foreign key to null</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
     </xsd:restriction>
   </xsd:simpleType>
   

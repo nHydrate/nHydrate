@@ -492,6 +492,7 @@ namespace nHydrate.Dsl.Custom
                 XmlHelper.AddAttribute(relationNode, "id", relation.InternalId);
                 XmlHelper.AddAttribute(relationNode, "childid", relation.ChildEntity.Id);
                 XmlHelper.AddAttribute(relationNode, "isenforced", relation.IsEnforced);
+                XmlHelper.AddAttribute(relationNode, "deleteaction", relation.DeleteAction.ToString());
                 XmlHelper.AddAttribute(relationNode, "rolename", relation.RoleName);
 
                 XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
@@ -1264,6 +1265,7 @@ namespace nHydrate.Dsl.Custom
                         var connection = entity.Store.CurrentContext.Partitions.First().Value.ElementDirectory.AllElements.Last() as EntityHasEntities;
                         connection.InternalId = XmlHelper.GetAttributeValue(n, "id", Guid.Empty);
                         connection.IsEnforced = XmlHelper.GetAttributeValue(n, "isenforced", connection.IsEnforced);
+                        connection.DeleteAction = (DeleteActionConstants)Enum.Parse(typeof(DeleteActionConstants), XmlHelper.GetAttributeValue(n, "deleteaction", connection.DeleteAction.ToString()));
                         connection.RoleName = XmlHelper.GetAttributeValue(n, "rolename", connection.RoleName);
 
                         var relationColumnsNode = n.SelectSingleNode("relationfieldset");

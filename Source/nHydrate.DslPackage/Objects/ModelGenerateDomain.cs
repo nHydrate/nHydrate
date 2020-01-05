@@ -803,6 +803,19 @@ namespace nHydrate.DslPackage.Objects
                                     newRelation.ParentTableRef = parentTable.CreateRef(parentTable.Key);
                                     newRelation.ChildTableRef = childTable.CreateRef(childTable.Key);
                                     newRelation.RoleName = ((EntityHasEntities)connector.ModelElement).RoleName;
+                                    switch(relation.DeleteAction)
+                                    {
+                                        case DeleteActionConstants.Cascade:
+                                            newRelation.DeleteAction = Relation.DeleteActionConstants.Cascade;
+                                            break;
+                                        case DeleteActionConstants.NoAction:
+                                            newRelation.DeleteAction = Relation.DeleteActionConstants.NoAction;
+                                            break;
+                                        case DeleteActionConstants.SetNull:
+                                            newRelation.DeleteAction = Relation.DeleteActionConstants.SetNull;
+                                            break;
+                                    }
+
                                     if (ownerModule == null)
                                     {
                                         newRelation.Enforce = relation.IsEnforced;

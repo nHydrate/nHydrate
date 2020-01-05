@@ -540,7 +540,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             else
                                 sb.AppendLine("							 .WithMany(b => b." + relation.PascalRoleName + childTable.PascalName + "List)");
 
-                            if (!relation.IsRequired)
+                            if (relation.IsRequired)
+                                sb.AppendLine("							 .IsRequired(true)");
+                            else
                                 sb.AppendLine("							 .IsRequired(false)");
 
                             if (relation.IsOneToOne)
@@ -561,7 +563,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                                 index++;
                             }
 
-                            sb.AppendLine(" });");
+                            sb.AppendLine(" })");
+
+                            //Specify what to do on delete
+                            if (relation.DeleteAction == Relation.DeleteActionConstants.Cascade)
+                                sb.AppendLine("							 .OnDelete(DeleteBehavior.Cascade);");
+                            else if (relation.DeleteAction == Relation.DeleteActionConstants.SetNull)
+                                sb.AppendLine("							 .OnDelete(DeleteBehavior.SetNull);");
+                            else if (relation.DeleteAction == Relation.DeleteActionConstants.NoAction)
+                                sb.AppendLine("							 .OnDelete(DeleteBehavior.Restrict);");
                         }
 
                         sb.AppendLine();

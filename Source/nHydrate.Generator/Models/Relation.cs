@@ -38,10 +38,18 @@ namespace nHydrate.Generator.Models
     {
         #region Member Variables
 
+        public enum DeleteActionConstants
+        {
+            NoAction,
+            Cascade,
+            SetNull
+        }
+
         protected const string _def_roleName = "";
         protected const string _def_constraintname = "";
         protected const bool _def_enforce = true;
         protected const string _def_description = "";
+        protected const DeleteActionConstants _def_deleteAction = DeleteActionConstants.NoAction;
 
         protected int _id = 1;
         protected Reference _parentTableRef = null;
@@ -52,6 +60,7 @@ namespace nHydrate.Generator.Models
         //private DateTime _createdDate = DateTime.Now;
         private bool _enforce = _def_enforce;
         private string _description = _def_description;
+        private DeleteActionConstants _deleteAction = _def_deleteAction;
 
         #endregion
 
@@ -354,6 +363,17 @@ namespace nHydrate.Generator.Models
             }
         }
 
+        [Browsable(false)]
+        public DeleteActionConstants DeleteAction
+        {
+            get { return _deleteAction; }
+            set
+            {
+                _deleteAction = value;
+                this.OnPropertyChanged(this, new PropertyChangedEventArgs("DeleteAction"));
+            }
+        }
+
         /// <summary>
         /// A hash of the table/columns of this relationship with no role information
         /// </summary>
@@ -651,6 +671,8 @@ namespace nHydrate.Generator.Models
             if (this.Description != _def_description)
                 XmlHelper.AddAttribute(node, "description", this.Description);
 
+            XmlHelper.AddAttribute(node, "deleteAction", this.DeleteAction.ToString());
+
             var columnRelationshipsNode = oDoc.CreateElement("crl");
             ColumnRelationships.XmlAppend(columnRelationshipsNode);
             node.AppendChild(columnRelationshipsNode);
@@ -678,6 +700,8 @@ namespace nHydrate.Generator.Models
             _key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
             _enforce = XmlHelper.GetAttributeValue(node, "enforce", _def_enforce);
             _description = XmlHelper.GetAttributeValue(node, "description", _def_description);
+
+            _deleteAction = (DeleteActionConstants)Enum.Parse(typeof(DeleteActionConstants), XmlHelper.GetAttributeValue(node, "deleteAction", _def_deleteAction.ToString()));
 
             var columnRelationshipsNode = node.SelectSingleNode("columnRelationships"); //deprecated, use "crl"
             if (columnRelationshipsNode == null)

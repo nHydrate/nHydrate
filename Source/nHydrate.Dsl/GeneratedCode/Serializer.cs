@@ -26989,6 +26989,23 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
+			// DeleteAction
+			if (!serializationContext.Result.Failed)
+			{
+				string attribDeleteAction = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "deleteAction");
+				if (attribDeleteAction != null)
+				{
+					DeleteActionConstants valueOfDeleteAction;
+					if (DslModeling::SerializationUtilities.TryGetValue<DeleteActionConstants>(serializationContext, attribDeleteAction, out valueOfDeleteAction))
+					{
+						instanceOfEntityHasEntities.DeleteAction = valueOfDeleteAction;
+					}
+					else
+					{	// Invalid property value, ignored.
+						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "deleteAction", typeof(DeleteActionConstants), attribDeleteAction);
+					}
+				}
+			}
 		}
 	
 		/// <summary>
@@ -27543,6 +27560,19 @@ namespace nHydrate.Dsl
 					if (!string.IsNullOrEmpty(propValue))
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "importedConstraintName", propValue);
 	
+				}
+			}
+			// DeleteAction
+			if (!serializationContext.Result.Failed)
+			{
+				DeleteActionConstants propValue = instanceOfEntityHasEntities.DeleteAction;
+				string serializedPropValue = DslModeling::SerializationUtilities.GetString<DeleteActionConstants>(serializationContext, propValue);
+				if (!serializationContext.Result.Failed)
+				{
+					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "NoAction") != 0)
+					{	// No need to write the value out if it's the same as default value.
+						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "deleteAction", serializedPropValue);
+					}
 				}
 			}
 		}

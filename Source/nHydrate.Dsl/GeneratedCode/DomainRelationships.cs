@@ -927,6 +927,97 @@ namespace nHydrate.Dsl
 		}
 		
 		#endregion
+		#region DeleteAction domain property code
+		
+		/// <summary>
+		/// DeleteAction domain property Id.
+		/// </summary>
+		public static readonly global::System.Guid DeleteActionDomainPropertyId = new global::System.Guid(0x64d1611c, 0xa22b, 0x40c1, 0xa3, 0xb0, 0x9b, 0x55, 0xd5, 0x91, 0x49, 0xf6);
+		
+		/// <summary>
+		/// Storage for DeleteAction
+		/// </summary>
+		private DeleteActionConstants deleteActionPropertyStorage = DeleteActionConstants.NoAction;
+		
+		/// <summary>
+		/// Gets or sets the value of DeleteAction domain property.
+		/// Determines the action on chld objects when principal entity is deleted
+		/// </summary>
+		[DslDesign::DisplayNameResource("nHydrate.Dsl.EntityHasEntities/DeleteAction.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("nHydrate.Dsl.EntityHasEntities/DeleteAction.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		[global::System.ComponentModel.DefaultValue(DeleteActionConstants.NoAction)]
+		[DslModeling::DomainObjectId("64d1611c-a22b-40c1-a3b0-9b55d59149f6")]
+		public virtual DeleteActionConstants DeleteAction
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return deleteActionPropertyStorage;
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DeleteActionPropertyHandler.Instance.SetValue(this, value);
+			}
+		}
+		/// <summary>
+		/// Value handler for the EntityHasEntities.DeleteAction domain property.
+		/// </summary>
+		internal sealed partial class DeleteActionPropertyHandler : DslModeling::DomainPropertyValueHandler<EntityHasEntitiesBase, DeleteActionConstants>
+		{
+			private DeleteActionPropertyHandler() { }
+		
+			/// <summary>
+			/// Gets the singleton instance of the EntityHasEntities.DeleteAction domain property value handler.
+			/// </summary>
+			public static readonly DeleteActionPropertyHandler Instance = new DeleteActionPropertyHandler();
+		
+			/// <summary>
+			/// Gets the Id of the EntityHasEntities.DeleteAction domain property.
+			/// </summary>
+			public sealed override global::System.Guid DomainPropertyId
+			{
+				[global::System.Diagnostics.DebuggerStepThrough]
+				get
+				{
+					return DeleteActionDomainPropertyId;
+				}
+			}
+			
+			/// <summary>
+			/// Gets a strongly-typed value of the property on specified element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <returns>Property value.</returns>
+			public override sealed DeleteActionConstants GetValue(EntityHasEntitiesBase element)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+				return element.DeleteAction;
+				//return element.GetValue<DeleteActionConstants>("DeleteAction", element.deleteActionPropertyStorage);
+				//return element.deleteActionPropertyStorage; //ORIGINAL CODE
+			}
+		
+			/// <summary>
+			/// Sets property value on an element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <param name="newValue">New property value.</param>
+			public override sealed void SetValue(EntityHasEntitiesBase element, DeleteActionConstants newValue)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+		
+				DeleteActionConstants oldValue = GetValue(element);
+				if (newValue != oldValue)
+				{
+					ValueChanging(element, oldValue, newValue);
+					element.deleteActionPropertyStorage = newValue;
+					ValueChanged(element, oldValue, newValue);
+					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("EntityHasEntities"));
+				}
+			}
+		}
+		
+		#endregion
 		#region ParentEntity link accessor
 		/// <summary>
 		/// Get the list of EntityHasEntities links to a Entity.

@@ -1835,6 +1835,11 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
+        <DomainProperty Id="64d1611c-a22b-40c1-a3b0-9b55d59149f6" Description="Determines the action on chld objects when principal entity is deleted" Name="DeleteAction" DisplayName="Delete Action" DefaultValue="NoAction">
+          <Type>
+            <DomainEnumerationMoniker Name="DeleteActionConstants" />
+          </Type>
+        </DomainProperty>
       </Properties>
       <Source>
         <DomainRole Id="6b449ed7-d557-4185-aca4-44921368b041" Description="" Name="ParentEntity" DisplayName="Parent Entity" PropertyName="ChildEntities" PropertyDisplayName="Child Entities">
@@ -2498,6 +2503,13 @@
         <EnumerationLiteral Description="" Name="EF6" Value="" />
       </Literals>
     </DomainEnumeration>
+    <DomainEnumeration Name="DeleteActionConstants" Namespace="nHydrate.Dsl" Description="Description for nHydrate.Dsl.DeleteActionConstants">
+      <Literals>
+        <EnumerationLiteral Description="Take no action on principal entity deletion" Name="NoAction" Value="" />
+        <EnumerationLiteral Description="Case delete of child objects" Name="Cascade" Value="" />
+        <EnumerationLiteral Description="On principal entity deletion, set foreign key to null" Name="SetNull" Value="" />
+      </Literals>
+    </DomainEnumeration>
   </Types>
   <Shapes>
     <CompartmentShape Id="88c528eb-f5e8-45fd-a37f-3f092cf148d8" Description="" Name="EntityShape" DisplayName="Entity Shape" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true" TooltipType="Variable" FixedTooltipText="Entity Shape" TextColor="White" ExposesTextColor="true" FillColor="0, 122, 204" OutlineColor="Gray" InitialWidth="2" InitialHeight="0.3" OutlineThickness="0.01" FillGradientMode="None" ExposesOutlineColorAsProperty="true" ExposesFillColorAsProperty="true" ExposesOutlineDashStyleAsProperty="true" Geometry="Rectangle">
@@ -2835,6 +2847,9 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="importedConstraintName">
             <DomainPropertyMoniker Name="EntityHasEntities/ImportedConstraintName" />
+          </XmlPropertyData>
+          <XmlPropertyData XmlName="deleteAction">
+            <DomainPropertyMoniker Name="EntityHasEntities/DeleteAction" />
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>

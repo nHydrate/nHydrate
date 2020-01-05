@@ -373,6 +373,7 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(EntityHasEntities), "ImportData", EntityHasEntities.ImportDataDomainPropertyId, typeof(EntityHasEntities.ImportDataPropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasEntities), "Summary", EntityHasEntities.SummaryDomainPropertyId, typeof(EntityHasEntities.SummaryPropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasEntities), "ImportedConstraintName", EntityHasEntities.ImportedConstraintNameDomainPropertyId, typeof(EntityHasEntities.ImportedConstraintNamePropertyHandler)),
+				new DomainMemberInfo(typeof(EntityHasEntities), "DeleteAction", EntityHasEntities.DeleteActionDomainPropertyId, typeof(EntityHasEntities.DeleteActionPropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasViews), "RoleName", EntityHasViews.RoleNameDomainPropertyId, typeof(EntityHasViews.RoleNamePropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasViews), "ImportData", EntityHasViews.ImportDataDomainPropertyId, typeof(EntityHasViews.ImportDataPropertyHandler)),
 				new DomainMemberInfo(typeof(EntityHasViews), "Summary", EntityHasViews.SummaryDomainPropertyId, typeof(EntityHasViews.SummaryPropertyHandler)),
@@ -1464,6 +1465,35 @@ namespace nHydrate.Dsl
 		/// </summary>
 		[DslDesign::DescriptionResource("nHydrate.Dsl.EFVersionConstants/EF6.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		EF6,
+	}
+}
+namespace nHydrate.Dsl
+{
+	/// <summary>
+	/// DomainEnumeration: DeleteActionConstants
+	/// Description for nHydrate.Dsl.DeleteActionConstants
+	/// </summary>
+	[global::System.CLSCompliant(true)]
+	public enum DeleteActionConstants
+	{
+		/// <summary>
+		/// NoAction
+		/// Take no action on principal entity deletion
+		/// </summary>
+		[DslDesign::DescriptionResource("nHydrate.Dsl.DeleteActionConstants/NoAction.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		NoAction,
+		/// <summary>
+		/// Cascade
+		/// Case delete of child objects
+		/// </summary>
+		[DslDesign::DescriptionResource("nHydrate.Dsl.DeleteActionConstants/Cascade.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		Cascade,
+		/// <summary>
+		/// SetNull
+		/// On principal entity deletion, set foreign key to null
+		/// </summary>
+		[DslDesign::DescriptionResource("nHydrate.Dsl.DeleteActionConstants/SetNull.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
+		SetNull,
 	}
 }
 

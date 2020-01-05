@@ -2901,6 +2901,14 @@
     <value>Imported Constraint Name</value>
     <comment>DisplayName for DomainProperty &apos;ImportedConstraintName&apos; on DomainClass &apos;EntityHasEntities&apos;</comment>
   </data>
+  <data name="nHydrate.Dsl.EntityHasEntities/DeleteAction.Description" xml:space="preserve">
+    <value>Determines the action on chld objects when principal entity is deleted</value>
+    <comment>Description for DomainProperty &apos;DeleteAction&apos; on DomainClass &apos;EntityHasEntities&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.EntityHasEntities/DeleteAction.DisplayName" xml:space="preserve">
+    <value>Delete Action</value>
+    <comment>DisplayName for DomainProperty &apos;DeleteAction&apos; on DomainClass &apos;EntityHasEntities&apos;</comment>
+  </data>
   <data name="nHydrate.Dsl.EntityHasEntities/ParentEntity.Description" xml:space="preserve">
     <value></value>
     <comment>Description for DomainRole &apos;ParentEntity&apos; on DomainRelationship &apos;EntityHasEntities&apos;</comment>
@@ -4504,6 +4512,30 @@
   <data name="nHydrate.Dsl.EFVersionConstants/EF6.Description" xml:space="preserve">
     <value></value>
     <comment>Description for EnumerationLiteral &apos;EF6&apos; on DomainEnumeration &apos;EFVersionConstants&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.DeleteActionConstants/NoAction.DisplayName" xml:space="preserve">
+    <value>NoAction</value>
+    <comment>Display name for EnumerationLiteral &apos;NoAction&apos; on DomainEnumeration &apos;DeleteActionConstants&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.DeleteActionConstants/NoAction.Description" xml:space="preserve">
+    <value>Take no action on principal entity deletion</value>
+    <comment>Description for EnumerationLiteral &apos;NoAction&apos; on DomainEnumeration &apos;DeleteActionConstants&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.DeleteActionConstants/Cascade.DisplayName" xml:space="preserve">
+    <value>Cascade</value>
+    <comment>Display name for EnumerationLiteral &apos;Cascade&apos; on DomainEnumeration &apos;DeleteActionConstants&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.DeleteActionConstants/Cascade.Description" xml:space="preserve">
+    <value>Case delete of child objects</value>
+    <comment>Description for EnumerationLiteral &apos;Cascade&apos; on DomainEnumeration &apos;DeleteActionConstants&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.DeleteActionConstants/SetNull.DisplayName" xml:space="preserve">
+    <value>SetNull</value>
+    <comment>Display name for EnumerationLiteral &apos;SetNull&apos; on DomainEnumeration &apos;DeleteActionConstants&apos;</comment>
+  </data>
+  <data name="nHydrate.Dsl.DeleteActionConstants/SetNull.Description" xml:space="preserve">
+    <value>On principal entity deletion, set foreign key to null</value>
+    <comment>Description for EnumerationLiteral &apos;SetNull&apos; on DomainEnumeration &apos;DeleteActionConstants&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.EntityShape.Description" xml:space="preserve">
     <value></value>
