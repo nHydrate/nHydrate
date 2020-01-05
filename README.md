@@ -1,9 +1,12 @@
 nHydrate ORM
 ========
 
-This platform creates strongly-typed, extendable classes for Entity Framework. **The generated code is Entity Framework. There is no difference.** This is not a replacement for EF or a custom ORM. It is a visual, modeling layer that allows a team to manage complex database schemas. It works well with SCM software like Git, allowing multi-user access to your model with minimal conflicts.
+This platform creates strongly-typed, extendable classes for Entity Framework. **The generated code is Entity Framework Core. There is no difference.** This is not a replacement for EF or a custom ORM. It is a visual, modeling layer that allows a team to manage complex database schemas. It works well with SCM software like Git, allowing multi-user access to your model with minimal conflicts.
 
 The main home page is [nHydrate.com](https://nHydrate.com)
+
+nHydrate is now for Entity Framework Core only. The previous Entity Framework 4.x-6.x support can be downloaded here. It must be manually installed, as it is no longer available in the Gallery.
+[Legacy Version](http://nhydrate.org/downloads/nHydrate.DslPackage.vsix.zip)
 
 Installation
 ========
