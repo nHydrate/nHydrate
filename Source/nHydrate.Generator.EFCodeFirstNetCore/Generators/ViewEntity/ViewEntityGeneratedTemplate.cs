@@ -100,17 +100,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
         {
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
-            sb.AppendLine("using System.Runtime.Serialization;");
-            sb.AppendLine("using System.Xml.Serialization;");
-            sb.AppendLine("using System.ComponentModel;");
-            sb.AppendLine("using System.Collections.Generic;");
-            sb.AppendLine("using System.Text;");
+            //sb.AppendLine("using System.Runtime.Serialization;");
+            //sb.AppendLine("using System.Xml.Serialization;");
+            //sb.AppendLine("using System.ComponentModel;");
+            //sb.AppendLine("using System.Collections.Generic;");
+            //sb.AppendLine("using System.Text;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ";");
-            sb.AppendLine("using System.Text.RegularExpressions;");
-            sb.AppendLine("using System.Linq.Expressions;");
+            //sb.AppendLine("using System.Text.RegularExpressions;");
+            //sb.AppendLine("using System.Linq.Expressions;");
             //sb.AppendLine("using System.Data.Entity;");
             //sb.AppendLine("using System.Data.Entity.ModelConfiguration;");
-            sb.AppendLine("using System.ComponentModel.DataAnnotations;");
+            //sb.AppendLine("using System.ComponentModel.DataAnnotations;");
             //sb.AppendLine("using System.Data.Entity.Core.Objects.DataClasses;");
             sb.AppendLine();
         }
@@ -154,7 +154,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
                 sb.AppendLine("			/// Field mapping for the '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
                 sb.AppendLine("			/// </summary>");
                 sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + column.PascalName + "' property\")]");
-                sb.AppendLine("			" + column.PascalName + ",");
+                sb.AppendLine($"			{column.PascalName},");
             }
 
             sb.AppendLine("		}");
@@ -255,12 +255,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 
                 sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 
-                //if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml && column.Length > 0)
-                //{
-                //    sb.AppendLine("		[StringLength(" + column.Length + ")]");
-                //}
+                if (column.IsTextType && column.IsMaxLength())
+                    sb.AppendLine("		[StringLengthUnbounded]");
+                else if (column.IsTextType && !column.IsMaxLength())
+                    sb.AppendLine($"		[System.ComponentModel.DataAnnotations.StringLength({column.Length})]");
 
-                sb.AppendLine("		public virtual " + column.GetCodeType() + " " + column.PascalName + " { get; set; }");
+                sb.AppendLine("		public virtual " + column.GetCodeType() + " " + column.PascalName + " { get; protected set; }");
                 sb.AppendLine();
                 index++;
             }
@@ -273,12 +273,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
         {
             sb.AppendLine("		#region Equals");
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Compares two objects of '" + _item.PascalName + "' type and determines if all properties match");
+            sb.AppendLine($"		/// Compares two objects of '{_item.PascalName}' type and determines if all properties match");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <returns>True if all properties match, false otherwise</returns>");
             sb.AppendLine("		public override bool Equals(object obj)");
             sb.AppendLine("		{");
-            sb.AppendLine("			var other = obj as " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ";");
+            sb.AppendLine($"			var other = obj as {this.GetLocalNamespace()}.Entity.{_item.PascalName};");
             sb.AppendLine("			if (other == null) return false;");
             sb.AppendLine("			return (");
 
