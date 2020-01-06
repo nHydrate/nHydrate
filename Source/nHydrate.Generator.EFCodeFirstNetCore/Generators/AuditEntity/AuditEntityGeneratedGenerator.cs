@@ -1,7 +1,7 @@
-#region Copyright (c) 2006-2011 Widgetsphere LLC, All Rights Reserved
+#region Copyright (c) 2006-2020 Widgetsphere LLC, All Rights Reserved
 //--------------------------------------------------------------------- *
 //                          Widgetsphere  LLC                           *
-//             Copyright (c) 2006-2011 All Rights reserved              *
+//             Copyright (c) 2006-2020 All Rights reserved              *
 //                                                                      *
 //                                                                      *
 //This file and its contents are protected by United States and         *
@@ -44,10 +44,10 @@ using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.EFCodeFirstNetCore;
 using nHydrate.Generator.Models;
 
-namespace nHydrate.Generator.EFCodeFirstNetCoreNetCore.Generators.EFCSDL
+namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
 {
-    [GeneratorItem("AuditEntityGeneratedGenerator", typeof(AuditEntityExtenderGenerator))]
-    public class AuditEntityGeneratedGenerator : EFCodeFirstProjectItemGenerator
+    [GeneratorItem("AuditEntityGeneratedGenerator", typeof(EFCodeFirstNetCoreProjectGenerator))]
+    public class AuditEntityGeneratedGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
         #region Class Members
 
