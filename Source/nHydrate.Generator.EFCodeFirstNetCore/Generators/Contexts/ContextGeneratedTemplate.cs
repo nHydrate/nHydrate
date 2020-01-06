@@ -616,13 +616,24 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             //    sb.AppendLine("			modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<" + _model.ProjectName + "Entities>(\"dbo\"));");
             //}
 
-            foreach (var table in _model.Database.Functions.Where(x => x.Generated && x.IsTable).OrderBy(x => x.Name))
+            //foreach (var table in _model.Database.Functions.Where(x => x.Generated && x.IsTable).OrderBy(x => x.Name))
+            //{
+            //    sb.AppendLine("			modelBuilder.ComplexType<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">();");
+            //}
+            foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.Generated).OrderBy(x => x.Name))
             {
-                sb.AppendLine("			modelBuilder.ComplexType<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">();");
-            }
-            foreach (var table in _model.Database.CustomStoredProcedures.Where(x => x.Generated).OrderBy(x => x.Name))
-            {
-                sb.AppendLine("			modelBuilder.ComplexType<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">();");
+                //sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>(); //This mapping is necessary");
+
+                //Need a fake PK
+                sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().HasKey(x => new { ");
+                var columnList = item.GetColumns().OrderBy(x => x.Name).ToList();
+                foreach (var c in columnList)
+                {
+                    sb.Append("x." + c.PascalName);
+                    if (columnList.IndexOf(c) < columnList.Count - 1)
+                        sb.Append(", ");
+                }
+                sb.AppendLine(" }); // Need fake PK");
             }
 
             sb.AppendLine();
@@ -1106,7 +1117,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     }
                 }
 
-                sb.Append("			var retval = this.Database.SqlQuery<" + item.PascalName + ">(\"[" + item.GetDatabaseObjectName() + "] " + string.Join(", ", spParamString) + "\"");
+                //sb.Append("			var retval = this.Database.SqlQuery<" + item.PascalName + ">(\"[" + item.GetDatabaseObjectName() + "] " + string.Join(", ", spParamString) + "\"");
+                sb.Append("			var retval = this.Set<" + item.PascalName + ">().FromSql(\"[" + item.GetDatabaseObjectName() + "] " + string.Join(", ", spParamString) + "\"");
+
                 if (parameterList.Count > 0)
                 {
                     sb.Append(", ");
