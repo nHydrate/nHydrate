@@ -517,7 +517,7 @@ namespace nHydrate.Generator.SQLInstaller
                                 sb.AppendLine();
                                 sb.AppendLine("--GENERATION NOTE **");
                                 sb.AppendLine("--THE PRIMARY KEY HAS CHANGED, THIS MAY REQUIRE MANUAL INTERVENTION");
-                                sb.AppendLine("--THE FOLLOWING SCRIPT WILL DROP AND READD THE PRIMARY KEY HOWEVER IF THERE ARE RELATIONSHIPS");
+                                sb.AppendLine("--THE FOLLOWING SCRIPT WILL DROP AND RE-ADD THE PRIMARY KEY HOWEVER IF THERE ARE RELATIONSHIPS");
                                 sb.AppendLine("--BASED ON THIS IT, THE SCRIPT WILL FAIL. YOU MUST DROP ALL FOREIGN KEYS FIRST.");
                                 sb.AppendLine();
 

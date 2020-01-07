@@ -273,7 +273,7 @@ namespace nHydrate.Core.SQLGeneration
             if (!string.IsNullOrEmpty(column.GetSQLDefault()))
             {
                 var defaultName = $"DF__{column.ParentTable.DatabaseName}_{column.DatabaseName}".ToUpper();
-                sb.AppendLine($"--DROP CONSTRAINT FOR '[{column.ParentTable.DatabaseName}].[{column.DatabaseName}]'");
+                sb.AppendLine($"--ADD CONSTRAINT FOR '[{column.ParentTable.DatabaseName}].[{column.DatabaseName}]'");
                 sb.AppendLine($"if exists (select * from sys.tables t inner join sys.schemas s on t.schema_id = s.schema_id where t.name = '{column.ParentTable.DatabaseName}' and s.name = '{column.ParentTable.GetSQLSchema()}') and not exists(select constid FROM sysconstraints where id=OBJECT_ID('{column.ParentTable.DatabaseName}') AND COL_NAME(id,colid)='{column.DatabaseName}' AND OBJECTPROPERTY(constid, 'IsDefaultCnst') = 1)");
                 sb.AppendLine($"ALTER TABLE [{column.ParentTable.GetSQLSchema()}].[{column.ParentTable.DatabaseName}] ADD CONSTRAINT [{defaultName}] DEFAULT {column.GetSQLDefault()} FOR [{column.DatabaseName}]");
             }
@@ -283,6 +283,7 @@ namespace nHydrate.Core.SQLGeneration
         public static string GetSqlDropColumnDefault(Column column, bool upgradeScript = false)
         {
             var sb = new StringBuilder();
+            sb.AppendLine($"--DROP CONSTRAINT FOR '[{column.ParentTable.DatabaseName}].[{column.DatabaseName}]'");
             if (upgradeScript)
                 sb.AppendLine("DECLARE @defaultName varchar(max)");
             sb.AppendLine("SET @defaultName = (SELECT d.name FROM sys.columns c inner join sys.default_constraints d on c.column_id = d.parent_column_id and c.object_id = d.parent_object_id inner join sys.objects o on d.parent_object_id = o.object_id where o.name = '" + column.ParentTable.DatabaseName + "' and c.name = '" + column.DatabaseName + "')");
@@ -489,7 +490,7 @@ namespace nHydrate.Core.SQLGeneration
                 sb.AppendLine();
 
                 //rename all indexes for this table (later we can select just for this column)
-                foreach (var index in newTable.TableIndexList)
+                foreach (var index in newTable.TableIndexList.Where(x => !x.PrimaryKey))
                 {
                     var oldIndex = oldTable.TableIndexList.FirstOrDefault(x => x.Key == index.Key);
                     if (oldIndex != null)
@@ -498,9 +499,9 @@ namespace nHydrate.Core.SQLGeneration
                         var newIndexName = GetIndexName(newTable, index);
                         if (oldIndexName != newIndexName)
                         {
-                            sb.AppendLine("--RENAME INDEX [" + oldTable.DatabaseName + "].[" + oldIndexName + "]");
-                            sb.AppendLine("if exists (select * from sys.indexes where name = '" + oldIndexName + "')");
-                            sb.AppendLine("exec sp_rename @objname='" + newTable.GetSQLSchema() + "." + newTable.DatabaseName + "." + oldIndexName + "', @newname='" + newIndexName + "', @objtype='INDEX';");
+                            sb.AppendLine($"--RENAME INDEX [{oldTable.DatabaseName}].[{oldIndexName}]");
+                            sb.AppendLine($"if exists (select * from sys.indexes where name = '{oldIndexName}')");
+                            sb.AppendLine($"exec sp_rename @objname='newTable.GetSQLSchema().{newTable.DatabaseName}.{oldIndexName}', @newname='{newIndexName}', @objtype='INDEX';");
                             sb.AppendLine();
                         }
                     }
@@ -585,16 +586,16 @@ namespace nHydrate.Core.SQLGeneration
 
             #region Delete Primary Key
 
-            if (oldColumn.PrimaryKey)
-            {
-                //Drop the primary key so we can modify this column
-                var pkName = "PK_" + newTable.DatabaseName.ToUpper();
-                sb.AppendLine("--DROP PK BECAUSE THE MODIFIED FIELD IS A PK COLUMN");
-                sb.AppendLine($"if exists(select * from sys.objects where name = '{pkName}' and type = 'PK')");
-                sb.AppendLine($"ALTER TABLE [{newTable.GetSQLSchema()}].[{newTable.DatabaseName}] DROP CONSTRAINT {pkName}");
-                sb.AppendLine("GO");
-                sb.AppendLine();
-            }
+            //if (oldColumn.PrimaryKey)
+            //{
+            //    //Drop the primary key so we can modify this column
+            //    var pkName = "PK_" + newTable.DatabaseName.ToUpper();
+            //    sb.AppendLine("--DROP PK BECAUSE THE MODIFIED FIELD IS A PK COLUMN");
+            //    sb.AppendLine($"if exists(select * from sys.objects where name = '{pkName}' and type = 'PK')");
+            //    sb.AppendLine($"ALTER TABLE [{newTable.GetSQLSchema()}].[{newTable.DatabaseName}] DROP CONSTRAINT {pkName}");
+            //    sb.AppendLine("GO");
+            //    sb.AppendLine();
+            //}
 
             #endregion
 
