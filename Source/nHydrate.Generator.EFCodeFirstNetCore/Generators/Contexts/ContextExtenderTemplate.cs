@@ -91,7 +91,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("			//Sqlite: Microsoft.EntityFrameworkCore.Sqlite");
                 sb.AppendLine();
                 sb.AppendLine("			if (string.IsNullOrEmpty(_connectionString?.Trim()))");
-                sb.AppendLine("					throw new Exception(\"Missing connection string\");");
+                sb.AppendLine("				throw new Exception(\"Missing connection string\");");
                 sb.AppendLine();
                 sb.AppendLine("			if (this.ContextStartup.AllowLazyLoading)");
                 sb.AppendLine("				optionsBuilder = optionsBuilder.UseLazyLoadingProxies();");

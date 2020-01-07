@@ -91,7 +91,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("			//Sqlite: Microsoft.EntityFrameworkCore.Sqlite");
                 sb.AppendLine();
                 sb.AppendLine("			if (string.IsNullOrEmpty(_connectionString?.Trim()))");
-                sb.AppendLine("					throw new Exception(\"Missing connection string\");");
+                sb.AppendLine("				throw new Exception(\"Missing connection string\");");
                 sb.AppendLine();
                 sb.AppendLine("			//STEP 2: Uncomment one of these based on database provider");
                 sb.AppendLine("			//Add the appropriate line based on your database provider and delete the exception line below");

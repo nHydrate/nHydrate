@@ -153,6 +153,7 @@ namespace nHydrate.Dsl
         public static readonly string WarningErrorModuleRuleLogicFail = "The module '{0}' has an {1} rule with dependent module '{2}' that fails. ";
         public static readonly string WarningErrorModuleRuleNoDependentModule = "The module '{0}' has an {1} rule with no dependent module.";
         public static readonly string ErrorTextRelationFieldDuplicated = "The relation {0}->{1} cannot have duplicate columns between the parent and child entities.";
+        public static readonly string ErrorTextRelationChildNotNullable = "The relation {0}->{1} is set to OnDelete SetNull but the child columns are not nullable.";
         public static readonly string ErrorTextRelationshipMustHaveFields = "The relation {0}->{1} must have one or fields defined.";
         public static readonly string ErrorTextModuleIsEmpty = "The module '{0}' must have at least one generated entity in it.";
         public static readonly string ErrorTextColumnMaxLengthViolation = "The defined length of item '{0}' is greater than the maximum length of {1} for the {2} data type.";

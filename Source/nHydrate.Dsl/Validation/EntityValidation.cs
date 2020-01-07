@@ -213,36 +213,6 @@ namespace nHydrate.Dsl
                 nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer4, "Entity Validate [" + this.Name + "] - C");
                 var timer5 = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
 
-                #region Verify that child tables have a relation to their parent table
-
-                //if (this.ParentInheritedEntity != null)
-                //{
-                //  bool isValidRelation = true;
-                //  var relations = this.ParentInheritedEntity.RelationshipList.FindByChildTable(this);
-                //  foreach (var relation in relations)
-                //  {
-                //    if (relation.ColumnRelationships.Count == this.PrimaryKeyColumns.Count)
-                //    {
-                //      foreach (ColumnRelationship columnRelationship in relation.ColumnRelationships)
-                //      {
-                //        Column parentColumn = (Column)columnRelationship.ParentColumnRef.Object;
-                //        Column childColumn = (Column)columnRelationship.ChildColumnRef.Object;
-                //        isValidRelation |= ((this.parentTable.PrimaryKeyColumns.Contains(parentColumn)) && (!this.PrimaryKeyColumns.Contains(childColumn)));
-                //      }
-                //    }
-                //    else
-                //    {
-                //      isValidRelation = false;
-                //    }
-                //  }
-                //  if (!isValidRelation || relations.Count() == 0)
-                //  {
-                //    context.LogError(string.Format(ValidationHelper.ErrorTextParentTableNoRelation, this.ParentInheritedEntity.Name, this.Name), string.Empty, this);
-                //  }
-                //}
-
-                #endregion
-
                 nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer5, "Entity Validate [" + this.Name + "] - D");
                 var timer6 = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
 
@@ -478,6 +448,13 @@ namespace nHydrate.Dsl
                         }
                         else
                             columnList.Add(parentColumn.Name + "|" + childColumn.Name);
+
+                        //Verify the OnDelete action
+                        if (relation.DeleteAction == DeleteActionConstants.SetNull && !childColumn.Nullable)
+                        {
+                            //If SetNull then child fields must be nullable
+                            context.LogError(string.Format(ValidationHelper.ErrorTextRelationChildNotNullable, parentTable.Name, childTable.Name), string.Empty, relation);
+                        }
 
                     }
 
