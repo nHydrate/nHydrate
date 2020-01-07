@@ -227,9 +227,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine($"		/// Initializes a new {_model.ProjectName}Entities object using the connection string found in the '{_model.ProjectName}Entities' section of the application configuration file.");
+            sb.AppendLine($"	/// Initializes a new {_model.ProjectName}Entities object using the connection string found in the '{_model.ProjectName}Entities' section of the application configuration file.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public {_model.ProjectName}Entities() :");
+            sb.AppendLine($"	public {_model.ProjectName}Entities() :");
             sb.AppendLine("			base()");
             sb.AppendLine("		{");
             sb.AppendLine("			_connectionString = ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"]?.ConnectionString;");
@@ -241,9 +241,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine($"		/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
+            sb.AppendLine($"	/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public {_model.ProjectName}Entities(ContextStartup contextStartup) :");
+            sb.AppendLine($"	public {_model.ProjectName}Entities(ContextStartup contextStartup) :");
             sb.AppendLine("				base()");
             sb.AppendLine("		{");
             sb.AppendLine("			_connectionString = ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"]?.ConnectionString;");
@@ -255,9 +255,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine($"		/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
+            sb.AppendLine($"	/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public {_model.ProjectName}Entities(ContextStartup contextStartup, string connectionString) :");
+            sb.AppendLine($"	public {_model.ProjectName}Entities(ContextStartup contextStartup, string connectionString) :");
             sb.AppendLine("				base()");
             sb.AppendLine("		{");
             sb.AppendLine("			_connectionString = connectionString;");
@@ -269,9 +269,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine($"		/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
+            sb.AppendLine($"	/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public {_model.ProjectName}Entities(string connectionString) :");
+            sb.AppendLine($"	public {_model.ProjectName}Entities(string connectionString) :");
             sb.AppendLine("				base()");
             sb.AppendLine("		{");
             sb.AppendLine("			_connectionString = connectionString;");
@@ -299,23 +299,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		protected override void OnModelCreating(ModelBuilder modelBuilder)");
             sb.AppendLine("		{");
             sb.AppendLine("			base.OnModelCreating(modelBuilder);");
-
-            if (_model.EFVersion == EFVersionConstants.EF6 && _model.Database.UseGeneratedCRUD)
-            {
-                // EF6 - Map Entities to generated Stored Procedures
-                var procedurePrefix = _model.StoredProcedurePrefix;
-                sb.AppendLine("			modelBuilder.Types().Configure(conventionTypeConfiguration =>");
-                sb.AppendLine("			    conventionTypeConfiguration.MapToStoredProcedures(conventionModificationStoredProceduresConfiguration =>");
-                sb.AppendLine("			        conventionModificationStoredProceduresConfiguration");
-                sb.AppendLine("			            .Insert(insertProcedure => insertProcedure.HasName(\"" + procedurePrefix + "_\" + conventionTypeConfiguration.ClrType.Name + \"_Insert\"))");
-                sb.AppendLine("			            .Update(updateProcedure => updateProcedure.HasName(\"" + procedurePrefix + "_\" + conventionTypeConfiguration.ClrType.Name + \"_Update\"))");
-                sb.AppendLine("			            .Delete(deleteProcedure => deleteProcedure.HasName(\"" + procedurePrefix + "_\" + conventionTypeConfiguration.ClrType.Name + \"_Delete\"))");
-                sb.AppendLine("			        ));");
-            }
-
             sb.AppendLine();
 
-            #region Rename Tables
+            #region Map Tables
             sb.AppendLine("			#region Map Tables");
 
             //Tables

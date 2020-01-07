@@ -133,7 +133,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
             sb.AppendLine("	{");
             this.AppendConstructors();
             this.AppendProperties();
-            this.AppendRecordLoader();
             this.AppendCompare();
             sb.AppendLine("	}");
             sb.AppendLine();
@@ -170,7 +169,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
         {
             sb.AppendLine("		#region Constructors");
             sb.AppendLine();
-            sb.AppendLine("		internal " + _item.PascalName + "Audit()");
+            sb.AppendLine($"		internal {_item.PascalName}Audit()");
             sb.AppendLine("		{");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -183,8 +182,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
             sb.AppendLine("		#region Properties");
             sb.AppendLine();
 
-            Dictionary<string, Column> columnList = new Dictionary<string, Column>();
-            List<Table> tableList = new List<Table>(new Table[] { _item });
+            var columnList = new Dictionary<string, Column>();
+            var tableList = new List<Table>(new Table[] { _item });
 
             //This is for inheritance which is NOT supported right now
             //List<Table> tableList = new List<Table>(_currentTable.GetTableHierarchy().Where(x => x.AllowAuditTracking).Reverse());
@@ -209,16 +208,24 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
                     sb.AppendLine("		/// The property that maps back to the database '" + (column.ParentTableRef.Object as Table).DatabaseName + "." + column.DatabaseName + "' field");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		public " + column.GetCodeType() + " " + column.PascalName + " { get; protected internal set; }");
+                sb.AppendLine();
             }
 
+            sb.AppendLine("		/// <summary>");
+            sb.AppendLine("		/// The primary key");
+            sb.AppendLine("		/// </summary>");
+            sb.AppendLine("		public int __RowId { get; protected set; }");
+            sb.AppendLine();
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// The type of audit");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public " + this.GetLocalNamespace() + ".AuditTypeConstants AuditType { get; protected internal set; }");
+            sb.AppendLine();
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// The date of the audit");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public DateTime AuditDate { get; protected internal set; }");
+            sb.AppendLine();
 
             //if (_item.AllowModifiedAudit)
             {
@@ -231,203 +238,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
-        }
-
-        private void AppendRecordLoader()
-        {
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Gets a set of audit records based on a primary key");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <returns>A set of audit records for the current record based on primary key</returns>");
-            sb.Append("		public static IEnumerable<" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit> GetAuditRecords(");
-
-            IEnumerable<Column> columnList = _item.GetColumns().Where(x =>
-                x.Generated &&
-                x.DataType != System.Data.SqlDbType.Text &&
-                x.DataType != System.Data.SqlDbType.NText &&
-                x.DataType != System.Data.SqlDbType.Image);
-
-            int index = 0;
-            foreach (Column column in _item.PrimaryKeyColumns)
-            {
-                sb.Append(column.GetCodeType() + " " + column.CamelName);
-                if (index < _item.PrimaryKeyColumns.Count - 1)
-                    sb.Append(", ");
-                index++;
-            }
-
-            sb.AppendLine(")");
-            sb.AppendLine("		{");
-            sb.Append("			return GetAuditRecords(0, 0, null, null, ");
-
-            index = 0;
-            foreach (Column column in _item.PrimaryKeyColumns)
-            {
-                sb.Append(column.CamelName);
-                if (index < _item.PrimaryKeyColumns.Count - 1)
-                    sb.Append(", ");
-                index++;
-            }
-            sb.AppendLine(").InnerList;");
-
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Gets a set of audit records based on a primary key");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"pageOffset\">The page offset needed for pagination starting from page 1</param>");
-            sb.AppendLine("		/// <param name=\"recordsPerPage\">The number of records to be returned on a page.</param>");
-            sb.AppendLine("		/// <param name=\"startDate\">The starting date used when searching for records.</param>");
-            sb.AppendLine("		/// <param name=\"endDate\">The ending date used when searching for records.</param>");
-            foreach (Column column in _item.PrimaryKeyColumns)
-            {
-                sb.AppendLine("		/// <param name=\"" + column.CamelName + "\">A primary key field to use when searching for records.</param>");
-            }
-            sb.AppendLine("		/// <returns>A set of audit records for the current record based on primary key</returns>");
-            sb.Append("		public static " + this.GetLocalNamespace() + ".AuditPaging<" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit> GetAuditRecords(int pageOffset, int recordsPerPage, DateTime? startDate, DateTime? endDate, ");
-
-            index = 0;
-            foreach (Column column in _item.PrimaryKeyColumns)
-            {
-                sb.Append(column.GetCodeType() + " " + column.CamelName);
-                if (index < _item.PrimaryKeyColumns.Count - 1)
-                    sb.Append(", ");
-                index++;
-            }
-
-            sb.AppendLine(")");
-            sb.AppendLine("		{");
-            sb.AppendLine("			var retval = new " + this.GetLocalNamespace() + ".AuditPaging<" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit>();");
-            sb.AppendLine("			retval.PageOffset = pageOffset;");
-            sb.AppendLine("			retval.RecordsPerPage = recordsPerPage;");
-            sb.AppendLine("			var innerList = new List<" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit>();");
-            sb.AppendLine();
-            sb.AppendLine("			System.Data.IDataReader dataReader = null;");
-            sb.AppendLine("			System.Data.IDbConnection dbConnection = null;");
-            sb.AppendLine("			System.Data.IDbCommand dbCommand = null;");
-            sb.AppendLine();
-            sb.AppendLine("			try");
-            sb.AppendLine("			{");
-            sb.AppendLine("				dbConnection = new System.Data.SqlClient.SqlConnection(" + this.GetLocalNamespace() + "." + _model.ProjectName + "Entities.GetConnectionString());");
-            sb.AppendLine("				dbConnection.Open();");
-            sb.AppendLine();
-            sb.AppendLine("				dbCommand = " + this.GetLocalNamespace() + ".DBHelper.GetCommand(\"[" + _item.GetSQLSchema() + "].[" + _model.GetStoredProcedurePrefix() + "_" + _item.PascalName + "__AUDIT_SELECT]\", CommandType.StoredProcedure, dbConnection);");
-            sb.AppendLine("				" + this.GetLocalNamespace() + ".DBHelper.AddParameter(dbCommand, \"@__pageOffset\", pageOffset);");
-            sb.AppendLine("				if (pageOffset != 0 && recordsPerPage != 0)");
-            sb.AppendLine("					" + this.GetLocalNamespace() + ".DBHelper.AddParameter(dbCommand, \"@__recordsPerPage\", recordsPerPage);");
-            sb.AppendLine("				" + this.GetLocalNamespace() + ".DBHelper.AddParameter(dbCommand, \"@__startDate\", startDate);");
-            sb.AppendLine("				" + this.GetLocalNamespace() + ".DBHelper.AddParameter(dbCommand, \"@__endDate\", endDate);");
-
-            foreach (Column column in _item.PrimaryKeyColumns)
-            {
-                sb.AppendLine("				" + this.GetLocalNamespace() + ".DBHelper.AddParameter(dbCommand, \"@" + column.DatabaseName + "\", " + column.CamelName + ");");
-            }
-
-            sb.AppendLine("				" + this.GetLocalNamespace() + ".DBHelper.AddReturnParameter(dbCommand);");
-            sb.AppendLine("				dataReader = dbCommand.ExecuteReader();");
-            sb.AppendLine();
-            sb.AppendLine("				// Fill the list box with the values retrieved");
-            sb.AppendLine("				int ordinal = 0;");
-            sb.AppendLine("				while (dataReader.Read())");
-            sb.AppendLine("				{");
-            sb.AppendLine("					" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit si = new " + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit();");
-            sb.AppendLine();
-            sb.AppendLine("					ordinal = dataReader.GetOrdinal(\"__action\");");
-            sb.AppendLine("					si.AuditType = (" + this.GetLocalNamespace() + ".AuditTypeConstants)dataReader.GetInt32(ordinal);");
-            sb.AppendLine();
-            sb.AppendLine("					ordinal = dataReader.GetOrdinal(\"__insertdate\");");
-            sb.AppendLine("					si.AuditDate = dataReader.GetDateTime(ordinal);");
-            sb.AppendLine();
-
-            if (_item.AllowModifiedAudit)
-            {
-                sb.AppendLine("					ordinal = dataReader.GetOrdinal(\"" + _model.Database.ModifiedByDatabaseName + "\");");
-                sb.AppendLine("					si.ModifiedBy = dataReader.IsDBNull(ordinal) ? null : dataReader.GetString(ordinal);");
-                sb.AppendLine();
-            }
-
-            foreach (Column column in columnList.OrderBy(x => x.Name))
-            {
-                sb.AppendLine("					ordinal = dataReader.GetOrdinal(\"" + column.DatabaseName + "\");");
-                if (column.DataType == System.Data.SqlDbType.DateTimeOffset)
-                {
-                    //DateTimeOffset is different
-                    sb.AppendLine("					if (dataReader is System.Data.SqlClient.SqlDataReader)");
-                    if (column.AllowNull)
-                        sb.AppendLine("						si." + column.PascalName + " = dataReader.IsDBNull(ordinal) ? (DateTimeOffset?)null : ((System.Data.SqlClient.SqlDataReader)dataReader).GetDateTimeOffset(ordinal);");
-                    else
-                        sb.AppendLine("						si." + column.PascalName + " = ((System.Data.SqlClient.SqlDataReader)dataReader).GetDateTimeOffset(ordinal);");
-                }
-                else if (column.DataType == System.Data.SqlDbType.Time)
-                {
-                    //Timespan is different
-                    sb.AppendLine("					if (dataReader is System.Data.SqlClient.SqlDataReader)");
-                    if (column.AllowNull)
-                        sb.AppendLine("						si." + column.PascalName + " = dataReader.IsDBNull(ordinal) ? (TimeSpan?)null : ((System.Data.SqlClient.SqlDataReader)dataReader).GetTimeSpan(ordinal);");
-                    else
-                        sb.AppendLine("						si." + column.PascalName + " = ((System.Data.SqlClient.SqlDataReader)dataReader).GetTimeSpan(ordinal);");
-                }
-                else if (column.IsBinaryType)
-                {
-                    //Binary types
-                    if (column.AllowNull)
-                        sb.AppendLine("					si." + column.PascalName + " = dataReader.IsDBNull(ordinal) ? (" + column.GetCodeType() + ")null : ReadFromByteArray(ordinal, dataReader);");
-                    else
-                        sb.AppendLine("					si." + column.PascalName + " = ReadFromByteArray(ordinal, dataReader);");
-                }
-                else
-                {
-                    //Non-binary types
-                    if (column.AllowNull)
-                        sb.AppendLine("					si." + column.PascalName + " = dataReader.IsDBNull(ordinal) ? (" + column.GetCodeType() + ")null : dataReader." + column.GetDataReaderMethodName() + "(ordinal);");
-                    else
-                        sb.AppendLine("					si." + column.PascalName + " = dataReader." + column.GetDataReaderMethodName() + "(ordinal);");
-                }
-                sb.AppendLine();
-            }
-
-            sb.AppendLine("					innerList.Add(si);");
-            sb.AppendLine("				}");
-            sb.AppendLine("				retval.InnerList = innerList;");
-            sb.AppendLine("			}");
-            sb.AppendLine("			catch { throw; }");
-            sb.AppendLine("			finally");
-            sb.AppendLine("			{");
-            sb.AppendLine("				if (dataReader != null) dataReader.Close();");
-            sb.AppendLine("				retval.TotalRecordCount = (int)((System.Data.IDbDataParameter)(dbCommand.Parameters[\"@RETURN_VALUE\"])).Value;");
-            sb.AppendLine("				if (dbConnection.State == ConnectionState.Open) dbConnection.Close();");
-            sb.AppendLine("			}");
-            sb.AppendLine("			return retval;");
-            sb.AppendLine();
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            if (_item.GetColumns().Count(x => x.IsBinaryType) > 0)
-            {
-                //Read binary method
-                sb.AppendLine("		private static byte[] ReadFromByteArray(int ordinal, System.Data.IDataReader dataReader)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			int bufferSize = 1024 * 10;");
-                sb.AppendLine("			int startIndex = 0;");
-                sb.AppendLine("			var outbyte = new byte[bufferSize];");
-                sb.AppendLine("			var retval = new List<byte>();");
-                sb.AppendLine();
-                sb.AppendLine("			// Read the bytes into outbyte[] and retain the number of bytes returned.");
-                sb.AppendLine("			long count = dataReader.GetBytes(ordinal, startIndex, outbyte, 0, bufferSize);");
-                sb.AppendLine();
-                sb.AppendLine("			// Continue reading and writing while there are bytes beyond the size of the buffer.");
-                sb.AppendLine("			while (count == bufferSize)");
-                sb.AppendLine("			{");
-                sb.AppendLine("				retval.AddRange(outbyte);");
-                sb.AppendLine("				startIndex += bufferSize;");
-                sb.AppendLine("				count = dataReader.GetBytes(1, startIndex, outbyte, 0, bufferSize);");
-                sb.AppendLine("			}");
-                sb.AppendLine("			return retval.ToArray();");
-                sb.AppendLine("		}");
-                sb.AppendLine();
-            }
-
         }
 
         private void AppendCompare()
