@@ -108,7 +108,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// Extension methods for this library");
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+            sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
             sb.AppendLine("	public static partial class " + _model.ProjectName + "EntitiesExtensions");
             sb.AppendLine("	{");
 

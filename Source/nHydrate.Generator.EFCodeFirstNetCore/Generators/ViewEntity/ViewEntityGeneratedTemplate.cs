@@ -174,7 +174,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
                 if (!string.IsNullOrEmpty(_item.Description))
                     StringHelper.LineBreakCode(sb, _item.Description, "	/// ");
                 sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+                sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
                 sb.AppendLine("	public partial class " + _item.PascalName + " : " + doubleDerivedClassName);
                 sb.AppendLine("	{");
                 sb.AppendLine("	}");
@@ -187,7 +187,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
                 sb.AppendLine("	/// " + _item.Description);
             sb.AppendLine("	/// </summary>");
             //sb.AppendLine("	[System.Data.Linq.Mapping.Table(Name = \"" + _item.PascalName + "\")]");
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+            sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
             //sb.AppendLine("	[System.Data.Objects.DataClasses.EdmEntityType(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _item.PascalName + "\")]");
             sb.AppendLine("	[FieldNameConstants(typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))]");
             if (!string.IsNullOrEmpty(_item.Description))

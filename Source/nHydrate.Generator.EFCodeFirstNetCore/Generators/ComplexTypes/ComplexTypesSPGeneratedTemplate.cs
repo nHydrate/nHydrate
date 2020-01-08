@@ -95,7 +95,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ComplexTypes
                 //sb.AppendLine("	[System.Data.Objects.DataClasses.EdmComplexType(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity\", Name = \"" + _item.PascalName + "\")]");
                 sb.AppendLine("	[DataContract(IsReference = true)]");
                 sb.AppendLine("	[Serializable]");
-                sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"{_model.ModelToolVersion}\")]");
+                sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
                 sb.AppendLine("	public partial class " + doubleDerivedClassName + " : " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject, System.ICloneable");
                 sb.AppendLine("	{");
                 this.AppendedFieldEnum();

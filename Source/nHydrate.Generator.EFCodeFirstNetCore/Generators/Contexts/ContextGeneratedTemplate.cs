@@ -229,7 +229,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine($"	/// Initializes a new {_model.ProjectName}Entities object using the connection string found in the '{_model.ProjectName}Entities' section of the application configuration file.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"	public {_model.ProjectName}Entities() :");
+            sb.AppendLine($"		public {_model.ProjectName}Entities() :");
             sb.AppendLine("			base()");
             sb.AppendLine("		{");
             sb.AppendLine("			_connectionString = ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"]?.ConnectionString;");
@@ -243,7 +243,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine($"	/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"	public {_model.ProjectName}Entities(ContextStartup contextStartup) :");
+            sb.AppendLine($"		public {_model.ProjectName}Entities(ContextStartup contextStartup) :");
             sb.AppendLine("				base()");
             sb.AppendLine("		{");
             sb.AppendLine("			_connectionString = ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"]?.ConnectionString;");
@@ -257,7 +257,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine($"	/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"	public {_model.ProjectName}Entities(ContextStartup contextStartup, string connectionString) :");
+            sb.AppendLine($"		public {_model.ProjectName}Entities(ContextStartup contextStartup, string connectionString) :");
             sb.AppendLine("				base()");
             sb.AppendLine("		{");
             sb.AppendLine("			_connectionString = connectionString;");
@@ -271,7 +271,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine($"	/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"	public {_model.ProjectName}Entities(string connectionString) :");
+            sb.AppendLine($"		public {_model.ProjectName}Entities(string connectionString) :");
             sb.AppendLine("				base()");
             sb.AppendLine("		{");
             sb.AppendLine("			_connectionString = connectionString;");
@@ -289,6 +289,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		partial void OnContextCreated();");
             sb.AppendLine("		partial void OnBeforeSaveChanges(ref bool cancel);");
             sb.AppendLine("		partial void OnAfterSaveChanges();");
+            sb.AppendLine("		partial void OnModelCreated(ModelBuilder modelBuilder);");
             sb.AppendLine();
 
             #region OnModelCreating
@@ -368,7 +369,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             sb.Append(".IsRequired()");
                         if (column.Identity == IdentityTypeConstants.Database && column.IsIntegerType)
                         {
-                            switch(_modelConfiguration.DatabaseType )
+                            switch (_modelConfiguration.DatabaseType)
                             {
                                 case DatabaseTypeConstants.SqlServer:
                                     sb.Append(".ValueGeneratedOnAdd()");
@@ -519,22 +520,22 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         {
                             sb.AppendLine("			//Relation " + table.PascalName + " -> " + childTable.PascalName);
                             sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
-                            sb.AppendLine("							 .HasOne(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                            sb.AppendLine("							.HasOne(a => a." + relation.PascalRoleName + table.PascalName + ")");
 
                             if (relation.IsOneToOne)
-                                sb.AppendLine("							 .WithOne(x => x." + relation.PascalRoleName + childTable.PascalName + ")");
+                                sb.AppendLine("							.WithOne(x => x." + relation.PascalRoleName + childTable.PascalName + ")");
                             else
-                                sb.AppendLine("							 .WithMany(b => b." + relation.PascalRoleName + childTable.PascalName + "List)");
+                                sb.AppendLine("							.WithMany(b => b." + relation.PascalRoleName + childTable.PascalName + "List)");
 
                             if (relation.IsRequired)
-                                sb.AppendLine("							 .IsRequired(true)");
+                                sb.AppendLine("							.IsRequired(true)");
                             else
-                                sb.AppendLine("							 .IsRequired(false)");
+                                sb.AppendLine("							.IsRequired(false)");
 
                             if (relation.IsOneToOne)
-                                sb.Append("							 .HasForeignKey<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(u => new { ");
+                                sb.Append("							.HasForeignKey<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(u => new { ");
                             else
-                                sb.Append("							 .HasForeignKey(u => new { ");
+                                sb.Append("							.HasForeignKey(u => new { ");
 
                             var index = 0;
                             foreach (var columnPacket in relation.ColumnRelationships
@@ -551,13 +552,16 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
                             sb.AppendLine(" })");
 
+                            var indexName = ("FK_" + relation.RoleName + "_" + relation.ChildTable.DatabaseName + "_" + relation.ParentTable.DatabaseName).ToUpper();
+                            sb.AppendLine($"							.HasConstraintName(\"{indexName}\")");
+
                             //Specify what to do on delete
                             if (relation.DeleteAction == Relation.DeleteActionConstants.Cascade)
-                                sb.AppendLine("							 .OnDelete(DeleteBehavior.Cascade);");
+                                sb.AppendLine("							.OnDelete(DeleteBehavior.Cascade);");
                             else if (relation.DeleteAction == Relation.DeleteActionConstants.SetNull)
-                                sb.AppendLine("							 .OnDelete(DeleteBehavior.SetNull);");
+                                sb.AppendLine("							.OnDelete(DeleteBehavior.SetNull);");
                             else if (relation.DeleteAction == Relation.DeleteActionConstants.NoAction)
-                                sb.AppendLine("							 .OnDelete(DeleteBehavior.Restrict);");
+                                sb.AppendLine("							.OnDelete(DeleteBehavior.Restrict);");
                         }
 
                         sb.AppendLine();
@@ -574,14 +578,21 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     var relation1 = relations.First();
                     var relation2 = relations.Last();
 
+                    var index1Name = ("FK_" + relation1.RoleName + "_" + relation1.ChildTable.DatabaseName + "_" + relation1.ParentTable.DatabaseName).ToUpper();
+                    var index2Name = ("FK_" + relation2.RoleName + "_" + relation2.ChildTable.DatabaseName + "_" + relation2.ParentTable.DatabaseName).ToUpper();
+
                     sb.AppendLine("			//Relation for "+ relation1.ParentTable.PascalName + " <-> "+ relation2.ParentTable.PascalName + " (Many-to-Many)");
-                    sb.AppendLine("			modelBuilder.Entity<" + relation1.ParentTable.PascalName + ">()");
-                    sb.AppendLine("				.HasMany(q => q." + relation2.PascalRoleName + table.PascalName + "List)");
-                    sb.AppendLine("				.WithOne(q => q." + relation1.PascalRoleName + relation1.ParentTable.PascalName + ");");
+                    sb.AppendLine($"			modelBuilder.Entity<{relation1.ParentTable.PascalName}>()");
+                    sb.AppendLine($"				.HasMany(q => q.{relation2.PascalRoleName}{table.PascalName}List)");
+                    sb.AppendLine($"				.WithOne(q => q.{relation1.PascalRoleName}{relation1.ParentTable.PascalName})");
+                    sb.AppendLine($"				.HasConstraintName(\"{index1Name}\")");
+                    sb.AppendLine("				.HasForeignKey(q => new { " + string.Join(",", relation1.ParentTable.PrimaryKeyColumns.OrderBy(x => x.Name).Select(c => "q." + c.Name)) + "} );");
                     sb.AppendLine();
-                    sb.AppendLine("			modelBuilder.Entity<" + relation2.ParentTable.PascalName + ">()");
-                    sb.AppendLine("				.HasMany(q => q." + relation1.PascalRoleName + table.PascalName + "List)");
-                    sb.AppendLine("				.WithOne(q => q." + relation2.PascalRoleName + relation2.ParentTable.PascalName + ");");
+                    sb.AppendLine($"			modelBuilder.Entity<{relation2.ParentTable.PascalName}>()");
+                    sb.AppendLine($"				.HasMany(q => q.{relation1.PascalRoleName}{table.PascalName}List)");
+                    sb.AppendLine($"				.WithOne(q => q.{relation2.PascalRoleName}{relation2.ParentTable.PascalName})");
+                    sb.AppendLine($"				.HasConstraintName(\"{index2Name}\")");
+                    sb.AppendLine("				.HasForeignKey(q => new { " + string.Join(",", relation2.ParentTable.PrimaryKeyColumns.OrderBy(x => x.Name).Select(c => "q." + c.Name)) + "} );");
                     sb.AppendLine();
                 }
             }
@@ -661,6 +672,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
             sb.AppendLine("			#endregion");
             sb.AppendLine();
+            sb.AppendLine("			OnModelCreated(modelBuilder);");
+            sb.AppendLine();
             #endregion
 
             sb.AppendLine("		}");
@@ -694,10 +707,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("				if (entity != null)");
             sb.AppendLine("				{");
             sb.AppendLine("					var audit = entity as IAuditableSet;");
-            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
+            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifier)");
             sb.AppendLine("					{");
-            sb.AppendLine("						if (audit != null) audit.CreatedBy = this.ContextStartup.Modifer;");
-            sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifer;");
+            sb.AppendLine("						if (audit != null) audit.CreatedBy = this.ContextStartup.Modifier;");
+            sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifier;");
             sb.AppendLine("					}");
             sb.AppendLine("					audit.CreatedDate = markedTime;");
             sb.AppendLine("					audit.ModifiedDate = markedTime;");
@@ -716,9 +729,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("				if (entity != null)");
             sb.AppendLine("				{");
             sb.AppendLine("					var audit = entity as IAuditableSet;");
-            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifer)");
+            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifier)");
             sb.AppendLine("					{");
-            sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifer;");
+            sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifier;");
             sb.AppendLine("					}");
             sb.AppendLine("					audit.ModifiedDate = markedTime;");
             sb.AppendLine("				}");
@@ -779,12 +792,19 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             {
                 var hasSecurity = item.Security.IsValid();
                 var name = item.PascalName;
-                if (hasSecurity) name += "__INTERNAL";
+                var scope = "public";
+                if (hasSecurity)
+                {
+                    name += "__INTERNAL";
+                    scope = "protected";
+                }
+                else if (item.AssociativeTable)
+                    scope = "protected";
 
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Entity set for " + item.PascalName);
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		" + (hasSecurity ? "protected internal" : "public") + " virtual DbSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + name + " { get; set; }");
+                sb.AppendLine("		" + (hasSecurity ? $"{scope} internal" : scope) + " virtual DbSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + name + " { get; set; }");
                 sb.AppendLine();
             }
 
@@ -924,8 +944,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine($"			var audit = entity as {this.GetLocalNamespace()}.IAuditableSet;");
             sb.AppendLine("			if (audit != null)");
             sb.AppendLine("			{");
-            sb.AppendLine("				audit.CreatedBy = _contextStartup.Modifer;");
-            sb.AppendLine("				audit.ModifiedBy = _contextStartup.Modifer;");
+            sb.AppendLine("				audit.CreatedBy = _contextStartup.Modifier;");
+            sb.AppendLine("				audit.ModifiedBy = _contextStartup.Modifier;");
             sb.AppendLine("			}");
 
             sb.AppendLine("			if (false) { }");

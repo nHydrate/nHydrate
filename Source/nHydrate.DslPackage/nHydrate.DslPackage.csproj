@@ -521,11 +521,6 @@
     <Compile Include="Objects\Utils.cs" />
     <Compile Include="Overrides\nHydrateCommandSet.cs" />
     <Compile Include="Overrides\nHydratePackage.cs" />
-    <Compile Include="ProjectItemTemplates\CSharp.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CSharp.tt</DependentUpon>
-    </Compile>
     <Compile Include="ProjectItemTemplates\VisualBasic.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -757,6 +752,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GeneratedVSCT.tt</DependentUpon>
     </Content>
+    <Content Include="ProjectItemTemplates\CSharp.vstemplate">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CSharp.tt</DependentUpon>
+    </Content>
     <Content Include="Resources\vsix-gallery.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -792,10 +792,14 @@
     </None>
     <None Include="ProjectItemTemplates\CSharp.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>CSharp.cs</LastGenOutput>
+      <LastGenOutput>CSharp.vstemplate</LastGenOutput>
     </None>
-    <None Include="ProjectItemTemplates\nhydrate.nhydrate" />
-    <None Include="ProjectItemTemplates\nhydrate.diagram" />
+    <EmbeddedResource Include="ProjectItemTemplates\nhydrate.nhydrate">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectItemTemplates\nhydrate.diagram">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <None Include="ProjectItemTemplates\VisualBasic.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>VisualBasic.cs</LastGenOutput>

@@ -127,7 +127,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 if (!string.IsNullOrEmpty(_item.Description))
                     StringHelper.LineBreakCode(sb, _item.Description, "	/// ");
                 sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+                sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
                 if (_item.IsAbstract)
                     sb.Append("	public abstract partial class " + _item.PascalName + " : " + doubleDerivedClassName);
                 else
@@ -154,7 +154,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             if (!string.IsNullOrEmpty(_item.Description))
                 sb.AppendLine("	/// " + _item.Description);
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+            sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
 
             sb.AppendLine("	[FieldNameConstants(typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))]");
 
@@ -225,7 +225,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             sb.AppendLine("	{");
             this.AppendedFieldEnum();
-            this.AppendConstructors();
+            //this.AppendConstructors(); //Not really needed
             this.AppendProperties();
             this.AppendGenerateEvents();
             this.AppendRegionBusinessObject();
@@ -345,6 +345,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             string scope = "public";
             if (_item.Immutable)
                 scope = "protected internal";
+
+            //For now only create constructor for Immutable
+            //Let user create default constructor if neeed
+            if (!_item.Immutable)
+                return;
 
             var doubleDerivedClassName = _item.PascalName;
             if (_item.GeneratesDoubleDerived)
@@ -770,16 +775,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             sb.AppendLine("		/// </summary>");
                             sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + otherRelation.PascalRoleName + childTable.PascalName + "List");
                             sb.AppendLine("		{");
-                            //sb.AppendLine("			get");
-                            //sb.AppendLine("			{");
-                            //sb.AppendLine("				if (_" + otherRelation.PascalRoleName + childTable.PascalName + "List == null) _" + otherRelation.PascalRoleName + childTable.PascalName + "List = new List<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">();");
-                            //sb.AppendLine("				return _" + otherRelation.PascalRoleName + childTable.PascalName + "List;");
-                            //sb.AppendLine("			}");
-                            //sb.AppendLine("			set { _" + otherRelation.PascalRoleName + childTable.PascalName + "List = value; }");
-                            sb.AppendLine("			get; set;");
+                            sb.AppendLine("			get; protected set;");
                             sb.AppendLine("		}");
-                            //sb.AppendLine("		/// <summary />");
-                            //sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> _" + otherRelation.PascalRoleName + childTable.PascalName + "List { get; set; }");
                             sb.AppendLine();
                         }
                     }
@@ -792,28 +789,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		" + scope + " virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> " + relation.PascalRoleName + childTable.PascalName + "List");
                         sb.AppendLine("		{");
-                        //sb.AppendLine("			get");
-                        //sb.AppendLine("			{");
-                        //sb.AppendLine("				if (_" + relation.PascalRoleName + childTable.PascalName + "List == null) _" + relation.PascalRoleName + childTable.PascalName + "List = new List<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">();");
-                        //sb.AppendLine("				return _" + relation.PascalRoleName + childTable.PascalName + "List;");
-                        //sb.AppendLine("			}");
-                        //sb.AppendLine("			set { _" + relation.PascalRoleName + childTable.PascalName + "List = value; }");
-                        sb.AppendLine("			get; set;");
+                        sb.AppendLine("			get; protected set;");
                         sb.AppendLine("		}");
-                        //sb.AppendLine("		/// <summary />");
-                        //sb.AppendLine("		protected virtual ICollection<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + "> _" + relation.PascalRoleName + childTable.PascalName + "List { get; set; }");
                         sb.AppendLine();
-
-                        //if (isPublic)
-                        //{
-                        //    //Interface implementation
-                        //    sb.AppendLine("		ICollection<" + this.InterfaceAssemblyNamespace + ".Entity.I" + childTable.PascalName + "> " + this.InterfaceAssemblyNamespace + ".Entity.I" + _item.PascalName + "." + relation.PascalRoleName + childTable.PascalName + "List");
-                        //    sb.AppendLine("		{");
-                        //    sb.AppendLine("			get { return this." + relation.PascalRoleName + childTable.PascalName + "List.Cast<" + this.InterfaceAssemblyNamespace + ".Entity.I" + childTable.PascalName + ">().ToList(); }");
-                        //    sb.AppendLine("		}");
-                        //    sb.AppendLine();
-                        //}
-
                     }
                 }
             }
@@ -1942,7 +1920,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// Metadata class for the '" + _item.PascalName + "' entity");
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+            sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
             sb.Append("	public partial class " + _item.PascalName + "Metadata : ");
 
             sb.AppendLine(this.GetLocalNamespace() + ".IMetadata");

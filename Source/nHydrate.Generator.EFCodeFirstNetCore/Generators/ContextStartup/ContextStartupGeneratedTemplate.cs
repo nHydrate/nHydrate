@@ -77,9 +77,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
                 sb.AppendLine("	#region ContextStartup");
                 sb.AppendLine();
                 sb.AppendLine("	/// <summary>");
-                sb.AppendLine("	/// This object holds the modifer information for audits on an ObjectContext");
+                sb.AppendLine("	/// This object holds the modifier information for audits on an ObjectContext");
                 sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	[System.CodeDom.Compiler.GeneratedCode(\"nHydrateModelGenerator\", \"" + _model.ModelToolVersion + "\")]");
+                sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
                 sb.AppendLine("	public partial class ContextStartup : ICloneable");
                 sb.AppendLine("	{");
                 sb.AppendLine("		protected internal string DebugInfo { get; set; }");
@@ -91,7 +91,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
                 sb.AppendLine("		public ContextStartup(string modifier)");
                 sb.AppendLine("		{");
                 sb.AppendLine("			this.CommandTimeout = 30;");
-                sb.AppendLine("			this.Modifer = modifier;");
+                sb.AppendLine("			this.Modifier = modifier;");
                 sb.AppendLine("			this.AllowLazyLoading = true;");
                 sb.AppendLine("			this.DefaultTimeout = true;");
                 sb.AppendLine("		}");
@@ -119,7 +119,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// The modifier string used for auditing");
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		public virtual string Modifer { get; protected internal set; }");
+                sb.AppendLine("		public virtual string Modifier { get; protected internal set; }");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Determines if relationships can be walked via 'Lazy Loading'");
