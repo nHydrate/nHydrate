@@ -747,25 +747,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("				_paramList.Clear();");
             sb.AppendLine("				if (base.Database.CurrentTransaction == null)");
             sb.AppendLine("					customTrans = base.Database.BeginTransaction();");
-            sb.AppendLine("				retval += QueryPreCache.ExecuteDeletes(this);");
             sb.AppendLine("				retval += base.SaveChanges();");
-            sb.AppendLine("				retval += QueryPreCache.ExecuteUpdates(this);");
             sb.AppendLine("				if (customTrans != null)");
             sb.AppendLine("					customTrans.Commit();");
             sb.AppendLine("			}");
-            //NETCORE REMOVED
-            //sb.AppendLine("			catch (System.Data.Entity.Validation.DbEntityValidationException ex)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				var sb = new System.Text.StringBuilder();");
-            //sb.AppendLine("				foreach (var error in ex.EntityValidationErrors)");
-            //sb.AppendLine("				{");
-            //sb.AppendLine("					foreach (var validationError in error.ValidationErrors)");
-            //sb.AppendLine("					{");
-            //sb.AppendLine("						sb.AppendLine(validationError.PropertyName + \": \" + validationError.ErrorMessage);");
-            //sb.AppendLine("					}");
-            //sb.AppendLine("				}");
-            //sb.AppendLine("				throw new System.Data.Entity.Validation.DbEntityValidationException(sb.ToString(), ex.EntityValidationErrors);");
-            //sb.AppendLine("			}");
             sb.AppendLine("			catch");
             sb.AppendLine("			{");
             sb.AppendLine("				throw;");
