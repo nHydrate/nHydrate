@@ -18,9 +18,11 @@ Features
 - SQL Server and PostgreSQL
 - Modeler for industry standard Entity Framework
 - Flexible mapping strategies
+- Multi-tenant database support
 - Full LINQ capabilities
+- Support for audit fields (created/modified)
+- Support for audit shadow tables (full row logging)
 - Logging support
-- Support for audit integration
 - Works with stored procedures and views
 - Outer-join fetching, when supported by database
 - Code facade naming for database entities
