@@ -133,6 +133,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine($"using {this.GetLocalNamespace()}.Entity;");
             sb.AppendLine("using System.Data.SqlClient;");
             sb.AppendLine("using System.Configuration;");
+            sb.AppendLine("using Microsoft.EntityFrameworkCore.ChangeTracking;");
             sb.AppendLine();
         }
 
@@ -497,6 +498,44 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
             #endregion
 
+            #region Primary Keys
+            sb.AppendLine("			#region Primary Keys");
+            sb.AppendLine();
+            foreach (var table in _model.Database.Tables
+                .Where(x => x.Generated && (x.TypedTable != Models.TypedTableConstants.EnumOnly))
+                .OrderBy(x => x.Name))
+            {
+                sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
+                var columnList = table.GetColumns().Where(x => x.PrimaryKey).OrderBy(x => x.Name).ToList();
+                foreach (var c in columnList)
+                {
+                    sb.Append("x." + c.PascalName);
+                    if (columnList.IndexOf(c) < columnList.Count - 1)
+                        sb.Append(", ");
+                }
+                sb.AppendLine(" });");
+            }
+
+            foreach (var table in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
+            {
+                sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
+                var columnList = table.GetColumns().Where(x => x.IsPrimaryKey).OrderBy(x => x.Name).ToList();
+                foreach (var c in columnList)
+                {
+                    sb.Append("x." + c.PascalName);
+                    if (columnList.IndexOf(c) < columnList.Count - 1)
+                        sb.Append(", ");
+                }
+                sb.AppendLine(" });");
+            }
+
+            sb.AppendLine();
+            sb.AppendLine("			#endregion");
+            sb.AppendLine();
+            sb.AppendLine("			OnModelCreated(modelBuilder);");
+            sb.AppendLine();
+            #endregion
+
             #region Create annotations for relationships
             sb.AppendLine("			#region Relations");
             sb.AppendLine();
@@ -532,6 +571,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             else
                                 sb.AppendLine("							.IsRequired(false)");
 
+                            sb.AppendLine("							.HasPrincipalKey(q => new { " + string.Join(", ", relation.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
                             if (relation.IsOneToOne)
                                 sb.Append("							.HasForeignKey<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(u => new { ");
                             else
@@ -583,16 +623,20 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
                     sb.AppendLine("			//Relation for "+ relation1.ParentTable.PascalName + " <-> "+ relation2.ParentTable.PascalName + " (Many-to-Many)");
                     sb.AppendLine($"			modelBuilder.Entity<{relation1.ParentTable.PascalName}>()");
-                    sb.AppendLine($"				.HasMany(q => q.{relation2.PascalRoleName}{table.PascalName}List)");
+                    sb.AppendLine($"				.HasMany(q => q.{relation1.PascalRoleName}{table.PascalName}List)");
                     sb.AppendLine($"				.WithOne(q => q.{relation1.PascalRoleName}{relation1.ParentTable.PascalName})");
                     sb.AppendLine($"				.HasConstraintName(\"{index1Name}\")");
-                    sb.AppendLine("				.HasForeignKey(q => new { " + string.Join(",", relation1.ParentTable.PrimaryKeyColumns.OrderBy(x => x.Name).Select(c => "q." + c.Name)) + "} );");
+                    sb.AppendLine("				.HasPrincipalKey(q => new { " + string.Join(", ", relation1.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                    sb.AppendLine("				.HasForeignKey(q => new { " + string.Join(", ", relation1.ColumnRelationships.Select(x => x.ChildColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " });");
                     sb.AppendLine();
+
+                    sb.AppendLine("			//Relation for " + relation2.ParentTable.PascalName + " <-> " + relation1.ParentTable.PascalName + " (Many-to-Many)");
                     sb.AppendLine($"			modelBuilder.Entity<{relation2.ParentTable.PascalName}>()");
-                    sb.AppendLine($"				.HasMany(q => q.{relation1.PascalRoleName}{table.PascalName}List)");
+                    sb.AppendLine($"				.HasMany(q => q.{relation2.PascalRoleName}{table.PascalName}List)");
                     sb.AppendLine($"				.WithOne(q => q.{relation2.PascalRoleName}{relation2.ParentTable.PascalName})");
                     sb.AppendLine($"				.HasConstraintName(\"{index2Name}\")");
-                    sb.AppendLine("				.HasForeignKey(q => new { " + string.Join(",", relation2.ParentTable.PrimaryKeyColumns.OrderBy(x => x.Name).Select(c => "q." + c.Name)) + "} );");
+                    sb.AppendLine("				.HasPrincipalKey(q => new { " + string.Join(", ", relation2.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                    sb.AppendLine("				.HasForeignKey(q => new { " + string.Join(", ", relation2.ColumnRelationships.Select(x => x.ChildColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " });");
                     sb.AppendLine();
                 }
             }
@@ -602,25 +646,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             #endregion
 
-            #region Functions
-            sb.AppendLine("			#region Functions");
+            #region Stored Procedures
+            sb.AppendLine("			#region Stored Procedures");
             sb.AppendLine();
             
-            //NETCORE Removed
-            //if (_model.Database.Functions.Any(x => x.Generated && x.IsTable) || _model.Database.Tables.Any(x => x.Security.IsValid()))
-            //{
-            //    sb.AppendLine("			//You must add the NUGET package 'CodeFirstStoreFunctions' for this functionality");
-            //    sb.AppendLine("			modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<" + _model.ProjectName + "Entities>(\"dbo\"));");
-            //}
-
-            //foreach (var table in _model.Database.Functions.Where(x => x.Generated && x.IsTable).OrderBy(x => x.Name))
-            //{
-            //    sb.AppendLine("			modelBuilder.ComplexType<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">();");
-            //}
             foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.Generated).OrderBy(x => x.Name))
             {
-                //sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>(); //This mapping is necessary");
-
                 //Need a fake PK
                 sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().HasKey(x => new { ");
                 var columnList = item.GetColumns().OrderBy(x => x.Name).ToList();
@@ -635,44 +666,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             sb.AppendLine();
             sb.AppendLine("			#endregion");
-            sb.AppendLine();
-            #endregion
-
-            #region Primary Keys
-            sb.AppendLine("			#region Primary Keys");
-            sb.AppendLine();
-            foreach (var table in _model.Database.Tables
-                .Where(x => x.Generated && (x.TypedTable != Models.TypedTableConstants.EnumOnly))
-                .OrderBy(x => x.Name))
-            {
-                sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
-                var columnList = table.GetColumns().Where(x => x.PrimaryKey).OrderBy(x => x.Name).ToList();
-                foreach (var c in columnList)
-                {
-                    sb.Append("x." + c.PascalName);
-                    if (columnList.IndexOf(c) < columnList.Count - 1)
-                        sb.Append(", ");
-                }
-                sb.AppendLine(" });");
-            }
-
-            foreach (var table in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
-            {
-                sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
-                var columnList = table.GetColumns().Where(x => x.IsPrimaryKey).OrderBy(x => x.Name).ToList();
-                foreach (var c in columnList)
-                {
-                    sb.Append("x." + c.PascalName);
-                    if (columnList.IndexOf(c) < columnList.Count - 1)
-                        sb.Append(", ");
-                }
-                sb.AppendLine(" });");
-            }
-
-            sb.AppendLine();
-            sb.AppendLine("			#endregion");
-            sb.AppendLine();
-            sb.AppendLine("			OnModelCreated(modelBuilder);");
             sb.AppendLine();
             #endregion
 
@@ -832,49 +825,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			get { return _modelKey; }");
             sb.AppendLine("		}");
             sb.AppendLine();
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Determines if the API matches the database connection");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		public virtual bool IsValidConnection()");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			return IsValidConnection(GetConnectionString(), true);");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Determines if the API matches the database connection");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		public virtual bool IsValidConnection(bool checkVersion)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			return IsValidConnection(GetConnectionString(), checkVersion);");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Determines if the API matches the database connection");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		/// <param name=\"checkVersion\">Determines if the check also includes the exact version of the model</param>");
-            //sb.AppendLine("		/// <param name=\"connectionString\">Determines the connection string to use when connecting to the database</param>");
-            //sb.AppendLine("		/// <returns></returns>");
-            //sb.AppendLine("		public virtual bool IsValidConnection(string connectionString, bool checkVersion = true)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			if (string.IsNullOrEmpty(connectionString))");
-            //sb.AppendLine("				return false;");
-            //sb.AppendLine();
-            //sb.AppendLine("			//Get current version");
-            //sb.AppendLine("			var version = GetDBVersion(connectionString);");
-            //sb.AppendLine();
-            //sb.AppendLine("			//If there is any version then the ModelKey was found, if not found then the database does not contain this model");
-            //sb.AppendLine("			if (string.IsNullOrEmpty(version))");
-            //sb.AppendLine("				return false;");
-            //sb.AppendLine();
-            //sb.AppendLine("			if (checkVersion)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				if (version != this.Version)");
-            //sb.AppendLine("					return false;");
-            //sb.AppendLine("			}");
-            //sb.AppendLine();
-            //sb.AppendLine("			return true;");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
 
             //TODO: Make for all databases
             //Removed for EF core because it is SQL Server specific
@@ -917,12 +867,43 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		#region AddItem Methods");
             sb.AppendLine();
 
+            sb.AppendLine("        public override EntityEntry Add( object entity)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            //No model validation. You should use the AddItem method.");
+            sb.AppendLine("            return base.Add(entity);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public override EntityEntry<TEntity> Add<TEntity>( TEntity entity)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            //No model validation. You should use the AddItem method.");
+            sb.AppendLine("            return base.Add(entity);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public override void AddRange(IEnumerable<object> entities)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            if (entities == null) return;");
+            sb.AppendLine("            //This will enforce model validation.");
+            sb.AppendLine("            foreach (var item in entities)");
+            sb.AppendLine("            {");
+            sb.AppendLine("                var entity = item as IBusinessObject;");
+            sb.AppendLine("                if (entity == null)");
+            sb.AppendLine("                    throw new Exception(\"Unknown entity type\");");
+            sb.AppendLine("                this.AddItem(entity);");
+            sb.AppendLine("            }");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public override void AddRange(params object[] entities)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            this.AddRange(entities.AsEnumerable());");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+
             #region Tables
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Adds an entity of to the object context");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"entity\">The entity to add</param>");
-            sb.AppendLine("		public virtual " + this.GetLocalNamespace() + ".IBusinessObject AddItem(" + this.GetLocalNamespace() + ".IBusinessObject entity)");
+            sb.AppendLine($"		public virtual {this.GetLocalNamespace()}.IBusinessObject AddItem({this.GetLocalNamespace()}.IBusinessObject entity)");
             sb.AppendLine("		{");
 
             sb.AppendLine("			if (entity == null) throw new NullReferenceException();");
@@ -934,16 +915,28 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			}");
 
             sb.AppendLine("			if (false) { }");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.Immutable).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("			else if (entity is " + GetLocalNamespace() + ".Entity." + table.PascalName + ")");
+                sb.AppendLine($"			else if (entity is {GetLocalNamespace()}.Entity.{table.PascalName})");
                 sb.AppendLine("			{");
                 if (table.Security.IsValid())
-                    sb.AppendLine("				this." + table.PascalName + "__INTERNAL.Add((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
+                {
+                    sb.AppendLine($"				this.{table.PascalName}__INTERNAL.Add(({GetLocalNamespace()}.Entity.{table.PascalName})entity);");
+                }
                 else
-                    sb.AppendLine("				this." + table.PascalName + ".Add((" + GetLocalNamespace() + ".Entity." + table.PascalName + ")entity);");
+                {
+                    //sb.AppendLine($"				this.{table.PascalName}.Add(({GetLocalNamespace()}.Entity.{table.PascalName})entity);");
+                    sb.AppendLine($"				this.Add(entity);");
+                }
                 sb.AppendLine("			}");
             }
+
+            //If not an entity then throw exception
+            sb.AppendLine($"			else");
+            sb.AppendLine("			{");
+            sb.AppendLine("				//If not an entity then throw exception");
+            sb.AppendLine("				throw new Exception(\"Unknown entity type\");");
+            sb.AppendLine("			}");
 
             sb.AppendLine("			return entity;");
             sb.AppendLine("		}");
@@ -955,15 +948,45 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             #region Delete Functionality
-            //Add an strongly-typed extension for "DeleteItem" method
-            sb.AppendLine("		#region DeleteItem Methods");
+            //Add an strongly-typed extension for "RemoveItem" method
+            sb.AppendLine("		#region RemoveItem Methods");
+            sb.AppendLine();
+
+            sb.AppendLine("        public override EntityEntry Remove( object entity)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            //No model validation. You should use the RemoveItem method.");
+            sb.AppendLine("            return base.Remove(entity);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public override EntityEntry<TEntity> Remove<TEntity>( TEntity entity)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            //No model validation. You should use the RemoveItem method.");
+            sb.AppendLine("            return base.Remove(entity);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public override void RemoveRange(IEnumerable<object> entities)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            if (entities == null) return;");
+            sb.AppendLine("            foreach (var item in entities)");
+            sb.AppendLine("            {");
+            sb.AppendLine("                var entity = item as IBusinessObject;");
+            sb.AppendLine("                if (entity == null)");
+            sb.AppendLine("                    throw new Exception(\"Unknown entity type\");");
+            sb.AppendLine("                this.RemoveItem(entity);");
+            sb.AppendLine("            }");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public override void RemoveRange(params object[] entities)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            this.RemoveRange(entities.AsEnumerable());");
+            sb.AppendLine("        }");
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Deletes an entity from the context");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"entity\">The entity to delete</param>");
-            sb.AppendLine("		public virtual void DeleteItem(IBusinessObject entity)");
+            sb.AppendLine("		public virtual void RemoveItem(IBusinessObject entity)");
             sb.AppendLine("		{");
             sb.AppendLine("			if (entity == null) return;");
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.Security.IsValid()).OrderBy(x => x.PascalName).ToList())
@@ -1041,7 +1064,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             #region Context Interface Members
-            sb.AppendLine("		#region I" + _model.ProjectName + " Members");
+            sb.AppendLine($"		#region I{_model.ProjectName} Members");
             sb.AppendLine();
 
             #region Tables
