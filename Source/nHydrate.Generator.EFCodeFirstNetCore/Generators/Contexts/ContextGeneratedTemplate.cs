@@ -894,7 +894,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
             sb.AppendLine("        public override void AddRange(params object[] entities)");
             sb.AppendLine("        {");
-            sb.AppendLine("            this.AddRange(entities.AsEnumerable());");
+            sb.AppendLine("            this.AddRange(entities?.AsEnumerable());");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public virtual void AddRange(IEnumerable<IBusinessObject> entities)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            this.AddRange(entities?.AsEnumerable<object>());");
             sb.AppendLine("        }");
             sb.AppendLine();
 
@@ -978,7 +983,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
             sb.AppendLine("        public override void RemoveRange(params object[] entities)");
             sb.AppendLine("        {");
-            sb.AppendLine("            this.RemoveRange(entities.AsEnumerable());");
+            sb.AppendLine("            this.RemoveRange(entities?.AsEnumerable());");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public virtual void RemoveRange(IEnumerable<IBusinessObject> entities)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            this.RemoveRange(entities?.AsEnumerable<object>());");
             sb.AppendLine("        }");
             sb.AppendLine();
 
