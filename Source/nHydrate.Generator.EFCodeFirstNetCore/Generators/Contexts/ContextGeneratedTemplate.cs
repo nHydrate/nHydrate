@@ -366,8 +366,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     {
                         sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
                         sb.Append(".Property(d => d." + column.PascalName + ")");
-                        if (!column.AllowNull)
-                            sb.Append(".IsRequired()");
+
+                        if (column.AllowNull)
+                            sb.Append(".IsRequired(false)");
+                        else
+                            sb.Append(".IsRequired(true)");
+
                         if (column.Identity == IdentityTypeConstants.Database && column.IsIntegerType)
                         {
                             switch (_modelConfiguration.DatabaseType)
@@ -384,9 +388,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             }
                         }
 
-                        if (column.IsTextType && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
-                        //if (column.DataType == System.Data.SqlDbType.VarChar) sb.Append(".HasColumnType(\"VARCHAR(" + column.GetAnnotationStringLength() + ")\")");
-                        if (column.DatabaseName != column.PascalName) sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
+                        if (column.IsTextType && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml)
+                            sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
+                        if (column.DatabaseName != column.PascalName)
+                            sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
                         sb.AppendLine(";");
                     }
                 }
@@ -546,25 +551,29 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     Table childTable = relation.ChildTableRef.Object as Table;
                     if (childTable.Generated && !childTable.IsInheritedFrom(table) && !childTable.AssociativeTable)
                     {
-                        //if (relation.IsOneToOne)
-                        //{
-                        //    sb.AppendLine("			//Relation " + table.PascalName + " -> " + childTable.PascalName);
-                        //    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
-                        //    sb.AppendLine("							 .HasOne(a => a." + relation.PascalRoleName + table.PascalName + ")");
-                        //    sb.AppendLine("							 .WithOne(x => x." + relation.PascalRoleName + childTable.PascalName + ");");
-                        //    if (!relation.IsRequired)
-                        //        sb.AppendLine("							 .IsRequired(false)");
-                        //}
-                        //else
+                        if (relation.IsOneToOne)
                         {
-                            sb.AppendLine("			//Relation " + table.PascalName + " -> " + childTable.PascalName);
-                            sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">()");
-                            sb.AppendLine("							.HasOne(a => a." + relation.PascalRoleName + table.PascalName + ")");
+                            sb.AppendLine($"			//Relation [{table.PascalName}] -> [{childTable.PascalName}] (Multiplicity 1:1)");
+                            sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>()");
+                            sb.AppendLine($"							 .HasOne(a => a.{relation.PascalRoleName}{childTable.PascalName})");
+                            sb.AppendLine($"							 .WithOne(x => x.{relation.PascalRoleName}{table.PascalName})");
+                            sb.AppendLine("							.HasForeignKey<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(q => new { " + string.Join(",", relation.ColumnRelationships.Select(x => x.ChildColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                            sb.AppendLine("							 .HasPrincipalKey<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " > (q => new { " + string.Join(",", relation.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                            if (relation.IsRequired)
+                                sb.AppendLine("							 .IsRequired(true);");
+                            else
+                                sb.AppendLine("							 .IsRequired(false);");
+                        }
+                        else
+                        {
+                            sb.AppendLine($"			//Relation [{table.PascalName}] -> [{childTable.PascalName}] (Multiplicity 1:N)");
+                            sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}>()");
+                            sb.AppendLine($"							.HasOne(a => a.{relation.PascalRoleName}{table.PascalName})");
 
                             if (relation.IsOneToOne)
-                                sb.AppendLine("							.WithOne(x => x." + relation.PascalRoleName + childTable.PascalName + ")");
+                                sb.AppendLine($"							.WithOne(x => x.{relation.PascalRoleName}{childTable.PascalName})");
                             else
-                                sb.AppendLine("							.WithMany(b => b." + relation.PascalRoleName + childTable.PascalName + "List)");
+                                sb.AppendLine($"							.WithMany(b => b.{relation.PascalRoleName}{childTable.PascalName}List)");
 
                             if (relation.IsRequired)
                                 sb.AppendLine("							.IsRequired(true)");
@@ -572,10 +581,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                                 sb.AppendLine("							.IsRequired(false)");
 
                             sb.AppendLine("							.HasPrincipalKey(q => new { " + string.Join(", ", relation.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
-                            if (relation.IsOneToOne)
-                                sb.Append("							.HasForeignKey<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(u => new { ");
-                            else
-                                sb.Append("							.HasForeignKey(u => new { ");
+                            sb.Append("							.HasForeignKey(u => new { ");
 
                             var index = 0;
                             foreach (var columnPacket in relation.ColumnRelationships
@@ -621,22 +627,24 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     var index1Name = ("FK_" + relation1.RoleName + "_" + relation1.ChildTable.DatabaseName + "_" + relation1.ParentTable.DatabaseName).ToUpper();
                     var index2Name = ("FK_" + relation2.RoleName + "_" + relation2.ChildTable.DatabaseName + "_" + relation2.ParentTable.DatabaseName).ToUpper();
 
-                    sb.AppendLine("			//Relation for "+ relation1.ParentTable.PascalName + " <-> "+ relation2.ParentTable.PascalName + " (Many-to-Many)");
+                    sb.AppendLine($"			//Relation for [{relation1.ParentTable.PascalName}] -> [{relation2.ParentTable.PascalName}] (Multiplicity N:M)");
                     sb.AppendLine($"			modelBuilder.Entity<{relation1.ParentTable.PascalName}>()");
-                    sb.AppendLine($"				.HasMany(q => q.{relation1.PascalRoleName}{table.PascalName}List)");
-                    sb.AppendLine($"				.WithOne(q => q.{relation1.PascalRoleName}{relation1.ParentTable.PascalName})");
-                    sb.AppendLine($"				.HasConstraintName(\"{index1Name}\")");
-                    sb.AppendLine("				.HasPrincipalKey(q => new { " + string.Join(", ", relation1.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
-                    sb.AppendLine("				.HasForeignKey(q => new { " + string.Join(", ", relation1.ColumnRelationships.Select(x => x.ChildColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " });");
+                    sb.AppendLine($"							.HasMany(q => q.{relation1.PascalRoleName}{table.PascalName}List)");
+                    sb.AppendLine($"							.WithOne(q => q.{relation1.PascalRoleName}{relation1.ParentTable.PascalName})");
+                    sb.AppendLine($"							.HasConstraintName(\"{index1Name}\")");
+                    sb.AppendLine("							.HasPrincipalKey(q => new { " + string.Join(", ", relation1.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                    sb.AppendLine("							.HasForeignKey(q => new { " + string.Join(", ", relation1.ColumnRelationships.Select(x => x.ChildColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                    sb.AppendLine("							.OnDelete(DeleteBehavior.Restrict);");
                     sb.AppendLine();
 
-                    sb.AppendLine("			//Relation for " + relation2.ParentTable.PascalName + " <-> " + relation1.ParentTable.PascalName + " (Many-to-Many)");
+                    sb.AppendLine($"			//Relation for [{relation2.ParentTable.PascalName}] -> [{relation1.ParentTable.PascalName}] (Multiplicity N:M)");
                     sb.AppendLine($"			modelBuilder.Entity<{relation2.ParentTable.PascalName}>()");
-                    sb.AppendLine($"				.HasMany(q => q.{relation2.PascalRoleName}{table.PascalName}List)");
-                    sb.AppendLine($"				.WithOne(q => q.{relation2.PascalRoleName}{relation2.ParentTable.PascalName})");
-                    sb.AppendLine($"				.HasConstraintName(\"{index2Name}\")");
-                    sb.AppendLine("				.HasPrincipalKey(q => new { " + string.Join(", ", relation2.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
-                    sb.AppendLine("				.HasForeignKey(q => new { " + string.Join(", ", relation2.ColumnRelationships.Select(x => x.ChildColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " });");
+                    sb.AppendLine($"							.HasMany(q => q.{relation2.PascalRoleName}{table.PascalName}List)");
+                    sb.AppendLine($"							.WithOne(q => q.{relation2.PascalRoleName}{relation2.ParentTable.PascalName})");
+                    sb.AppendLine($"							.HasConstraintName(\"{index2Name}\")");
+                    sb.AppendLine("							.HasPrincipalKey(q => new { " + string.Join(", ", relation2.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                    sb.AppendLine("							.HasForeignKey(q => new { " + string.Join(", ", relation2.ColumnRelationships.Select(x => x.ChildColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                    sb.AppendLine("							.OnDelete(DeleteBehavior.Restrict);");
                     sb.AppendLine();
                 }
             }

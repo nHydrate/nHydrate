@@ -340,7 +340,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine();
             #endregion
 
-            //Main one for base IReadOnlyBusinessObject object
+            #region Metadata Extension Methods
             sb.AppendLine("		#region Metadata Extension Methods");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
@@ -359,6 +359,76 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
+            #endregion
+
+            #region Many-to-Many Convenience extensions
+
+            sb.AppendLine("        #region Many-to-Many Convenience extensions");
+
+            foreach (var table in _model.Database.Tables.Where(x => x.AssociativeTable && x.Generated))
+            {
+                var relations = table.GetRelationsWhereChild().ToList();
+                if (relations.Count == 2)
+                {
+                    var relation1 = relations.First();
+                    var relation2 = relations.Last();
+
+                    sb.AppendLine("        /// <summary>");
+                    sb.AppendLine($"        /// Adds a {relation1.ParentTable.PascalName} child object to a many-to-many relationship");
+                    sb.AppendLine("        /// </summary>");
+                    sb.AppendLine($"        public static void Associate{relation1.ParentTable.PascalName}(this EFDAL.Entity.{relation2.ParentTable.PascalName} item, EFDAL.Entity.{relation1.ParentTable.PascalName} child)");
+                    sb.AppendLine("        {");
+                    sb.AppendLine($"            if (item.{table.PascalName}List == null)");
+                    sb.AppendLine($"                item.{table.PascalName}List = new List<Entity.{table.PascalName}>();");
+                    sb.AppendLine("            item." + table.PascalName + "List.Add(new EFDAL.Entity." + table.PascalName + " { " + relation2.ParentTable.PascalName + " = item, " + relation1.ParentTable.PascalName + " = child });");
+                    sb.AppendLine("        }");
+                    sb.AppendLine();
+
+                    sb.AppendLine("        /// <summary>");
+                    sb.AppendLine($"        /// Removes a {relation1.ParentTable.PascalName} child object from a many-to-many relationship");
+                    sb.AppendLine("        /// </summary>");
+                    sb.AppendLine($"        public static void Unassociate{relation1.ParentTable.PascalName}(this EFDAL.Entity.{relation2.ParentTable.PascalName} item, EFDAL.Entity.{relation1.ParentTable.PascalName} child)");
+                    sb.AppendLine("        {");
+                    sb.AppendLine($"            if (item.{table.PascalName}List == null)");
+                    sb.AppendLine($"                item.{table.PascalName}List = new List<Entity.{table.PascalName}>();");
+                    sb.AppendLine();
+                    sb.AppendLine($"            var list = item.{table.PascalName}List.Where(x => x.{relation1.ParentTable.PascalName} == child).ToList();");
+                    sb.AppendLine("            foreach (var cItem in list)");
+                    sb.AppendLine($"                item.{table.PascalName}List.Remove(cItem);");
+                    sb.AppendLine("        }");
+                    sb.AppendLine();
+
+                    sb.AppendLine("        /// <summary>");
+                    sb.AppendLine($"        /// Adds a {relation2.ParentTable.PascalName} child object to a many-to-many relationship");
+                    sb.AppendLine("        /// </summary>");
+                    sb.AppendLine($"        public static void Associate{relation2.ParentTable.PascalName}(this EFDAL.Entity.{relation1.ParentTable.PascalName} item, EFDAL.Entity.{relation2.ParentTable.PascalName} child)");
+                    sb.AppendLine("        {");
+                    sb.AppendLine($"            if (item.{table.PascalName}List == null)");
+                    sb.AppendLine($"                item.{table.PascalName}List = new List<Entity.{table.PascalName}>();");
+                    sb.AppendLine("            item." + table.PascalName + "List.Add(new EFDAL.Entity." + table.PascalName + " { " + relation1.ParentTable.PascalName + " = item, " + relation2.ParentTable.PascalName + " = child });");
+                    sb.AppendLine("        }");
+                    sb.AppendLine();
+
+                    sb.AppendLine("        /// <summary>");
+                    sb.AppendLine($"        /// Removes a {relation2.ParentTable.PascalName} child object from a many-to-many relationship");
+                    sb.AppendLine("        /// </summary>");
+                    sb.AppendLine($"        public static void Unassociate{relation2.ParentTable.PascalName}(this EFDAL.Entity.{relation1.ParentTable.PascalName} item, EFDAL.Entity.{relation2.ParentTable.PascalName} child)");
+                    sb.AppendLine("        {");
+                    sb.AppendLine($"            if (item.{table.PascalName}List == null)");
+                    sb.AppendLine($"                item.{table.PascalName}List = new List<Entity.{table.PascalName}>();");
+                    sb.AppendLine();
+                    sb.AppendLine($"            var list = item.{table.PascalName}List.Where(x => x.{relation2.ParentTable.PascalName} == child).ToList();");
+                    sb.AppendLine("            foreach (var cItem in list)");
+                    sb.AppendLine($"                item.{table.PascalName}List.Remove(cItem);");
+                    sb.AppendLine("        }");
+                    sb.AppendLine();
+
+                }
+            }
+
+            sb.AppendLine("        #endregion");
+
+            #endregion
 
             sb.AppendLine("	}");
             sb.AppendLine();
