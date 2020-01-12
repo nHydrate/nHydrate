@@ -79,7 +79,7 @@
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOK.Location = new System.Drawing.Point(316, 290);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
@@ -92,7 +92,7 @@
             // 
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(341, 570);
+            this.cmdCancel.Location = new System.Drawing.Point(341, 487);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 11;
@@ -286,8 +286,7 @@
             // 
             // grpRegister
             // 
-            this.grpRegister.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.grpRegister.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpRegister.Controls.Add(this.label1);
             this.grpRegister.Controls.Add(this.txtFirstName);
@@ -318,13 +317,12 @@
             // 
             // label13
             // 
-            this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(101, 290);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(107, 13);
+            this.label13.Size = new System.Drawing.Size(79, 13);
             this.label13.TabIndex = 11;
-            this.label13.Text = "* Required parameter";
+            this.label13.Text = "* Required field";
             // 
             // grpLogin
             // 
@@ -409,7 +407,7 @@
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(12, 551);
+            this.pictureBox1.Location = new System.Drawing.Point(12, 468);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(119, 32);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -422,7 +420,7 @@
             this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(158, 551);
+            this.pictureBox2.Location = new System.Drawing.Point(158, 468);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(102, 45);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -436,7 +434,7 @@
             this.chkStat.AutoSize = true;
             this.chkStat.Checked = true;
             this.chkStat.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkStat.Location = new System.Drawing.Point(112, 523);
+            this.chkStat.Location = new System.Drawing.Point(112, 440);
             this.chkStat.Name = "chkStat";
             this.chkStat.Size = new System.Drawing.Size(287, 17);
             this.chkStat.TabIndex = 10;
@@ -479,23 +477,22 @@
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.label15);
             this.panel1.Controls.Add(this.label14);
             this.panel1.Controls.Add(this.txtPremium);
-            this.panel1.Location = new System.Drawing.Point(12, 435);
+            this.panel1.Location = new System.Drawing.Point(377, 440);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(404, 79);
             this.panel1.TabIndex = 25;
+            this.panel1.Visible = false;
             // 
             // label15
             // 
-            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label15.Location = new System.Drawing.Point(11, 4);
@@ -507,7 +504,6 @@
             // 
             // label14
             // 
-            this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(8, 46);
             this.label14.Name = "label14";
@@ -517,7 +513,7 @@
             // 
             // txtPremium
             // 
-            this.txtPremium.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtPremium.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPremium.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtPremium.Location = new System.Drawing.Point(96, 43);
@@ -531,8 +527,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(428, 601);
-            this.Controls.Add(this.panel1);
+            this.ClientSize = new System.Drawing.Size(428, 518);
             this.Controls.Add(this.optLogin);
             this.Controls.Add(this.optRegistration);
             this.Controls.Add(this.grpLogin);
@@ -542,6 +537,7 @@
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.cmdCancel);
+            this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

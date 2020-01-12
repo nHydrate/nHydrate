@@ -37,7 +37,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore
 {
     [GeneratorProject(
         "EF Data Access Layer Code First (.NET Standard)",
-        "A data access layer built on top of Entity Framework (.NET Standard)",
+        "Creates a project with an Entity Framework Core data access layer (.NET Standard)",
         "d8156b27-b9f2-4291-82e8-88e1295eef05",
         typeof(nHydrateGeneratorProject),
         typeof(EFCodeFirstNetCoreProjectGenerator),

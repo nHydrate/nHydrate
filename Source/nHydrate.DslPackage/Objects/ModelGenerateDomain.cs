@@ -223,10 +223,6 @@ namespace nHydrate.DslPackage.Objects
                         var modelRoot = (generator.Model as nHydrate.Generator.Models.ModelRoot);
                         modelRoot.GeneratedVersion = generatedVersion;
                         _totalFileCount += genHelper.GetFileCount(generator, excludeList);
-
-                        //var projectGen = genHelper.GetProjectGenerators(generator);
-                        //modelRoot.ModelConfigurations.Add(projectGen.GetType().Name, projectGen.mode)
-                        //model.Modelco
                     }
                     System.Diagnostics.Debug.WriteLine($"File count: {_totalFileCount}");
 
@@ -265,13 +261,19 @@ namespace nHydrate.DslPackage.Objects
                         }
                     }
 
+                    var modelKey = (genList.FirstOrDefault()?.Model as nHydrate.Generator.Models.ModelRoot)?.Key;
+
+                    //Save model statistics
+                    var eCount = model.Entities.Count();
+                    var fCount = model.Entities.SelectMany(x => x.FieldList).Count();
+                    ModelStatsFile.Log(modelKey, eCount, fCount);
+
                     //Save local copy of last generated version
                     cacheFile.GeneratedVersion = generatedVersion;
                     cacheFile.ModelerVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
                     cacheFile.Save();
 
                     this.ErrorList = genHelper.GetErrorList().ToList();
-
                 }
                 catch (nHydrate.Generator.Common.Exceptions.LicenseException ex)
                 {

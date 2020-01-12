@@ -108,7 +108,7 @@ namespace nHydrate.DslPackage.Objects
             try
             {
                 return (string.IsNullOrEmpty(nHydrate.Generator.Common.GeneratorFramework.AddinAppData.Instance.Key) &&
-                    (DateTime.Now.Subtract(AddinAppData.Instance.LastNag).TotalDays >= 7));
+                    (DateTime.Now.Subtract(AddinAppData.Instance.LastNag).TotalDays >= 3));
             }
             catch (Exception ex)
             {
@@ -165,6 +165,23 @@ namespace nHydrate.DslPackage.Objects
             return Post<UserAccount, ResultModel>("register", model);
         }
 
+        public static List<IdTextModel> GetCountries()
+        {
+            return Get<List<IdTextModel>>("countries");
+        }
+
+        public static void LogStats(GenStatModel model)
+        {
+            try
+            {
+                var result = Post<GenStatModel, ResultModel>("log-stats", model);
+            }
+            catch (Exception ex)
+            {
+                //Do nothing
+            }
+        }
+
         private static R Post<T, R>(string path, T model)
             where T : new()
             where R : new()
@@ -201,5 +218,38 @@ namespace nHydrate.DslPackage.Objects
             }
         }
 
+        private static R Get<R>(string path)
+            where R : new()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(SERVICE_URL);
+
+                    // Add an Accept header for JSON format.
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    // List data response.
+                    var response = client.GetAsync(path).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Parse the response body.
+                        var result = response.Content.ReadAsStringAsync().Result;  //Make sure to add a reference to System.Net.Http.Formatting.dll
+                        return JsonConvert.DeserializeObject<R>(result);
+                    }
+                    else
+                    {
+                        Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
+                    }
+                    return default(R);
+                }
+            }
+            catch (Exception ex)
+            {
+                //throw;
+                return default(R);
+            }
+        }
     }
 }

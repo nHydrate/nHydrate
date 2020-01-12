@@ -48,236 +48,16 @@ namespace nHydrate.DslPackage.Forms
 
             var model = new UserAccount();
 
-            #region Add Countries
+            var countryList = VersionHelper.GetCountries();
             cboCountry.Items.Add("(Choose One)");
-            cboCountry.Items.Add("Afghanistan");
-            cboCountry.Items.Add("Albania");
-            cboCountry.Items.Add("Algeria");
-            cboCountry.Items.Add("American Samoa");
-            cboCountry.Items.Add("Andorra");
-            cboCountry.Items.Add("Angola");
-            cboCountry.Items.Add("Anguilla");
-            cboCountry.Items.Add("Antigua and Barbuda");
-            cboCountry.Items.Add("Argentina");
-            cboCountry.Items.Add("Armenia");
-            cboCountry.Items.Add("Aruba");
-            cboCountry.Items.Add("Australia");
-            cboCountry.Items.Add("Austria");
-            cboCountry.Items.Add("Azerbaijan");
-            cboCountry.Items.Add("Bahamas");
-            cboCountry.Items.Add("Bahrain");
-            cboCountry.Items.Add("Bahrain");
-            cboCountry.Items.Add("Bangladesh");
-            cboCountry.Items.Add("Barbados");
-            cboCountry.Items.Add("Belarus");
-            cboCountry.Items.Add("Belgium");
-            cboCountry.Items.Add("Belize");
-            cboCountry.Items.Add("Benin");
-            cboCountry.Items.Add("Bermuda");
-            cboCountry.Items.Add("Bhutan");
-            cboCountry.Items.Add("Bolivia");
-            cboCountry.Items.Add("Bosnia");
-            cboCountry.Items.Add("Botswana");
-            cboCountry.Items.Add("Brazil");
-            cboCountry.Items.Add("British Virgin Islands");
-            cboCountry.Items.Add("Brunei");
-            cboCountry.Items.Add("Bulgaria");
-            cboCountry.Items.Add("Burkina Faso");
-            cboCountry.Items.Add("Burundi");
-            cboCountry.Items.Add("Cambodia");
-            cboCountry.Items.Add("Cameroon");
-            cboCountry.Items.Add("Canada");
-            cboCountry.Items.Add("Cape Verde");
-            cboCountry.Items.Add("Cayman Islands");
-            cboCountry.Items.Add("Central African Republic");
-            cboCountry.Items.Add("Chad");
-            cboCountry.Items.Add("Chile");
-            cboCountry.Items.Add("China");
-            cboCountry.Items.Add("Colombia");
-            cboCountry.Items.Add("Comoros");
-            cboCountry.Items.Add("Costa Rica");
-            cboCountry.Items.Add("Cote d'Ivoire");
-            cboCountry.Items.Add("Croatia");
-            cboCountry.Items.Add("Cuba");
-            cboCountry.Items.Add("Cyprus");
-            cboCountry.Items.Add("Cyprus");
-            cboCountry.Items.Add("Czech Republic");
-            cboCountry.Items.Add("Democratic Republic of the Congo");
-            cboCountry.Items.Add("Denmark");
-            cboCountry.Items.Add("Djibouti");
-            cboCountry.Items.Add("Dominica");
-            cboCountry.Items.Add("Dominican Republic");
-            cboCountry.Items.Add("East Timor");
-            cboCountry.Items.Add("Ecuador");
-            cboCountry.Items.Add("Egypt");
-            cboCountry.Items.Add("Egypt");
-            cboCountry.Items.Add("El Salvador");
-            cboCountry.Items.Add("Equatorial Guinea");
-            cboCountry.Items.Add("Eritrea");
-            cboCountry.Items.Add("Estonia");
-            cboCountry.Items.Add("Ethiopia");
-            cboCountry.Items.Add("Falkland Islands");
-            cboCountry.Items.Add("Fiji");
-            cboCountry.Items.Add("Finland");
-            cboCountry.Items.Add("France");
-            cboCountry.Items.Add("French Guiana");
-            cboCountry.Items.Add("French Polynesia");
-            cboCountry.Items.Add("Gabon");
-            cboCountry.Items.Add("Gambia");
-            cboCountry.Items.Add("Georgia");
-            cboCountry.Items.Add("Germany");
-            cboCountry.Items.Add("Ghana");
-            cboCountry.Items.Add("Gibraltar");
-            cboCountry.Items.Add("Greece");
-            cboCountry.Items.Add("Greenland");
-            cboCountry.Items.Add("Grenada");
-            cboCountry.Items.Add("Guadeloupe");
-            cboCountry.Items.Add("Guam");
-            cboCountry.Items.Add("Guatemala");
-            cboCountry.Items.Add("Guinea");
-            cboCountry.Items.Add("Guinea-Bissau");
-            cboCountry.Items.Add("Guyana");
-            cboCountry.Items.Add("Haiti");
-            cboCountry.Items.Add("Honduras");
-            cboCountry.Items.Add("Hungary");
-            cboCountry.Items.Add("Iceland");
-            cboCountry.Items.Add("India");
-            cboCountry.Items.Add("Indonesia");
-            cboCountry.Items.Add("Iran");
-            cboCountry.Items.Add("Iraq");
-            cboCountry.Items.Add("Ireland");
-            cboCountry.Items.Add("Israel");
-            cboCountry.Items.Add("Italy");
-            cboCountry.Items.Add("Jamaica");
-            cboCountry.Items.Add("Japan");
-            cboCountry.Items.Add("Jordan");
-            cboCountry.Items.Add("Kazakhstan");
-            cboCountry.Items.Add("Kenya");
-            cboCountry.Items.Add("Kiribati");
-            cboCountry.Items.Add("Kosovo");
-            cboCountry.Items.Add("Kuwait");
-            cboCountry.Items.Add("Kyrgyzstan");
-            cboCountry.Items.Add("Laos");
-            cboCountry.Items.Add("Latvia");
-            cboCountry.Items.Add("Lebanon");
-            cboCountry.Items.Add("Lesotho");
-            cboCountry.Items.Add("Liberia");
-            cboCountry.Items.Add("Libya");
-            cboCountry.Items.Add("Liechtenstein");
-            cboCountry.Items.Add("Lithuania");
-            cboCountry.Items.Add("Luxembourg");
-            cboCountry.Items.Add("Macau");
-            cboCountry.Items.Add("Macedonia");
-            cboCountry.Items.Add("Madagascar");
-            cboCountry.Items.Add("Malawi");
-            cboCountry.Items.Add("Malaysia");
-            cboCountry.Items.Add("Maldives");
-            cboCountry.Items.Add("Mali");
-            cboCountry.Items.Add("Malta");
-            cboCountry.Items.Add("Marshall Islands");
-            cboCountry.Items.Add("Martinique");
-            cboCountry.Items.Add("Mauritania");
-            cboCountry.Items.Add("Mauritius");
-            cboCountry.Items.Add("Mexico");
-            cboCountry.Items.Add("Mexico");
-            cboCountry.Items.Add("Micronesia");
-            cboCountry.Items.Add("Moldova");
-            cboCountry.Items.Add("Monaco");
-            cboCountry.Items.Add("Mongolia");
-            cboCountry.Items.Add("Montenegro");
-            cboCountry.Items.Add("Montserrat");
-            cboCountry.Items.Add("Morocco");
-            cboCountry.Items.Add("Mozambique");
-            cboCountry.Items.Add("Myanmar");
-            cboCountry.Items.Add("Namibia");
-            cboCountry.Items.Add("Nauru");
-            cboCountry.Items.Add("Nepal");
-            cboCountry.Items.Add("Netherlands");
-            cboCountry.Items.Add("Netherlands Antilles");
-            cboCountry.Items.Add("New Caledonia");
-            cboCountry.Items.Add("New Zealand");
-            cboCountry.Items.Add("Nicaragua");
-            cboCountry.Items.Add("Niger");
-            cboCountry.Items.Add("Nigeria");
-            cboCountry.Items.Add("North Korea");
-            cboCountry.Items.Add("Northern Mariana Islands");
-            cboCountry.Items.Add("Norway");
-            cboCountry.Items.Add("Oman");
-            cboCountry.Items.Add("Pakistan");
-            cboCountry.Items.Add("Palau");
-            cboCountry.Items.Add("Palestine");
-            cboCountry.Items.Add("Panama");
-            cboCountry.Items.Add("Papua New Guinea");
-            cboCountry.Items.Add("Paraguay");
-            cboCountry.Items.Add("Peru");
-            cboCountry.Items.Add("Philippines");
-            cboCountry.Items.Add("Pitcairn Islands");
-            cboCountry.Items.Add("Poland");
-            cboCountry.Items.Add("Portugal");
-            cboCountry.Items.Add("Puerto Rico");
-            cboCountry.Items.Add("Qatar");
-            cboCountry.Items.Add("Republic of the Congo");
-            cboCountry.Items.Add("Romania");
-            cboCountry.Items.Add("Russia");
-            cboCountry.Items.Add("Rwanda");
-            cboCountry.Items.Add("San Marino");
-            cboCountry.Items.Add("Sao Tome and Principe");
-            cboCountry.Items.Add("Saudi Arabia");
-            cboCountry.Items.Add("Senegal");
-            cboCountry.Items.Add("Serbia");
-            cboCountry.Items.Add("Seychelles");
-            cboCountry.Items.Add("Sierra Leone");
-            cboCountry.Items.Add("Singapore");
-            cboCountry.Items.Add("Slovakia");
-            cboCountry.Items.Add("Slovenia");
-            cboCountry.Items.Add("Solomon Islands");
-            cboCountry.Items.Add("Somalia");
-            cboCountry.Items.Add("South Africa");
-            cboCountry.Items.Add("South Korea");
-            cboCountry.Items.Add("Spain");
-            cboCountry.Items.Add("Sri Lanka");
-            cboCountry.Items.Add("St. Kitts and Nevis");
-            cboCountry.Items.Add("St. Lucia");
-            cboCountry.Items.Add("St. Vincent and the Grenadines");
-            cboCountry.Items.Add("Sudan");
-            cboCountry.Items.Add("Suriname");
-            cboCountry.Items.Add("Swaziland");
-            cboCountry.Items.Add("Sweden");
-            cboCountry.Items.Add("Switzerland");
-            cboCountry.Items.Add("Syria");
-            cboCountry.Items.Add("Taiwan");
-            cboCountry.Items.Add("Tajikistan");
-            cboCountry.Items.Add("Tanzania");
-            cboCountry.Items.Add("Thailand");
-            cboCountry.Items.Add("Tibet");
-            cboCountry.Items.Add("Togo");
-            cboCountry.Items.Add("Tonga");
-            cboCountry.Items.Add("Trinidad and Tobago");
-            cboCountry.Items.Add("Tunisia");
-            cboCountry.Items.Add("Turkey");
-            cboCountry.Items.Add("Turkey");
-            cboCountry.Items.Add("Turkey");
-            cboCountry.Items.Add("Turkmenistan");
-            cboCountry.Items.Add("Turks and Caicos Islands");
-            cboCountry.Items.Add("Tuvalu");
-            cboCountry.Items.Add("U.S. Virgin Islands");
-            cboCountry.Items.Add("Uganda");
-            cboCountry.Items.Add("Ukraine");
-            cboCountry.Items.Add("United Arab Emirates");
-            cboCountry.Items.Add("United Kingdom");
-            cboCountry.Items.Add("United States");
-            cboCountry.Items.Add("Uruguay");
-            cboCountry.Items.Add("Uzbekistan");
-            cboCountry.Items.Add("Vanuatu");
-            cboCountry.Items.Add("Venezuela");
-            cboCountry.Items.Add("Vietnam");
-            cboCountry.Items.Add("Western Sahara");
-            cboCountry.Items.Add("Western Samoa");
-            cboCountry.Items.Add("Yemen");
-            cboCountry.Items.Add("Zambia");
-            cboCountry.Items.Add("Zimbabwe");
+            if (countryList != null)
+            {
+                foreach (var item in countryList)
+                {
+                    cboCountry.Items.Add(item.Text);
+                }
+            }
             cboCountry.SelectedIndex = 0;
-            #endregion
 
         }
 
@@ -424,7 +204,8 @@ namespace nHydrate.DslPackage.Forms
                 }
                 else
                 {
-                    MessageBox.Show("The login could not be validated.", "Invalid Login!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //MessageBox.Show("The login could not be validated.", "Invalid Login!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(result.Text, "Invalid Login!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -454,14 +235,15 @@ namespace nHydrate.DslPackage.Forms
 
         private void pictureBox1_Click(object sender, System.EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.linkedin.com/groups?gid=2401073");
+            //System.Diagnostics.Process.Start("https://www.linkedin.com/groups/2401073/");
+            System.Diagnostics.Process.Start("http://bit.ly/37CK5ip");
         }
 
         private void pictureBox2_Click(object sender, System.EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/nHydrate/nHydrate");
+            //System.Diagnostics.Process.Start("https://github.com/nHydrate/nHydrate/wiki");
+            System.Diagnostics.Process.Start("http://bit.ly/2sBcVkt");
         }
-
 
     }
 }

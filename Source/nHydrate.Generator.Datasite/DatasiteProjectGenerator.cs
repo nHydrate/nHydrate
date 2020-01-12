@@ -36,8 +36,8 @@ using nHydrate.Generator.ProjectItemGenerators;
 namespace nHydrate.Generator.Datasite
 {
     [GeneratorProjectAttribute(
-        "Documentation Site",
-        "A generator to create website for database documentation",
+        "HTML Documentation Site",
+        "Creates an HTML website that provides database documentation.",
         "65436b27-b9f2-4291-82e8-88e1295eef09",
         typeof(nHydrateGeneratorProject),
         typeof(DatasiteProjectGenerator),

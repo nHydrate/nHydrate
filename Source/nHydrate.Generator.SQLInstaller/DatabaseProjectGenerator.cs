@@ -36,8 +36,8 @@ using nHydrate.Generator.ProjectItemGenerators;
 namespace nHydrate.Generator.SQLInstaller
 {
     [GeneratorProjectAttribute(
-        "SQL Database Installer/Updater",
-        "A project that installs/updates a database based on the model, used in conjuction with the DAL",
+        "SQL Database Installer",
+        "Creates a project to maintain a SQL Server database, used in conjuction with the generated Entity Framework data access layer.",
         "b8bd6b27-b9f2-4291-82e8-88e1295eef09",
         typeof(nHydrateGeneratorProject),
         typeof(DatabaseProjectGenerator),

@@ -276,7 +276,7 @@
                 <Parent guid="guidDiagramMenuCmdSet" id="DiagramSubMenuGroup" />
                 <CommandFlag>DynamicVisibility</CommandFlag>
                 <Strings>
-                    <ButtonText>About...</ButtonText>
+                    <ButtonText>About/Registration</ButtonText>
                 </Strings>
             </Button>
 

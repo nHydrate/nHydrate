@@ -515,6 +515,7 @@
       <DependentUpon>CommandSet.tt</DependentUpon>
     </Compile>
     <Compile Include="Objects\FindWindowColumnItem.cs" />
+    <Compile Include="Objects\ModelStatsFile.cs" />
     <Compile Include="Objects\Postgres\ImportDomain.cs" />
     <Compile Include="Objects\Postgres\Models.cs" />
     <Compile Include="Objects\ProgressHelper.cs" />

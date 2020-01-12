@@ -103,10 +103,10 @@
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.Location = new System.Drawing.Point(3, 45);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(126, 13);
+            this.linkLabel1.Size = new System.Drawing.Size(109, 13);
             this.linkLabel1.TabIndex = 6;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "http://www.nHydrate.org";
+            this.linkLabel1.Text = "https://nHydrate.com";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // cmdRegister
@@ -130,6 +130,7 @@
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 22;
             this.pictureBox2.TabStop = false;
+            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
             // 
             // pictureBox1
             // 
@@ -235,7 +236,7 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.panel1.BackColor = System.Drawing.Color.Beige;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.txtKey);

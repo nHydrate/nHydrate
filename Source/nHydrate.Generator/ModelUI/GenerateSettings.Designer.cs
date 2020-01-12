@@ -40,6 +40,7 @@
             this.lblFinish = new System.Windows.Forms.Label();
             this.pageModules = new nHydrate.Wizard.WizardPage();
             this.chkModule = new System.Windows.Forms.CheckedListBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.wizard1.SuspendLayout();
             this.pageTemplates.SuspendLayout();
             this.pageFinish.SuspendLayout();
@@ -55,7 +56,7 @@
             this.wizard1.HeaderImage = ((System.Drawing.Image)(resources.GetObject("wizard1.HeaderImage")));
             this.wizard1.Location = new System.Drawing.Point(0, 0);
             this.wizard1.Name = "wizard1";
-            this.wizard1.Size = new System.Drawing.Size(518, 426);
+            this.wizard1.Size = new System.Drawing.Size(518, 364);
             this.wizard1.TabIndex = 0;
             this.wizard1.WizardPages.AddRange(new nHydrate.Wizard.WizardPage[] {
             this.pageTemplates,
@@ -64,6 +65,7 @@
             // 
             // pageTemplates
             // 
+            this.pageTemplates.Controls.Add(this.label2);
             this.pageTemplates.Controls.Add(this.linkShowAll);
             this.pageTemplates.Controls.Add(this.txtDescription);
             this.pageTemplates.Controls.Add(this.label1);
@@ -72,7 +74,7 @@
             this.pageTemplates.Description = "Choose the generators that will create your code";
             this.pageTemplates.Location = new System.Drawing.Point(0, 0);
             this.pageTemplates.Name = "pageTemplates";
-            this.pageTemplates.Size = new System.Drawing.Size(518, 378);
+            this.pageTemplates.Size = new System.Drawing.Size(518, 316);
             this.pageTemplates.TabIndex = 7;
             this.pageTemplates.Title = "Generators";
             // 
@@ -80,7 +82,7 @@
             // 
             this.linkShowAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkShowAll.AutoSize = true;
-            this.linkShowAll.Location = new System.Drawing.Point(12, 244);
+            this.linkShowAll.Location = new System.Drawing.Point(12, 272);
             this.linkShowAll.Name = "linkShowAll";
             this.linkShowAll.Size = new System.Drawing.Size(48, 13);
             this.linkShowAll.TabIndex = 10;
@@ -90,27 +92,27 @@
             // 
             // txtDescription
             // 
-            this.txtDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDescription.Location = new System.Drawing.Point(331, 74);
+            this.txtDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDescription.Location = new System.Drawing.Point(331, 126);
             this.txtDescription.Multiline = true;
             this.txtDescription.Name = "txtDescription";
             this.txtDescription.ReadOnly = true;
             this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtDescription.Size = new System.Drawing.Size(175, 167);
+            this.txtDescription.Size = new System.Drawing.Size(175, 136);
             this.txtDescription.TabIndex = 7;
             // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.Location = new System.Drawing.Point(83, 244);
+            this.label1.Location = new System.Drawing.Point(128, 272);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(423, 39);
+            this.label1.Size = new System.Drawing.Size(423, 23);
             this.label1.TabIndex = 9;
             this.label1.Text = "The dependencies for the selected project are listed below. You do not need to re" +
     "generate all projects all the time, but the projects below MUST exist in order f" +
     "or the selected project to compile.";
+            this.label1.Visible = false;
             // 
             // lstDependency
             // 
@@ -118,21 +120,21 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstDependency.FormattingEnabled = true;
             this.lstDependency.IntegralHeight = false;
-            this.lstDependency.Location = new System.Drawing.Point(12, 286);
+            this.lstDependency.Location = new System.Drawing.Point(12, 289);
             this.lstDependency.Name = "lstDependency";
-            this.lstDependency.Size = new System.Drawing.Size(494, 78);
+            this.lstDependency.Size = new System.Drawing.Size(494, 62);
             this.lstDependency.TabIndex = 8;
+            this.lstDependency.Visible = false;
             // 
             // tvwProjects
             // 
-            this.tvwProjects.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.tvwProjects.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tvwProjects.CheckBoxes = true;
             this.tvwProjects.HideSelection = false;
-            this.tvwProjects.Location = new System.Drawing.Point(12, 74);
+            this.tvwProjects.Location = new System.Drawing.Point(12, 126);
             this.tvwProjects.Name = "tvwProjects";
-            this.tvwProjects.Size = new System.Drawing.Size(304, 167);
+            this.tvwProjects.Size = new System.Drawing.Size(304, 136);
             this.tvwProjects.TabIndex = 6;
             // 
             // pageFinish
@@ -177,16 +179,28 @@
             this.chkModule.Size = new System.Drawing.Size(494, 299);
             this.chkModule.TabIndex = 4;
             // 
+            // label2
+            // 
+            this.label2.BackColor = System.Drawing.Color.PapayaWhip;
+            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(12, 72);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(494, 40);
+            this.label2.TabIndex = 11;
+            this.label2.Text = "NOTE: This version of nHydrate only supports .NET Core. If you are using Entity F" +
+    "ramework 4.x - 6.x, do not generate with this modeler. The older modeler is avai" +
+    "lable on the nHydrate.com website.";
+            // 
             // GenerateSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(518, 426);
+            this.ClientSize = new System.Drawing.Size(518, 364);
             this.Controls.Add(this.wizard1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(534, 465);
             this.Name = "GenerateSettings";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -214,5 +228,6 @@
 		private System.Windows.Forms.CheckedListBox chkModule;
 		private System.Windows.Forms.Label lblFinish;
         private System.Windows.Forms.LinkLabel linkShowAll;
-	}
+        private System.Windows.Forms.Label label2;
+    }
 }

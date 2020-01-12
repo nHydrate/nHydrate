@@ -36,8 +36,8 @@ using nHydrate.Generator.ProjectItemGenerators;
 namespace nHydrate.Generator.PostgresInstaller
 {
     [GeneratorProjectAttribute(
-        "Postgres Database Installer/Updater",
-        "A project that installs/updates a database based on the model, used in conjuction with the DAL",
+        "Postgres Database Installer (alpha)",
+        "Creates a project to maintain a Postgres database, used in conjuction with the generated Entity Framework data access layer.",
         "c7153425-b9f2-4291-82e8-88e1295eef09",
         typeof(nHydrateGeneratorProject),
         typeof(PostgresDatabaseProjectGenerator),
