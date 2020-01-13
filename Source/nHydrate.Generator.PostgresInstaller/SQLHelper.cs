@@ -541,7 +541,7 @@ namespace nHydrate.Generator.PostgresInstaller
                                 pkName = pkName.ToUpper();
                                 sb.AppendLine($"----DROP PRIMARY KEY FOR TABLE [{tableName}]");
                                 sb.AppendLine($"--if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
-                                sb.AppendLine($"--ALTER TABLE \"{newT.GetPostgresSchema()}\".\"{tableName}\" DROP CONSTRAINT IF EXISTS [{pkName}];");
+                                sb.AppendLine($"--ALTER TABLE {newT.GetPostgresSchema()}.\"{tableName}\" DROP CONSTRAINT IF EXISTS [{pkName}];");
                                 sb.AppendLine("--GO");
 
                                 var sql = SQLEmit.GetSqlCreatePK(newT) + "GO\r\n";
@@ -968,7 +968,7 @@ namespace nHydrate.Generator.PostgresInstaller
                     tableName = tableAliasName;
 
                 sb.AppendLine($"--CREATE TABLE [{tableName}]");
-                sb.AppendLine($"CREATE TABLE IF NOT EXISTS \"{table.GetPostgresSchema()}\".\"{tableName}\" (");
+                sb.AppendLine($"CREATE TABLE IF NOT EXISTS {table.GetPostgresSchema()}.\"{tableName}\" (");
 
                 var firstLoop = true;
                 foreach (var column in table.GeneratedColumns.OrderBy(x => x.SortOrder))
@@ -1024,7 +1024,7 @@ namespace nHydrate.Generator.PostgresInstaller
             if (useComment)
                 sb.AppendLine($"--ADD COLUMN [{tName}].[{column.DatabaseName}]");
 
-            sb.AppendLine($"ALTER TABLE \"{tName}\" ADD COLUMN IF NOT EXISTS " + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true) + ";");
+            sb.AppendLine($"ALTER TABLE {column.ParentTable.GetPostgresSchema()}.\"{tName}\" ADD COLUMN IF NOT EXISTS " + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true) + ";");
 
             return sb.ToString();
         }
@@ -1203,7 +1203,7 @@ namespace nHydrate.Generator.PostgresInstaller
             if (!string.IsNullOrEmpty(theValue))
             {
                 var tempBuilder = new StringBuilder();
-                tempBuilder.Append("DEFAULT " + theValue);
+                tempBuilder.Append($"DEFAULT {theValue}");
                 sb.Append(tempBuilder.ToString());
             }
             return sb.ToString();
@@ -1355,7 +1355,7 @@ namespace nHydrate.Generator.PostgresInstaller
             var sb = new StringBuilder();
             var pkName = $"PK_{table.DatabaseName}".ToUpper();
             sb.AppendLine($"--DROP PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
-            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{pkName}\";");
+            sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{pkName}\";");
             sb.AppendLine("--GO");
             sb.AppendLine();
             return sb.ToString();
@@ -1371,7 +1371,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 {
                     var indexName = $"PK_{table.DatabaseName.ToUpper()}";
                     sb.AppendLine($"--PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
-                    sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" WITH NOCHECK ADD ");
+                    sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" WITH NOCHECK ADD ");
                     //TODO: handle tableIndex.Clustered
                     sb.AppendLine($"CONSTRAINT \"{indexName}\" PRIMARY KEY ");
                     sb.AppendLine("(");
@@ -1434,7 +1434,7 @@ namespace nHydrate.Generator.PostgresInstaller
         public static string GetSqlDropColumnDefault(Column column, bool upgradeScript = false)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"ALTER TABLE \"{column.ParentTable.GetPostgresSchema()}\".\"{column.ParentTable.DatabaseName}\" ALTER COLUMN \"{column.DatabaseName}\" DROP DEFAULT;");
+            sb.AppendLine($"ALTER TABLE {column.ParentTable.GetPostgresSchema()}.\"{column.ParentTable.DatabaseName}\" ALTER COLUMN \"{column.DatabaseName}\" DROP DEFAULT;");
             if (upgradeScript)
                 sb.AppendLine("--GO");
             return sb.ToString();
@@ -1448,14 +1448,14 @@ namespace nHydrate.Generator.PostgresInstaller
 
                 var sb = new StringBuilder();
                 sb.AppendLine($"--DROP TENANT VIEW FOR TABLE [{table.DatabaseName}]");
-                sb.AppendLine($"DROP VIEW IF EXISTS \"{itemName}\"");
+                sb.AppendLine($"DROP VIEW IF EXISTS \"{itemName}\";");
                 sb.AppendLine("--GO");
                 sb.AppendLine();
 
                 sb.AppendLine($"--CREATE TENANT VIEW FOR TABLE [{table.DatabaseName}]");
-                sb.AppendLine($"CREATE VIEW \"{table.GetPostgresSchema()}\".\"{itemName}\" AS");
-                sb.AppendLine($"select * from \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\"");
-                sb.AppendLine($"WHERE (\"{model.TenantColumnName}\" = current_user)");
+                sb.AppendLine($"CREATE OR REPLACE VIEW \"{table.GetPostgresSchema()}\".\"{itemName}\" AS");
+                sb.AppendLine($"select * from {table.GetPostgresSchema()}.\"{table.DatabaseName}\"");
+                sb.AppendLine($"WHERE (\"{model.TenantColumnName}\" = current_user);");
                 sb.AppendLine("--GO");
 
                 //if (!string.IsNullOrEmpty(model.Database.GrantExecUser))
@@ -1487,7 +1487,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 //We know a default was specified so render the SQL
                 if (!string.IsNullOrEmpty(defaultClause))
                 {
-                    sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" ALTER COLUMN \"{GetDefaultValueConstraintName(column)}\" SET DEFAULT {defaultClause}");
+                    sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ALTER COLUMN \"{column.DatabaseName}\" SET {defaultClause};");
                     sb.AppendLine();
                 }
             }
@@ -1580,7 +1580,7 @@ namespace nHydrate.Generator.PostgresInstaller
                         var fieldListString = string.Join(",", fieldList);
                         var valueListString = string.Join(",", valueList);
 
-                        sb.AppendLine("INSERT INTO \"" + table.GetPostgresSchema() + "\".\"" + Globals.GetTableDatabaseName(model, table) + "\" (" + fieldListString + ") OVERRIDING SYSTEM VALUE values (" + valueListString + ") ON CONFLICT DO NOTHING;");
+                        sb.AppendLine("INSERT INTO " + table.GetPostgresSchema() + ".\"" + Globals.GetTableDatabaseName(model, table) + "\" (" + fieldListString + ") OVERRIDING SYSTEM VALUE values (" + valueListString + ") ON CONFLICT DO NOTHING;");
                     }
 
                     sb.AppendLine();
@@ -1683,13 +1683,18 @@ namespace nHydrate.Generator.PostgresInstaller
                 (childTable.TypedTable != TypedTableConstants.EnumOnly))
             {
                 sb.AppendLine($"--FOREIGN KEY RELATIONSHIP [{parentTable.DatabaseName}] -> [{childTable.DatabaseName}] ({GetFieldNames(relation)})");
-                sb.AppendLine($"ALTER TABLE \"{childTable.GetPostgresSchema()}\".\"{childTable.DatabaseName}\" ADD ");
+                sb.AppendLine("DO $$");
+                sb.AppendLine("BEGIN");
+                sb.AppendLine($"ALTER TABLE IF EXISTS {childTable.GetPostgresSchema()}.\"{childTable.DatabaseName}\" ADD ");
                 sb.AppendLine($"CONSTRAINT \"{indexName}\" FOREIGN KEY ");
                 sb.AppendLine("(");
                 sb.Append(AppendChildTableColumns(relation));
-                sb.AppendLine($") REFERENCES \"{parentTable.GetPostgresSchema()}\".\"{parentTable.DatabaseName}\" (");
+                sb.AppendLine($") REFERENCES {parentTable.GetPostgresSchema()}.\"{parentTable.DatabaseName}\" (");
                 sb.Append(AppendParentTableColumns(relation, childTable));
                 sb.AppendLine(");");
+                sb.AppendLine("EXCEPTION WHEN OTHERS THEN");
+                sb.AppendLine("NULL;");
+                sb.AppendLine("END $$;");
             }
             return sb.ToString();
         }
@@ -1734,7 +1739,7 @@ namespace nHydrate.Generator.PostgresInstaller
                                      "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, parentT);
 
                         sb.AppendLine("--REMOVE FOREIGN KEY");
-                        sb.AppendLine("ALTER TABLE \"" + childT.GetPostgresSchema() + "\".\"" + childT.DatabaseName + "\" DROP CONSTRAINT IF EXISTS \"" + objectNameFK + "\";");
+                        sb.AppendLine($"ALTER TABLE IF EXISTS {childT.GetPostgresSchema()}.\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectNameFK}\";");
                         sb.AppendLine();
                     }
                 }
@@ -1760,7 +1765,7 @@ namespace nHydrate.Generator.PostgresInstaller
                         objectNameFK = objectNameFK.ToUpper();
 
                         sb.AppendLine("--REMOVE FOREIGN KEY");
-                        sb.AppendLine("ALTER TABLE \"" + childT.GetPostgresSchema() + "\".\"" + childT.DatabaseName + "\" DROP CONSTRAINT IF EXISTS \"" + objectNameFK + "\";");
+                        sb.AppendLine($"ALTER TABLE IF EXISTS {childT.GetPostgresSchema()}.\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectNameFK}\";");
                         sb.AppendLine();
                     }
                 }
@@ -1773,7 +1778,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
             var objectNamePK = "PK_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, t);
             sb.AppendLine($"--DELETE PRIMARY KEY FOR TABLE [{t.DatabaseName}]");
-            sb.AppendLine($"ALTER TABLE \"{t.GetPostgresSchema()}\".\"{t.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectNamePK}\";");
+            sb.AppendLine($"ALTER TABLE {t.GetPostgresSchema()}.\"{t.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectNamePK}\";");
             sb.AppendLine();
 
             #endregion
@@ -1785,7 +1790,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 var indexName = "IX_" + t.Name.Replace("-", "") + "_" + c.Name.Replace("-", string.Empty);
                 indexName = indexName.ToUpper();
                 sb.AppendLine("--DELETE UNIQUE CONTRAINT");
-                sb.AppendLine($"ALTER TABLE \"{t.GetPostgresSchema()}\".\"{t.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
+                sb.AppendLine($"ALTER TABLE {t.GetPostgresSchema()}.\"{t.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
                 sb.AppendLine();
             }
 
@@ -1798,7 +1803,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 var indexName = "IX_" + t.Name.Replace("-", "") + "_" + c.Name.Replace("-", string.Empty);
                 indexName = indexName.ToUpper();
                 sb.AppendLine("--DELETE UNIQUE CONTRAINT");
-                sb.AppendLine($"ALTER TABLE \"{t.GetPostgresSchema()}\".\"{t.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
+                sb.AppendLine($"ALTER TABLE {t.GetPostgresSchema()}.\"{t.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
                 sb.AppendLine();
 
                 indexName = CreateIndexName(t, c);
@@ -1815,7 +1820,7 @@ namespace nHydrate.Generator.PostgresInstaller
             {
                 var itemName = model.TenantPrefix + "_" + t.DatabaseName;
                 sb.AppendLine($"--DROP TENANT VIEW FOR TABLE [{t.DatabaseName}]");
-                sb.AppendLine($"DROP VIEW IF EXISTS \"{itemName}\"");
+                sb.AppendLine($"DROP VIEW IF EXISTS \"{itemName}\";");
             }
             #endregion
 
@@ -1867,7 +1872,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 newIndexName = newIndexName.ToUpper();
 
                 sb.AppendLine("--RENAME FK [" + newTable.DatabaseName + "].[" + oldIndexName + "]");
-                sb.AppendLine("ALTER TABLE \"" + newTable.GetPostgresSchema() + "\".\"" + newTable.DatabaseName + "\" RENAME CONSTRAINT \"" + oldIndexName + "\" TO \"" + newIndexName + "\";");
+                sb.AppendLine("ALTER TABLE " + newTable.GetPostgresSchema() + ".\"" + newTable.DatabaseName + "\" RENAME CONSTRAINT \"" + oldIndexName + "\" TO \"" + newIndexName + "\";");
                 sb.AppendLine();
             }
 
@@ -1939,7 +1944,7 @@ namespace nHydrate.Generator.PostgresInstaller
             //RENAME COLUMN
             var sb = new StringBuilder();
             sb.AppendLine($"--RENAME COLUMN '{table.DatabaseName}.{oldColumn}'");
-            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" RENAME \"{oldColumn}\" TO {newColumn}");
+            sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" RENAME \"{oldColumn}\" TO {newColumn}");
             return sb.ToString();
         }
 
@@ -1950,7 +1955,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
             var sb = new StringBuilder();
             sb.AppendLine($"--REMOVE FOREIGN KEY [{relation.ParentTable.DatabaseName}->{relation.ChildTable.DatabaseName}]");
-            sb.AppendLine($"ALTER TABLE \"{targetTable.GetPostgresSchema()}\".\"{targetTable.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
+            sb.AppendLine($"ALTER TABLE IF EXISTS {targetTable.GetPostgresSchema()}.\"{targetTable.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
             return sb.ToString();
         }
 
@@ -1988,7 +1993,7 @@ namespace nHydrate.Generator.PostgresInstaller
                         objectName = objectName.ToUpper();
 
                         sb.AppendLine("--REMOVE FOREIGN KEY");
-                        sb.AppendLine($"ALTER TABLE \"{childT.GetPostgresSchema()}\".\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
+                        sb.AppendLine($"ALTER TABLE IF EXISTS {childT.GetPostgresSchema()}.\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
                         sb.AppendLine();
                     }
                 }
@@ -2023,7 +2028,7 @@ namespace nHydrate.Generator.PostgresInstaller
                             objectName = objectName.ToUpper();
 
                             sb.AppendLine("--REMOVE FOREIGN KEY");
-                            sb.AppendLine($"ALTER TABLE \"{childT.GetPostgresSchema()}\".\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
+                            sb.AppendLine($"ALTER TABLE IF EXISTS {childT.GetPostgresSchema()}.\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
                             sb.AppendLine();
                         }
                     }
@@ -2048,7 +2053,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
                 //Delete Primary Key
                 sb.AppendLine($"--DELETE PRIMARY KEY FOR TABLE [{t.DatabaseName}]");
-                sb.AppendLine($"ALTER TABLE \"{t.GetPostgresSchema()}\".\"{t.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
+                sb.AppendLine($"ALTER TABLE {t.GetPostgresSchema()}.\"{t.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
                 sb.AppendLine();
             }
 
@@ -2079,7 +2084,7 @@ namespace nHydrate.Generator.PostgresInstaller
             #region Delete actual column
 
             sb.AppendLine("--DROP COLUMN");
-            sb.AppendLine($"ALTER TABLE \"{t.GetPostgresSchema()}\".\"{t.DatabaseName}\" DROP COLUMN IF EXISTS \"{column.DatabaseName}\"");
+            sb.AppendLine($"ALTER TABLE {t.GetPostgresSchema()}.\"{t.DatabaseName}\" DROP COLUMN IF EXISTS \"{column.DatabaseName}\"");
 
             #endregion
 
@@ -2152,7 +2157,7 @@ namespace nHydrate.Generator.PostgresInstaller
                         objectName = objectName.ToUpper();
 
                         sb.AppendLine("--REMOVE FOREIGN KEY");
-                        sb.AppendLine($"ALTER TABLE \"{childT.GetPostgresSchema()}\".\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
+                        sb.AppendLine($"ALTER TABLE IF EXISTS {childT.GetPostgresSchema()}.\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
                         sb.AppendLine();
                     }
                 }
@@ -2188,7 +2193,7 @@ namespace nHydrate.Generator.PostgresInstaller
                             objectName = objectName.ToUpper();
 
                             sb.AppendLine("--REMOVE FOREIGN KEY");
-                            sb.AppendLine($"ALTER TABLE \"{childT.GetPostgresSchema()}\".\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
+                            sb.AppendLine($"ALTER TABLE IF EXISTS {childT.GetPostgresSchema()}.\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
                             sb.AppendLine();
                         }
                     }
@@ -2205,7 +2210,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 //Drop the primary key so we can modify this column
                 var pkName = "PK_" + newTable.DatabaseName.ToUpper();
                 sb.AppendLine("--DROP PK BECAUSE THE MODIFIED FIELD IS A PK COLUMN");
-                sb.AppendLine($"ALTER TABLE \"{newTable.GetPostgresSchema()}\".\"{newTable.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{pkName}\";");
+                sb.AppendLine($"ALTER TABLE {newTable.GetPostgresSchema()}.\"{newTable.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{pkName}\";");
                 sb.AppendLine("--GO");
                 sb.AppendLine();
             }
@@ -2221,7 +2226,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 var indexName = "IX_" + newTable.Name.Replace("-", "") + "_" + newColumn.Name.Replace("-", string.Empty);
                 indexName = indexName.ToUpper();
                 sb.AppendLine("--DELETE UNIQUE CONTRAINT");
-                sb.AppendLine($"ALTER TABLE \"{newTable.GetPostgresSchema()}\".\"{newTable.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
+                sb.AppendLine($"ALTER TABLE {newTable.GetPostgresSchema()}.\"{newTable.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
                 sb.AppendLine();
 
                 //Other Index
@@ -2422,7 +2427,7 @@ namespace nHydrate.Generator.PostgresInstaller
             {
                 //var defaultName = $"DF__{column.ParentTable.DatabaseName}_{column.DatabaseName}".ToUpper();
                 sb.AppendLine($"--DROP CONSTRAINT FOR '[{column.ParentTable.DatabaseName}].[{column.DatabaseName}]'");
-                sb.AppendLine($"ALTER TABLE \"{column.ParentTable.GetPostgresSchema()}\".\"{column.ParentTable.DatabaseName}\" ALTER COLUMN \"{column.DatabaseName}\" SET DEFAULT {column.GetSQLDefault()}");
+                sb.AppendLine($"ALTER TABLE {column.ParentTable.GetPostgresSchema()}.\"{column.ParentTable.DatabaseName}\" ALTER COLUMN \"{column.DatabaseName}\" SET DEFAULT {column.GetSQLDefault()}");
             }
             return sb.ToString();
         }
@@ -2431,7 +2436,7 @@ namespace nHydrate.Generator.PostgresInstaller
         {
             var sb = new StringBuilder();
             sb.AppendLine($"--ADD COLUMN [{table.DatabaseName}].[{model.TenantColumnName}]");
-            sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" ADD COLUMN \"{model.TenantColumnName}\" varchar (128) NOT NULL CONSTRAINT \"DF__{table.DatabaseName.ToUpper()}_{model.TenantColumnName.ToUpper()}\" DEFAULT (current_user)");
+            sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN \"{model.TenantColumnName}\" varchar (128) NOT NULL CONSTRAINT \"DF__{table.DatabaseName.ToUpper()}_{model.TenantColumnName.ToUpper()}\" DEFAULT (current_user)");
             return sb.ToString();
         }
 
@@ -2552,7 +2557,7 @@ namespace nHydrate.Generator.PostgresInstaller
         public static string GetSqlCreateView(CustomView dbObject, bool isInternal)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"CREATE OR REPLACE VIEW \"{dbObject.GetPostgresSchema()}\".\"{dbObject.DatabaseName}\"");
+            sb.AppendLine($"CREATE OR REPLACE VIEW {dbObject.GetPostgresSchema()}.\"{dbObject.DatabaseName}\"");
             sb.AppendLine("AS");
             sb.AppendLine();
             sb.AppendLine(dbObject.SQL);
@@ -2564,6 +2569,7 @@ namespace nHydrate.Generator.PostgresInstaller
             {
                 sb.AppendLine($"--MODELID: {dbObject.Key}");
             }
+            sb.AppendLine(";");
             sb.AppendLine("--GO");
             sb.AppendLine();
             return sb.ToString();
@@ -2574,8 +2580,8 @@ namespace nHydrate.Generator.PostgresInstaller
             var sb = new StringBuilder();
             var name = dbObject.GetDatabaseObjectName();
 
-            sb.AppendLine("if exists(select * from sys.objects where name = '" + name + "' and type = 'P' and type_desc = 'SQL_STORED_PROCEDURE')");
-            sb.AppendLine("drop procedure [" + dbObject.GetSQLSchema() + "].[" + name + "]");
+            sb.AppendLine($"if exists(select * from sys.objects where name = '{name}' and type = 'P' and type_desc = 'SQL_STORED_PROCEDURE')");
+            sb.AppendLine($"drop procedure [{dbObject.GetSQLSchema()}].[{name}]");
             if (isInternal)
             {
                 sb.AppendLine($"--MODELID: {dbObject.Key}");
@@ -2597,7 +2603,7 @@ namespace nHydrate.Generator.PostgresInstaller
             sb.AppendLine();
             if (isInternal)
             {
-                sb.AppendLine("--MODELID,BODY: " + dbObject.Key);
+                sb.AppendLine($"--MODELID,BODY: {dbObject.Key}");
             }
             sb.AppendLine("GO");
             sb.AppendLine();

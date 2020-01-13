@@ -97,11 +97,11 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.AuditTrigge
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
                 sb.AppendLine("--DROP ANY AUDIT TRIGGERS FOR [" + table.GetPostgresSchema() + "].[" + table.DatabaseName + "]");
-                sb.AppendLine($"DROP TRIGGER IF EXISTS \"__TR_{table.DatabaseName}__INSERT\" ON \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\"");
+                sb.AppendLine($"DROP TRIGGER IF EXISTS \"__TR_{table.DatabaseName}__INSERT\" ON {table.GetPostgresSchema()}.\"{table.DatabaseName}\";");
                 sb.AppendLine("--GO");
-                sb.AppendLine($"DROP TRIGGER IF EXISTS \"__TR_{table.DatabaseName}__UPDATE\" ON \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\"");
+                sb.AppendLine($"DROP TRIGGER IF EXISTS \"__TR_{table.DatabaseName}__UPDATE\" ON {table.GetPostgresSchema()}.\"{table.DatabaseName}\";");
                 sb.AppendLine("--GO");
-                sb.AppendLine($"DROP TRIGGER IF EXISTS \"__TR_{table.DatabaseName}__DELETE\" ON \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\"");
+                sb.AppendLine($"DROP TRIGGER IF EXISTS \"__TR_{table.DatabaseName}__DELETE\" ON {table.GetPostgresSchema()}.\"{table.DatabaseName}\";");
                 sb.AppendLine("--GO");
                 sb.AppendLine();
 

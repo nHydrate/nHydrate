@@ -166,7 +166,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                 sb.AppendLine("--##SECTION BEGIN [FIELD CREATE]");
                 foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
                 {
-                    sb.AppendLine("--TABLE [" + table.DatabaseName + "] ADD FIELDS");
+                    sb.AppendLine($"--TABLE [{table.DatabaseName}] ADD FIELDS");
                     foreach (var column in table.GeneratedColumns.OrderBy(x => x.SortOrder))
                         sb.Append(SQLEmit.GetSqlAddColumn(column, false));
                     sb.AppendLine("--GO");
@@ -438,7 +438,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                     if (table.IsTenant)
                     {
                         sb.AppendLine($"--APPEND TENANT FIELD FOR TABLE [{table.DatabaseName}]");
-                        sb.AppendLine($"ALTER TABLE \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{_model.TenantColumnName}\" varchar (128) NOT NULL CONSTRAINT \"DF__" + table.PascalName.ToUpper() + "_" + _model.TenantColumnName.ToUpper() + "\" DEFAULT current_user");
+                        sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{_model.TenantColumnName}\" varchar (128) NOT NULL CONSTRAINT \"DF__" + table.PascalName.ToUpper() + "_" + _model.TenantColumnName.ToUpper() + "\" DEFAULT current_user;");
                         sb.AppendLine();
                     }
 
@@ -509,9 +509,9 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
 
                 if (tempsb.ToString() != string.Empty)
                 {
-                    sb.AppendLine("--BEGIN DEFAULTS FOR TABLE [" + table.DatabaseName + "]");
+                    sb.AppendLine($"--BEGIN DEFAULTS FOR TABLE [{table.DatabaseName}]");
                     sb.Append(tempsb.ToString());
-                    sb.AppendLine("--END DEFAULTS FOR TABLE [" + table.DatabaseName + "]");
+                    sb.AppendLine($"--END DEFAULTS FOR TABLE [{table.DatabaseName}]");
                     sb.AppendLine("--GO");
                     sb.AppendLine();
                 }
@@ -541,9 +541,9 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
 
                 if (tempsb.ToString() != string.Empty)
                 {
-                    sb.AppendLine("--BEGIN DEFAULTS FOR TABLE [" + table.DatabaseName + "]");
+                    sb.AppendLine($"--BEGIN DEFAULTS FOR TABLE [{table.DatabaseName}]");
                     sb.Append(tempsb.ToString());
-                    sb.AppendLine("--END DEFAULTS FOR TABLE [" + table.DatabaseName + "]");
+                    sb.AppendLine($"--END DEFAULTS FOR TABLE [{table.DatabaseName}]");
                     sb.AppendLine("--GO");
                     sb.AppendLine();
                 }

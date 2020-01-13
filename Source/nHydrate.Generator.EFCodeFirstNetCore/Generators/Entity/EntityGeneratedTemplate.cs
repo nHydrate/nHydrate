@@ -347,8 +347,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             //For now only create constructor for Immutable
             //Let user create default constructor if neeed
-            if (!_item.Immutable && !_item.AssociativeTable)
-                return;
+            //if (!_item.Immutable && !_item.AssociativeTable)
+            //    return;
 
             var doubleDerivedClassName = _item.PascalName;
             if (_item.GeneratesDoubleDerived)
@@ -853,7 +853,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
             {
                 sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		protected " + column.GetCodeType() + " _" + column.CamelName + ";");
+                sb.AppendLine($"		protected {column.GetCodeType()} _{column.CamelName};");
                 this.AppendPropertyEventDeclarations(column, column.GetCodeType());
             }
 
@@ -867,15 +867,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
-
-            ////TODO: Implement this!!
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		[field:NonSerialized]");
-            //sb.AppendLine("		public event PropertyChangedEventHandler PropertyChanged;");
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		[field:NonSerialized]");
-            //sb.AppendLine("		public event PropertyChangingEventHandler PropertyChanging;");
-            //sb.AppendLine();
         }
 
         private void AppendPropertyEventDeclarations(Column column, string codeType)
