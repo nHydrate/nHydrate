@@ -235,7 +235,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             this.AppendRegionGetValue();
             this.AppendRegionSetValue();
             this.AppendNavigationProperties();
-            this.AppendAuditQuery();
 
             //TODO: need to make this work for all databases
             //Remove for now in EF Core
@@ -778,7 +777,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             sb.AppendLine();
 
                             sb.AppendLine("        /// <summary>");
-                            sb.AppendLine($"        /// Get a list of associated {targetRelation.ParentTable.PascalName} entities for this many-to-many relationship");
+                            sb.AppendLine($"        /// Gets a readonly list of associated {targetRelation.ParentTable.PascalName} entities for this many-to-many relationship");
                             sb.AppendLine("        /// </summary>");
                             sb.AppendLine("        [System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                             sb.AppendLine($"        public IList<{this.GetLocalNamespace()}.Entity.{targetRelation.ParentTable.PascalName}> Associated{targetRelation.ParentTable.PascalName}List");
@@ -1581,63 +1580,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
-        }
-
-        private void AppendAuditQuery()
-        {
-            //NO AUDIT TRACKING FOR NOW
-            return;
-
-            if (!_item.AllowAuditTracking) return;
-
-            sb.AppendLine("		#region GetAuditRecords");
-            sb.AppendLine();
-
-            var modifier = "virtual";
-            if (_item.GetTableHierarchy().Count(x => x != _item && x.AllowAuditTracking) != 0)
-                modifier = "new";
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Return audit records for this entity");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <returns>A set of audit records for the current record based on primary key</returns>");
-            sb.AppendLine("		public " + modifier + " IEnumerable<" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit> GetAuditRecords()");
-            sb.AppendLine("		{");
-            sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit.GetAuditRecords(");
-            sb.AppendLine(string.Join(", ", _item.PrimaryKeyColumns.Select(x => "this." + x.PascalName)) + ");");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Return audit records for this entity");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"pageOffset\">The page offset needed for pagination starting from page 1</param>");
-            sb.AppendLine("		/// <param name=\"recordsPerPage\">The number of records to be returned on a page.</param>");
-            sb.AppendLine("		/// <returns>A set of audit records for the current record based on primary key</returns>");
-            sb.AppendLine("		public " + modifier + " " + this.GetLocalNamespace() + ".AuditPaging<" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit> GetAuditRecords(int pageOffset, int recordsPerPage)");
-            sb.AppendLine("		{");
-            sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit.GetAuditRecords(pageOffset, recordsPerPage, null, null, ");
-            sb.AppendLine(string.Join(", ", _item.PrimaryKeyColumns.Select(x => "this." + x.PascalName)) + ");");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Return audit records for this entity");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"pageOffset\">The page offset needed for pagination starting from page 1</param>");
-            sb.AppendLine("		/// <param name=\"recordsPerPage\">The number of records to be returned on a page.</param>");
-            sb.AppendLine("		/// <param name=\"startDate\">The starting date used when searching for records.</param>");
-            sb.AppendLine("		/// <param name=\"endDate\">The ending date used when searching for records.</param>");
-            sb.AppendLine("		/// <returns>A set of audit records for the current record based on primary key</returns>");
-            sb.AppendLine("		public " + modifier + " " + this.GetLocalNamespace() + ".AuditPaging<" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit> GetAuditRecords(int pageOffset, int recordsPerPage, DateTime? startDate, DateTime? endDate)");
-            sb.AppendLine("		{");
-            sb.Append("			return " + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit.GetAuditRecords(pageOffset, recordsPerPage, startDate, endDate, ");
-            sb.AppendLine(string.Join(", ", _item.PrimaryKeyColumns.Select(x => "this." + x.PascalName)) + ");");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-
         }
 
         private void GenerateAuditField(string columnName, string codeType, string description, string propertyScope, string attributeType, bool isConcurrency = false)

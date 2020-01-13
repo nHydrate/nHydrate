@@ -891,7 +891,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 #region IContext
                 sb.AppendLine("	#region IContext");
                 sb.AppendLine("	/// <summary>");
-                sb.AppendLine("	/// The interface for a context object");
+                sb.AppendLine("	/// The interface for a entity context");
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	public partial interface IContext");
                 sb.AppendLine("	{");
@@ -967,15 +967,19 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// The base class for all entity objects using EF 6");
                 sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	[System.Runtime.Serialization.DataContract(IsReference = true)]");
+                //sb.AppendLine("	[System.Runtime.Serialization.DataContract(IsReference = true)]");
                 sb.AppendLine("	public abstract partial class BaseEntity");
                 sb.AppendLine("	{");
                 if (_model.EnableCustomChangeEvents)
                 {
-                    sb.AppendLine("		/// <summary />");
+                    sb.AppendLine("		/// <summary>");
+                    sb.AppendLine("		/// Event raised after a property is changed");
+                    sb.AppendLine("		/// </summary>");
                     //sb.AppendLine("		[field:NonSerialized]");
                     sb.AppendLine("		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;");
-                    sb.AppendLine("		/// <summary />");
+                    sb.AppendLine("		/// <summary>");
+                    sb.AppendLine("		/// Event raised before a property is changed");
+                    sb.AppendLine("		/// </summary>");
                     //sb.AppendLine("		[field:NonSerialized]");
                     sb.AppendLine("		public event System.ComponentModel.PropertyChangingEventHandler PropertyChanging;");
                     sb.AppendLine();
@@ -1001,9 +1005,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 #region IBusinessObject
                 sb.AppendLine("	#region IBusinessObject");
                 sb.AppendLine("	/// <summary>");
-                sb.AppendLine("	/// The interface for all entities");
+                sb.AppendLine("	/// An interface for writable entities");
                 sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	public partial interface IBusinessObject : " + GetLocalNamespace() + ".IReadOnlyBusinessObject");
+                sb.AppendLine($"	public partial interface IBusinessObject : {GetLocalNamespace()}.IReadOnlyBusinessObject");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Sets the value of a field");
@@ -1032,7 +1036,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// This class can be used to optimize queries or report information about the operations");
                 sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	public partial class QueryOptimizer");
+                sb.AppendLine("	internal partial class QueryOptimizer");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Determines if the query use select locks");
@@ -1135,30 +1139,45 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 #endregion
 
                 #region Audit Attributes
+                sb.AppendLine("	/// <summary>");
+                sb.AppendLine("	/// Attribute used to decorate a concurrency field");
+                sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
                 sb.AppendLine("	public partial class AuditTimestampAttribute : System.Attribute");
                 sb.AppendLine("	{");
                 sb.AppendLine("	}");
                 sb.AppendLine();
 
+                sb.AppendLine("	/// <summary>");
+                sb.AppendLine("	/// Attribute used to decorate an Audit CreatedBy field");
+                sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
                 sb.AppendLine("	public partial class AuditCreatedByAttribute : System.Attribute");
                 sb.AppendLine("	{");
                 sb.AppendLine("	}");
                 sb.AppendLine();
 
+                sb.AppendLine("	/// <summary>");
+                sb.AppendLine("	/// Attribute used to decorate an Audit CreatedDate field");
+                sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
                 sb.AppendLine("	public partial class AuditCreatedDateAttribute : System.Attribute");
                 sb.AppendLine("	{");
                 sb.AppendLine("	}");
                 sb.AppendLine();
 
+                sb.AppendLine("	/// <summary>");
+                sb.AppendLine("	/// Attribute used to decorate an Audit ModifiedBy field");
+                sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
                 sb.AppendLine("	public partial class AuditModifiedByAttribute : System.Attribute");
                 sb.AppendLine("	{");
                 sb.AppendLine("	}");
                 sb.AppendLine();
 
+                sb.AppendLine("	/// <summary>");
+                sb.AppendLine("	/// Attribute used to decorate an Audit ModifiedDate field");
+                sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
                 sb.AppendLine("	public partial class AuditModifiedDateAttribute : System.Attribute");
                 sb.AppendLine("	{");
@@ -1248,16 +1267,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("		/// <param name=\"field\"></param>");
                 sb.AppendLine("		/// <returns></returns>");
                 sb.AppendLine("		System.Type GetFieldType(Enum field);");
-                sb.AppendLine("	}");
-                sb.AppendLine("	#endregion");
-                sb.AppendLine();
-                #endregion
-
-                #region IBusinessObjectLINQQuery
-                sb.AppendLine("	#region IBusinessObjectLINQQuery");
-                sb.AppendLine("	/// <summary />");
-                sb.AppendLine("	public partial interface IBusinessObjectLINQQuery");
-                sb.AppendLine("	{");
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();

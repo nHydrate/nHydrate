@@ -123,7 +123,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
         private void AppendEntityClass()
         {
             sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// The object to hold the '" + _item.PascalName + "Audit' entity");
+            sb.AppendLine($"	/// The '{_item.PascalName}Audit' entity");
             if (!string.IsNullOrEmpty(_item.Description))
                 sb.AppendLine("	/// " + _item.Description);
             sb.AppendLine("	/// </summary>");
@@ -217,7 +217,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
             sb.AppendLine("		public int __RowId { get; protected set; }");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// The type of audit");
+            sb.AppendLine("		/// The type of audit (Insert, Update, Delete)");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public " + this.GetLocalNamespace() + ".AuditTypeConstants AuditType { get; protected internal set; }");
             sb.AppendLine();

@@ -178,6 +178,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.AllowAuditTracking && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 sb.AppendLine($"			//Field setup for {table.PascalName}Audit entity");
+                foreach (var column in table.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+                {
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Audit." + table.PascalName + "Audit>().Property(d => d." + column.PascalName + ").HasColumnName(\"" + column.DatabaseName + "\");");
+                }
                 sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Audit." + table.PascalName + "Audit>().Property(d => d.__RowId).IsRequired().HasColumnName(\"__rowid\");");
                 sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Audit." + table.PascalName + "Audit>().Property(d => d.AuditType).IsRequired().HasColumnName(\"__action\");");
                 sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Audit." + table.PascalName + "Audit>().Property(d => d.AuditDate).IsRequired().HasColumnName(\"__insertdate\");");

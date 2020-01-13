@@ -363,7 +363,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
 
             #region Many-to-Many Convenience extensions
 
-            sb.AppendLine("        #region Many-to-Many Convenience extensions");
+            sb.AppendLine("        #region Many-to-Many Convenience Extensions");
 
             foreach (var table in _model.Database.Tables.Where(x => x.AssociativeTable && x.Generated))
             {
@@ -374,7 +374,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
                     var relation2 = relations.Last();
 
                     sb.AppendLine("        /// <summary>");
-                    sb.AppendLine($"        /// Adds a {relation1.ParentTable.PascalName} child object to a many-to-many relationship");
+                    sb.AppendLine($"        /// Adds a {relation1.ParentTable.PascalName} child entity to a many-to-many relationship");
                     sb.AppendLine("        /// </summary>");
                     sb.AppendLine($"        public static void Associate{relation1.ParentTable.PascalName}(this EFDAL.Entity.{relation2.ParentTable.PascalName} item, EFDAL.Entity.{relation1.ParentTable.PascalName} child)");
                     sb.AppendLine("        {");
@@ -385,7 +385,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
                     sb.AppendLine();
 
                     sb.AppendLine("        /// <summary>");
-                    sb.AppendLine($"        /// Removes a {relation1.ParentTable.PascalName} child object from a many-to-many relationship");
+                    sb.AppendLine($"        /// Removes a {relation1.ParentTable.PascalName} child entity from a many-to-many relationship");
                     sb.AppendLine("        /// </summary>");
                     sb.AppendLine($"        public static void Unassociate{relation1.ParentTable.PascalName}(this EFDAL.Entity.{relation2.ParentTable.PascalName} item, EFDAL.Entity.{relation1.ParentTable.PascalName} child)");
                     sb.AppendLine("        {");
@@ -399,7 +399,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
                     sb.AppendLine();
 
                     sb.AppendLine("        /// <summary>");
-                    sb.AppendLine($"        /// Adds a {relation2.ParentTable.PascalName} child object to a many-to-many relationship");
+                    sb.AppendLine($"        /// Adds a {relation2.ParentTable.PascalName} child entity to a many-to-many relationship");
                     sb.AppendLine("        /// </summary>");
                     sb.AppendLine($"        public static void Associate{relation2.ParentTable.PascalName}(this EFDAL.Entity.{relation1.ParentTable.PascalName} item, EFDAL.Entity.{relation2.ParentTable.PascalName} child)");
                     sb.AppendLine("        {");
@@ -410,7 +410,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
                     sb.AppendLine();
 
                     sb.AppendLine("        /// <summary>");
-                    sb.AppendLine($"        /// Removes a {relation2.ParentTable.PascalName} child object from a many-to-many relationship");
+                    sb.AppendLine($"        /// Removes a {relation2.ParentTable.PascalName} child entity from a many-to-many relationship");
                     sb.AppendLine("        /// </summary>");
                     sb.AppendLine($"        public static void Unassociate{relation2.ParentTable.PascalName}(this EFDAL.Entity.{relation1.ParentTable.PascalName} item, EFDAL.Entity.{relation2.ParentTable.PascalName} child)");
                     sb.AppendLine("        {");
@@ -422,7 +422,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
                     sb.AppendLine($"                item.{table.PascalName}List.Remove(cItem);");
                     sb.AppendLine("        }");
                     sb.AppendLine();
-
                 }
             }
 

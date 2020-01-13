@@ -142,7 +142,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("	#region Entity Context");
             sb.AppendLine();
             sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// The object context for the schema tied to this generated model.");
+            sb.AppendLine("	/// The entity context for the defined model schema");
             sb.AppendLine("	/// </summary>");
             sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : Microsoft.EntityFrameworkCore.DbContext, " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities, IContext");
             sb.AppendLine("	{");
@@ -537,8 +537,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
             sb.AppendLine("			#endregion");
             sb.AppendLine();
-            sb.AppendLine("			OnModelCreated(modelBuilder);");
-            sb.AppendLine();
             #endregion
 
             #region Create annotations for relationships
@@ -555,14 +553,23 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         {
                             sb.AppendLine($"			//Relation [{table.PascalName}] -> [{childTable.PascalName}] (Multiplicity 1:1)");
                             sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>()");
-                            sb.AppendLine($"							 .HasOne(a => a.{relation.PascalRoleName}{childTable.PascalName})");
-                            sb.AppendLine($"							 .WithOne(x => x.{relation.PascalRoleName}{table.PascalName})");
+                            sb.AppendLine($"							.HasOne(a => a.{relation.PascalRoleName}{childTable.PascalName})");
+                            sb.AppendLine($"							.WithOne(x => x.{relation.PascalRoleName}{table.PascalName})");
                             sb.AppendLine("							.HasForeignKey<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(q => new { " + string.Join(",", relation.ColumnRelationships.Select(x => x.ChildColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
-                            sb.AppendLine("							 .HasPrincipalKey<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + " > (q => new { " + string.Join(",", relation.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                            sb.AppendLine("							.HasPrincipalKey<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">(q => new { " + string.Join(",", relation.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
                             if (relation.IsRequired)
-                                sb.AppendLine("							 .IsRequired(true);");
+                                sb.AppendLine("							.IsRequired(true)");
                             else
-                                sb.AppendLine("							 .IsRequired(false);");
+                                sb.AppendLine("							.IsRequired(false)");
+
+                            //Specify what to do on delete
+                            if (relation.DeleteAction == Relation.DeleteActionConstants.Cascade)
+                                sb.AppendLine("							.OnDelete(DeleteBehavior.Cascade);");
+                            else if (relation.DeleteAction == Relation.DeleteActionConstants.SetNull)
+                                sb.AppendLine("							.OnDelete(DeleteBehavior.SetNull);");
+                            else if (relation.DeleteAction == Relation.DeleteActionConstants.NoAction)
+                                sb.AppendLine("							.OnDelete(DeleteBehavior.Restrict);");
+
                         }
                         else
                         {
@@ -677,6 +684,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
             #endregion
 
+            sb.AppendLine("			// Override this event in the partial class to add any custom model changes or validation");
+            sb.AppendLine("			this.OnModelCreated(modelBuilder);");
+            sb.AppendLine();
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -1022,6 +1032,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             #region Connection String
+            sb.AppendLine("		#region Connection String");
+            sb.AppendLine();
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Returns the connection string used for this context object");
             sb.AppendLine("		/// </summary>");
@@ -1079,6 +1091,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             //sb.AppendLine("			}");
             //sb.AppendLine("		}");
             //sb.AppendLine();
+
+            sb.AppendLine("		#endregion");
+            sb.AppendLine();
+
             #endregion
 
             #region Context Interface Members
