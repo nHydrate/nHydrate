@@ -33,6 +33,7 @@ using nHydrate.Generator.Common.Util;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.Modeling;
 using nHydrate.Dsl;
+using System.IO.Compression;
 
 namespace nHydrate.Dsl.Custom
 {
@@ -53,7 +54,8 @@ namespace nHydrate.Dsl.Custom
             modelRoot.IsSaving = true;
             try
             {
-                var modelFolder = GetModelFolder(rootFolder, modelName);
+                var folderName = modelName.Replace(".nhydrate", ".model");
+                var modelFolder = GetModelFolder(rootFolder, folderName);
                 var generatedFileList = new List<string>();
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.ModelMetadata, modelFolder, diagram, generatedFileList);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Modules, modelFolder, diagram, generatedFileList);
@@ -63,6 +65,37 @@ namespace nHydrate.Dsl.Custom
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Functions, modelFolder, diagram, generatedFileList);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveDiagramFiles(modelFolder, diagram, generatedFileList);
                 RemoveOrphans(modelFolder, generatedFileList);
+
+                try
+                {
+                    var compressedFile = Path.Combine(rootFolder, modelName + ".zip");
+                    if (File.Exists(compressedFile))
+                    {
+                        File.Delete(compressedFile);
+                        System.Threading.Thread.Sleep(300);
+                    }
+
+                    //Create ZIP file with entire model folder
+                    System.IO.Compression.ZipFile.CreateFromDirectory(modelFolder, compressedFile, System.IO.Compression.CompressionLevel.Fastest, true);
+
+                    //Now add the top level model artifacts
+                    var artifacts = Directory.GetFiles(rootFolder, $"{modelName}.*").ToList();
+                    artifacts.RemoveAll(x => x == compressedFile);
+                    using (var zipToOpen = System.IO.Compression.ZipFile.Open(compressedFile, System.IO.Compression.ZipArchiveMode.Update))
+                    {
+                        foreach (var ff in artifacts)
+                        {
+                            var fi = new FileInfo(ff);
+                            zipToOpen.CreateEntryFromFile(ff, fi.Name);
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    //Do Nothing
+                }
+
             }
             catch (Exception ex)
             {
@@ -890,7 +923,25 @@ namespace nHydrate.Dsl.Custom
             model.IsSaving = true;
             try
             {
-                var modelFolder = GetModelFolder(rootFolder, modelName);
+                var folderName = modelName.Replace(".nhydrate", ".model");
+                var modelFolder = GetModelFolder(rootFolder, folderName);
+
+                //If the model folder does NOT exist
+                if (!Directory.Exists(modelFolder))
+                {
+                    //Try to use the ZIP file
+                    var compressedFile = Path.Combine(rootFolder, modelName + ".zip");
+                    if (!File.Exists(compressedFile))
+                    {
+                        MessageBox.Show("The model folder was not found and the ZIP file is missing. One of these must exist to continue.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    //Unzip the whole file
+                    //System.IO.Compression.ZipFile.ExtractToDirectory(compressedFile, rootFolder);
+                    ExtractToDirectory(compressedFile, rootFolder, false);
+                }
+
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.ModelMetadata, model, modelFolder, store);
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Modules, model, modelFolder, store);
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Views, model, modelFolder, store); //must coem before entities (view relations)
@@ -2136,6 +2187,47 @@ namespace nHydrate.Dsl.Custom
                     File.Delete(f);
                 }
 
+            }
+        }
+
+        private static void ExtractToDirectory(string compressedFile, string destinationDirectoryName, bool overwrite)
+        {
+            using (var archive = System.IO.Compression.ZipFile.Open(compressedFile, System.IO.Compression.ZipArchiveMode.Update))
+            {
+                //if (!overwrite)
+                //{
+                //    archive.ExtractToDirectory(destinationDirectoryName);
+                //    return;
+                //}
+
+                var di = Directory.CreateDirectory(destinationDirectoryName);
+                var destinationDirectoryFullPath = di.FullName;
+                foreach (var file in archive.Entries)
+                {
+                    var completeFileName = Path.GetFullPath(Path.Combine(destinationDirectoryFullPath, file.FullName));
+                    if (!completeFileName.StartsWith(destinationDirectoryFullPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new IOException("Trying to extract file outside of destination directory. See this link for more info: https://snyk.io/research/zip-slip-vulnerability");
+                    }
+
+                    if (file.Name == string.Empty)
+                    {
+                        // Assuming Empty for Directory
+                        Directory.CreateDirectory(Path.GetDirectoryName(completeFileName));
+                        continue;
+                    }
+
+                    if (!File.Exists(completeFileName))
+                    {
+                        var folder = (new FileInfo(completeFileName)).DirectoryName;
+                        if (!Directory.Exists(folder))
+                        {
+                            Directory.CreateDirectory(folder);
+                            System.Threading.Thread.Sleep(200);
+                        }
+                        file.ExtractToFile(completeFileName, overwrite);
+                    }
+                }
             }
         }
 

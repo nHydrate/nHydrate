@@ -47,23 +47,23 @@ namespace nHydrate.Dsl
         {
             var mainInfo = new FileInfo(modelFileName);
             modelRoot.ModelFileName = modelFileName;
-            var modelName = mainInfo.Name.Replace(".nhydrate", ".model");
+            //var modelName = mainInfo.Name.Replace(".nhydrate", ".model");
 
-            if (modelRoot.ModelToDisk)
-            {
-                nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, mainInfo.DirectoryName, modelName, diagram);
-            }
-            else
-            {
-                try
-                {
-                    var f = nHydrate.Dsl.Custom.SQLFileManagement.GetModelFolder(mainInfo.DirectoryName, modelName);
-                    if (Directory.Exists(f)) Directory.Delete(f, true);
-                }
-                catch
-                {
-                }
-            }
+            //if (modelRoot.ModelToDisk)
+            //{
+                nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, mainInfo.DirectoryName, mainInfo.Name, diagram);
+            //}
+            //else
+            //{
+            //    try
+            //    {
+            //        var f = nHydrate.Dsl.Custom.SQLFileManagement.GetModelFolder(mainInfo.DirectoryName, modelName);
+            //        if (Directory.Exists(f)) Directory.Delete(f, true);
+            //    }
+            //    catch
+            //    {
+            //    }
+            //}
 
             base.SaveModelAndDiagram(serializationResult, modelRoot, modelFileName, diagram, diagramFileName, encoding, writeOptionalPropertiesWithDefaultValue);
 
@@ -192,12 +192,12 @@ namespace nHydrate.Dsl
             modelRoot.IsDirty = false;
 
             var mainInfo = new FileInfo(modelFileName);
-            var modelName = mainInfo.Name.Replace(".nhydrate", ".model");
+            //var modelName = mainInfo.Name.Replace(".nhydrate", ".model");
 
-            if (modelRoot.ModelToDisk)
-            {
+            //if (modelRoot.ModelToDisk)
+            //{
                 //Load from disk store
-                nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(modelRoot, mainInfo.DirectoryName, modelRoot.Partition.Store, modelName);
+                nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(modelRoot, mainInfo.DirectoryName, modelRoot.Partition.Store, mainInfo.Name);
 
                 #region Watch Folder
                 //var modelFolder = nHydrate.Dsl.Custom.SQLFileManagement.GetModelFolder(mainInfo.DirectoryName, modelName);
@@ -224,18 +224,18 @@ namespace nHydrate.Dsl
                 //}
                 #endregion
 
-            }
-            else
-            {
-                try
-                {
-                    var f = nHydrate.Dsl.Custom.SQLFileManagement.GetModelFolder(mainInfo.DirectoryName, modelName);
-                    if (Directory.Exists(f)) Directory.Delete(f, true);
-                }
-                catch
-                {
-                }
-            }
+            //}
+            //else
+            //{
+            //    try
+            //    {
+            //        var f = nHydrate.Dsl.Custom.SQLFileManagement.GetModelFolder(mainInfo.DirectoryName, modelName);
+            //        if (Directory.Exists(f)) Directory.Delete(f, true);
+            //    }
+            //    catch
+            //    {
+            //    }
+            //}
 
             modelRoot.IsDirty = false;
 
