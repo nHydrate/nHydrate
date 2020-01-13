@@ -5,6 +5,8 @@ This platform creates strongly-typed, extendable classes for Entity Framework. *
 
 The main home page is [nHydrate.com](https://nHydrate.com)
 
+Questions or comments contact [feedback@nhydrate.org](mailto:feedback@nhydrate.org)
+
 nHydrate is now for Entity Framework Core only. The previous Entity Framework 4.x-6.x support can be downloaded here. It must be manually installed, as it is no longer available in the Gallery.
 [Legacy Version](http://nhydrate.org/downloads/nHydrate.DslPackage.vsix.zip)
 
