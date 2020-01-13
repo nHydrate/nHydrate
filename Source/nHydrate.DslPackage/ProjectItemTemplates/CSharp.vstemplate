@@ -6,7 +6,7 @@
 		<Icon Package="{36220dab-63c7-4daa-860c-fc548bf4d5d3}" ID="201" />
 		<ProjectType>CSharp</ProjectType>
 		<SortOrder>360</SortOrder>
-		<DefaultName>nHydrate.nhydrate</DefaultName>
+		<DefaultName>Model.nhydrate</DefaultName>
 	</TemplateData>
 	<TemplateContent>
 		<ProjectItem TargetFileName="$fileinputname$.nhydrate">nhydrate.nhydrate</ProjectItem>

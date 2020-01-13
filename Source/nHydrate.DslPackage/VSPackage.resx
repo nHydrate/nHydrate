@@ -128,7 +128,7 @@
     <value>nHydrate</value>
   </data>
   <data name="102" xml:space="preserve">
-    <value>Adds a nHydrate file to the project.</value>
+    <value>Adds a nHydrate model file to the project.</value>
   </data>
   <data name="201" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\File.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

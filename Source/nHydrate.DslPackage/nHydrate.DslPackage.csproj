@@ -522,27 +522,12 @@
     <Compile Include="Objects\Utils.cs" />
     <Compile Include="Overrides\nHydrateCommandSet.cs" />
     <Compile Include="Overrides\nHydratePackage.cs" />
-    <Compile Include="ProjectItemTemplates\VisualBasic.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>VisualBasic.tt</DependentUpon>
-    </Compile>
-    <Compile Include="source.extension.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>source.extension.tt</DependentUpon>
-    </Compile>
-    <Compile Include="VSPackage.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>VSPackage.resx</DependentUpon>
-    </Compile>
     <None Include="app.config" />
     <None Include="Key.snk" />
     <None Include="packages.config" />
     <None Include="source.extension.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>source.extension.cs</LastGenOutput>
+      <LastGenOutput>source.extension.vsixmanifest</LastGenOutput>
     </None>
     <None Include="GeneratedCode\Constants.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -743,8 +728,6 @@
       <SubType>Designer</SubType>
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>VSPackage.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -753,16 +736,27 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GeneratedVSCT.tt</DependentUpon>
     </Content>
-    <Content Include="ProjectItemTemplates\CSharp.vstemplate">
+    <VSItemTemplate Include="ProjectItemTemplates\CSharp.vstemplate">
+      <OutputName>Language1</OutputName>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CSharp.tt</DependentUpon>
-    </Content>
+    </VSItemTemplate>
+    <VSItemTemplate Include="ProjectItemTemplates\VisualBasic.vstemplate">
+      <OutputName>Language1</OutputName>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VisualBasic.tt</DependentUpon>
+    </VSItemTemplate>
     <Content Include="Resources\vsix-gallery.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <None Include="source.extension.vsixmanifest" />
+    <None Include="source.extension.vsixmanifest">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>source.extension.tt</DependentUpon>
+    </None>
     <EmbeddedResource Include="..\..\Resources\Images\folder.png">
       <Link>Resources\folder.png</Link>
     </EmbeddedResource>
@@ -795,15 +789,17 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>CSharp.vstemplate</LastGenOutput>
     </None>
-    <EmbeddedResource Include="ProjectItemTemplates\nhydrate.nhydrate">
+    <Content Include="ProjectItemTemplates\nhydrate.nhydrate">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ProjectItemTemplates\nhydrate.diagram">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="ProjectItemTemplates\nhydrate.diagram">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="ProjectItemTemplates\VisualBasic.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>VisualBasic.cs</LastGenOutput>
+      <LastGenOutput>VisualBasic.vstemplate</LastGenOutput>
     </None>
   </ItemGroup>
   <PropertyGroup>
