@@ -159,21 +159,24 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                 sb.AppendLine();
             }
 
+            //TODO BELOW: There is a problem with Postgres in that it creates multiple fields
+            //when "GENERATED ALWAYS AS IDENTITY" is used. It creates errors. This needs to be worked out
+
             //Only emit these defensive scripts if necessary
-            if (_model.EmitSafetyScripts)
-            {
-                //Now emit all field individually
-                sb.AppendLine("--##SECTION BEGIN [FIELD CREATE]");
-                foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
-                {
-                    sb.AppendLine($"--TABLE [{table.DatabaseName}] ADD FIELDS");
-                    foreach (var column in table.GeneratedColumns.OrderBy(x => x.SortOrder))
-                        sb.Append(SQLEmit.GetSqlAddColumn(column, false));
-                    sb.AppendLine("--GO");
-                }
-                sb.AppendLine("--##SECTION END [FIELD CREATE]");
-                sb.AppendLine();
-            }
+            //if (_model.EmitSafetyScripts)
+            //{
+            //    //Now emit all field individually
+            //    sb.AppendLine("--##SECTION BEGIN [FIELD CREATE]");
+            //    foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            //    {
+            //        sb.AppendLine($"--TABLE [{table.DatabaseName}] ADD FIELDS");
+            //        foreach (var column in table.GeneratedColumns.OrderBy(x => x.SortOrder))
+            //            sb.Append(SQLEmit.GetSqlAddColumn(column, false));
+            //        sb.AppendLine("--GO");
+            //    }
+            //    sb.AppendLine("--##SECTION END [FIELD CREATE]");
+            //    sb.AppendLine();
+            //}
 
         }
 
