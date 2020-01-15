@@ -362,10 +362,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     #endregion
 
                     //If the column is not a PK then process it
-                    if (!column.PrimaryKey)
+                    //if (!column.PrimaryKey)
                     {
-                        sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
-                        sb.Append(".Property(d => d." + column.PascalName + ")");
+                        sb.Append($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>()");
+                        sb.Append($".Property(d => d.{column.PascalName})");
 
                         if (column.AllowNull)
                             sb.Append(".IsRequired(false)");
@@ -389,9 +389,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         }
 
                         if (column.IsTextType && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml)
-                            sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
+                            sb.Append($".HasMaxLength({column.GetAnnotationStringLength()})");
                         if (column.DatabaseName != column.PascalName)
-                            sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
+                            sb.Append($".HasColumnName(\"{column.DatabaseName}\")");
                         sb.AppendLine(";");
                     }
                 }
