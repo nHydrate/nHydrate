@@ -92,11 +92,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("using System.Linq.Expressions;");
             sb.AppendLine("using System.Reflection;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
-            sb.AppendLine("using Microsoft.EntityFrameworkCore.Internal;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore.Query;");
-            sb.AppendLine("using Microsoft.EntityFrameworkCore.Query.Internal;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore.Storage;");
-            sb.AppendLine("using Remotion.Linq.Parsing.Structure;");
             sb.AppendLine();
         }
 

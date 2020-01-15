@@ -1346,7 +1346,7 @@ namespace nHydrate.Generator.PostgresInstaller
             if (table.AllowTimestamp)
             {
                 sb.AppendLine(",");
-                sb.Append("\t\"" + model.Database.TimestampColumnName + "\" timestamp NOT NULL DEFAULT current_timestamp");
+                sb.Append("\t\"" + model.Database.TimestampColumnName + "\" bytea NOT NULL");
             }
         }
 
@@ -1371,7 +1371,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 {
                     var indexName = $"PK_{table.DatabaseName.ToUpper()}";
                     sb.AppendLine($"--PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
-                    sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" WITH NOCHECK ADD ");
+                    sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{table.DatabaseName}\" WITH NOCHECK ADD ");
                     //TODO: handle tableIndex.Clustered
                     sb.AppendLine($"CONSTRAINT \"{indexName}\" PRIMARY KEY ");
                     sb.AppendLine("(");
@@ -1389,13 +1389,13 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlCreateAuditPK(Table table)
         {
-            var tableName = "__AUDIT__" + table.DatabaseName.ToUpper();
-            var indexName = "PK_" + tableName.ToUpper();
+            var tableName = $"__AUDIT__{table.DatabaseName.ToUpper()}";
+            var indexName = $"PK_{tableName.ToUpper()}";
 
             var sb = new StringBuilder();
             sb.AppendLine($"--PRIMARY KEY FOR TABLE [{tableName}]");
-            sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'PK')");
-            sb.AppendLine($"ALTER TABLE [{table.GetPostgresSchema()}].[{tableName}] WITH NOCHECK ADD");
+            //sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'PK')");
+            sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" WITH NOCHECK ADD");
             sb.Append($"CONSTRAINT [{indexName}] PRIMARY KEY CLUSTERED ([__rowid]);");
             sb.AppendLine();
             sb.AppendLine("--GO");
@@ -1405,13 +1405,13 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlDropAuditPK(Table table)
         {
-            var tableName = "__AUDIT__" + table.DatabaseName.ToUpper();
-            var pkName = "PK_" + tableName.ToUpper();
+            var tableName = $"__AUDIT__{table.DatabaseName.ToUpper()}";
+            var indexName = $"PK_{tableName.ToUpper()}";
 
             var sb = new StringBuilder();
             sb.AppendLine($"--DROP PRIMARY KEY FOR TABLE [{tableName}]");
-            sb.AppendLine($"if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
-            sb.AppendLine($"ALTER TABLE [{table.GetPostgresSchema()}].[{tableName}] DROP CONSTRAINT IF EXISTS \"{pkName}\";");
+            //sb.AppendLine($"if exists(select * from sys.objects where name = '{indexName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
+            sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
             sb.AppendLine("--GO");
             sb.AppendLine();
             return sb.ToString();
@@ -2635,5 +2635,36 @@ namespace nHydrate.Generator.PostgresInstaller
             }
             return output.ToString();
         }
+
+        public static string GetSQLCreateAuditTable(ModelRoot model, Table table)
+        {
+            if (table.TypedTable == TypedTableConstants.EnumOnly)
+                return string.Empty;
+
+            var sb = new StringBuilder();
+            var tableName = $"__AUDIT__{Globals.GetTableDatabaseName(model, table)}";
+
+            sb.AppendLine($"CREATE TABLE IF NOT EXISTS {table.GetPostgresSchema()}.\"{tableName}\" (");
+            sb.AppendLine("\t\"__rowid\" INTEGER GENERATED ALWAYS AS IDENTITY NOT NULL,");
+            sb.AppendLine("\t\"__action\" INTEGER NOT NULL,");
+            sb.AppendLine($"\t\"__insertdate\" timestamp CONSTRAINT DF__{table.DatabaseName}__AUDIT DEFAULT current_timestamp NOT NULL,");
+            if (table.AllowCreateAudit || table.AllowModifiedAudit)
+                sb.AppendLine("\t\"" + model.Database.ModifiedByDatabaseName + "\" Varchar (50) NULL,");
+
+            var columnList = table.GetColumns().Where(x => x.Generated).ToList();
+            foreach (var column in columnList)
+            {
+                if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
+                {
+                    sb.Append("\t" + AppendColumnDefinition(column, allowDefault: false, allowIdentity: false, forceNull: true, allowFormula: false, allowComputed: false));
+                    if (columnList.IndexOf(column) < columnList.Count - 1) sb.Append(",");
+                    sb.AppendLine();
+                }
+            }
+            sb.Append(");");
+            sb.AppendLine();
+            return sb.ToString();
+        }
+
     }
 }

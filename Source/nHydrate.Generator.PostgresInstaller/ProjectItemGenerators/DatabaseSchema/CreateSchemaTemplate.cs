@@ -51,7 +51,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
         {
             get
             {
-                GenerateContent();
+                this.GenerateContent();
                 return sb.ToString();
             }
         }
@@ -81,7 +81,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                 //this.AppendCreateSchema();
                 this.AppendCreateTable();
                 this.AppendCreateTenantViews();
-                //this.AppendAuditTracking();
+                this.AppendAuditTracking();
                 this.AppendCreateAudit();
                 //this.AppendCreatePrimaryKey(); //do not add this. user can handle this in upgrade
                 //this.AppendAuditTables();
@@ -91,6 +91,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                 this.AppendCreateDefaults();
                 //this.AppendFixNulls();
                 //this.AppendClearSP();
+                this.AppendCreateTriggers();
                 this.AppendVersionTable();
             }
             catch (Exception ex)
@@ -192,52 +193,50 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
 
             //Add grants
             sb.Append(grantSB.ToString());
+            sb.AppendLine();
         }
 
         #endregion
 
         #region Append AuditTracking
-        //private void AppendAuditTracking()
-        //{
-        //    foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
-        //    {
-        //        if (table.AllowAuditTracking)
-        //        {
-        //            sb.AppendLine("--CREATE AUDIT TABLE FOR [" + table.DatabaseName + "]");
-        //            sb.AppendLine(SQLEmit.GetSQLCreateAuditTable(_model, table));
-        //            sb.AppendLine("--GO");
-        //            sb.AppendLine();
+        private void AppendAuditTracking()
+        {
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.AllowAuditTracking && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            {
+                sb.AppendLine("--CREATE AUDIT TABLE FOR [" + table.DatabaseName + "]");
+                sb.AppendLine(SQLEmit.GetSQLCreateAuditTable(_model, table));
+                sb.AppendLine("--GO");
+                sb.AppendLine();
 
-        //            sb.AppendLine("--ENSURE ALL COLUMNS ARE CORRECT TYPE");
-        //            var tableName = "__AUDIT__" + table.DatabaseName;
+                sb.AppendLine("--ENSURE ALL COLUMNS ARE CORRECT TYPE");
+                var tableName = $"__AUDIT__{table.DatabaseName}";
 
-        //            foreach (var column in table.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
-        //            {
-        //                if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
-        //                {
-        //                    //Now add columns if they do not exist
-        //                    sb.AppendLine("if not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + column.DatabaseName + "' and o.name = '" + tableName + "')");
-        //                    sb.AppendLine($"ALTER TABLE [{table.GetPostgresSchema()}].[{tableName}] ADD [" + column.DatabaseName + "] " + column.DatabaseType + " NULL");
-        //                    sb.AppendLine("--GO");
-        //                    sb.AppendLine($"ALTER TABLE [{table.GetPostgresSchema()}].[{tableName}] ALTER COLUMN [" + column.DatabaseName + "] " + column.DatabaseType + " NULL");
-        //                    sb.AppendLine("--GO");
-        //                    sb.AppendLine();
-        //                }
-        //            }
+                foreach (var column in table.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+                {
+                    if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
+                    {
+                        //Now add columns if they do not exist
+                        //sb.AppendLine("if not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + column.DatabaseName + "' and o.name = '" + tableName + "')");
+                        sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" ADD COLUMN IF NOT EXISTS \"{column.DatabaseName}\" {column.DatabaseType} NULL");
+                        sb.AppendLine("--GO");
+                        //sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" ALTER COLUMN [" + column.DatabaseName + "] " + column.DatabaseType + " NULL");
+                        //sb.AppendLine("--GO");
+                        sb.AppendLine();
+                    }
+                }
 
-        //            if (table.AllowModifiedAudit)
-        //            {
-        //                sb.AppendLine("if not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + _model.Database.ModifiedByDatabaseName + "' and o.name = '" + tableName + "')");
-        //                sb.AppendLine($"ALTER TABLE [{table.GetPostgresSchema()}].[{tableName}] ADD [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
-        //                sb.AppendLine("--GO");
-        //                sb.AppendLine($"ALTER TABLE [{table.GetPostgresSchema()}].[{tableName}] ALTER COLUMN [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
-        //                sb.AppendLine("--GO");
-        //                sb.AppendLine();
-        //            }
+                if (table.AllowModifiedAudit)
+                {
+                    //sb.AppendLine("if not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + _model.Database.ModifiedByDatabaseName + "' and o.name = '" + tableName + "')");
+                    sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" ADD COLUMN IF NOT EXISTS \"{_model.Database.ModifiedByDatabaseName}\" Varchar (50) NULL;");
+                    //sb.AppendLine("--GO");
+                    //sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" ALTER COLUMN [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
+                    sb.AppendLine("--GO");
+                    sb.AppendLine();
+                }
 
-        //        }
-        //    }
-        //}
+            }
+        }
         #endregion
 
         #region Append Primary Key
@@ -612,11 +611,33 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
 
         #endregion
 
+        private void AppendCreateTriggers()
+        {
+            sb.AppendLine("--##SECTION START [TIMESTAMP TRIGGERS]");
+            sb.AppendLine();
+
+            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.AllowTimestamp))
+            {
+                var auditName = $"{table.DatabaseName.ToLower()}_ts_audit";
+                sb.AppendLine($"--TIMESTAMP AUDIT FOR [{table.DatabaseName}]");
+                sb.AppendLine($"DROP TRIGGER IF EXISTS {auditName} ON \"{table.DatabaseName}\";");
+                sb.AppendLine($"CREATE TRIGGER {auditName}");
+                sb.AppendLine($"BEFORE INSERT OR UPDATE ON \"{table.DatabaseName}\"");
+                sb.AppendLine("FOR EACH ROW EXECUTE PROCEDURE process_timestamp_audit();");
+                sb.AppendLine();
+            }
+
+            sb.AppendLine("--##SECTION END [TIMESTAMP TRIGGERS]");
+            sb.AppendLine("--GO");
+            sb.AppendLine();
+        }
+
         #region AppendVersionTable
 
         private void AppendVersionTable()
         {
             #region Add the schema table
+            sb.AppendLine("--INTERNAL MANAGEMENT TABLE");
             sb.AppendLine("CREATE TABLE IF NOT EXISTS \"__nhydrateschema\" (");
             sb.AppendLine("\"dbVersion\" varchar (50) NOT NULL,");
             sb.AppendLine("\"LastUpdate\" timestamp NOT NULL,");
@@ -629,8 +650,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
             #endregion
 
             #region Add the objects table
-
-
+            sb.AppendLine("--INTERNAL MANAGEMENT TABLE");
             sb.AppendLine("CREATE TABLE IF NOT EXISTS \"__nhydrateobjects\"");
             sb.AppendLine("(rowid bigint GENERATED BY DEFAULT AS IDENTITY,");
             sb.AppendLine("\"id\" UUID NULL,");
@@ -645,7 +665,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
             sb.AppendLine();
             sb.AppendLine("--GO");
             sb.AppendLine();
-
             #endregion
 
         }

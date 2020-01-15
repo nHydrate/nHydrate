@@ -117,7 +117,6 @@ namespace nHydrate.Core.SQLGeneration
             sb.Append(")");
             sb.AppendLine();
             return sb.ToString();
-
         }
 
         public static string GetSqlRenameTable(Table oldTable, Table newTable)
