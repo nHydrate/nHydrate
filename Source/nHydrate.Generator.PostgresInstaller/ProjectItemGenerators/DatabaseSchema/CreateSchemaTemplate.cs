@@ -217,7 +217,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                     {
                         //Now add columns if they do not exist
                         //sb.AppendLine("if not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + column.DatabaseName + "' and o.name = '" + tableName + "')");
-                        sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" ADD COLUMN IF NOT EXISTS \"{column.DatabaseName}\" {column.DatabaseType} NULL");
+                        sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" ADD COLUMN IF NOT EXISTS \"{column.DatabaseName}\" {column.GetSQLDefaultType(true)} NULL;");
                         sb.AppendLine("--GO");
                         //sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" ALTER COLUMN [" + column.DatabaseName + "] " + column.DatabaseType + " NULL");
                         //sb.AppendLine("--GO");

@@ -138,7 +138,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.AuditTrigge
                     sb.AppendLine("ELSEIF (TG_OP = 'INSERT') THEN");
                     sb.AppendLine("    actiontype = 3;");
                     sb.AppendLine("END IF;");
-                    sb.AppendLine($"INSERT INTO {table.GetPostgresSchema()}\"{auditTable}\" ({columnText} \"__action\") VALUES ({columnValues}, actiontype);");
+                    sb.AppendLine($"INSERT INTO {table.GetPostgresSchema()}.\"{auditTable}\" ({columnText} \"__action\") VALUES ({columnValues}, actiontype);");
                     sb.AppendLine("RETURN new;");
                     sb.AppendLine("END;");
                     sb.AppendLine("$BODY$");
