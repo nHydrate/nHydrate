@@ -451,7 +451,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         sb.Append(".HasColumnName(\"" + _model.Database.TimestampDatabaseName + "\")");
                         sb.AppendLine(";");
                     }
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").IsRowVersion();");
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").HasMaxLength(8).IsRowVersion();");
                 }
 
                 sb.AppendLine();

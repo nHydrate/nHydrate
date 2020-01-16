@@ -36,7 +36,7 @@ using nHydrate.Generator.ProjectItemGenerators;
 namespace nHydrate.Generator.PostgresInstaller
 {
     [GeneratorProjectAttribute(
-        "Postgres Database Installer (alpha)",
+        "Postgres Database Installer (beta)",
         "Creates a project to maintain a Postgres database, used in conjuction with the generated Entity Framework data access layer.",
         "c7153425-b9f2-4291-82e8-88e1295eef09",
         typeof(nHydrateGeneratorProject),
