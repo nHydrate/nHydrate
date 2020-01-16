@@ -18,7 +18,7 @@ namespace nHydrate.DslPackage
 		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
 		public const string CompanyName = @"nHydrate.org";
 		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
-		public const string ProductVersion = "7.0.0.227";
+		public const string ProductVersion = "7.0.0.228";
 
 		// Menu definitions
 		public static readonly global::System.ComponentModel.Design.CommandID nHydrateDiagramMenu = new global::System.ComponentModel.Design.CommandID(new global::System.Guid(nHydrateCommandSetId), 0x10000);

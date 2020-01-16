@@ -923,11 +923,15 @@ namespace nHydrate.Dsl.Custom
             model.IsSaving = true;
             try
             {
+                var modelFile = Path.Combine(rootFolder, modelName);
+                var fi = new FileInfo(modelFile);
+                var showError = (fi.Length > 10); //New file is small so show no error if creating new
+
                 var folderName = modelName.Replace(".nhydrate", ".model");
                 var modelFolder = GetModelFolder(rootFolder, folderName);
 
                 //If the model folder does NOT exist
-                if (!Directory.Exists(modelFolder))
+                if (showError && !Directory.Exists(modelFolder))
                 {
                     //Try to use the ZIP file
                     var compressedFile = Path.Combine(rootFolder, modelName + ".zip");
