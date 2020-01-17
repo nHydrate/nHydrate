@@ -12,7 +12,6 @@
 	</TemplateData>
 	<TemplateContent>
 		<Project File="database.csproj" ReplaceParameters="true">
-			<ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
 		</Project>
 	</TemplateContent>
 </VSTemplate>

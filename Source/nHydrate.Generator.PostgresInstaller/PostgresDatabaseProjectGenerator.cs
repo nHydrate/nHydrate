@@ -74,19 +74,6 @@ namespace nHydrate.Generator.PostgresInstaller
 
                 var postBuildProperty = project.Properties.Item("PostBuildEvent");
                 postBuildProperty.Value = "copy \"$(TargetDir)$(TargetName).*\" \"$(SolutionDir)Bin\\\"";
-
-                var config = project.ConfigurationManager.ActiveConfiguration;
-                try
-                {
-                    config.Properties.Item("StartAction").Value = 1;
-                    config.Properties.Item("StartProgram").Value = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory() + "InstallUtil.exe";
-                    config.Properties.Item("StartArguments").Value = this.GetLocalNamespace() + ".dll";
-                }
-                catch (Exception ex)
-                {
-                    //TODO
-                }
-
             }
             catch (Exception ex)
             {

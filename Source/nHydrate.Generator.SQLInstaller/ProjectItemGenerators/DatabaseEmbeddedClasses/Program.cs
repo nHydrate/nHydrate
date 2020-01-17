@@ -7,8 +7,18 @@ namespace PROJECTNAMESPACE
     {
         static void Main(string[] args)
         {
-            //This class is added for convenience. If you wish to convert the installer to a console application
-            //set its output type to "Console Application" and startup object to this class
+            /*
+                Example Connection String
+                server=.;initial catalog=MyDatabase;Integrated Security=SSPI;
+                server=.;initial catalog=MyDatabase;user id=sa;password=Password1;
+
+                Example command line to create a database
+                /create /newdb:"MyDatabase" /master:"server=.;initial catalog=master;Integrated Security=SSPI;" /connectionstring:"server=.;initial catalog=MyDatabase;Integrated Security=SSPI;"
+
+                Example command line to update a database
+                /update /connectionstring:"server=.;initial catalog=MyDatabase;Integrated Security=SSPI;"
+
+             */
 
             System.Console.WriteLine("Starting Install...");
             var stateSaver = new Dictionary<object, object>();

@@ -11,7 +11,6 @@
 using System;
 using System.Linq;
 using System.Collections;
-using System.Data.SqlClient;
 using System.Data;
 using System.Text;
 using System.Runtime.InteropServices;
@@ -21,6 +20,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Compression;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer;
+using Microsoft.Data.SqlClient;
 
 namespace PROJECTNAMESPACE
 {
@@ -141,7 +143,7 @@ namespace PROJECTNAMESPACE
             connectString = sb.ToString();
 
             var valid = false;
-            using (var conn = new System.Data.SqlClient.SqlConnection())
+            using (var conn = new SqlConnection())
             {
                 try
                 {
@@ -189,7 +191,7 @@ namespace PROJECTNAMESPACE
         internal static string[] GetDatabaseNames(string connectString)
         {
             var databaseNames = new ArrayList();
-            using (var conn = new System.Data.SqlClient.SqlConnection())
+            using (var conn = new SqlConnection())
             {
                 SqlDataReader databaseReader = null;
                 SqlDataReader existsReader = null;
@@ -274,7 +276,7 @@ namespace PROJECTNAMESPACE
         internal static bool HasCreatePermissions(string connectString)
         {
             var returnVal = false;
-            using (var conn = new System.Data.SqlClient.SqlConnection())
+            using (var conn = new SqlConnection())
             {
                 SqlDataReader existsReader = null;
                 try
@@ -320,7 +322,7 @@ namespace PROJECTNAMESPACE
         {
             try
             {
-                using (var conn = new System.Data.SqlClient.SqlConnection())
+                using (var conn = new SqlConnection())
                 {
                     conn.ConnectionString = setup.MasterConnectionString;
                     conn.Open();
@@ -534,7 +536,7 @@ namespace PROJECTNAMESPACE
                 {
                     if (!setup.CheckOnly)
                     {
-                        var dropCommand = new System.Data.SqlClient.SqlCommand(dropSQL, connection);
+                        var dropCommand = new SqlCommand(dropSQL, connection);
                         dropCommand.Transaction = transaction;
                         dropCommand.CommandTimeout = 0;
                         SqlServers.ExecuteCommand(dropCommand);
@@ -547,7 +549,7 @@ namespace PROJECTNAMESPACE
             }
             #endregion
 
-            var command = new System.Data.SqlClient.SqlCommand(sql, connection);
+            var command = new SqlCommand(sql, connection);
             command.Transaction = transaction;
             command.CommandTimeout = 0;
             try
@@ -578,7 +580,7 @@ namespace PROJECTNAMESPACE
                         successOrderScripts.Add(key);
                 }
             }
-            catch (System.Data.SqlClient.SqlException sqlexp)
+            catch (SqlException sqlexp)
             {
                 if ((sqlexp.Number == 1779) && sql.StartsWith("--PRIMARY KEY FOR TABLE"))
                 {
@@ -649,9 +651,11 @@ namespace PROJECTNAMESPACE
 
         private static bool SkipScriptPrompt(InvalidSQLException ex)
         {
-            var F = new SqlErrorForm();
-            F.Setup(ex, true);
-            return (F.ShowDialog() == System.Windows.Forms.DialogResult.OK);
+            //TODO: Allow a way to allow override from parameters
+            //This used to popup a dialog and ask for "OK"
+            //for now just logging and skipping
+            Console.WriteLine(ex.Message);
+            return true;
         }
 
         private static void CallMethod(string text, SqlConnection connection, SqlTransaction transaction, InstallSetup setup)
@@ -989,7 +993,7 @@ namespace PROJECTNAMESPACE
         {
             try
             {
-                using (var conn = new System.Data.SqlClient.SqlConnection())
+                using (var conn = new SqlConnection())
                 {
                     conn.ConnectionString = connectionString;
                     conn.Open();
@@ -1054,7 +1058,7 @@ namespace PROJECTNAMESPACE
         {
             try
             {
-                using (var conn = new System.Data.SqlClient.SqlConnection())
+                using (var conn = new SqlConnection())
                 {
                     conn.ConnectionString = connectionString;
                     conn.Open();
@@ -1179,13 +1183,13 @@ namespace PROJECTNAMESPACE
             return this.name + " / " + this.Hash;
         }
 
-        public static nHydrateDbObjectList Load(string connectionString, string modelKey, System.Data.SqlClient.SqlTransaction transaction)
+        public static nHydrateDbObjectList Load(string connectionString, string modelKey, SqlTransaction transaction)
         {
             var retval = new nHydrateDbObjectList();
-            System.Data.SqlClient.SqlConnection conn = null;
+            SqlConnection conn = null;
             if (transaction == null)
             {
-                conn = new System.Data.SqlClient.SqlConnection(connectionString);
+                conn = new SqlConnection(connectionString);
                 conn.Open();
             }
             else
@@ -1249,12 +1253,12 @@ namespace PROJECTNAMESPACE
             return retval;
         }
 
-        public static void Save(string connectionString, string modelKey, IEnumerable<nHydrateDbObject> list, System.Data.SqlClient.SqlTransaction transaction)
+        public static void Save(string connectionString, string modelKey, IEnumerable<nHydrateDbObject> list, SqlTransaction transaction)
         {
-            System.Data.SqlClient.SqlConnection conn = null;
+            SqlConnection conn = null;
             if (transaction == null)
             {
-                conn = new System.Data.SqlClient.SqlConnection(connectionString);
+                conn = new SqlConnection(connectionString);
                 conn.Open();
             }
             else

@@ -17,7 +17,7 @@ using System.Reflection;
 using System.Xml;
 using System.Security.Cryptography;
 using System.IO;
-using System.Windows.Forms;
+using Microsoft.Data.SqlClient;
 
 namespace PROJECTNAMESPACE
 {
@@ -35,8 +35,8 @@ namespace PROJECTNAMESPACE
         private GeneratedVersion _previousVersion = null;
         private static GeneratedVersion _upgradeToVersion = new GeneratedVersion("UPGRADE_VERSION");
         private InstallSetup _setup = null;
-        private System.Data.SqlClient.SqlConnection _connection;
-        private System.Data.SqlClient.SqlTransaction _transaction;
+        private SqlConnection _connection;
+        private SqlTransaction _transaction;
         private List<EmbeddedResourceName> _resourceNames = new List<EmbeddedResourceName>();
         private nHydrateDbObjectList _databaseItems = new nHydrateDbObjectList();
         private List<string> _newItems = new List<string>();
@@ -124,10 +124,8 @@ namespace PROJECTNAMESPACE
             {
                 if (settings.ModelKey != new Guid(MODELKEY) && !_setup.SuppressUI)
                 {
-                    if (System.Windows.Forms.MessageBox.Show("The database being updated was created against a different model. This may cause database versioning issues if you continue.\n\nDo you wish to continue?", "Continue?", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning) != System.Windows.Forms.DialogResult.Yes)
-                    {
-                        throw new Exception("Database does not match model.");
-                    }
+                    //TODO: Add way to override with parameters
+                    Console.WriteLine("The database being updated was created against a different model. This may cause database versioning issues");
                 }
             }
 
@@ -302,7 +300,7 @@ namespace PROJECTNAMESPACE
         {
             if (setup.Transaction == null || !setup.UseTransaction)
             {
-                _connection = new System.Data.SqlClient.SqlConnection(setup.ConnectionString);
+                _connection = new SqlConnection(setup.ConnectionString);
                 _connection.Open();
                 if (setup.UseTransaction)
                     _transaction = _connection.BeginTransaction(System.Data.IsolationLevel.RepeatableRead);
@@ -339,7 +337,7 @@ namespace PROJECTNAMESPACE
 
                 if (currentDbVersion > _upgradeToVersion && !_setup.SuppressUI)
                 {
-                    System.Windows.Forms.MessageBox.Show("The current database version (" + currentDbVersion.ToString() + ") is greater than the current library (" + _upgradeToVersion.ToString() + "). The upgrade will not proceed.", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                    Console.WriteLine($"The current database version ({currentDbVersion}) is greater than the current library ({_upgradeToVersion}). The upgrade will not proceed.");
                     return;
                 }
 
@@ -378,8 +376,9 @@ namespace PROJECTNAMESPACE
                                 {
                                     if (!_setup.SuppressUI)
                                     {
-                                        if (MessageBox.Show("The script '" + fileName + "' is part of the install but has never been applied to the database. The script version is lower than the database version so it will never be applied. Do you wish to proceed with the install?", "Script never applied", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                                            throw new ScriptDifferenceException("The script '" + fileName + "' has never been applied to the database and never will due to its version.");
+                                        //TODO: allow override with parameters. i.e. "Do you wish to proceed with the install?"
+                                        Console.WriteLine($"The script '{fileName}' is part of the install but has never been applied to the database. The script version is lower than the database version so it will never be applied.");
+                                        return;
                                     }
                                     else
                                     {
@@ -405,8 +404,9 @@ namespace PROJECTNAMESPACE
                             {
                                 if (!_setup.SuppressUI)
                                 {
-                                    if (MessageBox.Show("The script '" + fileName + "' was previously run on the database, but the current script is not the same. Do you wish to proceed with the install?", "Script has changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                                        throw new ScriptDifferenceException("The script '" + fileName + "' is different than the one run on the database.");
+                                    //TODO: Allow override with parameters, i.e. "Do you wish to continue"
+                                    Console.WriteLine($"The script '{fileName}' was previously run on the database, but the current script is not the same.");
+                                    return;
                                 }
                                 else
                                 {
@@ -531,10 +531,8 @@ namespace PROJECTNAMESPACE
             {
                 if (!setup.CheckOnly && !setup.SuppressUI)
                 {
-                    var F = new SqlErrorForm();
-                    F.Setup(ex, false);
-                    F.ShowDialog();
-
+                    Console.WriteLine(ex.ToString());
+                    return;
                 }
                 try
                 {
@@ -548,9 +546,8 @@ namespace PROJECTNAMESPACE
             {
                 if (!setup.CheckOnly && !setup.SuppressUI)
                 {
-                    var F = new SqlErrorForm();
-                    F.SetupGeneric(ex);
-                    F.ShowDialog();
+                    Console.WriteLine(ex.ToString());
+                    return;
                 }
                 try
                 {

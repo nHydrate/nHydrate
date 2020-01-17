@@ -38,13 +38,28 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration.Install;
-using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Text;
+using Microsoft.Data.SqlClient;
 
 namespace PROJECTNAMESPACE
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    internal enum ActionTypeConstants
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        Create,
+        /// <summary>
+        /// 
+        /// </summary>
+        Upgrade,
+    }
+
     /// <summary>
     /// The database installer class
     /// </summary>
@@ -311,7 +326,7 @@ namespace PROJECTNAMESPACE
                 }
             }
 
-            UIInstall(setup);
+            Console.WriteLine("Invalid configuration");
 
         }
 
@@ -319,11 +334,11 @@ namespace PROJECTNAMESPACE
         {
             try
             {
-                using (var con = new System.Data.SqlClient.SqlConnection(masterConnectionString))
+                using (var con = new SqlConnection(masterConnectionString))
                 {
                     con.Open();
                     var sqlCommandText = @"ALTER DATABASE [" + dbname + @"] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;DROP DATABASE [" + dbname + "]";
-                    using (var sqlCommand = new System.Data.SqlClient.SqlCommand(sqlCommandText, con))
+                    using (var sqlCommand = new SqlCommand(sqlCommandText, con))
                     {
                         sqlCommand.ExecuteNonQuery();
                     }
@@ -365,7 +380,7 @@ namespace PROJECTNAMESPACE
                     throw new Exception("A new database name was not specified.");
 
                 //The connection string and the new database name must be the same
-                var builder = new System.Data.SqlClient.SqlConnectionStringBuilder(setup.ConnectionString);
+                var builder = new SqlConnectionStringBuilder(setup.ConnectionString);
                 if (builder.InitialCatalog.ToLower() != setup.NewDatabaseName.ToLower())
                     throw new Exception("A new database name does not match the specified connection string.");
 
@@ -527,38 +542,6 @@ namespace PROJECTNAMESPACE
             return retVal;
         }
 
-        private bool IdentifyDatabaseConnectionString(InstallSetup setup)
-        {
-            var F = new IdentifyDatabaseForm(setup);
-            if (F.ShowDialog() == DialogResult.OK)
-            {
-                this.Action = F.Action;
-                this.Settings = F.Settings;
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary />
-        private void UIInstall(InstallSetup setup)
-        {
-            if (IdentifyDatabaseConnectionString(setup))
-            {
-                setup.ConnectionString = this.Settings.GetPrimaryConnectionString();
-                setup.InstallStatus = InstallStatusConstants.Upgrade;
-
-                if (this.Action == ActionTypeConstants.Create)
-                {
-                    setup.InstallStatus = InstallStatusConstants.Create;
-                    UpgradeInstaller.UpgradeDatabase(setup);
-                }
-                else if (this.Action == ActionTypeConstants.Upgrade)
-                {
-                    UpgradeInstaller.UpgradeDatabase(setup);
-                }
-            }
-        }
-
         #endregion
 
         #region ShowHelp
@@ -611,7 +594,7 @@ namespace PROJECTNAMESPACE
             sb.AppendLine("Specifies check mode and that no scripts will be run against the database. If any changes have occurred, an exception is thrown with the change list.");
             sb.AppendLine();
 
-            MessageBox.Show(sb.ToString(), "Help", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Console.WriteLine(sb.ToString());
         }
 
         #endregion
@@ -686,7 +669,7 @@ namespace PROJECTNAMESPACE
         /// <summary>
         /// The transaction to use for this action. If null, one will be created.
         /// </summary>
-        public System.Data.SqlClient.SqlTransaction Transaction { get; set; }
+        public SqlTransaction Transaction { get; set; }
 
         /// <summary />
         public List<string> SkipSections { get; set; }

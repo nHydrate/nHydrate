@@ -76,8 +76,6 @@
     <Compile Include="ProjectItemGenerators\AuditTriggers\CreateAuditTriggerTemplate.cs" />
     <Compile Include="ProjectItemGenerators\BaseDbScriptGenerator.cs" />
     <Compile Include="ProjectItemGenerators\BaseDbScriptTemplate.cs" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\SqlErrorForm.cs" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\InstallSettingsUI.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\Program.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptGenerator.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptTemplate.cs" />
@@ -88,14 +86,11 @@
     <Compile Include="ProjectItemGenerators\DatabaseCreateData\CreateDataGenerator.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseCreateData\CreateDataTemplate.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\XmlHelper.cs" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\IdentifyDatabaseForm.Designer.embed" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\InstallSettings.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseEmbeddedClassGenerator.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.cs" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\IdentifyDatabaseForm.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\SqlServers.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\UpgradeInstaller.cs" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\HistoryForm.cs" />
     <Compile Include="DatabaseProjectGenerator.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseSchema\CreateSchemaGenerator.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseSchema\CreateSchemaTemplate.cs" />
@@ -121,14 +116,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.Designer.embed" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\IdentifyDatabaseForm.resx.embed" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\HistoryForm.resx.embed" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\SqlErrorForm.Designer.embed" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\SqlErrorForm.resx.embed" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nHydrate.Core.SQLGeneration\nHydrate.Core.SQLGeneration.csproj">
@@ -143,10 +130,6 @@
       <Project>{E2040FE8-13C7-4A6B-860B-E612A0FDBEFF}</Project>
       <Name>nHydrate.Generator</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\InstallSettingsUI.Designer.embed" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\InstallSettingsUI.resx.embed" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
