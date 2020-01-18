@@ -17,6 +17,9 @@ namespace PROJECTNAMESPACE
                 Example command line to update a database
                 /update /connectionstring:"Server=localhost;Database=MyDatabase;UID=postgres;PWD=postgres;"
 
+                NOTE: To run this installer from Visual Studio, add one of the lines above to 
+                this project's properties sheet, Debug tab, Application Arguments
+
              */
 
             System.Console.WriteLine("Starting Install...");
