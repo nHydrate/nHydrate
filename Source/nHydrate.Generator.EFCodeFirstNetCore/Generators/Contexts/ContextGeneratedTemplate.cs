@@ -396,47 +396,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     }
                 }
 
-                //NO AUDIT TRACKING FOR NOW
-                //if (table.AllowAuditTracking)
-                //{
-                //    if (table.AllowCreateAudit)
-                //    {
-                //        if (!String.Equals(_model.Database.CreatedByDatabaseName, _model.Database.CreatedByPascalName, StringComparison.OrdinalIgnoreCase))
-                //        {
-                //            sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
-                //            sb.Append(".Property(d => d." + _model.Database.CreatedByPascalName + ")");
-                //            sb.Append(".HasColumnName(\"" + _model.Database.CreatedByDatabaseName + "\")");
-                //            sb.AppendLine(";");
-                //        }
-
-                //        if (!String.Equals(_model.Database.CreatedDateDatabaseName, _model.Database.CreatedDatePascalName, StringComparison.OrdinalIgnoreCase))
-                //        {
-                //            sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
-                //            sb.Append(".Property(d => d." + _model.Database.CreatedDatePascalName + ")");
-                //            sb.Append(".HasColumnName(\"" + _model.Database.CreatedDateDatabaseName + "\")");
-                //            sb.AppendLine(";");
-                //        }
-                //    }
-                //    if (table.AllowModifiedAudit)
-                //    {
-                //        if (!_model.Database.ModifiedByDatabaseName.Equals(_model.Database.ModifiedByPascalName, StringComparison.OrdinalIgnoreCase))
-                //        {
-                //            sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
-                //            sb.Append(".Property(d => d." + _model.Database.ModifiedByPascalName + ")");
-                //            sb.Append(".HasColumnName(\"" + _model.Database.ModifiedByDatabaseName + "\")");
-                //            sb.AppendLine(";");
-                //        }
-
-                //        if (!_model.Database.ModifiedDateDatabaseName.Equals(_model.Database.ModifiedDatePascalName, StringComparison.OrdinalIgnoreCase))
-                //        {
-                //            sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
-                //            sb.Append(".Property(d => d." + _model.Database.ModifiedDatePascalName + ")");
-                //            sb.Append(".HasColumnName(\"" + _model.Database.ModifiedDateDatabaseName + "\")");
-                //            sb.AppendLine(";");
-                //        }
-                //    }
-                //}
-
                 if (table.AllowCreateAudit)
                     sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.CreatedDateColumnName + ").IsRequired();");
                 if (table.AllowModifiedAudit)
@@ -493,7 +452,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         if (typeTable == null) typeTable = table;
                         if (typeTable != null)
                         {
-                            sb.AppendLine("			modelBuilder.Entity<" + table.PascalName + ">().Ignore(t => t." + pascalRoleName + typeTable.PascalName + "Value);");
+                            sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Ignore(t => t." + pascalRoleName + typeTable.PascalName + "Value);");
                         }
                     }
                 }
@@ -635,7 +594,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     var index2Name = ("FK_" + relation2.RoleName + "_" + relation2.ChildTable.DatabaseName + "_" + relation2.ParentTable.DatabaseName).ToUpper();
 
                     sb.AppendLine($"			//Relation for [{relation1.ParentTable.PascalName}] -> [{relation2.ParentTable.PascalName}] (Multiplicity N:M)");
-                    sb.AppendLine($"			modelBuilder.Entity<{relation1.ParentTable.PascalName}>()");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{relation1.ParentTable.PascalName}>()");
                     sb.AppendLine($"							.HasMany(q => q.{relation1.PascalRoleName}{table.PascalName}List)");
                     sb.AppendLine($"							.WithOne(q => q.{relation1.PascalRoleName}{relation1.ParentTable.PascalName})");
                     sb.AppendLine($"							.HasConstraintName(\"{index1Name}\")");
@@ -645,7 +604,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     sb.AppendLine();
 
                     sb.AppendLine($"			//Relation for [{relation2.ParentTable.PascalName}] -> [{relation1.ParentTable.PascalName}] (Multiplicity N:M)");
-                    sb.AppendLine($"			modelBuilder.Entity<{relation2.ParentTable.PascalName}>()");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{relation2.ParentTable.PascalName}>()");
                     sb.AppendLine($"							.HasMany(q => q.{relation2.PascalRoleName}{table.PascalName}List)");
                     sb.AppendLine($"							.WithOne(q => q.{relation2.PascalRoleName}{relation2.ParentTable.PascalName})");
                     sb.AppendLine($"							.HasConstraintName(\"{index2Name}\")");
