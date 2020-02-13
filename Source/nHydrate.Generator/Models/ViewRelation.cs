@@ -112,8 +112,6 @@ namespace nHydrate.Generator.Models
         /// </summary>
         [Description("Determines the field mappings of this relationship.")]
         [Category("Data")]
-        //[Editor(typeof(nHydrate.Generator.Design.Editors.ColumnRelationshipCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
-        //[TypeConverter(typeof(nHydrate.Generator.Design.Converters.ColumnRelationshipCollectionConverter))]
         public ViewColumnRelationshipCollection ColumnRelationships
         {
             get { return _columnRelationships; }

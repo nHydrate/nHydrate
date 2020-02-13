@@ -33,7 +33,6 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-	//[Editor(typeof(nHydrate.Generator.Design.Editors.CustomStoredProcedureColumnCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
 	public class CustomStoredProcedureColumnCollection : BaseModelCollection, IEnumerable<CustomStoredProcedureColumn>
 	{
 		#region Member Variables

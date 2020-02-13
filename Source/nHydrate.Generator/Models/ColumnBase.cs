@@ -217,8 +217,6 @@ namespace nHydrate.Generator.Models
             Description("Determines the data type of this column."),
             Category("Data"),
             DefaultValue(System.Data.SqlDbType.VarChar),
-            //TypeConverter(typeof(DataTypeConverter)),
-            //Editor(typeof(nHydrate.Generator.Design.Editors.DataTypeEditor), typeof(System.Drawing.Design.UITypeEditor))
         ]
         public virtual System.Data.SqlDbType DataType
         {
@@ -242,8 +240,6 @@ namespace nHydrate.Generator.Models
             Description("Determines if this column allows null values."),
             Category("Data"),
             DefaultValue(_def_allowNull),
-            //Editor(typeof(nHydrate.Generator.Design.Editors.AllowNullEditor), typeof(System.Drawing.Design.UITypeEditor)),
-            //TypeConverter(typeof(AllowNullConverter)),
         ]
         public virtual bool AllowNull
         {

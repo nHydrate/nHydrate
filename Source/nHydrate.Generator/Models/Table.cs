@@ -185,18 +185,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        //[
-        //Browsable(false),
-        //Description("Creates a hierarchy of dependencies for unit test generation."),
-        //Category("Data"),
-        //  //TypeConverter(typeof(nHydrate.Generator.Design.Converters.UnitTestDependencyConverter)),
-        //  //Editor(typeof(nHydrate.Generator.Design.Editors.UnitTestDependencyEditor), typeof(System.Drawing.Design.UITypeEditor))
-        //]
-        //public List<Table> UnitTestDependencies
-        //{
-        //  get { return _unitTestDependencies; }
-        //}
-
         public List<TableIndex> TableIndexList
         {
             get { return _tableIndexList; }

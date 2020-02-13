@@ -138,8 +138,6 @@ namespace nHydrate.Generator.Models
         Browsable(false),
         Description("Determines the columns that are associated with this table."),
         Category("Data"),
-            //TypeConverter(typeof(nHydrate.Generator.Design.Converters.ColumnReferenceCollectionConverter)),
-            //Editor(typeof(nHydrate.Generator.Design.Editors.ColumnReferenceCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))
         ]
         public ReferenceCollection Columns
         {
@@ -213,7 +211,6 @@ namespace nHydrate.Generator.Models
         Browsable(true),
         Description("Determines SQL statement used to create the database function object."),
         Category("Data"),
-            //Editor(typeof(nHydrate.Generator.Design.Editors.SQLEditor), typeof(UITypeEditor)),
         ]
         public string SQL
         {

@@ -411,7 +411,6 @@ namespace nHydrate.Generator.Models
         Browsable(true),
         Description("Determines copyright to add to each file."),
         Category("Data"),
-            //Editor(typeof(nHydrate.Generator.Design.Editors.CopyRightEditor), typeof(UITypeEditor)),
         ]
         public string Copyright
         {

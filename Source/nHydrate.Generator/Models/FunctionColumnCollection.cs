@@ -33,7 +33,6 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-    //[Editor(typeof(nHydrate.Generator.Design.Editors.FunctionColumnCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
     public class FunctionColumnCollection : BaseModelCollection, IEnumerable<FunctionColumn>
     {
         #region Member Variables
