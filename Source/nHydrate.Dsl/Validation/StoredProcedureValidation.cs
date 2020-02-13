@@ -89,7 +89,6 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-
                 #region Check StoredProcedure SQL
 
                 if (!this.IsExisting && string.IsNullOrEmpty(this.SQL))

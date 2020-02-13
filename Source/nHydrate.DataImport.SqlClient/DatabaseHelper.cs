@@ -86,8 +86,6 @@ namespace nHydrate.DataImport.SqlClient
             {
                 if (columnList.Count(x => x.Name.ToLower() == field.Name.ToLower()) == 1)
                 {
-                    //if (field.IsBinaryType()) sb.Append("NULL");
-                    //else sb.Append("[" + field.Name + "]");
                     sb.Append("[" + field.Name + "]");
                 }
                 else
