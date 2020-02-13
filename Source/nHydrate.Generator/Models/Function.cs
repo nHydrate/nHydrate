@@ -379,7 +379,6 @@ namespace nHydrate.Generator.Models
         [Browsable(false)]
         public string CamelName
         {
-            //get { return StringHelper.DatabaseNameToCamelCase(this.Name); }
             get { return StringHelper.DatabaseNameToCamelCase(this.PascalName); }
         }
 

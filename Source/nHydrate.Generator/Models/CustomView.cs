@@ -34,8 +34,6 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-    //[Designer(typeof(nHydrate.Generator.Design.Designers.TableDesigner))]
-    //[DesignTimeVisible(true)]
     public class CustomView : BaseModelObject, ICodeFacadeObject, INamedObject
     {
         #region Member Variables
@@ -329,7 +327,6 @@ namespace nHydrate.Generator.Models
         [Browsable(false)]
         public string CamelName
         {
-            //get { return StringHelper.DatabaseNameToCamelCase(this.Name); }
             get { return StringHelper.DatabaseNameToCamelCase(this.PascalName); }
         }
 

@@ -393,7 +393,6 @@ namespace nHydrate.Generator.Models
 
         public override bool IsSynchronized
         {
-            //get { return innerList.IsSynchronized; }
             get { return false; }
         }
 
@@ -409,7 +408,6 @@ namespace nHydrate.Generator.Models
 
         public override object SyncRoot
         {
-            //get { return innerList.SyncRoot; }
             get { return null; }
         }
 

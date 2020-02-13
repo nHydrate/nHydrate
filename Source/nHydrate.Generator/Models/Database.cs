@@ -52,7 +52,6 @@ namespace nHydrate.Generator.Models
         protected string _timestampColumnName = _def_timestampColumnName;
         protected string _grantExecUser = string.Empty;
         protected string _databaseName = string.Empty;
-        private string _tablePrefix = string.Empty;
         protected string _collate = string.Empty;
 
         #endregion
@@ -332,19 +331,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false),
-        Description("Determines the prefix to prepend to all table names. This can be used if you have many models generated to one database."),
-        Category("Data")]
-        public string TablePrefix
-        {
-            get { return ""; }
-            set
-            {
-                _tablePrefix = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("TablePrefix"));
-            }
-        }
-
         [Browsable(false)]
         public string Collate
         {
@@ -419,7 +405,6 @@ namespace nHydrate.Generator.Models
                 XmlHelper.AddAttribute((XmlElement)node, "timestampColumnName", TimestampColumnName);
                 XmlHelper.AddAttribute((XmlElement)node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
                 XmlHelper.AddAttribute((XmlElement)node, "grantExecUser", GrantExecUser);
-                XmlHelper.AddAttribute((XmlElement)node, "tablePrefix", TablePrefix);
                 XmlHelper.AddAttribute((XmlElement)node, "collate", Collate);
 
                 var columnsNode = oDoc.CreateElement("columns");
@@ -493,7 +478,6 @@ namespace nHydrate.Generator.Models
                 _timestampColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", _timestampColumnName);
                 _fullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", _fullIndexSearchColumnName);
                 _grantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", _grantExecUser);
-                _tablePrefix = XmlHelper.GetAttributeValue(node, "tablePrefix", _tablePrefix);
 
                 var relationsNode = node.SelectSingleNode("relations");
                 if (relationsNode != null)
@@ -575,7 +559,6 @@ namespace nHydrate.Generator.Models
                 this.TimestampColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", _def_timestampColumnName);
                 this.FullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", _def_fullIndexSearchColumnName);
                 this.GrantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", string.Empty);
-                this.TablePrefix = XmlHelper.GetAttributeValue(node, "tablePrefix", string.Empty);
 
                 //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
 

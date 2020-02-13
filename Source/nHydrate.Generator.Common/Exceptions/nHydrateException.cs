@@ -28,104 +28,65 @@ using System.Runtime.Serialization;
 
 namespace nHydrate.Generator.Common.Exceptions
 {
-	//[Serializable]
-	public class nHydrateException : System.Exception
-	{
-		/// <summary>
-		/// 
-		/// </summary>
-		public string ErrorCode = null;
-		public string[] Arguments = null;
+    public class nHydrateException : System.Exception
+    {
+        /// <summary />
+        public string ErrorCode = null;
+        public string[] Arguments = null;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public nHydrateException()
-			: base()
-		{
-		}
+        /// <summary />
+        public nHydrateException()
+            : base()
+        {
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="message"></param>
-		public nHydrateException(string Message)
-			: base(Message)
-		{
-		}
+        /// <summary />
+        public nHydrateException(string Message)
+            : base(Message)
+        {
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="message"></param>
-		/// <param name="inner"></param>
-		public nHydrateException(string Message, System.Exception InnerException)
-			: base(Message, InnerException)
-		{
-		}
+        /// <summary />
+        public nHydrateException(string Message, System.Exception InnerException)
+            : base(Message, InnerException)
+        {
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="errorCode"></param>
-		/// <param name="message"></param>
-		public nHydrateException(string ErrorCode, string Message)
-			: base(Message)
-		{
-			this.ErrorCode = ErrorCode;
-		}
+        /// <summary />
+        public nHydrateException(string ErrorCode, string Message)
+            : base(Message)
+        {
+            this.ErrorCode = ErrorCode;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="errorCode"></param>
-		/// <param name="arguments"></param>
-		public nHydrateException(string ErrorCode, params object[] Arguments)
-		{
-			this.ErrorCode = ErrorCode;
-			//this.arguments = arguments;
+        /// <summary />
+        public nHydrateException(string ErrorCode, params object[] Arguments)
+        {
+            this.ErrorCode = ErrorCode;
+            //this.arguments = arguments;
 
-			this.Arguments = new string[Arguments.Length];
+            this.Arguments = new string[Arguments.Length];
 
-			for (var length = 0; length < Arguments.Length; ++length)
-			{
-				this.Arguments[length] = (string)Arguments[length];
-			}
+            for (var length = 0; length < Arguments.Length; ++length)
+            {
+                this.Arguments[length] = (string)Arguments[length];
+            }
 
-		}
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="errorCode"></param>
-		/// <param name="message"></param>
-		/// <param name="inner"></param>
-		public nHydrateException(string ErrorCode, string Message, System.Exception InnerException)
-			: base(Message, InnerException)
-		{
-			this.ErrorCode = ErrorCode;
-		}
+        /// <summary />
+        public nHydrateException(string ErrorCode, string Message, System.Exception InnerException)
+            : base(Message, InnerException)
+        {
+            this.ErrorCode = ErrorCode;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="info"></param>
-		/// <param name="context"></param>
-		public nHydrateException(SerializationInfo SerializationInfo, StreamingContext Context)
-			: base(SerializationInfo, Context)
-		{
-			this.ErrorCode = (string)SerializationInfo.GetValue("errorCode", typeof(string));
-		}
+        /// <summary />
+        public nHydrateException(SerializationInfo SerializationInfo, StreamingContext Context)
+            : base(SerializationInfo, Context)
+        {
+            this.ErrorCode = (string)SerializationInfo.GetValue("errorCode", typeof(string));
+        }
 
-		///// <summary>
-		///// 
-		///// </summary>
-		///// <param name="info"></param>
-		///// <param name="context"></param>
-		//public override void GetObjectData ( SerializationInfo SerializationInfo, StreamingContext Context )
-		//{
-		//    SerializationInfo.AddValue ( "errorCode", ErrorCode );
-		//    base.GetObjectData ( SerializationInfo, Context ) ;
-		//}
-	}
+    }
 }

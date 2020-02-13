@@ -346,12 +346,6 @@ namespace nHydrate.Generator.Models
             return newItem;
         }
 
-        //[Browsable(false)]
-        //public bool IsFixedSize
-        //{
-        //  get { return _references.IsFixedSize; }
-        //}
-
         #endregion
 
         #region ICollection Members

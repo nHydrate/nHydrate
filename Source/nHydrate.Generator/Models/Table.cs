@@ -42,8 +42,6 @@ namespace nHydrate.Generator.Models
         EnumOnly,
     }
 
-    //[Designer(typeof(nHydrate.Generator.Design.Designers.TableDesigner))]
-    //[DesignTimeVisible(true)]
     public class Table : BaseModelObject, ICodeFacadeObject, INamedObject
     {
         #region Member Variables
@@ -201,59 +199,6 @@ namespace nHydrate.Generator.Models
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("AllowUnitTest"));
             }
         }
-
-        //[
-        //Browsable(true),
-        //Description("Determines if there is a parent table from which this object is inherited."),
-        //Category("Data"),
-        //]
-        //public Table ParentTable
-        //{
-        //    get
-        //    {
-        //        var arr = ((ModelRoot)this.Root).Database.Tables.GetByKey(_parentTableKey);
-        //        if (arr.Length == 0) return null;
-        //        else return arr[0];
-        //    }
-        //    set
-        //    {
-        //        if (value == null)
-        //        {
-        //            if (_parentTableKey != null)
-        //            {
-        //                _parentTableKey = null;
-        //                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ParentTable"));
-        //            }
-        //        }
-        //        else
-        //        {
-        //            //Ensure that there are no circles
-        //            var tList = value.GetTableHierarchy();
-        //            if (tList.Contains(this))
-        //            {
-        //                throw new Exception("This table cannot inherit from the specified table as it would create a circular inheritance.");
-        //            }
-
-        //            if (_parentTableKey != value.Key)
-        //            {
-        //                _parentTableKey = value.Key;
-        //                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ParentTable"));
-        //            }
-        //        }
-
-        //    }
-        //}
-
-        //[Browsable(false)]
-        //public string ParentTableKey
-        //{
-        //    get { return _parentTableKey; }
-        //    private set
-        //    {
-        //        _parentTableKey = value;
-        //        this.OnPropertyChanged(this, new PropertyChangedEventArgs("ParentTableKey"));
-        //    }
-        //}
 
         [
         Browsable(true),
@@ -1566,14 +1511,7 @@ namespace nHydrate.Generator.Models
         [Browsable(false)]
         public string DatabaseName
         {
-            get
-            {
-                var retval = ((ModelRoot)_root).Database.TablePrefix;
-                if (!string.IsNullOrEmpty(retval))
-                    return retval + "_" + this.Name;
-                else
-                    return this.Name;
-            }
+            get { return this.Name; }
         }
 
         [Browsable(false)]
@@ -1750,15 +1688,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        //[Browsable(true)]
-        //[Category("Data")]
-        //[Description("The date that this object was created.")]
-        //[ReadOnlyAttribute(true)]
-        //public DateTime CreatedDate
-        //{
-        //  get { return _createdDate; }
-        //}
-
         public void ResetId(int newId)
         {
             this.Id = newId;
@@ -1798,7 +1727,7 @@ namespace nHydrate.Generator.Models
 
         public string GetCodeFacade()
         {
-            if (this.CodeFacade == "")
+            if (string.IsNullOrEmpty(this.CodeFacade))
                 return this.Name;
             else
                 return this.CodeFacade;

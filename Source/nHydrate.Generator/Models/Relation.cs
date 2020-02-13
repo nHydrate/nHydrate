@@ -202,15 +202,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        //[Browsable(true)]
-        //[Category("Data")]
-        //[Description("The date that this object was created.")]
-        //[ReadOnlyAttribute(true)]
-        //public DateTime CreatedDate
-        //{
-        //  get { return _createdDate; }
-        //}
-
         /// <summary>
         /// Determines if this relationship has nullable fields or is required
         /// </summary>

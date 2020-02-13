@@ -330,15 +330,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        //[Browsable(true)]
-        //[Category("Data")]
-        //[Description("The date that this object was created.")]
-        //[ReadOnlyAttribute(true)]
-        //public virtual DateTime CreatedDate
-        //{
-        //  get { return _createdDate; }
-        //}
-
         [Browsable(false)]
         public virtual string CorePropertiesHash
         {

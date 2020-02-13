@@ -153,11 +153,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
 
         public static string GetTableDatabaseName(ModelRoot model, Table table)
         {
-            var retval = model.Database.TablePrefix;
-            if (!string.IsNullOrEmpty(retval))
-                return retval + "_" + table.DatabaseName;
-            else
-                return table.DatabaseName;
+            return table.DatabaseName;
         }
 
         public static Column GetColumnByName(ReferenceCollection referenceCollection, string name)
