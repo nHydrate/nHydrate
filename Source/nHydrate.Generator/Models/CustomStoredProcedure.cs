@@ -408,8 +408,6 @@ namespace nHydrate.Generator.Models
 
                 XmlHelper.AddAttribute(node, "id", this.Id);
 
-                //XmlHelper.AddAttribute(node, "createdDate", _createdDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
-
             }
             catch (Exception ex)
             {

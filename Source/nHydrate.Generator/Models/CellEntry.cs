@@ -220,8 +220,6 @@ namespace nHydrate.Generator.Models
             {
                 var oDoc = node.OwnerDocument;
 
-                //XmlHelper.AddAttribute(node, "key", this.Key);
-
                 if (ColumnRef != null)
                 {
                     var columnRefNode = oDoc.CreateElement("f");

@@ -199,8 +199,6 @@ namespace nHydrate.Generator.Models
         {
             var oDoc = node.OwnerDocument;
 
-            //XmlHelper.AddAttribute(node, "key", this.Key);
-
             var cellEntriesNode = oDoc.CreateElement("cl");
             CellEntries.XmlAppend(cellEntriesNode);
             node.AppendChild(cellEntriesNode);

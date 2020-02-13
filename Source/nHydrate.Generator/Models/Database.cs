@@ -51,23 +51,9 @@ namespace nHydrate.Generator.Models
         protected string _fullIndexSearchColumnName = _def_fullIndexSearchColumnName;
         protected string _timestampColumnName = _def_timestampColumnName;
         protected string _grantExecUser = string.Empty;
-
         protected string _databaseName = string.Empty;
-        protected TableCollection _tables = null;
-        protected ColumnCollection _columns = null;
-        protected RelationCollection _relations = null;
-        protected ViewRelationCollection _viewRelations = null;
-        protected CustomViewCollection _customViews = null;
-        protected CustomStoredProcedureCollection _customStoredProcedures = null;
-        protected CustomViewColumnCollection _customViewColumns = null;
-        protected CustomStoredProcedureColumnCollection _customStoredProcedureColumns = null;
-        protected FunctionCollection _functions = null;
-        protected FunctionColumnCollection _functionColumns = null;
-        protected ParameterCollection _customRetrieveRuleParameters = null;
-        protected ParameterCollection _functionParameters = null;
         private string _tablePrefix = string.Empty;
         protected string _collate = string.Empty;
-        //private DateTime _createdDate = DateTime.Now;
 
         #endregion
 
@@ -76,30 +62,30 @@ namespace nHydrate.Generator.Models
         public Database(INHydrateModelObject root)
             : base(root)
         {
-            _tables = new TableCollection(root);
-            _tables.ResetKey(Guid.Empty.ToString());
-            _columns = new ColumnCollection(root);
-            _columns.ResetKey(Guid.Empty.ToString());
-            _relations = new RelationCollection(root);
-            _relations.ResetKey(Guid.Empty.ToString());
-            _viewRelations = new ViewRelationCollection(root);
-            _viewRelations.ResetKey(Guid.Empty.ToString());
-            _customViews = new CustomViewCollection(root);
-            _customViews.ResetKey(Guid.Empty.ToString());
-            _customStoredProcedures = new CustomStoredProcedureCollection(root);
-            _customStoredProcedures.ResetKey(Guid.Empty.ToString());
-            _customViewColumns = new CustomViewColumnCollection(root);
-            _customViewColumns.ResetKey(Guid.Empty.ToString());
-            _customStoredProcedureColumns = new CustomStoredProcedureColumnCollection(root);
-            _customStoredProcedureColumns.ResetKey(Guid.Empty.ToString());
-            _customRetrieveRuleParameters = new ParameterCollection(root);
-            _customRetrieveRuleParameters.ResetKey(Guid.Empty.ToString());
-            _functionParameters = new ParameterCollection(root);
-            _functionParameters.ResetKey(Guid.Empty.ToString());
-            _functions = new FunctionCollection(root);
-            _functions.ResetKey(Guid.Empty.ToString());
-            _functionColumns = new FunctionColumnCollection(root);
-            _functionColumns.ResetKey(Guid.Empty.ToString());
+            this.Tables = new TableCollection(root);
+            this.Tables.ResetKey(Guid.Empty.ToString());
+            this.Columns = new ColumnCollection(root);
+            this.Columns.ResetKey(Guid.Empty.ToString());
+            this.Relations = new RelationCollection(root);
+            this.Relations.ResetKey(Guid.Empty.ToString());
+            this.ViewRelations = new ViewRelationCollection(root);
+            this.ViewRelations.ResetKey(Guid.Empty.ToString());
+            this.CustomViews = new CustomViewCollection(root);
+            this.CustomViews.ResetKey(Guid.Empty.ToString());
+            this.CustomStoredProcedures = new CustomStoredProcedureCollection(root);
+            this.CustomStoredProcedures.ResetKey(Guid.Empty.ToString());
+            this.CustomViewColumns = new CustomViewColumnCollection(root);
+            this.CustomViewColumns.ResetKey(Guid.Empty.ToString());
+            this.CustomStoredProcedureColumns = new CustomStoredProcedureColumnCollection(root);
+            this.CustomStoredProcedureColumns.ResetKey(Guid.Empty.ToString());
+            this.CustomRetrieveRuleParameters = new ParameterCollection(root);
+            this.CustomRetrieveRuleParameters.ResetKey(Guid.Empty.ToString());
+            this.FunctionParameters = new ParameterCollection(root);
+            this.FunctionParameters.ResetKey(Guid.Empty.ToString());
+            this.Functions = new FunctionCollection(root);
+            this.Functions.ResetKey(Guid.Empty.ToString());
+            this.FunctionColumns = new FunctionColumnCollection(root);
+            this.FunctionColumns.ResetKey(Guid.Empty.ToString());
 
             this.PrecedenceOrderList = new List<Guid>();
         }
@@ -113,22 +99,13 @@ namespace nHydrate.Generator.Models
 
 
         [Browsable(false)]
-        public ColumnCollection Columns
-        {
-            get { return _columns; }
-        }
+        public ColumnCollection Columns { get; }
 
         [Browsable(false)]
-        public RelationCollection Relations
-        {
-            get { return _relations; }
-        }
+        public RelationCollection Relations { get; }
 
         [Browsable(false)]
-        public ViewRelationCollection ViewRelations
-        {
-            get { return _viewRelations; }
-        }
+        public ViewRelationCollection ViewRelations { get; }
 
         [Browsable(false),
         Description("Determines the name of the database."),
@@ -177,7 +154,6 @@ namespace nHydrate.Generator.Models
                 if (((ModelRoot)this.Root).TransformNames)
                     return StringHelper.DatabaseNameToPascalCase(this.CreatedDateColumnName);
                 else
-                    //return StringHelper.FirstCharToUpper(this.CreatedDateColumnName);
                     return this.CreatedDateColumnName;
             }
         }
@@ -190,7 +166,6 @@ namespace nHydrate.Generator.Models
                 if (((ModelRoot)this.Root).TransformNames)
                     return StringHelper.DatabaseNameToPascalCase(this.CreatedByColumnName);
                 else
-                    //return StringHelper.FirstCharToUpper(this.CreatedByColumnName);
                     return this.CreatedByColumnName;
             }
         }
@@ -203,7 +178,6 @@ namespace nHydrate.Generator.Models
                 if (((ModelRoot)this.Root).TransformNames)
                     return StringHelper.DatabaseNameToPascalCase(this.ModifiedDateColumnName);
                 else
-                    //return StringHelper.FirstCharToUpper(this.ModifiedDateColumnName);
                     return this.ModifiedDateColumnName;
             }
         }
@@ -217,7 +191,6 @@ namespace nHydrate.Generator.Models
                     return StringHelper.DatabaseNameToPascalCase(this.ModifiedByColumnName);
                 else
                     return this.ModifiedByColumnName;
-                //return StringHelper.FirstCharToUpper(this.ModifiedByColumnName);
             }
         }
 
@@ -230,7 +203,6 @@ namespace nHydrate.Generator.Models
                     return StringHelper.DatabaseNameToPascalCase(this.TimestampColumnName);
                 else
                     return this.TimestampColumnName;
-                //StringHelper.FirstCharToUpper(this.TimestampColumnName);
             }
         }
 
@@ -320,67 +292,32 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(false),
-        Category("Data"),
-        ]
-        public TableCollection Tables
-        {
-            get { return _tables; }
-        }
-
-        [
-        Browsable(false),
-        Category("Data"),
-        ]
-        public FunctionCollection Functions
-        {
-            get { return _functions; }
-        }
+        [Browsable(false)]
+        public TableCollection Tables { get; }
 
         [Browsable(false)]
-        [Category("Data")]
-        public CustomViewCollection CustomViews
-        {
-            get { return _customViews; }
-        }
+        public FunctionCollection Functions { get; }
 
         [Browsable(false)]
-        [Category("Data")]
-        public CustomStoredProcedureCollection CustomStoredProcedures
-        {
-            get { return _customStoredProcedures; }
-        }
+        public CustomViewCollection CustomViews { get; }
 
         [Browsable(false)]
-        public CustomViewColumnCollection CustomViewColumns
-        {
-            get { return _customViewColumns; }
-        }
+        public CustomStoredProcedureCollection CustomStoredProcedures { get; }
 
         [Browsable(false)]
-        public CustomStoredProcedureColumnCollection CustomStoredProcedureColumns
-        {
-            get { return _customStoredProcedureColumns; }
-        }
+        public CustomViewColumnCollection CustomViewColumns { get; }
 
         [Browsable(false)]
-        public FunctionColumnCollection FunctionColumns
-        {
-            get { return _functionColumns; }
-        }
+        public CustomStoredProcedureColumnCollection CustomStoredProcedureColumns { get; }
 
         [Browsable(false)]
-        public ParameterCollection CustomRetrieveRuleParameters
-        {
-            get { return _customRetrieveRuleParameters; }
-        }
+        public FunctionColumnCollection FunctionColumns { get; }
 
         [Browsable(false)]
-        public ParameterCollection FunctionParameters
-        {
-            get { return _functionParameters; }
-        }
+        public ParameterCollection CustomRetrieveRuleParameters { get; }
+
+        [Browsable(false)]
+        public ParameterCollection FunctionParameters { get; }
 
         [Browsable(true),
         Description("Determines the database user to grant execution permissions to for the stored procedures."),
@@ -400,7 +337,6 @@ namespace nHydrate.Generator.Models
         Category("Data")]
         public string TablePrefix
         {
-            //get { return _tablePrefix; }
             get { return ""; }
             set
             {
@@ -419,15 +355,6 @@ namespace nHydrate.Generator.Models
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("Collate"));
             }
         }
-
-        //[Browsable(true)]
-        //[Category("Data")]
-        //[Description("The date that this object was created.")]
-        //[ReadOnlyAttribute(true)]
-        //public DateTime CreatedDate
-        //{
-        //  get { return _createdDate; }
-        //}
 
         #endregion
 
@@ -545,8 +472,6 @@ namespace nHydrate.Generator.Models
                 this.CustomStoredProcedures.XmlAppend(customStoredProceduresNode);
                 node.AppendChild(customStoredProceduresNode);
 
-                //XmlHelper.AddAttribute(node, "createdDate", _createdDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
-
             }
             catch (Exception ex)
             {
@@ -605,19 +530,6 @@ namespace nHydrate.Generator.Models
                 var columnsNode = node.SelectSingleNode("columns");
                 if (columnsNode != null)
                     this.Columns.XmlLoad(columnsNode);
-
-                //List<int> ll = new List<int>();
-                //foreach(Table t in this.Tables)
-                //{
-                //  foreach (Reference r in t.Columns)
-                //  {
-                //    if (ll.Contains(((Column)r.Object).Id))
-                //    {
-                //      int ii = 0;
-                //    }
-                //    ll.Add(((Column)r.Object).Id);
-                //  }
-                //}
 
                 var customviewcolumnsNode = node.SelectSingleNode("customviewcolumns");
                 if (customviewcolumnsNode != null)

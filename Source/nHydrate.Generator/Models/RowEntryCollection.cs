@@ -67,8 +67,6 @@ namespace nHydrate.Generator.Models
         {
             var oDoc = node.OwnerDocument;
 
-            //XmlHelper.AddAttribute(node, "key", this.Key);
-
             foreach (RowEntry rowEntry in internalList)
             {
                 var rowEntryNode = oDoc.CreateElement("r");

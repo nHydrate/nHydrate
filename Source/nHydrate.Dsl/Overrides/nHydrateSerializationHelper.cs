@@ -101,20 +101,6 @@ namespace nHydrate.Dsl
                         document.Save(diagramFile);
                     }
 
-                    ////Reset position attributes
-                    //var nlist = document.DocumentElement.SelectNodes("//entityShape");
-                    //foreach (XmlElement node in nlist)
-                    //{
-                    //  //XmlHelper.RemoveAttribute(node, "absoluteBounds");
-                    //  XmlHelper.AddAttribute(node, "absoluteBounds", "0, 0, 0, 0");
-                    //  var clist = node.SelectNodes("nestedChildShapes/elementListCompartment");
-                    //  foreach (XmlElement node2 in clist)
-                    //  {
-                    //    //XmlHelper.RemoveAttribute(node2, "absoluteBounds");
-                    //    XmlHelper.AddAttribute(node2, "absoluteBounds", "0, 0, 0, 0");
-                    //  }
-                    //}
-                    //document.Save(diagramFile);
                 }
             }
             else

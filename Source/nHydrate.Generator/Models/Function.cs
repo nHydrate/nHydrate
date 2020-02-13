@@ -51,8 +51,6 @@ namespace nHydrate.Generator.Models
         protected string _description = _def_description;
         protected bool _generated = _def_generated;
         protected string _sql = string.Empty;
-        protected ReferenceCollection _columns = null;
-        protected ReferenceCollection _parameters = null;
         private string _dbSchema = _def_dbSchema;
         private bool _isTable = _def_isTable;
         private string _returnVariable = string.Empty;
@@ -64,19 +62,19 @@ namespace nHydrate.Generator.Models
         public Function(INHydrateModelObject root)
             : base(root)
         {
-            _columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
-            _columns.ResetKey(Guid.Empty.ToString());
-            _columns.ObjectPlural = "Fields";
-            _columns.ObjectSingular = "Field";
-            _columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
-            _columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
+            this.Columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
+            this.Columns.ResetKey(Guid.Empty.ToString());
+            this.Columns.ObjectPlural = "Fields";
+            this.Columns.ObjectSingular = "Field";
+            this.Columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
+            this.Columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
 
-            _parameters = new ReferenceCollection(this.Root, this, ReferenceType.Parameter);
-            _parameters.ResetKey(Guid.Empty.ToString());
-            _parameters.ObjectPlural = "Parameters";
-            _parameters.ObjectSingular = "Parameter";
-            _parameters.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
-            _parameters.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
+            this.Parameters = new ReferenceCollection(this.Root, this, ReferenceType.Parameter);
+            this.Parameters.ResetKey(Guid.Empty.ToString());
+            this.Parameters.ObjectPlural = "Parameters";
+            this.Parameters.ObjectSingular = "Parameter";
+            this.Parameters.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
+            this.Parameters.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
         }
 
         #endregion
@@ -139,20 +137,14 @@ namespace nHydrate.Generator.Models
         Description("Determines the columns that are associated with this table."),
         Category("Data"),
         ]
-        public ReferenceCollection Columns
-        {
-            get { return _columns; }
-        }
+        public ReferenceCollection Columns { get; }
 
         [
         Browsable(false),
         Description("Determines the parameters that are associated with this rule."),
         Category("Data"),
         ]
-        public ReferenceCollection Parameters
-        {
-            get { return _parameters; }
-        }
+        public ReferenceCollection Parameters { get; }
 
         [Browsable(false)]
         public IEnumerable<Parameter> GeneratedParameters
@@ -263,8 +255,6 @@ namespace nHydrate.Generator.Models
         public override string ToString()
         {
             var retval = this.Name;
-            //if(!string.IsNullOrEmpty(this.CodeFacade))
-            //  retval += " AS " + this.CodeFacade;
             return retval;
         }
 
@@ -354,8 +344,6 @@ namespace nHydrate.Generator.Models
 
                 XmlHelper.AddAttribute(node, "id", this.Id);
 
-                //XmlHelper.AddAttribute(node, "createdDate", _createdDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
-
             }
             catch (Exception ex)
             {
@@ -385,7 +373,6 @@ namespace nHydrate.Generator.Models
 
                 this.Generated = XmlHelper.GetAttributeValue(node, "generated", _generated);
                 this.ResetId(XmlHelper.GetAttributeValue(node, "id", _id));
-                //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
 
                 this.Dirty = false;
             }

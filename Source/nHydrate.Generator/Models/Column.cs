@@ -1133,8 +1133,6 @@ namespace nHydrate.Generator.Models
                 if (this.Obsolete != _def_obsolete)
                     XmlHelper.AddAttribute(node, "obsolete", this.Obsolete);
 
-                //XmlHelper.AddAttribute(node, "createdDate", _createdDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
-
                 if (RelationshipRef != null)
                 {
                     var relationshipRefNode = oDoc.CreateElement("relationshipRef");

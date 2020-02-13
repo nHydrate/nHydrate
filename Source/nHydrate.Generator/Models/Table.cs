@@ -1567,8 +1567,6 @@ namespace nHydrate.Generator.Models
                 if (this.FullIndexSearch != _def_fullIndexSearch)
                     XmlHelper.AddAttribute(node, "fullIndexSearch", this.FullIndexSearch);
 
-                //XmlHelper.AddAttribute(node, "createdDate", _createdDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
-
                 if (this.AllowAuditTracking != _def_allowAuditTracking)
                     XmlHelper.AddAttribute(node, "allowAuditTracking", this.AllowAuditTracking);
 

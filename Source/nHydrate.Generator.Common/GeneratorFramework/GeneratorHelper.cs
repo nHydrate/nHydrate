@@ -808,14 +808,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                     }
                 }
 
-                #region Compute CRC
-                //System.IO.StreamReader sr = System.IO.File.OpenText("");
-                //nHydrate.Generator.Common.Util.CRC32HashAlgorithm hash = new CRC32HashAlgorithm();
-                //byte[] arr = hash.ComputeHash(sr.BaseStream);
-                //sr.Close();
-                //XmlHelper.AddAttribute(newfileNode, "crc", "0");
-                #endregion
-
                 if (fileStateInfo.FileName == string.Empty)
                 {
                     System.Diagnostics.Debug.Write(string.Empty);

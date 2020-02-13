@@ -690,7 +690,6 @@ namespace nHydrate.Generator.Models
                 XmlHelper.AddAttribute(node, "roleName", this.RoleName);
             if (this.ConstraintName != _def_constraintname)
                 XmlHelper.AddAttribute(node, "constraintName", this.ConstraintName);
-            //XmlHelper.AddAttribute(node, "createdDate", _createdDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
         }
 
         public override void XmlLoad(XmlNode node)
