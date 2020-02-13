@@ -457,10 +457,11 @@
   <ItemGroup>
     <Content Include="Build\postbuild.targets.xml" />
     <Content Include="Build\prebuild.targets.xml" />
-    <Content Include="Images\delete.png" />
-    <Content Include="Images\edit.png" />
-    <Content Include="Images\error.png" />
-    <Content Include="Images\import.png" />
+    <EmbeddedResource Include="Images\data_refresh.png" />
+    <EmbeddedResource Include="Images\delete.png" />
+    <EmbeddedResource Include="Images\edit.png" />
+    <EmbeddedResource Include="Images\error.png" />
+    <EmbeddedResource Include="Images\import.png" />
     <EmbeddedResource Include="Images\warning.png" />
     <EmbeddedResource Include="Images\import_storedprocedure.png" />
     <EmbeddedResource Include="Images\import_storedprocedure_header.png" />
@@ -468,9 +469,10 @@
     <EmbeddedResource Include="Images\import_table_header.png" />
     <EmbeddedResource Include="Images\import_view.png" />
     <EmbeddedResource Include="Images\import_view_header.png" />
-    <Content Include="Images\progress.png" />
-    <Content Include="Images\relationship.png" />
-    <Content Include="Images\version.png" />
+    <EmbeddedResource Include="Images\import_database_screen.png" />
+    <EmbeddedResource Include="Images\progress.png" />
+    <EmbeddedResource Include="Images\relationship.png" />
+    <EmbeddedResource Include="Images\version.png" />
     <EmbeddedResource Include="Images\Field.png" />
     <EmbeddedResource Include="Images\Fields.png" />
     <EmbeddedResource Include="Images\Entities.png" />
@@ -489,9 +491,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nHydrate.Generator.Common\nHydrate.Generator.Common.csproj">
