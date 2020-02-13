@@ -232,7 +232,6 @@ namespace nHydrate.Dsl.Custom
                 SaveRelations(folder, item, generatedFileList);
                 SaveEntityStaticData(folder, item, generatedFileList);
                 SaveEntityMetaData(folder, item, generatedFileList);
-                SaveEntityComposites(folder, item, generatedFileList);
 
             }
             #endregion
@@ -278,46 +277,6 @@ namespace nHydrate.Dsl.Custom
             }
 
             var f = Path.Combine(folder, item.Name + ".indexes.xml");
-            WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
-
-        }
-
-        private static void SaveEntityComposites(string folder, Entity item, List<string> generatedFileList)
-        {
-            var document = new XmlDocument();
-            document.LoadXml(@"<configuration type=""composite"" id=""" + item.Id + @"""></configuration>");
-
-            if (item.Composites.Count == 0)
-                return;
-
-            XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-            foreach (var composite in item.Composites)
-            {
-                var indexNode = XmlHelper.AddElement(document.DocumentElement, "composite");
-
-                XmlHelper.AddLineBreak((XmlElement)indexNode);
-                XmlHelper.AddCData((XmlElement)indexNode, "summary", composite.Summary);
-                XmlHelper.AddLineBreak((XmlElement)indexNode);
-
-                XmlHelper.AddAttribute(indexNode, "codefacade", composite.CodeFacade);
-                XmlHelper.AddAttribute(indexNode, "name", composite.Name);
-                XmlHelper.AddAttribute(indexNode, "isgenerated", composite.IsGenerated);
-
-                XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-
-                //Process the columns
-                var columnsNodes = XmlHelper.AddElement((XmlElement)indexNode, "columnset") as XmlElement;
-                XmlHelper.AddLineBreak((XmlElement)columnsNodes);
-                foreach (var column in composite.Fields)
-                {
-                    var indexColumnNode = XmlHelper.AddElement(columnsNodes, "column");
-                    XmlHelper.AddAttribute(indexColumnNode, "fieldid", column.FieldId);
-
-                    XmlHelper.AddLineBreak((XmlElement)columnsNodes);
-                }
-            }
-
-            var f = Path.Combine(folder, item.Name + ".composites.xml");
             WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
 
         }
@@ -1152,7 +1111,6 @@ namespace nHydrate.Dsl.Custom
                 LoadModules(folder, item);
                 LoadEntityStaticData(folder, item);
                 LoadEntityMetaData(folder, item);
-                LoadEntityComposites(folder, item);
             }
 
             #endregion
@@ -1375,48 +1333,6 @@ namespace nHydrate.Dsl.Custom
                 newData.OrderKey = XmlHelper.GetAttributeValue(n, "orderkey", newData.OrderKey);
                 newData.Value = XmlHelper.GetAttributeValue(n, "value", newData.Value);
                 newData.ColumnKey = XmlHelper.GetAttributeValue(n, "columnkey", newData.ColumnKey);
-            }
-
-        }
-
-        private static void LoadEntityComposites(string folder, Entity entity)
-        {
-            XmlDocument document = null;
-            var fileName = Path.Combine(folder, entity.Name + ".composites.xml");
-            if (!File.Exists(fileName)) return;
-            try
-            {
-                document = new XmlDocument();
-                document.Load(fileName);
-            }
-            catch (Exception ex)
-            {
-                //Do Nothing
-                MessageBox.Show("The file '" + fileName + "' is not valid and could not be loaded!", "Load Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            foreach (XmlNode n in document.DocumentElement)
-            {
-                var newComposite = new Composite(entity.Partition);
-                entity.Composites.Add(newComposite);
-
-                newComposite.Summary = XmlHelper.GetNodeValue(document.DocumentElement, "summary", newComposite.Summary);
-                newComposite.CodeFacade = XmlHelper.GetAttributeValue(n, "codefacade", newComposite.CodeFacade);
-                newComposite.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", newComposite.IsGenerated);
-                newComposite.Name = XmlHelper.GetAttributeValue(n, "name", newComposite.Name);
-
-                var columnsNode = n.SelectSingleNode("columnset");
-                if (columnsNode != null)
-                {
-                    foreach (XmlNode m in columnsNode.ChildNodes)
-                    {
-                        var newField = new CompositeField(entity.Partition);
-                        newComposite.Fields.Add(newField);
-                        newField.FieldId = XmlHelper.GetAttributeValue(m, "fieldid", newField.FieldId);
-                    }
-                }
-
             }
 
         }

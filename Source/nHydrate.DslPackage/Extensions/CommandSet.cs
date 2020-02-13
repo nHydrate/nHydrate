@@ -699,47 +699,6 @@ namespace nHydrate.DslPackage
         }
         #endregion
 
-        #region ComponentFields
-        private void OnStatusMenuImportComponentFields(object sender, EventArgs e)
-        {
-            try
-            {
-                var command = sender as MenuCommand;
-                command.Visible = false;
-                if (this.IsDiagramSelected()) return;
-
-                if (this.CurrentSelection.Count != 1) return;
-
-                foreach (var item in this.CurrentSelection)
-                {
-                    var selectedObject = item as EntityCompositeShape;
-                    if (selectedObject != null)
-                    {
-                        command.Visible = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        private void OnMenuCommandImportComponentFields(object sender, EventArgs e)
-        {
-            var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
-            var store = this.CurrentDocData.Store;
-            foreach (var item in this.CurrentSelection)
-            {
-                var composite = item as EntityCompositeShape;
-                var F = new nHydrate.DslPackage.Forms.TableCompositeColumnForm((Composite)composite.ModelElement, model, store);
-                if (F.ShowDialog() == DialogResult.OK)
-                {
-                }
-            }
-        }
-        #endregion
-
         #region FilterDiagram
         //private void OnStatusMenuImportFilterDiagram(object sender, EventArgs e)
         //{
@@ -1636,7 +1595,6 @@ namespace nHydrate.DslPackage
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuShowRelatedEntities), new EventHandler(OnMenuCommandShowRelatedEntities), new CommandID(guidModelMenuCmdSet, cmdidMenuShowRelatedEntities)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuImportStaticData), new EventHandler(OnMenuCommandImportStaticData), new CommandID(guidModelMenuCmdSet, cmdidMenuStaticData)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuShowIndexes), new EventHandler(OnMenuCommandShowIndexes), new CommandID(guidModelMenuCmdSet, cmdidMenuShowIndexes)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuImportComponentFields), new EventHandler(OnMenuCommandImportComponentFields), new CommandID(guidModelMenuCmdSet, cmdidMenuComponentFields)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuImportSaveImage), new EventHandler(OnMenuCommandImportSaveImage), new CommandID(guidDiagramMenuCmdSet, cmdidMenuSaveImage)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuDiagramCollapseAll), new EventHandler(OnMenuCommandDiagramCollapseAll), new CommandID(guidDiagramMenuCmdSet, cmdidMenuDiagramCollapseAll)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuDiagramExpandAll), new EventHandler(OnMenuCommandDiagramExpandAll), new CommandID(guidDiagramMenuCmdSet, cmdidMenuDiagramExpandAll)));

@@ -4876,20 +4876,6 @@ namespace nHydrate.Dsl
 			}
 		}
 		#endregion
-		#region Composites opposite domain role accessor
-		
-		/// <summary>
-		/// Gets a list of Composites.
-		/// </summary>
-		public virtual DslModeling::LinkedElementCollection<Composite> Composites
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return GetRoleCollection<DslModeling::LinkedElementCollection<Composite>, Composite>(global::nHydrate.Dsl.EntityHasComposites.EntityDomainRoleId);
-			}
-		}
-		#endregion
 		#region EntityMetadata opposite domain role accessor
 		
 		/// <summary>
@@ -4997,12 +4983,6 @@ namespace nHydrate.Dsl
 					return this.CanMergeStaticData(rootElement, elementGroupPrototype);
 				}
 				
-				if (rootElementDomainInfo.IsDerivedFrom(global::nHydrate.Dsl.Composite.DomainClassId)) 
-				{
-					// Call custom method implemented in partial class
-					return this.CanMergeComposite(rootElement, elementGroupPrototype);
-				}
-				
 				if (rootElementDomainInfo.IsDerivedFrom(global::nHydrate.Dsl.EntityMetadata.DomainClassId)) 
 				{
 					return true;
@@ -5065,38 +5045,29 @@ namespace nHydrate.Dsl
 				return;
 			}
 				
-			global::nHydrate.Dsl.Composite sourceComposite3 = sourceElement as global::nHydrate.Dsl.Composite;
-			if (sourceComposite3 != null)
-			{
-				// Create link for path EntityHasComposites.Composites
-				this.Composites.Add(sourceComposite3);
-
-				return;
-			}
-				
-			global::nHydrate.Dsl.EntityMetadata sourceEntityMetadata4 = sourceElement as global::nHydrate.Dsl.EntityMetadata;
-			if (sourceEntityMetadata4 != null)
+			global::nHydrate.Dsl.EntityMetadata sourceEntityMetadata3 = sourceElement as global::nHydrate.Dsl.EntityMetadata;
+			if (sourceEntityMetadata3 != null)
 			{
 				// Create link for path EntityHasMetadata.EntityMetadata
-				this.EntityMetadata.Add(sourceEntityMetadata4);
+				this.EntityMetadata.Add(sourceEntityMetadata3);
 
 				return;
 			}
 				
-			global::nHydrate.Dsl.Index sourceIndex5 = sourceElement as global::nHydrate.Dsl.Index;
-			if (sourceIndex5 != null)
+			global::nHydrate.Dsl.Index sourceIndex4 = sourceElement as global::nHydrate.Dsl.Index;
+			if (sourceIndex4 != null)
 			{
 				// Create link for path EntityHasIndexes.Indexes
-				this.Indexes.Add(sourceIndex5);
+				this.Indexes.Add(sourceIndex4);
 
 				return;
 			}
 				
-			global::nHydrate.Dsl.SecurityFunction sourceSecurityFunction6 = sourceElement as global::nHydrate.Dsl.SecurityFunction;
-			if (sourceSecurityFunction6 != null)
+			global::nHydrate.Dsl.SecurityFunction sourceSecurityFunction5 = sourceElement as global::nHydrate.Dsl.SecurityFunction;
+			if (sourceSecurityFunction5 != null)
 			{
 				// Create link for path EntityHasSecurityFunction.SecurityFunction
-				this.SecurityFunction = sourceSecurityFunction6;
+				this.SecurityFunction = sourceSecurityFunction5;
 
 				return;
 			}
@@ -5151,26 +5122,12 @@ namespace nHydrate.Dsl
 				return;
 			}
 				
-			global::nHydrate.Dsl.Composite sourceComposite3 = sourceElement as global::nHydrate.Dsl.Composite;
-			if (sourceComposite3 != null)
-			{
-				// Delete link for path EntityHasComposites.Composites
-				
-				foreach (DslModeling::ElementLink link in global::nHydrate.Dsl.EntityHasComposites.GetLinks((global::nHydrate.Dsl.Entity)this, sourceComposite3))
-				{
-					// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
-					link.Delete(global::nHydrate.Dsl.EntityHasComposites.EntityDomainRoleId, global::nHydrate.Dsl.EntityHasComposites.CompositeDomainRoleId);
-				}
-
-				return;
-			}
-				
-			global::nHydrate.Dsl.EntityMetadata sourceEntityMetadata4 = sourceElement as global::nHydrate.Dsl.EntityMetadata;
-			if (sourceEntityMetadata4 != null)
+			global::nHydrate.Dsl.EntityMetadata sourceEntityMetadata3 = sourceElement as global::nHydrate.Dsl.EntityMetadata;
+			if (sourceEntityMetadata3 != null)
 			{
 				// Delete link for path EntityHasMetadata.EntityMetadata
 				
-				foreach (DslModeling::ElementLink link in global::nHydrate.Dsl.EntityHasMetadata.GetLinks((global::nHydrate.Dsl.Entity)this, sourceEntityMetadata4))
+				foreach (DslModeling::ElementLink link in global::nHydrate.Dsl.EntityHasMetadata.GetLinks((global::nHydrate.Dsl.Entity)this, sourceEntityMetadata3))
 				{
 					// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
 					link.Delete(global::nHydrate.Dsl.EntityHasMetadata.EntityDomainRoleId, global::nHydrate.Dsl.EntityHasMetadata.EntityMetadataDomainRoleId);
@@ -5179,12 +5136,12 @@ namespace nHydrate.Dsl
 				return;
 			}
 				
-			global::nHydrate.Dsl.Index sourceIndex5 = sourceElement as global::nHydrate.Dsl.Index;
-			if (sourceIndex5 != null)
+			global::nHydrate.Dsl.Index sourceIndex4 = sourceElement as global::nHydrate.Dsl.Index;
+			if (sourceIndex4 != null)
 			{
 				// Delete link for path EntityHasIndexes.Indexes
 				
-				foreach (DslModeling::ElementLink link in global::nHydrate.Dsl.EntityHasIndexes.GetLinks((global::nHydrate.Dsl.Entity)this, sourceIndex5))
+				foreach (DslModeling::ElementLink link in global::nHydrate.Dsl.EntityHasIndexes.GetLinks((global::nHydrate.Dsl.Entity)this, sourceIndex4))
 				{
 					// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
 					link.Delete(global::nHydrate.Dsl.EntityHasIndexes.EntityDomainRoleId, global::nHydrate.Dsl.EntityHasIndexes.IndexDomainRoleId);
@@ -5193,12 +5150,12 @@ namespace nHydrate.Dsl
 				return;
 			}
 				
-			global::nHydrate.Dsl.SecurityFunction sourceSecurityFunction6 = sourceElement as global::nHydrate.Dsl.SecurityFunction;
-			if (sourceSecurityFunction6 != null)
+			global::nHydrate.Dsl.SecurityFunction sourceSecurityFunction5 = sourceElement as global::nHydrate.Dsl.SecurityFunction;
+			if (sourceSecurityFunction5 != null)
 			{
 				// Delete link for path EntityHasSecurityFunction.SecurityFunction
 				
-				foreach (DslModeling::ElementLink link in global::nHydrate.Dsl.EntityHasSecurityFunction.GetLinks((global::nHydrate.Dsl.Entity)this, sourceSecurityFunction6))
+				foreach (DslModeling::ElementLink link in global::nHydrate.Dsl.EntityHasSecurityFunction.GetLinks((global::nHydrate.Dsl.Entity)this, sourceSecurityFunction5))
 				{
 					// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
 					link.Delete(global::nHydrate.Dsl.EntityHasSecurityFunction.EntityDomainRoleId, global::nHydrate.Dsl.EntityHasSecurityFunction.SecurityFunctionDomainRoleId);
@@ -14141,732 +14098,6 @@ namespace nHydrate.Dsl
 			set
 			{
 				DslModeling::DomainRoleInfo.SetLinkedElement(this, global::nHydrate.Dsl.EntityHasStaticDatum.StaticDataDomainRoleId, value);
-			}
-		}
-		#endregion
-	}
-}
-namespace nHydrate.Dsl
-{
-	/// <summary>
-	/// Double-derived base class for DomainClass Composite
-	/// </summary>
-	[DslDesign::DisplayNameResource("nHydrate.Dsl.Composite.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-	[DslDesign::DescriptionResource("nHydrate.Dsl.Composite.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-	[DslModeling::DomainModelOwner(typeof(global::nHydrate.Dsl.nHydrateDomainModel))]
-	[global::System.CLSCompliant(true)]
-	[global::System.Diagnostics.DebuggerDisplay("{GetType().Name,nq} (Name = {namePropertyStorage})")]
-	[DslModeling::DomainObjectId("a6bd893f-0e60-4354-a19e-64042cccbfb8")]
-	public abstract partial class CompositeBase : DslModeling::ModelElement, System.ComponentModel.INotifyPropertyChanged
-	{
-		#region INotifyPropertyChanged
-		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-		protected virtual void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
-		{
-			if (this.PropertyChanged != null)
-				this.PropertyChanged(this, e);
-		}
-		#endregion
-	
-		#region Constructors, domain class Id
-	
-		/// <summary>
-		/// Composite domain class Id.
-		/// </summary>
-		public static readonly new global::System.Guid DomainClassId = new global::System.Guid(0xa6bd893f, 0x0e60, 0x4354, 0xa1, 0x9e, 0x64, 0x04, 0x2c, 0xcc, 0xbf, 0xb8);
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="partition">Partition where new element is to be created.</param>
-		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
-		protected CompositeBase(DslModeling::Partition partition, DslModeling::PropertyAssignment[] propertyAssignments)
-			: base(partition, propertyAssignments)
-		{
-		}
-		#endregion
-		#region Name domain property code
-		
-		/// <summary>
-		/// Name domain property Id.
-		/// </summary>
-		public static readonly global::System.Guid NameDomainPropertyId = new global::System.Guid(0x56c0a23f, 0xcc97, 0x497c, 0xbc, 0xab, 0xc8, 0x78, 0x99, 0xf9, 0x54, 0xa1);
-		
-		/// <summary>
-		/// Storage for Name
-		/// </summary>
-		private global::System.String namePropertyStorage = string.Empty;
-		
-		/// <summary>
-		/// Gets or sets the value of Name domain property.
-		/// Determines the name of this object
-		/// </summary>
-		[DslDesign::DisplayNameResource("nHydrate.Dsl.Composite/Name.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslDesign::CategoryResource("nHydrate.Dsl.Composite/Name.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslDesign::DescriptionResource("nHydrate.Dsl.Composite/Name.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[global::System.ComponentModel.DefaultValue("")]
-		[DslModeling::ElementName]
-		[DslModeling::DomainObjectId("56c0a23f-cc97-497c-bcab-c87899f954a1")]
-		public virtual global::System.String Name
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return namePropertyStorage;
-			}
-			[global::System.Diagnostics.DebuggerStepThrough]
-			set
-			{
-				NamePropertyHandler.Instance.SetValue(this, value);
-			}
-		}
-		/// <summary>
-		/// Value handler for the Composite.Name domain property.
-		/// </summary>
-		internal sealed partial class NamePropertyHandler : DslModeling::DomainPropertyValueHandler<CompositeBase, global::System.String>
-		{
-			private NamePropertyHandler() { }
-		
-			/// <summary>
-			/// Gets the singleton instance of the Composite.Name domain property value handler.
-			/// </summary>
-			public static readonly NamePropertyHandler Instance = new NamePropertyHandler();
-		
-			/// <summary>
-			/// Gets the Id of the Composite.Name domain property.
-			/// </summary>
-			public sealed override global::System.Guid DomainPropertyId
-			{
-				[global::System.Diagnostics.DebuggerStepThrough]
-				get
-				{
-					return NameDomainPropertyId;
-				}
-			}
-			
-			/// <summary>
-			/// Gets a strongly-typed value of the property on specified element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <returns>Property value.</returns>
-			public override sealed global::System.String GetValue(CompositeBase element)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-				return element.Name;
-				//return element.GetValue<global::System.String>("Name", element.namePropertyStorage);
-				//return element.namePropertyStorage; //ORIGINAL CODE
-			}
-		
-			/// <summary>
-			/// Sets property value on an element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <param name="newValue">New property value.</param>
-			public override sealed void SetValue(CompositeBase element, global::System.String newValue)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-		
-				global::System.String oldValue = GetValue(element);
-				if (newValue != oldValue)
-				{
-					ValueChanging(element, oldValue, newValue);
-					element.namePropertyStorage = newValue;
-					ValueChanged(element, oldValue, newValue);
-					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("Composite"));
-				}
-			}
-		}
-		
-		#endregion
-		#region CodeFacade domain property code
-		
-		/// <summary>
-		/// CodeFacade domain property Id.
-		/// </summary>
-		public static readonly global::System.Guid CodeFacadeDomainPropertyId = new global::System.Guid(0x6f15628a, 0x77ab, 0x4780, 0xa7, 0x12, 0xd6, 0x2c, 0x07, 0x50, 0x6b, 0xb0);
-		
-		/// <summary>
-		/// Storage for CodeFacade
-		/// </summary>
-		private global::System.String codeFacadePropertyStorage = string.Empty;
-		
-		/// <summary>
-		/// Gets or sets the value of CodeFacade domain property.
-		/// Determines the object name used in the API. If this property is blank the 'Name'
-		/// property is used in the API. This property can be used to mask the database
-		/// identifier.
-		/// </summary>
-		[DslDesign::DisplayNameResource("nHydrate.Dsl.Composite/CodeFacade.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslDesign::CategoryResource("nHydrate.Dsl.Composite/CodeFacade.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslDesign::DescriptionResource("nHydrate.Dsl.Composite/CodeFacade.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslModeling::DomainObjectId("6f15628a-77ab-4780-a712-d62c07506bb0")]
-		public virtual global::System.String CodeFacade
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return codeFacadePropertyStorage;
-			}
-			[global::System.Diagnostics.DebuggerStepThrough]
-			set
-			{
-				CodeFacadePropertyHandler.Instance.SetValue(this, value);
-			}
-		}
-		/// <summary>
-		/// Value handler for the Composite.CodeFacade domain property.
-		/// </summary>
-		internal sealed partial class CodeFacadePropertyHandler : DslModeling::DomainPropertyValueHandler<CompositeBase, global::System.String>
-		{
-			private CodeFacadePropertyHandler() { }
-		
-			/// <summary>
-			/// Gets the singleton instance of the Composite.CodeFacade domain property value handler.
-			/// </summary>
-			public static readonly CodeFacadePropertyHandler Instance = new CodeFacadePropertyHandler();
-		
-			/// <summary>
-			/// Gets the Id of the Composite.CodeFacade domain property.
-			/// </summary>
-			public sealed override global::System.Guid DomainPropertyId
-			{
-				[global::System.Diagnostics.DebuggerStepThrough]
-				get
-				{
-					return CodeFacadeDomainPropertyId;
-				}
-			}
-			
-			/// <summary>
-			/// Gets a strongly-typed value of the property on specified element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <returns>Property value.</returns>
-			public override sealed global::System.String GetValue(CompositeBase element)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-				return element.CodeFacade;
-				//return element.GetValue<global::System.String>("CodeFacade", element.codeFacadePropertyStorage);
-				//return element.codeFacadePropertyStorage; //ORIGINAL CODE
-			}
-		
-			/// <summary>
-			/// Sets property value on an element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <param name="newValue">New property value.</param>
-			public override sealed void SetValue(CompositeBase element, global::System.String newValue)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-		
-				global::System.String oldValue = GetValue(element);
-				if (newValue != oldValue)
-				{
-					ValueChanging(element, oldValue, newValue);
-					element.codeFacadePropertyStorage = newValue;
-					ValueChanged(element, oldValue, newValue);
-					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("Composite"));
-				}
-			}
-		}
-		
-		#endregion
-		#region IsGenerated domain property code
-		
-		/// <summary>
-		/// IsGenerated domain property Id.
-		/// </summary>
-		public static readonly global::System.Guid IsGeneratedDomainPropertyId = new global::System.Guid(0x7108a0f2, 0x9ac1, 0x43df, 0xae, 0xa9, 0x10, 0xd1, 0x78, 0x5a, 0xd7, 0xb8);
-		
-		/// <summary>
-		/// Storage for IsGenerated
-		/// </summary>
-		private global::System.Boolean isGeneratedPropertyStorage = true;
-		
-		/// <summary>
-		/// Gets or sets the value of IsGenerated domain property.
-		/// Determines if this item is used when generating
-		/// </summary>
-		[DslDesign::DisplayNameResource("nHydrate.Dsl.Composite/IsGenerated.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslDesign::CategoryResource("nHydrate.Dsl.Composite/IsGenerated.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslDesign::DescriptionResource("nHydrate.Dsl.Composite/IsGenerated.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[global::System.ComponentModel.DefaultValue(true)]
-		[DslModeling::DomainObjectId("7108a0f2-9ac1-43df-aea9-10d1785ad7b8")]
-		public virtual global::System.Boolean IsGenerated
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return isGeneratedPropertyStorage;
-			}
-			[global::System.Diagnostics.DebuggerStepThrough]
-			set
-			{
-				IsGeneratedPropertyHandler.Instance.SetValue(this, value);
-			}
-		}
-		/// <summary>
-		/// Value handler for the Composite.IsGenerated domain property.
-		/// </summary>
-		internal sealed partial class IsGeneratedPropertyHandler : DslModeling::DomainPropertyValueHandler<CompositeBase, global::System.Boolean>
-		{
-			private IsGeneratedPropertyHandler() { }
-		
-			/// <summary>
-			/// Gets the singleton instance of the Composite.IsGenerated domain property value handler.
-			/// </summary>
-			public static readonly IsGeneratedPropertyHandler Instance = new IsGeneratedPropertyHandler();
-		
-			/// <summary>
-			/// Gets the Id of the Composite.IsGenerated domain property.
-			/// </summary>
-			public sealed override global::System.Guid DomainPropertyId
-			{
-				[global::System.Diagnostics.DebuggerStepThrough]
-				get
-				{
-					return IsGeneratedDomainPropertyId;
-				}
-			}
-			
-			/// <summary>
-			/// Gets a strongly-typed value of the property on specified element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <returns>Property value.</returns>
-			public override sealed global::System.Boolean GetValue(CompositeBase element)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-				return element.IsGenerated;
-				//return element.GetValue<global::System.Boolean>("IsGenerated", element.isGeneratedPropertyStorage);
-				//return element.isGeneratedPropertyStorage; //ORIGINAL CODE
-			}
-		
-			/// <summary>
-			/// Sets property value on an element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <param name="newValue">New property value.</param>
-			public override sealed void SetValue(CompositeBase element, global::System.Boolean newValue)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-		
-				global::System.Boolean oldValue = GetValue(element);
-				if (newValue != oldValue)
-				{
-					ValueChanging(element, oldValue, newValue);
-					element.isGeneratedPropertyStorage = newValue;
-					ValueChanged(element, oldValue, newValue);
-					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("Composite"));
-				}
-			}
-		}
-		
-		#endregion
-		#region Summary domain property code
-		
-		/// <summary>
-		/// Summary domain property Id.
-		/// </summary>
-		public static readonly global::System.Guid SummaryDomainPropertyId = new global::System.Guid(0x0e04de98, 0x3432, 0x420a, 0xb6, 0x15, 0x61, 0x3c, 0xdd, 0xcf, 0x45, 0x24);
-		
-		/// <summary>
-		/// Storage for Summary
-		/// </summary>
-		private global::System.String summaryPropertyStorage = string.Empty;
-		
-		/// <summary>
-		/// Gets or sets the value of Summary domain property.
-		/// Determines the summary of this object
-		/// </summary>
-		[System.ComponentModel.Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor))]
-		[DslDesign::DisplayNameResource("nHydrate.Dsl.Composite/Summary.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslDesign::CategoryResource("nHydrate.Dsl.Composite/Summary.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslDesign::DescriptionResource("nHydrate.Dsl.Composite/Summary.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslModeling::DomainObjectId("0e04de98-3432-420a-b615-613cddcf4524")]
-		public virtual global::System.String Summary
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return summaryPropertyStorage;
-			}
-			[global::System.Diagnostics.DebuggerStepThrough]
-			set
-			{
-				SummaryPropertyHandler.Instance.SetValue(this, value);
-			}
-		}
-		/// <summary>
-		/// Value handler for the Composite.Summary domain property.
-		/// </summary>
-		internal sealed partial class SummaryPropertyHandler : DslModeling::DomainPropertyValueHandler<CompositeBase, global::System.String>
-		{
-			private SummaryPropertyHandler() { }
-		
-			/// <summary>
-			/// Gets the singleton instance of the Composite.Summary domain property value handler.
-			/// </summary>
-			public static readonly SummaryPropertyHandler Instance = new SummaryPropertyHandler();
-		
-			/// <summary>
-			/// Gets the Id of the Composite.Summary domain property.
-			/// </summary>
-			public sealed override global::System.Guid DomainPropertyId
-			{
-				[global::System.Diagnostics.DebuggerStepThrough]
-				get
-				{
-					return SummaryDomainPropertyId;
-				}
-			}
-			
-			/// <summary>
-			/// Gets a strongly-typed value of the property on specified element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <returns>Property value.</returns>
-			public override sealed global::System.String GetValue(CompositeBase element)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-				return element.Summary;
-				//return element.GetValue<global::System.String>("Summary", element.summaryPropertyStorage);
-				//return element.summaryPropertyStorage; //ORIGINAL CODE
-			}
-		
-			/// <summary>
-			/// Sets property value on an element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <param name="newValue">New property value.</param>
-			public override sealed void SetValue(CompositeBase element, global::System.String newValue)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-		
-				global::System.String oldValue = GetValue(element);
-				if (newValue != oldValue)
-				{
-					ValueChanging(element, oldValue, newValue);
-					element.summaryPropertyStorage = newValue;
-					ValueChanged(element, oldValue, newValue);
-					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("Composite"));
-				}
-			}
-		}
-		
-		#endregion
-		#region Entity opposite domain role accessor
-		/// <summary>
-		/// Gets or sets Entity.
-		/// </summary>
-		public virtual Entity Entity
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return DslModeling::DomainRoleInfo.GetLinkedElement(this, global::nHydrate.Dsl.EntityHasComposites.CompositeDomainRoleId) as Entity;
-			}
-			[global::System.Diagnostics.DebuggerStepThrough]
-			set
-			{
-				DslModeling::DomainRoleInfo.SetLinkedElement(this, global::nHydrate.Dsl.EntityHasComposites.CompositeDomainRoleId, value);
-			}
-		}
-		#endregion
-		#region Fields opposite domain role accessor
-		
-		/// <summary>
-		/// Gets a list of Fields.
-		/// </summary>
-		public virtual DslModeling::LinkedElementCollection<CompositeField> Fields
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return GetRoleCollection<DslModeling::LinkedElementCollection<CompositeField>, CompositeField>(global::nHydrate.Dsl.CompositeHasFields.CompositeDomainRoleId);
-			}
-		}
-		#endregion
-		#region ElementGroupPrototype Merge methods
-		/// <summary>
-		/// Returns a value indicating whether the source element represented by the
-		/// specified root ProtoElement can be added to this element.
-		/// </summary>
-		/// <param name="rootElement">
-		/// The root ProtoElement representing a source element.  This can be null, 
-		/// in which case the ElementGroupPrototype does not contain an ProtoElements
-		/// and the code should inspect the ElementGroupPrototype context information.
-		/// </param>
-		/// <param name="elementGroupPrototype">The ElementGroupPrototype that contains the root ProtoElement.</param>
-		/// <returns>true if the source element represented by the ProtoElement can be added to this target element.</returns>
-		protected override bool CanMerge(DslModeling::ProtoElementBase rootElement, DslModeling::ElementGroupPrototype elementGroupPrototype)
-		{
-			if ( elementGroupPrototype == null ) throw new global::System.ArgumentNullException("elementGroupPrototype");
-			
-			if (rootElement != null)
-			{
-				DslModeling::DomainClassInfo rootElementDomainInfo = this.Partition.DomainDataDirectory.GetDomainClass(rootElement.DomainClassId);
-				
-				if (rootElementDomainInfo.IsDerivedFrom(global::nHydrate.Dsl.CompositeField.DomainClassId)) 
-				{
-					// Call custom method implemented in partial class
-					return this.CanMergeCompositeField(rootElement, elementGroupPrototype);
-				}
-			}
-			return base.CanMerge(rootElement, elementGroupPrototype);
-		}
-		
-		/// <summary>
-		/// Called by the Merge process to create a relationship between 
-		/// this target element and the specified source element. 
-		/// Typically, a parent-child relationship is established
-		/// between the target element (the parent) and the source element 
-		/// (the child), but any relationship can be established.
-		/// </summary>
-		/// <param name="sourceElement">The element that is to be related to this model element.</param>
-		/// <param name="elementGroup">The group of source ModelElements that have been rehydrated into the target store.</param>
-		/// <remarks>
-		/// This method is overriden to create the relationship between the target element and the specified source element.
-		/// The base method does nothing.
-		/// </remarks>
-		protected override void MergeRelate(DslModeling::ModelElement sourceElement, DslModeling::ElementGroup elementGroup)
-		{
-			// In general, sourceElement is allowed to be null, meaning that the elementGroup must be parsed for special cases.
-			// However this is not supported in generated code.  Use double-deriving on this class and then override MergeRelate completely if you 
-			// need to support this case.
-			if ( sourceElement == null ) throw new global::System.ArgumentNullException("sourceElement");
-		
-				
-			global::nHydrate.Dsl.CompositeField sourceCompositeField1 = sourceElement as global::nHydrate.Dsl.CompositeField;
-			if (sourceCompositeField1 != null)
-			{
-				// Create link for path CompositeHasFields.Fields
-				this.Fields.Add(sourceCompositeField1);
-
-				return;
-			}
-		
-			// Sdk workaround to runtime bug #879350 (DSL: can't copy and paste a MEL that has a MEX). Avoid MergeRelate on ModelElementExtension
-			// during a "Paste".
-			if (sourceElement is DslModeling::ExtensionElement
-				&& sourceElement.Store.TransactionManager.CurrentTransaction.TopLevelTransaction.Context.ContextInfo.ContainsKey("{9DAFD42A-DC0E-4d78-8C3F-8266B2CF8B33}"))
-			{
-				return;
-			}
-		
-			// Fall through to base class if this class hasn't handled the merge.
-			base.MergeRelate(sourceElement, elementGroup);
-		}
-		
-		/// <summary>
-		/// Performs operation opposite to MergeRelate - i.e. disconnects a given
-		/// element from the current one (removes links created by MergeRelate).
-		/// </summary>
-		/// <param name="sourceElement">Element to be unmerged/disconnected.</param>
-		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
-		protected override void MergeDisconnect(DslModeling::ModelElement sourceElement)
-		{
-			if (sourceElement == null) throw new global::System.ArgumentNullException("sourceElement");
-				
-			global::nHydrate.Dsl.CompositeField sourceCompositeField1 = sourceElement as global::nHydrate.Dsl.CompositeField;
-			if (sourceCompositeField1 != null)
-			{
-				// Delete link for path CompositeHasFields.Fields
-				
-				foreach (DslModeling::ElementLink link in global::nHydrate.Dsl.CompositeHasFields.GetLinks((global::nHydrate.Dsl.Composite)this, sourceCompositeField1))
-				{
-					// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
-					link.Delete(global::nHydrate.Dsl.CompositeHasFields.CompositeDomainRoleId, global::nHydrate.Dsl.CompositeHasFields.CompositeFieldDomainRoleId);
-				}
-
-				return;
-			}
-			// Fall through to base class if this class hasn't handled the unmerge.
-			base.MergeDisconnect(sourceElement);
-		}
-		#endregion
-	}
-	/// <summary>
-	/// DomainClass Composite
-	/// </summary>
-	[global::System.CLSCompliant(true)]
-			
-	public partial class Composite : CompositeBase
-	{
-		#region Constructors
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="store">Store where new element is to be created.</param>
-		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
-		public Composite(DslModeling::Store store, params DslModeling::PropertyAssignment[] propertyAssignments)
-			: this(store != null ? store.DefaultPartitionForClass(DomainClassId) : null, propertyAssignments)
-		{
-		}
-		
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="partition">Partition where new element is to be created.</param>
-		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
-		public Composite(DslModeling::Partition partition, params DslModeling::PropertyAssignment[] propertyAssignments)
-			: base(partition, propertyAssignments)
-		{
-		}
-		#endregion
-	}
-}
-namespace nHydrate.Dsl
-{
-	/// <summary>
-	/// DomainClass CompositeField
-	/// </summary>
-	[DslDesign::DisplayNameResource("nHydrate.Dsl.CompositeField.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-	[DslDesign::DescriptionResource("nHydrate.Dsl.CompositeField.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-	[DslModeling::DomainModelOwner(typeof(global::nHydrate.Dsl.nHydrateDomainModel))]
-	[global::System.CLSCompliant(true)]
-	[DslModeling::DomainObjectId("ae498b64-1182-495b-81d6-8972a32ecc67")]
-	public partial class CompositeField : DslModeling::ModelElement, System.ComponentModel.INotifyPropertyChanged
-	{
-		#region INotifyPropertyChanged
-		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-		protected virtual void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
-		{
-			if (this.PropertyChanged != null)
-				this.PropertyChanged(this, e);
-		}
-		#endregion
-	
-		#region Constructors, domain class Id
-	
-		/// <summary>
-		/// CompositeField domain class Id.
-		/// </summary>
-		public static readonly new global::System.Guid DomainClassId = new global::System.Guid(0xae498b64, 0x1182, 0x495b, 0x81, 0xd6, 0x89, 0x72, 0xa3, 0x2e, 0xcc, 0x67);
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="store">Store where new element is to be created.</param>
-		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
-		public CompositeField(DslModeling::Store store, params DslModeling::PropertyAssignment[] propertyAssignments)
-			: this(store != null ? store.DefaultPartitionForClass(DomainClassId) : null, propertyAssignments)
-		{
-		}
-		
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="partition">Partition where new element is to be created.</param>
-		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
-		public CompositeField(DslModeling::Partition partition, params DslModeling::PropertyAssignment[] propertyAssignments)
-			: base(partition, propertyAssignments)
-		{
-		}
-		#endregion
-		#region FieldId domain property code
-		
-		/// <summary>
-		/// FieldId domain property Id.
-		/// </summary>
-		public static readonly global::System.Guid FieldIdDomainPropertyId = new global::System.Guid(0x24e3a97d, 0x1b3b, 0x4d4c, 0x95, 0xed, 0x50, 0x64, 0xcd, 0x76, 0x3d, 0x43);
-		
-		/// <summary>
-		/// Storage for FieldId
-		/// </summary>
-		private global::System.Guid fieldIdPropertyStorage;
-		
-		/// <summary>
-		/// Gets or sets the value of FieldId domain property.
-		/// </summary>
-		[DslDesign::DisplayNameResource("nHydrate.Dsl.CompositeField/FieldId.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[DslDesign::DescriptionResource("nHydrate.Dsl.CompositeField/FieldId.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		[global::System.ComponentModel.Browsable(false)]
-		[DslModeling::DomainObjectId("24e3a97d-1b3b-4d4c-95ed-5064cd763d43")]
-		public virtual global::System.Guid FieldId
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return fieldIdPropertyStorage;
-			}
-			[global::System.Diagnostics.DebuggerStepThrough]
-			set
-			{
-				FieldIdPropertyHandler.Instance.SetValue(this, value);
-			}
-		}
-		/// <summary>
-		/// Value handler for the CompositeField.FieldId domain property.
-		/// </summary>
-		internal sealed partial class FieldIdPropertyHandler : DslModeling::DomainPropertyValueHandler<CompositeField, global::System.Guid>
-		{
-			private FieldIdPropertyHandler() { }
-		
-			/// <summary>
-			/// Gets the singleton instance of the CompositeField.FieldId domain property value handler.
-			/// </summary>
-			public static readonly FieldIdPropertyHandler Instance = new FieldIdPropertyHandler();
-		
-			/// <summary>
-			/// Gets the Id of the CompositeField.FieldId domain property.
-			/// </summary>
-			public sealed override global::System.Guid DomainPropertyId
-			{
-				[global::System.Diagnostics.DebuggerStepThrough]
-				get
-				{
-					return FieldIdDomainPropertyId;
-				}
-			}
-			
-			/// <summary>
-			/// Gets a strongly-typed value of the property on specified element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <returns>Property value.</returns>
-			public override sealed global::System.Guid GetValue(CompositeField element)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-				return element.FieldId;
-				//return element.GetValue<global::System.Guid>("FieldId", element.fieldIdPropertyStorage);
-				//return element.fieldIdPropertyStorage; //ORIGINAL CODE
-			}
-		
-			/// <summary>
-			/// Sets property value on an element.
-			/// </summary>
-			/// <param name="element">Element which owns the property.</param>
-			/// <param name="newValue">New property value.</param>
-			public override sealed void SetValue(CompositeField element, global::System.Guid newValue)
-			{
-				if (element == null) throw new global::System.ArgumentNullException("element");
-		
-				global::System.Guid oldValue = GetValue(element);
-				if (newValue != oldValue)
-				{
-					ValueChanging(element, oldValue, newValue);
-					element.fieldIdPropertyStorage = newValue;
-					ValueChanged(element, oldValue, newValue);
-					element.OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("CompositeField"));
-				}
-			}
-		}
-		
-		#endregion
-		#region Composite opposite domain role accessor
-		/// <summary>
-		/// Gets or sets Composite.
-		/// </summary>
-		public virtual Composite Composite
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return DslModeling::DomainRoleInfo.GetLinkedElement(this, global::nHydrate.Dsl.CompositeHasFields.CompositeFieldDomainRoleId) as Composite;
-			}
-			[global::System.Diagnostics.DebuggerStepThrough]
-			set
-			{
-				DslModeling::DomainRoleInfo.SetLinkedElement(this, global::nHydrate.Dsl.CompositeHasFields.CompositeFieldDomainRoleId, value);
 			}
 		}
 		#endregion

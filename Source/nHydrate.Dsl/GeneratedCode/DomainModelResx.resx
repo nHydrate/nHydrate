@@ -1729,78 +1729,6 @@
     <value>Order Key</value>
     <comment>DisplayName for DomainProperty &apos;OrderKey&apos; on DomainClass &apos;StaticData&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.Composite.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Composite.DisplayName" xml:space="preserve">
-    <value>Composite</value>
-    <comment>DisplayName for DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Composite/Name.Description" xml:space="preserve">
-    <value>Determines the name of this object</value>
-    <comment>Description for DomainProperty &apos;Name&apos; on DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Composite/Name.DisplayName" xml:space="preserve">
-    <value>Name</value>
-    <comment>DisplayName for DomainProperty &apos;Name&apos; on DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Composite/Name.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;Name&apos; on DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Composite/CodeFacade.Description" xml:space="preserve">
-    <value>Determines the object name used in the API. If this property is blank the &apos;Name&apos; property is used in the API. This property can be used to mask the database identifier.</value>
-    <comment>Description for DomainProperty &apos;CodeFacade&apos; on DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Composite/CodeFacade.DisplayName" xml:space="preserve">
-    <value>Code Facade</value>
-    <comment>DisplayName for DomainProperty &apos;CodeFacade&apos; on DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Composite/CodeFacade.Category" xml:space="preserve">
-    <value>Code</value>
-    <comment>Category for DomainProperty &apos;CodeFacade&apos; on DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Composite/IsGenerated.Description" xml:space="preserve">
-    <value>Determines if this item is used when generating</value>
-    <comment>Description for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Composite/IsGenerated.DisplayName" xml:space="preserve">
-    <value>Is Generated</value>
-    <comment>DisplayName for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Composite/IsGenerated.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Composite/Summary.Description" xml:space="preserve">
-    <value>Determines the summary of this object</value>
-    <comment>Description for DomainProperty &apos;Summary&apos; on DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Composite/Summary.DisplayName" xml:space="preserve">
-    <value>Summary</value>
-    <comment>DisplayName for DomainProperty &apos;Summary&apos; on DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Composite/Summary.Category" xml:space="preserve">
-    <value>Documentation</value>
-    <comment>Category for DomainProperty &apos;Summary&apos; on DomainClass &apos;Composite&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.CompositeField.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainClass &apos;CompositeField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.CompositeField.DisplayName" xml:space="preserve">
-    <value>Composite Field</value>
-    <comment>DisplayName for DomainClass &apos;CompositeField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.CompositeField/FieldId.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainProperty &apos;FieldId&apos; on DomainClass &apos;CompositeField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.CompositeField/FieldId.DisplayName" xml:space="preserve">
-    <value>Field Id</value>
-    <comment>DisplayName for DomainProperty &apos;FieldId&apos; on DomainClass &apos;CompositeField&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.EntityMetadata.Description" xml:space="preserve">
     <value></value>
     <comment>Description for DomainClass &apos;EntityMetadata&apos;</comment>
@@ -3128,70 +3056,6 @@
   <data name="nHydrate.Dsl.EntityHasStaticDatum/StaticData.PropertyDisplayName" xml:space="preserve">
     <value>Entity</value>
     <comment>PropertyDisplayName for DomainRole &apos;StaticData&apos; on DomainRelationship &apos;EntityHasStaticDatum&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasComposites.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainClass &apos;EntityHasComposites&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasComposites.DisplayName" xml:space="preserve">
-    <value>Entity Has Composites</value>
-    <comment>DisplayName for DomainClass &apos;EntityHasComposites&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasComposites/Entity.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasComposites&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasComposites/Entity.DisplayName" xml:space="preserve">
-    <value>Entity</value>
-    <comment>DisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasComposites&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasComposites/Entity.PropertyDisplayName" xml:space="preserve">
-    <value>Composites</value>
-    <comment>PropertyDisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasComposites&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasComposites/Composite.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainRole &apos;Composite&apos; on DomainRelationship &apos;EntityHasComposites&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasComposites/Composite.DisplayName" xml:space="preserve">
-    <value>Composite</value>
-    <comment>DisplayName for DomainRole &apos;Composite&apos; on DomainRelationship &apos;EntityHasComposites&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasComposites/Composite.PropertyDisplayName" xml:space="preserve">
-    <value>Entity</value>
-    <comment>PropertyDisplayName for DomainRole &apos;Composite&apos; on DomainRelationship &apos;EntityHasComposites&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.CompositeHasFields.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainClass &apos;CompositeHasFields&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.CompositeHasFields.DisplayName" xml:space="preserve">
-    <value>Composite Has Fields</value>
-    <comment>DisplayName for DomainClass &apos;CompositeHasFields&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.CompositeHasFields/Composite.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainRole &apos;Composite&apos; on DomainRelationship &apos;CompositeHasFields&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.CompositeHasFields/Composite.DisplayName" xml:space="preserve">
-    <value>Composite</value>
-    <comment>DisplayName for DomainRole &apos;Composite&apos; on DomainRelationship &apos;CompositeHasFields&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.CompositeHasFields/Composite.PropertyDisplayName" xml:space="preserve">
-    <value>Fields</value>
-    <comment>PropertyDisplayName for DomainRole &apos;Composite&apos; on DomainRelationship &apos;CompositeHasFields&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.CompositeHasFields/CompositeField.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainRole &apos;CompositeField&apos; on DomainRelationship &apos;CompositeHasFields&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.CompositeHasFields/CompositeField.DisplayName" xml:space="preserve">
-    <value>Composite Field</value>
-    <comment>DisplayName for DomainRole &apos;CompositeField&apos; on DomainRelationship &apos;CompositeHasFields&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.CompositeHasFields/CompositeField.PropertyDisplayName" xml:space="preserve">
-    <value>Composite</value>
-    <comment>PropertyDisplayName for DomainRole &apos;CompositeField&apos; on DomainRelationship &apos;CompositeHasFields&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.EntityHasMetadata.Description" xml:space="preserve">
     <value></value>
@@ -4533,14 +4397,6 @@
     <value>Fields</value>
     <comment>Compartment title</comment>
   </data>
-  <data name="nHydrate.Dsl.EntityCompositeShape.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainClass &apos;EntityCompositeShape&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityCompositeShape.DisplayName" xml:space="preserve">
-    <value>Entity Composite Shape</value>
-    <comment>DisplayName for DomainClass &apos;EntityCompositeShape&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.FunctionShape.Description" xml:space="preserve">
     <value></value>
     <comment>Description for DomainClass &apos;FunctionShape&apos;</comment>
@@ -4568,14 +4424,6 @@
   <data name="nHydrate.Dsl.EntityAssociationConnector.DisplayName" xml:space="preserve">
     <value>Entity Association Connector</value>
     <comment>DisplayName for DomainClass &apos;EntityAssociationConnector&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityCompositeConnector.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainClass &apos;EntityCompositeConnector&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityCompositeConnector.DisplayName" xml:space="preserve">
-    <value>Composite Connector</value>
-    <comment>DisplayName for DomainClass &apos;EntityCompositeConnector&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.EntityViewAssociationConnector.Description" xml:space="preserve">
     <value>Connect an entity and a view</value>
@@ -4798,10 +4646,6 @@ A DomainClass can be serialized as a moniker only if
     <value>..\Resources\view.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Icon decorator default image</comment>
   </data>
-  <data name="EntityCompositeShapeEntityCompositeShapeIconDecoratorDefaultImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
-    <value>..\Resources\composite.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-    <comment>Icon decorator default image</comment>
-  </data>
   <data name="FunctionShapeFunctionIconDecoratorDefaultImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
     <value>..\Resources\function.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Icon decorator default image</comment>
@@ -4832,10 +4676,6 @@ A DomainClass can be serialized as a moniker only if
   </data>
   <data name="ViewFieldExplorerImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
     <value>..\Resources\field.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-    <comment>Toolbox item image</comment>
-  </data>
-  <data name="CompositeExplorerImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
-    <value>..\Resources\composite.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Toolbox item image</comment>
   </data>
   <data name="EntityMetadataExplorerImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">

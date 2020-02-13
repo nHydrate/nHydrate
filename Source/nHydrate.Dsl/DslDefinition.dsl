@@ -373,14 +373,6 @@
             <DomainPath>EntityHasStaticDatum.StaticDatum</DomainPath>
           </LinkCreationPaths>
         </ElementMergeDirective>
-        <ElementMergeDirective UsesCustomAccept="true">
-          <Index>
-            <DomainClassMoniker Name="Composite" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>EntityHasComposites.Composites</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
         <ElementMergeDirective>
           <Index>
             <DomainClassMoniker Name="EntityMetadata" />
@@ -1052,56 +1044,6 @@
         <DomainProperty Id="b57e8a0c-dc79-41ef-8835-9115b5cb66f0" Description="The record number [1..N]" Name="OrderKey" DisplayName="Order Key" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-    </DomainClass>
-    <DomainClass Id="a6bd893f-0e60-4354-a19e-64042cccbfb8" Description="" Name="Composite" DisplayName="Composite" Namespace="nHydrate.Dsl" GeneratesDoubleDerived="true">
-      <Properties>
-        <DomainProperty Id="56c0a23f-cc97-497c-bcab-c87899f954a1" Description="Determines the name of this object" Name="Name" DisplayName="Name" DefaultValue="" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="6f15628a-77ab-4780-a712-d62c07506bb0" Description="Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier." Name="CodeFacade" DisplayName="Code Facade" Category="Code">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="7108a0f2-9ac1-43df-aea9-10d1785ad7b8" Description="Determines if this item is used when generating" Name="IsGenerated" DisplayName="Is Generated" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="0e04de98-3432-420a-b615-613cddcf4524" Description="Determines the summary of this object" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-      <ElementMergeDirectives>
-        <ElementMergeDirective UsesCustomAccept="true">
-          <Index>
-            <DomainClassMoniker Name="CompositeField" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>CompositeHasFields.Fields</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-      </ElementMergeDirectives>
-    </DomainClass>
-    <DomainClass Id="ae498b64-1182-495b-81d6-8972a32ecc67" Description="" Name="CompositeField" DisplayName="Composite Field" Namespace="nHydrate.Dsl">
-      <Properties>
-        <DomainProperty Id="24e3a97d-1b3b-4d4c-95ed-5064cd763d43" Description="" Name="FieldId" DisplayName="Field Id" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Guid" />
           </Type>
         </DomainProperty>
       </Properties>
@@ -1959,38 +1901,6 @@
         </DomainRole>
       </Target>
     </DomainRelationship>
-    <DomainRelationship Id="196f7f0d-bf28-494a-916f-17f515856f7e" Description="" Name="EntityHasComposites" DisplayName="Entity Has Composites" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="7c3a4c96-7c33-4e7c-80e1-905a7c15a248" Description="" Name="Entity" DisplayName="Entity" PropertyName="Composites" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Composites">
-          <RolePlayer>
-            <DomainClassMoniker Name="Entity" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="906a19ba-d657-4536-87c5-9c49b84e95ef" Description="" Name="Composite" DisplayName="Composite" PropertyName="Entity" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="Entity">
-          <RolePlayer>
-            <DomainClassMoniker Name="Composite" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="fcf0b894-a572-4b7c-b00b-b7ef50a0b5bc" Description="" Name="CompositeHasFields" DisplayName="Composite Has Fields" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="d442f05a-b561-4029-acd7-d33501098183" Description="" Name="Composite" DisplayName="Composite" PropertyName="Fields" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Fields">
-          <RolePlayer>
-            <DomainClassMoniker Name="Composite" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="17b23d49-303f-471f-9d87-cf5e36c80a2a" Description="" Name="CompositeField" DisplayName="Composite Field" PropertyName="Composite" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="Composite">
-          <RolePlayer>
-            <DomainClassMoniker Name="CompositeField" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
     <DomainRelationship Id="d8f52b3f-4006-4795-b93f-d47721cc13d3" Description="" Name="EntityHasMetadata" DisplayName="Entity Has Metadata" Namespace="nHydrate.Dsl" GeneratesDoubleDerived="true" IsEmbedding="true">
       <Source>
         <DomainRole Id="c3d56be9-0465-4928-992d-fbd0efdae2c4" Description="" Name="Entity" DisplayName="Entity" PropertyName="EntityMetadata" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Entity Metadata">
@@ -2540,14 +2450,6 @@
       </ShapeHasDecorators>
       <Compartment FillColor="WhiteSmoke" TitleFillColor="Gainsboro" Name="ViewFieldCompartment" Title="Fields" />
     </CompartmentShape>
-    <CompartmentShape Id="cb67d1b7-d8ed-49d9-b750-9ac6129b2422" Description="" Name="EntityCompositeShape" DisplayName="Entity Composite Shape" Namespace="nHydrate.Dsl" GeneratesDoubleDerived="true" TooltipType="Variable" FixedTooltipText="Entity Composite Shape" FillColor="Gainsboro" InitialHeight="0.3" OutlineThickness="0.01" FillGradientMode="None" Geometry="Rectangle" IsSingleCompartmentHeaderVisible="false" DefaultExpandCollapseState="Collapsed">
-      <ShapeHasDecorators Position="InnerTopLeft" HorizontalOffset="0.25" VerticalOffset="0">
-        <TextDecorator Name="EntityCompositeShapeTextDecorator" DisplayName="" DefaultText="" FontStyle="Bold" />
-      </ShapeHasDecorators>
-      <ShapeHasDecorators Position="InnerTopLeft" HorizontalOffset="0.05" VerticalOffset="0">
-        <IconDecorator Name="EntityCompositeShapeIconDecorator" DisplayName="" DefaultIcon="Resources\composite.png" />
-      </ShapeHasDecorators>
-    </CompartmentShape>
     <CompartmentShape Id="66621fb1-7d1f-4aef-a5f2-d1c5b92dbf17" Description="" Name="FunctionShape" DisplayName="Function Shape" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true" FixedTooltipText="Function Shape" FillColor="SandyBrown" OutlineColor="255, 128, 255" InitialWidth="2" InitialHeight="0.3" OutlineThickness="0.01" FillGradientMode="None" HasDefaultConnectionPoints="true" Geometry="Rectangle">
       <ShapeHasDecorators Position="InnerTopLeft" HorizontalOffset="0.25" VerticalOffset="0">
         <TextDecorator Name="FunctionTextDecorator" DisplayName="Function Text Decorator" DefaultText="FunctionTextDecorator" FontStyle="Bold" />
@@ -2571,7 +2473,6 @@
         <TextDecorator Name="DestEntityRelationTextDecorator" DisplayName="DESTINATION" DefaultText="" FontStyle="Italic" />
       </ConnectorHasDecorators>
     </Connector>
-    <Connector Id="62c983a8-9996-45b6-8c2a-56a8f9b40e04" Description="" Name="EntityCompositeConnector" DisplayName="Composite Connector" Namespace="nHydrate.Dsl" GeneratesDoubleDerived="true" TooltipType="Variable" FixedTooltipText="" Color="DimGray" DashStyle="Dash" SourceEndStyle="FilledDiamond" Thickness="0.01" />
     <Connector Id="1715d1db-8274-453b-8248-a36e795c89b8" Description="Connect an entity and a view" Name="EntityViewAssociationConnector" DisplayName="Entity View Association Connector" Namespace="nHydrate.Dsl" TooltipType="Variable" FixedTooltipText="Entity View Association Connector" TextColor="DimGray" Color="DimGray" SourceEndStyle="EmptyDiamond" TargetEndStyle="EmptyArrow" Thickness="0.01" />
   </Connectors>
   <XmlSerializationBehavior Name="nHydrateSerializationBehavior" Namespace="nHydrate.Dsl">
@@ -2742,9 +2643,6 @@
           </XmlPropertyData>
           <XmlRelationshipData UseFullForm="true" RoleElementName="staticDatum">
             <DomainRelationshipMoniker Name="EntityHasStaticDatum" />
-          </XmlRelationshipData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="composites">
-            <DomainRelationshipMoniker Name="EntityHasComposites" />
           </XmlRelationshipData>
           <XmlRelationshipData UseFullForm="true" RoleElementName="entityMetadata">
             <DomainRelationshipMoniker Name="EntityHasMetadata" />
@@ -3181,46 +3079,6 @@
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>
-      <XmlClassData TypeName="EntityHasComposites" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityHasCompositesMoniker" ElementName="entityHasComposites" MonikerTypeName="EntityHasCompositesMoniker">
-        <DomainRelationshipMoniker Name="EntityHasComposites" />
-      </XmlClassData>
-      <XmlClassData TypeName="Composite" MonikerAttributeName="" SerializeId="true" MonikerElementName="compositeMoniker" ElementName="composite" MonikerTypeName="CompositeMoniker">
-        <DomainClassMoniker Name="Composite" />
-        <ElementData>
-          <XmlPropertyData XmlName="name">
-            <DomainPropertyMoniker Name="Composite/Name" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="codeFacade">
-            <DomainPropertyMoniker Name="Composite/CodeFacade" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="isGenerated">
-            <DomainPropertyMoniker Name="Composite/IsGenerated" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="Composite/Summary" />
-          </XmlPropertyData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="fields">
-            <DomainRelationshipMoniker Name="CompositeHasFields" />
-          </XmlRelationshipData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="CompositeHasFields" MonikerAttributeName="" SerializeId="true" MonikerElementName="compositeHasFieldsMoniker" ElementName="compositeHasFields" MonikerTypeName="CompositeHasFieldsMoniker">
-        <DomainRelationshipMoniker Name="CompositeHasFields" />
-      </XmlClassData>
-      <XmlClassData TypeName="CompositeField" MonikerAttributeName="" SerializeId="true" MonikerElementName="compositeFieldMoniker" ElementName="compositeField" MonikerTypeName="CompositeFieldMoniker">
-        <DomainClassMoniker Name="CompositeField" />
-        <ElementData>
-          <XmlPropertyData XmlName="fieldId">
-            <DomainPropertyMoniker Name="CompositeField/FieldId" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="EntityCompositeShape" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityCompositeShapeMoniker" ElementName="entityCompositeShape" MonikerTypeName="EntityCompositeShapeMoniker">
-        <CompartmentShapeMoniker Name="EntityCompositeShape" />
-      </XmlClassData>
-      <XmlClassData TypeName="EntityCompositeConnector" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityCompositeConnectorMoniker" ElementName="entityCompositeConnector" MonikerTypeName="EntityCompositeConnectorMoniker">
-        <ConnectorMoniker Name="EntityCompositeConnector" />
-      </XmlClassData>
       <XmlClassData TypeName="EntityHasMetadata" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityHasMetadataMoniker" ElementName="entityHasMetadata" MonikerTypeName="EntityHasMetadataMoniker">
         <DomainRelationshipMoniker Name="EntityHasMetadata" />
       </XmlClassData>
@@ -3644,11 +3502,6 @@
           <DomainClassMoniker Name="ViewField" />
         </Class>
       </ExplorerNodeSettings>
-      <ExplorerNodeSettings IconToDisplay="Resources\composite.png">
-        <Class>
-          <DomainClassMoniker Name="Composite" />
-        </Class>
-      </ExplorerNodeSettings>
       <ExplorerNodeSettings IconToDisplay="Resources\data.png">
         <Class>
           <DomainClassMoniker Name="EntityMetadata" />
@@ -3719,13 +3572,11 @@
       <DomainPath>EntityHasEntities.ChildEntities</DomainPath>
       <DomainPath>EntityHasEntities.ParentEntity</DomainPath>
       <DomainPath>nHydrateModelHasRelationFields.RelationFields</DomainPath>
-      <DomainPath>CompositeHasFields.Fields</DomainPath>
       <DomainPath>EntityReferencesModules.Modules</DomainPath>
       <DomainPath>nHydrateModelHasRelationModules.RelationModules</DomainPath>
       <DomainPath>EntityHasEntities.ChildEntities</DomainPath>
       <DomainPath>EntityHasEntities.ParentEntity</DomainPath>
       <DomainPath>nHydrateModelHasRelationModules.nHydrateModel</DomainPath>
-      <DomainPath>EntityHasComposites.Composites</DomainPath>
       <DomainPath>nHydrateModelHasIndexModules.IndexModules</DomainPath>
     </HiddenNodes>
   </ExplorerBehavior>
@@ -3903,21 +3754,6 @@
         </CompartmentMap>
       </CompartmentShapeMap>
       <CompartmentShapeMap>
-        <DomainClassMoniker Name="Composite" />
-        <ParentElementPath>
-          <DomainPath>EntityHasComposites.Entity/!Entity/nHydrateModelHasEntities.nHydrateModel/!nHydrateModel</DomainPath>
-        </ParentElementPath>
-        <DecoratorMap>
-          <TextDecoratorMoniker Name="EntityCompositeShape/EntityCompositeShapeTextDecorator" />
-          <PropertyDisplayed>
-            <PropertyPath>
-              <DomainPropertyMoniker Name="Composite/Name" />
-            </PropertyPath>
-          </PropertyDisplayed>
-        </DecoratorMap>
-        <CompartmentShapeMoniker Name="EntityCompositeShape" />
-      </CompartmentShapeMap>
-      <CompartmentShapeMap>
         <DomainClassMoniker Name="View" />
         <ParentElementPath>
           <DomainPath>nHydrateModelHasViews.nHydrateModel/!nHydrateModel</DomainPath>
@@ -4040,10 +3876,6 @@
             </PropertyPath>
           </PropertyDisplayed>
         </DecoratorMap>
-      </ConnectorMap>
-      <ConnectorMap>
-        <ConnectorMoniker Name="EntityCompositeConnector" />
-        <DomainRelationshipMoniker Name="EntityHasComposites" />
       </ConnectorMap>
       <ConnectorMap>
         <ConnectorMoniker Name="EntityViewAssociationConnector" />

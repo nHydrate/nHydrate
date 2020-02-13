@@ -313,10 +313,6 @@ namespace nHydrate.Dsl
                 }
                 return image;
             }
-            else if (mel is nHydrate.Dsl.Composite)
-            {
-                return _images["composite"];
-            }
             else
             {
                 return null;
@@ -435,10 +431,6 @@ namespace nHydrate.Dsl
                 text += "Generated Fields: " + genFieldCount + Environment.NewLine;
             text += "Outbound Relations: " + o.RelationshipList.Count() + Environment.NewLine;
             text += "Inbound Relations: " + o.GetRelationsWhereChild().Count() + Environment.NewLine;
-
-            if (o.Composites.Count > 0)
-                text += "Composites: " + o.Composites.Count + Environment.NewLine;
-
             return text;
         }
 

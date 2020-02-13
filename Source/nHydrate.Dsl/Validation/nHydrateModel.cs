@@ -134,26 +134,6 @@ namespace nHydrate.Dsl
                             nameList.Add(check);
                     }
 
-                    ////Check Select Commands
-                    //foreach (var command in entity.SelectCommands)
-                    //{
-                    //  var check = command.PascalName.ToLower();
-                    //  if (nameList.Contains(check))
-                    //    context.LogError(string.Format(ValidationHelper.ErrorTextDuplicateName, command.PascalName), string.Empty, command);
-                    //  else
-                    //    nameList.Add(check);
-                    //}
-
-                    //Check Composites
-                    foreach (var composite in entity.Composites)
-                    {
-                        var check = composite.PascalName.ToLower();
-                        if (nameList.Contains(check))
-                            context.LogError(string.Format(ValidationHelper.ErrorTextDuplicateName, composite.PascalName), string.Empty, composite);
-                        else
-                            nameList.Add(check);
-                    }
-
                 }
 
                 //Check Views

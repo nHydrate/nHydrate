@@ -47,8 +47,6 @@ namespace nHydrate.Generator
 		Parameter,
 		Components,
 		Component,
-		SelectCommands,
-		SelectCommand,
 		Function,
 	}
 
@@ -153,12 +151,6 @@ namespace nHydrate.Generator
 					retval = GetImage("Default.png");
 					break;
 				case ImageConstants.Component:
-					retval = GetImage("Default.png");
-					break;
-				case ImageConstants.SelectCommands:
-					retval = GetImage("Default.png");
-					break;
-				case ImageConstants.SelectCommand:
 					retval = GetImage("Default.png");
 					break;
 			}

@@ -320,12 +320,6 @@ namespace nHydrate.Dsl
 				if(newShape != null) newShape.Size = newShape.DefaultSize; // set default shape size
 				return newShape;
 			}
-			if(element is global::nHydrate.Dsl.Composite)
-			{
-				global::nHydrate.Dsl.EntityCompositeShape newShape = new global::nHydrate.Dsl.EntityCompositeShape(this.Partition);
-				if(newShape != null) newShape.Size = newShape.DefaultSize; // set default shape size
-				return newShape;
-			}
 			if(element is global::nHydrate.Dsl.View)
 			{
 				global::nHydrate.Dsl.ViewShape newShape = new global::nHydrate.Dsl.ViewShape(this.Partition);
@@ -349,11 +343,6 @@ namespace nHydrate.Dsl
 				global::nHydrate.Dsl.EntityAssociationConnector newShape = new global::nHydrate.Dsl.EntityAssociationConnector(this.Partition);
 				return newShape;
 			}
-			if(element is global::nHydrate.Dsl.EntityHasComposites)
-			{
-				global::nHydrate.Dsl.EntityCompositeConnector newShape = new global::nHydrate.Dsl.EntityCompositeConnector(this.Partition);
-				return newShape;
-			}
 			if(element is global::nHydrate.Dsl.EntityHasViews)
 			{
 				global::nHydrate.Dsl.EntityViewAssociationConnector newShape = new global::nHydrate.Dsl.EntityViewAssociationConnector(this.Partition);
@@ -371,7 +360,6 @@ namespace nHydrate.Dsl
 		{
 			base.InitializeShapeFields(shapeFields);
 			global::nHydrate.Dsl.EntityShape.DecoratorsInitialized += EntityShapeDecoratorMap.OnDecoratorsInitialized;
-			global::nHydrate.Dsl.EntityCompositeShape.DecoratorsInitialized += EntityCompositeShapeDecoratorMap.OnDecoratorsInitialized;
 			global::nHydrate.Dsl.ViewShape.DecoratorsInitialized += ViewShapeDecoratorMap.OnDecoratorsInitialized;
 			global::nHydrate.Dsl.StoredProcedureShape.DecoratorsInitialized += StoredProcedureShapeDecoratorMap.OnDecoratorsInitialized;
 			global::nHydrate.Dsl.FunctionShape.DecoratorsInitialized += FunctionShapeDecoratorMap.OnDecoratorsInitialized;
@@ -393,24 +381,6 @@ namespace nHydrate.Dsl
 				
 				propertyInfo = new DslDiagrams::AssociatedPropertyInfo(global::nHydrate.Dsl.Entity.NameDomainPropertyId);
 				DslDiagrams::ShapeElement.FindDecorator(shape.Decorators, "EntityTextDecorator").AssociateValueWith(shape.Store, propertyInfo);
-			}
-		}
-		
-		/// <summary>
-		/// Class containing decorator path traversal methods for EntityCompositeShape.
-		/// </summary>
-		internal static partial class EntityCompositeShapeDecoratorMap
-		{
-			/// <summary>
-			/// Event handler called when decorator initialization is complete for EntityCompositeShape.  Adds decorator mappings for this shape or connector.
-			/// </summary>
-			public static void OnDecoratorsInitialized(object sender, global::System.EventArgs e)
-			{
-				DslDiagrams::ShapeElement shape = (DslDiagrams::ShapeElement)sender;
-				DslDiagrams::AssociatedPropertyInfo propertyInfo;
-				
-				propertyInfo = new DslDiagrams::AssociatedPropertyInfo(global::nHydrate.Dsl.Composite.NameDomainPropertyId);
-				DslDiagrams::ShapeElement.FindDecorator(shape.Decorators, "EntityCompositeShapeTextDecorator").AssociateValueWith(shape.Store, propertyInfo);
 			}
 		}
 		
@@ -855,12 +825,10 @@ namespace nHydrate.Dsl
 		/// Rule that initiates view fixup when an element that has an associated shape is added to the model. 
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.Entity), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.Composite), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.View), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedure), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.Function), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasEntities), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasComposites), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasViews), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		internal sealed partial class FixUpDiagram : FixUpDiagramBase
 		{
@@ -880,10 +848,6 @@ namespace nHydrate.Dsl
 				if(childElement is global::nHydrate.Dsl.Entity)
 				{
 					parentElement = GetParentForEntity((global::nHydrate.Dsl.Entity)childElement);
-				} else
-				if(childElement is global::nHydrate.Dsl.Composite)
-				{
-					parentElement = GetParentForComposite((global::nHydrate.Dsl.Composite)childElement);
 				} else
 				if(childElement is global::nHydrate.Dsl.View)
 				{
@@ -910,16 +874,6 @@ namespace nHydrate.Dsl
 			{
 				// Segments 0 and 1
 				global::nHydrate.Dsl.nHydrateModel result = root.nHydrateModel;
-				if ( result == null ) return null;
-				return result;
-			}
-			public static global::nHydrate.Dsl.nHydrateModel GetParentForComposite( global::nHydrate.Dsl.Composite root )
-			{
-				// Segments 0 and 1
-				global::nHydrate.Dsl.Entity root2 = root.Entity;
-				if ( root2 == null ) return null;
-				// Segments 2 and 3
-				global::nHydrate.Dsl.nHydrateModel result = root2.nHydrateModel;
 				if ( result == null ) return null;
 				return result;
 			}
@@ -1619,7 +1573,6 @@ namespace nHydrate.Dsl
 		/// Reroute a connector when the role players of its underlying relationship change
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasEntities), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasComposites), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasViews), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		internal sealed class ConnectorRolePlayerChanged : DslModeling::RolePlayerChangeRule
 		{
