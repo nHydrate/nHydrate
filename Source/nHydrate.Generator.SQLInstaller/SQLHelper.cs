@@ -949,8 +949,6 @@ namespace nHydrate.Generator.SQLInstaller
             var t1Alias = "[t0]";
             if (useLinqAlias) t1NameClause = t1Name + " AS " + t1Alias;
             else t1NameClause = t1Name;
-
-            var tableIndex = 1;
             var retval = t1NameClause;
             return retval;
         }

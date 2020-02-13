@@ -229,21 +229,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             this.AppendProperties();
             this.AppendGenerateEvents();
             this.AppendRegionBusinessObject();
-            //this.AppendParented();
             if (!_item.GeneratesDoubleDerived)
                 this.AppendClone();
             this.AppendRegionGetValue();
             this.AppendRegionSetValue();
             this.AppendNavigationProperties();
-
-            //TODO: need to make this work for all databases
-            //Remove for now in EF Core
-            //this.AppendDeleteDataScaler();
-
-            //this.AppendUpdateDataScaler(); //Not handled yet
             this.AppendRegionGetDatabaseFieldName();
             this.AppendIAuditable();
-            //this.AppendStaticMethods();
             this.AppendIEquatable();
             sb.AppendLine("	}");
         }
@@ -1106,23 +1098,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             return returnVal.ToString();
         }
 
-        private void AppendParented()
-        {
-            sb.AppendLine("		#region IsParented");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Determines if this object is part of a collection or is detached");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]");
-            sb.AppendLine("		public virtual bool IsParented");
-            sb.AppendLine("		{");
-            sb.AppendLine("			get { return (this.EntityState != System.Data.EntityState.Detached); }");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-        }
-
         private void AppendRegionGetValue()
         {
             sb.AppendLine("		#region GetValue");
@@ -1622,182 +1597,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected " + codeType + " _" + StringHelper.DatabaseNameToCamelCase(columnName) + ";");
-            sb.AppendLine();
-
-        }
-
-        private void AppendDeleteDataScaler()
-        {
-            if (_item.Immutable) return;
-            //No static methods for security tables
-            if (_item.Security.IsValid()) return;
-
-            sb.AppendLine("		#region DeleteData");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
-            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
-            sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", bool>> where, string connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return DeleteData(where: where, optimizer: new QueryOptimizer(), startup: new ContextStartup(null), connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
-            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
-            sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", bool>> where, QueryOptimizer optimizer, string connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return DeleteData(where: where, optimizer: optimizer, startup: new ContextStartup(null), connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
-            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
-            sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", bool>> where, ContextStartup startup, string connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return DeleteData(where: where, optimizer: new QueryOptimizer(), startup: startup, connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Delete all records that match a where condition");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records deleted</param>");
-            sb.AppendLine("		/// <param name=\"optimizer\">The optimization object to use for running queries</param>");
-            sb.AppendLine("		/// <param name=\"startup\">The startup options</param>");
-            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string to use for this access</param>");
-            sb.AppendLine("		/// <returns>The number of rows deleted</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Delete method\")]");
-            sb.AppendLine("		public static int DeleteData(Expression<Func<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", bool>> where, QueryOptimizer optimizer, ContextStartup startup, string connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			if (optimizer == null)");
-            sb.AppendLine("				optimizer = new QueryOptimizer();");
-            sb.AppendLine("				if (startup == null) startup = new ContextStartup(null);");
-            sb.AppendLine();
-            sb.AppendLine("			using (var context = new " + _model.ProjectName + "Entities(startup, connectionString))");
-            sb.AppendLine("			{");
-            sb.AppendLine("				context." + _item.PascalName + ".Where(where).Delete();");
-            sb.AppendLine("				return context.SaveChanges();");
-            sb.AppendLine("			}");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-        }
-
-        private void AppendUpdateDataScaler()
-        {
-            if (_item.Immutable) return;
-
-            sb.AppendLine("		#region UpdateData");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-            sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
-            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-            sb.AppendLine("		/// <param name=\"connection\">An open database connection</param>");
-            sb.AppendLine("		/// <param name=\"transaction\">The database connection transaction</param>");
-            sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
-            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, System.Data.IDbConnection connection, System.Data.Common.DbTransaction transaction)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup: null, connection: connection, transaction: transaction);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-            sb.AppendLine("		/// <param name=\"startup\">A configuration object</param>");
-            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
-            sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
-            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, ContextStartup startup, string connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ", startup: startup, connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
-            sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
-            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, TSource newValue, string connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-            sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
-            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " newValue)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ");");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Update the specified field that matches the Where expression with the new data value");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"select\">The field to update</param>");
-            sb.AppendLine("		/// <param name=\"where\">The expression that determines the records selected</param>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value to set the specified field in all matching records</param>");
-            sb.AppendLine("		/// <param name=\"connectionString\">The database connection string</param>");
-            sb.AppendLine("		/// <returns>The number of records affected</returns>");
-            //sb.AppendLine("  [Obsolete(\"Replaced by the context Update method\")]");
-            sb.AppendLine("		public static int UpdateData<TSource>(Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>> select, Expression<Func<" + this.GetLocalNamespace() + "." + _item.PascalName + "Query, bool>> where, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " newValue, string connectionString)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return BusinessObjectQuery<" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ", " + this.GetLocalNamespace() + "." + _item.PascalName + "Query, TSource>.UpdateData(select: select, where: where, newValue: newValue, leafTable: \"" + _item.DatabaseName + "\", getField: GetDatabaseFieldName, hasModifyAudit: " + _item.AllowModifiedAudit.ToString().ToLower() + ", connectionString: connectionString);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		#endregion");
             sb.AppendLine();
 
         }
