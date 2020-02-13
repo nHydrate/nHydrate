@@ -176,16 +176,11 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(nHydrateModel), "ModelToDisk", nHydrateModel.ModelToDiskDomainPropertyId, typeof(nHydrateModel.ModelToDiskPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "MaxPrecedenceOrder", nHydrateModel.MaxPrecedenceOrderDomainPropertyId, typeof(nHydrateModel.MaxPrecedenceOrderPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "ModelVersion", nHydrateModel.ModelVersionDomainPropertyId, typeof(nHydrateModel.ModelVersionPropertyHandler)),
-				new DomainMemberInfo(typeof(nHydrateModel), "CompanyURL", nHydrateModel.CompanyURLDomainPropertyId, typeof(nHydrateModel.CompanyURLPropertyHandler)),
-				new DomainMemberInfo(typeof(nHydrateModel), "CompanyPhone", nHydrateModel.CompanyPhoneDomainPropertyId, typeof(nHydrateModel.CompanyPhonePropertyHandler)),
-				new DomainMemberInfo(typeof(nHydrateModel), "UseGeneratedCRUD", nHydrateModel.UseGeneratedCRUDDomainPropertyId, typeof(nHydrateModel.UseGeneratedCRUDPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "DiagramVisibility", nHydrateModel.DiagramVisibilityDomainPropertyId, typeof(nHydrateModel.DiagramVisibilityPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "OutputTarget", nHydrateModel.OutputTargetDomainPropertyId, typeof(nHydrateModel.OutputTargetPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "TenantPrefix", nHydrateModel.TenantPrefixDomainPropertyId, typeof(nHydrateModel.TenantPrefixPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "TenantColumnName", nHydrateModel.TenantColumnNameDomainPropertyId, typeof(nHydrateModel.TenantColumnNamePropertyHandler)),
-				new DomainMemberInfo(typeof(nHydrateModel), "EFVersion", nHydrateModel.EFVersionDomainPropertyId, typeof(nHydrateModel.EFVersionPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "EmitSafetyScripts", nHydrateModel.EmitSafetyScriptsDomainPropertyId, typeof(nHydrateModel.EmitSafetyScriptsPropertyHandler)),
-				new DomainMemberInfo(typeof(nHydrateModel), "AllowMocks", nHydrateModel.AllowMocksDomainPropertyId, typeof(nHydrateModel.AllowMocksPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "EmitChangeScripts", nHydrateModel.EmitChangeScriptsDomainPropertyId, typeof(nHydrateModel.EmitChangeScriptsPropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "Name", Entity.NameDomainPropertyId, typeof(Entity.NamePropertyHandler)),
 				new DomainMemberInfo(typeof(Entity), "Summary", Entity.SummaryDomainPropertyId, typeof(Entity.SummaryPropertyHandler)),
@@ -1444,27 +1439,6 @@ namespace nHydrate.Dsl
 		/// </summary>
 		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/ImageUrl.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		ImageUrl = 13,
-	}
-}
-namespace nHydrate.Dsl
-{
-	/// <summary>
-	/// DomainEnumeration: EFVersionConstants
-	/// </summary>
-	[global::System.CLSCompliant(true)]
-	public enum EFVersionConstants
-	{
-		/// <summary>
-		/// EF4
-		/// EF 4
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.EFVersionConstants/EF4.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		EF4,
-		/// <summary>
-		/// EF6
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.EFVersionConstants/EF6.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		EF6,
 	}
 }
 namespace nHydrate.Dsl

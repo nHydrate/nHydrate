@@ -300,24 +300,6 @@
             <xsd:documentation>Determines the version of the model. Used for tracking changes and provides an upgrade path for older models</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: CompanyURL -->
-        <xsd:attribute name="companyURL" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>The URL of the company</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: CompanyPhone -->
-        <xsd:attribute name="companyPhone" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>The public phone numbner of the company</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: UseGeneratedCRUD -->
-        <xsd:attribute name="useGeneratedCRUD" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if generated stored procedures are used for the CRUD layer.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: DiagramVisibility -->
         <xsd:attribute name="diagramVisibility" type="VisibilityTypeConstants" >
           <xsd:annotation>
@@ -342,22 +324,10 @@
             <xsd:documentation>Determines the name of the column to hold tenant information for tenant tables</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: EFVersion -->
-        <xsd:attribute name="eFVersion" type="EFVersionConstants" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the target Entity Framework version</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: EmitSafetyScripts -->
         <xsd:attribute name="emitSafetyScripts" type="xsd:boolean" >
           <xsd:annotation>
             <xsd:documentation>Determines if normalization safety scripts are emitted into the installer</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: AllowMocks -->
-        <xsd:attribute name="allowMocks" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if mock objects are generated</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: EmitChangeScripts -->
@@ -4108,18 +4078,6 @@
       <xsd:enumeration value="Password"/>
       <xsd:enumeration value="Url"/>
       <xsd:enumeration value="ImageUrl"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-  
-  <!-- Enum EFVersionConstants -->
-  <xsd:simpleType name="EFVersionConstants">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="EF4">
-        <xsd:annotation>
-          <xsd:documentation>EF 4</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="EF6"/>
     </xsd:restriction>
   </xsd:simpleType>
   

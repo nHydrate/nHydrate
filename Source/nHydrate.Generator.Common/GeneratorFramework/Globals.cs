@@ -34,18 +34,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         SQLAzure,
     }
 
-    public enum EFVersionConstants
-    {
-        EF4,
-        EF6,
-    }
-
-    public enum FrameworkVersionConstants
-    {
-        v35 = 0,
-        v40 = 1,
-    }
-
     public delegate void StandardEventHandler(object sender, System.EventArgs e);
     public delegate void ItemChanagedEventHandler(object sender, System.EventArgs e);
     public delegate void BooleanDelegate(object sender, BooleanEventArgs e);

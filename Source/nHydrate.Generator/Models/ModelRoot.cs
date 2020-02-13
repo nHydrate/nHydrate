@@ -48,11 +48,9 @@ namespace nHydrate.Generator.Models
         protected const bool _def_supportLegacySearchObject = false;
         protected const string _def_defaultNamespace = "";
         protected const SQLServerTypeConstants _def_sQLServerType = SQLServerTypeConstants.SQL2005;
-        protected const EFVersionConstants _def_efVersion = EFVersionConstants.EF6;
         protected const string _def_storedProcedurePrefix = "gen";
         protected const string _def_tenantColumnName = "__tenant_user";
         protected const string _def_tenantPrefix = "__vw_tenant";
-        protected const bool _def_allowMocks = false;
 
         protected Database _database = null;
         protected string _companyName = string.Empty;
@@ -68,14 +66,12 @@ namespace nHydrate.Generator.Models
         protected string _defaultNamespace = _def_defaultNamespace;
         protected IGenerator _generatorProject = null;
         private SQLServerTypeConstants _sQLServerType = _def_sQLServerType;
-        private EFVersionConstants _efVersion = _def_efVersion;
         private string _storedProcedurePrefix = _def_storedProcedurePrefix;
         private readonly VersionHistoryCollection _versionHistoryList = new VersionHistoryCollection();
         private string _moduleName = string.Empty;
         private string _modeToolVersion = string.Empty;
         protected string _tenantColumnName = _def_tenantColumnName;
         protected string _tenantPrefix = _def_tenantPrefix;
-        protected bool _allowMocks = _def_allowMocks;
 
         #endregion
 
@@ -100,16 +96,6 @@ namespace nHydrate.Generator.Models
         #region Property Implementations
 
         public Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; } = new Dictionary<string, IModelConfiguration>();
-
-        public bool AllowMocks
-        {
-            get { return _allowMocks; }
-            set
-            {
-                _allowMocks = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("AllowMocks"));
-            }
-        }
 
         public string TenantColumnName
         {
@@ -247,21 +233,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the target Entity Framework version."),
-        DefaultValue(typeof(EFVersionConstants), "EF6"),
-        Category("Data"),
-        ]
-        public EFVersionConstants EFVersion
-        {
-            get { return _efVersion; }
-            set
-            {
-                _efVersion = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("EFVersionConstants"));
-            }
-        }
 
         [
         Browsable(true),
@@ -496,7 +467,6 @@ namespace nHydrate.Generator.Models
                 XmlHelper.AddAttribute(node, "emitSafetyScripts", this.EmitSafetyScripts);
                 XmlHelper.AddAttribute(node, "tenantColumnName", this.TenantColumnName);
                 XmlHelper.AddAttribute(node, "tenantPrefix", this.TenantPrefix);
-                XmlHelper.AddAttribute(node, "allowMocks", this.AllowMocks);
 
                 if (!string.IsNullOrEmpty(this.ModuleName))
                     XmlHelper.AddAttribute(node, "moduleName", this.ModuleName);
@@ -520,7 +490,6 @@ namespace nHydrate.Generator.Models
                 _versionHistoryList.XmlAppend(versionHistoryListNode);
 
                 XmlHelper.AddAttribute(node, "sqlType", this.SQLServerType.ToString());
-                XmlHelper.AddAttribute(node, "efversion", this.EFVersion.ToString());
 
                 if (this.MetaData.Count > 0)
                 {
@@ -548,11 +517,9 @@ namespace nHydrate.Generator.Models
                 _version = XmlHelper.GetAttributeValue(node, "version", _def_version);
                 this.UseUTCTime = XmlHelper.GetAttributeValue(node, "useUTCTime", this.UseUTCTime);
                 this.SQLServerType = (SQLServerTypeConstants)Enum.Parse(typeof(SQLServerTypeConstants), XmlHelper.GetAttributeValue(node, "sqlType", _def_sQLServerType.ToString()));
-                this.EFVersion = (EFVersionConstants)Enum.Parse(typeof(EFVersionConstants), XmlHelper.GetAttributeValue(node, "efversion", _def_efVersion.ToString()));
                 this.StoredProcedurePrefix = XmlHelper.GetAttributeValue(node, "storedProcedurePrefix", _def_storedProcedurePrefix);
                 this.TenantColumnName = XmlHelper.GetAttributeValue(node, "tenantColumnName", _def_tenantColumnName);
                 this.TenantPrefix = XmlHelper.GetAttributeValue(node, "tenantPrefix", _def_tenantPrefix);
-                this.AllowMocks = XmlHelper.GetAttributeValue(node, "allowMocks", _def_allowMocks);
                 this.CompanyName = XmlHelper.GetAttributeValue(node, "companyName", this.CompanyName);
                 this.EmitSafetyScripts = XmlHelper.GetAttributeValue(node, "emitSafetyScripts", this.EmitSafetyScripts);
                 this.CompanyAbbreviation = XmlHelper.GetAttributeValue(node, "companyAbbreviation", this.CompanyAbbreviation);

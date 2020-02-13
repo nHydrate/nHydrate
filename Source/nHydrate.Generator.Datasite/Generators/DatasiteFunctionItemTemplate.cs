@@ -146,7 +146,7 @@ namespace nHydrate.Generator.Datasite
                 #endregion
 
                 #region SQL
-                var sql = nHydrate.Core.SQLGeneration.SQLEmit.GetSQLCreateFunction(_item, true, _model.EFVersion);
+                var sql = nHydrate.Core.SQLGeneration.SQLEmit.GetSQLCreateFunction(_item, true);
                 var lines = sql.Replace("\r", string.Empty).Split('\n');
                 var newCode = new StringBuilder();
                 sql = string.Join("\r\n", lines.Where(x => !x.StartsWith("--MODELID")).ToList());

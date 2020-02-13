@@ -133,21 +133,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="e6f9583a-48f9-4747-95ef-6edaf297206b" Description="The URL of the company" Name="CompanyURL" DisplayName="Company URL" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="4bfc4208-7582-4e3d-a01a-7d20a1c3caaa" Description="The public phone numbner of the company" Name="CompanyPhone" DisplayName="Company Phone" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="4138a1c1-4bbf-4195-aba3-1c32aad51a0e" Description="Determines if generated stored procedures are used for the CRUD layer." Name="UseGeneratedCRUD" DisplayName="Use Generated CRUD" DefaultValue="" Category="Database" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="ceb0f015-ea20-4762-a324-e3c7fc567b0c" Description="Determines which objects are visible on the diagram" Name="DiagramVisibility" DisplayName="Diagram Visibility" DefaultValue="" Category="Diagram">
           <Attributes>
             <ClrAttribute Name="System.ComponentModel.TypeConverter">
@@ -182,17 +167,7 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="faacbca6-ce50-4101-846f-3b6a55e61bce" Description="Determines the target Entity Framework version" Name="EFVersion" DisplayName="EF Version" DefaultValue="EF6" Category="Code" IsBrowsable="false">
-          <Type>
-            <DomainEnumerationMoniker Name="EFVersionConstants" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="f348a2a7-4cf4-440c-b0b5-75be15bf6dde" Description="Determines if normalization safety scripts are emitted into the installer" Name="EmitSafetyScripts" DisplayName="Emit Safety Scripts" DefaultValue="true" Category="Database">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="ef57a476-64d2-47a8-9e7f-562a41dd6be1" Description="Determines if mock objects are generated" Name="AllowMocks" DisplayName="Allow Mocks" DefaultValue="false" Category="Code" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
@@ -2497,12 +2472,6 @@
         <EnumerationLiteral Description="" Name="ImageUrl" Value="13" />
       </Literals>
     </DomainEnumeration>
-    <DomainEnumeration Name="EFVersionConstants" Namespace="nHydrate.Dsl" Description="">
-      <Literals>
-        <EnumerationLiteral Description="EF 4" Name="EF4" Value="" />
-        <EnumerationLiteral Description="" Name="EF6" Value="" />
-      </Literals>
-    </DomainEnumeration>
     <DomainEnumeration Name="DeleteActionConstants" Namespace="nHydrate.Dsl" Description="Description for nHydrate.Dsl.DeleteActionConstants">
       <Literals>
         <EnumerationLiteral Description="Take no action on principal entity deletion" Name="NoAction" Value="" />
@@ -2700,18 +2669,9 @@
           <XmlPropertyData XmlName="modelVersion">
             <DomainPropertyMoniker Name="nHydrateModel/ModelVersion" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="companyURL">
-            <DomainPropertyMoniker Name="nHydrateModel/CompanyURL" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="companyPhone">
-            <DomainPropertyMoniker Name="nHydrateModel/CompanyPhone" />
-          </XmlPropertyData>
           <XmlRelationshipData UseFullForm="true" RoleElementName="modelMetadata">
             <DomainRelationshipMoniker Name="nHydrateModelHasModelMetadata" />
           </XmlRelationshipData>
-          <XmlPropertyData XmlName="useGeneratedCRUD">
-            <DomainPropertyMoniker Name="nHydrateModel/UseGeneratedCRUD" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="diagramVisibility">
             <DomainPropertyMoniker Name="nHydrateModel/DiagramVisibility" />
           </XmlPropertyData>
@@ -2727,14 +2687,8 @@
           <XmlRelationshipData UseFullForm="true" RoleElementName="indexModules">
             <DomainRelationshipMoniker Name="nHydrateModelHasIndexModules" />
           </XmlRelationshipData>
-          <XmlPropertyData XmlName="eFVersion">
-            <DomainPropertyMoniker Name="nHydrateModel/EFVersion" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="emitSafetyScripts">
             <DomainPropertyMoniker Name="nHydrateModel/EmitSafetyScripts" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="allowMocks">
-            <DomainPropertyMoniker Name="nHydrateModel/AllowMocks" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="emitChangeScripts">
             <DomainPropertyMoniker Name="nHydrateModel/EmitChangeScripts" />

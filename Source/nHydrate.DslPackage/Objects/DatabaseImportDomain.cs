@@ -1172,7 +1172,6 @@ namespace nHydrate.DslPackage.Objects
                         model.SQLServerType = (DatabaseTypeConstants)Enum.Parse(typeof(DatabaseTypeConstants), oldModel.SQLServerType.ToString());
                         model.StoredProcedurePrefix = oldModel.StoredProcedurePrefix;
                         model.TenantPrefix = oldModel.TenantPrefix;
-                        model.AllowMocks = oldModel.AllowMocks;
                         model.TimestampColumnName = oldModel.Database.TimestampColumnName;
                         model.UseUTCTime = oldModel.UseUTCTime;
                         model.Version = oldModel.Version;

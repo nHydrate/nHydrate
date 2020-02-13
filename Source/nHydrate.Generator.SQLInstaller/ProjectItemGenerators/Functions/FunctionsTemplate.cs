@@ -90,7 +90,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Functions
 
                 foreach (var function in _model.Database.Functions.Where(x => x.Generated).OrderBy(x => x.DatabaseName))
                 {
-                    sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSQLCreateFunction(function, true, _model.EFVersion));
+                    sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSQLCreateFunction(function, true));
                 }
 
                 //Add Grants

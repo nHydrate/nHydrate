@@ -43,7 +43,6 @@ namespace nHydrate.Generator.Models
         protected const string _def_modifiedDateColumnName = "ModifiedDate";
         protected const string _def_timestampColumnName = "TimeStamp";
         protected const string _def_fullIndexSearchColumnName = "full_index_text";
-        protected const bool _def_useGeneratedCRUD = false;
 
         protected string _createdByColumnName = _def_createdByColumnName;
         protected string _createdDateColumName = _def_createdDateColumName;
@@ -52,7 +51,6 @@ namespace nHydrate.Generator.Models
         protected string _fullIndexSearchColumnName = _def_fullIndexSearchColumnName;
         protected string _timestampColumnName = _def_timestampColumnName;
         protected string _grantExecUser = string.Empty;
-        protected bool _useGeneratedCRUD = _def_useGeneratedCRUD;
 
         protected string _databaseName = string.Empty;
         protected TableCollection _tables = null;
@@ -398,20 +396,6 @@ namespace nHydrate.Generator.Models
         }
 
         [Browsable(false),
-        Description("Determines if anything must be installed in the databae to upport this model."),
-        DefaultValue(_def_useGeneratedCRUD),
-        Category("Data")]
-        public bool UseGeneratedCRUD
-        {
-            get { return _useGeneratedCRUD; }
-            set
-            {
-                _useGeneratedCRUD = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("UseGeneratedCRUD"));
-            }
-        }
-
-        [Browsable(false),
         Description("Determines the prefix to prepend to all table names. This can be used if you have many models generated to one database."),
         Category("Data")]
         public string TablePrefix
@@ -508,7 +492,6 @@ namespace nHydrate.Generator.Models
                 XmlHelper.AddAttribute((XmlElement)node, "timestampColumnName", TimestampColumnName);
                 XmlHelper.AddAttribute((XmlElement)node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
                 XmlHelper.AddAttribute((XmlElement)node, "grantExecUser", GrantExecUser);
-                XmlHelper.AddAttribute((XmlElement)node, "useGeneratedCRUD", UseGeneratedCRUD.ToString());
                 XmlHelper.AddAttribute((XmlElement)node, "tablePrefix", TablePrefix);
                 XmlHelper.AddAttribute((XmlElement)node, "collate", Collate);
 
@@ -585,7 +568,6 @@ namespace nHydrate.Generator.Models
                 _timestampColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", _timestampColumnName);
                 _fullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", _fullIndexSearchColumnName);
                 _grantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", _grantExecUser);
-                _useGeneratedCRUD = XmlHelper.GetAttributeValue(node, "useGeneratedCRUD", _useGeneratedCRUD);
                 _tablePrefix = XmlHelper.GetAttributeValue(node, "tablePrefix", _tablePrefix);
 
                 var relationsNode = node.SelectSingleNode("relations");
@@ -681,7 +663,6 @@ namespace nHydrate.Generator.Models
                 this.TimestampColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", _def_timestampColumnName);
                 this.FullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", _def_fullIndexSearchColumnName);
                 this.GrantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", string.Empty);
-                this.UseGeneratedCRUD = XmlHelper.GetAttributeValue(node, "useGeneratedCRUD", _useGeneratedCRUD);
                 this.TablePrefix = XmlHelper.GetAttributeValue(node, "tablePrefix", string.Empty);
 
                 //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);

@@ -81,9 +81,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
 				sb.AppendLine("GO");
 				sb.AppendLine();
 
-				//if (!_model.Database.UseGeneratedCRUD)
-				//  return;
-
 				sb.AppendLine("CREATE PROCEDURE [" + _currentTable.GetSQLSchema() + "].[" + storedProcName + "]");
 				sb.AppendLine("(");
 

@@ -836,7 +836,7 @@ namespace nHydrate.Generator.SQLInstaller
                     var oldT = modelOld.Database.Functions.FirstOrDefault(x => x.Key == newT.Key);
                     if (oldT == null || (oldT.CorePropertiesHash != newT.CorePropertiesHash))
                     {
-                        sb.Append(SQLEmit.GetSQLCreateFunction(newT, false, modelNew.EFVersion));
+                        sb.Append(SQLEmit.GetSQLCreateFunction(newT, false));
                     }
                 }
 

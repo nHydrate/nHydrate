@@ -787,7 +787,7 @@ namespace nHydrate.Dsl
                 #region Associative Table
 
                 //If no generated CRUD cannot have auditing on Associative
-                if (this.IsAssociative && !this.nHydrateModel.UseGeneratedCRUD && (this.AllowCreateAudit || this.AllowModifyAudit || this.AllowTimestamp))
+                if (this.IsAssociative && (this.AllowCreateAudit || this.AllowModifyAudit || this.AllowTimestamp))
                 {
                     context.LogError(string.Format(ValidationHelper.ErrorTextTableAssociativeNoCRUDAudit, this.Name), string.Empty, this);
                 }

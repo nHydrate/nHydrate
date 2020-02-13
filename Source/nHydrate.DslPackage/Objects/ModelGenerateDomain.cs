@@ -465,17 +465,14 @@ namespace nHydrate.DslPackage.Objects
                 root.DefaultNamespace = model.DefaultNamespace;
                 root.ProjectName = model.ProjectName;
                 root.SQLServerType = (SQLServerTypeConstants)Enum.Parse(typeof(SQLServerTypeConstants), model.SQLServerType.ToString());
-                root.EFVersion = (nHydrate.Generator.Common.GeneratorFramework.EFVersionConstants)Enum.Parse(typeof(nHydrate.Generator.Common.GeneratorFramework.EFVersionConstants), model.EFVersion.ToString());
                 root.SupportLegacySearchObject = false;
                 root.UseUTCTime = model.UseUTCTime;
                 root.Version = model.Version;
-                root.Database.UseGeneratedCRUD = model.UseGeneratedCRUD;
                 root.Database.ResetKey(model.Id.ToString());
                 root.OutputTarget = string.Empty; //model.OutputTarget;
                 //These have the same mapping values flags so we need convert to int and then convert to the other enumeration
                 root.TenantColumnName = model.TenantColumnName;
                 root.TenantPrefix = model.TenantPrefix;
-                root.AllowMocks = model.AllowMocks;
 
                 foreach (var md in model.ModelMetadata)
                 {

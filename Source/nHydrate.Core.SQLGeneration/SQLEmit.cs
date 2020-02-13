@@ -1261,42 +1261,7 @@ namespace nHydrate.Core.SQLGeneration
             return sb.ToString();
         }
 
-        private static string GetSQLCreateFunctionSPWrapper(Function dbObject)
-        {
-            var sb = new StringBuilder();
-            var name = dbObject.PascalName + "_SPWrapper";
-
-            sb.AppendLine("if exists(select * from sys.objects where name = '" + name + "' and type = 'P' and type_desc = 'SQL_STORED_PROCEDURE')");
-            sb.AppendLine("drop procedure [" + dbObject.GetSQLSchema() + "].[" + name + "]");
-            sb.AppendLine($"--MODELID: {dbObject.Key}");
-            sb.AppendLine("GO");
-            sb.AppendLine();
-            sb.AppendLine("CREATE PROCEDURE [" + dbObject.GetSQLSchema() + "].[" + name + "]");
-
-            var parameterList = dbObject.GetGeneratedParametersDatabaseOrder();
-            if (parameterList.Count > 0)
-            {
-                sb.AppendLine("(");
-
-                var plist = dbObject.GetGeneratedParametersDatabaseOrder().ToList();
-                plist.ForEach(x => x.Length = 0);
-
-                sb.Append(BuildFunctionParameterList(plist));
-                sb.AppendLine(")");
-            }
-
-            sb.AppendLine("AS");
-            sb.AppendLine();
-            sb.Append("SELECT * FROM [" + dbObject.GetSQLSchema() + "].[" + dbObject.DatabaseName + "] (");
-            sb.AppendLine(string.Join(", ", parameterList.Select(x => "@" + x.DatabaseName)) + ")");
-            sb.AppendLine();
-            sb.AppendLine("--MODELID,BODY: " + dbObject.Key);
-            sb.AppendLine("GO");
-            sb.AppendLine();
-            return sb.ToString();
-        }
-
-        public static string GetSQLCreateFunction(Function dbObject, bool isInternal, EFVersionConstants efversion)
+        public static string GetSQLCreateFunction(Function dbObject, bool isInternal)
         {
             var sb = new StringBuilder();
             sb.AppendLine("if exists(select * from sys.objects where name = '" + dbObject.PascalName + "' and type in('FN','IF','TF'))");
@@ -1366,10 +1331,6 @@ namespace nHydrate.Core.SQLGeneration
             }
             sb.AppendLine("GO");
             sb.AppendLine();
-
-            //Get the wrapper
-            if (dbObject.IsTable && efversion == EFVersionConstants.EF4)
-                sb.Append(GetSQLCreateFunctionSPWrapper(dbObject));
 
             return sb.ToString();
         }
