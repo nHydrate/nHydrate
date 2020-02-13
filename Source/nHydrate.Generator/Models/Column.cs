@@ -78,7 +78,6 @@ namespace nHydrate.Generator.Models
         private double _min = _def_min;
         private double _max = _def_max;
         private bool _isIndexed = _def_isIndexed;
-        //private DateTime _createdDate = DateTime.Now;
         protected bool _isUnique = _def_isUnique;
         protected string _collate = string.Empty;
         protected bool _computedColumn = _def_computedColumn;
@@ -1202,7 +1201,7 @@ namespace nHydrate.Generator.Models
 
                 _length = XmlHelper.GetAttributeValue(node, "length", _def_length);
                 _scale = XmlHelper.GetAttributeValue(node, "scale", _def_scale);
-                this.ResetId(XmlHelper.GetAttributeValue(node, "id", _id));
+                this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
                 var parentTableRefNode = node.SelectSingleNode("parentTableRef"); //deprecated, use "pt"
                 if (parentTableRefNode == null) parentTableRefNode = node.SelectSingleNode("pt");

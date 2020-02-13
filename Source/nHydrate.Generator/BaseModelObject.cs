@@ -38,6 +38,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         protected bool _dirty = false;
         protected bool _cancelUIEvents = false;
         protected INHydrateModelObjectController _controller = null;
+        protected string _name = string.Empty;
 
         #endregion
 
@@ -77,7 +78,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
         #region Property Implementations
 
-        public Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; }
+        public virtual Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; }
 
         [Browsable(false)]
         public virtual INHydrateModelObjectController Controller
@@ -93,7 +94,18 @@ namespace nHydrate.Generator.Common.GeneratorFramework
             get { return (INHydrateModelObject)_root; }
         }
 
+        [Browsable(false)]
+        public int Id { get; protected set; }
 
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Name"));
+            }
+        }
         [Browsable(false)]
         public virtual string Key
         {

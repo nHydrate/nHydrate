@@ -36,7 +36,6 @@ namespace nHydrate.Generator.Models
     {
         #region Member Variables
 
-        protected int _id = 1;
         private bool _ascending = true;
         private Guid _fieldID = Guid.Empty;
 
@@ -71,12 +70,6 @@ namespace nHydrate.Generator.Models
                 _fieldID = value;
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("fieldID"));
             }
-        }
-
-        [Browsable(false)]
-        public int Id
-        {
-            get { return _id; }
         }
 
         #endregion
@@ -145,7 +138,7 @@ namespace nHydrate.Generator.Models
                 _key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
                 this.FieldID = XmlHelper.GetAttributeValue(node, "fieldID", this.FieldID);
                 this.Ascending = XmlHelper.GetAttributeValue(node, "ascending", this.Ascending);
-                _id = XmlHelper.GetAttributeValue(node, "id", _id);
+                this.Id = XmlHelper.GetAttributeValue(node, "id", this.Id);
                 this.Dirty = false;
             }
             catch (Exception ex)

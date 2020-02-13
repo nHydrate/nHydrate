@@ -93,55 +93,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
             sb.AppendLine("			}");
         }
 
-        public static string BuildSelectList(TableComponent component, ModelRoot model)
-        {
-            var index = 0;
-            var output = new StringBuilder();
-            var columnList = new List<Column>();
-            foreach (Reference r in component.Columns)
-                columnList.Add((Column)r.Object);
-
-            foreach (var column in columnList)
-            {
-                var parentTable = column.ParentTableRef.Object as Table;
-                output.AppendFormat("	[{0}].[{1}]", GetTableDatabaseName(model, parentTable), column.DatabaseName);
-                if ((index < columnList.Count - 1) || (component.Parent.AllowCreateAudit) || (component.Parent.AllowModifiedAudit) || (component.Parent.AllowTimestamp))
-                    output.Append(",");
-                output.AppendLine();
-                index++;
-            }
-
-            if (component.Parent.AllowCreateAudit)
-            {
-                output.AppendFormat("	[{0}].[{1}],", GetTableDatabaseName(model, component.Parent), model.Database.CreatedByColumnName);
-                output.AppendLine();
-
-                output.AppendFormat("	[{0}].[{1}]", GetTableDatabaseName(model, component.Parent), model.Database.CreatedDateColumnName);
-                if ((component.Parent.AllowModifiedAudit) || (component.Parent.AllowTimestamp))
-                    output.Append(",");
-                output.AppendLine();
-            }
-
-            if (component.Parent.AllowModifiedAudit)
-            {
-                output.AppendFormat("	[{0}].[{1}],", GetTableDatabaseName(model, component.Parent), model.Database.ModifiedByColumnName);
-                output.AppendLine();
-
-                output.AppendFormat("	[{0}].[{1}]", GetTableDatabaseName(model, component.Parent), model.Database.ModifiedDateColumnName);
-                if (component.Parent.AllowTimestamp)
-                    output.Append(",");
-                output.AppendLine();
-            }
-
-            if (component.Parent.AllowTimestamp)
-            {
-                output.AppendFormat("	[{0}].[{1}]", GetTableDatabaseName(model, component.Parent.GetAbsoluteBaseTable()), model.Database.TimestampColumnName);
-                output.AppendLine();
-            }
-
-            return output.ToString();
-        }
-
         public static string BuildSelectList(Table table, ModelRoot model)
         {
             return BuildSelectList(table, model, false);

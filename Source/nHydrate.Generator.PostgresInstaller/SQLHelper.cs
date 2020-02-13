@@ -696,12 +696,6 @@ namespace nHydrate.Generator.PostgresInstaller
             return item.DBSchema;
         }
 
-        public static string GetPostgresSchema(this TableComponent item)
-        {
-            if (string.IsNullOrEmpty(item.Parent.DBSchema)) return "public";
-            return item.Parent.DBSchema;
-        }
-
         public static string GetPostgresSchema(this CustomStoredProcedure item)
         {
             if (string.IsNullOrEmpty(item.DBSchema)) return "public";

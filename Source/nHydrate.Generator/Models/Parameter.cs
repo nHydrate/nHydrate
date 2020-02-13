@@ -46,8 +46,6 @@ namespace nHydrate.Generator.Models
         protected const int _def_sortOrder = 0;
         protected const string _def_codefacade = "";
 
-        protected int _id = 0;
-        protected string _name = string.Empty;
         protected string _description = _def_description;
         protected System.Data.SqlDbType _dataType = _def_type;
         protected int _length = _def_length;
@@ -88,22 +86,6 @@ namespace nHydrate.Generator.Models
             {
                 _generated = value;
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("generated"));
-            }
-        }
-
-        [
-        Browsable(true),
-        Description("Determines the name of this parameter."),
-        Category("Design"),
-        DefaultValue(""),
-        ]
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                _name = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Name"));
             }
         }
 
@@ -186,12 +168,6 @@ namespace nHydrate.Generator.Models
                 _scale = value;
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("Scale"));
             }
-        }
-
-        [Browsable(false)]
-        public int Id
-        {
-            get { return _id; }
         }
 
         [
@@ -391,7 +367,7 @@ namespace nHydrate.Generator.Models
 
                 this.Default = XmlHelper.GetAttributeValue(node, "default", _def_default);
                 this.Length = XmlHelper.GetAttributeValue(node, "length", _length);
-                this.ResetId(XmlHelper.GetAttributeValue(node, "id", _id));
+                this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
                 this.SortOrder = XmlHelper.GetAttributeValue(node, "sortOrder", _sortOrder);
 
                 var parentTableRefNode = node.SelectSingleNode("parentTableRef");
@@ -710,7 +686,7 @@ namespace nHydrate.Generator.Models
 
         public void ResetId(int newId)
         {
-            _id = newId;
+            this.Id = newId;
         }
 
         public virtual int GetPredefinedScale()

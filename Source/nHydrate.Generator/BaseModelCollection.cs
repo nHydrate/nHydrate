@@ -23,8 +23,12 @@
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                     *
 // -------------------------------------------------------------------------- *
 #endregion
+using nHydrate.Generator.Common.Util;
 using System;
+using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
+using System.Xml;
 
 namespace nHydrate.Generator.Common.GeneratorFramework
 {
@@ -74,6 +78,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         public abstract bool IsSynchronized { get; }
 
         #endregion
-
     }
+
 }

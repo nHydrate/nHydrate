@@ -923,12 +923,6 @@ namespace nHydrate.Generator.SQLInstaller
             return item.DBSchema;
         }
 
-        public static string GetSQLSchema(this TableComponent item)
-        {
-            if (string.IsNullOrEmpty(item.Parent.DBSchema)) return "dbo";
-            return item.Parent.DBSchema;
-        }
-
         public static string GetSQLSchema(this CustomStoredProcedure item)
         {
             if (string.IsNullOrEmpty(item.DBSchema)) return "dbo";

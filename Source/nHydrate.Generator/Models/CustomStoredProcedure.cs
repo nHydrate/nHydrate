@@ -48,8 +48,6 @@ namespace nHydrate.Generator.Models
         protected const bool _def_isExisting = false;
         protected const bool _def_generatesDoubleDerived = false;
 
-        protected int _id = 1;
-        protected string _name = string.Empty;
         protected bool _isExisting = _def_isExisting;
         protected string _databaseObjectName = string.Empty;
         protected string _codeFacade = _def_codefacade;
@@ -58,7 +56,6 @@ namespace nHydrate.Generator.Models
         protected string _sql = string.Empty;
         protected ReferenceCollection _columns = null;
         protected ReferenceCollection _parameters = null;
-        //private DateTime _createdDate = DateTime.Now;
         private string _dbSchema = _def_dbSchema;
         private bool _generatesDoubleDerived = _def_generatesDoubleDerived;
 
@@ -90,22 +87,6 @@ namespace nHydrate.Generator.Models
 
         [Browsable(false)]
         public int PrecedenceOrder { get; set; }
-
-        [
-        Browsable(true),
-        Description("Determines the name of this object."),
-        Category("Design"),
-        DefaultValue("")
-        ]
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                _name = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Name"));
-            }
-        }
 
         [
         Browsable(true),
@@ -255,21 +236,6 @@ namespace nHydrate.Generator.Models
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("ViewSql"));
             }
         }
-
-        [Browsable(false)]
-        public int Id
-        {
-            get { return _id; }
-        }
-
-        //[Browsable(true)]
-        //[Category("Data")]
-        //[Description("The date that this object was created.")]
-        //[ReadOnlyAttribute(true)]
-        //public DateTime CreatedDate
-        //{
-        //  get { return _createdDate; }
-        //}
 
         #endregion
 
@@ -437,8 +403,7 @@ namespace nHydrate.Generator.Models
                     this.Parameters.XmlLoad(parametersNode);
 
                 this.Generated = XmlHelper.GetAttributeValue(node, "generated", _generated);
-                this.ResetId(XmlHelper.GetAttributeValue(node, "id", _id));
-                //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
                 this.Dirty = false;
             }
@@ -513,7 +478,7 @@ namespace nHydrate.Generator.Models
 
         public void ResetId(int newId)
         {
-            _id = newId;
+            this.Id = newId;
         }
 
         #endregion

@@ -45,8 +45,6 @@ namespace nHydrate.Generator.Models
         protected const string _def_description = "";
         protected const bool _def_isTable = false;
 
-        protected int _id = 1;
-        protected string _name = string.Empty;
         protected string _codeFacade = _def_codefacade;
         protected string _description = _def_description;
         protected bool _generated = _def_generated;
@@ -83,22 +81,6 @@ namespace nHydrate.Generator.Models
 
         [Browsable(false)]
         public int PrecedenceOrder { get; set; }
-
-        [
-        Browsable(true),
-        Description("Determines the name of this object."),
-        Category("Design"),
-        DefaultValue("")
-        ]
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                _name = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Name"));
-            }
-        }
 
         [
         Browsable(true),
@@ -242,12 +224,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
-        public int Id
-        {
-            get { return _id; }
-        }
-
         #endregion
 
         #region Methods
@@ -372,7 +348,7 @@ namespace nHydrate.Generator.Models
                     this.Parameters.XmlLoad(parametersNode);
 
                 this.Generated = XmlHelper.GetAttributeValue(node, "generated", _generated);
-                this.ResetId(XmlHelper.GetAttributeValue(node, "id", _id));
+                this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
                 this.Dirty = false;
             }
@@ -447,7 +423,7 @@ namespace nHydrate.Generator.Models
 
         public void ResetId(int newId)
         {
-            _id = newId;
+            this.Id = newId;
         }
 
         #endregion

@@ -680,35 +680,6 @@ namespace nHydrate.DslPackage.Objects
 
                     #endregion
 
-                    #region Composites
-                    foreach (var composite in entity.Composites.Where(x => x.IsGenerated))
-                    {
-                        var newComponent = new nHydrate.Generator.Models.TableComponent(newTable.ComponentList.Root, newTable.ComponentList.Parent);
-                        newComponent.ResetKey(composite.Id.ToString());
-                        //newComponent.ResetId(HashString(newComponent.Key));
-                        newComponent.CodeFacade = composite.CodeFacade;
-                        newComponent.Description = composite.Summary;
-                        newComponent.Generated = composite.IsGenerated;
-                        newComponent.Name = composite.Name;
-                        newTable.ComponentList.Add(newComponent);
-
-                        foreach (var column in composite.Fields)
-                        {
-                            var oldColumn = entity.Fields.FirstOrDefault(x => x.Id == column.Id);
-                            if (oldColumn != null)
-                            {
-                                var newColumn = newTable.GetColumns().FirstOrDefault(x => x.Name == oldColumn.Name);
-                                if (newColumn != null)
-                                {
-                                    newColumn.ResetKey(column.Id.ToString());
-                                    newColumn.ResetId(HashString(newColumn.Key));
-                                    newComponent.Columns.Add(newColumn.CreateRef(newColumn.Key));
-                                }
-                            }
-                        }
-                    }
-                    #endregion
-
                     #region Static Data
                     //if (entity.TypedEntity != TypedEntityConstants.None)
                     //{

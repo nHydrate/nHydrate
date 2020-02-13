@@ -261,7 +261,7 @@ namespace nHydrate.Generator.Models
 				this.Default = XmlHelper.GetAttributeValue(node, "default", _def_default);
 				this.Length = XmlHelper.GetAttributeValue(node, "length", _length);
 				this.Scale = XmlHelper.GetAttributeValue(node, "scale", _scale);
-				this.ResetId(XmlHelper.GetAttributeValue(node, "id", _id));
+				this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
 				var parentRefNode = node.SelectSingleNode("parentTableRef");
 				ParentRef = new Reference(this.Root);

@@ -229,18 +229,6 @@
     <Compile Include="Models\ModelRootController.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\TableComponent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\TableComponentCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\TableComposite.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\TableCompositeCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Models\VersionHistoryCollection.cs" />
     <Compile Include="Models\VersionHistory.cs" />
     <Compile Include="Models\CustomStoredProcedure.cs" />

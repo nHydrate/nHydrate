@@ -51,8 +51,6 @@ namespace nHydrate.Generator.Models
         protected const System.ComponentModel.DataAnnotations.DataType _def_uIDataType =
             System.ComponentModel.DataAnnotations.DataType.Custom;
 
-        protected int _id = 0;
-        protected string _name = string.Empty;
         protected string _description = _def_description;
         protected string _prompt = _def_prompt;
         protected System.Data.SqlDbType _dataType = _def_type;
@@ -63,7 +61,6 @@ namespace nHydrate.Generator.Models
         protected bool _isBrowsable = _def_isBrowsable;
         protected string _category = string.Empty;
         protected System.ComponentModel.DataAnnotations.DataType _uIDataType = _def_uIDataType;
-        //private DateTime _createdDate = DateTime.Now;
 
         #endregion
 
@@ -113,22 +110,6 @@ namespace nHydrate.Generator.Models
             {
                 _generated = value;
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("generated"));
-            }
-        }
-
-        [
-            Browsable(true),
-            Description("Determines the name of this column."),
-            Category("Design"),
-            DefaultValue(""),
-        ]
-        public virtual string Name
-        {
-            get { return _name; }
-            set
-            {
-                _name = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Name"));
             }
         }
 
@@ -204,12 +185,6 @@ namespace nHydrate.Generator.Models
                 _scale = value;
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("Scale"));
             }
-        }
-
-        [Browsable(false)]
-        public virtual int Id
-        {
-            get { return _id; }
         }
 
         [
@@ -1010,7 +985,7 @@ namespace nHydrate.Generator.Models
 
         public virtual void ResetId(int id)
         {
-            _id = id;
+            this.Id = id;
             this.OnPropertyChanged(this, new PropertyChangedEventArgs("Id"));
         }
 

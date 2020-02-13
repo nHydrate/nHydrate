@@ -75,8 +75,6 @@ namespace nHydrate.Generator.Models
         protected const bool _def_generatesDoubleDerived = false;
         protected const bool _def_isTenant = false;
 
-        protected int _id = 1;
-        protected string _name = string.Empty;
         protected string _codeFacade = _def_codeFacade;
         protected string _description = _def_description;
         protected bool _associativeTable = _def_associativeTable;
@@ -93,16 +91,9 @@ namespace nHydrate.Generator.Models
         protected ReferenceCollection _relationships = null;
         protected ReferenceCollection _viewRelationships = null;
         protected List<TableIndex> _tableIndexList = new List<TableIndex>();
-        private bool _isMetaData = false;
-        private bool _isMetaDataDefinition = false;
-        private bool _isMetaDataMaster = false;
-        //private DateTime _createdDate = DateTime.Now;
         private string _parentTableKey = null;
         private UnitTestSettingsConstants _allowUnitTest = _def_allowUnitTest;
-        //private List<Table> _unitTestDependencies = new List<Table>();
         private List<int> _unitTestTableIdPreLoad = new List<int>();
-        private readonly TableCompositeCollection _compositeList = null;
-        private readonly TableComponentCollection _componentList = null;
         private bool _allowAuditTracking = _def_allowAuditTracking;
         private bool _immutable = _def_immutable;
         private bool _enforePrimaryKey = _def_enforePrimaryKey;
@@ -121,8 +112,6 @@ namespace nHydrate.Generator.Models
         {
             this.MetaData = new MetadataItemCollection();
 
-            _compositeList = new TableCompositeCollection(root, this);
-            _componentList = new TableComponentCollection(root, this);
             _security = new SecurityFunction(root, this);
             _security.ResetKey(Guid.Empty.ToString());
 
@@ -188,26 +177,6 @@ namespace nHydrate.Generator.Models
         public List<TableIndex> TableIndexList
         {
             get { return _tableIndexList; }
-        }
-
-        [
-        Browsable(false),
-        Description("A list of composite objects of this table."),
-        Category("Relations"),
-        ]
-        public TableCompositeCollection CompositeList
-        {
-            get { return _compositeList; }
-        }
-
-        [
-        Browsable(false),
-        Description("A list of component objects of this table. These are sub-tables that are created in the API with a subset of columns from this table."),
-        Category("Relations"),
-        ]
-        public TableComponentCollection ComponentList
-        {
-            get { return _componentList; }
         }
 
         [
@@ -302,21 +271,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the name of this table."),
-        Category("Design"),
-        DefaultValue("")
-        ]
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                _name = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Name"));
-            }
-        }
 
         [
         Browsable(true),
@@ -594,12 +548,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
-        public int Id
-        {
-            get { return _id; }
-        }
-
         [
         Browsable(true),
         Description("Defines the static data that is generated into the database scripts."),
@@ -686,25 +634,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
-        internal bool IsMetaData
-        {
-            get { return _isMetaData; }
-            set { _isMetaData = value; }
-        }
-
-        [Browsable(false)]
-        public bool IsMetaDataDefinition
-        {
-            get { return _isMetaDataDefinition; }
-            set { _isMetaDataDefinition = value; }
-        }
-
-        internal bool IsMetaDataMaster
-        {
-            get { return _isMetaDataMaster; }
-            set { _isMetaDataMaster = value; }
-        }
 
         [Browsable(false)]
         public bool InheritsCreateAudit
@@ -1089,64 +1018,6 @@ namespace nHydrate.Generator.Models
         }
 
         /// <summary>
-        /// This gets all table composites from this and all base classes
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<TableComposite> GetTableCompositesFullHierarchy()
-        {
-            try
-            {
-                var retval = new List<TableComposite>();
-
-                var t = this;
-                while (t != null)
-                {
-                    foreach (var tableComposite in t.CompositeList.ToList())
-                    {
-                        retval.Add(tableComposite);
-                    }
-                    //t = t.ParentTable;
-                    t = null;
-                }
-                return retval;
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This gets all table components from this and all base classes
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<TableComponent> GetTableComponentsFullHierarchy()
-        {
-            try
-            {
-                var retval = new List<TableComponent>();
-
-                var t = this;
-                while (t != null)
-                {
-                    foreach (var tableComponent in t.ComponentList.ToList())
-                    {
-                        retval.Add(tableComponent);
-                    }
-                    //t = t.ParentTable;
-                    t = null;
-                }
-                return retval;
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
         /// This gets all columns in this class NOT in a base class
         /// </summary>
         /// <returns></returns>
@@ -1499,20 +1370,6 @@ namespace nHydrate.Generator.Models
                 //  XmlHelper.AddElement((XmlElement)unitTestNode, "tableid", t.Id.ToString());
                 //}
 
-                if (this.CompositeList.Count > 0)
-                {
-                    var compositesNode = oDoc.CreateElement("composites");
-                    this.CompositeList.XmlAppend(compositesNode);
-                    node.AppendChild(compositesNode);
-                }
-
-                if (this.ComponentList.Count > 0)
-                {
-                    var componentsNode = oDoc.CreateElement("components");
-                    this.ComponentList.XmlAppend(componentsNode);
-                    node.AppendChild(componentsNode);
-                }
-
                 if (this.Generated != _def_generated)
                     XmlHelper.AddAttribute(node, "generated", this.Generated);
 
@@ -1603,14 +1460,6 @@ namespace nHydrate.Generator.Models
                 if (columnsNode != null)
                     this.Columns.XmlLoad(columnsNode);
 
-                var compositesNode = node.SelectSingleNode("composites");
-                if (compositesNode != null)
-                    this.CompositeList.XmlLoad(compositesNode);
-
-                var componentsNode = node.SelectSingleNode("components");
-                if (componentsNode != null)
-                    this.ComponentList.XmlLoad(componentsNode);
-
                 var tableIndexListNode = node.SelectSingleNode("til");
                 if (tableIndexListNode != null)
                     _tableIndexList.XmlLoad(tableIndexListNode, this.Root);
@@ -1621,7 +1470,7 @@ namespace nHydrate.Generator.Models
                 this.EnforcePrimaryKey = XmlHelper.GetAttributeValue(node, "enforePrimaryKey", _def_enforePrimaryKey);
                 this.AllowUnitTest = (UnitTestSettingsConstants)Enum.Parse(typeof(UnitTestSettingsConstants), XmlHelper.GetAttributeValue(node, "allowUnitTest", _def_allowUnitTest.ToString()), true);
 
-                this.ResetId(XmlHelper.GetAttributeValue(node, "id", _id));
+                this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
                 var staticDataNode = node.SelectSingleNode("staticData");
                 if (staticDataNode != null)
@@ -1912,7 +1761,7 @@ namespace nHydrate.Generator.Models
 
         public void ResetId(int newId)
         {
-            _id = newId;
+            this.Id = newId;
         }
 
         [Browsable(false)]

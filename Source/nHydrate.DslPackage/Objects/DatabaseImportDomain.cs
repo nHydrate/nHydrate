@@ -1232,36 +1232,6 @@ namespace nHydrate.DslPackage.Objects
                             }
                             #endregion
 
-                            #region Composites
-                            foreach (var component in table.ComponentList.ToList())
-                            {
-                                var newComposite = new Composite(model.Partition);
-                                newEntity.Composites.Add(newComposite);
-                                addedElements.Add(newComposite);
-                                newComposite.CodeFacade = component.CodeFacade;
-                                newComposite.Summary = component.Description;
-                                newComposite.Name = component.Name;
-                                newComposite.IsGenerated = component.Generated;
-
-                                //Add the fields by looking them up in the new table
-                                foreach (var column in component.GetColumns())
-                                {
-                                    var checkColumn = table.GetColumns().FirstOrDefault(x => x.Key == column.Key);
-                                    if (checkColumn != null)
-                                    {
-                                        var tableField = newEntity.Fields.FirstOrDefault(x => x.Name == checkColumn.Name);
-                                        if (tableField != null)
-                                        {
-                                            var newField = new CompositeField(model.Partition);
-                                            newComposite.Fields.Add(newField);
-                                            newField.FieldId = tableField.Id;
-                                        }
-                                    }
-                                }
-
-                            }
-                            #endregion
-
                             #region Load Static Data
                             var index = 1;
                             foreach (nHydrate.Generator.Models.RowEntry data in table.StaticData)

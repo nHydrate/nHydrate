@@ -95,8 +95,6 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        public Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; } = new Dictionary<string, IModelConfiguration>();
-
         public string TenantColumnName
         {
             get { return _tenantColumnName; }

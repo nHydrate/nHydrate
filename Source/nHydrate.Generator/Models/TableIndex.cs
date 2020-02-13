@@ -38,7 +38,6 @@ namespace nHydrate.Generator.Models
 	{
 		#region Member Variables
 
-		protected int _id = 1;
 		private string _description = string.Empty;
 		private string _importedName = string.Empty;
 		private bool _isUnique = false;
@@ -114,15 +113,9 @@ namespace nHydrate.Generator.Models
 			}
 		}
 
-		[Browsable(false)]
-		public int Id
-		{
-			get { return _id; }
-		}
-
 		public void ResetId(int newId)
 		{
-			_id = newId;
+            this.Id = newId;
 		}
 
 		#endregion
@@ -202,7 +195,7 @@ namespace nHydrate.Generator.Models
 				this.IsUnique = XmlHelper.GetAttributeValue(node, "isUnique", this.IsUnique);
 				this.PrimaryKey = XmlHelper.GetAttributeValue(node, "primaryKey", this.PrimaryKey);
 				this.Clustered = XmlHelper.GetAttributeValue(node, "clustered", this.Clustered);
-				_id = XmlHelper.GetAttributeValue(node, "id", _id);
+                this.Id = XmlHelper.GetAttributeValue(node, "id", this.Id);
 
 				var tableIndexColumnListNode = node.SelectSingleNode("ticl");
 				if (tableIndexColumnListNode != null)

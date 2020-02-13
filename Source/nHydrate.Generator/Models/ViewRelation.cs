@@ -42,13 +42,11 @@ namespace nHydrate.Generator.Models
         protected const bool _def_enforce = true;
         protected const string _def_description = "";
 
-        protected int _id = 1;
         protected Reference _parentTableRef = null;
         protected Reference _childViewRef = null;
         protected string _roleName = _def_roleName;
         protected string _constraintName = string.Empty;
         protected ViewColumnRelationshipCollection _columnRelationships = null;
-        //private DateTime _createdDate = DateTime.Now;
         private string _description = _def_description;
 
         #endregion
@@ -158,15 +156,6 @@ namespace nHydrate.Generator.Models
                     this.OnPropertyChanged(this, new PropertyChangedEventArgs("childTableRef"));
                 }
             }
-        }
-
-        /// <summary>
-        /// Determines the unique id of this object.
-        /// </summary>
-        [Browsable(false)]
-        public int Id
-        {
-            get { return _id; }
         }
 
         /// <summary>
@@ -502,7 +491,7 @@ namespace nHydrate.Generator.Models
             if (this.ParentTableRef == null) _parentTableRef = new Reference(this.Root);
             this.ParentTableRef.XmlLoad(parentTableRefNode);
 
-            this.ResetId(XmlHelper.GetAttributeValue(node, "id", _id));
+            this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
             var roleName = XmlHelper.GetAttributeValue(node, "roleName", _def_roleName);
             if (roleName == "fk") roleName = string.Empty; //Error correct from earlier versions
@@ -592,7 +581,7 @@ namespace nHydrate.Generator.Models
 
         public void ResetId(int newId)
         {
-            _id = newId;
+            this.Id = newId;
         }
 
         public override string ToString()

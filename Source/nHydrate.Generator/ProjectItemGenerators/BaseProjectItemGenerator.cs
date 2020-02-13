@@ -66,7 +66,6 @@ namespace nHydrate.Generator.ProjectItemGenerators
                 {
                     #region Create the PROPERTY_ITEM_DATA_TYPE table
                     projectItemDataType = _model.Database.Tables.Add("PROPERTY_ITEM_DATA_TYPE");
-                    projectItemDataType.IsMetaDataMaster = true;
 
                     Column column = null;
                     column = _model.Database.Columns.Add("property_item_data_type_id");
@@ -94,7 +93,6 @@ namespace nHydrate.Generator.ProjectItemGenerators
 
                         #region Create the PROPERTY_ITEM_DEFINE table
                         var projectItemDefineTable = _model.Database.Tables.Add(table.DatabaseName + "_PROPERTY_ITEM_DEFINE");
-                        projectItemDefineTable.IsMetaDataDefinition = true;
 
                         column = _model.Database.Columns.Add("property_item_define_id");
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
@@ -195,7 +193,6 @@ namespace nHydrate.Generator.ProjectItemGenerators
 
                         #region Create the PROPERTY_ITEM table
                         var projectItemValueTable = _model.Database.Tables.Add(table.DatabaseName + "_PROPERTY_ITEM");
-                        projectItemValueTable.IsMetaData = true;
 
                         column = _model.Database.Columns.Add("property_item_id");
                         column.ParentTableRef = projectItemValueTable.CreateRef();

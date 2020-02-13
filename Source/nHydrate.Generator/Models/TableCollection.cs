@@ -191,34 +191,6 @@ namespace nHydrate.Generator.Models
 
         #region Methods
 
-        ///// <summary>
-        ///// This returns a list of all columns for all tables
-        ///// </summary>
-        ///// <returns></returns>
-        //public IEnumerable<Column> GetAllColumns()
-        //{
-        //  var  retval = new List<Column>();
-        //  foreach (Table table in this)
-        //  {
-        //    retval.AddRange(table.GetColumnsFullHierarchy(true));
-        //  }
-        //  return retval;
-        //}
-
-        /// <summary>
-        /// This returns a list of all components for all tables
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<TableComponent> GetAllComponents()
-        {
-            var retval = new List<TableComponent>();
-            foreach (Table table in this)
-            {
-                retval.AddRange(table.GetTableComponentsFullHierarchy());
-            }
-            return retval;
-        }
-
         public Table[] GetById(int id)
         {
             var retval = new ArrayList();
