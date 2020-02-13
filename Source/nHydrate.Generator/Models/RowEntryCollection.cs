@@ -78,7 +78,7 @@ namespace nHydrate.Generator.Models
 
         public override void XmlLoad(XmlNode node)
         {
-            _key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
 
             var rowEntryNodes = node.SelectNodes("rowEntry"); //deprecated, use "r"
             if (rowEntryNodes.Count == 0) rowEntryNodes = node.SelectNodes("r");

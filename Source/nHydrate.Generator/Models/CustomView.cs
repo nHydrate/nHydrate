@@ -1,28 +1,4 @@
-#region Copyright (c) 2006-2020 nHydrate.org, All Rights Reserved
-// -------------------------------------------------------------------------- *
-//                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2020 All Rights reserved                   *
-//                                                                            *
-//                                                                            *
-// Permission is hereby granted, free of charge, to any person obtaining a    *
-// copy of this software and associated documentation files (the "Software"), *
-// to deal in the Software without restriction, including without limitation  *
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,   *
-// and/or sell copies of the Software, and to permit persons to whom the      *
-// Software is furnished to do so, subject to the following conditions:       *
-//                                                                            *
-// The above copyright notice and this permission notice shall be included    *
-// in all copies or substantial portions of the Software.                     *
-//                                                                            *
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,            *
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES            *
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  *
-// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY       *
-// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,       *
-// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE          *
-// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                     *
-// -------------------------------------------------------------------------- *
-#endregion
+#pragma warning disable 0168
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -65,6 +41,11 @@ namespace nHydrate.Generator.Models
             _columns.ObjectSingular = "Field";
             _columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
             _columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
+        }
+
+        public CustomView()
+        {
+            //This is only for the BaseModelCollection<T>
         }
 
         #endregion
@@ -284,7 +265,7 @@ namespace nHydrate.Generator.Models
         {
             try
             {
-                _key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
                 this.Name = XmlHelper.GetAttributeValue(node, "name", string.Empty);
                 this.DBSchema = XmlHelper.GetAttributeValue(node, "dbschema", _def_dbSchema);
                 this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", _def_codefacade);
@@ -371,11 +352,6 @@ namespace nHydrate.Generator.Models
                 }
                 return primaryKeyColumns.AsReadOnly();
             }
-        }
-
-        public void ResetId(int newId)
-        {
-            this.Id = newId;
         }
 
         #endregion

@@ -33,7 +33,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
     {
         #region Class Members
 
-        protected string _key = Guid.NewGuid().ToString();
         protected INHydrateModelObject _root;
         protected bool _dirty = false;
         protected bool _cancelUIEvents = false;
@@ -47,6 +46,11 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         public BaseModelObject(INHydrateModelObject root)
         {
             _root = root;
+        }
+
+        public BaseModelObject()
+        {
+            //This should only be used for BaseModelCollection<T>
         }
 
         #endregion
@@ -92,10 +96,28 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         public virtual INHydrateModelObject Root
         {
             get { return (INHydrateModelObject)_root; }
+            protected internal set //need for BaseModelCollection<T>
+            {
+                if (value == null)
+                    throw new Exception("Cannot set root to null.");
+                _root = value;
+            }
         }
 
         [Browsable(false)]
         public int Id { get; protected set; }
+
+        public void ResetId(int newId)
+        {
+            this.Id = newId;
+            this.OnPropertyChanged(this, new PropertyChangedEventArgs("Id"));
+        }
+
+        public virtual void SetKey(string key)
+        {
+            this.Key = key;
+            this.OnPropertyChanged(this, new PropertyChangedEventArgs("Key"));
+        }
 
         public string Name
         {
@@ -107,10 +129,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
             }
         }
         [Browsable(false)]
-        public virtual string Key
-        {
-            get { return _key; }
-        }
+        public virtual string Key { get; protected set; } = Guid.NewGuid().ToString();
 
         [Browsable(false)]
         public virtual bool Dirty
@@ -143,7 +162,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         {
             if (string.IsNullOrEmpty(newKey))
                 throw new Exception("The key value must have a value!");
-            _key = newKey;
+            this.Key = newKey;
         }
 
         #endregion

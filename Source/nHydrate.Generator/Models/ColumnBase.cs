@@ -974,18 +974,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public virtual void ResetId(int id)
-        {
-            this.Id = id;
-            this.OnPropertyChanged(this, new PropertyChangedEventArgs("Id"));
-        }
-
-        protected internal virtual void SetKey(string key)
-        {
-            _key = key;
-            this.OnPropertyChanged(this, new PropertyChangedEventArgs("Key"));
-        }
-
         public static int GetPredefinedSize(System.Data.SqlDbType dataType)
         {
             //Returns -1 if variable

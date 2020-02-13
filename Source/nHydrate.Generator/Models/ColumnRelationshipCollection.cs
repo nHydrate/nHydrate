@@ -90,7 +90,7 @@ namespace nHydrate.Generator.Models
 
         public override void XmlLoad(XmlNode node)
         {
-            _key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
             var columnRelationshipNodes = node.SelectNodes("columnRelationship"); //deprecated, use "cr"
             if (columnRelationshipNodes.Count == 0) columnRelationshipNodes = node.SelectNodes("cr");
             foreach (XmlNode columnRelationshipNode in columnRelationshipNodes)

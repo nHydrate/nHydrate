@@ -1,28 +1,4 @@
-#region Copyright (c) 2006-2020 nHydrate.org, All Rights Reserved
-// -------------------------------------------------------------------------- *
-//                           NHYDRATE.ORG                                     *
-//              Copyright (c) 2006-2020 All Rights reserved                   *
-//                                                                            *
-//                                                                            *
-// Permission is hereby granted, free of charge, to any person obtaining a    *
-// copy of this software and associated documentation files (the "Software"), *
-// to deal in the Software without restriction, including without limitation  *
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,   *
-// and/or sell copies of the Software, and to permit persons to whom the      *
-// Software is furnished to do so, subject to the following conditions:       *
-//                                                                            *
-// The above copyright notice and this permission notice shall be included    *
-// in all copies or substantial portions of the Software.                     *
-//                                                                            *
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,            *
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES            *
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  *
-// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY       *
-// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,       *
-// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE          *
-// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                     *
-// -------------------------------------------------------------------------- *
-#endregion
+#pragma warning disable 0168
 using nHydrate.Generator.Common.Util;
 using System;
 using System.Linq;
@@ -79,5 +55,218 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
         #endregion
     }
+
+    public abstract class BaseModelCollection<T> : BaseModelCollection, IEnumerable<T>
+        where T : BaseModelObject, new()
+    {
+        public BaseModelCollection(INHydrateModelObject root)
+            : base(root)
+        {
+        }
+
+        #region Member Variables
+        protected readonly List<T> _internalList = new List<T>();
+        #endregion
+
+        protected abstract string NodeOldName { get; }
+        protected abstract string NodeName { get; }
+
+        #region IXMLable Members
+
+        public override void XmlAppend(XmlNode node)
+        {
+            var oDoc = node.OwnerDocument;
+            XmlHelper.AddAttribute(node, "key", this.Key);
+            foreach (var item in _internalList)
+            {
+                var newNode = oDoc.CreateElement(this.NodeName);
+                item.XmlAppend(newNode);
+                node.AppendChild(newNode);
+            }
+
+        }
+
+        public override void XmlLoad(XmlNode node)
+        {
+            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+            XmlNodeList nList = null;
+            if (!string.IsNullOrEmpty(this.NodeOldName))
+                nList = node.SelectNodes(this.NodeOldName);
+            if (nList.Count == 0) nList = node.SelectNodes(this.NodeName);
+            foreach (XmlNode n in nList)
+            {
+                var newNode = new T();
+                newNode.Root = this.Root;
+                newNode.XmlLoad(n);
+                this.Add(newNode);
+            }
+
+            this.Dirty = false;
+
+        }
+
+        #endregion
+
+        #region IList Members
+        public virtual bool IsReadOnly
+        {
+            get { return false; }
+        }
+
+        public virtual T this[int index]
+        {
+            get { return (T)_internalList[index]; }
+            set { _internalList[index] = value; }
+        }
+
+        public virtual void RemoveAt(int index)
+        {
+            _internalList.RemoveAt(index);
+        }
+
+        public virtual void Insert(int index, T value)
+        {
+            _internalList.Insert(index, value);
+        }
+
+        public virtual void Remove(T value)
+        {
+            _internalList.Remove(value);
+        }
+
+        public virtual bool Contains(T value)
+        {
+            return _internalList.Contains(value);
+        }
+
+        protected bool ContainsId(int id)
+        {
+            foreach (T element in this)
+            {
+                if (id == element.Id)
+                    return true;
+            }
+            return false;
+        }
+
+        public override void Clear()
+        {
+            _internalList.Clear();
+        }
+
+        public virtual int IndexOf(T value)
+        {
+            return _internalList.IndexOf(value);
+        }
+
+        public override void AddRange(ICollection list)
+        {
+            foreach (T item in list)
+            {
+                _internalList.Add(item);
+            }
+        }
+
+        public virtual void Add(T value)
+        {
+            _internalList.Add(value);
+        }
+
+        public virtual bool IsFixedSize
+        {
+            get { return false; }
+        }
+
+        #endregion
+
+        public virtual T Add()
+        {
+            var newItem = new T();
+            newItem.Root = this.Root;
+            newItem.ResetId(NextIndex());
+            this.Add(newItem);
+            return newItem;
+        }
+
+        public virtual bool Contains(string name)
+        {
+            foreach (T item in this)
+            {
+                if (string.Compare(item.Name, name, true) == 0)
+                    return true;
+            }
+            return false;
+        }
+
+        #region ICollection Members
+
+        public override bool IsSynchronized
+        {
+            get { return false; }
+        }
+
+        public override int Count
+        {
+            get { return _internalList.Count; }
+        }
+
+        public override void CopyTo(Array array, int index)
+        {
+            _internalList.CopyTo((T[])array, index);
+        }
+
+        public override object SyncRoot
+        {
+            get { return _internalList; }
+        }
+
+        #endregion
+
+        #region Methods
+
+        public virtual T[] GetById(int id)
+        {
+            var retval = new ArrayList();
+            foreach (T element in this)
+            {
+                if (element.Id == id)
+                    retval.Add(element);
+            }
+            return (T[])retval.ToArray(typeof(T));
+        }
+
+        private Random _rnd = new Random();
+        internal virtual int NextIndex()
+        {
+            var retval = _rnd.Next(1, int.MaxValue);
+            while (_internalList.Select(x => x.Id).Count(x => x == retval) != 0)
+            {
+                retval = _rnd.Next(1, int.MaxValue);
+            }
+            return retval;
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        public override IEnumerator GetEnumerator()
+        {
+            return _internalList.GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable<T> Members
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return _internalList.GetEnumerator();
+        }
+
+        #endregion
+
+    }
+
 
 }
