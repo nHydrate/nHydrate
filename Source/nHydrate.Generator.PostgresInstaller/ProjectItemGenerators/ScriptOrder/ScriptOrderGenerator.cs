@@ -15,16 +15,13 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.ScriptOrder
 
 		private const string PARENT_ITEM_NAME = @"5_Programmability";
 
-		#endregion
+        #endregion
 
-		#region Overrides
+        #region Overrides
 
-		public override int FileCount
-		{
-			get { return 1; }
-		}
-		
-		public override void Generate()
+        public override int FileCount => 1;
+
+        public override void Generate()
 		{
 			var template = new ScriptOrderTemplate(_model);
 			var fullFileName = template.FileName;

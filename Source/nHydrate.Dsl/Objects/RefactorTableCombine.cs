@@ -25,7 +25,7 @@ namespace nHydrate.Dsl.Objects
 		public Guid EntityKey1 { get; set; }
 		public Guid EntityKey2 { get; set; }
 
-		public Dictionary<Guid, Guid> ReMappedFieldIDList { get; private set; }
+		public Dictionary<Guid, Guid> ReMappedFieldIDList { get; }
 
 		public void ToXML(System.Xml.XmlElement node)
 		{

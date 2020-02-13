@@ -97,22 +97,11 @@ namespace nHydrate.Generator.Models
             get { return this.ColumnRelationships.AsEnumerable().All(cr => cr.ParentColumn.PrimaryKey); }
         }
 
-        /// <summary>
-        /// Determines the field mappings of this relationship.
-        /// </summary>
-        [Description("Determines the field mappings of this relationship.")]
-        [Category("Data")]
         public ColumnRelationshipCollection ColumnRelationships
         {
             get { return _columnRelationships; }
         }
 
-        /// <summary>
-        /// Determines the parent table in the relationship.
-        /// </summary>
-        [Browsable(false)]
-        [Description("Determines the parent table in the relationship.")]
-        [Category("Data")]
         public Reference ParentTableRef
         {
             get { return _parentTableRef; }
@@ -129,11 +118,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines the child table in the relationship.
-        /// </summary>
-        [Description("Determines the child table in the relationship.")]
-        [Category("Data")]
         public Reference ChildTableRef
         {
             get { return _childTableRef; }
@@ -150,12 +134,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines the database role name of this relation.
-        /// </summary>
-        [Description("Determines the database role name of this relation.")]
-        [Category("Data")]
-        [DefaultValue(_def_roleName)]
         public string RoleName
         {
             get { return _roleName; }
@@ -169,7 +147,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public string ConstraintName
         {
             get { return _constraintName; }
@@ -183,10 +160,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines if this relationship has nullable fields or is required
-        /// </summary>
-        [Browsable(false)]
         public bool IsRequired
         {
             get
@@ -200,10 +173,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines if this is a M:N relationship
-        /// </summary>
-        [Browsable(false)]
         public bool IsManyToMany
         {
             get
@@ -227,10 +196,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines if this is a 1:1 relationship
-        /// </summary>
-        [Browsable(false)]
         public bool IsOneToOne
         {
             get
@@ -258,31 +223,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines if all fields on both sides of the relation are table PKs
-        /// </summary>
-        [Browsable(false)]
-        public bool AreAllFieldsPK
-        {
-            get
-            {
-                if ((this.ParentTable == null) || (this.ChildTable == null)) return false;
-                if (this.ParentTable.PrimaryKeyColumns.Count != this.ChildTable.PrimaryKeyColumns.Count) return false;
-
-                foreach (ColumnRelationship columnRelationship in this.ColumnRelationships)
-                {
-                    if ((columnRelationship.ParentColumn == null) || (!columnRelationship.ParentColumn.PrimaryKey)) return false;
-                    if ((columnRelationship.ChildColumn == null) || (!columnRelationship.ChildColumn.PrimaryKey)) return false;
-                }
-
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Determines if this is an inheritance relationship
-        /// </summary>
-        [Browsable(false)]
         public bool IsInherited
         {
             get
@@ -294,10 +234,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
-        [Description("Determines if this relation is enforced in the database.")]
-        [Category("Data")]
-        [DefaultValue(_def_enforce)]
         public bool Enforce
         {
             get { return _enforce; }
@@ -311,7 +247,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public string Description
         {
             get { return _description; }
@@ -322,7 +257,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public DeleteActionConstants DeleteAction
         {
             get { return _deleteAction; }
@@ -333,10 +267,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// A hash of the table/columns of this relationship with no role information
-        /// </summary>
-        [Browsable(false)]
         public string LinkHash
         {
             get
@@ -353,67 +283,9 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public int UniqueHash
-        {
-            get { return (this.LinkHash + "|" + this.RoleName).GetHashCode(); }
-        }
-
         #endregion
 
         #region Methods
-
-        /// <summary>
-        /// Determines that all columns in the relationship are generated
-        /// </summary>
-        public bool IsGenerated
-        {
-            get
-            {
-                var retval = true;
-                foreach (ColumnRelationship columnRelationship in this.ColumnRelationships)
-                {
-                    var childColumn = columnRelationship.ChildColumn;
-                    var parentColumn = columnRelationship.ParentColumn;
-                    retval &= childColumn.Generated;
-                    retval &= parentColumn.Generated;
-                }
-                return retval;
-            }
-        }
-
-        public bool IsPrimaryKeyRelation()
-        {
-            //Determine if this relation ship is based on primary keys
-            var retval = true;
-            foreach (ColumnRelationship columnRelationship in this.ColumnRelationships)
-            {
-                var parentColumn = columnRelationship.ParentColumn;
-                var parentTable = this.ParentTable;
-                if (!parentTable.PrimaryKeyColumns.Contains(parentColumn))
-                    retval = false;
-            }
-            return retval;
-        }
-
-        public string ToLongString()
-        {
-            try
-            {
-                var col1 = this.ColumnRelationships.First().ParentColumn;
-                var col2 = this.ColumnRelationships.First().ChildColumn;
-                var retval = (this.RoleName == "" ? "" : this.RoleName + " ");
-                retval += ((Table)col1.ParentTableRef.Object).Name + ".";
-                retval += col1.ToString();
-                retval += "->";
-                retval += ((Table)col2.ParentTableRef.Object).Name + ".";
-                retval += col2.ToString();
-                return retval;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
 
         public bool IsInvalidRelation()
         {
@@ -530,10 +402,6 @@ namespace nHydrate.Generator.Models
             return base.GetHashCode();
         }
 
-        /// <summary>
-        /// Get the parent table of this relation
-        /// </summary>
-        /// <returns></returns>
         public Table ParentTable
         {
             get
@@ -544,10 +412,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Get the child table of this relation
-        /// </summary>
-        /// <returns></returns>
         public Table ChildTable
         {
             get
@@ -556,54 +420,6 @@ namespace nHydrate.Generator.Models
                 if (this.ChildTableRef.Object == null) return null;
                 return this.ChildTableRef.Object as Table;
             }
-        }
-
-        public Table GetSecondaryAssociativeTable()
-        {
-            if (!this.IsManyToMany) return null;
-
-            var parentTable = (Table)this.ParentTableRef.Object;
-            var childTable = (Table)this.ChildTableRef.Object;
-
-            var otherTable = parentTable;
-            if (childTable.AssociativeTable) otherTable = childTable;
-
-            if (otherTable.AssociativeTable)
-            {
-                var relationList = otherTable.GetRelationsWhereChild();
-                {
-                    var relation = relationList.Where(x => x != this).FirstOrDefault();
-                    if (relation == null) return null;
-
-                    return relation.ParentTableRef.Object as Table;
-
-                }
-            }
-            return null;
-
-        }
-
-        public Relation GetAssociativeOtherRelation()
-        {
-            if (!this.IsManyToMany) return null;
-
-            var parentTable = (Table)this.ParentTableRef.Object;
-            var childTable = (Table)this.ChildTableRef.Object;
-
-            var otherTable = parentTable;
-            if (childTable.AssociativeTable) otherTable = childTable;
-
-            if (otherTable.AssociativeTable)
-            {
-                var relationList = otherTable.GetRelationsWhereChild();
-                if (relationList.Count() == 2)
-                {
-                    var relation = relationList.Where(x => x != this).FirstOrDefault();
-                    if (relation == null) return null;
-                    return relation;
-                }
-            }
-            return null;
         }
 
         #endregion
@@ -711,7 +527,6 @@ namespace nHydrate.Generator.Models
             return returnVal;
         }
 
-        [Browsable(false)]
         public string PascalRoleName
         {
             get
@@ -723,25 +538,11 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
-        public string CamelRoleName
-        {
-            get
-            {
-                if (((ModelRoot)this.Root).TransformNames)
-                    return StringHelper.DatabaseNameToCamelCase(RoleName);
-                else
-                    return StringHelper.FirstCharToLower(this.RoleName);
-            }
-        }
-
-        [Browsable(false)]
         public string DatabaseRoleName
         {
             get { return this.RoleName; }
         }
 
-        [Browsable(false)]
         public IEnumerable<Column> FkColumns
         {
             get

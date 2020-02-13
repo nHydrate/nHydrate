@@ -75,9 +75,9 @@ namespace nHydrate.Dsl.Objects
 
 		public int PrecedenceOrder { get; set; }
 		public string Name { get; set; }
-		public string TypeName { get; private set; }
-		public Guid ID { get; private set; }
-		public bool IsValid { get; private set; }
+		public string TypeName { get; }
+		public Guid ID { get; }
+		public bool IsValid { get; }
 
 		#endregion
 	}

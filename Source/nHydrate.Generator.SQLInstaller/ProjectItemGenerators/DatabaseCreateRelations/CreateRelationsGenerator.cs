@@ -15,16 +15,13 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateRe
 
 		private const string PARENT_ITEM_NAME = @"3_GeneratedTablesAndData";
 
-		#endregion
+        #endregion
 
-		#region Overrides
+        #region Overrides
 
-		public override int FileCount
-		{
-			get { return 1; }
-		}
-		
-		public override void Generate()
+        public override int FileCount => 1;
+
+        public override void Generate()
 		{
 			var template = new CreateRelationsTemplate(_model);
 			var fullFileName = template.FileName;

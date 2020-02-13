@@ -39,20 +39,11 @@ namespace nHydrate.Generator.Models
 
         public string SQL { get; set; }
 
-        [
-        Browsable(false),
-        Description("Determines the parameters that are associated with this rule."),
-        Category("Data"),
-        ]
         public ReferenceCollection Parameters
         {
             get { return _parameters; }
         }
 
-        /// <summary>
-        /// Returns the parameters for this object
-        /// </summary>
-        /// <returns></returns>
         public IEnumerable<Parameter> GetParameters()
         {
             var retval = new List<Parameter>();
@@ -64,7 +55,6 @@ namespace nHydrate.Generator.Models
             return retval.OrderBy(x => x.Name);
         }
 
-        [Browsable(false)]
         public IEnumerable<Parameter> GeneratedParameters
         {
             get { return this.GetParameters().Where(x => x.Generated); }

@@ -22,7 +22,7 @@ namespace nHydrate.DslPackage.Forms
         public ModelUtilitiesForm()
         {
             InitializeComponent();
-            this.KeyDown += new KeyEventHandler(ModelUtilitiesForm_KeyDown);
+            this.KeyDown += ModelUtilitiesForm_KeyDown;
         }
 
         public ModelUtilitiesForm(nHydrateModel model, Microsoft.VisualStudio.Modeling.Store store, nHydrateDiagram diagram)

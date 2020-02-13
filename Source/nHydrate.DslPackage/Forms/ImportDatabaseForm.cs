@@ -17,13 +17,6 @@ namespace nHydrate.DslPackage.Forms
     {
         #region Class Members
 
-        private enum ActionConstants
-        {
-            Add,
-            Refresh,
-            Delete,
-        }
-
         public enum ImportReturnConstants
         {
             Aborted,
@@ -154,7 +147,7 @@ namespace nHydrate.DslPackage.Forms
         public nHydrate.DataImport.Database CurrentDatabase { get; set; }
         public nHydrate.DataImport.Database NewDatabase { get; private set; }
 
-        internal ImportModelSettings Settings { get; private set; }
+        internal ImportModelSettings Settings { get; }
         internal ImportReturnConstants Status { get; private set; }
 
         internal string GetConnectionString()

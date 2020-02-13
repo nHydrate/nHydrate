@@ -190,7 +190,7 @@ namespace nHydrate.DslPackage.Forms
 
         #region Properties
 
-        public bool DoShow { get; private set; }
+        public bool DoShow { get; }
 
         #endregion
 
@@ -370,16 +370,6 @@ namespace nHydrate.DslPackage.Forms
         {
             this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.Close();
-        }
-
-        private class DisplayItem
-        {
-            public Field Field { get; set; }
-
-            public override string ToString()
-            {
-                return this.Field.Entity.Name + "." + this.Field.Name;
-            }
         }
 
         private void cmdUncheckAll_Click(object sender, EventArgs e)

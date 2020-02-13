@@ -19,10 +19,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.AuditTrigge
 
         #region Overrides
 
-        public override int FileCount
-        {
-            get { return 1; }
-        }
+        public override int FileCount => 1;
 
         public override void Generate()
         {

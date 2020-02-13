@@ -74,20 +74,6 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        #region Property Implementations
-
-        public ICollection CustomStoredProcedures
-        {
-            get { return _internalList; }
-        }
-
-        public ICollection CustomStoredProcedureIds
-        {
-            get { return _internalList.Select(x => x.Id).ToList(); }
-        }
-
-        #endregion
-
         #region Methods
 
         public CustomStoredProcedure[] GetById(int id)
@@ -110,17 +96,6 @@ namespace nHydrate.Generator.Models
                 retval = _rnd.Next(1, int.MaxValue);
             }
             return retval;
-        }
-
-        #endregion
-
-        #region Helpers
-
-        public CustomStoredProcedure CreateCustomStoredProcedure()
-        {
-            var customStoredProcedure = new CustomStoredProcedure(this.Root);
-            customStoredProcedure.ResetId(NextIndex());
-            return customStoredProcedure;
         }
 
         #endregion
@@ -201,7 +176,6 @@ namespace nHydrate.Generator.Models
         {
             _internalList.Clear();
         }
-
 
         internal CustomStoredProcedure Add(CustomStoredProcedure value)
         {

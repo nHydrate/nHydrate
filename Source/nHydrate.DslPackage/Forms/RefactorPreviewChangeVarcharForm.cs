@@ -325,16 +325,6 @@ namespace nHydrate.DslPackage.Forms
             this.Close();
         }
 
-        private class DisplayItem
-        {
-            public Field Field { get; set; }
-
-            public override string ToString()
-            {
-                return this.Field.Entity.Name + "." + this.Field.Name;
-            }
-        }
-
         private void cmdUncheckAll_Click(object sender, EventArgs e)
         {
             tvwItem.Nodes.GetAllNodes().ForEach(x => x.Checked = false);

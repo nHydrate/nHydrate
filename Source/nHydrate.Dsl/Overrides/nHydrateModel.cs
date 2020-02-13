@@ -215,10 +215,10 @@ namespace nHydrate.Dsl
             get { return StringHelper.DatabaseNameToPascalCase(this.TimestampColumnName); }
         }
 
-        public List<string> RemovedTables { get; private set; }
-        public List<string> RemovedViews { get; private set; }
-        public List<string> RemovedStoredProcedures { get; private set; }
-        public List<string> RemovedFunctions { get; private set; }
+        public List<string> RemovedTables { get; }
+        public List<string> RemovedViews { get; }
+        public List<string> RemovedStoredProcedures { get; }
+        public List<string> RemovedFunctions { get; }
 
         /// <summary>
         /// The URL to the SyncServer service

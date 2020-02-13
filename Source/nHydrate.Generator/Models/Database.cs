@@ -188,33 +188,26 @@ namespace nHydrate.Generator.Models
             get { return this.CreatedDateColumnName; }
         }
 
-        [Browsable(false)]
         public virtual string CreatedByDatabaseName
         {
             get { return this.CreatedByColumnName; }
         }
 
-        [Browsable(false)]
         public virtual string ModifiedDateDatabaseName
         {
             get { return this.ModifiedDateColumnName; }
         }
 
-        [Browsable(false)]
         public virtual string ModifiedByDatabaseName
         {
             get { return this.ModifiedByColumnName; }
         }
 
-        [Browsable(false)]
         public virtual string TimestampDatabaseName
         {
             get { return this.TimestampColumnName; }
         }
 
-        [Browsable(true),
-        Description("Determines the name of the modified by column."),
-        Category("Data")]
         public string ModifiedByColumnName
         {
             get { return _modifiedByColumnName; }
@@ -225,9 +218,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(true),
-        Description("Determines the name of the modified date column."),
-        Category("Data")]
         public string ModifiedDateColumnName
         {
             get { return _modifiedDateColumnName; }
@@ -238,12 +228,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// This not implemented
-        /// </summary>
-        [Browsable(false),
-        Description("Determines the name of the full index search column."),
-        Category("Data")]
         public string FullIndexSearchColumnName
         {
             get { return _fullIndexSearchColumnName; }
@@ -254,9 +238,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(true),
-        Description("Determines the name of the timestamp column."),
-        Category("Data")]
         public string TimestampColumnName
         {
             get { return _timestampColumnName; }
@@ -267,36 +248,24 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public TableCollection Tables { get; }
 
-        [Browsable(false)]
         public FunctionCollection Functions { get; }
 
-        [Browsable(false)]
         public CustomViewCollection CustomViews { get; }
 
-        [Browsable(false)]
         public CustomStoredProcedureCollection CustomStoredProcedures { get; }
 
-        [Browsable(false)]
         public CustomViewColumnCollection CustomViewColumns { get; }
 
-        [Browsable(false)]
         public CustomStoredProcedureColumnCollection CustomStoredProcedureColumns { get; }
 
-        [Browsable(false)]
         public FunctionColumnCollection FunctionColumns { get; }
 
-        [Browsable(false)]
         public ParameterCollection CustomRetrieveRuleParameters { get; }
 
-        [Browsable(false)]
         public ParameterCollection FunctionParameters { get; }
 
-        [Browsable(true),
-        Description("Determines the database user to grant execution permissions to for the stored procedures."),
-        Category("Data")]
         public string GrantExecUser
         {
             get { return _grantExecUser; }
@@ -307,7 +276,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public string Collate
         {
             get { return _collate; }
@@ -335,19 +303,16 @@ namespace nHydrate.Generator.Models
             return false;
         }
 
-        [Browsable(false)]
         public IEnumerable<Table> GetGeneratedTables()
         {
             return (from x in this.Tables where x.Generated select x);
         }
 
-        [Browsable(false)]
         public IEnumerable<Relation> GetRelationsWhereChild(Table table)
         {
             return GetRelationsWhereChild(table, false);
         }
 
-        [Browsable(false)]
         public IEnumerable<Relation> GetRelationsWhereChild(Table table, bool fullHierarchy)
         {
             var retval = new List<Relation>();

@@ -17,6 +17,6 @@ namespace nHydrate.DataImport
         public bool IsPrimaryKey { get; set; }
         public bool Clustered { get; set; }
         public bool IsUnique { get; set; }
-        public List<IndexField> FieldList { get; private set; }
+        public List<IndexField> FieldList { get; }
     }
 }

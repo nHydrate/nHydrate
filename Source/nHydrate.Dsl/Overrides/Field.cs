@@ -255,8 +255,7 @@ namespace nHydrate.Dsl
                 else
                 {
                     var gv = userValue.Replace("'", string.Empty);
-                    Guid g;
-                    if (Guid.TryParse(gv, out g))
+                    if (Guid.TryParse(gv, out _))
                         defaultValue = "new Guid(\"" + gv + "\")";
                 }
             }
@@ -316,8 +315,7 @@ namespace nHydrate.Dsl
             {
                 case DataTypeConstants.BigInt:
                     {
-                        long v;
-                        return long.TryParse(value, out v);
+                        return long.TryParse(value, out _);
                     }
                 case DataTypeConstants.Binary:
                 case DataTypeConstants.Image:
@@ -330,8 +328,7 @@ namespace nHydrate.Dsl
                     {
                         var q = value.ToLower();
                         if (q == "1" || q == "0") return true;
-                        bool v;
-                        return bool.TryParse(value, out v);
+                        return bool.TryParse(value, out _);
                     }
                 case DataTypeConstants.Char:
                     return true;
@@ -354,23 +351,19 @@ namespace nHydrate.Dsl
                     return false;
                 case DataTypeConstants.Decimal:
                     {
-                        decimal v;
-                        return decimal.TryParse(value, out v);
+                        return decimal.TryParse(value, out _);
                     }
                 case DataTypeConstants.Float:
                     {
-                        decimal v;
-                        return decimal.TryParse(value, out v);
+                        return decimal.TryParse(value, out _);
                     }
                 case DataTypeConstants.Int:
                     {
-                        int v;
-                        return int.TryParse(value, out v);
+                        return int.TryParse(value, out _);
                     }
                 case DataTypeConstants.Money:
                     {
-                        long v;
-                        return long.TryParse(value, out v);
+                        return long.TryParse(value, out _);
                     }
                 case DataTypeConstants.NChar:
                     return true;
@@ -380,8 +373,7 @@ namespace nHydrate.Dsl
                     return true;
                 case DataTypeConstants.Real:
                     {
-                        decimal v;
-                        return decimal.TryParse(value, out v);
+                        return decimal.TryParse(value, out _);
                     }
                 case DataTypeConstants.SmallDateTime:
                     {
@@ -390,13 +382,11 @@ namespace nHydrate.Dsl
                     }
                 case DataTypeConstants.SmallInt:
                     {
-                        Int16 v;
-                        return Int16.TryParse(value, out v);
+                        return Int16.TryParse(value, out _);
                     }
                 case DataTypeConstants.SmallMoney:
                     {
-                        int v;
-                        return int.TryParse(value, out v);
+                        return int.TryParse(value, out _);
                     }
                 case DataTypeConstants.Structured:
                     return false;

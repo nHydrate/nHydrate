@@ -10,9 +10,6 @@ namespace nHydrate.Generator.Models
     {
         #region Member Variables
 
-        private Reference _parentColumnRef;
-        private Reference _childColumnRef;
-
         #endregion
 
         #region Constructor
@@ -26,17 +23,9 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        public Reference ParentColumnRef
-        {
-            get { return _parentColumnRef; }
-            set { _parentColumnRef = value; }
-        }
+        public Reference ParentColumnRef { get; set; }
 
-        public Reference ChildColumnRef
-        {
-            get { return _childColumnRef; }
-            set { _childColumnRef = value; }
-        }
+        public Reference ChildColumnRef { get; set; }
 
         public Column ParentColumn
         {

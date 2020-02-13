@@ -59,15 +59,8 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        [Browsable(false)]
         public int PrecedenceOrder { get; set; }
 
-        [
-        Browsable(true),
-        Description("Determines the name of this stored procedure in the database. Leave empty to auto-generate."),
-        Category("Design"),
-        DefaultValue("")
-        ]
         public string DatabaseObjectName
         {
             get { return _databaseObjectName; }
@@ -78,12 +71,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the this stored procedure is a pre-existing one and should not be overwritten."),
-        Category("Design"),
-        DefaultValue(_def_isExisting)
-        ]
         public bool IsExisting
         {
             get { return _isExisting; }
@@ -94,12 +81,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the parent schema for this object."),
-        Category("Design"),
-        DefaultValue(_def_dbSchema)
-        ]
         public string DBSchema
         {
             get { return _dbSchema; }
@@ -110,8 +91,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
-        [DefaultValue(_def_generatesDoubleDerived)]
         public bool GeneratesDoubleDerived
         {
             get { return _generatesDoubleDerived; }
@@ -122,12 +101,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the description of this object."),
-        Category("Data"),
-        DefaultValue(_def_description),
-        ]
         public string Description
         {
             get { return _description; }
@@ -138,33 +111,21 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(false),
-        Description("Determines the columns that are associated with this table."),
-        Category("Data"),
-        ]
         public ReferenceCollection Columns
         {
             get { return _columns; }
         }
 
-        [
-        Browsable(false),
-        Description("Determines the parameters that are associated with this rule."),
-        Category("Data"),
-        ]
         public ReferenceCollection Parameters
         {
             get { return _parameters; }
         }
 
-        [Browsable(false)]
         public List<Parameter> GeneratedParameters
         {
             get { return this.GetParameters().Where(x => x.Generated).ToList(); }
         }
 
-        [Browsable(false)]
         public List<CustomStoredProcedureColumn> GeneratedColumns
         {
             get
@@ -176,12 +137,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if this item is used in the generation."),
-        Category("Data"),
-        DefaultValue(_def_generated),
-        ]
         public bool Generated
         {
             get { return _generated; }
@@ -192,11 +147,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines SQL statement used to create the database stored procedure object."),
-        Category("Data"),
-        ]
         public string SQL
         {
             get
@@ -235,10 +185,6 @@ namespace nHydrate.Generator.Models
             return retval.Tables[0];
         }
 
-        /// <summary>
-        /// Returns the columns for this object
-        /// </summary>
-        /// <returns></returns>
         public List<CustomStoredProcedureColumn> GetColumns()
         {
             try
@@ -257,10 +203,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Returns the parameters for this object
-        /// </summary>
-        /// <returns></returns>
         public List<Parameter> GetParameters()
         {
             var retval = new List<Parameter>();
@@ -291,10 +233,6 @@ namespace nHydrate.Generator.Models
             return this.DBSchema;
         }
 
-        /// <summary>
-        /// Determines the database stored procedure name
-        /// </summary>
-        /// <returns></returns>
         public string GetDatabaseObjectName()
         {
             if (string.IsNullOrEmpty(this.DatabaseObjectName))
@@ -405,13 +343,11 @@ namespace nHydrate.Generator.Models
             return returnVal;
         }
 
-        [Browsable(false)]
         public string CamelName
         {
             get { return StringHelper.DatabaseNameToCamelCase(this.PascalName); }
         }
 
-        [Browsable(false)]
         public string PascalName
         {
             get
@@ -428,17 +364,11 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public string DatabaseName
         {
             get { return this.Name; }
         }
 
-        [
-        Browsable(false),
-        Description("Determines the fields that constitute the table primary key."),
-        Category("Data"),
-        ]
         public IList<CustomStoredProcedureColumn> PrimaryKeyColumns
         {
             get
@@ -472,12 +402,6 @@ namespace nHydrate.Generator.Models
 
         #region ICodeFacadeObject Members
 
-        [
-        Browsable(true),
-        Description("Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier."),
-        Category("Design"),
-        DefaultValue(_def_codefacade),
-        ]
         public string CodeFacade
         {
             get { return _codeFacade; }

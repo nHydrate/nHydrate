@@ -57,20 +57,20 @@ namespace nHydrate.DslPackage.Forms
         {
             InitializeComponent();
 
-            lvwMain.DoubleClick += new EventHandler(lvwMain_DoubleClick);
-            lvwMain.KeyDown += new KeyEventHandler(lvwMain_KeyDown);
-            lvwMain.SelectedIndexChanged += new EventHandler(lvwMain_SelectedIndexChanged);
-            lvwMain.ColumnClick += new ColumnClickEventHandler(lvwMain_ColumnClick);
-            lvwMain.AfterLabelEdit += new LabelEditEventHandler(lvwMain_AfterLabelEdit);
+            lvwMain.DoubleClick += lvwMain_DoubleClick;
+            lvwMain.KeyDown += lvwMain_KeyDown;
+            lvwMain.SelectedIndexChanged += lvwMain_SelectedIndexChanged;
+            lvwMain.ColumnClick += lvwMain_ColumnClick;
+            lvwMain.AfterLabelEdit += lvwMain_AfterLabelEdit;
 
-            lvwSubItem.DoubleClick += new EventHandler(lvwSubItem_DoubleClick);
-            lvwSubItem.KeyDown += new KeyEventHandler(lvwSubItem_KeyDown);
-            lvwSubItem.SelectedIndexChanged += new EventHandler(lvwSubItem_SelectedIndexChanged);
-            lvwSubItem.AfterLabelEdit += new LabelEditEventHandler(lvwSubItem_AfterLabelEdit);
+            lvwSubItem.DoubleClick += lvwSubItem_DoubleClick;
+            lvwSubItem.KeyDown += lvwSubItem_KeyDown;
+            lvwSubItem.SelectedIndexChanged += lvwSubItem_SelectedIndexChanged;
+            lvwSubItem.AfterLabelEdit += lvwSubItem_AfterLabelEdit;
 
-            txtSearch.TextChanged += new EventHandler(txtSearch_TextChanged);
-            txtSearch.GotFocus += new EventHandler(txtSearch_GotFocus);
-            txtSearch.Enter += new EventHandler(txtSearch_Enter);
+            txtSearch.TextChanged += txtSearch_TextChanged;
+            txtSearch.GotFocus += txtSearch_GotFocus;
+            txtSearch.Enter += txtSearch_Enter;
 
             cmdSettings.Click += cmdSettings_Click;
 
@@ -103,8 +103,8 @@ namespace nHydrate.DslPackage.Forms
 
             //lvwSubItem.Columns.Add(string.Empty, lvwMain.Width - 130 - 40);
             lvwMain.Size = new System.Drawing.Size(lvwMain.Size.Width, (int)(this.Height * 0.7));
-            splitter1.SplitterMoved += new SplitterEventHandler(splitter1_SplitterMoved);
-            this.Resize += new EventHandler(FindWindowControl_Resize);
+            splitter1.SplitterMoved += splitter1_SplitterMoved;
+            this.Resize += FindWindowControl_Resize;
 
             contextMenuMain.Opening += mainPopupMenu_Popup;
             menuItemMainSelect.Click += SelectMenu_Click;
@@ -115,15 +115,12 @@ namespace nHydrate.DslPackage.Forms
             menuItemMainShowRelatedEntities.Click += menuItemMainShowRelatedEntities_Click;
             menuItemMainStaticData.Click += menuItemMainStaticData_Click;
             menuItemMainViewIndexes.Click += menuItemMainViewIndexes_Click;
-            menuItemMainSetupColumns.Click += new EventHandler(menuItemMainSetupColumns_Click);
+            menuItemMainSetupColumns.Click += menuItemMainSetupColumns_Click;
 
             contextMenuSub.Opening += subPopupMenu_Popup;
             menuItemSubSelect.Click += SelectSubMenu_Click;
             menuItemSubDelete.Click += DeleteSubMenu_Click;
-            menuItemSubSetupColumns.Click += new EventHandler(menuItemSubSetupColumns_Click);
-
-            //Instance_EnvironmentColorChange(null, null);
-            //EnvDTEHelper.Instance.EnvironmentColorChange += Instance_EnvironmentColorChange;
+            menuItemSubSetupColumns.Click += menuItemSubSetupColumns_Click;
         }
 
         private void cmdSettings_Click(object sender, EventArgs e)

@@ -202,7 +202,6 @@ namespace nHydrate.Generator.Models
             _internalList.Clear();
         }
 
-
         internal Function Add(Function value)
         {
             _internalList.Add(value);

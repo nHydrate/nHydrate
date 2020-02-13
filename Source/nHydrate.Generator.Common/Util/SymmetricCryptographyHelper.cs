@@ -104,10 +104,10 @@ namespace nHydrate.Generator.Common.Util
 							CryptoStreamMode.Read))
 				{
 					var buffer = new byte[256];
-					var bytesRead = 0;
-					using(var decryptedData = new MemoryStream())
+                    using(var decryptedData = new MemoryStream())
 					{
-						do
+                        var bytesRead = 0;
+                        do
 						{
 							bytesRead = crypto.Read(buffer, 0, 256);
 							decryptedData.Write(buffer, 0, bytesRead);
@@ -172,14 +172,13 @@ namespace nHydrate.Generator.Common.Util
 
 		private byte[] GetKey(byte[] salt)
 		{
-			byte[] key;
-			if(entropy == null || entropy.Trim().Length == 0)
+            if(entropy == null || entropy.Trim().Length == 0)
 			{
 				entropy = CryptographyUtility.GetEntropy(keyLength);
 			}
 
 			var passBytes = new PasswordDeriveBytes(entropy, salt);
-			key = passBytes.GetBytes(keyLength);
+			var key = passBytes.GetBytes(keyLength);
 			
 			return key;
 		}

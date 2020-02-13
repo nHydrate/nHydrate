@@ -34,15 +34,14 @@ namespace nHydrate.Generator.Common.Util
 		{
 			discarded = 0;
 			var newString = new StringBuilder(hexString.Length);
-			char c;
-			for (var i=0; i < hexString.Length; i++)
-			{
-				c = hexString[i];
-				if (IsHexDigit(c))
+            for (var i=0; i < hexString.Length; i++)
+            {
+                var c = hexString[i];
+                if (IsHexDigit(c))
 					newString.Append(c);
 				else
 					discarded++;
-			}
+            }
 			if (newString.Length % 2 != 0)
 			{
 				discarded++;

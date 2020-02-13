@@ -10,21 +10,15 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Functions
 	{
 		#region Properties
 
-		private string ParentItemPath
-		{
-			get { return @"5_Programmability\Functions\Model"; }
-		}
+		private string ParentItemPath => @"5_Programmability\Functions\Model";
 
-		#endregion
+        #endregion
 
-		#region Overrides
+        #region Overrides
 
-		public override int FileCount
-		{
-			get { return 1; }
-		}
+        public override int FileCount => 1;
 
-		public override void Generate()
+        public override void Generate()
 		{
 			try
 			{

@@ -42,21 +42,18 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        [Browsable(false)]
         public int Ref
         {
             get { return _ref; }
             set { _ref = value; }
         }
 
-        [Browsable(false)]
         public ReferenceType RefType
         {
             get { return _refType; }
             set { _refType = value; }
         }
 
-        [Browsable(false)]
         public INHydrateModelObject Object
         {
             get

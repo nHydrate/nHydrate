@@ -16,7 +16,7 @@ namespace nHydrate.Generator.Models
     {
         #region Member Variables
 
-        protected Dictionary<int, Column> _internalList;
+        private Dictionary<int, Column> _internalList;
 
         #endregion
 
@@ -221,7 +221,6 @@ namespace nHydrate.Generator.Models
         {
             _internalList.Clear();
         }
-
 
         internal void Add(Column value)
         {

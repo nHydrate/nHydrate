@@ -8,37 +8,16 @@ namespace nHydrate.Generator.Models
 {
 	public class ViewColumnRelationship : BaseModelObject
 	{
-		#region Member Variables
-
-		private Reference _parentColumnRef;
-		private Reference _childColumnRef;
-
-		#endregion
-
-		#region Constructor
-
 		public ViewColumnRelationship(INHydrateModelObject root)
 			: base(root)
 		{
 		}
 
-		#endregion
+		public Reference ParentColumnRef { get; set; }
 
-		#region Property Implementations
+        public Reference ChildColumnRef { get; set; }
 
-		public Reference ParentColumnRef
-		{
-			get { return _parentColumnRef; }
-			set { _parentColumnRef = value; }
-		}
-
-		public Reference ChildColumnRef
-		{
-			get { return _childColumnRef; }
-			set { _childColumnRef = value; }
-		}
-
-		public Column ParentColumn
+        public Column ParentColumn
 		{
 			get
 			{
@@ -55,10 +34,6 @@ namespace nHydrate.Generator.Models
 				else return this.ChildColumnRef.Object as CustomViewColumn;
 			}
 		}
-
-		#endregion
-
-		#region IXMLable Members
 
 		public override void XmlAppend(XmlNode node)
 		{
@@ -102,8 +77,6 @@ namespace nHydrate.Generator.Models
 				throw;
 			}
 		}
-
-		#endregion
 
 	}
 }

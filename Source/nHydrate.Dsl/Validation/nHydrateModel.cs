@@ -653,8 +653,8 @@ namespace nHydrate.Dsl
                 this.TableList = new List<Entity>();
             }
 
-            public List<Entity> TableList { get; set; }
-            public EntityHasEntities Relationship { get; set; }
+            public List<Entity> TableList { get; }
+            public EntityHasEntities Relationship { get; }
         }
 
         #endregion

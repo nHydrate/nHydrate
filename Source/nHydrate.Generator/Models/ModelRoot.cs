@@ -91,21 +91,14 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// This is the fifth number to use in the version string: the Generated Version
-        /// </summary>
-        [Browsable(false)]
         public int GeneratedVersion { get; set; }
 
         public string OutputTarget { get; set; }
 
-        [Browsable(false)]
-        public MetadataItemCollection MetaData { get; private set; }
+        public MetadataItemCollection MetaData { get; }
 
-        [Browsable(false)]
-        public List<IRefactor> Refactorizations { get; private set; }
+        public List<IRefactor> Refactorizations { get; }
 
-        [Browsable(false)]
         public string ModelToolVersion
         {
             get
@@ -121,12 +114,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the default namespace and base project names of all generated projects. Leave blank for the default value of CompanyName.ProjectName"),
-        DefaultValue(_def_defaultNamespace),
-        Category("Data"),
-        ]
         public string DefaultNamespace
         {
             get { return _defaultNamespace; }
@@ -143,12 +130,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines whether to transform the names and facades or use defined values"),
-        DefaultValue(_def_transformNames),
-        Category("Data"),
-        ]
         public bool TransformNames
         {
             get { return _transformNames; }
@@ -159,12 +140,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("When enabled a custom Changing and Changed event will be generated for all properties"),
-        DefaultValue(_def_enableCustomChangeEvents),
-        Category("Data"),
-        ]
         public bool EnableCustomChangeEvents
         {
             get { return _enableCustomChangeEvents; }
@@ -175,12 +150,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if the legacy search object is needed. The LINQ implmentation has rendered this functionality redundant."),
-        DefaultValue(_def_supportLegacySearchObject),
-        Category("Data"),
-        ]
         public bool SupportLegacySearchObject
         {
             get { return _supportLegacySearchObject; }
@@ -191,12 +160,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the target SQL Server version."),
-        DefaultValue(typeof(SQLServerTypeConstants), "SQL2005"),
-        Category("Data"),
-        ]
         public SQLServerTypeConstants SQLServerType
         {
             get { return _sQLServerType; }
@@ -207,13 +170,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-
-        [
-        Browsable(true),
-        Description("Determines the prefix for stored procedures"),
-        DefaultValue(_def_storedProcedurePrefix),
-        Category("Data"),
-        ]
         public string StoredProcedurePrefix
         {
             get { return _storedProcedurePrefix; }
@@ -224,18 +180,12 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public IGenerator GeneratorProject
         {
             get { return _generatorProject; }
             set { _generatorProject = value; }
         }
 
-        [
-        Browsable(true),
-        Description("Specifies the name of the generated assembly."),
-        Category("Data"),
-        ]
         public string ProjectName
         {
             get { return _projectName; }
@@ -246,12 +196,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Specifies whether UTC or local time is used for the created and modified audits."),
-        Category("Data"),
-        DefaultValue(_def_useUTCTime),
-        ]
         public bool UseUTCTime
         {
             get { return _useUTCTime; }
@@ -262,11 +206,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Specifies the version number of the generated assembly."),
-        Category("Data"),
-        ]
         public string Version
         {
             get { return _version; }
@@ -281,11 +220,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Specifies the company name that will be used to build namespaces."),
-        Category("Data"),
-        ]
         public string CompanyName
         {
             get { return _companyName; }
@@ -296,11 +230,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Specifies the company name that will be used to build namespaces."),
-        Category("Data"),
-        ]
         public bool EmitSafetyScripts
         {
             get { return _emitSafetyScripts; }
@@ -311,7 +240,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public string ModuleName
         {
             get { return _moduleName; }
@@ -322,11 +250,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(false),
-        Description("Specifies a short name for the company."),
-        Category("Data"),
-        ]
         public string CompanyAbbreviation
         {
             get { return _companyAbbreviation; }
@@ -337,26 +260,14 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public Database Database
         {
             get { return _database; }
             set { _database = value; }
         }
 
-        [Browsable(true)]
-        [Category("Design")]
-        [ReadOnlyAttribute(true)]
-        public VersionHistoryCollection VersionHistoryList
-        {
-            get { return _versionHistoryList; }
-        }
+        public VersionHistoryCollection VersionHistoryList => _versionHistoryList;
 
-        [
-        Browsable(true),
-        Description("Determines copyright to add to each file."),
-        Category("Data"),
-        ]
         public string Copyright
         {
             get { return _copyright; }
@@ -367,29 +278,19 @@ namespace nHydrate.Generator.Models
             }
         }
 
-
-        /// <summary>
-        /// Gets the dfault date wither UTC or local date in SQL syntax
-        /// </summary>
-        /// <returns></returns>
-        [Browsable(false)]
         public virtual string GetSQLDefaultDate()
         {
             if (this.UseUTCTime) return "getutcdate()";
             else return "sysdatetime()";
         }
 
-        [Browsable(false)]
-        public ExtendedList<string> RemovedTables { get; private set; }
+        public ExtendedList<string> RemovedTables { get; }
 
-        [Browsable(false)]
-        public ExtendedList<string> RemovedViews { get; private set; }
+        public ExtendedList<string> RemovedViews { get; }
 
-        [Browsable(false)]
-        public ExtendedList<string> RemovedStoredProcedures { get; private set; }
+        public ExtendedList<string> RemovedStoredProcedures { get; }
 
-        [Browsable(false)]
-        public ExtendedList<string> RemovedFunctions { get; private set; }
+        public ExtendedList<string> RemovedFunctions { get; }
 
         #endregion
 
@@ -579,7 +480,6 @@ namespace nHydrate.Generator.Models
 
         #region INHydrateModelObject Members
 
-        [Browsable(false)]
         public override INHydrateModelObject Root
         {
             get { return this; }

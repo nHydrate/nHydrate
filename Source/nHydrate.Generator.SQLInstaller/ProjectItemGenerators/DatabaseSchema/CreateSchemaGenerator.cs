@@ -19,11 +19,8 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         #region Overrides
 
-        public override int FileCount
-        {
-            get { return 1; }
-        }
-
+        public override int FileCount => 1;
+    
         public override void Generate()
         {
             var template = new CreateSchemaTemplate(_model);

@@ -21,13 +21,13 @@ namespace nHydrate.DataImport
 
 		public string Collate { get; set; }
 
-		public List<Entity> EntityList { get; private set; }
-		public List<StoredProc> StoredProcList { get; private set; }
-		public List<View> ViewList { get; private set; }
-		public List<Function> FunctionList { get; private set; }
-		public List<Index> IndexList { get; private set; }
+		public List<Entity> EntityList { get; }
+		public List<StoredProc> StoredProcList { get; }
+		public List<View> ViewList { get; }
+		public List<Function> FunctionList { get; }
+		public List<Index> IndexList { get; }
 		public bool IgnoreRelations { get; set; }
-		public Dictionary<string, string> UserDefinedTypes { get; private set; }
+		public Dictionary<string, string> UserDefinedTypes { get; }
 
 		public IEnumerable<Relationship> RelationshipList
 		{

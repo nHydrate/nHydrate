@@ -19,7 +19,6 @@ namespace nHydrate.Generator.Models
         private bool _isUnique = false;
         private bool _clustered = false;
         private bool _primaryKey = false;
-        private List<TableIndexColumn> _indexColumnList = new List<TableIndexColumn>();
 
         #endregion
 
@@ -34,10 +33,7 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        public List<TableIndexColumn> IndexColumnList
-        {
-            get { return _indexColumnList; }
-        }
+        public List<TableIndexColumn> IndexColumnList => new List<TableIndexColumn>();
 
         public string ImportedName
         {
@@ -146,7 +142,7 @@ namespace nHydrate.Generator.Models
                 XmlHelper.AddAttribute(node, "id", this.Id);
 
                 var tableIndexColumnListNode = oDoc.CreateElement("ticl");
-                _indexColumnList.XmlAppend(tableIndexColumnListNode);
+                this.IndexColumnList.XmlAppend(tableIndexColumnListNode);
                 node.AppendChild(tableIndexColumnListNode);
             }
             catch (Exception ex)
@@ -170,7 +166,7 @@ namespace nHydrate.Generator.Models
 
                 var tableIndexColumnListNode = node.SelectSingleNode("ticl");
                 if (tableIndexColumnListNode != null)
-                    _indexColumnList.XmlLoad(tableIndexColumnListNode, this.Root);
+                    this.IndexColumnList.XmlLoad(tableIndexColumnListNode, this.Root);
 
                 this.Dirty = false;
             }

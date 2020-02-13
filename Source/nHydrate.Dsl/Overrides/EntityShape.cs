@@ -402,14 +402,6 @@ namespace nHydrate.Dsl
 
         }
 
-        private class GhostCache
-        {
-            public System.Drawing.Color FillColor { get; set; }
-            public System.Drawing.Color TextColor { get; set; }
-            public System.Drawing.Color OutlineColor { get; set; }
-            public System.Drawing.Drawing2D.DashStyle OutlineDashStyle { get; set; }
-        }
-
     }
 
     partial class EntityShapeBase

@@ -15,7 +15,6 @@ namespace nHydrate.Generator.Models
 
         protected const string _def_roleName = "";
         protected const string _def_constraintname = "";
-        protected const bool _def_enforce = true;
         protected const string _def_description = "";
 
         protected Reference _parentTableRef = null;
@@ -72,31 +71,11 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        /// <summary>
-        /// EF only supports relations where the primary table is from the PK
-        /// If the parent table is from a non-PK unique field, EF will NOT render it
-        /// </summary>
-        public bool IsValidEFRelation
-        {
-            get { return this.ColumnRelationships.AsEnumerable().All(cr => cr.ParentColumn.PrimaryKey); }
-        }
-
-        /// <summary>
-        /// Determines the field mappings of this relationship.
-        /// </summary>
-        [Description("Determines the field mappings of this relationship.")]
-        [Category("Data")]
         public ViewColumnRelationshipCollection ColumnRelationships
         {
             get { return _columnRelationships; }
         }
 
-        /// <summary>
-        /// Determines the parent table in the relationship.
-        /// </summary>
-        [Browsable(false)]
-        [Description("Determines the parent table in the relationship.")]
-        [Category("Data")]
         public Reference ParentTableRef
         {
             get { return _parentTableRef; }
@@ -113,11 +92,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines the child table in the relationship.
-        /// </summary>
-        [Description("Determines the child view in the relationship.")]
-        [Category("Data")]
         public Reference ChildViewRef
         {
             get { return _childViewRef; }
@@ -134,12 +108,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines the database role name of this relation.
-        /// </summary>
-        [Description("Determines the database role name of this relation.")]
-        [Category("Data")]
-        [DefaultValue(_def_roleName)]
         public string RoleName
         {
             get { return _roleName; }
@@ -153,7 +121,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public string ConstraintName
         {
             get { return _constraintName; }
@@ -167,36 +134,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines if this is a 1:1 relationship
-        /// </summary>
-        [Browsable(false)]
-        public bool IsOneToOne
-        {
-            get
-            {
-                //If any of the columns are not unique then the relationship is NOT unique
-                var retval = true;
-                var childPKCount = 0; //Determine if any of the child columns are in the PK
-                foreach (var columnRelationship in this.ColumnRelationships.AsEnumerable())
-                {
-                    var column1 = columnRelationship.ParentColumn;
-                    var column2 = columnRelationship.ChildColumn;
-                    if (this.ChildView.PrimaryKeyColumns.Contains(column2)) childPKCount++;
-                }
-
-                //If at least one column was a Child table PK, 
-                //then all columns must be in there to be 1:1
-                if ((childPKCount > 0) && (this.ColumnRelationships.Count != this.ChildView.PrimaryKeyColumns.Count))
-                {
-                    return false;
-                }
-
-                return retval;
-            }
-        }
-
-        [Browsable(false)]
         public string Description
         {
             get { return _description; }
@@ -207,74 +144,9 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// A hash of the table/columns of this relationship with no role information
-        /// </summary>
-        [Browsable(false)]
-        public string LinkHash
-        {
-            get
-            {
-                var retval = string.Empty;
-                if (this.ParentTable != null) retval += this.ParentTable.Name.ToLower() + "|";
-                if (this.ChildView != null) retval += this.ChildView.Name.ToLower() + "|";
-                foreach (var cr in this.ColumnRelationships.AsEnumerable())
-                {
-                    if (cr.ParentColumn != null) retval += cr.ParentColumn.Name.ToLower() + "|";
-                    if (cr.ChildColumn != null) retval += cr.ChildColumn.Name.ToLower() + "|";
-                }
-                return retval;
-            }
-        }
-
-        public int UniqueHash
-        {
-            get { return (this.LinkHash + "|" + this.RoleName).GetHashCode(); }
-        }
-
-
         #endregion
 
         #region Methods
-
-        /// <summary>
-        /// Determines that all columns in the relationship are generated
-        /// </summary>
-        public bool IsGenerated
-        {
-            get
-            {
-                var retval = true;
-                foreach (var columnRelationship in this.ColumnRelationships.AsEnumerable())
-                {
-                    var childColumn = columnRelationship.ChildColumn;
-                    var parentColumn = columnRelationship.ParentColumn;
-                    retval &= childColumn.Generated;
-                    retval &= parentColumn.Generated;
-                }
-                return retval;
-            }
-        }
-
-        public string ToLongString()
-        {
-            try
-            {
-                var col1 = this.ColumnRelationships.First().ParentColumn;
-                var col2 = this.ColumnRelationships.First().ChildColumn;
-                var retval = (this.RoleName == "" ? "" : this.RoleName + " ");
-                retval += col1.ParentTable.Name + ".";
-                retval += col1.ToString();
-                retval += "->";
-                retval += ((CustomView)col2.ParentViewRef.Object).Name + ".";
-                retval += col2.ToString();
-                return retval;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
 
         public bool IsInvalidRelation()
         {
@@ -385,10 +257,6 @@ namespace nHydrate.Generator.Models
             return base.GetHashCode();
         }
 
-        /// <summary>
-        /// Get the parent table of this relation
-        /// </summary>
-        /// <returns></returns>
         public Table ParentTable
         {
             get
@@ -399,10 +267,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Get the child table of this relation
-        /// </summary>
-        /// <returns></returns>
         public CustomView ChildView
         {
             get
@@ -496,64 +360,6 @@ namespace nHydrate.Generator.Models
             return returnVal;
         }
 
-        [Browsable(false)]
-        public string PascalRoleName
-        {
-            get
-            {
-                if (((ModelRoot)this.Root).TransformNames)
-                    return StringHelper.DatabaseNameToPascalCase(RoleName);
-                else
-                    return StringHelper.FirstCharToUpper(this.RoleName);
-            }
-        }
-
-        [Browsable(false)]
-        public string CamelRoleName
-        {
-            get
-            {
-                if (((ModelRoot)this.Root).TransformNames)
-                    return StringHelper.DatabaseNameToCamelCase(RoleName);
-                else
-                    return StringHelper.FirstCharToLower(this.RoleName);
-            }
-        }
-
-        [Browsable(false)]
-        public string DatabaseRoleName
-        {
-            get { return this.RoleName; }
-        }
-
-        [Browsable(false)]
-        public IEnumerable<CustomViewColumn> FkColumns
-        {
-            get
-            {
-                try
-                {
-                    var sorted = new SortedDictionary<string, CustomViewColumn>();
-                    foreach (var columnRel in this.ColumnRelationships.AsEnumerable())
-                    {
-                        var parentColumn = columnRel.ParentColumn;
-                        var childColumn = columnRel.ChildColumn;
-                        sorted.Add(parentColumn.Name + "|" + childColumn.Name + "|" + this.RoleName + "|" + columnRel.Key, childColumn);
-                    }
-
-                    var fkColumns = new List<CustomViewColumn>();
-                    foreach (var kvp in sorted)
-                    {
-                        fkColumns.Add(kvp.Value);
-                    }
-                    return fkColumns;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
-        }
 
         public override string ToString()
         {

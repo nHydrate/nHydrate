@@ -25,9 +25,9 @@ namespace nHydrate.DslPackage.Forms
 			InitializeComponent();
 
 			this.Size = new Size((int)(Screen.PrimaryScreen.WorkingArea.Width * 0.8), (int)(Screen.PrimaryScreen.WorkingArea.Height * 0.8));
-			this.ResizeEnd += new EventHandler(DBObjectDifferenceForm_ClientSizeChanged);
-			this.ClientSizeChanged += new EventHandler(DBObjectDifferenceForm_ClientSizeChanged);
-			this.KeyDown += new KeyEventHandler(DBObjectDifferenceForm_KeyDown);
+			this.ResizeEnd += DBObjectDifferenceForm_ClientSizeChanged;
+			this.ClientSizeChanged += DBObjectDifferenceForm_ClientSizeChanged;
+			this.KeyDown += DBObjectDifferenceForm_KeyDown;
 			pnlLeft.Width = pnlMain.Width / 2; //split screen in half
 			splitterField.SplitterMoved += new SplitterEventHandler(splitter1_SplitterMoved);
 			splitterField.DoubleClick += new EventHandler(splitter1_DoubleClick);
@@ -35,7 +35,7 @@ namespace nHydrate.DslPackage.Forms
 			txtText1.ChangedLineColor = Color.FromArgb(255, 230, 230, 255);
 			txtText1.ReadOnly = true;
 			txtText1.Scroll += new ScrollEventHandler(txtText1_Scroll);
-			txtText1.VisibleRangeChanged += new EventHandler(txtText1_VisibleRangeChanged);
+			txtText1.VisibleRangeChanged += txtText1_VisibleRangeChanged;
 			
 			txtText2.CurrentLineColor = txtText1.CurrentLineColor;
 			txtText2.ChangedLineColor = txtText1.ChangedLineColor;

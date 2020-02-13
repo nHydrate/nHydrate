@@ -20,9 +20,9 @@ namespace nHydrate.Generator.Common.EventArgs
 
 		#region Property Implementations
 
-		public string ItemName { get; private set; }
-		public string ProjectName { get; private set; }
-		public ProjectItemType ItemType { get; private set; }
+		public string ItemName { get; }
+		public string ProjectName { get; }
+		public ProjectItemType ItemType { get; }
 		public bool Exists { get; set; }
 
 		#endregion

@@ -1,3 +1,4 @@
+#pragma warning disable 0168
 using System;
 using System.Globalization;
 using System.IO;

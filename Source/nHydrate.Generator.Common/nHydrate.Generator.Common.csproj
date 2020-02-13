@@ -295,7 +295,6 @@
     <Compile Include="Util\HashTable.cs" />
     <Compile Include="Util\HTTPHelper.cs" />
     <Compile Include="Util\ICryptoHelper.cs" />
-    <Compile Include="Util\PerformanceCounterHelper.cs" />
     <Compile Include="Util\ProjectItemCacheItem.cs" />
     <Compile Include="Util\RegExHelper.cs" />
     <Compile Include="Util\SecurityHelper.cs" />
@@ -320,9 +319,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Util\InstallLocationHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Util\ProjectItemTemplateHelper.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Util\ReflectionHelper.cs">

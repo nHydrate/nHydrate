@@ -1,4 +1,5 @@
-﻿using System;
+﻿#pragma warning disable 0168
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,8 +13,6 @@ namespace nHydrate.Generator.Common.Util
 {
 	public class TextManagerEvents : IVsTextManagerEvents
 	{
-		private Guid _guidColorService = Guid.Empty;
-
 		private static IVsTextManager2 GetService()
 		{
             return Microsoft.VisualStudio.Shell.ServiceProvider.GlobalProvider.GetService(typeof(SVsTextManager)) as IVsTextManager2;

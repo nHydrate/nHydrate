@@ -9,7 +9,7 @@ namespace nHydrate.Generator.Common.EventArgs
 			this.ProjectItemGenerator = projectItemGenerator;
 		}
 
-		public IProjectItemGenerator ProjectItemGenerator { get; private set; }
+		public IProjectItemGenerator ProjectItemGenerator { get; }
 
 	}
 }

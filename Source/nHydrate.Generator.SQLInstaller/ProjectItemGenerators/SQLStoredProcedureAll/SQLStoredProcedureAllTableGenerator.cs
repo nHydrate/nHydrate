@@ -16,103 +16,44 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
     {
         #region Properties
 
-        private string _parentItemPath = string.Empty;
-        private bool _useSingleFile = false;
-        private string ParentItemPath
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_parentItemPath))
-                {
-                    //Feb 7, 2012 - Rearranged the Installer output folders. This code ensures old projects do not break
-                    //If the old folder structure exists then continue to use it.
-                    var DEFAULT_PATH = @"Stored Procedures\Generated\Objects";
-                    var eventArgs = new ProjectItemExistsEventArgs(ProjectName, DEFAULT_PATH, ProjectItemType.Folder);
-                    OnProjectItemExists(this, eventArgs);
-                    if (eventArgs.Exists)
-                    {
-                        return DEFAULT_PATH;
-                    }
-                    else
-                    {
-                        _useSingleFile = true;
-                        return @"5_Programmability\Stored Procedures\Internal";
-                    }
-                }
-                return _parentItemPath;
-            }
-        }
-
-        private bool UseSingleFile
-        {
-            get
-            {
-                var s = this.ParentItemPath; //forces a refresh of this private variable
-                return _useSingleFile;
-            }
-        }
+        private string ParentItemPath => @"5_Programmability\Stored Procedures\Internal";
 
         #endregion
 
         #region Overrides
 
-        public override int FileCount
-        {
-            get
-            {
-                if (this.UseSingleFile)
-                    return 1;
-                else
-                    return _model.Database.Tables.Count(x => x.Generated);
-            }
-        }
+        public override int FileCount => 1;
 
         public override void Generate()
         {
             //if (_model.Database.AllowZeroTouch) return;
             try
             {
-                if (this.UseSingleFile)
+                //Process all views
+                var sb = new StringBuilder();
+                sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
+                sb.AppendLine();
+
+                if (_model.EmitSafetyScripts)
                 {
-                    //Process all views
-                    var sb = new StringBuilder();
-                    sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
+                    sb.AppendLine("--##SECTION BEGIN [INTERNAL STORED PROCS]");
                     sb.AppendLine();
 
-                    if (_model.EmitSafetyScripts)
+                    foreach (var table in _model.Database.Tables
+                        .Where(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
                     {
-                        sb.AppendLine("--##SECTION BEGIN [INTERNAL STORED PROCS]");
-                        sb.AppendLine();
-
-                        foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
-                        {
-                            var template = new SQLStoredProcedureTableAllTemplate(_model, table, true);
-                            sb.Append(template.FileContent);
-                        }
-
-                        sb.AppendLine("--##SECTION END [INTERNAL STORED PROCS]");
-                        sb.AppendLine();
+                        var template = new SQLStoredProcedureTableAllTemplate(_model, table, true);
+                        sb.Append(template.FileContent);
                     }
 
-                    var eventArgs = new ProjectItemGeneratedEventArgs("StoredProcedures.sql", sb.ToString(), ProjectName, this.ParentItemPath, ProjectItemType.Folder, this, true);
-                    eventArgs.Properties.Add("BuildAction", 3);
-                    OnProjectItemGenerated(this, eventArgs);
+                    sb.AppendLine("--##SECTION END [INTERNAL STORED PROCS]");
+                    sb.AppendLine();
                 }
-                else
-                {
-                    if (_model.EmitSafetyScripts)
-                    {
-                        //Process all tables
-                        foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
-                        {
-                            var template = new SQLStoredProcedureTableAllTemplate(_model, table, false);
-                            var fullFileName = template.FileName;
-                            var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this.ParentItemPath, ProjectItemType.Folder, this, true);
-                            eventArgs.Properties.Add("BuildAction", 3);
-                            OnProjectItemGenerated(this, eventArgs);
-                        }
-                    }
-                }
+
+                var eventArgs = new ProjectItemGeneratedEventArgs("StoredProcedures.sql", sb.ToString(), ProjectName,
+                    this.ParentItemPath, ProjectItemType.Folder, this, true);
+                eventArgs.Properties.Add("BuildAction", 3);
+                OnProjectItemGenerated(this, eventArgs);
 
                 var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
                 OnGenerationComplete(this, gcEventArgs);

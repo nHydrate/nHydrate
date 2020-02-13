@@ -19,7 +19,7 @@ namespace nHydrate.Generator.Common.EventArgs
 
 		#region Property Implementations
 
-		public bool Value { get; private set; }
+		public bool Value { get; }
 
 		#endregion
 	}

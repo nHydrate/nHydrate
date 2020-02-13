@@ -32,13 +32,12 @@ namespace nHydrate.Generator.Common.Util
 		#region public methods used to get information from the resource Helper
 		public int GetInt(string key)
 		{
-			int returnVal;
-			var resourceVal = rm.GetString(key);
+            var resourceVal = rm.GetString(key);
 			try
-			{
-				returnVal = int.Parse(resourceVal, CultureInfo.CurrentCulture.NumberFormat);
-				return returnVal;
-			}
+            {
+                var returnVal = int.Parse(resourceVal, CultureInfo.CurrentCulture.NumberFormat);
+                return returnVal;
+            }
 			catch(Exception ex)
 			{
 				throw new Exception(String.Format("Resource cannot be cast to the suggested type. type: {0} key: {1}", "int", key), ex);
@@ -47,13 +46,12 @@ namespace nHydrate.Generator.Common.Util
 
 		public float GetFloat(string key)
 		{
-			float returnVal;
-			var resourceVal = rm.GetString(key);
+            var resourceVal = rm.GetString(key);
 			try
-			{
-				returnVal = float.Parse(resourceVal, CultureInfo.CurrentCulture.NumberFormat);
-				return returnVal;
-			}
+            {
+                var returnVal = float.Parse(resourceVal, CultureInfo.CurrentCulture.NumberFormat);
+                return returnVal;
+            }
 			catch(Exception ex)
 			{
 				throw new Exception(String.Format("Resource cannot be cast to the suggested type. type: {0} key: {1}", "float", key), ex);

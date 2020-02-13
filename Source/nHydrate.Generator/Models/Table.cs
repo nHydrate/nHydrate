@@ -118,7 +118,6 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        [Browsable(true)]
         public bool IsTenant
         {
             get { return _isTenant; }
@@ -129,36 +128,13 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
-        public MetadataItemCollection MetaData { get; private set; }
-
-        [Browsable(false)]
-        public bool NeedOverridePersistable
-        {
-            get
-            {
-                var tableList = new List<Table>(this.GetTableHierarchy());
-                tableList.RemoveAt(tableList.Count - 1);
-                var allowModification = false;
-                foreach (var t in tableList)
-                {
-                    allowModification |= !t.Immutable;
-                }
-                return allowModification;
-            }
-        }
+        public MetadataItemCollection MetaData { get; }
 
         public List<TableIndex> TableIndexList
         {
             get { return _tableIndexList; }
         }
 
-        [
-        Browsable(false),
-        Description("Determines if unit tests are generated for this object."),
-        Category("Behavior"),
-        DefaultValue(typeof(UnitTestSettingsConstants), "StubOnly"),
-        ]
         public UnitTestSettingsConstants AllowUnitTest
         {
             get
@@ -176,12 +152,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if this table will be used to generate an enumeration."),
-        Category("Data"),
-        DefaultValue(_def_isTypeTable),
-        ]
         public TypedTableConstants TypedTable
         {
             get { return _isTypeTable; }
@@ -192,13 +162,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-
-        [
-        Browsable(true),
-        Description("Determines the parent schema for this object."),
-        Category("Design"),
-        DefaultValue(_def_dbSchema)
-        ]
         public string DBSchema
         {
             get { return _dbSchema; }
@@ -209,10 +172,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
-        [Description("Determines if this entity is abstract.")]
-        [Category("Design")]
-        [DefaultValue(_def_isAbstract)]
         public bool IsAbstract
         {
             get { return false; }
@@ -223,8 +182,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
-        [DefaultValue(_def_generatesDoubleDerived)]
         public bool GeneratesDoubleDerived
         {
             get { return _generatesDoubleDerived; }
@@ -235,12 +192,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("The description of this table."),
-        Category("Data"),
-        DefaultValue(_def_description),
-        ]
         public string Description
         {
             get { return _description; }
@@ -251,12 +202,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if items from this table are readonly. When true items cannot be modified."),
-        Category("Data"),
-        DefaultValue(_def_immutable),
-        ]
         public bool Immutable
         {
             get { return _immutable || this.TypedTable != TypedTableConstants.None; }
@@ -267,11 +212,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("This collection defines the relationships in which this table participates."),
-        Category("Relations"),
-        ]
         public ReferenceCollection Relationships
         {
             get
@@ -287,11 +227,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("This collection defines the relationships in which this table participates with views."),
-        Category("Relations"),
-        ]
         public ReferenceCollection ViewRelationships
         {
             get
@@ -307,10 +242,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Returns a list of all parent and child relations
-        /// </summary>
-        [Browsable(false)]
         public RelationCollection AllRelationships
         {
             get
@@ -331,20 +262,11 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(false),
-        Description("The list of columns that are associated with this table."),
-        Category("Data"),
-        ]
         public ReferenceCollection Columns
         {
             get { return _columns; }
         }
 
-        /// <summary>
-        /// Returns the generated columns for this table only (not hierarchy)
-        /// </summary>
-        [Browsable(false)]
         public IEnumerable<Column> GeneratedColumns
         {
             get
@@ -355,10 +277,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Returns the generated columns for this table only (not hierarchy)
-        /// </summary>
-        [Browsable(false)]
         public IEnumerable<Column> GeneratedColumnsFullHierarchy
         {
             get
@@ -369,12 +287,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if this item is used in the generation."),
-        Category("Data"),
-        DefaultValue(_def_generated),
-        ]
         public bool Generated
         {
             get { return _generated; }
@@ -385,12 +297,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if the fields 'ModifiedBy' and 'ModifiedDate' are created."),
-        Category("Behavior"),
-        DefaultValue(_def_modifiedAudit),
-        ]
         public bool AllowModifiedAudit
         {
             get { return _modifiedAudit; }
@@ -401,12 +307,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Category("Behavior"),
-        Description("Determines if the fields 'CreateBy' and 'CreateDate' are created."),
-        DefaultValue(_def_createAudit),
-        ]
         public bool AllowCreateAudit
         {
             get { return _createAudit; }
@@ -417,12 +317,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if this table will have a timestamp field created and used for synchronization."),
-        Category("Behavior"),
-        DefaultValue(_def_timestamp),
-        ]
         public bool AllowTimestamp
         {
             get { return _allowTimestamp; }
@@ -433,32 +327,12 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(true),
-        Description("Determines if this primary key is enforced in the database."),
-        Category("Data"),
-        DefaultValue(_def_enforePrimaryKey),
-        ]
         public bool EnforcePrimaryKey
         {
             get { return _enforePrimaryKey; }
             set { _enforePrimaryKey = value; }
         }
 
-        [Browsable(false)]
-        public bool IsAuditable
-        {
-            get { return this.AllowCreateAudit || this.AllowModifiedAudit || this.AllowTimestamp; }
-        }
-
-        /// <summary>
-        /// This not implemented
-        /// </summary>
-        [
-        Browsable(false),
-        Description("Determines if this table should implement a full index search."),
-        Category("Data"),
-        DefaultValue(_def_fullIndexSearch),
-        ]
         public bool FullIndexSearch
         {
             get { return _fullIndexSearch; }
@@ -469,22 +343,11 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Defines the static data that is generated into the database scripts."),
-        Category("Data"),
-        ]
         public RowEntryCollection StaticData
         {
             get { return _staticData; }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if this is an intermediary table between two other tables."),
-        Category("Data"),
-        DefaultValue(_def_associativeTable),
-        ]
         public bool AssociativeTable
         {
             get { return _associativeTable; }
@@ -495,12 +358,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if audit tables are created in the database that will log an audit trail of records for this table."),
-        Category("Behavior"),
-        DefaultValue(_def_allowAuditTracking),
-        ]
         public bool AllowAuditTracking
         {
             get
@@ -517,15 +374,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// This not implemented
-        /// </summary>
-        [
-        Browsable(false),
-        Description("Determines if history tables are generated."),
-        Category("Behavior"),
-        DefaultValue(_def_hasHistory),
-        ]
         public bool HasHistory
         {
             get { return _hasHistory; }
@@ -536,15 +384,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// This not implemented
-        /// </summary>
-        [
-        Browsable(false),
-        Description("Determines if meta data tables are generated."),
-        Category("Data"),
-        DefaultValue(_def_createMetaData),
-        ]
         public bool CreateMetaData
         {
             get { return _createMetaData; }
@@ -555,40 +394,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-
-        [Browsable(false)]
-        public bool InheritsCreateAudit
-        {
-            get
-            {
-                var tables = new List<Table>(this.GetTableHierarchy());
-                if (tables.Contains(this))
-                    tables.Remove(this);
-
-                return ((from x in tables
-                         where x.AllowCreateAudit == true
-                         select x).ToArray().Length != 0);
-
-            }
-        }
-
-        [Browsable(false)]
-        public bool InheritsModifyAudit
-        {
-            get
-            {
-                var tables = new List<Table>(this.GetTableHierarchy());
-                if (tables.Contains(this))
-                    tables.Remove(this);
-
-                return ((from x in tables
-                         where x.AllowModifiedAudit == true
-                         select x).ToArray().Length != 0);
-
-            }
-        }
-
-        [Browsable(false)]
         public SecurityFunction Security
         {
             get { return _security; }
@@ -597,110 +402,6 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region Methods
-
-        /// <summary>
-        /// Determines if the specified table can be a parent of this table
-        /// </summary>
-        /// <param name="parentTable"></param>
-        /// <returns></returns>
-        public virtual bool CanInherit(Table parentTable)
-        {
-            //Ensure that there are no circles
-            var tList = parentTable.GetTableHierarchy();
-            return !tList.Contains(this);
-        }
-
-        public bool FullHierarchyPrimaryKeyIsDatabaseIdentity()
-        {
-            var t = this;
-            while (t != null)
-            {
-                foreach (var column in t.PrimaryKeyColumns.OrderBy(x => x.Name))
-                {
-                    if (column.Identity == IdentityTypeConstants.Database)
-                        return true;
-                }
-                //t = t.ParentTable;
-                t = null;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Get all relations where this table or any derived table is the child
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<Relation> GetChildRoleRelationsFullHierarchy()
-        {
-            var retval = new List<Relation>();
-            foreach (var table in this.GetTableHierarchy())
-            {
-                foreach (var relation in table.ChildRoleRelations)
-                {
-                    if ((relation.ChildTableRef.Object != null) && (relation.ChildTableRef.Ref == table.Id))
-                        retval.Add(relation);
-                }
-            }
-            return retval;
-        }
-
-        /// <summary>
-        /// Get all relations where this table or any derived table is the parent
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<Relation> GetParentRoleRelationsFullHierarchy()
-        {
-            var retval = new List<Relation>();
-            foreach (var table in this.GetTableHierarchy())
-            {
-                foreach (var relation in table.ParentRoleRelations)
-                {
-                    if ((relation.ParentTableRef.Object != null) && (relation.ParentTableRef.Ref == table.Id))
-                        retval.Add(relation);
-                }
-            }
-            return retval;
-        }
-
-        //public void AddUnitTests()
-        //{
-        //  this.AllowUnitTest = UnitTestSettingsConstants.FullTest;
-
-        //  List<Table> leftOverTables = null;
-        //  List<Table> usedList = new List<Table>(this.UnitTestDependencies);
-        //  usedList.Reverse();
-
-        //  //while (leftOverTables == null || leftOverTables.Count > 0)
-        //  //{
-        //  //Get a list of all child tables so we can query parents
-        //  List<Table> childTableList = new List<Table>();
-        //  childTableList.AddRange(this.GetTableHierarchy());
-        //  foreach (Table t in usedList)
-        //  {
-        //    childTableList.AddRange(t.GetTableHierarchy());
-        //  }
-
-        //  //Get a list of all used tables
-        //  List<Table> list = new List<Table>();
-        //  foreach (Table t in childTableList)
-        //  {
-        //    foreach (Table c in t.GetParentTables())
-        //      if (!list.Contains(c)) list.Add(c);
-        //  }
-
-        //  IEnumerable<Table> list1 = (from x in list select x).Distinct();
-        //  IEnumerable<Table> list2 = (from x in childTableList select x).Distinct();
-
-        //  leftOverTables = new List<Table>(list1.Except(list2));
-        //  usedList.AddRange(leftOverTables);
-        //  //}
-
-        //  //Now set the Dependencies to the new list
-        //  this.UnitTestDependencies.Clear();
-        //  usedList.Reverse();
-        //  this.UnitTestDependencies.AddRange(usedList);
-
-        //}
 
         public override string ToString()
         {
@@ -721,46 +422,17 @@ namespace nHydrate.Generator.Models
             return retval.Tables[0];
         }
 
-        /// <summary>
-        /// Determines if the specified table is an ancestor of the this table object
-        /// </summary>
-        /// <param name="table"></param>
-        /// <returns></returns>
         public bool IsInheritedFrom(Table table)
         {
             return false;
         }
 
-        /// <summary>
-        /// Determines if this table shares a common ancestor with the specified table
-        /// </summary>
-        /// <param name="table"></param>
-        /// <returns></returns>
-        public bool ShareAncestor(Table table)
-        {
-            if (table == null) return false;
-            if (table == this) return false;
-
-            var list1 = this.GetTableHierarchy();
-            var list2 = table.GetTableHierarchy();
-            return (list1.Intersect(list2).Count() > 0);
-        }
-
-        /// <summary>
-        /// Get all the tables that are descendants of this table
-        /// </summary>
-        /// <returns></returns>
         public IEnumerable<Table> GetTablesInheritedFromHierarchy()
         {
             var retval = new List<Table>();
             return retval;
         }
 
-        /// <summary>
-        /// Determines the bottom of the inheritance hierarchy for a table.
-        /// </summary>
-        /// <returns>The bottom base table in the hierarchy. If there is no hierarchy, the table is returned.</returns>
-        [Browsable(false)]
         public Table GetAbsoluteBaseTable()
         {
             var tableList = GetTableHierarchy().ToList();
@@ -769,110 +441,6 @@ namespace nHydrate.Generator.Models
             return tableList.First();
         }
 
-        /// <summary>
-        /// Given a field from this table a search is performed to get the same column from the base table if one exists
-        /// </summary>
-        [Browsable(false)]
-        public Column GetBasePKColumn(Column column)
-        {
-            if (column == null)
-                throw new Exception("The column cannot be null.");
-            if (this.PrimaryKeyColumns.Count(x => x.Name == column.Name) == 0)
-                throw new Exception("The column does not belong to this table.");
-
-            var tList = new List<Table>(GetTableHierarchy());
-            tList.Add(this);
-            return tList.First().PrimaryKeyColumns.FirstOrDefault(x => x.Name == column.Name);
-        }
-
-        /// <summary>
-        /// Returns all primary keys from the ultimate ancestor in the table hierarchy
-        /// </summary>
-        [Browsable(false)]
-        public IEnumerable<Column> GetBasePKColumnList()
-        {
-            var retval = new List<Column>();
-            var tList = new List<Table>(GetTableHierarchy());
-            tList.Add(this);
-            foreach (var column in this.PrimaryKeyColumns)
-            {
-                retval.Add(tList.First().PrimaryKeyColumns.First(x => x.Name == column.Name));
-            }
-            return retval;
-        }
-
-        /// <summary>
-        /// Ensure that the inheritance hierarchy is valid
-        /// </summary>
-        [Browsable(false)]
-        public bool IsValidInheritance
-        {
-            get
-            {
-                var inheritTables = new List<Table>(this.GetTableHierarchy());
-                var pkList = new Dictionary<string, Column>();
-                foreach (var c in this.PrimaryKeyColumns.OrderBy(x => x.Name))
-                {
-                    pkList.Add(c.Name, c);
-                }
-
-                //Ensure that all tables have the same primary keys
-                foreach (var t in inheritTables)
-                {
-                    if (t.PrimaryKeyColumns.Count != this.PrimaryKeyColumns.Count)
-                    {
-                        //Different number of pk columns so invalid
-                        return false;
-                    }
-                    else
-                    {
-                        foreach (var c in t.PrimaryKeyColumns.OrderBy(x => x.Name))
-                        {
-                            if (!pkList.ContainsKey(c.Name))
-                                return false;
-                            if (pkList[c.Name].DataType != c.DataType)
-                                return false;
-                        }
-                    }
-                }
-
-                //Ensure that all tables in inheritance hierarchy
-                //do not have duplicate column names except primary keys
-                var columNames = new List<string>();
-                foreach (var t in inheritTables)
-                {
-                    foreach (Reference r in t.Columns)
-                    {
-                        var c = r.Object as Column;
-                        //Make sure this is not a PK
-                        if (!pkList.ContainsKey(c.Name))
-                        {
-                            //If the column already exists then it is a duplicate
-                            if (columNames.Contains(c.Name))
-                                return false;
-
-                            columNames.Add(c.Name);
-                        }
-                    }
-                }
-
-                return true;
-            }
-        }
-
-        [Browsable(false)]
-        public bool DoesBaseAllowTableAudit()
-        {
-            var list = new List<Table>(GetTableHierarchy());
-            list.Remove(this);
-            return (list.Count(x => x.AllowAuditTracking) > 0);
-        }
-
-        /// <summary>
-        /// Get the full hierarchy of tables starting with this table 
-        /// and working back to the most base table
-        /// </summary>
-        /// <returns></returns>
         public IEnumerable<Table> GetTableHierarchy()
         {
             var retval = new List<Table>();
@@ -880,33 +448,6 @@ namespace nHydrate.Generator.Models
             return retval;
         }
 
-        /// <summary>
-        /// Determines if any base class has its Immutable set to true
-        /// </summary>
-        [Browsable(false)]
-        public bool AnyBaseNonModifiable
-        {
-            get
-            {
-                var tList = new List<Table>(this.GetTableHierarchy());
-                foreach (var t in tList)
-                {
-                    if (t.Immutable)
-                        return true;
-                }
-                return false;
-            }
-        }
-
-        public bool PropertyExistsInBase(string columnName)
-        {
-            return false;
-        }
-
-        /// <summary>
-        /// This gets all columns from this and all base classes
-        /// </summary>
-        /// <returns></returns>
         public ColumnCollection GetColumnsFullHierarchy()
         {
             try
@@ -929,32 +470,6 @@ namespace nHydrate.Generator.Models
                     //t = t.ParentTable;
                     t = null;
                 }
-                return retval;
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This gets all columns in this class NOT in a base class
-        /// </summary>
-        /// <returns></returns>
-        public ColumnCollection GetColumnsNotInBase()
-        {
-            try
-            {
-                var nameList = new List<string>();
-
-                var currentList = new List<Column>();
-                foreach (var c in this.GetColumns())
-                    currentList.Add(c);
-
-                var retval = new ColumnCollection(this.Root);
-                foreach (var c in currentList)
-                    retval.Add(c);
                 return retval;
 
             }
@@ -993,56 +508,6 @@ namespace nHydrate.Generator.Models
             return retval;
         }
 
-        public ColumnCollection GetColumnInRelationships()
-        {
-            var retval = new ColumnCollection(this.Root);
-            foreach (var r in ((ModelRoot)this.Root).Database.Relations.ToList())
-            {
-                if (r.ParentTableRef.Object == this)
-                {
-                    foreach (var cr in r.ColumnRelationships.ToList())
-                    {
-                        var column = cr.ParentColumnRef.Object as Column;
-                        if (!retval.Contains(column))
-                            retval.Add(column);
-                    }
-                }
-                else if (r.ChildTableRef.Object == this)
-                {
-                    foreach (var cr in r.ColumnRelationships.ToList())
-                    {
-                        var column = cr.ChildColumnRef.Object as Column;
-                        if (!retval.Contains(column))
-                            retval.Add(column);
-                    }
-                }
-            }
-            return retval;
-        }
-
-        public IEnumerable<Column> GetColumnNotInRelationships()
-        {
-            try
-            {
-                var inRelations = this.GetColumnInRelationships();
-                var retval = new ColumnCollection(this.Root);
-                foreach (var c in this.GetColumns())
-                {
-                    if (!inRelations.Contains(c))
-                        retval.Add(c);
-                }
-                return retval.OrderBy(x => x.Name);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Returns the columns for this table only (not hierarchy)
-        /// </summary>
-        /// <returns></returns>
         public IEnumerable<Column> GetColumns()
         {
             try
@@ -1075,57 +540,6 @@ namespace nHydrate.Generator.Models
             return retval;
         }
 
-        /// <summary>
-        /// Returns a list of generated relations for this table to views
-        /// </summary>
-        /// <returns></returns>
-        public ViewRelationCollection GetViewRelations()
-        {
-            try
-            {
-                var retval = new ViewRelationCollection(this.Root);
-                foreach (var r in this.ViewRelationships.AsEnumerable())
-                {
-                    var relation = r.Object as ViewRelation;
-                    if (relation != null)
-                    {
-                        if (relation.ChildView.Generated)
-                            retval.Add(relation);
-                    }
-                }
-                return retval;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public IEnumerable<Relation> GetRelationsFullHierarchy()
-        {
-            try
-            {
-                var allRelations = new List<Relation>();
-                var allTables = this.GetTableHierarchy();
-                foreach (var table in allTables)
-                {
-                    foreach (Relation relation in table.AllRelationships)
-                    {
-                        allRelations.Add(relation);
-                    }
-                }
-                return allRelations;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Returns a list of generated relations for this table
-        /// </summary>
-        /// <returns></returns>
         public RelationCollection GetRelations()
         {
             try
@@ -1148,9 +562,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Returns generated relations for this table
-        /// </summary>
         public IEnumerable<Relation> GetRelationsWhereChild(bool fullHierarchy = false)
         {
             var retval = ((ModelRoot)_root).Database.GetRelationsWhereChild(this, fullHierarchy);
@@ -1186,30 +597,6 @@ namespace nHydrate.Generator.Models
             return retval;
         }
 
-        public bool IsColumnInherited(Column column)
-        {
-            return false;
-        }
-
-        public string ToDatabaseIdentifier()
-        {
-            return ValidationHelper.MakeDatabaseIdentifier(this.DatabaseName);
-        }
-
-        /// <summary>
-        /// Create a valid T-SQL variable from the name
-        /// </summary>
-        /// <returns></returns>
-        public string ToDatabaseCodeIdentifier()
-        {
-            return ValidationHelper.MakeDatabaseScriptIdentifier(this.DatabaseName);
-        }
-
-        /// <summary>
-        /// Given a column in this table, determines if there is a relation to a type table based on it
-        /// </summary>
-        /// <param name="column"></param>
-        /// <returns></returns>
         public bool IsColumnRelatedToTypeTable(Column column, out string roleName)
         {
             return (GetRelatedTypeTableByColumn(column, out roleName) != null);
@@ -1460,14 +847,12 @@ namespace nHydrate.Generator.Models
             return returnVal;
         }
 
-        [Browsable(false)]
         public string CamelName
         {
             //get { return StringHelper.DatabaseNameToCamelCase(this.Name); }
             get { return StringHelper.DatabaseNameToCamelCase(this.PascalName); }
         }
 
-        [Browsable(false)]
         public string PascalName
         {
             get
@@ -1484,13 +869,11 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public string DatabaseName
         {
             get { return this.Name; }
         }
 
-        [Browsable(false)]
         public ReadOnlyCollection<Relation> ParentRoleRelations
         {
             get
@@ -1512,7 +895,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public ReadOnlyCollection<Relation> ChildRoleRelations
         {
             get
@@ -1527,129 +909,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
-        public ReadOnlyCollection<Relation> ChildRoleRelationsFullHierarchy
-        {
-            get
-            {
-                var retval = new List<Relation>();
-                foreach (Relation relation in ((ModelRoot)this.Root).Database.Relations)
-                {
-                    var childTable = relation.ChildTableRef.Object as Table;
-                    if ((relation.ChildTableRef.Object != null) && ((childTable == this) || (this.IsInheritedFrom(childTable))))
-                        retval.Add(relation);
-                }
-                return retval.AsReadOnly();
-            }
-        }
-
-        [Browsable(false)]
-        public bool SelfReference
-        {
-            //get
-            //{
-            //  foreach (Relation rel in this.AllRelationships)
-            //  {
-            //    if(rel.ParentTableRef.Ref == rel.ChildTableRef.Ref)
-            //      return true;
-            //  }
-            //  return false;
-            //}
-            get { return this.SelfReferenceRelation != null; }
-        }
-
-        /// <summary>
-        /// Get full hierarchy of relations from this table to other targets
-        /// </summary>
-        [Browsable(false)]
-        public IEnumerable<Table> RelatedTables
-        {
-            get
-            {
-                var relatedTables = new List<Table>();
-                foreach (var relation in this.GetRelationsFullHierarchy())
-                {
-                    var childTable = (Table)relation.ChildTableRef.Object;
-                    var parentTable = (Table)relation.ParentTableRef.Object;
-                    if (childTable != this && !relatedTables.Contains(childTable))
-                    {
-                        relatedTables.Add(childTable);
-                    }
-                    if (parentTable != this && !relatedTables.Contains(parentTable))
-                    {
-                        relatedTables.Add(parentTable);
-                    }
-                }
-                return relatedTables;
-            }
-        }
-
-        /// <summary>
-        /// Get relations from this table to other targets (no inheritance)
-        /// </summary>
-        [Browsable(false)]
-        public IEnumerable<Table> RelatedTablesNoHierarchy
-        {
-            get
-            {
-                var relatedTables = new List<Table>();
-                foreach (Relation relation in this.GetRelations())
-                {
-                    var childTable = (Table)relation.ChildTableRef.Object;
-                    var parentTable = (Table)relation.ParentTableRef.Object;
-                    if (childTable != this && !relatedTables.Contains(childTable))
-                    {
-                        relatedTables.Add(childTable);
-                    }
-                    if (parentTable != this && !relatedTables.Contains(parentTable))
-                    {
-                        relatedTables.Add(parentTable);
-                    }
-                }
-                return relatedTables;
-            }
-        }
-
-
-        ////TODO: Make this work for compound primary keys
-        //[Browsable(false)]
-        //public Column SelfReferencePrimaryKeyColumn
-        //{
-        //  get { return (Column)this.PrimaryKeyColumns[0]; }
-        //}
-
-        //[Browsable(false)]
-        //public IEnumerable<Column> SelfReferenceParentColumns
-        //{
-        //  get
-        //  {
-        //    var retval = new List<Column>();
-        //    foreach (Relation relation in this.AllRelationships)
-        //    {
-        //      Table child = (Table)relation.ChildTableRef.Object;
-        //      Table parent = (Table)relation.ParentTableRef.Object;
-        //      if (child == parent)
-        //      {
-        //        foreach (Column item in relation.FkColumns)
-        //          retval.Add(item);
-        //      }
-        //    }
-        //    return retval;
-        //  }
-        //}
-
-        [Browsable(false)]
-        public Relation SelfReferenceRelation
-        {
-            get { return this.AllRelationships.Where(x => x.ChildTableRef.Object == x.ParentTableRef.Object).FirstOrDefault(); }
-        }
-
-        [
-        Browsable(false),
-        Description("Determines the fields that constitute the table primary key."),
-        Category("Data"),
-        DefaultValue(""),
-        ]
         public IList<Column> PrimaryKeyColumns
         {
             get
@@ -1664,28 +923,10 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
-        public string CorePropertiesHash
-        {
-            get
-            {
-                var prehash =
-                    this.Name + "|" +
-                    this.DBSchema;
-                return prehash;
-            }
-        }
-
         #endregion
 
         #region ICodeFacadeObject Members
 
-        [
-        Browsable(true),
-        Description("Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier."),
-        Category("Design"),
-        DefaultValue(_def_codeFacade),
-        ]
         public string CodeFacade
         {
             get { return _codeFacade; }

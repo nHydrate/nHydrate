@@ -49,12 +49,6 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        [
-        Browsable(true),
-        Description("Should this parameter be generated as part of the default table."),
-        Category("Data"),
-        DefaultValue(_def_generated),
-        ]
         public bool Generated
         {
             get { return _generated; }
@@ -65,12 +59,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines description text were applicable."),
-        Category("Data"),
-        DefaultValue(_def_description),
-        ]
         public string Description
         {
             get { return _description; }
@@ -81,19 +69,12 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public Reference RelationshipRef
         {
             get { return _relationshipRef; }
             set { _relationshipRef = value; }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the default value of this parameter."),
-        Category("Data"),
-        DefaultValue(_def_default),
-        ]
         public string Default
         {
             get { return _default; }
@@ -104,12 +85,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the size in bytes of this parameter."),
-        Category("Data"),
-        DefaultValue(_def_length),
-        ]
         public int Length
         {
             get
@@ -126,10 +101,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(true)]
-        [Description("Determines the scale of some data types.")]
-        [Category("Data")]
-        [DefaultValue(_def_scale)]
         public virtual int Scale
         {
             get
@@ -146,10 +117,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(false),
-        DefaultValue(_def_sortOrder)
-        ]
         public int SortOrder
         {
             get { return _sortOrder; }
@@ -160,14 +127,12 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public Reference ParentTableRef
         {
             get { return _parentTableRef; }
             set { _parentTableRef = value; }
         }
 
-        [Browsable(false)]
         public virtual string DatabaseType
         {
             get
@@ -179,12 +144,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the data type of this parameter."),
-        Category("Data"),
-        DefaultValue(System.Data.SqlDbType.VarChar),
-        ]
         public System.Data.SqlDbType DataType
         {
             get { return _dataType; }
@@ -199,12 +158,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if this parameter allows null values."),
-        Category("Data"),
-        DefaultValue(_def_allowNull),
-        ]
         public bool AllowNull
         {
             get { return _allowNull; }
@@ -221,12 +174,6 @@ namespace nHydrate.Generator.Models
             set { _enumType = value; }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if this parameter is an output parameter."),
-        Category("Data"),
-        DefaultValue(_def_isOutputParameter),
-        ]
         public bool IsOutputParameter
         {
             get { return _isOutputParameter; }
@@ -247,7 +194,6 @@ namespace nHydrate.Generator.Models
             return retval;
         }
 
-        [Browsable(false)]
         public virtual string GetLengthString()
         {
             if (ModelHelper.SupportsMax(this.DataType) && this.Length == 0)
@@ -256,10 +202,6 @@ namespace nHydrate.Generator.Models
                 return this.Length.ToString();
         }
 
-        /// <summary>
-        /// Gets the SQL equivalent for this default value
-        /// </summary>
-        /// <returns></returns>
         public virtual string GetSQLDefault()
         {
             return ModelHelper.GetSQLDefault(this.DataType, this.Default);
@@ -382,13 +324,11 @@ namespace nHydrate.Generator.Models
             return returnVal;
         }
 
-        [Browsable(false)]
         public string CamelName
         {
             get { return StringHelper.DatabaseNameToCamelCase(this.PascalName); }
         }
 
-        [Browsable(false)]
         public string PascalName
         {
             get
@@ -405,7 +345,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public string DatabaseName
         {
             get { return this.Name; }
@@ -539,10 +478,6 @@ namespace nHydrate.Generator.Models
 
         }
 
-        /// <summary>
-        /// Determines if the Datatype suppors the 'Parse' method
-        /// </summary>
-        [Browsable(false)]
         public bool AllowStringParse
         {
             get
@@ -713,7 +648,6 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        [Browsable(false)]
         public virtual string CorePropertiesHash
         {
             get
@@ -733,12 +667,6 @@ namespace nHydrate.Generator.Models
 
         #region ICodeFacadeObject Members
 
-        [
-        Browsable(true),
-        Description("Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier."),
-        Category("Design"),
-        DefaultValue(_def_codefacade),
-        ]
         public string CodeFacade
         {
             get { return _codeFacade; }
@@ -781,10 +709,6 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        /// <summary>
-        /// Gets the C# code equivalent for this default value
-        /// </summary>
-        /// <returns></returns>
         public virtual string GetCodeDefault()
         {
             var defaultValue = string.Empty;
@@ -893,43 +817,36 @@ namespace nHydrate.Generator.Models
             return defaultValue;
         }
 
-        [Browsable(false)]
         public virtual bool IsTextType
         {
             get { return ModelHelper.IsTextType(this.DataType); }
         }
 
-        [Browsable(false)]
         public virtual bool IsBinaryType
         {
             get { return ModelHelper.IsBinaryType(this.DataType); }
         }
 
-        [Browsable(false)]
         public virtual bool IsIntegerType
         {
             get { return ModelHelper.IsIntegerType(this.DataType); }
         }
 
-        [Browsable(false)]
         public virtual bool IsNumericType
         {
             get { return ModelHelper.IsNumericType(this.DataType); }
         }
 
-        [Browsable(false)]
         public virtual bool IsMoneyType
         {
             get { return ModelHelper.IsMoneyType(this.DataType); }
         }
 
-        [Browsable(false)]
         public virtual bool IsDecimalType
         {
             get { return ModelHelper.IsDecimalType(this.DataType); }
         }
 
-        [Browsable(false)]
         public virtual bool IsDateType
         {
             get { return ModelHelper.IsDateType(this.DataType); }

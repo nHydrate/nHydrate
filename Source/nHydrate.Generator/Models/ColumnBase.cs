@@ -41,7 +41,7 @@ namespace nHydrate.Generator.Models
 
         #region Constructor
 
-        public ColumnBase(INHydrateModelObject root)
+        protected ColumnBase(INHydrateModelObject root)
             : base(root)
         {
         }
@@ -50,7 +50,6 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        [Browsable(false)]
         public System.ComponentModel.DataAnnotations.DataType UIDataType
         {
             get { return _uIDataType; }
@@ -61,7 +60,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public string Category
         {
             get { return _category; }
@@ -72,12 +70,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-            Browsable(true),
-            Description("Determines if this item is used in the generation."),
-            Category("Data"),
-            DefaultValue(_def_generated),
-        ]
         public virtual bool Generated
         {
             get { return _generated; }
@@ -88,12 +80,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-            Browsable(true),
-            Description("Determines description text were applicable."),
-            Category("Data"),
-            DefaultValue(""),
-        ]
         public virtual string Description
         {
             get { return _description; }
@@ -104,12 +90,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-            Browsable(true),
-            Description("Determines the prompt text were applicable."),
-            Category("Data"),
-            DefaultValue(""),
-        ]
         public virtual string Prompt
         {
             get { return _prompt; }
@@ -120,12 +100,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-            Browsable(true),
-            Description("Determines the size of this column in bytes."),
-            Category("Data"),
-            DefaultValue(_def_length),
-        ]
         public virtual int Length
         {
             get
@@ -142,10 +116,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(true)]
-        [Description("Determines the scale of some data types.")]
-        [Category("Data")]
-        [DefaultValue(_def_scale)]
         public virtual int Scale
         {
             get
@@ -162,12 +132,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-            Browsable(true),
-            Description("Determines the data type of this column."),
-            Category("Data"),
-            DefaultValue(System.Data.SqlDbType.VarChar),
-        ]
         public virtual System.Data.SqlDbType DataType
         {
             get { return _dataType; }
@@ -185,12 +149,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-            Browsable(true),
-            Description("Determines if this column allows null values."),
-            Category("Data"),
-            DefaultValue(_def_allowNull),
-        ]
         public virtual bool AllowNull
         {
             get { return this.DataType != System.Data.SqlDbType.Variant && _allowNull; }
@@ -201,12 +159,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-            Browsable(true),
-            Description("Determines if this column is browsable in the UI."),
-            Category("Data"),
-            DefaultValue(_def_isBrowsable),
-        ]
         public virtual bool IsBrowsable
         {
             get { return _isBrowsable; }
@@ -217,55 +169,46 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public virtual string DatabaseType
         {
             get { return this.GetSQLDefaultType(); }
         }
 
-        [Browsable(false)]
         public virtual string DatabaseTypeRaw
         {
             get { return this.GetSQLDefaultType(true); }
         }
 
-        [Browsable(false)]
         public virtual bool IsTextType
         {
             get { return ModelHelper.IsTextType(this.DataType); }
         }
 
-        [Browsable(false)]
         public virtual bool IsBinaryType
         {
             get { return ModelHelper.IsBinaryType(this.DataType); }
         }
 
-        [Browsable(false)]
         public virtual bool IsIntegerType
         {
             get { return ModelHelper.IsIntegerType(this.DataType); }
         }
 
-        [Browsable(false)]
         public virtual bool IsNumericType
         {
             get { return ModelHelper.IsNumericType(this.DataType); }
         }
 
-        [Browsable(false)]
         public virtual bool IsMoneyType
         {
             get { return ModelHelper.IsMoneyType(this.DataType); }
         }
 
-        [Browsable(false)]
         public virtual bool IsDecimalType
         {
             get { return ModelHelper.IsDecimalType(this.DataType); }
         }
 
-        [Browsable(false)]
         public virtual bool IsDateType
         {
             get { return ModelHelper.IsDateType(this.DataType); }
@@ -274,7 +217,6 @@ namespace nHydrate.Generator.Models
         /// <summary>
         /// Determines if this field type can be made into a range query
         /// </summary>
-        [Browsable(false)]
         public virtual bool IsRangeType
         {
             get
@@ -305,7 +247,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public virtual string CorePropertiesHash
         {
             get
@@ -321,7 +262,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public virtual string CorePropertiesHashNoPK
         {
             get
@@ -344,7 +284,6 @@ namespace nHydrate.Generator.Models
         /// <summary>
         /// Determines if this data type supports a user-defined size
         /// </summary>
-        [Browsable(false)]
         public virtual bool IsDefinedSize
         {
             get { return this.PredefinedSize != -1; }
@@ -353,7 +292,6 @@ namespace nHydrate.Generator.Models
         /// <summary>
         /// Determines if this data type supports a user-defined scale
         /// </summary>
-        [Browsable(false)]
         public virtual bool IsDefinedScale
         {
             get { return this.PredefinedScale == 0; }
@@ -363,7 +301,6 @@ namespace nHydrate.Generator.Models
         /// Determines if this field has no max length defined
         /// </summary>
         /// <returns></returns>
-        [Browsable(false)]
         public virtual bool IsMaxLength()
         {
             switch (this.DataType)
@@ -380,7 +317,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public virtual string GetLengthString()
         {
             if (ModelHelper.SupportsMax(this.DataType) && this.Length == 0)
@@ -392,7 +328,6 @@ namespace nHydrate.Generator.Models
         /// <summary>
         /// This is the length used for annotations and meta data for class descriptions
         /// </summary>
-        [Browsable(false)]
         public virtual int GetAnnotationStringLength()
         {
             switch (this.DataType)
@@ -505,7 +440,6 @@ namespace nHydrate.Generator.Models
         public abstract Reference CreateRef();
         public abstract Reference CreateRef(string key);
 
-        [Browsable(false)]
         public virtual string CamelName
         {
             get
@@ -517,10 +451,8 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public abstract string PascalName { get; }
 
-        [Browsable(false)]
         public virtual string DatabaseName
         {
             get { return this.Name; }
@@ -821,7 +753,6 @@ namespace nHydrate.Generator.Models
         /// <summary>
         /// Determines if the Datatype supports the 'Parse' method
         /// </summary>
-        [Browsable(false)]
         public virtual bool AllowStringParse
         {
             get

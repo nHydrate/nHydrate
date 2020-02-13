@@ -55,13 +55,12 @@ namespace nHydrate.Generator.Common.Util
 		/// <returns></returns>
 		protected static uint[] BuildCRC32Table( uint ulPolynomial )
 		{
-			uint dwCrc;
-			var table = new uint[256];
+            var table = new uint[256];
 
 			// 256 values representing ASCII character codes. 
 			for (var i = 0; i < 256; i++)
 			{
-				dwCrc = (uint)i;
+				var dwCrc = (uint)i;
 				for (var j = 8; j > 0; j--)
 				{
 					if((dwCrc & 1) == 1)

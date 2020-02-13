@@ -127,8 +127,7 @@ namespace nHydrate.DslPackage.Forms
                     if (arr[0] != "nhydrate") return false;
                     int id;
                     if (!int.TryParse(arr[1], out id)) return false;
-                    DateTime theDate;
-                    if (!DateTime.TryParseExact(arr[2], "yyyyMMdd", DateTimeFormatInfo.InvariantInfo, DateTimeStyles.NoCurrentDateDefault, out theDate)) return false;
+                    if (!DateTime.TryParseExact(arr[2], "yyyyMMdd", DateTimeFormatInfo.InvariantInfo, DateTimeStyles.NoCurrentDateDefault, out _)) return false;
                     return true;
                 }
                 return false;

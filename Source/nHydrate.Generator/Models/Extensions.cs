@@ -199,8 +199,7 @@ namespace nHydrate.Generator.Models
                     .Max();
         }
 
-        public static int IndexOf<T>(this IEnumerable<T> obj, T value
-                     , IEqualityComparer<T> comparer)
+        public static int IndexOf<T>(this IEnumerable<T> obj, T value, IEqualityComparer<T> comparer)
         {
             return obj
                     .Select((a, i) => (comparer.Equals(a, value)) ? i : -1)

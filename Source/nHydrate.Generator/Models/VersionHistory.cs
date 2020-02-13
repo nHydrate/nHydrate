@@ -5,70 +5,45 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-	public class VersionHistory : IXMLable
-	{
-		#region Member Variables
+    public class VersionHistory : IXMLable
+    {
 
-		protected DateTime _createdDate = DateTime.Now;
-		protected string _version = ModelRoot._def_version;
+        public VersionHistory()
+        {
+        }
 
-		#endregion
+        public VersionHistory(string version)
+        {
+            this.Version = version;
+        }
 
-		#region Constructor
+        public DateTime CreatedDate { get; private set; }
 
-		public VersionHistory()
-		{
-		}
+        public string Version { get; private set; }
 
-		public VersionHistory(string version)
-		{
-			_version = version;
-		}
+        public void XmlAppend(System.Xml.XmlNode node)
+        {
+            var oDoc = node.OwnerDocument;
 
-		#endregion
+            XmlHelper.AddAttribute(node, "createdDate",
+                this.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
+            XmlHelper.AddAttribute(node, "version", this.Version);
 
-		#region Property Implementations
+        }
 
-		[Browsable(true)]
-		[Category("Data")]
-		[Description("The date that this object was created.")]
-		[ReadOnlyAttribute(true)]
-		public DateTime CreatedDate
-		{
-			get { return _createdDate; }
-		}
+        public void XmlLoad(System.Xml.XmlNode node)
+        {
+            this.CreatedDate = DateTime.ParseExact(
+                XmlHelper.GetAttributeValue(node, "createdDate",
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)),
+                "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            this.Version = XmlHelper.GetAttributeValue(node, "version", ModelRoot._def_version);
+        }
 
-		public string Version
-		{
-			get { return _version; }
-		}
+        public override string ToString()
+        {
+            return this.Version;
+        }
 
-		#endregion
-
-		#region IXMLable Members
-
-		public void XmlAppend(System.Xml.XmlNode node)
-		{
-			var oDoc = node.OwnerDocument;
-
-			XmlHelper.AddAttribute(node, "createdDate", _createdDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
-			XmlHelper.AddAttribute(node, "version", this.Version);
-
-		}
-
-		public void XmlLoad(System.Xml.XmlNode node)
-		{
-			_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-			_version = XmlHelper.GetAttributeValue(node, "version", ModelRoot._def_version);
-		}
-
-		#endregion
-
-		public override string ToString()
-		{
-			return this.Version;
-		}
-
-	}
+    }
 }
-

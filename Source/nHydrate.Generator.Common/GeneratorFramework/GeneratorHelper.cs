@@ -69,8 +69,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
         public static IGenerator OpenModel(string filePath)
         {
-            var loadResult = LoadResultConstants.Failed;
-            return OpenModel(filePath, out loadResult);
+            return OpenModel(filePath, out _);
         }
 
         public static IGenerator OpenModel(string filePath, out LoadResultConstants loadResult)
@@ -405,16 +404,9 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
         #region Public Generate Methods
 
-        private delegate void AsyncDelegate(IGenerator generator, Type projectGeneratorType);
         public IGenerator _generator;
         public void GenerateAll(IGenerator generator, List<Type> excludeList)
         {
-            //Validate that tool is licensed if the model is using licensed features
-            //if (generator.InLicense)
-            //{
-            //  throw new nHydrate.Generator.Common.Exceptions.LicenseException();
-            //}
-
             try
             {
                 EnvDTEHelper.Instance.ClearCache();

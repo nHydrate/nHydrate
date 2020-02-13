@@ -29,17 +29,17 @@ namespace nHydrate.Generator.Common.EventArgs
 
         public string FullName { get; set; } = string.Empty;
 
-        public IProjectItemGenerator BaseGenerator { get; private set; } = null;
+        public IProjectItemGenerator BaseGenerator { get; } = null;
 
-        public ProjectItemType ParentItemType { get; private set; } = ProjectItemType.File;
+        public ProjectItemType ParentItemType { get; } = ProjectItemType.File;
 
         public ProjectItemContentType ContentType { get; set; } = ProjectItemContentType.String;
 
-        public string ParentItemName { get; private set; } = string.Empty;
+        public string ParentItemName { get; } = string.Empty;
 
-        public string ProjectName { get; private set; } = string.Empty;
+        public string ProjectName { get; } = string.Empty;
 
-        public string ProjectItemName { get; private set; } = string.Empty;
+        public string ProjectItemName { get; } = string.Empty;
 
         public Hashtable Properties { get; set; } = new Hashtable();
 

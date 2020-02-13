@@ -76,13 +76,8 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        [Browsable(false)]
-        public MetadataItemCollection MetaData { get; private set; }
+        public MetadataItemCollection MetaData { get; }
 
-        [Browsable(true)]
-        [Description("Determines if this column can be updated.")]
-        [Category("Data")]
-        [DefaultValue(_def_isReadOnly)]
         public bool IsReadOnly
         {
             get { return _isReadOnly; }
@@ -104,12 +99,6 @@ namespace nHydrate.Generator.Models
             set { base.AllowNull = value; }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if this column is used in update or insert statments. Can be used to support calculated fields."),
-        Category("Data"),
-        DefaultValue(_def_computedColumn),
-        ]
         public bool ComputedColumn
         {
             get { return _computedColumn; }
@@ -120,12 +109,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Formula for the computed column. This is only considered when the computed column is set to true."),
-        Category("Data"),
-        DefaultValue(""),
-        ]
         public string Formula
         {
             get { return _formula; }
@@ -136,12 +119,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the regular expression used to validate this field in the UI."),
-        Category("Data"),
-        DefaultValue(_def_validationExpression),
-        ]
         public string ValidationExpression
         {
             get { return _validationExpression; }
@@ -152,12 +129,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determine if this column is the table primary key."),
-        Category("Data"),
-        DefaultValue(_def_primaryKey),
-        ]
         public bool PrimaryKey
         {
             get
@@ -172,12 +143,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the type of identity for this column."),
-        Category("Data"),
-        DefaultValue(_def_identity),
-        ]
         public IdentityTypeConstants Identity
         {
             get
@@ -193,19 +158,12 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public Reference RelationshipRef
         {
             get { return _relationshipRef; }
             set { _relationshipRef = value; }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the default value of this column."),
-        Category("Data"),
-        DefaultValue(_def_default),
-        ]
         public string Default
         {
             get
@@ -220,12 +178,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the default value of this column is a function."),
-        Category("Data"),
-        DefaultValue(_def_defaultIsFunc),
-        ]
         public bool DefaultIsFunc
         {
             get
@@ -240,12 +192,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the minimum value for a int, long, float value."),
-        Category("Data"),
-        DefaultValue(_def_min),
-        ]
         public double Min
         {
             get
@@ -260,10 +206,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(true)]
-        [Description("Determines the maximum value for a int, long, float value.")]
-        [Category("Data")]
-        [DefaultValue(_def_max)]
         public double Max
         {
             get
@@ -278,12 +220,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if this field has a database index."),
-        Category("Data"),
-        DefaultValue(_def_isIndexed),
-        ]
         public bool IsIndexed
         {
             get { return (_isIndexed || _primaryKey) && !_computedColumn; }
@@ -294,12 +230,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines if this field is marked as unique."),
-        Category("Data"),
-        DefaultValue(_def_isUnique),
-        ]
         public bool IsUnique
         {
             get { return (_isUnique || _primaryKey) && !_computedColumn; }
@@ -310,12 +240,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the field collation."),
-        Category("Data"),
-        DefaultValue(_def_collate),
-        ]
         public string Collate
         {
             get
@@ -330,28 +254,17 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public Reference ParentTableRef
         {
             get { return _parentTableRef; }
             set { _parentTableRef = value; }
         }
 
-        [Browsable(false)]
         public Table ParentTable
         {
             get { return _parentTableRef.Object as Table; }
         }
 
-        /// <summary>
-        /// Determines a friend name to display to users
-        /// </summary>
-        [
-        Browsable(true),
-        Description("Determines a friend name to display to users"),
-        Category("Appearance"),
-        DefaultValue(_def_friendlyName)
-        ]
         public string FriendlyName
         {
             get { return _friendlyName; }
@@ -362,15 +275,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines the sort order of this field in relation to other data visible fields.
-        /// </summary>
-        [
-          Browsable(false),
-        Description("Determines the sort order of this field in relation to other data visible fields."),
-        Category("Appearance"),
-        DefaultValue(_def_sortOrder),
-        ]
         public int SortOrder
         {
             get { return _sortOrder; }
@@ -381,15 +285,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines if the column is visible in grids.
-        /// </summary>
-        [
-        Browsable(false),
-        Description("Determines if the column is visible in grids."),
-        Category("Appearance"),
-        DefaultValue(_def_UIVisible),
-        ]
         public bool UIVisible
         {
             get { return _UIVisible; }
@@ -400,15 +295,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Identifies the mask for data input.
-        /// </summary>
-        [
-        Browsable(false),
-        Description("Identifies the mask for data input and presentation."),
-        Category("Mask"),
-        DefaultValue(_def_mask),
-        ]
         public string Mask
         {
             get { return _mask; }
@@ -419,15 +305,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines if the field is marked obsolete
-        /// </summary>
-        [
-        Browsable(false),
-        Description("Determines if the field is marked obsolete"),
-        Category("Code"),
-        DefaultValue(_def_obsolete),
-        ]
         public bool Obsolete
         {
             get { return _obsolete; }
@@ -438,7 +315,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public override string CorePropertiesHash
         {
             get
@@ -458,7 +334,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public override string CorePropertiesHashNoPK
         {
             get
@@ -478,136 +353,10 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
-        public virtual string CorePropertiesHashNoPKOrDefault
-        {
-            get
-            {
-                var prehash =
-                    this.Name + "|" +
-                    this.Identity + "|" +
-                    this.AllowNull + "|" +
-                    //this.Default + "|" +
-                    this.Length + "|" +
-                    this.Scale + "|" +
-                    this.Collate + "|" +
-                    //this.PrimaryKey + "|" +
-                    this.DataType.ToString();
-                //return HashHelper.Hash(prehash);
-                return prehash;
-            }
-        }
-
         #endregion
 
         #region Methods
 
-        /// <summary>
-        /// Determines if the default value is a valid literal for the specified data type
-        /// </summary>
-        [Browsable(false)]
-        public virtual bool IsLiteralDefaultValue
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(this.Default))
-                    return false;
-
-                var value = this.Default;
-                switch (this.DataType)
-                {
-                    case System.Data.SqlDbType.BigInt:
-                        {
-                            long v;
-                            return long.TryParse(value, out v);
-                        }
-                    case System.Data.SqlDbType.Binary:
-                    case System.Data.SqlDbType.Image:
-                    case System.Data.SqlDbType.VarBinary:
-                        if (value.Length <= 2) return false;
-                        if ((value.Substring(0, 2) == "0x") && (value.Length % 2 == 0) && value.Substring(2, value.Length - 2).IsHex()) return true;
-                        return false;
-                    case System.Data.SqlDbType.Bit:
-                        {
-                            var q = value.ToLower();
-                            if (q == "1" || q == "0") return true;
-                            bool v;
-                            return bool.TryParse(value, out v);
-                        }
-                    case System.Data.SqlDbType.Char:
-                        return true;
-                    case System.Data.SqlDbType.Date:
-                    case System.Data.SqlDbType.DateTime:
-                    case System.Data.SqlDbType.DateTime2:
-                    case System.Data.SqlDbType.SmallDateTime:
-                    case System.Data.SqlDbType.Time:
-                        {
-                            DateTime v;
-                            return DateTime.TryParse(value, out v);
-                        }
-                    case System.Data.SqlDbType.DateTimeOffset:
-                        return false;
-                    case System.Data.SqlDbType.Decimal:
-                        {
-                            decimal v;
-                            return decimal.TryParse(value, out v);
-                        }
-                    case System.Data.SqlDbType.Float:
-                        {
-                            decimal v;
-                            return decimal.TryParse(value, out v);
-                        }
-                    case System.Data.SqlDbType.Int:
-                        {
-                            int v;
-                            return int.TryParse(value, out v);
-                        }
-                    case System.Data.SqlDbType.Money:
-                    case System.Data.SqlDbType.SmallMoney:
-                        {
-                            decimal v;
-                            return decimal.TryParse(value, out v);
-                        }
-                    case System.Data.SqlDbType.NChar:
-                    case System.Data.SqlDbType.NText:
-                    case System.Data.SqlDbType.NVarChar:
-                    case System.Data.SqlDbType.Text:
-                    case System.Data.SqlDbType.VarChar:
-                        return true;
-                    case System.Data.SqlDbType.Real:
-                        {
-                            decimal v;
-                            return decimal.TryParse(value, out v);
-                        }
-                    case System.Data.SqlDbType.SmallInt:
-                        {
-                            Int16 v;
-                            return Int16.TryParse(value, out v);
-                        }
-                    case System.Data.SqlDbType.TinyInt:
-                        {
-                            byte v;
-                            return byte.TryParse(value, out v);
-                        }
-                    case System.Data.SqlDbType.UniqueIdentifier:
-                        {
-                            Guid v;
-                            return Guid.TryParse(value, out v);
-                        }
-                    case System.Data.SqlDbType.Structured:
-                    case System.Data.SqlDbType.Timestamp:
-                    case System.Data.SqlDbType.Udt:
-                    case System.Data.SqlDbType.Variant:
-                    case System.Data.SqlDbType.Xml:
-                        return false;
-                    default:
-                        return false;
-                }
-
-            }
-        }
-
-        [Browsable(false)]
         public virtual string GetFriendlyName()
         {
             if (string.IsNullOrEmpty(this.FriendlyName))
@@ -616,7 +365,6 @@ namespace nHydrate.Generator.Models
                 return this.FriendlyName;
         }
 
-        [Browsable(false)]
         public bool SupportsIdentity()
         {
             return this.DataType == System.Data.SqlDbType.BigInt ||
@@ -625,11 +373,6 @@ namespace nHydrate.Generator.Models
                    this.DataType == System.Data.SqlDbType.UniqueIdentifier;
         }
 
-        /// <summary>
-        /// Builds an Intellisnse string for the remarks section
-        /// </summary>
-        /// <returns></returns>
-        [Browsable(false)]
         public string GetIntellisenseRemarks()
         {
             var text = "Field: [" + (this.ParentTableRef.Object as Table).DatabaseName + "].[" + this.DatabaseName + "], ";
@@ -739,10 +482,6 @@ namespace nHydrate.Generator.Models
             return false;
         }
 
-        /// <summary>
-        /// Gets the C# code equivalent for this default value
-        /// </summary>
-        /// <returns></returns>
         public virtual string GetCodeDefault()
         {
             var defaultValue = string.Empty;
@@ -828,8 +567,7 @@ namespace nHydrate.Generator.Models
             else if (this.IsNumericType)
             {
                 defaultValue = "0";
-                double d;
-                if (double.TryParse(this.Default, out d))
+                if (double.TryParse(this.Default, out _))
                 {
                     defaultValue = this.Default;
                     if (this.GetCodeType(false) == "decimal") defaultValue += "M";
@@ -853,25 +591,11 @@ namespace nHydrate.Generator.Models
             return defaultValue;
         }
 
-        /// <summary>
-        /// Gets the SQL equivalent for this default value
-        /// </summary>
-        /// <returns></returns>
         public virtual string GetSQLDefault()
         {
             return ModelHelper.GetSQLDefault(this.DataType, this.Default);
         }
 
-        [Browsable(false)]
-        public virtual bool IsValidDefault()
-        {
-            if (!this.CanHaveDefault())
-                return string.IsNullOrEmpty(this.Default);
-
-            return IsValidDefault(this.Default);
-        }
-
-        [Browsable(false)]
         public virtual bool IsValidDefault(string value)
         {
             //No default is valid for everything
@@ -920,18 +644,15 @@ namespace nHydrate.Generator.Models
                     return false;
                 case System.Data.SqlDbType.Decimal:
                     {
-                        decimal v;
-                        return decimal.TryParse(value, out v);
+                        return decimal.TryParse(value, out _);
                     }
                 case System.Data.SqlDbType.Float:
                     {
-                        decimal v;
-                        return decimal.TryParse(value, out v);
+                        return decimal.TryParse(value, out _);
                     }
                 case System.Data.SqlDbType.Int:
                     {
-                        int v;
-                        return int.TryParse(value, out v);
+                        return int.TryParse(value, out _);
                     }
                 case System.Data.SqlDbType.Money:
                     {
@@ -1226,7 +947,6 @@ namespace nHydrate.Generator.Models
             return returnVal;
         }
 
-        [Browsable(false)]
         public override string PascalName
         {
             get
@@ -1245,7 +965,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public string EnumType
         {
             get { return _enumType; }
@@ -1272,12 +991,6 @@ namespace nHydrate.Generator.Models
 
         #region ICodeFacadeObject Members
 
-        [
-        Browsable(true),
-        Description("Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier."),
-        Category("Design"),
-        DefaultValue(""),
-        ]
         public string CodeFacade
         {
             get { return _codeFacade; }

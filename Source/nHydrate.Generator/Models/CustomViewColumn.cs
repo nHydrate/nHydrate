@@ -51,19 +51,12 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public Reference RelationshipRef
         {
             get { return _relationshipRef; }
             set { _relationshipRef = value; }
         }
 
-        [
-        Browsable(true),
-        Description("Determines the default value of this column."),
-        Category("Data"),
-        DefaultValue(_def_default),
-        ]
         public string Default
         {
             get { return _default; }
@@ -74,22 +67,12 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public Reference ParentViewRef
         {
             get { return _parentViewRef; }
             set { _parentViewRef = value; }
         }
 
-        /// <summary>
-        /// Determines a friend name to display to users
-        /// </summary>
-        [
-        Browsable(true),
-        Description("Determines a friend name to display to users"),
-        Category("Appearance"),
-        DefaultValue(_def_friendlyName),
-        ]
         public string FriendlyName
         {
             get { return _friendlyName; }
@@ -100,15 +83,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines the sort order of this field in relation to other data visible fields.
-        /// </summary>
-        [
-        Browsable(false),
-        Description("Determines the sort order of this field in relation to other data visible fields."),
-        Category("Appearance"),
-        DefaultValue(_def_sortOrder),
-        ]
         public int SortOrder
         {
             get { return _sortOrder; }
@@ -119,15 +93,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        /// <summary>
-        /// Determines if the column is visible in grids.
-        /// </summary>
-        [
-        Browsable(false),
-        Description("Determines if the column is visible in grids."),
-        Category("Appearance"),
-        DefaultValue(_def_UIVisible),
-        ]
         public bool UIVisible
         {
             get { return _UIVisible; }
@@ -144,7 +109,6 @@ namespace nHydrate.Generator.Models
             set { _enumType = value; }
         }
 
-        [Browsable(false)]
         public override string DatabaseType
         {
             get
@@ -167,7 +131,6 @@ namespace nHydrate.Generator.Models
 
         #region Methods
 
-        [Browsable(false)]
         public virtual string GetFriendlyName()
         {
             if (string.IsNullOrEmpty(this.FriendlyName))
@@ -316,7 +279,6 @@ namespace nHydrate.Generator.Models
             return returnVal;
         }
 
-        [Browsable(false)]
         public override string PascalName
         {
             get
@@ -352,7 +314,6 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        [Browsable(false)]
         public override string CorePropertiesHash
         {
             get
@@ -371,12 +332,6 @@ namespace nHydrate.Generator.Models
 
         #region ICodeFacadeObject Members
 
-        [
-        Browsable(true),
-        Description("Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier."),
-        Category("Design"),
-        DefaultValue(_def_codefacade),
-        ]
         public string CodeFacade
         {
             get { return _codeFacade; }

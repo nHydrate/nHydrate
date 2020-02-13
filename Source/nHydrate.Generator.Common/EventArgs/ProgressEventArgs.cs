@@ -13,7 +13,7 @@ namespace nHydrate.Generator.Common.EventArgs
 			this.PercentProgress = percentProgress;
 		}
 
-		public virtual int PercentProgress { get; private set; }
+		public virtual int PercentProgress { get; }
 
 	}
 }

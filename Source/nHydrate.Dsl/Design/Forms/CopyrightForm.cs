@@ -14,7 +14,7 @@ namespace nHydrate.Dsl.Design.Forms
 		public CopyrightForm()
 		{
 			InitializeComponent();
-			txtText.KeyDown += new KeyEventHandler(txtText_KeyDown);
+			txtText.KeyDown += txtText_KeyDown;
 		}
 
 		private void txtText_KeyDown(object sender, KeyEventArgs e)

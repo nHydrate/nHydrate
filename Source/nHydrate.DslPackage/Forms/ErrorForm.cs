@@ -14,7 +14,7 @@ namespace nHydrate.DslPackage.Forms
 		public ErrorForm()
 		{
 			InitializeComponent();
-			this.KeyDown += new KeyEventHandler(ErrorForm_KeyDown);
+			this.KeyDown += ErrorForm_KeyDown;
 		}
 
 		private void ErrorForm_KeyDown(object sender, KeyEventArgs e)

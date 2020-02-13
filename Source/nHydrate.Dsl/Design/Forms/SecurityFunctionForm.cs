@@ -17,7 +17,7 @@ namespace nHydrate.Dsl.Design.Forms
         public SecurityFunctionForm()
         {
             InitializeComponent();
-            txtSQL.KeyDown += new KeyEventHandler(txtSQL_KeyDown);
+            txtSQL.KeyDown += txtSQL_KeyDown;
             lstParameter.SelectedIndexChanged += lstParameter_SelectedIndexChanged;
             //cmdOK.Click += cmdOK_Click;
             //cmdCancel.Click += cmdCancel_Click;

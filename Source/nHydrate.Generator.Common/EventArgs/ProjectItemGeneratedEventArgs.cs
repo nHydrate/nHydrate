@@ -65,25 +65,25 @@ namespace nHydrate.Generator.Common.EventArgs
 
 		public string FullName { get; set; }
 
-		public IProjectItemGenerator BaseGenerator { get; private set; }
+		public IProjectItemGenerator BaseGenerator { get; }
 
-		public ProjectItemType ParentItemType { get; private set; }
+		public ProjectItemType ParentItemType { get; }
 
 		public ProjectItemContentType ContentType { get; set; }
 
-		public string ParentItemName { get; private set; }
+		public string ParentItemName { get; }
 
-		public string ProjectName { get; private set; }
+		public string ProjectName { get; }
 
 		public string ProjectItemName { get; internal set; }
 
-		public string ProjectItemContent { get; private set; }
+		public string ProjectItemContent { get; }
 
 		public byte[] ProjectItemBinaryContent { get; set; }
 
 		public Hashtable Properties { get; set; }
 
-		public bool Overwrite { get; private set; }
+		public bool Overwrite { get; }
 
 		public bool RunCustomTool { get; set; }
 

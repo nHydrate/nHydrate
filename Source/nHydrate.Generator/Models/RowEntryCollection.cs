@@ -28,7 +28,6 @@ namespace nHydrate.Generator.Models
 
         #region Property Imeplementations
 
-        [Browsable(false)]
         public INHydrateModelObject Parent
         {
             get { return _parent; }

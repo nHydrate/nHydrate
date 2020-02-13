@@ -13,17 +13,15 @@ namespace nHydrate.Generator.Common.Util
 		
 		public static string SetLocalMachineRegistryValue(string path, string item, string newValue)
 		{
-			RegistryKey key = null;
-		
-			var returnVal = string.Empty;
+            var returnVal = string.Empty;
 			try
-			{
-				key = Registry.LocalMachine.OpenSubKey(path);
-				if(key != null)
+            {
+                var key = Registry.LocalMachine.OpenSubKey(path);
+                if(key != null)
 				{
 					returnVal = (string)key.GetValue(item);
 				}
-			}
+            }
 			catch
 			{
 			}
