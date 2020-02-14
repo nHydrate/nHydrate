@@ -223,23 +223,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// SQLServerType
-			if (!serializationContext.Result.Failed)
-			{
-				string attribSQLServerType = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "sQLServerType");
-				if (attribSQLServerType != null)
-				{
-					DatabaseTypeConstants valueOfSQLServerType;
-					if (DslModeling::SerializationUtilities.TryGetValue<DatabaseTypeConstants>(serializationContext, attribSQLServerType, out valueOfSQLServerType))
-					{
-						instanceOfnHydrateModel.SQLServerType = valueOfSQLServerType;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "sQLServerType", typeof(DatabaseTypeConstants), attribSQLServerType);
-					}
-				}
-			}
 			// StoredProcedurePrefix
 			if (!serializationContext.Result.Failed)
 			{
@@ -1684,19 +1667,6 @@ namespace nHydrate.Dsl
 					if (!string.IsNullOrEmpty(propValue))
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "projectName", propValue);
 	
-				}
-			}
-			// SQLServerType
-			if (!serializationContext.Result.Failed)
-			{
-				DatabaseTypeConstants propValue = instanceOfnHydrateModel.SQLServerType;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<DatabaseTypeConstants>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "SQL2008") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "sQLServerType", serializedPropValue);
-					}
 				}
 			}
 			// StoredProcedurePrefix

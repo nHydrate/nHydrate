@@ -2,13 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using nHydrate.Generator.Common.Util;
 using System.ComponentModel;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
-using DslDesign = global::Microsoft.VisualStudio.Modeling.Design;
-using nHydrate.Generator.Common.GeneratorFramework;
-using System.Windows.Forms;
 
 namespace nHydrate.Dsl
 {
@@ -68,47 +64,22 @@ namespace nHydrate.Dsl
 
         #region Methods
 
-        public static bool IsSupportedType(DataTypeConstants type, DatabaseTypeConstants sqlVersion)
+        public static bool IsSupportedType(DataTypeConstants type)
         {
-            if (sqlVersion == DatabaseTypeConstants.SQL2005)
+            switch (type)
             {
-                switch (type)
-                {
-                    //case DataTypeConstants.Xml:
-                    case DataTypeConstants.Udt:
-                    case DataTypeConstants.Structured:
-                    case DataTypeConstants.Variant:
-                    case DataTypeConstants.DateTimeOffset:
-                    case DataTypeConstants.DateTime2:
-                    case DataTypeConstants.Time:
-                    case DataTypeConstants.Date:
-                        return false;
-                    default:
-                        return true;
-                }
+                //case DataTypeConstants.Xml:
+                case DataTypeConstants.Udt:
+                case DataTypeConstants.Structured:
+                case DataTypeConstants.Variant:
+                    //case DataTypeConstants.DateTimeOffset:
+                    //case DataTypeConstants.DateTime2:
+                    //case DataTypeConstants.Time:
+                    //case DataTypeConstants.Date:
+                    return false;
+                default:
+                    return true;
             }
-            else if ((sqlVersion == DatabaseTypeConstants.SQL2008) || (sqlVersion == DatabaseTypeConstants.SQLAzure))
-            {
-                switch (type)
-                {
-                    //case DataTypeConstants.Xml:
-                    case DataTypeConstants.Udt:
-                    case DataTypeConstants.Structured:
-                    case DataTypeConstants.Variant:
-                        //case DataTypeConstants.DateTimeOffset:
-                        //case DataTypeConstants.DateTime2:
-                        //case DataTypeConstants.Time:
-                        //case DataTypeConstants.Date:
-                        return false;
-                    default:
-                        return true;
-                }
-            }
-            else
-            {
-                return false;
-            }
-
         }
 
         public virtual bool CanHaveDefault()
@@ -709,12 +680,6 @@ namespace nHydrate.Dsl
 
                     if (this.Entity != null && this.Entity.nHydrateModel != null)
                     {
-                        var sqlType = this.Entity.nHydrateModel.SQLServerType;
-                        //if (!Field.IsSupportedType(value, sqlType) && !this.Entity.nHydrateModel.IsLoading)
-                        //{
-                        //  throw new Exception("Unsupported type '" + value.ToString() + "' for SQL Server type '" + sqlType + "'.");
-                        //}
-
                         //Reset length if necessary
                         if (!this.Entity.nHydrateModel.IsLoading)
                         {

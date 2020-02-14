@@ -33,7 +33,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
         {
             try
             {
-                var dateTimeString = (model.SQLServerType == Common.GeneratorFramework.SQLServerTypeConstants.SQL2005) ? "[DateTime]" : "[DateTime2]";
+                var dateTimeString = "[DateTime2]";
                 sb.AppendLine("--APPEND AUDIT TRAIL CREATE FOR TABLE [" + table.DatabaseName + "]");
                 sb.AppendLine($"if exists(select * from sys.tables where name = '{table.DatabaseName}') and not exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id where c.name = '{model.Database.CreatedByColumnName}' and t.name = '{table.DatabaseName}')");
                 sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [{model.Database.CreatedByColumnName}] [NVarchar] (50) NULL");
@@ -54,7 +54,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
         {
             try
             {
-                var dateTimeString = (model.SQLServerType == Common.GeneratorFramework.SQLServerTypeConstants.SQL2005) ? "[DateTime]" : "[DateTime2]";
+                var dateTimeString = "[DateTime2]";
                 sb.AppendLine("--APPEND AUDIT TRAIL MODIFY FOR TABLE [" + table.DatabaseName + "]");
                 sb.AppendLine($"if exists(select * from sys.tables where name = '{table.DatabaseName}') and not exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id where c.name = '{model.Database.ModifiedByColumnName}' and t.name = '{table.DatabaseName}')");
                 sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [{model.Database.ModifiedByColumnName}] [NVarchar] (50) NULL");

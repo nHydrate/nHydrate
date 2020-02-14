@@ -69,7 +69,7 @@ namespace nHydrate.Core.SQLGeneration
             if (table.TypedTable == TypedTableConstants.EnumOnly)
                 return string.Empty;
 
-            var dateTimeString = (model.SQLServerType == nHydrate.Generator.Common.GeneratorFramework.SQLServerTypeConstants.SQL2005) ? "[DateTime]" : "[DateTime2]";
+            var dateTimeString = "[DateTime2]";
             var sb = new StringBuilder();
             var tableName = "__AUDIT__" + Globals.GetTableDatabaseName(model, table);
             sb.AppendLine("if not exists(select * from sys.objects where name = '" + tableName + "' and type = 'U')");
@@ -1893,7 +1893,7 @@ namespace nHydrate.Core.SQLGeneration
         {
             if (table.AllowCreateAudit)
             {
-                var dateTimeString = (model.SQLServerType == nHydrate.Generator.Common.GeneratorFramework.SQLServerTypeConstants.SQL2005) ? "[DateTime]" : "[DateTime2]";
+                var dateTimeString = "[DateTime2]";
                 var defaultName = "DF__" + table.DatabaseName + "_" + model.Database.CreatedDateColumnName;
                 defaultName = defaultName.ToUpper();
                 sb.AppendLine(",");
@@ -1906,7 +1906,7 @@ namespace nHydrate.Core.SQLGeneration
         {
             if (table.AllowModifiedAudit)
             {
-                var dateTimeString = (model.SQLServerType == nHydrate.Generator.Common.GeneratorFramework.SQLServerTypeConstants.SQL2005) ? "[DateTime]" : "[DateTime2]";
+                var dateTimeString = "[DateTime2]";
                 var defaultName = "DF__" + table.DatabaseName + "_" + model.Database.ModifiedDateColumnName;
                 defaultName = defaultName.ToUpper();
                 sb.AppendLine(",");

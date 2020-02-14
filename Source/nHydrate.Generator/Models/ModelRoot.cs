@@ -23,7 +23,6 @@ namespace nHydrate.Generator.Models
         protected const bool _def_enableCustomChangeEvents = false;
         protected const bool _def_supportLegacySearchObject = false;
         protected const string _def_defaultNamespace = "";
-        protected const SQLServerTypeConstants _def_sQLServerType = SQLServerTypeConstants.SQL2005;
         protected const string _def_storedProcedurePrefix = "gen";
         protected const string _def_tenantColumnName = "__tenant_user";
         protected const string _def_tenantPrefix = "__vw_tenant";
@@ -41,7 +40,6 @@ namespace nHydrate.Generator.Models
         protected bool _supportLegacySearchObject = _def_supportLegacySearchObject;
         protected string _defaultNamespace = _def_defaultNamespace;
         protected IGenerator _generatorProject = null;
-        private SQLServerTypeConstants _sQLServerType = _def_sQLServerType;
         private string _storedProcedurePrefix = _def_storedProcedurePrefix;
         private readonly VersionHistoryCollection _versionHistoryList = new VersionHistoryCollection();
         private string _moduleName = string.Empty;
@@ -157,16 +155,6 @@ namespace nHydrate.Generator.Models
             {
                 _supportLegacySearchObject = value;
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("SupportLegacySearchObject"));
-            }
-        }
-
-        public SQLServerTypeConstants SQLServerType
-        {
-            get { return _sQLServerType; }
-            set
-            {
-                _sQLServerType = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("SQLServerType"));
             }
         }
 
@@ -359,8 +347,6 @@ namespace nHydrate.Generator.Models
                 node.AppendChild(versionHistoryListNode);
                 _versionHistoryList.XmlAppend(versionHistoryListNode);
 
-                XmlHelper.AddAttribute(node, "sqlType", this.SQLServerType.ToString());
-
                 if (this.MetaData.Count > 0)
                 {
                     var metadataNode = oDoc.CreateElement("metadata");
@@ -386,7 +372,6 @@ namespace nHydrate.Generator.Models
                 this.SupportLegacySearchObject = XmlHelper.GetAttributeValue(node, "supportLegacySearchObject", _def_supportLegacySearchObject);
                 _version = XmlHelper.GetAttributeValue(node, "version", _def_version);
                 this.UseUTCTime = XmlHelper.GetAttributeValue(node, "useUTCTime", this.UseUTCTime);
-                this.SQLServerType = (SQLServerTypeConstants)Enum.Parse(typeof(SQLServerTypeConstants), XmlHelper.GetAttributeValue(node, "sqlType", _def_sQLServerType.ToString()));
                 this.StoredProcedurePrefix = XmlHelper.GetAttributeValue(node, "storedProcedurePrefix", _def_storedProcedurePrefix);
                 this.TenantColumnName = XmlHelper.GetAttributeValue(node, "tenantColumnName", _def_tenantColumnName);
                 this.TenantPrefix = XmlHelper.GetAttributeValue(node, "tenantPrefix", _def_tenantPrefix);

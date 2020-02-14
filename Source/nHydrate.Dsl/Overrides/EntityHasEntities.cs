@@ -157,7 +157,7 @@ namespace nHydrate.Dsl
 			{
 				var relationList = otherTable.GetRelationsWhereChild();
 				{
-					var relation = relationList.Where(x => x != this).FirstOrDefault();
+					var relation = relationList.FirstOrDefault(x => x != this);
 					if (relation == null) return null;
 					return relation.SourceEntity;
 				}
@@ -200,7 +200,7 @@ namespace nHydrate.Dsl
 				var relationList = otherTable.GetRelationsWhereChild();
 				if (relationList.Count() == 2)
 				{
-					var relation = relationList.Where(x => x != this).FirstOrDefault();
+					var relation = relationList.FirstOrDefault(x => x != this);
 					if (relation == null) return null;
 					return relation;
 				}

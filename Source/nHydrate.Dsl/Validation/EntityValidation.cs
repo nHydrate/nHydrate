@@ -881,12 +881,9 @@ namespace nHydrate.Dsl
 
                 #region DateTime 2008+
 
-                if (this.nHydrateModel.SQLServerType != DatabaseTypeConstants.SQL2005)
+                foreach (var field in this.FieldList.Where(x => x.DataType == DataTypeConstants.DateTime).ToList())
                 {
-                    foreach (var field in this.FieldList.Where(x => x.DataType == DataTypeConstants.DateTime).ToList())
-                    {
-                        context.LogWarning(string.Format(ValidationHelper.ErrorTextDateTimeDeprecated, field.Name), string.Empty, this);
-                    }
+                    context.LogWarning(string.Format(ValidationHelper.ErrorTextDateTimeDeprecated, field.Name), string.Empty, this);
                 }
 
                 #endregion
@@ -895,8 +892,7 @@ namespace nHydrate.Dsl
 
                 if (this.SecurityFunction != null)
                 {
-                    var isValid = true;
-                    if (string.IsNullOrEmpty(this.SecurityFunction.SQL)) isValid = false;
+                    bool isValid = !string.IsNullOrEmpty(this.SecurityFunction.SQL);
                     foreach (var p in this.SecurityFunction.SecurityFunctionParameters)
                     {
                         if (!ValidationHelper.ValidEntityName(p.Name)) isValid = false;

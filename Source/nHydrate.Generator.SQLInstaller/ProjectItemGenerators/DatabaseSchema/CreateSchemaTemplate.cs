@@ -418,7 +418,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             {
                 if (table.AllowCreateAudit || table.AllowModifiedAudit ||  table.AllowTimestamp | table.IsTenant)
                 {
-                    var dateTimeString = (_model.SQLServerType == Common.GeneratorFramework.SQLServerTypeConstants.SQL2005) ? "[DateTime]" : "[DateTime2]";
+                    var dateTimeString = "[DateTime2]";
                     if (table.AllowCreateAudit)
                     {
                         Globals.AppendCreateAudit(table, _model, sb);

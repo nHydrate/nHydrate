@@ -74,18 +74,6 @@ namespace nHydrate.Dsl
                 }
                 #endregion
 
-                #region Varchar Max only supported in SQL 2008
-
-                //if (((ModelRoot)this.Root).SQLServerType == SQLServerTypeConstants.SQL2005)
-                //{
-                //  if (ModelHelper.SupportsMax(this.DataType) && this.Length == 0)
-                //  {
-                //    context.LogError(string.Format(ValidationHelper.ErrorTextColumnMaxNotSupported, this.Name), string.Empty, this);
-                //  }
-                //}
-
-                #endregion
-
                 #region Columns cannot be 0 length
 
                 if (!this.DataType.SupportsMax() && this.Length == 0)
@@ -119,7 +107,7 @@ namespace nHydrate.Dsl
 
                 #region Verify Datatypes for SQL 2005/2008
 
-                if (!this.DataType.IsSupportedType(this.Entity.nHydrateModel.SQLServerType))
+                if (!this.DataType.IsSupportedType())
                 {
                     context.LogError(string.Format(ValidationHelper.ErrorTextDataTypeNotSupported, this.Name), string.Empty, this);
                 }

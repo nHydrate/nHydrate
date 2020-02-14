@@ -237,7 +237,7 @@ namespace nHydrate.Generator.ModelUI
             {
                 foreach (var dependencyName in attribute.DependencyList)
                 {
-                    var dependencyNode = nodeList.Where(x => x.Name == dependencyName).FirstOrDefault();
+                    var dependencyNode = nodeList.FirstOrDefault(x => x.Name == dependencyName);
                     if (dependencyNode != null)
                     {
                         lstDependency.Items.Add(dependencyNode.Text);
@@ -265,7 +265,7 @@ namespace nHydrate.Generator.ModelUI
                 {
                     foreach (var name in attribute.DependencyList)
                     {
-                        var dependencyNode = nodeList.Where(x => x.Name == name).FirstOrDefault();
+                        var dependencyNode = nodeList.FirstOrDefault(x => x.Name == name);
                         if (dependencyNode != null)
                         {
                             dependencyNode.Checked = true;
@@ -277,7 +277,7 @@ namespace nHydrate.Generator.ModelUI
                 {
                     foreach (var name in attribute.ExclusionList)
                     {
-                        var dependencyNode = nodeList.Where(x => (x.Tag as nHydrate.Generator.Common.GeneratorFramework.GeneratorProjectAttribute).CurrentType.ToString() == name).FirstOrDefault();
+                        var dependencyNode = nodeList.FirstOrDefault(x => (x.Tag as GeneratorProjectAttribute).CurrentType.ToString() == name);
                         if (dependencyNode != null)
                         {
                             dependencyNode.Checked = false;

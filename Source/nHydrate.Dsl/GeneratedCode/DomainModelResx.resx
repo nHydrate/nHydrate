@@ -181,18 +181,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;ProjectName&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.nHydrateModel/SQLServerType.Description" xml:space="preserve">
-    <value>Determines the target SQL Server version</value>
-    <comment>Description for DomainProperty &apos;SQLServerType&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/SQLServerType.DisplayName" xml:space="preserve">
-    <value>SQLServer Type</value>
-    <comment>DisplayName for DomainProperty &apos;SQLServerType&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/SQLServerType.Category" xml:space="preserve">
-    <value>Database</value>
-    <comment>Category for DomainProperty &apos;SQLServerType&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.nHydrateModel/StoredProcedurePrefix.Description" xml:space="preserve">
     <value>Determines the prefix for generated stored procedures</value>
     <comment>Description for DomainProperty &apos;StoredProcedurePrefix&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
@@ -4028,30 +4016,6 @@
   <data name="nHydrate.Dsl.IdentityTypeConstants/Code.Description" xml:space="preserve">
     <value></value>
     <comment>Description for EnumerationLiteral &apos;Code&apos; on DomainEnumeration &apos;IdentityTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.DatabaseTypeConstants/SQL2005.DisplayName" xml:space="preserve">
-    <value>SQL2005</value>
-    <comment>Display name for EnumerationLiteral &apos;SQL2005&apos; on DomainEnumeration &apos;DatabaseTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.DatabaseTypeConstants/SQL2005.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;SQL2005&apos; on DomainEnumeration &apos;DatabaseTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.DatabaseTypeConstants/SQLAzure.DisplayName" xml:space="preserve">
-    <value>SQLAzure</value>
-    <comment>Display name for EnumerationLiteral &apos;SQLAzure&apos; on DomainEnumeration &apos;DatabaseTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.DatabaseTypeConstants/SQLAzure.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;SQLAzure&apos; on DomainEnumeration &apos;DatabaseTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.DatabaseTypeConstants/SQL2008.DisplayName" xml:space="preserve">
-    <value>SQL2008</value>
-    <comment>Display name for EnumerationLiteral &apos;SQL2008&apos; on DomainEnumeration &apos;DatabaseTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.DatabaseTypeConstants/SQL2008.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;SQL2008&apos; on DomainEnumeration &apos;DatabaseTypeConstants&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.ModuleRuleStatusTypeConstants/Subset.DisplayName" xml:space="preserve">
     <value>Subset</value>

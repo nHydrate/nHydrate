@@ -227,12 +227,9 @@
     </Compile>
     <Compile Include="GeneratorFramework\AddinProperties.cs" />
     <Compile Include="GeneratorFramework\INamedObject.cs" />
-    <Compile Include="GeneratorFramework\IModelEditor.cs" />
     <Compile Include="GeneratorFramework\IModelObject.cs" />
     <Compile Include="GeneratorFramework\IRefactor.cs" />
-    <Compile Include="GeneratorFramework\ModelUIAttribute.cs" />
     <Compile Include="GeneratorFramework\GeneratorProjectAttribute.cs" />
-    <Compile Include="GeneratorFramework\IGeneratorStore.cs" />
     <Compile Include="GeneratorFramework\RefactorTableCombine.cs" />
     <Compile Include="GeneratorFramework\RefactorTableSplit.cs" />
     <Compile Include="GlobalCacheFile.cs" />

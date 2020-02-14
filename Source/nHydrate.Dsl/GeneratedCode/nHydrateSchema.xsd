@@ -186,12 +186,6 @@
             <xsd:documentation>Specifies the name of the generated assembly</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: SQLServerType -->
-        <xsd:attribute name="sQLServerType" type="DatabaseTypeConstants" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the target SQL Server version</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: StoredProcedurePrefix -->
         <xsd:attribute name="storedProcedurePrefix" type="xsd:string" >
           <xsd:annotation>
@@ -3742,15 +3736,6 @@
       <xsd:enumeration value="None"/>
       <xsd:enumeration value="Database"/>
       <xsd:enumeration value="Code"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-  
-  <!-- Enum DatabaseTypeConstants -->
-  <xsd:simpleType name="DatabaseTypeConstants">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="SQL2005"/>
-      <xsd:enumeration value="SQLAzure"/>
-      <xsd:enumeration value="SQL2008"/>
     </xsd:restriction>
   </xsd:simpleType>
   

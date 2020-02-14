@@ -548,47 +548,22 @@ namespace nHydrate.Dsl
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static bool IsSupportedType(this DataTypeConstants type, DatabaseTypeConstants sqlVersion)
+        public static bool IsSupportedType(this DataTypeConstants type)
         {
-            if (sqlVersion == DatabaseTypeConstants.SQL2005)
+            switch (type)
             {
-                switch (type)
-                {
-                    //case DataTypeConstants.Xml:
-                    case DataTypeConstants.Udt:
-                    case DataTypeConstants.Structured:
-                    case DataTypeConstants.Variant:
-                    case DataTypeConstants.DateTimeOffset:
-                    case DataTypeConstants.DateTime2:
-                    case DataTypeConstants.Time:
-                    case DataTypeConstants.Date:
-                        return false;
-                    default:
-                        return true;
-                }
+                //case DataTypeConstants.Xml:
+                case DataTypeConstants.Udt:
+                case DataTypeConstants.Structured:
+                case DataTypeConstants.Variant:
+                    //case DataTypeConstants.DateTimeOffset:
+                    //case DataTypeConstants.DateTime2:
+                    //case DataTypeConstants.Time:
+                    //case DataTypeConstants.Date:
+                    return false;
+                default:
+                    return true;
             }
-            else if ((sqlVersion == DatabaseTypeConstants.SQL2008) || (sqlVersion == DatabaseTypeConstants.SQLAzure))
-            {
-                switch (type)
-                {
-                    //case DataTypeConstants.Xml:
-                    case DataTypeConstants.Udt:
-                    case DataTypeConstants.Structured:
-                    case DataTypeConstants.Variant:
-                        //case DataTypeConstants.DateTimeOffset:
-                        //case DataTypeConstants.DateTime2:
-                        //case DataTypeConstants.Time:
-                        //case DataTypeConstants.Date:
-                        return false;
-                    default:
-                        return true;
-                }
-            }
-            else
-            {
-                return false;
-            }
-
         }
 
         public static double ToDouble(this string s)

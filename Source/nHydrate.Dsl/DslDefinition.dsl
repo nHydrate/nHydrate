@@ -31,11 +31,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="e309bd8d-ce4c-4995-a73e-b6aaeb070c3d" Description="Determines the target SQL Server version" Name="SQLServerType" DisplayName="SQLServer Type" DefaultValue="SQL2008" Category="Database" IsBrowsable="false">
-          <Type>
-            <DomainEnumerationMoniker Name="DatabaseTypeConstants" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="bc3b0b9e-6e90-4e4c-a859-e11747c420fc" Description="Determines the prefix for generated stored procedures" Name="StoredProcedurePrefix" DisplayName="Stored Procedure Prefix" DefaultValue="gen" Category="Database" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
@@ -2311,13 +2306,6 @@
         <EnumerationLiteral Description="" Name="Code" Value="" />
       </Literals>
     </DomainEnumeration>
-    <DomainEnumeration Name="DatabaseTypeConstants" Namespace="nHydrate.Dsl" Description="">
-      <Literals>
-        <EnumerationLiteral Description="" Name="SQL2005" Value="" />
-        <EnumerationLiteral Description="" Name="SQLAzure" Value="" />
-        <EnumerationLiteral Description="" Name="SQL2008" Value="" />
-      </Literals>
-    </DomainEnumeration>
     <ExternalType Name="Color" Namespace="System.Drawing" />
     <ExternalType Name="DashStyle" Namespace="System.Drawing.Drawing2D" />
     <ExternalType Name="LinearGradientMode" Namespace="System.Drawing.Drawing2D" />
@@ -2500,9 +2488,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="projectName">
             <DomainPropertyMoniker Name="nHydrateModel/ProjectName" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="sQLServerType">
-            <DomainPropertyMoniker Name="nHydrateModel/SQLServerType" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="storedProcedurePrefix">
             <DomainPropertyMoniker Name="nHydrateModel/StoredProcedurePrefix" />

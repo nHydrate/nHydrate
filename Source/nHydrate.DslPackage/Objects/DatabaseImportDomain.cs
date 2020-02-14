@@ -510,7 +510,7 @@ namespace nHydrate.DslPackage.Objects
 
                     foreach (var storedProc in database.StoredProcList.Where(x => x.ImportState == DataImport.ImportStateConstants.Added || x.ImportState == DataImport.ImportStateConstants.Modified))
                     {
-                        var newStoredProc = diagramStoredProcs.Where(x => x.Id == storedProc.ID).FirstOrDefault();
+                        var newStoredProc = diagramStoredProcs.FirstOrDefault(x => x.Id == storedProc.ID);
                         if (newStoredProc == null) newStoredProc = diagramStoredProcs.FirstOrDefault(x => x.Name.ToLower() == storedProc.Name.ToLower());
                         if (newStoredProc == null)
                         {
@@ -561,7 +561,7 @@ namespace nHydrate.DslPackage.Objects
 
                     foreach (var view in database.ViewList.Where(x => x.ImportState == DataImport.ImportStateConstants.Added || x.ImportState == DataImport.ImportStateConstants.Modified))
                     {
-                        var newView = diagramViews.Where(x => x.Id == view.ID).FirstOrDefault();
+                        var newView = diagramViews.FirstOrDefault(x => x.Id == view.ID);
                         if (newView == null) newView = diagramViews.FirstOrDefault(x => x.Name.ToLower() == view.Name.ToLower());
                         if (newView == null)
                         {
@@ -611,7 +611,7 @@ namespace nHydrate.DslPackage.Objects
 
                     foreach (var function in database.FunctionList.Where(x => x.ImportState == DataImport.ImportStateConstants.Added || x.ImportState == DataImport.ImportStateConstants.Modified))
                     {
-                        var newFunction = diagramFunctions.Where(x => x.Id == function.ID).FirstOrDefault();
+                        var newFunction = diagramFunctions.FirstOrDefault(x => x.Id == function.ID);
                         if (newFunction == null) newFunction = diagramFunctions.FirstOrDefault(x => x.Name.ToLower() == function.Name.ToLower());
                         if (newFunction == null)
                         {
@@ -1145,7 +1145,6 @@ namespace nHydrate.DslPackage.Objects
                         model.DefaultNamespace = oldModel.DefaultNamespace;
                         model.ModifiedByColumnName = oldModel.Database.ModifiedByColumnName;
                         model.ModifiedDateColumnName = oldModel.Database.ModifiedDateColumnName;
-                        model.SQLServerType = (DatabaseTypeConstants)Enum.Parse(typeof(DatabaseTypeConstants), oldModel.SQLServerType.ToString());
                         model.StoredProcedurePrefix = oldModel.StoredProcedurePrefix;
                         model.TenantPrefix = oldModel.TenantPrefix;
                         model.TimestampColumnName = oldModel.Database.TimestampColumnName;

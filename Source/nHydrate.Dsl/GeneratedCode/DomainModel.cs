@@ -151,7 +151,6 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(nHydrateModel), "Copyright", nHydrateModel.CopyrightDomainPropertyId, typeof(nHydrateModel.CopyrightPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "DefaultNamespace", nHydrateModel.DefaultNamespaceDomainPropertyId, typeof(nHydrateModel.DefaultNamespacePropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "ProjectName", nHydrateModel.ProjectNameDomainPropertyId, typeof(nHydrateModel.ProjectNamePropertyHandler)),
-				new DomainMemberInfo(typeof(nHydrateModel), "SQLServerType", nHydrateModel.SQLServerTypeDomainPropertyId, typeof(nHydrateModel.SQLServerTypePropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "StoredProcedurePrefix", nHydrateModel.StoredProcedurePrefixDomainPropertyId, typeof(nHydrateModel.StoredProcedurePrefixPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "UseUTCTime", nHydrateModel.UseUTCTimeDomainPropertyId, typeof(nHydrateModel.UseUTCTimePropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "Version", nHydrateModel.VersionDomainPropertyId, typeof(nHydrateModel.VersionPropertyHandler)),
@@ -1152,31 +1151,6 @@ namespace nHydrate.Dsl
 		/// </summary>
 		[DslDesign::DescriptionResource("nHydrate.Dsl.IdentityTypeConstants/Code.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		Code,
-	}
-}
-namespace nHydrate.Dsl
-{
-	/// <summary>
-	/// DomainEnumeration: DatabaseTypeConstants
-	/// </summary>
-	[global::System.CLSCompliant(true)]
-	public enum DatabaseTypeConstants
-	{
-		/// <summary>
-		/// SQL2005
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.DatabaseTypeConstants/SQL2005.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		SQL2005,
-		/// <summary>
-		/// SQLAzure
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.DatabaseTypeConstants/SQLAzure.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		SQLAzure,
-		/// <summary>
-		/// SQL2008
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.DatabaseTypeConstants/SQL2008.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		SQL2008,
 	}
 }
 namespace nHydrate.Dsl

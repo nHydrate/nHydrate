@@ -137,12 +137,6 @@ namespace nHydrate.Generator.Models
             get { return _dataType; }
             set
             {
-                var sqlType = ((ModelRoot)this.Root).SQLServerType;
-                if (!Column.IsSupportedType(value, sqlType))
-                {
-                    throw new Exception("Unsupported type '" + value.ToString() + "' for SQL Server type '" + sqlType + "'.");
-                }
-
                 _length = this.GetDefaultSize(value);
                 _dataType = value;
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("Type"));
@@ -357,45 +351,21 @@ namespace nHydrate.Generator.Models
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static bool IsSupportedType(System.Data.SqlDbType type, SQLServerTypeConstants sqlVersion)
+        public static bool IsSupportedType(System.Data.SqlDbType type)
         {
-            if (sqlVersion == SQLServerTypeConstants.SQL2005)
+            switch (type)
             {
-                switch (type)
-                {
-                    //case System.Data.SqlDbType.Xml:
-                    case System.Data.SqlDbType.Udt:
-                    case System.Data.SqlDbType.Structured:
-                    case System.Data.SqlDbType.Variant:
-                    case System.Data.SqlDbType.DateTimeOffset:
-                    case System.Data.SqlDbType.DateTime2:
-                    case System.Data.SqlDbType.Time:
-                    case System.Data.SqlDbType.Date:
-                        return false;
-                    default:
-                        return true;
-                }
-            }
-            else if ((sqlVersion == SQLServerTypeConstants.SQL2008) || (sqlVersion == SQLServerTypeConstants.SQLAzure))
-            {
-                switch (type)
-                {
-                    //case System.Data.SqlDbType.Xml:
-                    case System.Data.SqlDbType.Udt:
-                    case System.Data.SqlDbType.Structured:
-                    case System.Data.SqlDbType.Variant:
-                        //case System.Data.SqlDbType.DateTimeOffset:
-                        //case System.Data.SqlDbType.DateTime2:
-                        //case System.Data.SqlDbType.Time:
-                        //case System.Data.SqlDbType.Date:
-                        return false;
-                    default:
-                        return true;
-                }
-            }
-            else
-            {
-                return false;
+                //case System.Data.SqlDbType.Xml:
+                case System.Data.SqlDbType.Udt:
+                case System.Data.SqlDbType.Structured:
+                case System.Data.SqlDbType.Variant:
+                    //case System.Data.SqlDbType.DateTimeOffset:
+                    //case System.Data.SqlDbType.DateTime2:
+                    //case System.Data.SqlDbType.Time:
+                    //case System.Data.SqlDbType.Date:
+                    return false;
+                default:
+                    return true;
             }
         }
 

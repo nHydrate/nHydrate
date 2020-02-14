@@ -460,7 +460,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
             retVal = retVal.Replace("\"UPGRADE_VERSION\"", major + ", " + minor + ", " + revision + ", " + build + ", " + generated);
             retVal = retVal.Replace("DATABASENAME", _model.Database.DatabaseName);
             retVal = retVal.Replace("PROJECTNAMESPACE", this.GetLocalNamespace());
-            retVal = retVal.Replace("DATABASETYPE", _model.SQLServerType.ToString());
             return retVal;
         }
 

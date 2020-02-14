@@ -149,10 +149,6 @@ namespace nHydrate.Generator.Models
             get { return _dataType; }
             set
             {
-                if (!Column.IsSupportedType(value, ((ModelRoot)this.Root).SQLServerType))
-                {
-                    throw new Exception("Unsupported type");
-                }
                 _dataType = value;
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("Type"));
             }

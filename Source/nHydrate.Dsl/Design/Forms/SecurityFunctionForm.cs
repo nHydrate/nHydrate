@@ -98,8 +98,7 @@ namespace nHydrate.Dsl.Design.Forms
             lstParameter.SelectedValue = null;
 
             //Validation
-            var isValid = true;
-            if (string.IsNullOrEmpty(txtSQL.Text)) isValid = false;
+            bool isValid = !string.IsNullOrEmpty(txtSQL.Text);
             foreach(var p in _entity.SecurityFunction.SecurityFunctionParameters)
             {
                 if (!ValidationHelper.ValidEntityName(p.Name)) isValid = false;
