@@ -1,7 +1,5 @@
 namespace nHydrate.Generator.Common.GeneratorFramework
 {
-    public delegate void EmptyDelegate();
-
     public interface INHydrateModelObject : IXMLable, IModelObject
     {
         INHydrateModelObject Root { get; }

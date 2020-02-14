@@ -6,7 +6,6 @@ using System.Xml;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
 using System.Collections.Generic;
-using System.Drawing.Design;
 using System.Text;
 
 namespace nHydrate.Generator.Models

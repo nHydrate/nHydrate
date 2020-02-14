@@ -95,9 +95,9 @@ namespace nHydrate.Dsl
         /// <summary>
         /// Determines if the data type is a database character type of Binary,Image,VarBinary
         /// </summary>
-        public static bool IsBinaryType(this Field field)
+        public static bool IsBinaryType(this DataTypeConstants dataType)
         {
-            switch (field.DataType)
+            switch (dataType)
             {
                 case DataTypeConstants.Binary:
                 case DataTypeConstants.Image:
@@ -111,9 +111,9 @@ namespace nHydrate.Dsl
         /// <summary>
         /// Determines if the data type is a database character type of Char,NChar,NText,NVarChar,Text,VarChar,Xml
         /// </summary>
-        public static bool IsTextType(this Field field)
+        public static bool IsTextType(this DataTypeConstants dataType)
         {
-            switch (field.DataType)
+            switch (dataType)
             {
                 case DataTypeConstants.Char:
                 case DataTypeConstants.NChar:
@@ -131,9 +131,9 @@ namespace nHydrate.Dsl
         /// <summary>
         /// Determines if the data type is a database character type of DateTime,DateTime2,DateTimeOffset,SmallDateTime
         /// </summary>
-        public static bool IsDateType(this Field field)
+        public static bool IsDateType(this DataTypeConstants dataType)
         {
-            switch (field.DataType)
+            switch (dataType)
             {
                 case DataTypeConstants.DateTime:
                 case DataTypeConstants.DateTime2:
@@ -145,21 +145,21 @@ namespace nHydrate.Dsl
         }
 
         /// <summary>
-        /// Determines if the type is a number wither floating point or integer
+        /// Determines if the type is a number either floating point or integer
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static bool IsNumericType(this Field field)
+        public static bool IsNumericType(this DataTypeConstants dataType)
         {
-            return field.IsDecimalType() || field.IsIntegerType();
+            return dataType.IsDecimalType() || dataType.IsIntegerType();
         }
 
         /// <summary>
         /// Determines if the data type is a database character type of Decimal,Float,Real
         /// </summary>
-        public static bool IsDecimalType(this Field field)
+        public static bool IsDecimalType(this DataTypeConstants dataType)
         {
-            switch (field.DataType)
+            switch (dataType)
             {
                 case DataTypeConstants.Decimal:
                 case DataTypeConstants.Float:
@@ -172,9 +172,9 @@ namespace nHydrate.Dsl
         /// <summary>
         /// Determines if the data type is a database character type of Int,BigInt,TinyInt,SmallInt
         /// </summary>
-        public static bool IsIntegerType(this Field field)
+        public static bool IsIntegerType(this DataTypeConstants dataType)
         {
-            switch (field.DataType)
+            switch (dataType)
             {
                 case DataTypeConstants.BigInt:
                 case DataTypeConstants.Int:

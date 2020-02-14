@@ -112,21 +112,10 @@ namespace nHydrate.Generator.Models
             get { return _internalList.FirstOrDefault(x => x.Id == id); }
         }
 
-        public void Remove(int parameterId)
-        {
-            this.Root.Dirty = true;
-            _internalList.RemoveAll(x => x.Id == parameterId);
-        }
-
         public void Remove(Parameter parameter)
         {
             this.Root.Dirty = true;
             _internalList.RemoveAll(x => x.Id == parameter.Id);
-        }
-
-        public bool Contains(int id)
-        {
-            return (_internalList.Count(x => x.Id == id) > 0);
         }
 
         public override void Clear()

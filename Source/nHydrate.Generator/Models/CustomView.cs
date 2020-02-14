@@ -35,12 +35,7 @@ namespace nHydrate.Generator.Models
         public CustomView(INHydrateModelObject root)
             : base(root)
         {
-            _columns = new ReferenceCollection(this.Root, this, ReferenceType.CustomViewColumn);
-            _columns.ResetKey(Guid.Empty.ToString());
-            _columns.ObjectPlural = "Fields";
-            _columns.ObjectSingular = "Field";
-            _columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
-            _columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
+            this.Initialize();
         }
 
         public CustomView()
@@ -49,6 +44,21 @@ namespace nHydrate.Generator.Models
         }
 
         #endregion
+
+        private void Initialize()
+        {
+            _columns = new ReferenceCollection(this.Root, this, ReferenceType.CustomViewColumn);
+            _columns.ResetKey(Guid.Empty.ToString());
+            _columns.ObjectPlural = "Fields";
+            _columns.ObjectSingular = "Field";
+            _columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
+            _columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
+        }
+
+        protected override void OnRootReset(System.EventArgs e)
+        {
+            this.Initialize();
+        }
 
         #region Property Implementations
 

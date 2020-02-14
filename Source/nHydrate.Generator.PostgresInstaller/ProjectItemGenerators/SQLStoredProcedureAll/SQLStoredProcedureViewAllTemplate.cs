@@ -1,11 +1,7 @@
 #pragma warning disable 0168
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text;
 using nHydrate.Generator.Models;
-using nHydrate.Generator.Common.Util;
-using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredProcedureAll
 {

@@ -1,10 +1,8 @@
 #pragma warning disable 0168
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Xml;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
 
@@ -19,11 +17,6 @@ namespace nHydrate.Generator.Models
 
         protected override string NodeOldName => "relation";
         protected override string NodeName => "r";
-
-        public ICollection Relations
-        {
-            get { return _internalList; }
-        }
 
         public ReadOnlyCollection<Relation> FindByParentColumn(Column column)
         {
@@ -48,67 +41,6 @@ namespace nHydrate.Generator.Models
             {
                 throw;
             }
-        }
-
-        public Relation[] GetFromMatch(Relation relation)
-        {
-            var retval = new List<Relation>();
-            try
-            {
-                foreach (Relation r in this)
-                {
-                    if ((relation.ParentTableRef == null) || (r.ParentTableRef == null) ||
-                        (relation.ChildTableRef == null) || (r.ChildTableRef == null))
-                    {
-                        return null;
-                    }
-
-                    //Verify that parent and child tables match
-                    if ((((Table)relation.ParentTableRef.Object).Name == ((Table)r.ParentTableRef.Object).Name) &&
-                        (((Table)relation.ChildTableRef.Object).Name == ((Table)r.ChildTableRef.Object).Name))
-                    {
-                        //Same number of column link
-                        if (relation.ColumnRelationships.Count == r.ColumnRelationships.Count)
-                        {
-                            var match = true;
-                            for (var ii = 0; ii < relation.ColumnRelationships.Count; ii++)
-                            {
-                                if ((relation.ColumnRelationships[ii].ParentColumnRef == null) ||
-                                    (relation.ColumnRelationships[ii].ChildColumnRef == null) ||
-                                    (r.ColumnRelationships[ii].ParentColumnRef == null) ||
-                                    (r.ColumnRelationships[ii].ChildColumnRef == null))
-                                {
-                                    match = false;
-                                }
-                                else
-                                {
-                                    var columnChild1 = (Column)relation.ColumnRelationships[ii].ChildColumnRef.Object;
-                                    var tableChild1 = (Table)columnChild1.ParentTableRef.Object;
-                                    var columnChild2 = (Column)r.ColumnRelationships[ii].ChildColumnRef.Object;
-                                    var tableChild2 = (Table)columnChild2.ParentTableRef.Object;
-
-                                    var columnParent1 = (Column)relation.ColumnRelationships[ii].ParentColumnRef.Object;
-                                    var tableParent1 = (Table)columnParent1.ParentTableRef.Object;
-                                    var columnParent2 = (Column)r.ColumnRelationships[ii].ParentColumnRef.Object;
-                                    var tableParent2 = (Table)columnParent2.ParentTableRef.Object;
-
-                                    match |= ((tableChild1.Name == tableChild2.Name) &&
-                                                        (columnChild1.Name == columnChild2.Name) &&
-                                                        (tableParent1.Name == tableParent2.Name) &&
-                                                        (columnParent1.Name == columnParent2.Name));
-                                }
-                            }
-                            if (match) retval.Add(r);
-                        }
-                    }
-                }
-                return retval.ToArray();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
         }
 
         public override void Remove(Relation element)

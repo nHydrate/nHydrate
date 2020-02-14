@@ -28,7 +28,7 @@ namespace nHydrate.Dsl.Design.Converters
 				if (destinationType == typeof(string))
 				{
 					var retval = string.Empty;
-					if (column != null && column.IsNumericType())
+					if (column != null && column.DataType.IsNumericType())
 					{
 						retval = column.Min.ToString();
 						if (double.IsNaN(column.Min))

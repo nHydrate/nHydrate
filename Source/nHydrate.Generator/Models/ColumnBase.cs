@@ -173,41 +173,6 @@ namespace nHydrate.Generator.Models
             get { return this.GetSQLDefaultType(true); }
         }
 
-        public virtual bool IsTextType
-        {
-            get { return ModelHelper.IsTextType(this.DataType); }
-        }
-
-        public virtual bool IsBinaryType
-        {
-            get { return ModelHelper.IsBinaryType(this.DataType); }
-        }
-
-        public virtual bool IsIntegerType
-        {
-            get { return ModelHelper.IsIntegerType(this.DataType); }
-        }
-
-        public virtual bool IsNumericType
-        {
-            get { return ModelHelper.IsNumericType(this.DataType); }
-        }
-
-        public virtual bool IsMoneyType
-        {
-            get { return ModelHelper.IsMoneyType(this.DataType); }
-        }
-
-        public virtual bool IsDecimalType
-        {
-            get { return ModelHelper.IsDecimalType(this.DataType); }
-        }
-
-        public virtual bool IsDateType
-        {
-            get { return ModelHelper.IsDateType(this.DataType); }
-        }
-
         /// <summary>
         /// Determines if this field type can be made into a range query
         /// </summary>
@@ -313,7 +278,7 @@ namespace nHydrate.Generator.Models
 
         public virtual string GetLengthString()
         {
-            if (ModelHelper.SupportsMax(this.DataType) && this.Length == 0)
+            if (this.DataType.SupportsMax() && this.Length == 0)
                 return "max";
             else
                 return this.Length.ToString();
@@ -334,7 +299,7 @@ namespace nHydrate.Generator.Models
                     return int.MaxValue;
             }
 
-            if (ModelHelper.SupportsMax(this.DataType) && this.Length == 0)
+            if (this.DataType.SupportsMax() && this.Length == 0)
                 return int.MaxValue;
             else
                 return this.Length;

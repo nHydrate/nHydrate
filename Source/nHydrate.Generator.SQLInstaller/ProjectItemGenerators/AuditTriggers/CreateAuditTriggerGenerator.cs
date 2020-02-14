@@ -8,7 +8,7 @@ using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.AuditTriggers
 {
-    [GeneratorItemAttribute("CreateAuditTriggers", typeof(DatabaseProjectGenerator))]
+    [GeneratorItem("CreateAuditTriggers", typeof(DatabaseProjectGenerator))]
     public class CreateAuditTriggersGenerator : BaseDbScriptGenerator
     {
         #region Class Members

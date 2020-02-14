@@ -1,11 +1,8 @@
 #pragma warning disable 0168
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using nHydrate.Dsl;
 
@@ -211,15 +208,6 @@ namespace nHydrate.DslPackage.Forms
 		#endregion
 
 		#region Methods
-
-		private void LoadTables(ComboBox cboEntity)
-		{
-			cboEntity.Items.Clear();
-			foreach (var entity in _model.Entities.OrderBy(x => x.Name))
-			{
-				cboEntity.Items.Add(entity.Name);
-			}
-		}
 
 		private void LoadFields(string tableName, ComboBox cboField)
 		{

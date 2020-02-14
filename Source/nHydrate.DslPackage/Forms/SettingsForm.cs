@@ -1,15 +1,8 @@
 #pragma warning disable 0168
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using nHydrate.Generator.Common.GeneratorFramework;
 using System.Globalization;
-using nHydrate.Generator.Common.Util;
 using System.IO;
 using nHydrate.DslPackage.Objects;
 
@@ -26,11 +19,6 @@ namespace nHydrate.DslPackage.Forms
             txtKey.Text = AddinAppData.Instance.Key;
             txtKey.ReadOnly = (!string.IsNullOrEmpty(txtKey.Text));
             chkStat.Checked = AddinAppData.Instance.AllowStats;
-
-            //if (!string.IsNullOrEmpty(txtKey.Text))
-            //{
-            //  cmdRegister.Visible = false;
-            //}
 
             try
             {

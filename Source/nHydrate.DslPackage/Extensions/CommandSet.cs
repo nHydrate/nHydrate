@@ -1009,9 +1009,7 @@ namespace nHydrate.DslPackage
 
         private void OnMenuCommandUtilityDialog(object sender, EventArgs e)
         {
-            var F = new ModelUtilitiesForm(this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel,
-                this.CurrentDocData.Store,
-                this.CurrentDocView.CurrentDiagram as nHydrateDiagram);
+            var F = new ModelUtilitiesForm(this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel, this.CurrentDocData.Store);
             F.ShowDialog();
         }
         #endregion

@@ -10,7 +10,7 @@ using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLSelectStoredProcedure
 {
-    [GeneratorItemAttribute("SqlSelectDefinedStoredProcedure", typeof(DatabaseProjectGenerator))]
+    [GeneratorItem("SqlSelectDefinedStoredProcedure", typeof(DatabaseProjectGenerator))]
     public class SQLSelectStoredProcedureGenerator : BaseDbScriptGenerator
     {
         #region Properties

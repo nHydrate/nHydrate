@@ -46,7 +46,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             {
                 nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
-                sb.AppendLine("#pragma warning disable 0168"); //Supress variable declared not used
+                sb.AppendLine("#pragma warning disable 0168"); //Suppress variable declared not used
                 sb.AppendLine("#pragma warning disable 0108"); //Hides inherited member audit fields from IAudit
                 this.AppendUsingStatements();
                 sb.AppendLine("namespace " + this.GetLocalNamespace());
@@ -55,14 +55,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 this.AppendContextClass();
                 sb.AppendLine("}");
                 sb.AppendLine();
-                sb.AppendLine("#pragma warning restore 0168"); //Supress variable declared not used
+                sb.AppendLine("#pragma warning restore 0168"); //Suppress variable declared not used
                 sb.AppendLine("#pragma warning restore 0108"); //Hides inherited member audit fields from IAudit
-
-                //sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
-                //sb.AppendLine("{");
-                //this.AppendTypeTableWrappers();
-                //sb.AppendLine("}");
-                //sb.AppendLine();
             }
             catch (Exception ex)
             {
@@ -243,42 +237,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             }
 
         }
-
-        #region Table Wrapper (Not used)
-        //private void AppendTypeTableWrappers()
-        //{
-        //  if (_model.Database.Tables.Count(x => x.IsTypeTable) == 0)
-        //    return;
-
-        //  sb.AppendLine("	#region Type Tables");
-        //  sb.AppendLine();
-
-        //  foreach (Table table in _model.Database.Tables.Where(x => x.IsTypeTable))
-        //  {
-        //    sb.AppendLine("	/// <summary>");
-        //    sb.AppendLine("	/// The wrapper class for the type table '" + table.PascalName + "' used to define properties on related entities");
-        //    sb.AppendLine("	/// </summary>");
-        //    sb.AppendLine("	public partial interface I" + table.PascalName + "Wrapper");
-        //    sb.AppendLine("	{");
-        //    sb.AppendLine("		/// <summary>");
-        //    sb.AppendLine("		/// The numeric value associated with the type");
-        //    sb.AppendLine("		/// </summary>");
-        //    sb.AppendLine("		int Value { get; set; }");
-        //    sb.AppendLine();
-        //    sb.AppendLine("		/// <summary>");
-        //    sb.AppendLine("		/// The enum value associated with the type");
-        //    sb.AppendLine("		/// </summary>");
-        //    sb.AppendLine("		Enum EnumValue { get; set; }");
-        //    sb.AppendLine();
-        //    sb.AppendLine("	}");
-        //    sb.AppendLine();
-        //  }
-
-        //  sb.AppendLine("	#endregion");
-        //  sb.AppendLine();
-
-        //}
-        #endregion
 
         #endregion
 

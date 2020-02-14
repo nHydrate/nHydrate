@@ -252,7 +252,7 @@ namespace nHydrate.Dsl
                 if (this.TypedEntity != TypedEntityConstants.None && (this.PrimaryKeyFields.Count > 0))
                 {
                     //Must have one PK that is integer type
-                    if ((this.PrimaryKeyFields.Count > 1) || !this.PrimaryKeyFields.First().IsIntegerType())
+                    if ((this.PrimaryKeyFields.Count > 1) || !this.PrimaryKeyFields.First().DataType.IsIntegerType())
                     {
                         context.LogError(string.Format(ValidationHelper.ErrorTextTypeTablePrimaryKey, this.Name), string.Empty, this);
                     }

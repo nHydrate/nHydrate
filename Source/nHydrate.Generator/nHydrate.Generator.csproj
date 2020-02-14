@@ -206,7 +206,6 @@
     <Compile Include="MessageEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ModelHelper.cs" />
     <Compile Include="ModelObjectTreeNode.cs" />
     <Compile Include="ModelObjectUserInterface.cs">
       <SubType>UserControl</SubType>

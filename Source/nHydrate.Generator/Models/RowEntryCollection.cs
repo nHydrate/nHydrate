@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.ComponentModel;
 using System.Xml;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
@@ -76,29 +75,9 @@ namespace nHydrate.Generator.Models
             set { internalList[index] = value; }
         }
 
-        public void Insert(int index, RowEntry value)
-        {
-            internalList.Insert(index, value);
-        }
-
-        public void Remove(RowEntry value)
-        {
-            internalList.Remove(value);
-        }
-
-        public bool Contains(RowEntry value)
-        {
-            return internalList.Contains(value);
-        }
-
         public override void Clear()
         {
             internalList.Clear();
-        }
-
-        public int IndexOf(RowEntry value)
-        {
-            return internalList.IndexOf(value);
         }
 
         public override void AddRange(ICollection list)
@@ -109,13 +88,6 @@ namespace nHydrate.Generator.Models
         public int Add(RowEntry value)
         {
             return internalList.Add(value);
-        }
-
-        public RowEntry Add()
-        {
-            var newItem = new RowEntry(this.Root);
-            this.Add(newItem);
-            return newItem;
         }
 
         #endregion

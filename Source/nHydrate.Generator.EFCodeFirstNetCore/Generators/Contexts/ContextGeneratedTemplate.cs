@@ -348,7 +348,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         else
                             sb.Append(".IsRequired(true)");
 
-                        if (column.Identity == IdentityTypeConstants.Database && column.IsIntegerType)
+                        if (column.Identity == IdentityTypeConstants.Database && column.DataType.IsIntegerType())
                         {
                             switch (_modelConfiguration.DatabaseType)
                             {
@@ -364,7 +364,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             }
                         }
 
-                        if (column.IsTextType && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml)
+                        if (column.DataType.IsTextType() && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml)
                             sb.Append($".HasMaxLength({column.GetAnnotationStringLength()})");
                         if (column.DatabaseName != column.PascalName)
                             sb.Append($".HasColumnName(\"{column.DatabaseName}\")");
@@ -403,7 +403,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     if (!column.AllowNull)
                         sb.Append(".IsRequired()");
 
-                    if (column.IsTextType && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
+                    if (column.DataType.IsTextType() && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
                     if (column.DatabaseName != column.PascalName) sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
                     sb.AppendLine(";");
                 }

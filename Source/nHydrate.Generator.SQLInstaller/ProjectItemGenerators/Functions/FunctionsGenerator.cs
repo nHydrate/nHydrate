@@ -5,7 +5,7 @@ using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Functions
 {
-	[GeneratorItemAttribute("Functions", typeof(DatabaseProjectGenerator))]
+	[GeneratorItem("Functions", typeof(DatabaseProjectGenerator))]
 	public class FunctionsGenerator : BaseDbScriptGenerator
 	{
 		#region Properties

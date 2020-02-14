@@ -63,34 +63,9 @@ namespace nHydrate.Generator.Models
             set { _columnRelationships[index] = value; }
         }
 
-        public void RemoveAt(int index)
-        {
-            _columnRelationships.RemoveAt(index);
-        }
-
-        public void Insert(int index, ViewColumnRelationship value)
-        {
-            _columnRelationships.Insert(index, value);
-        }
-
-        public void Remove(ViewColumnRelationship value)
-        {
-            _columnRelationships.Remove(value);
-        }
-
-        public bool Contains(ViewColumnRelationship value)
-        {
-            return _columnRelationships.Contains(value);
-        }
-
         public override void Clear()
         {
             _columnRelationships.Clear();
-        }
-
-        public int IndexOf(ViewColumnRelationship value)
-        {
-            return _columnRelationships.IndexOf(value);
         }
 
         public override void AddRange(ICollection list)

@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.GenerationDetails
 {
-    [GeneratorItemAttribute("GenerationDetails", typeof(PostgresDatabaseProjectGenerator))]
+    [GeneratorItem("GenerationDetails", typeof(PostgresDatabaseProjectGenerator))]
     public class GenerationDetailsGenerator : BaseDbScriptGenerator
     {
         #region Class Members

@@ -381,13 +381,13 @@ namespace nHydrate.Generator.Datasite
 		{
 			if (dataType == SqlDbType.UniqueIdentifier)
 				return "\"540C6D43-5645-40FB-980F-2FF126BFBD5E\"";
-			else if (ModelHelper.IsNumericType(dataType))
+			else if (dataType.IsNumericType())
 				return "0";
-			else if (ModelHelper.IsBinaryType(dataType))
+			else if (dataType.IsBinaryType())
 				return "0x0";
 			else if (dataType == SqlDbType.Bit)
 				return "true";
-			else if (ModelHelper.IsDateType(dataType))
+			else if (dataType.IsDateType())
 				return "new DateTime(2000, 1, 1)";
 
 			//text

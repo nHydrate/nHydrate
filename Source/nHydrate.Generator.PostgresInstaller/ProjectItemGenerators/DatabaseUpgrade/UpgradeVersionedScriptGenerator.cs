@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
-using nHydrate.Generator.ProjectItemGenerators;
 using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseUpgrade
 {
-    [GeneratorItemAttribute("UpgradeVersioned", typeof(PostgresDatabaseProjectGenerator))]
+    [GeneratorItem("UpgradeVersioned", typeof(PostgresDatabaseProjectGenerator))]
     public class UpgradeVersionedGenerator : BaseDbScriptGenerator
     {
         #region Class Members

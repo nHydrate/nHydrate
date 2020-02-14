@@ -3,7 +3,7 @@ using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator.ProjectItemGenerators
 {
-    public abstract class BaseClassTemplate : IFileTemplate
+    public abstract class BaseClassTemplate
     {
         protected ModelRoot _model;
 
@@ -12,10 +12,6 @@ namespace nHydrate.Generator.ProjectItemGenerators
         {
             _model = model;
         }
-
-        //public BaseClassTemplate()
-        //{
-        //}
 
         public virtual string DefaultNamespace
         {

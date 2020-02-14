@@ -255,9 +255,6 @@
     <Compile Include="GeneratorFramework\IProjectItemGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GeneratorFramework\IFileTemplate.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="GeneratorFramework\IXMLable.cs">
       <SubType>Code</SubType>
     </Compile>

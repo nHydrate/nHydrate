@@ -49,7 +49,7 @@ namespace nHydrate.Dsl
                 if ((!string.IsNullOrEmpty(this.CodeFacade)) && !ValidationHelper.ValidDatabaseIdenitifer(this.CodeFacade))
                     context.LogError(ValidationHelper.ErrorTextInvalidCodeFacade, string.Empty, this);
 
-                if (this.IsNumericType())
+                if (this.DataType.IsNumericType())
                 {
                     if (!double.IsNaN(this.Min) && (!double.IsNaN(this.Max)))
                     {

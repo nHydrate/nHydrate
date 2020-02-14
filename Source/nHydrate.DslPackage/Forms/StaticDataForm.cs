@@ -3,9 +3,6 @@ using System;
 using System.Linq;
 using System.Data;
 using System.Windows.Forms;
-using nHydrate.Generator.Models;
-using nHydrate.Generator.Common.GeneratorFramework;
-using System.Collections.Generic;
 using nHydrate.Dsl;
 
 namespace nHydrate.DslPackage.Forms
@@ -41,7 +38,7 @@ namespace nHydrate.DslPackage.Forms
         private void LoadData()
         {
             this.dataGridView1.Columns.Clear();
-            var fieldList = _entity.Fields.Where(x => !x.IsBinaryType() && x.DataType != DataTypeConstants.Timestamp).ToList();
+            var fieldList = _entity.Fields.Where(x => !x.DataType.IsBinaryType() && x.DataType != DataTypeConstants.Timestamp).ToList();
 
             //Setup Columns
             var dt = new DataTable();

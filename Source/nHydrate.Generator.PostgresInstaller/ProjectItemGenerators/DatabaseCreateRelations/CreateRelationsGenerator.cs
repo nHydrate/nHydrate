@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
 
 using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCreateRelations
 {
-    [GeneratorItemAttribute("CreateReleations", typeof(PostgresDatabaseProjectGenerator))]
+    [GeneratorItem("CreateReleations", typeof(PostgresDatabaseProjectGenerator))]
     public class CreateRelationsGenerator : BaseDbScriptGenerator
     {
         #region Class Members

@@ -6,7 +6,7 @@ using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.GenerationDetails
 {
-    [GeneratorItemAttribute("GenerationDetails", typeof(DatabaseProjectGenerator))]
+    [GeneratorItem("GenerationDetails", typeof(DatabaseProjectGenerator))]
     public class GenerationDetailsGenerator : BaseDbScriptGenerator
     {
         #region Class Members

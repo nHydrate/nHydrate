@@ -172,11 +172,6 @@ namespace nHydrate.Generator.Models
             this.Remove(function.Id);
         }
 
-        public bool Contains(int id)
-        {
-            return (_internalList.Count(x => x.Id == id) > 0);
-        }
-
         public override void Clear()
         {
             _internalList.Clear();
@@ -209,18 +204,6 @@ namespace nHydrate.Generator.Models
         public Function Add()
         {
             return this.Add(this.GetUniqueName());
-        }
-
-        public bool Contains(string name)
-        {
-            foreach (Function function in this)
-            {
-                if (string.Compare(function.Name, name, true) == 0)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         private string GetUniqueName()

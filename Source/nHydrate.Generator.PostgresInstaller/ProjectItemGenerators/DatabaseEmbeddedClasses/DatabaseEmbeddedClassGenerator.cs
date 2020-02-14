@@ -23,7 +23,7 @@ using System.IO;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseEmbeddedClasses
 {
-	[GeneratorItemAttribute("DatabaseEmbeddedClassGenerator", typeof (PostgresDatabaseProjectGenerator))]
+	[GeneratorItem("DatabaseEmbeddedClassGenerator", typeof (PostgresDatabaseProjectGenerator))]
 	public class DatabaseEmbeddedClassGenerator : BaseDbScriptGenerator
 	{
 		private const string EMBEDDED_LOCATION = "ProjectItemGenerators.DatabaseEmbeddedClasses";

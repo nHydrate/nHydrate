@@ -192,7 +192,7 @@ namespace nHydrate.Generator.Models
 
         public virtual string GetLengthString()
         {
-            if (ModelHelper.SupportsMax(this.DataType) && this.Length == 0)
+            if (this.DataType.SupportsMax() && this.Length == 0)
                 return "max";
             else
                 return this.Length.ToString();
@@ -200,7 +200,7 @@ namespace nHydrate.Generator.Models
 
         public virtual string GetSQLDefault()
         {
-            return ModelHelper.GetSQLDefault(this.DataType, this.Default);
+            return this.DataType.GetSQLDefault(this.Default);
         }
 
         #endregion
@@ -305,11 +305,6 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region Helpers
-
-        public Reference CreateRef()
-        {
-            return CreateRef(Guid.NewGuid().ToString());
-        }
 
         public Reference CreateRef(string key)
         {
@@ -474,117 +469,6 @@ namespace nHydrate.Generator.Models
 
         }
 
-        public bool AllowStringParse
-        {
-            get
-            {
-                if (StringHelper.Match(this.DataType.ToString(), "bigint", true))
-                {
-                    return true;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "binary", true))
-                {
-                    return false;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "bit", true))
-                {
-                    return true;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "char", true))
-                {
-                    return false;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "datetime", true))
-                {
-                    return true;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "decimal", true))
-                {
-                    return true;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "float", true))
-                {
-                    return true;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "image", true))
-                {
-                    return false;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "int", true))
-                {
-                    return true;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "money", true))
-                {
-                    return true;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "nchar", true))
-                {
-                    return false;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "ntext", true))
-                {
-                    return false;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "numeric", true))
-                {
-                    return true;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "nvarchar", true))
-                {
-                    return false;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "real", true))
-                {
-                    return true;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "smalldatetime", true))
-                {
-                    return true;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "smallint", true))
-                {
-                    return true;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "smallmoney", true))
-                {
-                    return true;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "variant", true))
-                {
-                    return false;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "text", true))
-                {
-                    return false;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "tinyint", true))
-                {
-                    return false;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "uniqueidentifier", true))
-                {
-                    return false;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "varbinary", true))
-                {
-                    return false;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "varchar", true))
-                {
-                    return false;
-                }
-                else if (StringHelper.Match(this.DataType.ToString(), "timestamp", true))
-                {
-                    return false;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
         public virtual int GetPredefinedScale()
         {
             //Returns -1 if variable
@@ -708,7 +592,7 @@ namespace nHydrate.Generator.Models
         public virtual string GetCodeDefault()
         {
             var defaultValue = string.Empty;
-            if (this.IsDateType)
+            if (this.DataType.IsDateType())
             {
                 var scrubbed = this.Default.Replace("(", string.Empty).Replace(")", string.Empty);
                 if (scrubbed == "getdate")
@@ -752,7 +636,7 @@ namespace nHydrate.Generator.Models
                 if (this.Default.Length == 1)
                     defaultValue = "@\"" + this.Default[0].ToString().Replace("\"", @"""") + "\"";
             }
-            else if (this.IsBinaryType)
+            else if (this.DataType.IsBinaryType())
             {
                 defaultValue = "new System.Byte[] { " + this.Default.ConvertToHexArrayString() + " }";
             }
@@ -777,7 +661,7 @@ namespace nHydrate.Generator.Models
                 else if (!string.IsNullOrEmpty(this.Default) && this.Default.Length == 36)
                     defaultValue = "new Guid(\"" + this.Default.Replace("'", "") + "\")";
             }
-            else if (this.IsIntegerType)
+            else if (this.DataType.IsIntegerType())
             {
                 defaultValue = "0";
                 int i;
@@ -785,7 +669,7 @@ namespace nHydrate.Generator.Models
                     defaultValue = this.Default;
                 if (this.DataType == System.Data.SqlDbType.BigInt) defaultValue += "L";
             }
-            else if (this.IsNumericType)
+            else if (this.DataType.IsNumericType())
             {
                 defaultValue = "0";
                 double d;
@@ -805,47 +689,12 @@ namespace nHydrate.Generator.Models
             }
             else
             {
-                if (ModelHelper.IsTextType(this.DataType))
+                if (this.DataType.IsTextType())
                     defaultValue = "\"" + this.Default.Replace("''", "") + "\"";
                 else
                     defaultValue = "\"" + this.Default + "\"";
             }
             return defaultValue;
-        }
-
-        public virtual bool IsTextType
-        {
-            get { return ModelHelper.IsTextType(this.DataType); }
-        }
-
-        public virtual bool IsBinaryType
-        {
-            get { return ModelHelper.IsBinaryType(this.DataType); }
-        }
-
-        public virtual bool IsIntegerType
-        {
-            get { return ModelHelper.IsIntegerType(this.DataType); }
-        }
-
-        public virtual bool IsNumericType
-        {
-            get { return ModelHelper.IsNumericType(this.DataType); }
-        }
-
-        public virtual bool IsMoneyType
-        {
-            get { return ModelHelper.IsMoneyType(this.DataType); }
-        }
-
-        public virtual bool IsDecimalType
-        {
-            get { return ModelHelper.IsDecimalType(this.DataType); }
-        }
-
-        public virtual bool IsDateType
-        {
-            get { return ModelHelper.IsDateType(this.DataType); }
         }
 
     }

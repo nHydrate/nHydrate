@@ -46,7 +46,7 @@ namespace nHydrate.Generator.Models
                 foreach (CellEntry cellEntry in this.CellEntries)
                 {
                     var column = cellEntry.ColumnRef.Object as Column;
-                    if (column != null && column.IsIntegerType)
+                    if (column != null && column.DataType.IsIntegerType())
                     {
                         if (column.Name.ToLower().Contains("order") || column.Name.ToLower().Contains("sort"))
                             return cellEntry.Value;

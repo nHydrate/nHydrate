@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
-using nHydrate.Generator.ProjectItemGenerators;
 using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCreateData
 {
-    [GeneratorItemAttribute("CreateData", typeof(PostgresDatabaseProjectGenerator))]
+    [GeneratorItem("CreateData", typeof(PostgresDatabaseProjectGenerator))]
     public class CreateDataGenerator : BaseDbScriptGenerator
     {
         #region Class Members
@@ -35,7 +30,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
             var delEventArgs = new ProjectItemDeletedEventArgs($@"\{PARENT_ITEM_NAME}\{template.OldFileName}", ProjectName, this);
             delEventArgs.DeleteFile = true;
             OnProjectItemDeleted(this, delEventArgs);
-
         }
 
         #endregion

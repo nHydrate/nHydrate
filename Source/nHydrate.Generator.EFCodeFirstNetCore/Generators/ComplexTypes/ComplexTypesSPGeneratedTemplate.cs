@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Text;
 using nHydrate.Generator.Models;
-using nHydrate.Generator.Common.GeneratorFramework;
+using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ComplexTypes
 {
@@ -279,7 +279,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ComplexTypes
                         case System.Data.SqlDbType.NChar:
                         case System.Data.SqlDbType.NVarChar:
                         case System.Data.SqlDbType.VarChar:
-                            if ((column.Length == 0) && (ModelHelper.SupportsMax(column.DataType)))
+                            if ((column.Length == 0) && (column.DataType.SupportsMax()))
                                 sb.AppendLine("					return int.MaxValue;");
                             else
                                 sb.AppendLine("					return " + column.Length + ";");

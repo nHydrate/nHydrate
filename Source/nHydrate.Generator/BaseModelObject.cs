@@ -11,7 +11,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         protected INHydrateModelObject _root;
         protected bool _dirty = false;
         protected bool _cancelUIEvents = false;
-        protected INHydrateModelObjectController _controller = null;
         protected string _name = string.Empty;
 
         #endregion
@@ -60,12 +59,14 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         public virtual Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; }
 
         [Browsable(false)]
-        public virtual INHydrateModelObjectController Controller
-        {
-            get { return _controller; }
-            set { _controller = value; }
-        }
+        public virtual INHydrateModelObjectController Controller { get; set; } = null;
 
+        protected event EventHandler RootReset;
+        protected virtual void OnRootReset(System.EventArgs e)
+        {
+            if (this.RootReset != null)
+                this.RootReset(this, System.EventArgs.Empty);
+        }
 
         [Browsable(false)]
         public virtual INHydrateModelObject Root
@@ -76,6 +77,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                 if (value == null)
                     throw new Exception("Cannot set root to null.");
                 _root = value;
+                this.OnRootReset(System.EventArgs.Empty);
             }
         }
 

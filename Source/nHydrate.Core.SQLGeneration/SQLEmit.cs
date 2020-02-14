@@ -638,7 +638,7 @@ namespace nHydrate.Core.SQLGeneration
                             sb.AppendLine("--WARNING: IF YOU NEED TO SET NULL COLUMN VALUES TO THE DEFAULT VALUE, UNCOMMENT THE FOLLOWING LINE TO DO SO HERE BEFORE MAKING THE COLUMN NON-NULLABLE");
 
                             var dValue = newColumn.Default;
-                            if (ModelHelper.IsTextType(newColumn.DataType) || ModelHelper.IsDateType(newColumn.DataType))
+                            if (newColumn.DataType.IsTextType() || newColumn.DataType.IsDateType())
                                 dValue = "'" + dValue.Replace("'", "''") + "'";
 
                             sb.AppendLine("--UPDATE [" + newTable.GetSQLSchema() + "].[" + newTable.DatabaseName + "] SET [" + newColumn.DatabaseName + "] = " + dValue + " WHERE [" + newColumn.DatabaseName + "] IS NULL");
@@ -922,7 +922,7 @@ namespace nHydrate.Core.SQLGeneration
                             {
                                 if (!string.IsNullOrEmpty(column.Default))
                                 {
-                                    if (ModelHelper.IsTextType(column.DataType) || ModelHelper.IsDateType(column.DataType))
+                                    if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                     {
                                         if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
                                             fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
@@ -1041,7 +1041,7 @@ namespace nHydrate.Core.SQLGeneration
                             {
                                 if (!string.IsNullOrEmpty(column.Default))
                                 {
-                                    if (ModelHelper.IsTextType(column.DataType) || ModelHelper.IsDateType(column.DataType))
+                                    if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                     {
                                         if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
                                             fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
@@ -1735,7 +1735,7 @@ namespace nHydrate.Core.SQLGeneration
                 }
 
                 //Add collation
-                if (column.IsTextType && !string.IsNullOrEmpty(column.Collate))
+                if (column.DataType.IsTextType() && !string.IsNullOrEmpty(column.Collate))
                     sb.Append(" COLLATE " + column.Collate);
 
                 //Add NULLable
@@ -1832,11 +1832,11 @@ namespace nHydrate.Core.SQLGeneration
                 else if ((d == "true") || (d == "1"))
                     tempBuilder.Append("1");
             }
-            else if (column.IsBinaryType)
+            else if (column.DataType.IsBinaryType())
             {
                 tempBuilder.Append(GetDefaultValue(defaultValue));
             }
-            else if (ModelHelper.DefaultIsString(column.DataType) && !string.IsNullOrEmpty(defaultValue))
+            else if (column.DataType.DefaultIsString() && !string.IsNullOrEmpty(defaultValue))
             {
                 if (!column.DefaultIsFunc)
                     tempBuilder.Append("'");

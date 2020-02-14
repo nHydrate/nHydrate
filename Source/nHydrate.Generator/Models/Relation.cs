@@ -43,7 +43,7 @@ namespace nHydrate.Generator.Models
         public Relation(INHydrateModelObject root)
             : base(root)
         {
-            _columnRelationships = new ColumnRelationshipCollection(this.Root);
+            this.Initialize();
         }
 
         public Relation()
@@ -52,6 +52,16 @@ namespace nHydrate.Generator.Models
         }
 
         #endregion
+
+        private void Initialize()
+        {
+            _columnRelationships = new ColumnRelationshipCollection(this.Root);
+        }
+
+        protected override void OnRootReset(System.EventArgs e)
+        {
+            this.Initialize();
+        }
 
         #region Events
 

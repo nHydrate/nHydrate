@@ -85,8 +85,6 @@
     <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLStoredProcedureViewAllTemplate.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptGenerator.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptTemplate.cs" />
-    <Compile Include="ProjectItemGenerators\ScriptOrder\ScriptOrderGenerator.cs" />
-    <Compile Include="ProjectItemGenerators\ScriptOrder\ScriptOrderTemplate.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\XmlHelper.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\InstallSettings.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseEmbeddedClassGenerator.cs" />
@@ -120,6 +118,7 @@
       <Name>nHydrate.Generator</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 			 Other similar extension points exist, see Microsoft.Common.targets.

@@ -94,14 +94,6 @@ namespace nHydrate.DslPackage
                 this.FindWindow = package.GetToolWindow(typeof(FindWindow), true) as FindWindow;
                 this.ModelExplorerToolWindow = package.GetToolWindow(typeof(nHydrateExplorerToolWindow), true) as nHydrateExplorerToolWindow;
             }
-
-            //Prompt dialog to setup these essential properties
-            if (string.IsNullOrEmpty(modelRoot.CompanyName) || string.IsNullOrEmpty(modelRoot.ProjectName))
-            {
-                var F = new FirstPromptForm(modelRoot);
-                F.ShowDialog();
-            }
-
         }
 
         protected override void OnDocumentSaved(EventArgs e)

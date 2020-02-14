@@ -665,7 +665,7 @@ namespace nHydrate.DslPackage.Objects
                     {
                         //For each row create N cells one for each column
                         var rowEntry = new nHydrate.Generator.Models.RowEntry(newTable.Root);
-                        var staticDataFieldList = fieldList.Where(x => !x.IsBinaryType() && x.DataType != DataTypeConstants.Timestamp).ToList();
+                        var staticDataFieldList = fieldList.Where(x => !x.DataType.IsBinaryType() && x.DataType != DataTypeConstants.Timestamp).ToList();
                         for (var jj = 0; jj < staticDataFieldList.Count; jj++)
                         {
                             var cellEntry = new nHydrate.Generator.Models.CellEntry(newTable.Root);

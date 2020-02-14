@@ -98,19 +98,6 @@ namespace nHydrate.Generator.Models
 		{
 		}
 
-		public virtual void ClearTree()
-		{
-			if (_node != null)
-			{
-				var oldNode = _node;
-				_node = null;
-				var s = this.Node.Name; //Reset
-				oldNode.Nodes.Clear();
-				oldNode.Nodes.AddRange(this.Node.Nodes.ToArray());
-				_node = oldNode;
-			}
-		}
-
 		private void SummaryClick(object sender, System.EventArgs e)
 		{
 			//var F = new ModelSummaryForm((ModelRoot)this.Object);

@@ -14,7 +14,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
         {
         }
 
-        #region BaseClassTemplate overrides
         public override string FileName
         {
             get { return string.Format("I{0}Entities.cs", _model.ProjectName); }
@@ -36,11 +35,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             }
         }
 
-        #endregion
-
-        #region GenerateContent
-
-        public void GenerateContent()
+        private void GenerateContent()
         {
             try
             {
@@ -58,8 +53,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             }
 
         }
-
-        #endregion
 
     }
 }

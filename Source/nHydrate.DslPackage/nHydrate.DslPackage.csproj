@@ -286,13 +286,6 @@
     <Compile Include="Forms\FindWindowPopupOptionsForm.Designer.cs">
       <DependentUpon>FindWindowPopupOptionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FirstPromptForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FirstPromptForm.Designer.cs">
-      <DependentUpon>FirstPromptForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ModelElement.cs" />
     <Compile Include="Forms\RefactorPreviewChangeVarcharForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -323,12 +316,6 @@
     <Compile Include="Forms\DatabaseConnectionControl.Designer.cs">
       <DependentUpon>DatabaseConnectionControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\DeleteColumnsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\DeleteColumnsForm.Designer.cs">
-      <DependentUpon>DeleteColumnsForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\DeleteModeObjectPrompt.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -352,12 +339,6 @@
     </Compile>
     <Compile Include="Forms\ImportDatabaseForm.Designer.cs">
       <DependentUpon>ImportDatabaseForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ImportLegacy.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ImportLegacy.Designer.cs">
-      <DependentUpon>ImportLegacy.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ImportStaticDataForm.cs">
       <SubType>Form</SubType>
@@ -394,18 +375,6 @@
     </Compile>
     <Compile Include="Forms\NagScreenForm.Designer.cs">
       <DependentUpon>NagScreenForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\OptionsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\OptionsForm.Designer.cs">
-      <DependentUpon>OptionsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\PrecedenseOrderForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\PrecedenseOrderForm.Designer.cs">
-      <DependentUpon>PrecedenseOrderForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\RefactorCombineTableForm.cs">
       <SubType>Form</SubType>
@@ -467,12 +436,6 @@
     <Compile Include="Forms\RunningProcesses.Designer.cs">
       <DependentUpon>RunningProcesses.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SendErrorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\SendErrorForm.Designer.cs">
-      <DependentUpon>SendErrorForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -485,23 +448,11 @@
     <Compile Include="Forms\StaticDataForm.Designer.cs">
       <DependentUpon>StaticDataForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\TableCodeFacadeUpdateForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TableCodeFacadeUpdateForm.Designer.cs">
-      <DependentUpon>TableCodeFacadeUpdateForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\TableExtendedPropertiesForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\TableExtendedPropertiesForm.Designer.cs">
       <DependentUpon>TableExtendedPropertiesForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\UserDefinedScriptOrderForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\UserDefinedScriptOrderForm.Designer.cs">
-      <DependentUpon>UserDefinedScriptOrderForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GeneratedCode\CommandSet.cs">
       <AutoGen>True</AutoGen>
@@ -607,9 +558,6 @@
     <EmbeddedResource Include="Forms\FindWindowPopupOptionsForm.resx">
       <DependentUpon>FindWindowPopupOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FirstPromptForm.resx">
-      <DependentUpon>FirstPromptForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\RefactorPreviewChangeVarcharForm.resx">
       <DependentUpon>RefactorPreviewChangeVarcharForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -625,9 +573,6 @@
     <EmbeddedResource Include="Forms\DatabaseConnectionControl.resx">
       <DependentUpon>DatabaseConnectionControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\DeleteColumnsForm.resx">
-      <DependentUpon>DeleteColumnsForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\DeleteModeObjectPrompt.resx">
       <DependentUpon>DeleteModeObjectPrompt.cs</DependentUpon>
     </EmbeddedResource>
@@ -639,9 +584,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ImportDatabaseForm.resx">
       <DependentUpon>ImportDatabaseForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ImportLegacy.resx">
-      <DependentUpon>ImportLegacy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ImportStaticDataForm.resx">
       <DependentUpon>ImportStaticDataForm.cs</DependentUpon>
@@ -660,12 +602,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\NagScreenForm.resx">
       <DependentUpon>NagScreenForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OptionsForm.resx">
-      <DependentUpon>OptionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\PrecedenseOrderForm.resx">
-      <DependentUpon>PrecedenseOrderForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\RefactorCombineTableForm.resx">
       <DependentUpon>RefactorCombineTableForm.cs</DependentUpon>
@@ -697,23 +633,14 @@
     <EmbeddedResource Include="Forms\RunningProcesses.resx">
       <DependentUpon>RunningProcesses.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SendErrorForm.resx">
-      <DependentUpon>SendErrorForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\StaticDataForm.resx">
       <DependentUpon>StaticDataForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TableCodeFacadeUpdateForm.resx">
-      <DependentUpon>TableCodeFacadeUpdateForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\TableExtendedPropertiesForm.resx">
       <DependentUpon>TableExtendedPropertiesForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\UserDefinedScriptOrderForm.resx">
-      <DependentUpon>UserDefinedScriptOrderForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <SubType>Designer</SubType>

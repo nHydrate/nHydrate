@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Xml;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
@@ -96,27 +95,6 @@ namespace nHydrate.Generator.Models
                 retval = _rnd.Next(1, int.MaxValue);
             }
             return retval;
-        }
-
-        public Reference GetByKey(string key)
-        {
-            foreach (Reference element in this)
-            {
-                if (StringHelper.Match(element.Key, key, true))
-                    return element;
-            }
-            return null;
-        }
-
-        public Array FindReferencedObject(string key)
-        {
-            var retval = new ArrayList();
-            foreach (INHydrateModelObject element in this)
-            {
-                if (StringHelper.Match(((Reference)element).Object.Key, key, true))
-                    retval.Add(element);
-            }
-            return retval.ToArray();
         }
 
         #endregion
@@ -233,25 +211,9 @@ namespace nHydrate.Generator.Models
             _references.RemoveAt(index);
         }
 
-        public void Insert(int index, Reference value)
-        {
-            _references.Insert(index, value);
-        }
-
         public void Remove(Reference value)
         {
             _references.Remove(value);
-        }
-
-        public void RemoveRange(IEnumerable range)
-        {
-            foreach (Reference element in range)
-                this.Remove(element);
-        }
-
-        public bool Contains(Reference value)
-        {
-            return _references.Contains(value);
         }
 
         public bool Contains(int id)
@@ -259,18 +221,6 @@ namespace nHydrate.Generator.Models
             foreach (Reference reference in this)
             {
                 if (reference.Ref == id)
-                    return true;
-            }
-            return false;
-        }
-
-        public bool Contains(string key)
-        {
-            foreach (Reference reference in this)
-            {
-                if (reference.Key == key)
-                    return true;
-                if (reference.Object.Key == key)
                     return true;
             }
             return false;
@@ -285,11 +235,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public int IndexOf(Reference value)
-        {
-            return _references.IndexOf(value);
-        }
-
         public void Add(Reference value)
         {
             _references.Add(value);
@@ -301,14 +246,6 @@ namespace nHydrate.Generator.Models
             {
                 _references.Add(reference);
             }
-        }
-
-        public Reference Add()
-        {
-            var newItem = new Reference(this.Root);
-            newItem.Ref = NextIndex();
-            this.Add(newItem);
-            return newItem;
         }
 
         #endregion

@@ -57,11 +57,6 @@ namespace nHydrate.Generator.PostgresInstaller
             }
         }
 
-        protected override void OnInitialize(IModelObject model)
-        {
-            //nHydrateGeneratorProject.AddICSharpDllToBinFolder();
-        }
-
         public override IModelConfiguration ModelConfiguration { get; set; }
     }
 }

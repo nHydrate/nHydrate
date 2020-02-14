@@ -202,17 +202,6 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        #region Helpers
-
-        public Table CreateTable()
-        {
-            var table = new Table(this.Root);
-            table.ResetId(NextIndex());
-            return table;
-        }
-
-        #endregion
-
         #region IEnumerable Members
         public override IEnumerator GetEnumerator()
         {
@@ -295,16 +284,10 @@ namespace nHydrate.Generator.Models
             this.Remove(table.Id);
         }
 
-        public bool Contains(int id)
-        {
-            return (_internalList.Count(x => x.Id == id) > 0);
-        }
-
         public override void Clear()
         {
             _internalList.Clear();
         }
-
 
         internal Table Add(Table value)
         {

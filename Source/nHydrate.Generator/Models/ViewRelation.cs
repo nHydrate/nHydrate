@@ -346,11 +346,6 @@ namespace nHydrate.Generator.Models
 
         #region Helpers
 
-        public Reference CreateRef()
-        {
-            return CreateRef(Guid.NewGuid().ToString());
-        }
-
         public Reference CreateRef(string key)
         {
             var returnVal = new Reference(this.Root);
@@ -359,7 +354,6 @@ namespace nHydrate.Generator.Models
             returnVal.RefType = ReferenceType.ViewRelation;
             return returnVal;
         }
-
 
         public override string ToString()
         {

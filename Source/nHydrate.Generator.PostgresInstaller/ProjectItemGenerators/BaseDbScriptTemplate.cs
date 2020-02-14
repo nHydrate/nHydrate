@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using nHydrate.Generator.Models;
 using nHydrate.Generator.ProjectItemGenerators;
 

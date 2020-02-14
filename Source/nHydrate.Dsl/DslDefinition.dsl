@@ -141,13 +141,6 @@
           </Type>
         </DomainProperty>
         <DomainProperty Id="be71ee12-7759-4612-930e-e53430febfb8" Description="The target location for generated projects" Name="OutputTarget" DisplayName="Output Target" Category="Definition" IsBrowsable="false">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Editors.OutputTargetEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
           </Type>

@@ -8,7 +8,7 @@ using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.UnversionedUpgrade
 {
-    [GeneratorItemAttribute("UpgradeVersioned", typeof(PostgresDatabaseProjectGenerator))]
+    [GeneratorItem("UpgradeVersioned", typeof(PostgresDatabaseProjectGenerator))]
     public class UpgradeUnversionedScriptGenerator : BaseDbScriptGenerator
     {
         #region Class Members

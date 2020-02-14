@@ -485,7 +485,7 @@ namespace nHydrate.Generator.Models
         public virtual string GetCodeDefault()
         {
             var defaultValue = string.Empty;
-            if (this.IsDateType)
+            if (this.DataType.IsDateType())
             {
                 var scrubbed = this.Default.Replace("(", string.Empty).Replace(")", string.Empty);
                 if (scrubbed == "getdate")
@@ -529,7 +529,7 @@ namespace nHydrate.Generator.Models
                 if (this.Default.Length == 1)
                     defaultValue = "@\"" + this.Default[0].ToString().Replace("\"", @"""") + "\"";
             }
-            else if (this.IsBinaryType)
+            else if (this.DataType.IsBinaryType())
             {
                 defaultValue = "new System.Byte[] { " + this.Default.ConvertToHexArrayString() + " }";
             }
@@ -556,7 +556,7 @@ namespace nHydrate.Generator.Models
                 else if (!string.IsNullOrEmpty(this.Default) && this.Default.Length == 36)
                     defaultValue = "new Guid(\"" + this.Default.Replace("'", "") + "\")";
             }
-            else if (this.IsIntegerType)
+            else if (this.DataType.IsIntegerType())
             {
                 defaultValue = "0";
                 int i;
@@ -564,7 +564,7 @@ namespace nHydrate.Generator.Models
                     defaultValue = this.Default;
                 if (this.DataType == System.Data.SqlDbType.BigInt) defaultValue += "L";
             }
-            else if (this.IsNumericType)
+            else if (this.DataType.IsNumericType())
             {
                 defaultValue = "0";
                 if (double.TryParse(this.Default, out _))
@@ -583,7 +583,7 @@ namespace nHydrate.Generator.Models
             }
             else
             {
-                if (ModelHelper.IsTextType(this.DataType))
+                if (this.DataType.IsTextType())
                     defaultValue = "\"" + this.Default.Replace("''", "") + "\"";
                 else
                     defaultValue = "\"" + this.Default + "\"";
@@ -593,7 +593,7 @@ namespace nHydrate.Generator.Models
 
         public virtual string GetSQLDefault()
         {
-            return ModelHelper.GetSQLDefault(this.DataType, this.Default);
+            return this.DataType.GetSQLDefault(this.Default);
         }
 
         public virtual bool IsValidDefault(string value)

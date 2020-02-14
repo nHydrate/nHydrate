@@ -8,7 +8,7 @@ using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateRelations
 {
-	[GeneratorItemAttribute("CreateReleations", typeof(DatabaseProjectGenerator))]
+	[GeneratorItem("CreateReleations", typeof(DatabaseProjectGenerator))]
 	public class CreateRelationsGenerator : BaseDbScriptGenerator
 	{
 		#region Class Members

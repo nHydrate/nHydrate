@@ -10,7 +10,7 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Datasite
 {
-	[GeneratorItemAttribute("Datasite", typeof(DatasiteProjectGenerator))]
+	[GeneratorItem("Datasite", typeof(DatasiteProjectGenerator))]
 	public class DatasiteGenerator : BaseScriptGenerator
 	{
 		#region Class Members

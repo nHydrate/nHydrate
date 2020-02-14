@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Dsl.Design.Converters
 {
@@ -28,7 +29,7 @@ namespace nHydrate.Dsl.Design.Converters
 				if (destinationType == typeof(string))
 				{
 					var retval = string.Empty;
-					if (column != null && column.IsNumericType())
+					if (column != null && column.DataType.IsNumericType())
 					{
 						retval = column.Max.ToString();
 						if (double.IsNaN(column.Max))

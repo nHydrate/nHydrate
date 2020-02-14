@@ -8,7 +8,7 @@ using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.UnversionedUpgrade
 {
-    [GeneratorItemAttribute("UpgradeVersioned", typeof(DatabaseProjectGenerator))]
+    [GeneratorItem("UpgradeVersioned", typeof(DatabaseProjectGenerator))]
     public class UpgradeUnversionedScriptGenerator : BaseDbScriptGenerator
     {
         #region Class Members

@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Xml;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
@@ -208,26 +207,6 @@ namespace nHydrate.Generator.Models
 			foreach (ViewRelation element in this)
 			{
 				if (id == element.Id)
-					return true;
-			}
-			return false;
-		}
-
-		public bool Contains(ViewRelation item)
-		{
-			foreach (ViewRelation element in this)
-			{
-				if (item == element)
-					return true;
-			}
-			return false;
-		}
-
-		public bool Contains(string name)
-		{
-			foreach (ViewRelation element in this)
-			{
-				if (string.Compare(name, element.ConstraintName, true) == 0)
 					return true;
 			}
 			return false;

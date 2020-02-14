@@ -2181,7 +2181,6 @@ namespace nHydrate.Dsl
 		/// Gets or sets the value of OutputTarget domain property.
 		/// The target location for generated projects
 		/// </summary>
-		[System.ComponentModel.Editor(typeof(nHydrate.Dsl.Design.Editors.OutputTargetEditor), typeof(System.Drawing.Design.UITypeEditor))]
 		[DslDesign::DisplayNameResource("nHydrate.Dsl.nHydrateModel/OutputTarget.DisplayName", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::CategoryResource("nHydrate.Dsl.nHydrateModel/OutputTarget.Category", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("nHydrate.Dsl.nHydrateModel/OutputTarget.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]

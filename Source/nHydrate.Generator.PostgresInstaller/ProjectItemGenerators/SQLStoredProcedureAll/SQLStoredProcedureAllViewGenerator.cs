@@ -1,17 +1,13 @@
 #pragma warning disable 0168
 using System;
 using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
-using nHydrate.Generator.ProjectItemGenerators;
 using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredProcedureAll
 {
-    [GeneratorItemAttribute("SQLStoredProcedureAllViewGenerator", typeof(PostgresDatabaseProjectGenerator))]
+    [GeneratorItem("SQLStoredProcedureAllViewGenerator", typeof(PostgresDatabaseProjectGenerator))]
     public class SQLStoredProcedureAllViewGenerator : BaseDbScriptGenerator
     {
         #region Properties
@@ -28,7 +24,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredPr
         {
             try
             {
-
                 //Process views
                 var sb = new StringBuilder();
                 sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");

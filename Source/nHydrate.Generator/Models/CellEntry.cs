@@ -11,9 +11,6 @@ namespace nHydrate.Generator.Models
     {
         #region Member Variables
 
-        protected Reference _columnRef;
-        protected string _value;
-
         #endregion
 
         #region Constructor
@@ -25,23 +22,16 @@ namespace nHydrate.Generator.Models
 
         public CellEntry()
         {
+            //Only needed for BaseModelCollection<T>
         }
 
         #endregion
 
         #region Property Implementations
 
-        public Reference ColumnRef
-        {
-            get { return _columnRef; }
-            set { _columnRef = value; }
-        }
+        public Reference ColumnRef { get; set; }
 
-        public string Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
+        public string Value { get; set; }
 
         public virtual bool IsDataValid()
         {
@@ -151,9 +141,9 @@ namespace nHydrate.Generator.Models
 
             if (column.AllowNull && v == "(NULL)")
                 return null;
-            else if (ModelHelper.IsTextType(column.DataType) ||
-                ModelHelper.IsDateType(column.DataType) ||
-                column.DataType == System.Data.SqlDbType.UniqueIdentifier
+            else if (column.DataType.IsTextType() ||
+                     column.DataType.IsDateType() ||
+                     column.DataType == System.Data.SqlDbType.UniqueIdentifier
                 )
                 return "'" + v.Replace("'", "''") + "'";
             else
@@ -167,9 +157,9 @@ namespace nHydrate.Generator.Models
 
             if (column.AllowNull && v == "(NULL)")
                 return null;
-            else if (ModelHelper.IsTextType(column.DataType) ||
-                ModelHelper.IsDateType(column.DataType) ||
-                column.DataType == System.Data.SqlDbType.UniqueIdentifier
+            else if (column.DataType.IsTextType() ||
+                     column.DataType.IsDateType() ||
+                     column.DataType == System.Data.SqlDbType.UniqueIdentifier
                 )
                 return "\"" + v.Replace("\"", @"""") + "\"";
             else

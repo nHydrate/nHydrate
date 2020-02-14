@@ -201,7 +201,7 @@ namespace nHydrate.Dsl
                 if (userValue.Length == 1)
                     defaultValue = "@\"" + userValue.First().ToString().Replace("\"", @"""") + "\"";
             }
-            else if (this.IsBinaryType())
+            else if (this.DataType.IsBinaryType())
             {
                 defaultValue = "new System.Byte[] { " + userValue.ConvertToHexArrayString() + " }";
             }
@@ -230,7 +230,7 @@ namespace nHydrate.Dsl
                         defaultValue = "new Guid(\"" + gv + "\")";
                 }
             }
-            else if (this.IsIntegerType())
+            else if (this.DataType.IsIntegerType())
             {
                 defaultValue = "0";
                 int i;
@@ -238,7 +238,7 @@ namespace nHydrate.Dsl
                     defaultValue = userValue;
                 if (this.DataType == DataTypeConstants.BigInt) defaultValue += "L";
             }
-            else if (this.IsNumericType())
+            else if (this.DataType.IsNumericType())
             {
                 defaultValue = "0";
                 double d;
@@ -257,7 +257,7 @@ namespace nHydrate.Dsl
             }
             else
             {
-                if (Extensions.IsTextType(this))
+                if (this.DataType.IsTextType())
                     defaultValue = "\"" + userValue.Replace("''", "") + "\"";
                 else
                     defaultValue = "\"" + userValue + "\"";
@@ -568,7 +568,7 @@ namespace nHydrate.Dsl
             get
             {
                 if (this.IsCalculated) return double.NaN;
-                if (!this.IsNumericType()) return double.NaN;
+                if (!this.DataType.IsNumericType()) return double.NaN;
                 return base.Min;
             }
             set { base.Min = value; }
@@ -579,7 +579,7 @@ namespace nHydrate.Dsl
             get
             {
                 if (this.IsCalculated) return double.NaN;
-                if (!this.IsNumericType()) return double.NaN;
+                if (!this.DataType.IsNumericType()) return double.NaN;
                 return base.Max;
             }
             set { base.Max = value; }

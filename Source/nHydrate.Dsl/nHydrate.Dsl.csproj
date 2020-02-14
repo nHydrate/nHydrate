@@ -156,7 +156,6 @@
     <Compile Include="Design\Converters\TextLengthConverter.cs" />
     <Compile Include="Design\Converters\VersionConverter.cs" />
     <Compile Include="Design\Editors\SecurityFunctionEditor.cs" />
-    <Compile Include="Design\Editors\OutputTargetEditor.cs" />
     <Compile Include="Design\Editors\EntityFieldEditor.cs" />
     <Compile Include="Design\Editors\CopyrightEditor.cs" />
     <Compile Include="Design\Editors\ModuleEditor.cs" />
@@ -172,12 +171,6 @@
     </Compile>
     <Compile Include="Design\Forms\CopyrightForm.Designer.cs">
       <DependentUpon>CopyrightForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Design\Forms\OutputTargetForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Design\Forms\OutputTargetForm.Designer.cs">
-      <DependentUpon>OutputTargetForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Design\Forms\SQLForm.cs">
       <SubType>Form</SubType>
@@ -370,9 +363,6 @@
     <Content Include="Versioning.txt" />
     <EmbeddedResource Include="Design\Forms\SecurityFunctionForm.resx">
       <DependentUpon>SecurityFunctionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Design\Forms\OutputTargetForm.resx">
-      <DependentUpon>OutputTargetForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GeneratedCode\DomainModelResx.resx">
       <AutoGen>True</AutoGen>

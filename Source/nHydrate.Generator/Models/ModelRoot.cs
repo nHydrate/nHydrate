@@ -2,9 +2,7 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
-using System.Drawing.Design;
 using System.Linq;
-using System.Windows.Forms;
 using System.Xml;
 using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.GeneratorFramework;
@@ -294,14 +292,6 @@ namespace nHydrate.Generator.Models
                 s = _def_storedProcedurePrefix;
 
             return s;
-        }
-
-        public string GetStoredProcedurePrefix(CustomStoredProcedure storedProcecdure)
-        {
-            if (string.IsNullOrEmpty(storedProcecdure.DatabaseObjectName))
-                return GetStoredProcedurePrefix();
-            else
-                return string.Empty;
         }
 
         #endregion

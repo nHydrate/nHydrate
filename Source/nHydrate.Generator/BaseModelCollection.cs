@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Windows.Forms.VisualStyles;
 using System.Xml;
 
 namespace nHydrate.Generator.Common.GeneratorFramework
@@ -83,26 +84,31 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                 item.XmlAppend(newNode);
                 node.AppendChild(newNode);
             }
-
         }
 
         public override void XmlLoad(XmlNode node)
         {
-            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-            XmlNodeList nList = null;
-            if (!string.IsNullOrEmpty(this.NodeOldName))
-                nList = node.SelectNodes(this.NodeOldName);
-            if (nList.Count == 0) nList = node.SelectNodes(this.NodeName);
-            foreach (XmlNode n in nList)
+            try
             {
-                var newNode = new T();
-                newNode.Root = this.Root;
-                newNode.XmlLoad(n);
-                this.Add(newNode);
+                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+                XmlNodeList nList = null;
+                if (!string.IsNullOrEmpty(this.NodeOldName))
+                    nList = node.SelectNodes(this.NodeOldName);
+                if (nList == null || nList.Count == 0)
+                    nList = node.SelectNodes(this.NodeName);
+                foreach (XmlNode n in nList)
+                {
+                    var newNode = new T();
+                    newNode.Root = this.Root;
+                    newNode.XmlLoad(n);
+                    this.Add(newNode);
+                }
+                this.Dirty = false;
             }
-
-            this.Dirty = false;
-
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         #endregion

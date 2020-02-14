@@ -79,8 +79,6 @@
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\Program.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptGenerator.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptTemplate.cs" />
-    <Compile Include="ProjectItemGenerators\ScriptOrder\ScriptOrderGenerator.cs" />
-    <Compile Include="ProjectItemGenerators\ScriptOrder\ScriptOrderTemplate.cs" />
     <Compile Include="ProjectItemGenerators\Functions\FunctionsGenerator.cs" />
     <Compile Include="ProjectItemGenerators\Functions\FunctionsTemplate.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseCreateData\CreateDataGenerator.cs" />
@@ -130,6 +128,9 @@
       <Project>{E2040FE8-13C7-4A6B-860B-E612A0FDBEFF}</Project>
       <Name>nHydrate.Generator</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ProjectItemGenerators\ScriptOrder\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

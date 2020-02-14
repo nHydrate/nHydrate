@@ -11,7 +11,7 @@ using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedureAll
 {
-    [GeneratorItemAttribute("SQLStoredProcedureAllTableGenerator", typeof(DatabaseProjectGenerator))]
+    [GeneratorItem("SQLStoredProcedureAllTableGenerator", typeof(DatabaseProjectGenerator))]
     public class SQLStoredProcedureAllTableGenerator : BaseDbScriptGenerator
     {
         #region Properties

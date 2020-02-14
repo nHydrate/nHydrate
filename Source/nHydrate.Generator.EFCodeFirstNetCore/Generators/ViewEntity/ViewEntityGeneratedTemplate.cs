@@ -231,9 +231,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 
                 sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 
-                if (column.IsTextType && column.IsMaxLength())
+                if (column.DataType.IsTextType() && column.IsMaxLength())
                     sb.AppendLine("		[StringLengthUnbounded]");
-                else if (column.IsTextType && !column.IsMaxLength())
+                else if (column.DataType.IsTextType() && !column.IsMaxLength())
                     sb.AppendLine($"		[System.ComponentModel.DataAnnotations.StringLength({column.Length})]");
 
                 sb.AppendLine("		public virtual " + column.GetCodeType() + " " + column.PascalName + " { get; protected set; }");
@@ -361,7 +361,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
                         case System.Data.SqlDbType.NChar:
                         case System.Data.SqlDbType.NVarChar:
                         case System.Data.SqlDbType.VarChar:
-                            if ((column.Length == 0) && (ModelHelper.SupportsMax(column.DataType)))
+                            if ((column.Length == 0) && (column.DataType.SupportsMax()))
                                 sb.AppendLine("					return int.MaxValue;");
                             else
                                 sb.AppendLine("					return " + column.Length + ";");

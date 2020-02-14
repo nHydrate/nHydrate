@@ -390,7 +390,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		public " + modifieraux + " object CloneAsNew()");
             sb.AppendLine("		{");
             sb.AppendLine("			var item = " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".Clone(this);");
-            foreach (var pk in _item.GeneratedColumns.Where(x => x.Identity == IdentityTypeConstants.Database && x.IsNumericType))
+            foreach (var pk in _item.GeneratedColumns.Where(x => x.Identity == IdentityTypeConstants.Database && x.DataType.IsNumericType()))
             {
                 sb.AppendLine("			item._" + pk.CamelName + " = 0;");
             }
@@ -530,9 +530,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     sb.AppendLine("	[CustomMetadata(Key = \"" + StringHelper.ConvertTextToSingleLineCodeString(meta.Key) + "\", Value = \"" + meta.Value.Replace("\"", "\\\"") + "\")]");
                 }
 
-                if (column.IsTextType && column.IsMaxLength())
+                if (column.DataType.IsTextType() && column.IsMaxLength())
                     sb.AppendLine("		[StringLengthUnbounded]");
-                else if (column.IsTextType && !column.IsMaxLength())
+                else if (column.DataType.IsTextType() && !column.IsMaxLength())
                     sb.AppendLine($"		[System.ComponentModel.DataAnnotations.StringLength({column.Length})]");
 
                 sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
@@ -573,7 +573,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                 #region Validation
                 //Error Check for field size
-                if (ModelHelper.IsTextType(column.DataType))
+                if (column.DataType.IsTextType())
                 {
                     sb.Append("				if ((value != null) && (value.Length > GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")))");
                     sb.AppendLine(" throw new Exception(string.Format(GlobalValues.ERROR_DATA_TOO_BIG, value, \"" + _item.PascalName + "." + column.PascalName + "\", GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")));");
@@ -584,7 +584,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value < GlobalValues.MIN_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(\"yyyy-MM-dd HH:mm:ss\") + \") cannot be less than \" + GlobalValues.MIN_DATETIME.ToString());");
                     sb.AppendLine("				if (" + (column.AllowNull ? "(value != null) && " : "") + "(value > GlobalValues.MAX_DATETIME)) throw new Exception(\"The DateTime value '" + column.PascalName + "' (\" + value" + (column.AllowNull ? ".Value" : "") + ".ToString(\"yyyy-MM-dd HH:mm:ss\") + \") cannot be greater than \" + GlobalValues.MAX_DATETIME.ToString());");
                 }
-                else if (ModelHelper.IsBinaryType(column.DataType))
+                else if (column.DataType.IsBinaryType())
                 {
                     sb.Append("				if ((value != null) && (value.Length > GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")))");
                     sb.AppendLine(" throw new Exception(string.Format(GlobalValues.ERROR_DATA_TOO_BIG, value, \"" + _item.PascalName + "." + column.PascalName + "\", GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")));");
@@ -923,7 +923,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         case System.Data.SqlDbType.NChar:
                         case System.Data.SqlDbType.NVarChar:
                         case System.Data.SqlDbType.VarChar:
-                            if ((column.Length == 0) && (ModelHelper.SupportsMax(column.DataType)))
+                            if ((column.Length == 0) && (column.DataType.SupportsMax()))
                                 sb.AppendLine("					return int.MaxValue;");
                             else
                                 sb.AppendLine($"					return {column.Length};");
@@ -1184,7 +1184,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     }
                     else
                     {
-                        if (ModelHelper.IsTextType(column.DataType))
+                        if (column.DataType.IsTextType())
                         {
                             sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperInternal((string)newValue, fixLength, GetMaxLength(field));");
                         }
@@ -1195,7 +1195,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             else
                                 sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperDoubleNotNullableInternal(newValue, \"Field '" + column.PascalName + "' does not allow null values!\");");
                         }
-                        else if (ModelHelper.IsDateType(column.DataType))
+                        else if (column.DataType.IsDateType())
                         {
                             if (column.AllowNull)
                                 sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperDateTimeNullableInternal(newValue);");
@@ -1679,7 +1679,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
 
                 //If text then validate the length
-                if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml)
+                if (column.DataType.IsTextType() && column.DataType != System.Data.SqlDbType.Xml)
                 {
                     var l = column.GetAnnotationStringLength();
                     if (l > 0)

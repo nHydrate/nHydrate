@@ -8,7 +8,7 @@ using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSchema
 {
-    [GeneratorItemAttribute("CreateSchema", typeof(PostgresDatabaseProjectGenerator))]
+    [GeneratorItem("CreateSchema", typeof(PostgresDatabaseProjectGenerator))]
     public class CreateSchemaGenerator : BaseDbScriptGenerator
     {
         #region Class Members

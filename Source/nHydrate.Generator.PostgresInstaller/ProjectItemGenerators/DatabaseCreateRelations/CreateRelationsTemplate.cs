@@ -1,13 +1,8 @@
 #pragma warning disable 0168
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Text;
-using nHydrate.Generator;
 using nHydrate.Generator.Models;
-using System.Collections;
-using nHydrate.Generator.Common.Util;
-using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCreateRelations
 {

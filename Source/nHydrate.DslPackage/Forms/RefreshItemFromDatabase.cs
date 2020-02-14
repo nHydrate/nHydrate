@@ -1,17 +1,11 @@
 #pragma warning disable 0168
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using nHydrate.Dsl;
 using System.IO;
 using nHydrate.DataImport;
 using nHydrate.DslPackage.Objects;
-using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.DslPackage.Forms
 {
@@ -66,12 +60,6 @@ namespace nHydrate.DslPackage.Forms
 
             wizard1.FinishEnabled = false;
 
-        }
-
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Close();
         }
 
         private void LoadDatabaseObjects()
