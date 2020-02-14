@@ -1,1 +1,0 @@
-Add scripts that will always run after schema and upgrades in this folder. Make them embedded resources and they will be run in alphabetical order.

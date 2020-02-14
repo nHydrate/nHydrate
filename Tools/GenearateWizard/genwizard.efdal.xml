@@ -1,9 +1,0 @@
-<wizards>
-	<wizard name="Entity Framework DAL" description="This set of three (3) projects creates an Entity Framework data access layer, its interface project and a database installer" picture="efdal_diagram.png">
-		<projects>
-			<project key="b8bd6b27-b9f2-4291-82e8-88e1295eef06" />
-			<project key="b8bd6b27-b9f2-4291-82e8-88e1295eef07" />
-			<project key="b8bd6b27-b9f2-4291-82e8-88e1295eef09" />
-		</projects>
-	</wizard>
-</wizards>

@@ -1,1 +1,0 @@
-Add scripts that will be run after schema and upgrades on a database creation in this folder. Make them embedded resources and they will be run in alphabetical order.

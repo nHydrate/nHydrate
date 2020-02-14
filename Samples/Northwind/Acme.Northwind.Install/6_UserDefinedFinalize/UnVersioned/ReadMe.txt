@@ -1,1 +1,0 @@
-Add scripts that will be run after all other scripts on an existing non-versioned database in this folder. Make them embedded resources and they will be run in alphabetical order.

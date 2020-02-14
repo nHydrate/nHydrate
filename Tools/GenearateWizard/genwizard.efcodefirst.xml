@@ -1,7 +1,0 @@
-<wizards>
-	<wizard name="Entity Framework Code-First (BETA)" description="This generates a project based on the code first CTP5 release on top of Entity Framework" picture="efcodefirst_diagram.png">
-		<projects>
-			<project key="b8bd6b27-b9f2-4291-82e8-88e1295eef05" />
-		</projects>
-	</wizard>
-</wizards>

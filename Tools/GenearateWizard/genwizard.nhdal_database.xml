@@ -1,8 +1,0 @@
-<wizards>
-	<wizard name="nHydrate DAL" description="This set of two (2) projects creates a nHydrate data access layer and a database installer" picture="nhdal_diagram.png">
-		<projects>
-			<project key="b8bd6b27-b9f2-4291-82e8-88e1295eef01" />
-			<project key="b8bd6b27-b9f2-4291-82e8-88e1295eef09" />
-		</projects>
-	</wizard>
-</wizards>

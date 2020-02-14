@@ -1,8 +1,0 @@
---DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.
---Static Data For Version 0.0.0.0
---Generated on 2012-02-25 15:25:22
-
-exec sp_MSforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'
-
-exec sp_MSforeachtable 'ALTER TABLE ? CHECK CONSTRAINT ALL'
-
