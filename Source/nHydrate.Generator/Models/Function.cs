@@ -326,15 +326,6 @@ namespace nHydrate.Generator.Models
             get { return this.Name; }
         }
 
-        public IList<FunctionColumn> PrimaryKeyColumns
-        {
-            get
-            {
-                var primaryKeyColumns = new List<FunctionColumn>();
-                return primaryKeyColumns;
-            }
-        }
-
         #endregion
 
         #region CorePropertiesHash
@@ -369,14 +360,6 @@ namespace nHydrate.Generator.Models
                 _codeFacade = value;
                 this.OnPropertyChanged(this, new PropertyChangedEventArgs("codeFacade"));
             }
-        }
-
-        public string GetCodeFacade()
-        {
-            if (this.CodeFacade == "")
-                return this.Name;
-            else
-                return this.CodeFacade;
         }
 
         #endregion

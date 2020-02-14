@@ -43,40 +43,29 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        [Browsable(false)]
         public INHydrateModelObject Parent
         {
             get { return _parent; }
         }
 
-        [Browsable(false)]
-        public ReferenceType RefType
-        {
-            get { return _refType; }
-        }
-
-        [Browsable(false)]
         public string ObjectSingular
         {
             get { return _objectSingular; }
             set { _objectSingular = value; }
         }
 
-        [Browsable(false)]
         public string ObjectPlural
         {
             get { return _objectPlural; }
             set { _objectPlural = value; }
         }
 
-        [Browsable(false)]
         public int ImageIndex
         {
             get { return _imageIndex; }
             set { _imageIndex = value; }
         }
 
-        [Browsable(false)]
         public int SelectedImageIndex
         {
             get { return _selectedImageIndex; }
@@ -326,13 +315,11 @@ namespace nHydrate.Generator.Models
 
         #region ICollection Members
 
-        [Browsable(false)]
         public override bool IsSynchronized
         {
             get { return false; }
         }
 
-        [Browsable(false)]
         public override int Count
         {
             get
@@ -348,7 +335,6 @@ namespace nHydrate.Generator.Models
 
         private readonly object _syncRoot = "QQQ";
 
-        [Browsable(false)]
         public override object SyncRoot
         {
             get { return _syncRoot; }

@@ -79,19 +79,5 @@ namespace nHydrate.Generator.Common.Util
             return folders;
         }
 
-        //public static 
-
-        //public static List<EnvDTE.Project> GetFolders(this EnvDTE80.SolutionFolder project)
-        //{
-        //  var folders = new List<EnvDTE.Project>();
-        //  for (int ii = 1; ii <= project.ot.ProjectItems.Count; ii++)
-        //  {
-        //    var child = project.ProjectItems.Item(ii);
-        //    if (child.Kind == "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}")
-        //      folders.Add(project);
-        //  }
-        //  return folders;
-        //}
-
     }
 }

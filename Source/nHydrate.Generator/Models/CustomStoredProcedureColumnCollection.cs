@@ -108,11 +108,6 @@ namespace nHydrate.Generator.Models
 
         #region IDictionary Members
 
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
-
         public CustomStoredProcedureColumn this[int id]
         {
             get { return _internalList.FirstOrDefault(x => x.Id == id); }
@@ -165,11 +160,6 @@ namespace nHydrate.Generator.Models
         public CustomStoredProcedureColumn Add()
         {
             return this.Add(this.GetUniqueName());
-        }
-
-        public bool IsFixedSize
-        {
-            get { throw new NotImplementedException(); }
         }
 
         public bool Contains(string name)

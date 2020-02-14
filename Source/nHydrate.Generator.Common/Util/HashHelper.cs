@@ -13,57 +13,6 @@ namespace nHydrate.Generator.Common.Util
 
         #region Public interfaces...
 
-        public enum ServiceProviderEnum : int
-        {
-            SHA1,
-            SHA256,
-            SHA384,
-            SHA512,
-            MD5
-        }
-
-        public HashHelper()
-        {
-            mCryptoService = new SHA1Managed();
-        }
-
-        public HashHelper(ServiceProviderEnum serviceProvider)
-        {
-            // Select hash algorithm
-            switch (serviceProvider)
-            {
-                case ServiceProviderEnum.MD5:
-                    mCryptoService = new MD5CryptoServiceProvider();
-                    break;
-                case ServiceProviderEnum.SHA1:
-                    mCryptoService = new SHA1Managed();
-                    break;
-                case ServiceProviderEnum.SHA256:
-                    mCryptoService = new SHA256Managed();
-                    break;
-                case ServiceProviderEnum.SHA384:
-                    mCryptoService = new SHA384Managed();
-                    break;
-                case ServiceProviderEnum.SHA512:
-                    mCryptoService = new SHA512Managed();
-                    break;
-            }
-        }
-
-        public HashHelper(string serviceProviderName)
-        {
-            try
-            {
-                // Set Hash algorithm
-                mCryptoService = (HashAlgorithm)CryptoConfig.CreateFromName(
-                    serviceProviderName.ToUpper());
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
         public virtual string Encrypt(string plainText)
         {
             var cryptoByte = mCryptoService.ComputeHash(
@@ -97,18 +46,11 @@ namespace nHydrate.Generator.Common.Util
             return sb.ToString();
         }
 
-
         public bool Match(string input, string hashValue)
         {
             return StringHelper.Match(this.Encrypt(input), hashValue, true);
         }
 
-        public string Salt
-        {
-            // Salt value
-            get { return mSalt; }
-            set { mSalt = value; }
-        }
         #endregion
     }
 

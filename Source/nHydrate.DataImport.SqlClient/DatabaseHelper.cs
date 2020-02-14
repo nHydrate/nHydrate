@@ -137,26 +137,6 @@ namespace nHydrate.DataImport.SqlClient
             //return sp.GetDirectQueryCommand();
         }
 
-        internal static void SetParameterValue(IDbCommand command, string paramName, object inValue)
-        {
-            try
-            {
-                var currentParam = (IDbDataParameter)command.Parameters[paramName];
-                if (currentParam != null)
-                {
-                    currentParam.Value = inValue;
-                }
-                else
-                {
-                    throw new Exception("Parameter: " + paramName + " is missing from stored procedure: " + command.CommandText);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Parameter: " + paramName + " is missing from stored procedure: " + command.CommandText, ex);
-            }
-        }
-
         internal static SqlDataReader ExecuteReader(IDbConnection connection, CommandType cmdType, string stmt)
         {
             var cmd = GetCommand();
@@ -183,18 +163,6 @@ namespace nHydrate.DataImport.SqlClient
             {
                 throw;
             }
-        }
-
-        internal static SqlDataReader ExecuteReader(IDbCommand selectCommand)
-        {
-            var cmd = (SqlCommand)selectCommand;
-            return (SqlDataReader)cmd.ExecuteReader();
-        }
-
-        internal static IDbDataAdapter GetDataAdapter()
-        {
-            var da = new SqlDataAdapter();
-            return da;
         }
 
         internal static IDbCommand GetCommand()
@@ -361,78 +329,6 @@ namespace nHydrate.DataImport.SqlClient
                 case SqlNativeTypes.xml: return SqlDbType.Xml;
                 default: throw new Exception("Unknown native SQL type '" + nativeType.ToString() + "'!");
             }
-        }
-
-        internal static SqlDbType GetSQLDataType(string sqlTypeString)
-        {
-            if (StringHelper.Match(sqlTypeString, "BigInt", true))
-                return SqlDbType.BigInt;
-            else if (StringHelper.Match(sqlTypeString, "Binary", true))
-                return SqlDbType.Binary;
-            else if (StringHelper.Match(sqlTypeString, "Bit", true))
-                return SqlDbType.Bit;
-            else if (StringHelper.Match(sqlTypeString, "Char", true))
-                return SqlDbType.Char;
-            else if (StringHelper.Match(sqlTypeString, "DateTime", true))
-                return SqlDbType.DateTime;
-            else if (StringHelper.Match(sqlTypeString, "Decimal", true))
-                return SqlDbType.Decimal;
-            else if (StringHelper.Match(sqlTypeString, "Numeric", true))
-                return SqlDbType.Decimal;
-            else if (StringHelper.Match(sqlTypeString, "Float", true))
-                return SqlDbType.Float;
-            else if (StringHelper.Match(sqlTypeString, "Image", true))
-                return SqlDbType.Image;
-            else if (StringHelper.Match(sqlTypeString, "Int", true))
-                return SqlDbType.Int;
-            else if (StringHelper.Match(sqlTypeString, "Money", true))
-                return SqlDbType.Money;
-            else if (StringHelper.Match(sqlTypeString, "NChar", true))
-                return SqlDbType.NChar;
-            else if (StringHelper.Match(sqlTypeString, "NText", true))
-                return SqlDbType.NText;
-            else if (StringHelper.Match(sqlTypeString, "NVarChar", true))
-                return SqlDbType.NVarChar;
-            else if (StringHelper.Match(sqlTypeString, "Real", true))
-                return SqlDbType.Real;
-            else if (StringHelper.Match(sqlTypeString, "UniqueIdentifier", true))
-                return SqlDbType.UniqueIdentifier;
-            else if (StringHelper.Match(sqlTypeString, "SmallDateTime", true))
-                return SqlDbType.SmallDateTime;
-            else if (StringHelper.Match(sqlTypeString, "SmallInt", true))
-                return SqlDbType.SmallInt;
-            else if (StringHelper.Match(sqlTypeString, "SmallMoney", true))
-                return SqlDbType.SmallMoney;
-            else if (StringHelper.Match(sqlTypeString, "Text", true))
-                return SqlDbType.Text;
-            else if (StringHelper.Match(sqlTypeString, "RowVersion", true))
-                return SqlDbType.Timestamp;
-            else if (StringHelper.Match(sqlTypeString, "TinyInt", true))
-                return SqlDbType.TinyInt;
-            else if (StringHelper.Match(sqlTypeString, "VarBinary", true))
-                return SqlDbType.VarBinary;
-            else if (StringHelper.Match(sqlTypeString, "VarChar", true))
-                return SqlDbType.VarChar;
-            else if (StringHelper.Match(sqlTypeString, "Variant", true))
-                return SqlDbType.Variant;
-            else if (StringHelper.Match(sqlTypeString, "Xml", true))
-                return SqlDbType.Xml;
-            else if (StringHelper.Match(sqlTypeString, "Udt", true))
-                return SqlDbType.Udt;
-            else if (StringHelper.Match(sqlTypeString, "Structured", true))
-                return SqlDbType.Structured;
-            else if (StringHelper.Match(sqlTypeString, "Date", true))
-                return SqlDbType.Date;
-            else if (StringHelper.Match(sqlTypeString, "Time", true))
-                return SqlDbType.Time;
-            else if (StringHelper.Match(sqlTypeString, "DateTime2", true))
-                return SqlDbType.DateTime2;
-            else if (StringHelper.Match(sqlTypeString, "DateTimeOffset", true))
-                return SqlDbType.DateTimeOffset;
-            else if (StringHelper.Match(sqlTypeString, "sysname", true))
-                return SqlDbType.NVarChar;
-            else
-                throw new Exception("Unknown SQL data type!");
         }
 
         #endregion

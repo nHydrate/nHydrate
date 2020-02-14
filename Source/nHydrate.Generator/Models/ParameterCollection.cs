@@ -106,10 +106,6 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region IDictionary Members
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
 
         public Parameter this[int id]
         {
@@ -138,7 +134,6 @@ namespace nHydrate.Generator.Models
             _internalList.Clear();
         }
 
-
         private void Add(Parameter value)
         {
             _internalList.Add(value);
@@ -165,11 +160,6 @@ namespace nHydrate.Generator.Models
         public Parameter Add()
         {
             return this.Add(this.GetUniqueName());
-        }
-
-        public bool IsFixedSize
-        {
-            get { return false; }
         }
 
         public bool Contains(string name)

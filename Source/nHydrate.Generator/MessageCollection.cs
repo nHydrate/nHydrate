@@ -54,13 +54,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 			}
 		}
 
-		public new void RemoveAt(int index)
-		{
-			var element = this[index];
-			this.InnerList.RemoveAt(index);
-			this.OnAfterMessageRemove(this, new nHydrate.Generator.Common.EventArgs.MessageEventArgs(element));
-		}
-
 		public void Insert(int index, Message value)
 		{
 			this.InnerList.Insert(index, value);

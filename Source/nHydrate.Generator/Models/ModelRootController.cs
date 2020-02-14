@@ -9,14 +9,6 @@ namespace nHydrate.Generator.Models
 {
 	public class ModelRootController : BaseModelObjectController
 	{
-		#region Member Variables
-
-		//private ModelRootControllerUIControl _uiControl = null;
-
-		#endregion
-
-		#region Constructor
-
 		public ModelRootController(INHydrateModelObject modelObject)
 			: base(modelObject)
 		{
@@ -24,10 +16,6 @@ namespace nHydrate.Generator.Models
 			this.HeaderDescription = "This object defines all high level settings for the model";
 			this.HeaderImage = ImageHelper.GetImage(ImageConstants.Model);
 		}
-
-		#endregion
-
-		#region Methods
 
 		public void SelectNode(INHydrateModelObject modelObject)
 		{
@@ -47,10 +35,6 @@ namespace nHydrate.Generator.Models
 					this.SelectNode(modelObject, node.Nodes);
 			}
 		}
-
-		#endregion
-
-		#region BaseModelObjectController Members
 
 		public override ModelObjectTreeNode Node
 		{
@@ -127,36 +111,11 @@ namespace nHydrate.Generator.Models
 			}
 		}
 
-		//public override ModelObjectUserInterface UIControl
-		//{
-		//  get
-		//  {
-		//    if (this._userInterface == null)
-		//    {
-		//      var ctrl = new PanelUIControl();
-		//      _uiControl = new ModelRootControllerUIControl();
-		//      _uiControl.Populate(this.Object as ModelRoot);
-		//      _uiControl.Dock = System.Windows.Forms.DockStyle.Fill;
-		//      ctrl.MainPanel.Controls.Add(_uiControl);
-		//      ctrl.Dock = DockStyle.Fill;
-		//      this._userInterface = ctrl;
-		//    }
-		//    this._userInterface.Enabled = this.IsEnabled;
-		//    return this._userInterface;
-		//  }
-		//}
-
-		#endregion
-
-		#region Event Handlers
-
 		private void SummaryClick(object sender, System.EventArgs e)
 		{
 			//var F = new ModelSummaryForm((ModelRoot)this.Object);
 			//F.ShowDialog();
 		}
-
-		#endregion
 
 	}
 

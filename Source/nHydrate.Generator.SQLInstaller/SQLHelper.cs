@@ -913,11 +913,6 @@ namespace nHydrate.Generator.SQLInstaller
 
         #endregion
 
-        public static string GetFullHierarchyTableJoin(this Table item)
-        {
-            return item.GetFullHierarchyTableJoin(false);
-        }
-
         public static string GetFullHierarchyTableJoin(this Table item, bool useLinqAlias)
         {
             var t1Name = "[" + item.GetSQLSchema() + "].[" + item.DatabaseName + "]";

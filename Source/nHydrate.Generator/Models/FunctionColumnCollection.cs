@@ -33,17 +33,6 @@ namespace nHydrate.Generator.Models
 
         #region Methods
 
-        public FunctionColumn[] GetById(int id)
-        {
-            var retval = new ArrayList();
-            foreach (FunctionColumn element in this)
-            {
-                if (element.Id == id)
-                    retval.Add(element);
-            }
-            return (FunctionColumn[])retval.ToArray(typeof(FunctionColumn));
-        }
-
         private readonly Random _rnd = new Random();
         internal int NextIndex()
         {
@@ -164,11 +153,6 @@ namespace nHydrate.Generator.Models
         public FunctionColumn Add()
         {
             return this.Add(this.GetUniqueName());
-        }
-
-        public bool IsFixedSize
-        {
-            get { throw new NotImplementedException(); }
         }
 
         public bool Contains(string name)

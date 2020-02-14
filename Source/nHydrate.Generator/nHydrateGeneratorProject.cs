@@ -12,10 +12,7 @@ namespace nHydrate.Generator
     public class nHydrateGeneratorProject : INHydrateGenerator, IXMLable
     {
         #region Constants
-        //public const string ICSharpCodeFile = "ICSharpCode.SharpZipLib.dll";
         public const string EFCoreFile = "nHydrate.EFCore.dll";
-        public const string MicrosoftServiceModelWeb = "Microsoft.ServiceModel.Web.dll";
-        public const string CodeFirstCTP5 = "EntityFramework.dll";
         #endregion
 
         #region Member Variables
@@ -223,78 +220,6 @@ namespace nHydrate.Generator
             //}
 
             return LoadResultConstants.Failed;
-        }
-
-        //public static void AddICSharpDllToBinFolder()
-        //{
-        //  AddAssemblyBinFolder(ICSharpCodeFile);
-        //}
-
-        public static void AddEFCoreToBinFolder()
-        {
-            AddAssemblyBinFolder(EFCoreFile);
-        }
-
-        public static void AddMicrosoftServiceModelWebToBinFolder()
-        {
-            AddAssemblyBinFolder(MicrosoftServiceModelWeb);
-        }
-
-        /// <summary>
-        /// Adds the specified assembly from the extensions folder to the generated 'bin' folder
-        /// </summary>
-        /// <param name="fileName"></param>
-        public static void AddAssemblyBinFolder(string fileName)
-        {
-            var binDirectoryString = Path.Combine(EnvDTEHelper.Instance.SolutionDirectory.FullName, "bin");
-            var coreFileString = Path.Combine(AddinAppData.Instance.ExtensionDirectory, fileName);
-            var binDirectory = new DirectoryInfo(binDirectoryString);
-            var targetFile = Path.Combine(binDirectoryString, fileName);
-            var coreFile = new FileInfo(coreFileString);
-            if (!binDirectory.Exists)
-                binDirectory.Create();
-
-            //If the file is the same then do not copy it
-            if (File.Exists(coreFileString) && File.Exists(targetFile))
-            {
-                var sourceInfo = new FileInfo(targetFile);
-                if (sourceInfo.Length == coreFile.Length && sourceInfo.LastWriteTime == coreFile.LastWriteTime)
-                    return;
-            }
-
-            MoveFile(binDirectory, coreFile);
-        }
-
-        private static void MoveFile(DirectoryInfo binDirectory, FileInfo fileToMove)
-        {
-            if (!fileToMove.Exists)
-            {
-                GlobalHelper.ShowError("Solution will not build because file " + fileToMove.FullName + " could not be moved to " + binDirectory.FullName);
-            }
-            else
-            {
-                try
-                {
-                    var movedTo = new FileInfo(Path.Combine(binDirectory.FullName, fileToMove.Name));
-                    if (!movedTo.Exists)
-                        fileToMove.CopyTo(movedTo.FullName);
-                    else
-                    {
-                        try
-                        {
-                            fileToMove.CopyTo(movedTo.FullName, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            GlobalHelper.ShowError("Attempt to update file " + fileToMove.FullName + " with the latest from " + binDirectory.FullName + " failed: " + ex.ToString());
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    GlobalHelper.ShowError("Solution will not build because file " + fileToMove.FullName + " could not be moved to " + binDirectory.FullName + " " + ex.ToString());
-                }
-            }
         }
 
         #endregion

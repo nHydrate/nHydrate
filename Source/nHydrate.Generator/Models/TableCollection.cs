@@ -221,10 +221,6 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region IDictionary Members
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
 
         public Table this[int tableId]
         {
@@ -338,11 +334,6 @@ namespace nHydrate.Generator.Models
         public Table Add()
         {
             return this.Add(this.GetUniqueName());
-        }
-
-        public bool IsFixedSize
-        {
-            get { throw new NotImplementedException(); }
         }
 
         public bool Contains(string name)

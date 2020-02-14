@@ -13,9 +13,6 @@ using System.Xml;
 
 namespace nHydrate.Generator.Common.Util
 {
-    /// <summary>
-    /// Summary description for EnvDTEHelper.
-    /// </summary>
     public class EnvDTEHelper
     {
         #region member variables
@@ -28,19 +25,8 @@ namespace nHydrate.Generator.Common.Util
 
         public enum FileStateConstants
         {
-            /// <summary>
-            /// The file was successfully written
-            /// </summary>
             Success,
-
-            /// <summary>
-            /// The file existed and was not marked as overwrite, so it was skipped
-            /// </summary>
             Skipped,
-
-            /// <summary>
-            /// The write failed because the file was in use or read-only
-            /// </summary>
             Failed,
         }
 
@@ -77,16 +63,6 @@ namespace nHydrate.Generator.Common.Util
         public System.Drawing.Color ForegroundColor { get; internal set; }
         public System.Drawing.Color SelectedBackgroundColor { get; internal set; }
 
-        public event EventHandler EnvironmentColorChange;
-
-        internal void TriggerColorChange()
-        {
-            if (EnvironmentColorChange != null)
-            {
-                EnvironmentColorChange(this, new System.EventArgs());
-            }
-        }
-
         public static EnvDTEHelper Instance
         {
             get
@@ -96,25 +72,6 @@ namespace nHydrate.Generator.Common.Util
                     _instance = new EnvDTEHelper();
                 }
                 return _instance;
-            }
-        }
-
-        public SolutionEvents SolutionEvents
-        {
-            get { return _solutionEvents; }
-        }
-
-        public Project CurrentProject
-        {
-            get
-            {
-                var projects = (System.Array)_applicationObject.DTE.ActiveSolutionProjects;
-                if (projects.Length != 1)
-                {
-                    return null;
-                }
-                var currentProject = (Project)projects.GetValue(0);
-                return currentProject;
             }
         }
 
@@ -556,12 +513,6 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        public static void AddReference(Project project, string assemblyLocation)
-        {
-            var vsProject = CastToVSProject(project);
-            vsProject.References.Add(assemblyLocation);
-        }
-
         public static VSProject CastToVSProject(Project project)
         {
             if ((project.Kind == PrjKind.prjKindVBProject) || (project.Kind == PrjKind.prjKindCSharpProject) || (project.Kind == PrjKind.prjKindVSAProject))
@@ -611,11 +562,6 @@ namespace nHydrate.Generator.Common.Util
             fileStateInfo.FileState = FileStateConstants.Success;
         }
 
-        public ProjectItem GetProjectItem(string projectName, string parentItemRelativeName)
-        {
-            return GetProjectItem(projectName, parentItemRelativeName, ProjectItemType.File);
-        }
-
         public ProjectItem GetProjectItem(string projectName, string parentRelativeName, ProjectItemType parentItemType)
         {
             var relativeFolder = string.Empty;
@@ -663,14 +609,6 @@ namespace nHydrate.Generator.Common.Util
                 return null;
             }
         }
-
-        public void SelectProjectItem(ProjectItem pi)
-        {
-            ActivateSolutionHierarchy();
-            var uiHierarchyItem = Find(pi);
-            uiHierarchyItem.Select(vsUISelectionType.vsUISelectionTypeSelect);
-        }
-
 
         public FileInfo[] Find(string fileExtension)
         {
@@ -829,18 +767,6 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        public bool IsModelFileSelected
-        {
-            get
-            {
-                if (CurrentProjectItem != null)
-                {
-                    return GeneratorHelper.IsModelFile(CurrentProjectItem);
-                }
-                return false;
-            }
-        }
-
         public EnvDTE.Project CreateSolutionFolder(string relativePath)
         {
             return CreateSolutionFolder(relativePath, null);
@@ -875,11 +801,6 @@ namespace nHydrate.Generator.Common.Util
                 else
                     return CreateSolutionFolder(string.Join(@"\", arr.Skip(1).Take(arr.Length - 1)), selected);
             }
-        }
-
-        public Project CreateProjectFromTemplate(string template, string projectName)
-        {
-            return CreateProjectFromTemplate(template, projectName, string.Empty);
         }
 
         public Project CreateProjectFromTemplate(string template, string projectName, string outputTarget)
@@ -924,46 +845,6 @@ namespace nHydrate.Generator.Common.Util
                     return (folder.Object as EnvDTE80.SolutionFolder).AddFromTemplate(template, targetFolder, projectName);
                 }
 
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public Project CreateCSharpProject(string name)
-        {
-            try
-            {
-                var currentSolution = new FileInfo(CurrentSolution.FullName);
-                var currentSolutionDirectory = currentSolution.Directory;
-                if (currentSolutionDirectory.GetDirectories(name).Length > 0)
-                    throw new Exception("Directory already exists.");
-
-                var newProjectLocation = currentSolutionDirectory.CreateSubdirectory(name);
-                var installLocation = InstallLocationHelper.VisualStudio2005().FullName;
-                var retval = CurrentSolution.AddFromTemplate(installLocation + @"Common7\IDE\ProjectTemplatesCache\CSharp\Windows\1033\EmptyProject.zip\emptyproject.csproj", newProjectLocation.FullName, name, false);
-                return retval;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public Project CreateDatabaseProject(string name)
-        {
-            try
-            {
-                var currentSolution = new FileInfo(CurrentSolution.FullName);
-                var currentSolutionDirectory = currentSolution.Directory;
-                if (currentSolutionDirectory.GetDirectories(name).Length > 0)
-                    throw new Exception("Directory Already exists.");
-
-                var newProjectLocation = currentSolutionDirectory.CreateSubdirectory(name);
-                var installLocation = InstallLocationHelper.VisualStudio2005().FullName;
-                var retval = CurrentSolution.AddFromTemplate(installLocation + @"Common7\IDE\ProjectTemplatesCache\CSharp\Windows\1033\EmptyDatabase.zip\Database.mdf", newProjectLocation.FullName, name, false);
-                return retval;
             }
             catch (Exception ex)
             {
@@ -1020,20 +901,6 @@ namespace nHydrate.Generator.Common.Util
                 }
             }
             return null;
-        }
-
-        public ProjectItem GetProjectFolder(string projectName, string projectLocation)
-        {
-            var proj = this.GetProject(projectName);
-            if (proj != null)
-                return GetProjectFolder(proj, projectLocation);
-            else
-                return null;
-        }
-
-        public ProjectItem GetProjectItem(ProjectItem parentItem, string projectItem)
-        {
-            return GetProjectItem(parentItem, projectItem, true);
         }
 
         public ProjectItem GetProjectItem(ProjectItem parentItem, string projectItem, bool createPathIfNotExists)
@@ -1230,58 +1097,6 @@ namespace nHydrate.Generator.Common.Util
                 }
                 return false;
             }
-        }
-
-        public bool GetProjectItemExists(ProjectItem parentItem, string projectItem)
-        {
-            if (projectItem != string.Empty)
-            {
-                ProjectItem currentProjectItem = null;
-                foreach (ProjectItem pi in parentItem.ProjectItems)
-                {
-                    if (pi.Name == projectItem)
-                    {
-                        currentProjectItem = pi;
-                    }
-                }
-                return (currentProjectItem != null);
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        public bool GetProjectItemExists(Project project, string projectItemString)
-        {
-            ProjectItem currentProjectItem = null;
-            var currentFolder = string.Empty;
-            var folder = string.Empty;
-            projectItemString = projectItemString.TrimStart(new char[] { '\\' });
-            var folders = projectItemString.Split(new char[] { '\\' });
-            if (folders.Length > 0)
-            {
-                folder = folders[0];
-                foreach (ProjectItem pi in project.ProjectItems)
-                {
-                    if (pi.Name == folder)
-                    {
-                        currentProjectItem = pi;
-                    }
-                }
-            }
-
-            for (var ii = 1; ii < folders.Length; ii++)
-            {
-                if (currentProjectItem != null)
-                {
-                    if (GetProjectItemExists(currentProjectItem, folders[ii]))
-                        return true;
-                }
-            }
-
-            return (currentProjectItem != null);
-
         }
 
         public string Version

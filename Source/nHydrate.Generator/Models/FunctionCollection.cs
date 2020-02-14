@@ -81,11 +81,6 @@ namespace nHydrate.Generator.Models
             get { return _internalList; }
         }
 
-        public ICollection FunctionIds
-        {
-            get { return _internalList.Select(x => x.Id).ToList(); }
-        }
-
         #endregion
 
         #region Methods
@@ -114,17 +109,6 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        #region Helpers
-
-        public Function CreateFunction()
-        {
-            var function = new Function(this.Root);
-            function.ResetId(NextIndex());
-            return function;
-        }
-
-        #endregion
-
         #region IEnumerable Members
         public override IEnumerator GetEnumerator()
         {
@@ -133,10 +117,6 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region IDictionary Members
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
 
         public Function this[int id]
         {
@@ -229,11 +209,6 @@ namespace nHydrate.Generator.Models
         public Function Add()
         {
             return this.Add(this.GetUniqueName());
-        }
-
-        public bool IsFixedSize
-        {
-            get { throw new NotImplementedException(); }
         }
 
         public bool Contains(string name)

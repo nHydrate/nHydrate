@@ -163,87 +163,6 @@ namespace nHydrate.Generator.Common.Util
 
 		#endregion
 
-		#region GetObjectsFromPath
-		public static System.Type[] GetCreatableObjects(System.Type parentType, string path)
-		{
-			var retval = new ArrayList();
-			var al = LoadAllAssembliesForPath(path);
-
-			try
-			{
-				foreach (System.Reflection.Assembly assembly in al)
-				{
-					System.Diagnostics.Debug.WriteLine(assembly.Location);
-					foreach (var t in assembly.GetTypes())
-					{
-						if (parentType.IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface)
-							retval.Add(t);
-						else if (t.IsAssignableFrom(parentType) && !t.IsAbstract && !t.IsInterface)
-							retval.Add(t);
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-
-			return (System.Type[])retval.ToArray(typeof(System.Type));
-		}
-
-		#endregion
-
-		#region GetByAttribute
-		public static Hashtable GetFieldsByAttribute(object o, System.Type attributeType)
-		{
-			try
-			{
-				var objectType = o.GetType();
-				var retval = new Hashtable();
-				var fields = objectType.GetFields();
-				foreach (var field in fields)
-				{
-					var attributes = field.GetCustomAttributes(attributeType, true);
-					if (attributes.Length > 0)
-					{
-						retval.Add(field, attributes[0]);
-					}
-				}
-				return retval;
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
-
-		public static Hashtable GetMethodsByAttribute(System.Type parentType, System.Type attributeType)
-		{
-			try
-			{
-				var retval = new Hashtable();
-				var methods = parentType.GetMethods();
-				foreach (var m in methods)
-				{
-					var attributes = m.GetCustomAttributes(attributeType, true);
-					if (attributes.Length > 0)
-					{
-						retval.Add(attributes[0], m);
-					}
-				}
-
-				//Sort the array
-
-				return retval;
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
-
-		#endregion
-
 		#region GetSingleAttribute
 
 		public static Attribute GetSingleAttribute(System.Type attributeType, object instance)
@@ -289,49 +208,6 @@ namespace nHydrate.Generator.Common.Util
 			}
 		}
 
-		public static Attribute[] GetAttributes(System.Type attributeType, object instance)
-		{
-			try
-			{
-				var attributes = (Attribute[])instance.GetType().GetCustomAttributes(attributeType, true);
-				return attributes;
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
-
-		public static Attribute GetPropertyAttribute(System.Type attributeType, object instance, string propertyName)
-		{
-			try
-			{
-				var property = instance.GetType().GetProperty(propertyName);
-				if (property == null) return null;
-
-				var attribute = property.GetCustomAttributes(attributeType, true).FirstOrDefault();
-				return attribute as Attribute;
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
-
-		public static string GetPropertyAttributeDescriptionValue(object instance, string propertyName)
-		{
-			try
-			{
-				var att = GetPropertyAttribute(typeof(System.ComponentModel.DescriptionAttribute), instance, propertyName) as System.ComponentModel.DescriptionAttribute;
-				if (att == null) return string.Empty;
-				return att.Description;
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
-
 		#endregion
 
 		#region IsTypeOf
@@ -354,34 +230,6 @@ namespace nHydrate.Generator.Common.Util
 
 		#endregion
 
-		#region DisplayProperties
-
-		public static void DisplayProperties(object o)
-		{
-			foreach (var info in o.GetType().GetProperties())
-			{
-				System.Diagnostics.Debug.WriteLine(info.Name);
-			}
-		}
-
-		public static void DisplayObjectTypes(object o)
-		{
-			foreach (var t1 in o.GetType().GetNestedTypes())
-			{
-				System.Diagnostics.Debug.WriteLine(t1.ToString());
-			}
-			foreach (var t in o.GetType().GetInterfaces())
-			{
-				System.Diagnostics.Debug.WriteLine(t.ToString());
-			}
-			foreach (var mi in o.GetType().GetMethods())
-			{
-				System.Diagnostics.Debug.WriteLine(mi.Name);
-			}
-		}
-
-		#endregion
-
 		#region Implements Interface
 		public static bool ImplementsInterface(object o, Type interfaceType)
 		{
@@ -400,24 +248,6 @@ namespace nHydrate.Generator.Common.Util
 					return true;
 			}
 			return false;
-		}
-
-		public static System.Type[] GetCreatableObjectImplementsInterface(Type interfaceType, Assembly assembly)
-		{
-			var retval = new ArrayList();
-			try
-			{
-				foreach (var t in assembly.GetTypes())
-				{
-					if (ImplementsInterface(t, interfaceType) && !t.IsAbstract && !t.IsInterface)
-						retval.Add(t);
-				}
-			}
-			catch (Exception ex)
-			{
-				nHydrateLog.LogError(ex, "Could not load types for assembly: " + assembly.FullName);
-			}
-			return (System.Type[])retval.ToArray(typeof(System.Type));
 		}
 
 		public static System.Type[] GetCreatableObjectImplementsInterface(Type interfaceType, string path)

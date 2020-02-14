@@ -108,20 +108,11 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         #endregion
 
         #region IList Members
-        public virtual bool IsReadOnly
-        {
-            get { return false; }
-        }
 
         public virtual T this[int index]
         {
             get { return (T)_internalList[index]; }
             set { _internalList[index] = value; }
-        }
-
-        public virtual void RemoveAt(int index)
-        {
-            _internalList.RemoveAt(index);
         }
 
         public virtual void Insert(int index, T value)
@@ -170,11 +161,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         public virtual void Add(T value)
         {
             _internalList.Add(value);
-        }
-
-        public virtual bool IsFixedSize
-        {
-            get { return false; }
         }
 
         #endregion

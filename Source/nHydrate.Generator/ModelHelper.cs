@@ -6,40 +6,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 {
     public static class ModelHelper
     {
-        public static bool VariableLengthType(System.Data.SqlDbType type)
-        {
-            switch (type)
-            {
-                case SqlDbType.BigInt: return false;
-                case SqlDbType.Binary: return true;
-                case SqlDbType.Bit: return false;
-                case SqlDbType.Char: return true;
-                case SqlDbType.DateTime: return false;
-                case SqlDbType.Decimal: return true;
-                case SqlDbType.Float: return false;
-                case SqlDbType.Image: return false;
-                case SqlDbType.Int: return false;
-                case SqlDbType.Money: return false;
-                case SqlDbType.NChar: return true;
-                case SqlDbType.NText: return false;
-                case SqlDbType.NVarChar: return true;
-                case SqlDbType.Real: return false;
-                case SqlDbType.SmallDateTime: return false;
-                case SqlDbType.SmallInt: return false;
-                case SqlDbType.SmallMoney: return false;
-                case SqlDbType.Text: return false;
-                case SqlDbType.Timestamp: return false;
-                case SqlDbType.TinyInt: return false;
-                case SqlDbType.Udt: return false;
-                case SqlDbType.UniqueIdentifier: return false;
-                case SqlDbType.VarBinary: return true;
-                case SqlDbType.VarChar: return true;
-                case SqlDbType.Variant: return false;
-                case SqlDbType.Xml: return false;
-                default: return false;
-            }
-        }
-
         /// <summary>
         /// Determines if the data type is a database character type of Binary,Image,VarBinary
         /// </summary>
@@ -197,80 +163,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                 case SqlDbType.Variant: return true;
                 case SqlDbType.Xml: return true;
                 default: return false;
-            }
-        }
-
-        /// <summary>
-        /// Determines if the nullable type in code is native like 'string' or made up of a composite type like 'decimal?'
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool CodeNullableTypeIsNative(System.Data.SqlDbType type)
-        {
-            switch (type)
-            {
-                case SqlDbType.BigInt: return false;
-                case SqlDbType.Binary: return false;
-                case SqlDbType.Bit: return false;
-                case SqlDbType.Char: return true;
-                case SqlDbType.DateTime: return false;
-                case SqlDbType.Decimal: return false;
-                case SqlDbType.Float: return false;
-                case SqlDbType.Image: return false;
-                case SqlDbType.Int: return false;
-                case SqlDbType.Money: return false;
-                case SqlDbType.NChar: return true;
-                case SqlDbType.NText: return true;
-                case SqlDbType.NVarChar: return true;
-                case SqlDbType.Real: return false;
-                case SqlDbType.SmallDateTime: return false;
-                case SqlDbType.SmallInt: return false;
-                case SqlDbType.SmallMoney: return false;
-                case SqlDbType.Text: return true;
-                case SqlDbType.Timestamp: return false;
-                case SqlDbType.TinyInt: return false;
-                case SqlDbType.Udt: return false;
-                case SqlDbType.UniqueIdentifier: return false;
-                case SqlDbType.VarBinary: return false;
-                case SqlDbType.VarChar: return true;
-                case SqlDbType.Variant: return false;
-                case SqlDbType.Xml: return true;
-                default: return false;
-            }
-        }
-
-        public static string DefaultValueCodeString(System.Data.SqlDbType type)
-        {
-            switch (type)
-            {
-
-                case SqlDbType.BigInt: return "long.MinValue";
-                case SqlDbType.Binary: return "new System.Byte[]{}";
-                case SqlDbType.Bit: return "false";
-                case SqlDbType.Char: return "string.Empty";
-                case SqlDbType.DateTime: return "System.DateTime.MinValue";
-                case SqlDbType.Decimal: return "0.0m";
-                case SqlDbType.Float: return "0.0f";
-                case SqlDbType.Image: return "new System.Byte[]{}";
-                case SqlDbType.Int: return "int.MinValue";
-                case SqlDbType.Money: return "0.00m";
-                case SqlDbType.NChar: return "string.Empty";
-                case SqlDbType.NText: return "string.Empty";
-                case SqlDbType.NVarChar: return "string.Empty";
-                case SqlDbType.Real: return "System.Single.MinValue";
-                case SqlDbType.SmallDateTime: return "System.DateTime.MinValue";
-                case SqlDbType.SmallInt: return "0";
-                case SqlDbType.SmallMoney: return "0.00m";
-                case SqlDbType.Text: return "string.Empty";
-                case SqlDbType.Timestamp: return "new System.Byte[]{}";
-                case SqlDbType.TinyInt: return "0";
-                case SqlDbType.Udt: return "string.Empty";
-                case SqlDbType.UniqueIdentifier: return "System.Guid.NewGuid()";
-                case SqlDbType.VarBinary: return "new System.Byte[]{}";
-                case SqlDbType.VarChar: return "string.Empty";
-                case SqlDbType.Variant: return "string.Empty";
-                case SqlDbType.Xml: return "string.Empty";
-                default: return "string.Empty";
             }
         }
 

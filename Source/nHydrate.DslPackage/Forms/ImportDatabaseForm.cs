@@ -150,11 +150,6 @@ namespace nHydrate.DslPackage.Forms
         internal ImportModelSettings Settings { get; }
         internal ImportReturnConstants Status { get; private set; }
 
-        internal string GetConnectionString()
-        {
-            return DatabaseConnectionControl1.ImportOptions.ConnectionString;
-        }
-
         private void CreateSummary()
         {
             try
@@ -264,17 +259,6 @@ namespace nHydrate.DslPackage.Forms
         public void Populate()
         {
             this.PopulateAllTrees();
-        }
-
-        /// <summary>
-        /// Make this an add dialog and remove the tabs for delete and refresh
-        /// </summary>
-        public void ForceAddOnly()
-        {
-            pnlMain.Controls.Clear();
-            pnlMain.Controls.Add(tvwAdd);
-            tvwAdd.Dock = DockStyle.Fill;
-            _addOnly = true;
         }
 
         private void PopulateAllTrees()
@@ -425,21 +409,6 @@ namespace nHydrate.DslPackage.Forms
             }
         }
 
-        private int CountChanges(TreeNodeCollection nodeList)
-        {
-            var retval = 0;
-            foreach (TreeNode node in nodeList)
-            {
-                if (node.Tag != null)
-                {
-                    if (((DataTreeItem)node.Tag).State != nHydrate.DataImport.ImportStateConstants.Unchanged)
-                        retval++;
-                }
-                retval += CountChanges(node.Nodes);
-            }
-            return retval;
-        }
-
         private bool AreChanges()
         {
             if (_addOnly)
@@ -452,11 +421,6 @@ namespace nHydrate.DslPackage.Forms
                        (tvwDelete.GetNodeCount(true) > 2) ||
                        (tvwRefresh.GetNodeCount(true) > 2);
             }
-        }
-
-        public int GetChangeCount()
-        {
-            return CountChanges(tvwAdd.Nodes);
         }
 
         #endregion

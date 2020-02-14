@@ -35,17 +35,6 @@ namespace nHydrate.Generator.Models
             return null;
         }
 
-        public ColumnRelationship GetByChildField(Column column)
-        {
-            foreach (ColumnRelationship r in this)
-            {
-                var c = (Column)r.ParentColumnRef.Object;
-                if (c == column)
-                    return r;
-            }
-            return null;
-        }
-
         #endregion
 
         #region IXMLable Members
@@ -82,20 +71,11 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region IList Members
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
 
         public ColumnRelationship this[int index]
         {
             get { return (ColumnRelationship)_columnRelationships[index]; }
             set { _columnRelationships[index] = value; }
-        }
-
-        public void RemoveAt(int index)
-        {
-            _columnRelationships.RemoveAt(index);
         }
 
         public void Insert(int index, ColumnRelationship value)
@@ -134,11 +114,6 @@ namespace nHydrate.Generator.Models
         public void Add(ColumnRelationship value)
         {
             _columnRelationships.Add(value);
-        }
-
-        public bool IsFixedSize
-        {
-            get { return false; }
         }
 
         #endregion

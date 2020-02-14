@@ -55,45 +55,6 @@ namespace nHydrate.Generator.Common.Util
 		}
 
 		/// <summary>
-		/// Case Insensitive String Replace
-		/// </summary>
-		public static string StringReplace(string text, string oldValue, string newValue)
-		{
-			var iPos = text.ToLower().IndexOf(oldValue.ToLower());
-			var retval = string.Empty;
-			while (iPos != -1)
-			{
-				retval += text.Substring(0, iPos) + newValue;
-				text = text.Substring(iPos + oldValue.Length);
-				iPos = text.ToLower().IndexOf(oldValue.ToLower());
-			}
-			if (text.Length > 0)
-				retval += text;
-			return retval;
-		}
-
-		/// <summary>
-		/// Take the specified text and break it into lines and write it as a C# comment
-		/// </summary>
-		/// <param name="tabCount">The number of preceding tabs</param>
-		/// <param name="writer">The string builder to write the text</param>
-		/// <param name="text">The text to process</param>
-		public static void WriteGeneratedCommentSection(int tabCount, StringBuilder writer, string text)
-		{
-			if (string.IsNullOrEmpty(text)) return;
-			if (tabCount < 0) tabCount = 0;
-			text = text.Replace("\r\n", "\n");
-			text = text.Replace("\r", "\n");
-			var arr = text.Split('\n');
-
-			foreach (var s in arr)
-			{
-				writer.AppendLine(new string('	', tabCount) + "/// " + s);
-			}
-
-		}
-
-		/// <summary>
 		/// Convert the specified text to a single line text
 		/// </summary>
 		public static string ConvertTextToSingleLineCodeString(string text)
@@ -170,41 +131,7 @@ namespace nHydrate.Generator.Common.Util
 		#endregion
 
 		#region Variable Case Conversion
-		public static string MakeValidDatabaseCaseVariableName(string inputString)
-		{
-			var pascalCase = MakeValidPascalCaseVariableName(inputString);
-			return PascalCaseToDatabase(pascalCase);
-		}
 
-		public static string MakeValidCamelCaseVariableName(string inputString)
-		{
-			var camelCase = MakeValidPascalCaseVariableName(inputString);
-			if (camelCase.Length > 0)
-			{
-				camelCase = camelCase.Insert(0, camelCase[0].ToString().ToLower());
-				camelCase = camelCase.Remove(1, 1);
-			}
-			return camelCase;
-		}
-
-		public static string MakeValidPascalCaseVariableName(string inputString)
-		{
-			var output = new StringBuilder();
-			var regexp = "[A-Z,a-z,0-9]+";
-			var matches = Regex.Matches(inputString, regexp);
-			foreach (Match match in matches)
-			{
-				var appendString = match.Value;
-				appendString = appendString.Insert(0, appendString[0].ToString().ToUpper());
-				appendString = appendString.Remove(1, 1);
-				output.Append(appendString);
-			}
-			var returnVal = output.ToString();
-			returnVal = returnVal.TrimStart(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
-			if (returnVal.Length < 0)
-				throw new Exception("Cannot turn string( " + inputString + " ) into a valid variable name");
-			return returnVal;
-		}
 
 		public static string DatabaseNameToCamelCase(string databaseName)
 		{
@@ -226,19 +153,6 @@ namespace nHydrate.Generator.Common.Util
 			return pascalCase;
 		}
 
-		public static string PascalCaseToDatabase(string pascalCase)
-		{
-			var digitregex = new Regex("(?<caps>[A-Z])");
-			var parameterName = digitregex.Replace(pascalCase, "_$+");
-			parameterName = parameterName.ToLower().TrimStart('_');
-			return parameterName;
-		}
-
-		public static string CamelCaseToDatabase(string camelCase)
-		{
-			return PascalCaseToDatabase(camelCase);
-		}
-
 		private static string ReplaceWithUpper(Match m)
 		{
 			var character = m.ToString().TrimStart('_');
@@ -257,51 +171,5 @@ namespace nHydrate.Generator.Common.Util
 		}
 		#endregion
 
-		#region byte array conversions
-		public static MemoryStream StringToMemoryStream(string str)
-		{
-			var ms = new MemoryStream(StringToByteArray(str));
-			return ms;
-		}
-
-		public static String MemoryStreamToString(MemoryStream memStream)
-		{
-			return ByteArrayToString(memStream.GetBuffer(), (int)memStream.Length);
-		}
-
-		public static Byte[] StringToByteArray(string str)
-		{
-			var enc = new UTF8Encoding();
-			return enc.GetBytes(str);
-		}
-
-		public static string ByteArrayToHexString(byte[] bytes)
-		{
-			var hexString = string.Empty;
-			for (var i = 0; i < bytes.Length; i++)
-			{
-				hexString += bytes[i].ToString("X2");
-			}
-			return hexString;
-		}
-
-
-		public static string ByteArrayToString(byte[] byteArray)
-		{
-			var enc = new UTF8Encoding();
-			return enc.GetString(byteArray, 0, byteArray.Length);
-		}
-
-		public static string ByteArrayToString(byte[] byteArray, Encoding encoder)
-		{
-			return encoder.GetString(byteArray, 0, byteArray.Length);
-		}
-
-		public static string ByteArrayToString(byte[] byteArray, int length)
-		{
-			var enc = new UTF8Encoding();
-			return enc.GetString(byteArray, 0, length);
-		}
-		#endregion
 	}
 }

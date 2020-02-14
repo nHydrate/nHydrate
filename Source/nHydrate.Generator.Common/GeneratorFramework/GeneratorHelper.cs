@@ -476,20 +476,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
             }
         }
 
-        //private void LoadProject(IGenerator generator, Type projectGeneratorType)
-        //{
-        //  try
-        //  {
-        //    var projectGenerator = GetProjectGenerator(projectGeneratorType);
-        //    projectGenerator.Initialize(generator.Model);
-        //    projectGenerator.LoadProject();
-        //  }
-        //  catch (Exception ex)
-        //  {
-        //    throw;
-        //  }
-        //}
-
         private void CreateProject(IGenerator generator, Type projectGeneratorType)
         {
             try
@@ -634,14 +620,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         public IEnumerable<string> GetErrorList()
         {
             return _errorList;
-        }
-
-        public static bool IsItemInProject(string projectName, string projectItemName)
-        {
-            var project = EnvDTEHelper.Instance.GetProject(projectName);
-            var fi = new FileInfo(project.FullName);
-            var fileName = fi.DirectoryName + projectItemName;
-            return File.Exists(fileName);
         }
 
         private readonly List<string> processedFiles = new List<string>();

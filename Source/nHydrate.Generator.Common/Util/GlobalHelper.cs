@@ -5,10 +5,6 @@ namespace nHydrate.Generator.Common.Util
 {
 	public static class GlobalHelper
 	{
-		static GlobalHelper()
-		{
-		}
-
 		public static void ShowError(Exception ex)
 		{
 			ShowError(ex.ToString());

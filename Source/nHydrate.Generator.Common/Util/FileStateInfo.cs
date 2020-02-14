@@ -5,7 +5,6 @@ namespace nHydrate.Generator.Common.Util
     #region Class Members
 
     private nHydrate.Generator.Common.Util.EnvDTEHelper.FileStateConstants _fileState = EnvDTEHelper.FileStateConstants.Success;
-    private string _fileName = string.Empty;
 
     #endregion
 
@@ -17,7 +16,7 @@ namespace nHydrate.Generator.Common.Util
 
     public FileStateInfo(nHydrate.Generator.Common.Util.EnvDTEHelper.FileStateConstants fileState, string fileName)
     {
-      _fileName = fileName;
+      FileName = fileName;
       _fileState = fileState;
     }
 
@@ -31,11 +30,7 @@ namespace nHydrate.Generator.Common.Util
       set { _fileState = value; }
     }
 
-    public string FileName
-    {
-      get { return _fileName; }
-      set { _fileName = value; }
-    }
+    public string FileName { get; set; } = string.Empty;
 
     #endregion
 

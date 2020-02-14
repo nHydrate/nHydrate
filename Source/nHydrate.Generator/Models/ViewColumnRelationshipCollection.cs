@@ -22,32 +22,6 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        #region Methods
-
-        public ViewColumnRelationship GetByParentField(CustomViewColumn column)
-        {
-            foreach (ViewColumnRelationship r in this)
-            {
-                var c = (CustomViewColumn)r.ChildColumnRef.Object;
-                if (c == column)
-                    return r;
-            }
-            return null;
-        }
-
-        public ColumnRelationship GetByChildField(CustomViewColumn column)
-        {
-            foreach (ColumnRelationship r in this)
-            {
-                var c = (CustomViewColumn)r.ParentColumnRef.Object;
-                if (c == column)
-                    return r;
-            }
-            return null;
-        }
-
-        #endregion
-
         #region IXMLable Members
 
         public override void XmlAppend(XmlNode node)
@@ -82,10 +56,6 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region IList Members
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
 
         public ViewColumnRelationship this[int index]
         {
@@ -134,11 +104,6 @@ namespace nHydrate.Generator.Models
         public void Add(ViewColumnRelationship value)
         {
             _columnRelationships.Add(value);
-        }
-
-        public bool IsFixedSize
-        {
-            get { return false; }
         }
 
         #endregion

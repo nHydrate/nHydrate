@@ -108,10 +108,6 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region IDictionary Members
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
 
         public CustomStoredProcedure this[int id]
         {
@@ -204,11 +200,6 @@ namespace nHydrate.Generator.Models
         public CustomStoredProcedure Add()
         {
             return this.Add(this.GetUniqueName());
-        }
-
-        public bool IsFixedSize
-        {
-            get { throw new NotImplementedException(); }
         }
 
         public bool Contains(string name)

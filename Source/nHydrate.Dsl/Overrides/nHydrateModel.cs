@@ -43,13 +43,7 @@ namespace nHydrate.Dsl
 
         public List<nHydrate.Dsl.Objects.IRefactor> Refactorizations { get; set; }
 
-        //protected internal bool IsLoading { get; set; }
-        private bool _IsLoading = false;
-        public bool IsLoading
-        {
-            get { return _IsLoading; }
-            set { _IsLoading = value; }
-        }
+        public bool IsLoading { get; set; } = false;
 
         public bool IsSaving { get; set; }
 
@@ -74,119 +68,6 @@ namespace nHydrate.Dsl
                 .ToList()
                 .Cast<EntityHasEntities>()
                 .ToList();
-            }
-        }
-
-        public IList<EntityHasEntities> FindByParentTable(Entity entity)
-        {
-            return FindByParentTable(entity, false);
-        }
-
-        /// <summary>
-        /// Find all relationships that have a specific parent table
-        /// </summary>
-        /// <param name="entity">The table from which all relations begin</param>
-        /// <param name="includeHierarchy">Determines if the return includes all tables in the inheritence tree</param>
-        /// <returns></returns>
-        public IList<EntityHasEntities> FindByParentTable(Entity entity, bool includeHierarchy)
-        {
-            var tableList = new List<Entity>();
-            var columnList = new List<Field>();
-            if (includeHierarchy)
-            {
-                tableList.AddRange(new List<Entity>(entity.GetTableHierarchy()));
-                foreach (var t in tableList)
-                {
-                    foreach (var column in (from x in t.GetColumnsFullHierarchy() select x))
-                    {
-                        columnList.Add(column);
-                    }
-                }
-            }
-            else
-            {
-                tableList = new List<Entity>();
-                tableList.Add(entity);
-                columnList.AddRange(entity.Fields);
-            }
-
-            var retval = new List<EntityHasEntities>();
-            foreach (var relation in this.Store.ElementDirectory.AllElements.Where(x => x is EntityHasEntities).Cast<EntityHasEntities>())
-            {
-                var parentTable = relation.SourceEntity;
-                foreach (var columnRelationship in relation.FieldMapList())
-                {
-                    foreach (var column in columnList)
-                    {
-                        if (tableList.Contains(parentTable))
-                        {
-                            if (!retval.Contains(relation))
-                                retval.Add(relation);
-                        }
-                    }
-                }
-            }
-
-            return retval.AsReadOnly();
-        }
-
-        public IList<EntityHasEntities> FindByChildTable(Entity entity)
-        {
-            return FindByChildTable(entity, false);
-        }
-
-        /// <summary>
-        /// Find all relationships that have a specific child table
-        /// </summary>
-        /// <param name="entity">The table from which all relations begin</param>
-        /// <param name="includeHierarchy">Determines if the return includes all tables in the inheritence tree</param>
-        /// <returns></returns>
-        public IList<EntityHasEntities> FindByChildTable(Entity entity, bool includeHierarchy)
-        {
-            try
-            {
-                var retval = new List<EntityHasEntities>();
-                var tableList = new List<Entity>();
-                var columnList = new List<Field>();
-                if (includeHierarchy)
-                {
-                    tableList.AddRange(entity.GetTableHierarchy());
-                    foreach (var t in tableList)
-                    {
-                        foreach (var column in (from x in t.GetColumnsFullHierarchy() select x))
-                        {
-                            columnList.Add(column);
-                        }
-                    }
-                }
-                else
-                {
-                    tableList = new List<Entity>();
-                    tableList.Add(entity);
-                    columnList.AddRange(entity.Fields);
-                }
-
-                foreach (var relation in this.Store.ElementDirectory.AllElements.Where(x => x is EntityHasEntities).Cast<EntityHasEntities>())
-                {
-                    var childTable = relation.TargetEntity;
-                    foreach (var columnRelationship in relation.FieldMapList())
-                    {
-                        foreach (var column in columnList)
-                        {
-                            if (tableList.Contains(childTable))
-                            {
-                                if (!retval.Contains(relation))
-                                    retval.Add(relation);
-                            }
-                        }
-                    }
-                }
-
-                return retval.AsReadOnly();
-            }
-            catch (Exception ex)
-            {
-                throw;
             }
         }
 
@@ -220,16 +101,9 @@ namespace nHydrate.Dsl
         public List<string> RemovedStoredProcedures { get; }
         public List<string> RemovedFunctions { get; }
 
-        /// <summary>
-        /// The URL to the SyncServer service
-        /// </summary>
-        public string SyncServerURL { get; set; }
         public Guid SyncServerToken { get; set; }
         public string ModelFileName { get; set; }
 
-        /// <summary>
-        /// This willbe used to track version with an nHydrate Server
-        /// </summary>
         public long ServerVersion { get; set; }
 
     }

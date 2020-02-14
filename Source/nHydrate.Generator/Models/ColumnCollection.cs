@@ -118,11 +118,6 @@ namespace nHydrate.Generator.Models
 
         #region IDictionary Members
 
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
-
         public Column this[int id]
         {
             get
@@ -145,7 +140,6 @@ namespace nHydrate.Generator.Models
                 return null;
             }
         }
-
 
         public void Remove(int columnId)
         {
@@ -279,11 +273,6 @@ namespace nHydrate.Generator.Models
         public Column Add()
         {
             return this.Add(this.GetUniqueName());
-        }
-
-        public bool IsFixedSize
-        {
-            get { return false; }
         }
 
         public bool Contains(string name)

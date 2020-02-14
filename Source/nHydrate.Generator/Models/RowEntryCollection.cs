@@ -70,20 +70,10 @@ namespace nHydrate.Generator.Models
 
         #region IList Members
 
-        public bool IsReadOnly
-        {
-            get { return internalList.IsReadOnly; }
-        }
-
         public RowEntry this[int index]
         {
             get { return (RowEntry)internalList[index]; }
             set { internalList[index] = value; }
-        }
-
-        public void RemoveAt(int index)
-        {
-            internalList.RemoveAt(index);
         }
 
         public void Insert(int index, RowEntry value)
@@ -126,14 +116,6 @@ namespace nHydrate.Generator.Models
             var newItem = new RowEntry(this.Root);
             this.Add(newItem);
             return newItem;
-        }
-
-        public bool IsFixedSize
-        {
-            get
-            {
-                return internalList.IsFixedSize;
-            }
         }
 
         #endregion

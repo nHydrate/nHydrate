@@ -284,50 +284,23 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Util\ByteEncoding.cs" />
-    <Compile Include="Util\CryptoFactory.cs" />
-    <Compile Include="Util\CryptographyHelperBase.cs" />
-    <Compile Include="Util\CryptographyUtility.cs" />
     <Compile Include="Util\EmbeddedResourceName.cs" />
     <Compile Include="Util\Extensions.cs" />
     <Compile Include="Util\FileStateInfo.cs" />
     <Compile Include="Util\HashHelper.cs" />
     <Compile Include="Util\HashTable.cs" />
-    <Compile Include="Util\HTTPHelper.cs" />
-    <Compile Include="Util\ICryptoHelper.cs" />
     <Compile Include="Util\ProjectItemCacheItem.cs" />
-    <Compile Include="Util\RegExHelper.cs" />
     <Compile Include="Util\SecurityHelper.cs" />
-    <Compile Include="Util\SerializeHelper.cs" />
-    <Compile Include="Util\SymmetricCryptographyHelper.cs" />
-    <Compile Include="Util\AspStringBlock.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Util\CRC32HashAlgorithm.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Util\CryptoHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Util\EnvDTEHelper.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Util\FileSystemHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Util\GlobalHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Util\InstallLocationHelper.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Util\ReflectionHelper.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Util\RegistryHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Util\ResourceHelper.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Util\StringHelper.cs">

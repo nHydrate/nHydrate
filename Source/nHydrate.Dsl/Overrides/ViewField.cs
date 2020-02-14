@@ -35,11 +35,6 @@ namespace nHydrate.Dsl
         #endregion
 
         #region Names
-        public string CamelName
-        {
-            get { return StringHelper.DatabaseNameToCamelCase(this.PascalName); }
-        }
-
         public string DatabaseName
         {
             get { return this.Name; }
