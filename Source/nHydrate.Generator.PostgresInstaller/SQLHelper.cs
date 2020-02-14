@@ -17,11 +17,6 @@ namespace nHydrate.Generator.PostgresInstaller
     {
         #region GetModelDifferenceSQL
 
-        //public static string GetModelDifferenceSql(ModelRoot modelOld, ModelRoot modelNew)
-        //{
-        //    return "NOT IMPLEMENTED";
-        //}
-
         #region TODO
         public static string GetModelDifferenceSql(ModelRoot modelOld, ModelRoot modelNew)
         {
@@ -2305,41 +2300,6 @@ namespace nHydrate.Generator.PostgresInstaller
             }
             sb.AppendLine(";");
             sb.AppendLine("--GO");
-            sb.AppendLine();
-            return sb.ToString();
-        }
-
-        public static string GetSQLCreateStoredProc(CustomStoredProcedure dbObject, bool isInternal)
-        {
-            var sb = new StringBuilder();
-            var name = dbObject.GetDatabaseObjectName();
-
-            sb.AppendLine($"if exists(select * from sys.objects where name = '{name}' and type = 'P' and type_desc = 'SQL_STORED_PROCEDURE')");
-            sb.AppendLine($"drop procedure [{dbObject.GetSQLSchema()}].[{name}]");
-            if (isInternal)
-            {
-                sb.AppendLine($"--MODELID: {dbObject.Key}");
-            }
-            sb.AppendLine("GO");
-            sb.AppendLine();
-            sb.AppendLine("CREATE PROCEDURE [" + dbObject.GetSQLSchema() + "].[" + name + "]");
-
-            if (dbObject.Parameters.Count > 0)
-            {
-                sb.AppendLine("(");
-                sb.Append(BuildStoredProcParameterList(dbObject));
-                sb.AppendLine(")");
-            }
-
-            sb.AppendLine("AS");
-            sb.AppendLine();
-            sb.Append(dbObject.SQL);
-            sb.AppendLine();
-            if (isInternal)
-            {
-                sb.AppendLine($"--MODELID,BODY: {dbObject.Key}");
-            }
-            sb.AppendLine("GO");
             sb.AppendLine();
             return sb.ToString();
         }
