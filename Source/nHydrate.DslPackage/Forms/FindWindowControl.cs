@@ -19,18 +19,10 @@ namespace nHydrate.DslPackage.Forms
         #region Settings
         public class Settings
         {
-            public Settings()
-            {
-                this.AllowEntity = true;
-                this.AllowView = true;
-                this.AllowStoredProc = true;
-                this.AllowFunction = true;
-            }
-
-            public bool AllowEntity { get; set; }
-            public bool AllowView { get; set; }
-            public bool AllowStoredProc { get; set; }
-            public bool AllowFunction { get; set; }
+            public bool AllowEntity { get; set; } = true;
+            public bool AllowView { get; set; } = true;
+            public bool AllowStoredProc { get; set; } = true;
+            public bool AllowFunction { get; set; } = true;
             public bool AllowField { get; set; }
             public bool AllowParameter { get; set; }
         }
@@ -133,12 +125,6 @@ namespace nHydrate.DslPackage.Forms
             F.Show();
         }
 
-        //private void Instance_EnvironmentColorChange(object sender, EventArgs e)
-        //{
-        //	lvwMain.BackColor = EnvDTEHelper.Instance.BackgroundColor;
-        //	lvwMain.ForeColor = EnvDTEHelper.Instance.ForegroundColor;
-        //}
-
         #endregion
 
         #region Methods
@@ -214,35 +200,25 @@ namespace nHydrate.DslPackage.Forms
                 _modelElements.Add(item);
             }
 
-            //if ((_model.DiagramVisibility & Dsl.VisibilityTypeConstants.View) == Dsl.VisibilityTypeConstants.View)
+            //Add Views
+            foreach (var item in _model.Views.OrderBy(x => x.Name))
             {
-                //Add Views
-                foreach (var item in _model.Views.OrderBy(x => x.Name))
-                {
-                    _modelElements.Add(item);
-                }
+                _modelElements.Add(item);
             }
 
-            //if ((_model.DiagramVisibility & Dsl.VisibilityTypeConstants.StoredProcedure) == Dsl.VisibilityTypeConstants.StoredProcedure)
+            //Add StoredProcedures
+            foreach (var item in _model.StoredProcedures.OrderBy(x => x.Name))
             {
-                //Add StoredProcedures
-                foreach (var item in _model.StoredProcedures.OrderBy(x => x.Name))
-                {
-                    _modelElements.Add(item);
-                }
+                _modelElements.Add(item);
             }
 
-            //if ((_model.DiagramVisibility & Dsl.VisibilityTypeConstants.Function) == Dsl.VisibilityTypeConstants.Function)
+            //Add Functions
+            foreach (var item in _model.Functions.OrderBy(x => x.Name))
             {
-                //Add Functions
-                foreach (var item in _model.Functions.OrderBy(x => x.Name))
-                {
-                    _modelElements.Add(item);
-                }
+                _modelElements.Add(item);
             }
 
-            DisplayObjects();
-
+            this.DisplayObjects();
         }
 
         private void DeleteObjects()
@@ -782,7 +758,6 @@ namespace nHydrate.DslPackage.Forms
                 var element = lvwSubItem.SelectedItems[0].Tag as Microsoft.VisualStudio.Modeling.ModelElement;
                 (_docData as nHydrateDocData).ModelExplorerToolWindow.SelectElement(element, false);
             }
-            //else (_docData as nHydrateDocData).DocumentationWindow.SelectElement(null);
         }
 
         private void lvwMain_SelectedIndexChanged(object sender, EventArgs e)
@@ -794,7 +769,6 @@ namespace nHydrate.DslPackage.Forms
                 var element = lvwMain.SelectedItems[0].Tag as Microsoft.VisualStudio.Modeling.ModelElement;
                 (_docData as nHydrateDocData).ModelExplorerToolWindow.SelectElement(element, false);
             }
-            //else (_docData as nHydrateDocData).DocumentationWindow.SelectElement(null);
         }
 
         private void FindWindowControl_Resize(object sender, EventArgs e)
@@ -931,9 +905,6 @@ namespace nHydrate.DslPackage.Forms
 
         private void mainPopupMenu_Popup(object sender, CancelEventArgs e)
         {
-            //if (lvwMain.SelectedItems.Count == 0)
-            //  e.Cancel = true;
-
             menuItemMainSep1.Visible = false;
             menuItemMainBulkImport.Visible = false;
             menuItemMainStaticData.Visible = false;
@@ -965,12 +936,8 @@ namespace nHydrate.DslPackage.Forms
 
         private void subPopupMenu_Popup(object sender, CancelEventArgs e)
         {
-            //if (lvwSubItem.SelectedItems.Count == 0)
-            //  e.Cancel = true;
-
             menuItemSubSelect.Visible = (lvwSubItem.SelectedItems.Count == 1);
             menuItemSubDelete.Visible = (lvwSubItem.SelectedItems.Count > 0);
-
         }
 
         private void lvwSubItem_AfterLabelEdit(object sender, LabelEditEventArgs e)

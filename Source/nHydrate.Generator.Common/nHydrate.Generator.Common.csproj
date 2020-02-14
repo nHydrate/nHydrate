@@ -233,10 +233,6 @@
     <Compile Include="GeneratorFramework\RefactorTableCombine.cs" />
     <Compile Include="GeneratorFramework\RefactorTableSplit.cs" />
     <Compile Include="GlobalCacheFile.cs" />
-    <Compile Include="Exceptions\ThreadExceptionHandler.cs" />
-    <Compile Include="Exceptions\ThreadExceptionHandlerForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Exceptions\nHydrateException.cs" />
     <Compile Include="Forms\CollectionEditorForm.cs">
       <SubType>Form</SubType>
@@ -261,10 +257,6 @@
     <Compile Include="GeneratorFramework\GeneratorItemAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Logging\DebugConsole.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Logging\MultiProcessTraceListener.cs" />
     <Compile Include="Logging\nHydrateLog.cs" />
     <Compile Include="ModelCacheFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -314,18 +306,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Exceptions\ThreadExceptionHandlerForm.resx">
-      <DependentUpon>ThreadExceptionHandlerForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\SendErrorForm.resx">
       <DependentUpon>SendErrorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Images\Default.ico" />
-    <EmbeddedResource Include="Logging\DebugConsole.resx">
-      <DependentUpon>DebugConsole.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -363,7 +347,6 @@
   <ItemGroup>
     <Content Include="Build\postbuild.targets.xml" />
     <Content Include="Build\prebuild.targets.xml" />
-    <Content Include="Logging\ExampleLogConfig.xml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

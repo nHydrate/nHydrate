@@ -7,16 +7,16 @@ namespace nHydrate.Generator.Common.Util
     public class HashHelper
     {
         #region Private member variables...
-        private string mSalt;
-        private readonly HashAlgorithm mCryptoService;
+        private string _salt;
+        private readonly HashAlgorithm _cryptoService;
         #endregion
 
         #region Public interfaces...
 
         public virtual string Encrypt(string plainText)
         {
-            var cryptoByte = mCryptoService.ComputeHash(
-                ASCIIEncoding.ASCII.GetBytes(plainText + mSalt));
+            var cryptoByte = _cryptoService.ComputeHash(
+                ASCIIEncoding.ASCII.GetBytes(plainText + _salt));
 
             // Convert into base 64 to enable result to be used in Xml
             return Convert.ToBase64String(cryptoByte, 0, cryptoByte.Length);

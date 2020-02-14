@@ -6,10 +6,7 @@ using System.IO;
 using EnvDTE;
 using VSLangProj;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Common.Logging;
-using interop = System.Runtime.InteropServices;
 using System.Collections.Generic;
-using System.Xml;
 
 namespace nHydrate.Generator.Common.Util
 {

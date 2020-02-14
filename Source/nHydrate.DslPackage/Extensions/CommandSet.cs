@@ -1000,20 +1000,6 @@ namespace nHydrate.DslPackage
         }
         #endregion
 
-        #region Utility Dialog
-        private void OnStatusMenuUtilityDialog(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            command.Visible = this.IsDiagramSelected();
-        }
-
-        private void OnMenuCommandUtilityDialog(object sender, EventArgs e)
-        {
-            var F = new ModelUtilitiesForm(this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel, this.CurrentDocData.Store);
-            F.ShowDialog();
-        }
-        #endregion
-
         #region Zoom
         private void OnStatusMenuZoom(object sender, EventArgs e)
         {
@@ -1577,7 +1563,6 @@ namespace nHydrate.DslPackage
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuRelationShowTarget), new EventHandler(OnMenuCommandRelationShowTarget), new CommandID(guidModelMenuCmdSet, cmdidMenuRelationShowTarget)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuShowOnDiagram), new EventHandler(OnMenuCommandShowOnDiagram), new CommandID(guidModelMenuCmdSet, cmdidMenuShowOnDiagram)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuModuleDialog), new EventHandler(OnMenuCommandModuleDialog), new CommandID(guidModelMenuCmdSet, cmdidMenuModuleDialog)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuUtilityDialog), new EventHandler(OnMenuCommandUtilityDialog), new CommandID(guidModelMenuCmdSet, cmdidMenuUtilityDialog)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuAbout), new EventHandler(OnMenuCommandAbout), new CommandID(guidDiagramMenuCmdSet, cmdidMenuAbout)));
 
             //Cut/Copy/Paste
@@ -1594,12 +1579,6 @@ namespace nHydrate.DslPackage
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuRefactorChangeNText), new EventHandler(OnMenuRefactorChangeVarchar), new CommandID(guidRefactorMenuCmdSet, cmdidMenuRefactorChangeVarchar)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuRefactorChangeNText), new EventHandler(OnMenuRefactorChangeNText), new CommandID(guidRefactorMenuCmdSet, cmdidMenuRefactorChangeNText)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuRefactorChangeNText), new EventHandler(OnMenuRefactorRetypePK), new CommandID(guidRefactorMenuCmdSet, cmdidMenuRefactorRetypePK)));
-
-            //commands.Add(
-            //  new DynamicStatusMenuCommand(
-            //  new EventHandler(OnStatusMenuImportFilterDiagram),
-            //  new EventHandler(OnMenuCommandImportFilterDiagram),
-            //  new CommandID(guidMenuFilterDiagram, cmdidMenuFilterDiagram)));
 
             #region Zoom
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom), new EventHandler(OnMenuCommandZoomIn), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoomIn)));

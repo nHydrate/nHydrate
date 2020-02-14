@@ -304,12 +304,6 @@
     <Compile Include="Forms\DBObjectDifferenceForm.Designer.cs">
       <DependentUpon>DBObjectDifferenceForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\EntityAuditMappings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\EntityAuditMappings.Designer.cs">
-      <DependentUpon>EntityAuditMappings.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\DatabaseConnectionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -357,12 +351,6 @@
     </Compile>
     <Compile Include="Forms\IndexesForm.Designer.cs">
       <DependentUpon>IndexesForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ModelUtilitiesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ModelUtilitiesForm.Designer.cs">
-      <DependentUpon>ModelUtilitiesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ModuleMappings.cs">
       <SubType>Form</SubType>
@@ -567,9 +555,6 @@
     <EmbeddedResource Include="Forms\DBObjectDifferenceForm.resx">
       <DependentUpon>DBObjectDifferenceForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\EntityAuditMappings.resx">
-      <DependentUpon>EntityAuditMappings.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\DatabaseConnectionControl.resx">
       <DependentUpon>DatabaseConnectionControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -593,9 +578,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\IndexesForm.resx">
       <DependentUpon>IndexesForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ModelUtilitiesForm.resx">
-      <DependentUpon>ModelUtilitiesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ModuleMappings.resx">
       <DependentUpon>ModuleMappings.cs</DependentUpon>
