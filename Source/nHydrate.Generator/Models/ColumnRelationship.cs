@@ -45,8 +45,7 @@ namespace nHydrate.Generator.Models
         {
             get
             {
-                if (this.ChildColumnRef == null) return null;
-                else return this.ChildColumnRef.Object as Column;
+                return ChildColumnRef?.Object as Column;
             }
         }
 

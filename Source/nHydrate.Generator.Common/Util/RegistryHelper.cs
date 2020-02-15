@@ -24,9 +24,9 @@ namespace nHydrate.Generator.Common.Util
 			{
 			}
 			finally
-			{
-				if (key != null) key.Close();
-			}
+            {
+                key?.Close();
+            }
 			return returnVal;
 		}
 	}

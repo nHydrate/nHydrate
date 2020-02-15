@@ -29,10 +29,9 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 		}
 
 		protected void OnAfterMessageRemove(object sender, MessageEventArgs e)
-		{
-			if (this.AfterMessageRemove != null)
-				this.AfterMessageRemove(sender, e);
-		}
+        {
+            AfterMessageRemove?.Invoke(sender, e);
+        }
 
 		#endregion
 

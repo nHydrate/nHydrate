@@ -41,15 +41,13 @@ namespace nHydrate.Generator.Common.GeneratorFramework
             //Cancel UI events if necessary
             if (!this.CancelUIEvents)
             {
-                if (this.PropertyChanged != null)
-                    this.PropertyChanged(sender, e);
+                PropertyChanged?.Invoke(sender, e);
             }
         }
 
         protected void OnDirtyChanged(object sender, System.EventArgs e)
         {
-            if (this.DirtyChanged != null)
-                this.DirtyChanged(sender, e);
+            DirtyChanged?.Invoke(sender, e);
         }
 
         #endregion

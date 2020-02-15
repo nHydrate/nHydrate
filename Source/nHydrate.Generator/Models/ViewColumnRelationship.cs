@@ -20,19 +20,17 @@ namespace nHydrate.Generator.Models
         public Column ParentColumn
 		{
 			get
-			{
-				if (this.ParentColumnRef == null) return null;
-				else return this.ParentColumnRef.Object as Column;
-			}
+            {
+                return ParentColumnRef?.Object as Column;
+            }
 		}
 
 		public CustomViewColumn ChildColumn
 		{
 			get
-			{
-				if (this.ChildColumnRef == null) return null;
-				else return this.ChildColumnRef.Object as CustomViewColumn;
-			}
+            {
+                return ChildColumnRef?.Object as CustomViewColumn;
+            }
 		}
 
 		public override void XmlAppend(XmlNode node)

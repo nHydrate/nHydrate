@@ -37,8 +37,7 @@ namespace nHydrate.Generator
         public event nHydrate.Generator.Common.GeneratorFramework.VerifyDelegate VerifyComplete;
         protected void OnVerifyComplete(object sender, nHydrate.Generator.Common.EventArgs.MessageCollectionEventArgs e)
         {
-            if (this.VerifyComplete != null)
-                this.VerifyComplete(sender, e);
+            VerifyComplete?.Invoke(sender, e);
         }
 
         #endregion

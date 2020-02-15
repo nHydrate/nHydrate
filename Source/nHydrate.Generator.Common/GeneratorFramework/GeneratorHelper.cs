@@ -32,10 +32,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
         protected virtual void OnProjectItemGenerated(object sender, ProjectItemGeneratedEventArgs pigArgs)
         {
-            if (ProjectItemGenerated != null)
-            {
-                this.ProjectItemGenerated(sender, pigArgs);
-            }
+            ProjectItemGenerated?.Invoke(sender, pigArgs);
         }
 
         protected virtual void OnProjectItemDeleted(object sender, ProjectItemDeletedEventArgs pigArgs)

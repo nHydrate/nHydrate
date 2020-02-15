@@ -33,12 +33,9 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
 		public event ItemChanagedEventHandler ItemChanged;
 		public void OnItemChanged(object sender, System.EventArgs e)
-		{
-			if (this.ItemChanged != null)
-			{
-				this.ItemChanged(sender, e);
-			}
-		}
+        {
+            ItemChanged?.Invoke(sender, e);
+        }
 
 		public event PropertyValueChangedEventHandler PropertyValueChanged;
 		protected virtual void OnPropertyValueChanged(PropertyValueChangedEventArgs e)

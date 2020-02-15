@@ -65,7 +65,6 @@
       <Link>Properties\AssemblyInfoGeneratorCommon.cs</Link>
     </Compile>
     <Compile Include="Globals.cs" />
-    <Compile Include="HTMLEmit.cs" />
     <Compile Include="SQLEmit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
