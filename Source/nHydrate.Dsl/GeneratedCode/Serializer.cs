@@ -4445,40 +4445,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// Min
-			if (!serializationContext.Result.Failed)
-			{
-				string attribMin = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "min");
-				if (attribMin != null)
-				{
-					global::System.Double valueOfMin;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Double>(serializationContext, attribMin, out valueOfMin))
-					{
-						instanceOfField.Min = valueOfMin;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "min", typeof(global::System.Double), attribMin);
-					}
-				}
-			}
-			// Max
-			if (!serializationContext.Result.Failed)
-			{
-				string attribMax = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "max");
-				if (attribMax != null)
-				{
-					global::System.Double valueOfMax;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Double>(serializationContext, attribMax, out valueOfMax))
-					{
-						instanceOfField.Max = valueOfMax;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "max", typeof(global::System.Double), attribMax);
-					}
-				}
-			}
 			// IsPrimaryKey
 			if (!serializationContext.Result.Failed)
 			{
@@ -5444,32 +5410,6 @@ namespace nHydrate.Dsl
 					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "50") != 0)
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "length", serializedPropValue);
-					}
-				}
-			}
-			// Min
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Double propValue = instanceOfField.Min;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Double>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, string.Empty) != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "min", serializedPropValue);
-					}
-				}
-			}
-			// Max
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Double propValue = instanceOfField.Max;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Double>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, string.Empty) != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "max", serializedPropValue);
 					}
 				}
 			}

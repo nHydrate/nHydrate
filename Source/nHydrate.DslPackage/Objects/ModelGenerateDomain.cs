@@ -539,8 +539,6 @@ namespace nHydrate.DslPackage.Objects
                         newColumn.IsReadOnly = field.IsReadOnly;
                         newColumn.IsUnique = field.IsUnique;
                         newColumn.Length = field.Length;
-                        newColumn.Max = field.Max;
-                        newColumn.Min = field.Min;
                         newColumn.Name = field.Name;
                         newColumn.ParentTableRef = newTable.CreateRef(newTable.Key);
                         newColumn.PrimaryKey = field.IsPrimaryKey;

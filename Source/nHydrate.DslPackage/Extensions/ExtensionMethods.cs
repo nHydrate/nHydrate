@@ -460,8 +460,6 @@ namespace nHydrate.DslPackage
                 IsReadOnly = original.IsReadOnly,
                 IsUnique = original.IsUnique,
                 Length = original.Length,
-                Max = original.Max,
-                Min = original.Min,
                 Nullable = original.Nullable,
                 Scale = original.Scale,
                 Summary = original.Summary,

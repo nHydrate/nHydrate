@@ -206,8 +206,6 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(Field), "IsIndexed", Field.IsIndexedDomainPropertyId, typeof(Field.IsIndexedPropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "IsUnique", Field.IsUniqueDomainPropertyId, typeof(Field.IsUniquePropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "Length", Field.LengthDomainPropertyId, typeof(Field.LengthPropertyHandler)),
-				new DomainMemberInfo(typeof(Field), "Min", Field.MinDomainPropertyId, typeof(Field.MinPropertyHandler)),
-				new DomainMemberInfo(typeof(Field), "Max", Field.MaxDomainPropertyId, typeof(Field.MaxPropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "IsPrimaryKey", Field.IsPrimaryKeyDomainPropertyId, typeof(Field.IsPrimaryKeyPropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "Scale", Field.ScaleDomainPropertyId, typeof(Field.ScalePropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "ValidationExpression", Field.ValidationExpressionDomainPropertyId, typeof(Field.ValidationExpressionPropertyHandler)),

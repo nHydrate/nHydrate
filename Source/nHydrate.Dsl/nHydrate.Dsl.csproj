@@ -146,12 +146,9 @@
     <Compile Include="Custom\SQLFileManagement.cs" />
     <Compile Include="Design\Converters\DatatypeConverter.cs" />
     <Compile Include="Design\Converters\VisibilityTypeEnumConverter.cs" />
-    <Compile Include="Design\Converters\SQLConverter.cs" />
     <Compile Include="Design\Converters\EntityFieldConverter.cs" />
     <Compile Include="Design\Converters\ModuleRuleInclusionEnumConverter.cs" />
     <Compile Include="Design\Converters\ModuleConverter.cs" />
-    <Compile Include="Design\Converters\RangeMaxConverter.cs" />
-    <Compile Include="Design\Converters\RangeMinConverter.cs" />
     <Compile Include="Design\Converters\TextDecimalScaleConverter.cs" />
     <Compile Include="Design\Converters\TextLengthConverter.cs" />
     <Compile Include="Design\Converters\VersionConverter.cs" />
@@ -177,6 +174,11 @@
     </Compile>
     <Compile Include="Design\Forms\SQLForm.Designer.cs">
       <DependentUpon>SQLForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GeneratedCode\HelpKeywordHelper.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HelpKeywordHelper.tt</DependentUpon>
     </Compile>
     <Compile Include="GeneratedCode\Serializer1.cs">
       <AutoGen>True</AutoGen>
@@ -309,11 +311,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DomainRelationships.tt</DependentUpon>
-    </Compile>
-    <Compile Include="GeneratedCode\HelpKeywordHelper.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>HelpKeywordHelper.tt</DependentUpon>
     </Compile>
     <Compile Include="GeneratedCode\MultiplicityValidation.cs">
       <AutoGen>True</AutoGen>

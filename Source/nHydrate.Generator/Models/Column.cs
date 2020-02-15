@@ -24,8 +24,6 @@ namespace nHydrate.Generator.Models
         protected const int _def_sortOrder = 0;
         protected const bool _def_UIVisible = false;
         protected const string _def_mask = "";
-        protected const double _def_min = double.NaN;
-        protected const double _def_max = double.NaN;
         protected const bool _def_isIndexed = false;
         protected const bool _def_isUnique = false;
         protected const string _def_formula = "";
@@ -45,8 +43,6 @@ namespace nHydrate.Generator.Models
         protected string _default = _def_default;
         protected bool _defaultIsFunc = _def_defaultIsFunc;
         protected Reference _relationshipRef = null;
-        private double _min = _def_min;
-        private double _max = _def_max;
         private bool _isIndexed = _def_isIndexed;
         protected bool _isUnique = _def_isUnique;
         protected string _collate = string.Empty;
@@ -158,32 +154,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _defaultIsFunc = value;
-            }
-        }
-
-        public double Min
-        {
-            get
-            {
-                if (this.ComputedColumn) return _def_min;
-                else return _min;
-            }
-            set
-            {
-                _min = value;
-            }
-        }
-
-        public double Max
-        {
-            get
-            {
-                if (this.ComputedColumn) return _def_max;
-                else return _max;
-            }
-            set
-            {
-                _max = value;
             }
         }
 
@@ -314,11 +284,6 @@ namespace nHydrate.Generator.Models
 
             if (this.IsIndexed)
                 text += "Indexed, ";
-
-            if (!double.IsNaN(this.Min) || !double.IsNaN(this.Max))
-            {
-                text += "Range [" + (double.IsNaN(this.Min) ? "INF" : this.Min.ToString()) + ".." + (double.IsNaN(this.Max) ? "INF" : this.Max.ToString()) + "], ";
-            }
 
             if (!string.IsNullOrEmpty(this.Default) && this.DataType == System.Data.SqlDbType.Bit)
                 text += "Default Value: " + (this.Default == "0" || this.Default == "false" ? "false" : "true");
@@ -739,10 +704,6 @@ namespace nHydrate.Generator.Models
                 if (this.Category != string.Empty)
                     XmlHelper.AddAttribute(node, "category", this.Category);
 
-                if (!double.IsNaN(this.Min)) XmlHelper.AddAttribute(node, "min", this.Min);
-
-                if (!double.IsNaN(this.Max)) XmlHelper.AddAttribute(node, "max", this.Max);
-
                 if (this.Mask != _def_mask)
                     XmlHelper.AddAttribute(node, "mask", this.Mask);
 
@@ -794,8 +755,6 @@ namespace nHydrate.Generator.Models
                 this.FriendlyName = XmlHelper.GetAttributeValue(node, "dataFieldFriendlyName", _def_friendlyName);
                 this.UIVisible = XmlHelper.GetAttributeValue(node, "dataFieldVisibility", _def_UIVisible);
                 this.SortOrder = XmlHelper.GetAttributeValue(node, "dataFieldSortOrder", _def_sortOrder);
-                this.Min = XmlHelper.GetAttributeValue(node, "min", _def_min);
-                this.Max = XmlHelper.GetAttributeValue(node, "max", _def_max);
                 this.Mask = XmlHelper.GetAttributeValue(node, "mask", _def_mask);
                 this.Obsolete = XmlHelper.GetAttributeValue(node, "obsolete", _def_obsolete);
                 //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);

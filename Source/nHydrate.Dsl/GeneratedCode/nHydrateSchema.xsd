@@ -736,18 +736,6 @@
             <xsd:documentation>Determines the size of this column in bytes</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: Min -->
-        <xsd:attribute name="min" type="xsd:double" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the minimum value for a int, long, float value</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Max -->
-        <xsd:attribute name="max" type="xsd:double" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the maximum value for a int, long, float value</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: IsPrimaryKey -->
         <xsd:attribute name="isPrimaryKey" type="xsd:boolean" >
           <xsd:annotation>

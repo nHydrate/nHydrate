@@ -1685,20 +1685,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		[System.ComponentModel.DataAnnotations.StringLength(" + l + ", ErrorMessage = \"The property '" + column.GetFriendlyName() + "' has a maximum length of " + l + "\")]");
                 }
 
-                //If a range column then validate
-                if (column.IsRangeType && column.Identity == IdentityTypeConstants.None)
-                {
-                    //If at least one is a value then process
-                    if (!Double.IsNaN(column.Min) || !Double.IsNaN(column.Max))
-                    {
-                        var min = column.GetCodeType(false) + ".MinValue";
-                        var max = column.GetCodeType(false) + ".MaxValue";
-                        if (!Double.IsNaN(column.Min)) min = column.Min.ToString();
-                        if (!Double.IsNaN(column.Max)) max = column.Max.ToString();
-                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Range(" + min + ", " + max + ")]");
-                    }
-                }
-
                 if (!string.IsNullOrEmpty(column.Mask))
                 {
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = @\"" + column.Mask.Replace(@"\\", @"\\\\") + "\")]");

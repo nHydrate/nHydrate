@@ -1197,8 +1197,6 @@ namespace nHydrate.DslPackage.Objects
                                 newField.IsReadOnly = column.IsReadOnly;
                                 newField.IsUnique = column.IsUnique;
                                 newField.Length = column.Length;
-                                newField.Max = column.Max;
-                                newField.Min = column.Min;
                                 newField.Name = column.Name;
                                 newField.Nullable = column.AllowNull;
                                 newField.Scale = column.Scale;

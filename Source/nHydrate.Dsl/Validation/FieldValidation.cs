@@ -41,23 +41,6 @@ namespace nHydrate.Dsl
                 #region Check valid name based on codefacade
                 if ((!string.IsNullOrEmpty(this.CodeFacade)) && !ValidationHelper.ValidDatabaseIdenitifer(this.CodeFacade))
                     context.LogError(ValidationHelper.ErrorTextInvalidCodeFacade, string.Empty, this);
-
-                if (this.DataType.IsNumericType())
-                {
-                    if (!double.IsNaN(this.Min) && (!double.IsNaN(this.Max)))
-                    {
-                        if (this.Min > this.Max)
-                            context.LogError(ValidationHelper.ErrorTextMinMaxValueMismatch, string.Empty, this);
-                    }
-                }
-                else //Non-numeric
-                {
-                    //Neither should be set
-                    if (!double.IsNaN(this.Min) || (!double.IsNaN(this.Max)))
-                    {
-                        context.LogError(ValidationHelper.ErrorTextMinMaxValueInvalidType, string.Empty, this);
-                    }
-                }
                 #endregion
 
                 #region Validate identity field
@@ -193,13 +176,6 @@ namespace nHydrate.Dsl
                 if (this.Entity.nHydrateModel.UseModules && (this.Modules.Count == 0) && this.IsGenerated)
                 {
                     context.LogError(string.Format(ValidationHelper.ErrorTextModuleItemNotInModule, this.Entity.Name + "." + this.Name), string.Empty, this);
-                }
-                #endregion
-
-                #region Identity cannot have range check
-                if ((!Double.IsNaN(this.Min) || !Double.IsNaN(this.Max)) && this.Identity != IdentityTypeConstants.None)
-                {
-                    context.LogError(string.Format(ValidationHelper.ErrorTextColumnNoRange4Identity, this.Entity.Name + "." + this.Name), string.Empty, this);
                 }
                 #endregion
 

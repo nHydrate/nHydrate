@@ -480,30 +480,6 @@
             <ExternalTypeMoniker Name="/System/Int32" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="1681175c-090d-404f-a776-086c6d444672" Description="Determines the minimum value for a int, long, float value" Name="Min" DisplayName="Min" DefaultValue="" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.RangeMinConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Double" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="7be3e16a-8034-41e2-872e-75ea86acbeb9" Description="Determines the maximum value for a int, long, float value" Name="Max" DisplayName="Max" DefaultValue="" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.RangeMaxConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Double" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="658312f1-4067-4791-9c8e-818d086c108e" Description="Determine if this field is the entity primary key" Name="IsPrimaryKey" DisplayName="Is Primary Key" DefaultValue="false" Category="Definition">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
@@ -2741,12 +2717,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="length">
             <DomainPropertyMoniker Name="Field/Length" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="min">
-            <DomainPropertyMoniker Name="Field/Min" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="max">
-            <DomainPropertyMoniker Name="Field/Max" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="isPrimaryKey">
             <DomainPropertyMoniker Name="Field/IsPrimaryKey" />

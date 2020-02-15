@@ -149,8 +149,6 @@ namespace nHydrate.Dsl.Custom
                         XmlHelper.AddAttribute(fieldNode, "collate", field.Collate);
                         XmlHelper.AddAttribute(fieldNode, "friendlyname", field.FriendlyName);
                         XmlHelper.AddAttribute(fieldNode, "isbrowsable", field.IsBrowsable);
-                        XmlHelper.AddAttribute(fieldNode, "max", field.Max);
-                        XmlHelper.AddAttribute(fieldNode, "min", field.Min);
                         XmlHelper.AddAttribute(fieldNode, "validationexpression", field.ValidationExpression);
                         XmlHelper.AddAttribute(fieldNode, "obsolete", field.Obsolete);
 
@@ -998,8 +996,6 @@ namespace nHydrate.Dsl.Custom
                         field.Collate = XmlHelper.GetAttributeValue(n, "collate", field.Collate);
                         field.FriendlyName = XmlHelper.GetAttributeValue(n, "friendlyname", field.FriendlyName);
                         field.IsBrowsable = XmlHelper.GetAttributeValue(n, "isbrowsable", field.IsBrowsable);
-                        field.Max = XmlHelper.GetAttributeValue(n, "max", field.Max);
-                        field.Min = XmlHelper.GetAttributeValue(n, "min", field.Min);
                         field.ValidationExpression = XmlHelper.GetAttributeValue(n, "validationexpression", field.ValidationExpression);
                         field.Obsolete = XmlHelper.GetAttributeValue(n, "obsolete", field.Obsolete);
                         field.Summary = XmlHelper.GetNodeValue(n, "summary", field.Summary);

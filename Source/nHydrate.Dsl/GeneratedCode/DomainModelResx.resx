@@ -853,30 +853,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Length&apos; on DomainClass &apos;Field&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.Field/Min.Description" xml:space="preserve">
-    <value>Determines the minimum value for a int, long, float value</value>
-    <comment>Description for DomainProperty &apos;Min&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/Min.DisplayName" xml:space="preserve">
-    <value>Min</value>
-    <comment>DisplayName for DomainProperty &apos;Min&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/Min.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;Min&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/Max.Description" xml:space="preserve">
-    <value>Determines the maximum value for a int, long, float value</value>
-    <comment>Description for DomainProperty &apos;Max&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/Max.DisplayName" xml:space="preserve">
-    <value>Max</value>
-    <comment>DisplayName for DomainProperty &apos;Max&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/Max.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;Max&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.Field/IsPrimaryKey.Description" xml:space="preserve">
     <value>Determine if this field is the entity primary key</value>
     <comment>Description for DomainProperty &apos;IsPrimaryKey&apos; on DomainClass &apos;Field&apos;</comment>

@@ -30,8 +30,6 @@ namespace nHydrate.Dsl
         public Field(DslModeling::Partition partition, params DslModeling::PropertyAssignment[] propertyAssignments)
             : base(partition, propertyAssignments)
         {
-            this.Min = double.NaN;
-            this.Max = double.NaN;
         }
         #endregion
 
@@ -562,28 +560,6 @@ namespace nHydrate.Dsl
         {
             get { return (base.IsUnique || base.IsPrimaryKey) && !base.IsCalculated; }
             set { base.IsUnique = value; }
-        }
-
-        public override double Min
-        {
-            get
-            {
-                if (this.IsCalculated) return double.NaN;
-                if (!this.DataType.IsNumericType()) return double.NaN;
-                return base.Min;
-            }
-            set { base.Min = value; }
-        }
-
-        public override double Max
-        {
-            get
-            {
-                if (this.IsCalculated) return double.NaN;
-                if (!this.DataType.IsNumericType()) return double.NaN;
-                return base.Max;
-            }
-            set { base.Max = value; }
         }
 
         public override string Collate
