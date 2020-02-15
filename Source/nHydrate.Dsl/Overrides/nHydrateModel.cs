@@ -30,7 +30,6 @@ namespace nHydrate.Dsl
         {
             this.SyncServerToken = Guid.Empty;
             this.IsLoading = true;
-            this.Refactorizations = new List<Objects.IRefactor>();
             this.DiagramVisibility = VisibilityTypeConstants.Function | VisibilityTypeConstants.StoredProcedure | VisibilityTypeConstants.View;
 
             this.RemovedTables = new List<string>();
@@ -40,8 +39,6 @@ namespace nHydrate.Dsl
         }
 
         public override bool ModelToDisk { get => true; }
-
-        public List<nHydrate.Dsl.Objects.IRefactor> Refactorizations { get; set; }
 
         public bool IsLoading { get; set; } = false;
 

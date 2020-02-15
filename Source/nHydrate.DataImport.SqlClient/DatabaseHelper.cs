@@ -52,7 +52,7 @@ namespace nHydrate.DataImport.SqlClient
             //Get the columns that actually exist in the database
             var columnList = dbEntity.FieldList;
 
-            var fieldList = entity.FieldList.Where(x => !x.IsBinaryType() && x.DataType != SqlDbType.Timestamp).ToList();
+            var fieldList = entity.FieldList.Where(x => !x.DataType.IsBinaryType() && x.DataType != SqlDbType.Timestamp).ToList();
 
             //Load the static data grid
             var sb = new StringBuilder();
@@ -128,13 +128,6 @@ namespace nHydrate.DataImport.SqlClient
             sqlConnection.ConnectionString = connectionString;
             //}
             return sqlConnection;
-        }
-
-        internal static IDbCommand GetCommand(string connectionString, string spName)
-        {
-            return null;
-            //StoredProcedure sp = StoredProcedureFactory.GetStoredProcedure(connectionString, spName);
-            //return sp.GetDirectQueryCommand();
         }
 
         internal static SqlDataReader ExecuteReader(IDbConnection connection, CommandType cmdType, string stmt)
@@ -328,30 +321,6 @@ namespace nHydrate.DataImport.SqlClient
                 //case SqlNativeTypes.: return SqlDbType.Variant;
                 case SqlNativeTypes.xml: return SqlDbType.Xml;
                 default: throw new Exception("Unknown native SQL type '" + nativeType.ToString() + "'!");
-            }
-        }
-
-        #endregion
-
-        #region SetTransaction
-
-        internal static void SetTransaction(IDbDataAdapter da, IDbTransaction trans)
-        {
-            if (da.InsertCommand != null)
-            {
-                da.InsertCommand.Transaction = trans;
-            }
-            if (da.SelectCommand != null)
-            {
-                da.SelectCommand.Transaction = trans;
-            }
-            if (da.UpdateCommand != null)
-            {
-                da.UpdateCommand.Transaction = trans;
-            }
-            if (da.DeleteCommand != null)
-            {
-                da.DeleteCommand.Transaction = trans;
             }
         }
 

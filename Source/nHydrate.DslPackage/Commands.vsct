@@ -26,9 +26,6 @@
             <Group guid="guidDiagramMenuCmdSet" id="DiagramSubMenuGroup" priority="0x0100">
                 <Parent guid="guidDiagramMenuCmdSet" id="DiagramSubMenuGroup" />
             </Group>
-            <Group guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" priority="0x0100">
-                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
-            </Group>
             <Group guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" priority="0x0100">
                 <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
             </Group>
@@ -57,13 +54,6 @@
                 <Strings>
                     <ButtonText>Diagram</ButtonText>
                     <CommandName>Diagram</CommandName>
-                </Strings>
-            </Menu>
-            <Menu guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" priority="0x800" type="Menu">
-                <Parent guid="guidMenuGroupMain" id="grpidGroupMain" />
-                <Strings>
-                    <ButtonText>Refactor</ButtonText>
-                    <CommandName>Refactor</CommandName>
                 </Strings>
             </Menu>
             <Menu guid="guidMenuNHydrateCmdSet" id="grpidNHydrateMenu" priority="0x100" type="Menu">
@@ -366,70 +356,6 @@
                 </Strings>
             </Button>
 
-            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorSplitTable" priority="0x0100" type="Button">
-                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
-                <CommandFlag>DynamicVisibility</CommandFlag>
-                <Strings>
-                    <ButtonText>Split Entity</ButtonText>
-                </Strings>
-            </Button>
-
-            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorCombineTable" priority="0x0100" type="Button">
-                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
-                <CommandFlag>DynamicVisibility</CommandFlag>
-                <Strings>
-                    <ButtonText>Combine Entities</ButtonText>
-                </Strings>
-            </Button>
-
-            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorReplaceIDWithGuid" priority="0x0100" type="Button">
-                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
-                <CommandFlag>DynamicVisibility</CommandFlag>
-                <Strings>
-                    <ButtonText>Replace Identity with GUID</ButtonText>
-                </Strings>
-            </Button>
-
-            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorReplaceGuidWithID" priority="0x0100" type="Button">
-                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
-                <CommandFlag>DynamicVisibility</CommandFlag>
-                <Strings>
-                    <ButtonText>Replace GUID with Identity</ButtonText>
-                </Strings>
-            </Button>
-
-            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorCreateAssoc" priority="0x0100" type="Button">
-                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
-                <CommandFlag>DynamicVisibility</CommandFlag>
-                <Strings>
-                    <ButtonText>Create Associative Table</ButtonText>
-                </Strings>
-            </Button>
-
-            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorChangeVarchar" priority="0x0100" type="Button">
-                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
-                <CommandFlag>DynamicVisibility</CommandFlag>
-                <Strings>
-                    <ButtonText>Convert Varchar/NVarchar Datatypes</ButtonText>
-                </Strings>
-            </Button>
-
-            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorChangeNText" priority="0x0100" type="Button">
-                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
-                <CommandFlag>DynamicVisibility</CommandFlag>
-                <Strings>
-                    <ButtonText>Convert Deprecated Datatypes</ButtonText>
-                </Strings>
-            </Button>
-
-            <Button guid="guidRefactorMenuCmdSet" id="cmdidMenuRefactorRetypePK" priority="0x0100" type="Button">
-                <Parent guid="guidRefactorMenuCmdSet" id="RefactorSubMenuGroup" />
-                <CommandFlag>DynamicVisibility</CommandFlag>
-                <Strings>
-                    <ButtonText>Change Primary Key Type</ButtonText>
-                </Strings>
-            </Button>
-
         </Buttons>
 
     </Commands>
@@ -445,7 +371,6 @@
         <VisibilityItem guid="guidMenuGroupMain" id="grpidGroupMain" context="guidEditor" />
         <VisibilityItem guid="guidMenuGroupDiagram" id="grpidGroupDiagram" context="guidEditor" />
         <VisibilityItem guid="guidMenuDiagramMenu" id="grpidDiagramMenu" context="guidEditor" />
-        <VisibilityItem guid="guidMenuRefactorMenu" id="grpidRefactorMenu" context="guidEditor" />
     </VisibilityConstraints>
 
     <Symbols>
@@ -465,10 +390,6 @@
 
         <GuidSymbol name="guidMenuDiagramMenu" value="{CBCDAA34-817C-44FC-8227-EC4C4C56BE3C}">
             <IDSymbol name="grpidDiagramMenu" value="0x01003" />
-        </GuidSymbol>
-
-        <GuidSymbol name="guidMenuRefactorMenu" value="{DDCDAA34-817C-44FC-8227-EC4C4C56BE3C}">
-            <IDSymbol name="grpidRefactorMenu" value="0x01005" />
         </GuidSymbol>
 
         <GuidSymbol name="guidModelMenuCmdSet" value="{66457976-07EF-4CF1-AE6C-FA5E2D926EA9}">
@@ -501,19 +422,6 @@
             <IDSymbol name="cmdidMenuDiagramExpandAll" value="0x00010" />
             <IDSymbol name="cmdidMenuDiagramShowTypes" value="0x00011" />
             <IDSymbol name="cmdidMenuAbout" value="0x00015" />
-        </GuidSymbol>
-
-        <GuidSymbol name="guidRefactorMenuCmdSet" value="{99887976-07EF-4CF1-AE6C-FA5E2D926EA9}">
-            <IDSymbol name="RefactorSubMenu" value="0x1101" />
-            <IDSymbol name="RefactorSubMenuGroup" value="0x1153" />
-            <IDSymbol name="cmdidMenuRefactorSplitTable" value="0x00019" />
-            <IDSymbol name="cmdidMenuRefactorCombineTable" value="0x0001A" />
-            <IDSymbol name="cmdidMenuRefactorReplaceIDWithGuid" value="0x0001B" />
-            <IDSymbol name="cmdidMenuRefactorReplaceGuidWithID" value="0x0001C" />
-            <IDSymbol name="cmdidMenuRefactorCreateAssoc" value="0x0001D" />
-            <IDSymbol name="cmdidMenuRefactorChangeVarchar" value="0x00020" />
-            <IDSymbol name="cmdidMenuRefactorChangeNText" value="0x0001E" />
-            <IDSymbol name="cmdidMenuRefactorRetypePK" value="0x0001F" />
         </GuidSymbol>
 
         <GuidSymbol name="guidZoomMenuCmdSet" value="{65457976-07EF-4CF1-AE6C-FA5E2D926EA9}">

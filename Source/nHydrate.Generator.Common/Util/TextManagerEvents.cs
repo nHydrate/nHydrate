@@ -1,12 +1,6 @@
 ﻿#pragma warning disable 0168
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
-//using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 namespace nHydrate.Generator.Common.Util

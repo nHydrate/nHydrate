@@ -53,7 +53,6 @@ namespace nHydrate.Generator.Models
             : base(root)
         {
             _database = new Database(this);
-            this.Refactorizations = new List<IRefactor>();
 
             this.RemovedTables = new ExtendedList<string>();
             this.RemovedViews = new ExtendedList<string>();
@@ -92,8 +91,6 @@ namespace nHydrate.Generator.Models
         public string OutputTarget { get; set; }
 
         public MetadataItemCollection MetaData { get; }
-
-        public List<IRefactor> Refactorizations { get; }
 
         public string ModelToolVersion
         {

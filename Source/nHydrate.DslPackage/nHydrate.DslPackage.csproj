@@ -286,12 +286,6 @@
     <Compile Include="Forms\FindWindowPopupOptionsForm.Designer.cs">
       <DependentUpon>FindWindowPopupOptionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\RefactorPreviewChangeVarcharForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\RefactorPreviewChangeVarcharForm.Designer.cs">
-      <DependentUpon>RefactorPreviewChangeVarcharForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\RelationshipViewDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -364,30 +358,6 @@
     <Compile Include="Forms\NagScreenForm.Designer.cs">
       <DependentUpon>NagScreenForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\RefactorCombineTableForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\RefactorCombineTableForm.Designer.cs">
-      <DependentUpon>RefactorCombineTableForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\RefactorPreviewChangeNTextForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\RefactorPreviewChangeNTextForm.Designer.cs">
-      <DependentUpon>RefactorPreviewChangeNTextForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\RefactorPreviewCreateAssociativeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\RefactorPreviewCreateAssociativeForm.Designer.cs">
-      <DependentUpon>RefactorPreviewCreateAssociativeForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\RefactorSplitTableForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\RefactorSplitTableForm.Designer.cs">
-      <DependentUpon>RefactorSplitTableForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\RefreshItemFromDatabase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -411,12 +381,6 @@
     </Compile>
     <Compile Include="Forms\RelationshipDialog.Designer.cs">
       <DependentUpon>RelationshipDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\RefactorRetypePkForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\RefactorRetypePkForm.Designer.cs">
-      <DependentUpon>RefactorRetypePkForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\RunningProcesses.cs">
       <SubType>Form</SubType>
@@ -546,9 +510,6 @@
     <EmbeddedResource Include="Forms\FindWindowPopupOptionsForm.resx">
       <DependentUpon>FindWindowPopupOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\RefactorPreviewChangeVarcharForm.resx">
-      <DependentUpon>RefactorPreviewChangeVarcharForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\RelationshipViewDialog.resx">
       <DependentUpon>RelationshipViewDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -585,18 +546,6 @@
     <EmbeddedResource Include="Forms\NagScreenForm.resx">
       <DependentUpon>NagScreenForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\RefactorCombineTableForm.resx">
-      <DependentUpon>RefactorCombineTableForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\RefactorPreviewChangeNTextForm.resx">
-      <DependentUpon>RefactorPreviewChangeNTextForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\RefactorPreviewCreateAssociativeForm.resx">
-      <DependentUpon>RefactorPreviewCreateAssociativeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\RefactorSplitTableForm.resx">
-      <DependentUpon>RefactorSplitTableForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\RefreshItemFromDatabase.resx">
       <DependentUpon>RefreshItemFromDatabase.cs</DependentUpon>
     </EmbeddedResource>
@@ -608,9 +557,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\RelationshipDialog.resx">
       <DependentUpon>RelationshipDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\RefactorRetypePkForm.resx">
-      <DependentUpon>RefactorRetypePkForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\RunningProcesses.resx">
       <DependentUpon>RunningProcesses.cs</DependentUpon>

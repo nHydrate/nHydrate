@@ -98,20 +98,6 @@ namespace nHydrate.Dsl
                 }
             }
 
-            //Save the refactorizations
-            if (modelRoot.Refactorizations.Count > 0)
-            {
-                var document = new XmlDocument();
-                document.Load(modelFileName);
-                var refactorList = XmlHelper.AddElement(document.DocumentElement, "refactorizations");
-                foreach (var item in modelRoot.Refactorizations)
-                {
-                    var n = XmlHelper.AddElement((XmlElement)refactorList, "refactor");
-                    item.ToXML((XmlElement)n);
-                }
-                document.Save(modelFileName);
-            }
-
         }
 
         private FileSystemWatcher _watchFolder = new FileSystemWatcher();
@@ -234,46 +220,6 @@ namespace nHydrate.Dsl
             modelRoot.StoredProcedures.Where(x => x.PrecedenceOrder == 0).ToList().ForEach(x => x.PrecedenceOrder = ++modelRoot.MaxPrecedenceOrder);
             modelRoot.Views.Where(x => x.PrecedenceOrder == 0).ToList().ForEach(x => x.PrecedenceOrder = ++modelRoot.MaxPrecedenceOrder);
             modelRoot.Functions.Where(x => x.PrecedenceOrder == 0).ToList().ForEach(x => x.PrecedenceOrder = ++modelRoot.MaxPrecedenceOrder);
-
-            #endregion
-
-            #region Load the refactorizations
-
-            if (File.Exists(modelFileName))
-            {
-                var fi = new FileInfo(modelFileName);
-                if (fi.Length > 5)
-                {
-                    var document = new XmlDocument();
-                    document.Load(modelFileName);
-                    if (document.DocumentElement != null)
-                    {
-                        var refactorList = document.DocumentElement.SelectSingleNode("refactorizations");
-                        if (refactorList != null)
-                        {
-                            foreach (XmlNode n in refactorList.ChildNodes)
-                            {
-                                //if (XmlHelper.GetAttributeValue(n, "type", string.Empty) == "guidtoid")
-                                //{
-                                //  modelRoot.Refactorizations.Add(new RefactorChangeGuidToID((XmlElement)n));
-                                //}
-                                //else if (XmlHelper.GetAttributeValue(n, "type", string.Empty) == "guidtoididtoguid")
-                                //{
-                                //  modelRoot.Refactorizations.Add(new RefactorChangeIDToGuid((XmlElement)n));
-                                //}
-                                if (XmlHelper.GetAttributeValue(n, "type", string.Empty) == "splittable")
-                                {
-                                    modelRoot.Refactorizations.Add(new RefactorTableSplit((XmlElement)n));
-                                }
-                                else if (XmlHelper.GetAttributeValue(n, "type", string.Empty) == "combinetable")
-                                {
-                                    modelRoot.Refactorizations.Add(new RefactorTableCombine((XmlElement)n));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
 
             #endregion
 

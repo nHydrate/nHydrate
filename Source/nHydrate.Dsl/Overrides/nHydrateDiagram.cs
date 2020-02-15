@@ -58,18 +58,8 @@ namespace nHydrate.Dsl
             TextManagerEvents.RegisterForTextManagerEvents();
         }
 
-        public new void AutoLayoutChildShapes(System.Collections.IDictionary shapeElementMap)
-        {
-            //base.AutoLayoutChildShapes(shapeElementMap);
-        }
-
         private bool CanUndoRedoCallback(bool isUndo, Microsoft.VisualStudio.Modeling.TransactionItem transactionItem)
         {
-            //This callback will catch the UNDO events and if the UNDO was a factor 
-            //then remove it from the refactor collection that is used later for SQL emits
-            var model = this.Diagram.ModelElement as nHydrateModel;
-            var refactor = model.Refactorizations.FirstOrDefault(x => x.Id == transactionItem.Id);
-            if (refactor != null) model.Refactorizations.Remove(refactor);
             return true;
         }
 

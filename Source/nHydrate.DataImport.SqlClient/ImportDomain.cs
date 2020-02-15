@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Data.SqlClient;
 using System.Data;
-using System.Text.RegularExpressions;
+using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.DataImport.SqlClient
 {
@@ -483,12 +481,11 @@ namespace nHydrate.DataImport.SqlClient
                                 var newColumn = new Field();
 
                                 var dataType = Extensions.GetSqlDbType(column.DataType);
-                                var length = newColumn.DataType.ValidateDataTypeMax(1000000);
 
                                 newColumn.Name = column.ColumnName;
                                 newColumn.DataType = dataType;
                                 newColumn.Nullable = true;
-                                newColumn.Length = length;
+                                newColumn.Length = 0;
                                 if (newColumn.DataType == SqlDbType.Decimal)
                                 {
                                     newColumn.Length = 18;
@@ -1035,7 +1032,7 @@ namespace nHydrate.DataImport.SqlClient
             if (field.Nullable && defaultvalue.ToLower() == "null")
                 defaultvalue = string.Empty;
 
-            if (field.IsNumericType() || field.DataType == SqlDbType.Bit || field.IsDateType() || field.IsBinaryType())
+            if (field.DataType.IsNumericType() || field.DataType == SqlDbType.Bit || field.DataType.IsDateType() || field.DataType.IsBinaryType())
             {
                 field.DefaultValue = defaultvalue.Replace("(", string.Empty).Replace(")", string.Empty); //remove any parens
             }
@@ -1048,7 +1045,7 @@ namespace nHydrate.DataImport.SqlClient
                 else
                     field.DefaultValue = defaultvalue.Replace("(", string.Empty).Replace(")", string.Empty).Replace("'", string.Empty); //Format: ('000...0000')
             }
-            else if (field.IsTextType())
+            else if (field.DataType.IsTextType())
             {
                 if (defaultvalue.StartsWith("(N'")) defaultvalue = defaultvalue.Substring(3, defaultvalue.Length - 3);
                 while (defaultvalue.StartsWith("('")) defaultvalue = defaultvalue.Substring(2, defaultvalue.Length - 2);

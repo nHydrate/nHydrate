@@ -1,10 +1,10 @@
 #pragma warning disable 0168
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
 using System.Text.RegularExpressions;
+using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.DataImport.SqlClient
 {
@@ -346,15 +346,15 @@ namespace nHydrate.DataImport.SqlClient
             {
                 if (parameter.DataType == SqlDbType.UniqueIdentifier)
                     sb.Append("@" + parameter.Name + "='540C6D43-5645-40FB-980F-2FF126BFBD5E'");
-                else if (parameter.IsTextType())
+                else if (parameter.DataType.IsTextType())
                     sb.Append("@" + parameter.Name + "=''");
-                else if (parameter.IsNumericType())
+                else if (parameter.DataType.IsNumericType())
                     sb.Append("@" + parameter.Name + "=0");
-                else if (parameter.IsBinaryType())
+                else if (parameter.DataType.IsBinaryType())
                     sb.Append("@" + parameter.Name + "=0x0");
                 else if (parameter.DataType == SqlDbType.Bit)
                     sb.Append("@" + parameter.Name + "=0");
-                else if (parameter.IsDateType())
+                else if (parameter.DataType.IsDateType())
                     sb.Append("@" + parameter.Name + "='2000-01-01'");
                 else
                     System.Diagnostics.Debug.Write(string.Empty);

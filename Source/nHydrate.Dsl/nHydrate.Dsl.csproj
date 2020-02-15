@@ -185,9 +185,6 @@
     </Compile>
     <Compile Include="Objects\ModelerOptions.cs" />
     <Compile Include="Objects\PrecedenceUtil.cs" />
-    <Compile Include="Objects\RefactorTableCombine.cs" />
-    <Compile Include="Objects\IRefactor.cs" />
-    <Compile Include="Objects\RefactorTableSplit.cs" />
     <Compile Include="Objects\UserDefinedScript.cs" />
     <Compile Include="Overrides\IFieldContainer.cs" />
     <Compile Include="Overrides\IField.cs" />

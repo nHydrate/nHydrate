@@ -220,21 +220,6 @@ namespace nHydrate.DslPackage.Objects
                         }
                     }
 
-                    if (model.Refactorizations.Count > 0)
-                    {
-                        using (var transaction = store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
-                        {
-                            model.Refactorizations.Clear();
-                            model.UseUTCTime = !model.UseUTCTime; //Trigger a model change
-                            model.UseUTCTime = !model.UseUTCTime; //Keep this line too
-                            transaction.Commit();
-
-                            //Save document
-                            (docData as nHydrateDocData).Save(docData.FileName, 1, 0);
-
-                        }
-                    }
-
                     var modelKey = (genList.FirstOrDefault()?.Model as nHydrate.Generator.Models.ModelRoot)?.Key;
 
                     //Save model statistics
@@ -454,32 +439,7 @@ namespace nHydrate.DslPackage.Objects
                     newmd.Value = md.Value;
                     root.MetaData.Add(newmd);
                 }
-
-                #region Set Refactorizations
-                foreach (var r in model.Refactorizations)
-                {
-                    if (r is nHydrate.Dsl.Objects.RefactorTableSplit)
-                    {
-                        var newR = new nHydrate.Generator.Common.GeneratorFramework.RefactorTableSplit();
-                        newR.EntityKey1 = (r as nHydrate.Dsl.Objects.RefactorTableSplit).EntityKey1;
-                        newR.EntityKey2 = (r as nHydrate.Dsl.Objects.RefactorTableSplit).EntityKey2;
-                        var flist = (r as nHydrate.Dsl.Objects.RefactorTableSplit).ReMappedFieldIDList;
-                        foreach (var k in flist.Keys)
-                            newR.ReMappedFieldIDList.Add(k, flist[k]);
-                        root.Refactorizations.Add(newR);
-                    }
-                    else if (r is nHydrate.Dsl.Objects.RefactorTableCombine)
-                    {
-                        var newR = new nHydrate.Generator.Common.GeneratorFramework.RefactorTableCombine();
-                        newR.EntityKey1 = (r as nHydrate.Dsl.Objects.RefactorTableCombine).EntityKey1;
-                        newR.EntityKey2 = (r as nHydrate.Dsl.Objects.RefactorTableCombine).EntityKey2;
-                        var flist = (r as nHydrate.Dsl.Objects.RefactorTableCombine).ReMappedFieldIDList;
-                        foreach (var k in flist.Keys)
-                            newR.ReMappedFieldIDList.Add(k, flist[k]);
-                        root.Refactorizations.Add(newR);
-                    }
-                }
-                #endregion
+               
 
                 if (ownerModule != null)
                     root.ModuleName = ownerModule.Name;

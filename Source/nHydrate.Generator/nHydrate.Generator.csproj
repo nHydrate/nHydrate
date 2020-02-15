@@ -333,9 +333,6 @@
     <Compile Include="ProjectItemGenerators\BaseProjectItemGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DatabaseHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="PropertyGrid.cs">
       <SubType>UserControl</SubType>
     </Compile>
