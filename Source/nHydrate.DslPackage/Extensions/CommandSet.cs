@@ -56,7 +56,6 @@ namespace nHydrate.DslPackage
         private const int cmdidMenuModuleDialog = 22;
         private const int cmdidMenuAbout = 21;
         private const int cmdidMenuZoom = 0x00101;
-        private const int cmdidMenuUtilityDialog = 23;
 
         private const int cmdidMenuCut = 0x1240;
         private const int cmdidMenuCopy = 0x1241;
