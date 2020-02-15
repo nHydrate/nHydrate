@@ -103,7 +103,6 @@ namespace nHydrate.Generator
                     newNode.XmlLoad(n);
                     this.Add(newNode);
                 }
-                this.Dirty = false;
             }
             catch (Exception ex)
             {

@@ -167,8 +167,6 @@ namespace nHydrate.Generator.Models
 
                 this.AllowNull = XmlHelper.GetAttributeValue(node, "allowNull", _allowNull);
                 this.IsBrowsable = XmlHelper.GetAttributeValue(node, "isBrowsable", _def_isBrowsable);
-
-                this.Dirty = false;
             }
             catch (Exception ex)
             {

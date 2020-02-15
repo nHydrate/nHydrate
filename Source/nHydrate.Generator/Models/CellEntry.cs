@@ -208,8 +208,6 @@ namespace nHydrate.Generator.Models
                 }
 
                 this.Value = XmlHelper.GetAttributeValue(node, "value", string.Empty);
-
-                this.Dirty = false;
             }
             catch (Exception ex)
             {

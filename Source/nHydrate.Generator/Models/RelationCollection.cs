@@ -85,8 +85,6 @@ namespace nHydrate.Generator.Models
                 }
 
                 _internalList.Remove(element);
-                this.Root.Dirty = true;
-
             }
             catch (Exception ex)
             {

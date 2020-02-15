@@ -507,9 +507,6 @@ namespace nHydrate.Generator.Models
             this.RoleName = roleName;
 
             this.ConstraintName = XmlHelper.GetAttributeValue(node, "constraintName", _def_constraintname);
-            //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-
-            this.Dirty = false;
         }
 
         #endregion

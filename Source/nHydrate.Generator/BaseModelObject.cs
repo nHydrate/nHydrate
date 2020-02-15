@@ -11,8 +11,6 @@ namespace nHydrate.Generator
 
         protected INHydrateModelObject _root;
         protected bool _dirty = false;
-        protected bool _cancelUIEvents = false;
-        protected string _name = string.Empty;
 
         #endregion
 
@@ -26,29 +24,6 @@ namespace nHydrate.Generator
         protected BaseModelObject()
         {
             //This should only be used for BaseModelCollection<T>
-        }
-
-        #endregion
-
-        #region Events
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event System.EventHandler DirtyChanged;
-
-        protected void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            this.Dirty = true;
-
-            //Cancel UI events if necessary
-            if (!this.CancelUIEvents)
-            {
-                PropertyChanged?.Invoke(sender, e);
-            }
-        }
-
-        protected void OnDirtyChanged(object sender, System.EventArgs e)
-        {
-            DirtyChanged?.Invoke(sender, e);
         }
 
         #endregion
@@ -93,39 +68,10 @@ namespace nHydrate.Generator
             this.Key = key;
         }
 
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                _name = value;
-            }
-        }
+        public string Name { get; set; } = string.Empty;
+
         [Browsable(false)]
         public virtual string Key { get; protected set; } = Guid.NewGuid().ToString();
-
-        [Browsable(false)]
-        public virtual bool Dirty
-        {
-            get { return _dirty; }
-            set
-            {
-                //if (_dirty != value)
-                //{
-                _dirty = value;
-                this.OnDirtyChanged(this, new System.EventArgs());
-                if ((this.Dirty) && (this.Root != null) && (this != this.Root))
-                    this.Root.Dirty = true;
-                //}
-            }
-        }
-
-        [Browsable(false)]
-        public virtual bool CancelUIEvents
-        {
-            get { return _cancelUIEvents; }
-            set { _cancelUIEvents = value; }
-        }
 
         /// <summary>
         /// Resets the unique key

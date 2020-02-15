@@ -244,8 +244,6 @@ namespace nHydrate.Generator.Models
 
                 this.AllowNull = XmlHelper.GetAttributeValue(node, "allowNull", AllowNull);
                 this.IsOutputParameter = XmlHelper.GetAttributeValue(node, "isOutputParameter", IsOutputParameter);
-
-                this.Dirty = false;
             }
             catch (Exception ex)
             {

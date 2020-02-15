@@ -98,8 +98,6 @@ namespace nHydrate.Generator.Models
                 var parametersNode = node.SelectSingleNode("parameters");
                 if (parametersNode != null)
                     this.Parameters.XmlLoad(parametersNode);
-
-                this.Dirty = false;
             }
             catch (Exception ex)
             {

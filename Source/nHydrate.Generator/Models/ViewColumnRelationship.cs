@@ -67,8 +67,6 @@ namespace nHydrate.Generator.Models
 				if (childColumnRefNode == null) childColumnRefNode = node.SelectSingleNode("ct");
 				this.ChildColumnRef = new Reference(this.Root);
 				this.ChildColumnRef.XmlLoad(childColumnRefNode);
-
-				this.Dirty = false;
 			}
 			catch (Exception ex)
 			{

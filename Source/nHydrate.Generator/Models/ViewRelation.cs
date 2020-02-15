@@ -348,8 +348,6 @@ namespace nHydrate.Generator.Models
             this.RoleName = roleName;
 
             this.ConstraintName = XmlHelper.GetAttributeValue(node, "constraintName", _def_constraintname);
-
-            this.Dirty = false;
         }
 
         #endregion

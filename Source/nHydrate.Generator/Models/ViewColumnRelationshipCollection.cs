@@ -48,9 +48,6 @@ namespace nHydrate.Generator.Models
                 newColumnRelationship.XmlLoad(columnRelationshipNode);
                 this.Add(newColumnRelationship);
             }
-
-            this.Dirty = false;
-
         }
 
         #endregion

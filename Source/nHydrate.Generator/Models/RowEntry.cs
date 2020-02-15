@@ -196,8 +196,6 @@ namespace nHydrate.Generator.Models
             var cellEntriesNode = node.SelectSingleNode("cellEntries"); //deprecated, use "cl"
             if (cellEntriesNode == null) cellEntriesNode = node.SelectSingleNode("cl");
             this.CellEntries.XmlLoad(cellEntriesNode);
-
-            this.Dirty = false;
         }
         #endregion
 

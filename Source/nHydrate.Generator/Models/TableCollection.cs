@@ -134,8 +134,6 @@ namespace nHydrate.Generator.Models
                     else
                         checkList.Add(t.Key);
                 }
-
-                this.Dirty = false;
             }
             catch (Exception ex)
             {
@@ -256,7 +254,6 @@ namespace nHydrate.Generator.Models
                 //Remove column references
                 table.Columns.Clear();
 
-                this.Root.Dirty = true;
                 _internalList.RemoveAll(x => x.Id == tableId);
             }
             catch (Exception ex)

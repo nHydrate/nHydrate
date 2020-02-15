@@ -254,9 +254,6 @@ namespace nHydrate.Generator.Models
                 var metadataNode = node.SelectSingleNode("metadata");
                 if (metadataNode != null)
                     this.MetaData.XmlLoad(metadataNode);
-
-                this.Dirty = false;
-
             }
             catch (Exception ex)
             {

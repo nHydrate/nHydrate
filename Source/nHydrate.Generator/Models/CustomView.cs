@@ -1,7 +1,6 @@
 #pragma warning disable 0168
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -218,9 +217,6 @@ namespace nHydrate.Generator.Models
 
                 this.Generated = XmlHelper.GetAttributeValue(node, "generated", _generated);
                 this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
-                //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-
-                this.Dirty = false;
             }
             catch(Exception ex)
             {

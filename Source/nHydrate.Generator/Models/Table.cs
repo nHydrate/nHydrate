@@ -623,8 +623,6 @@ namespace nHydrate.Generator.Models
                 var securityNode = node.SelectSingleNode("security");
                 if (securityNode != null)
                     this.Security.XmlLoad(securityNode);
-
-                this.Dirty = false;
             }
             catch (Exception ex)
             {

@@ -136,8 +136,6 @@ namespace nHydrate.Generator.Models
                     newReference.XmlLoad(referenceNode);
                     _references.Add(newReference);
                 }
-
-                this.Dirty = false;
             }
             catch (Exception ex)
             {

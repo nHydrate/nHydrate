@@ -96,7 +96,6 @@ namespace nHydrate.Generator.Models
                 this.FieldID = XmlHelper.GetAttributeValue(node, "fieldID", this.FieldID);
                 this.Ascending = XmlHelper.GetAttributeValue(node, "ascending", this.Ascending);
                 this.Id = XmlHelper.GetAttributeValue(node, "id", this.Id);
-                this.Dirty = false;
             }
             catch (Exception ex)
             {

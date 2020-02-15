@@ -179,40 +179,6 @@ namespace nHydrate.Generator
 
         public LoadResultConstants ProcessPostModelLoad()
         {
-            //try
-            //{
-            //  var root = (ModelRoot)this.RootController.Object;
-            //  if ((root.CompanyName == "[COMPANY NAME]") && root.ProjectName == "[NEW PROJECT]")
-            //  {
-            //    var F = new NewModelWizardForm(root);
-            //    if (F.ShowDialog() == DialogResult.OK)
-            //    {
-            //      if (root.Database.Tables.Count + root.Database.CustomViewColumns.Count + root.Database.CustomStoredProcedures.Count == 0)
-            //      {
-            //        var importForm = new ImportDatabaseForm();
-            //        importForm.ForceAddOnly();
-            //        importForm.CurrentDatabase = root.Database;
-            //        if (importForm.ShowDialog() == DialogResult.OK)
-            //        {
-            //        }
-            //      }
-
-            //      this.RootController.Object.Dirty = true;
-            //      return LoadResultConstants.SuccessDirty;
-            //    }
-            //    return LoadResultConstants.Success;
-            //  }
-            //  else
-            //  {
-            //    return LoadResultConstants.Success;
-            //  }
-
-            //}
-            //catch (Exception ex)
-            //{
-            //  return LoadResultConstants.Failed;
-            //}
-
             return LoadResultConstants.Failed;
         }
 

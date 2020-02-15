@@ -6,8 +6,6 @@ namespace nHydrate.Generator
     {
         INHydrateModelObject Root { get; }
         string Key { get; }
-        bool Dirty { get; set; }
-        event System.EventHandler DirtyChanged;
         INHydrateModelObjectController Controller { get; set; }
     }
 }

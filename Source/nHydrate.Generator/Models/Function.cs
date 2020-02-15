@@ -233,8 +233,6 @@ namespace nHydrate.Generator.Models
 
                 this.Generated = XmlHelper.GetAttributeValue(node, "generated", Generated);
                 this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
-
-                this.Dirty = false;
             }
             catch (Exception ex)
             {

@@ -135,8 +135,6 @@ namespace nHydrate.Generator.Models
                 var refTypeNode = XmlHelper.GetAttributeValue(node, "refType", -1);
                 if (refTypeNode != -1)
                     _refType = (ReferenceType)refTypeNode;
-
-                this.Dirty = false;
             }
             catch (Exception ex)
             {

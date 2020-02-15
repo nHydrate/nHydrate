@@ -120,8 +120,6 @@ namespace nHydrate.Generator.Models
                 var tableIndexColumnListNode = node.SelectSingleNode("ticl");
                 if (tableIndexColumnListNode != null)
                     this.IndexColumnList.XmlLoad(tableIndexColumnListNode, this.Root);
-
-                this.Dirty = false;
             }
             catch (Exception ex)
             {

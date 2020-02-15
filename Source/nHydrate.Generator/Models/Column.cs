@@ -748,7 +748,7 @@ namespace nHydrate.Generator.Models
                 this.Generated = XmlHelper.GetAttributeValue(node, "generated", _def_generated);
                 this.UIDataType = (System.ComponentModel.DataAnnotations.DataType)Enum.Parse(typeof(System.ComponentModel.DataAnnotations.DataType), XmlHelper.GetAttributeValue(node, "uidatatype", _def_uIDataType.ToString()), true);
                 this.Identity = (IdentityTypeConstants)XmlHelper.GetAttributeValue(node, "identity", (int)_def_identity);
-                this.Name = XmlHelper.GetAttributeValue(node, "name", _name);
+                this.Name = XmlHelper.GetAttributeValue(node, "name", Name);
                 this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", string.Empty);
                 this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
                 this.Prompt = XmlHelper.GetAttributeValue(node, "prompt", _def_prompt);
@@ -798,8 +798,6 @@ namespace nHydrate.Generator.Models
                 var metadataNode = node.SelectSingleNode("metadata");
                 if (metadataNode != null)
                     this.MetaData.XmlLoad(metadataNode);
-
-                this.Dirty = false;
             }
             catch (Exception ex)
             {
