@@ -61,17 +61,11 @@ namespace nHydrate.Generator.Models
             this.Functions.ResetKey(Guid.Empty.ToString());
             this.FunctionColumns = new FunctionColumnCollection(root);
             this.FunctionColumns.ResetKey(Guid.Empty.ToString());
-
-            this.PrecedenceOrderList = new List<Guid>();
         }
 
         #endregion
 
         #region Property Implementations
-
-        [Browsable(false)]
-        public List<Guid> PrecedenceOrderList { get; set; }
-
 
         [Browsable(false)]
         public ColumnCollection Columns { get; }

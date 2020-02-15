@@ -183,8 +183,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Serializer.tt</DependentUpon>
     </Compile>
-    <Compile Include="Objects\PrecedenceUtil.cs" />
-    <Compile Include="Objects\UserDefinedScript.cs" />
     <Compile Include="Overrides\IFieldContainer.cs" />
     <Compile Include="Overrides\IField.cs" />
     <Compile Include="Overrides\IDatabaseEntity.cs" />

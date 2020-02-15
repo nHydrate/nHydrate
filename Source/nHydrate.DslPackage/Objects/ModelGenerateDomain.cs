@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using nHydrate.Dsl;
 using nHydrate.Generator.ModelUI;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Dsl.Objects;
 using System.IO;
 using System.Xml;
 using nHydrate.Generator.Models;
@@ -451,10 +450,6 @@ namespace nHydrate.DslPackage.Objects
                 root.Database.TimestampColumnName = model.TimestampColumnName;
                 root.Database.GrantExecUser = model.GrantUser;
                 root.Database.Collate = model.Collate;
-
-                root.Database.PrecedenceOrderList = PrecedenceUtil.GetAllPrecedenceItems(model)
-                    .Select(x => x.ID)
-                    .ToList();
 
                 #region Load the entities
                 foreach (var entity in model.Entities.Where(x => x.IsGenerated).Where(x => ownerModule == null || x.Modules.Contains(ownerModule)))
