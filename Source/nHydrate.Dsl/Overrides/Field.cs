@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using nHydrate.Generator.Common.Util;
 using System.ComponentModel;
+using nHydrate.Generator.Common.GeneratorFramework;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
 
 namespace nHydrate.Dsl
 {
-    partial class Field : nHydrate.Dsl.IModuleLink, nHydrate.Dsl.IContainerParent, nHydrate.Dsl.IField
+    partial class Field : nHydrate.Dsl.IModuleLink, nHydrate.Dsl.IContainerParent, nHydrate.Dsl.IField, IDirtyable
     {
         #region Constructors
         /// <summary>

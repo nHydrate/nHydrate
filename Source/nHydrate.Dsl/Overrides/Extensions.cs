@@ -6,6 +6,7 @@ using System.Text;
 using System.Xml;
 using System.IO;
 using System.Runtime.InteropServices;
+using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Dsl
 {
@@ -604,109 +605,14 @@ namespace nHydrate.Dsl
                    dataType == DataTypeConstants.UniqueIdentifier;
         }
 
-        public static bool IsDirty(this IEnumerable<Field> list)
+        public static bool IsDirty(this IEnumerable<IDirtyable> list)
         {
             foreach (var item in list)
                 if (item.IsDirty) return true;
             return false;
         }
 
-        public static bool IsDirty(this IEnumerable<Index> list)
-        {
-            foreach (var item in list)
-                if (item.IsDirty) return true;
-            return false;
-        }
-
-        public static bool IsDirty(this IEnumerable<IndexColumn> list)
-        {
-            foreach (var item in list)
-                if (item.IsDirty) return true;
-            return false;
-        }
-
-        public static bool IsDirty(this IEnumerable<ViewField> list)
-        {
-            foreach (var item in list)
-                if (item.IsDirty) return true;
-            return false;
-        }
-
-        public static bool IsDirty(this IEnumerable<StoredProcedureField> list)
-        {
-            foreach (var item in list)
-                if (item.IsDirty) return true;
-            return false;
-        }
-
-        public static bool IsDirty(this IEnumerable<StoredProcedureParameter> list)
-        {
-            foreach (var item in list)
-                if (item.IsDirty) return true;
-            return false;
-        }
-
-        public static bool IsDirty(this IEnumerable<FunctionField> list)
-        {
-            foreach (var item in list)
-                if (item.IsDirty) return true;
-            return false;
-        }
-
-        public static bool IsDirty(this IEnumerable<FunctionParameter> list)
-        {
-            foreach (var item in list)
-                if (item.IsDirty) return true;
-            return false;
-        }
-
-        public static bool IsDirty(this IEnumerable<Entity> list)
-        {
-            foreach (var item in list)
-                if (item.IsDirty) return true;
-            return false;
-        }
-
-        public static bool IsDirty(this IEnumerable<View> list)
-        {
-            foreach (var item in list)
-                if (item.IsDirty) return true;
-            return false;
-        }
-
-        public static bool IsDirty(this IEnumerable<StoredProcedure> list)
-        {
-            foreach (var item in list)
-                if (item.IsDirty) return true;
-            return false;
-        }
-
-        public static bool IsDirty(this IEnumerable<Function> list)
-        {
-            foreach (var item in list)
-                if (item.IsDirty) return true;
-            return false;
-        }
-
-        public static void ResetDirty(this IEnumerable<Entity> list, bool newValue)
-        {
-            foreach (var item in list)
-                item.IsDirty = newValue;
-        }
-
-        public static void ResetDirty(this IEnumerable<View> list, bool newValue)
-        {
-            foreach (var item in list)
-                item.IsDirty = newValue;
-        }
-
-        public static void ResetDirty(this IEnumerable<StoredProcedure> list, bool newValue)
-        {
-            foreach (var item in list)
-                item.IsDirty = newValue;
-        }
-
-        public static void ResetDirty(this IEnumerable<Function> list, bool newValue)
+        public static void ResetDirty(this IEnumerable<IDirtyable> list, bool newValue)
         {
             foreach (var item in list)
                 item.IsDirty = newValue;

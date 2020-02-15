@@ -1,8 +1,6 @@
 #pragma warning disable 0168
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.Modeling.Validation;
 
 namespace nHydrate.Dsl
@@ -12,7 +10,7 @@ namespace nHydrate.Dsl
     {
         #region Dirty
         [System.ComponentModel.Browsable(false)]
-        internal bool IsDirty { get; set; } = false;
+        public bool IsDirty { get; set; } = false;
 
         protected override void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
         {

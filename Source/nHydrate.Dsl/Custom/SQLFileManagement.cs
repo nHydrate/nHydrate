@@ -2,13 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using System.Xml;
 using nHydrate.Generator.Common.Util;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.Modeling;
-using nHydrate.Dsl;
 using System.IO.Compression;
 
 namespace nHydrate.Dsl.Custom
@@ -933,7 +931,6 @@ namespace nHydrate.Dsl.Custom
 
                 #region Properties
 
-                item.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                 item.Name = XmlHelper.GetAttributeValue(document.DocumentElement, "name", item.Name);
                 item.AllowAuditTracking = XmlHelper.GetAttributeValue(document.DocumentElement, "allowaudittracking", item.AllowAuditTracking);
                 item.AllowCreateAudit = XmlHelper.GetAttributeValue(document.DocumentElement, "allowcreateaudit", item.AllowCreateAudit);
@@ -953,7 +950,6 @@ namespace nHydrate.Dsl.Custom
 
                 item.Schema = XmlHelper.GetAttributeValue(document.DocumentElement, "schema", item.Schema);
                 item.Summary = XmlHelper.GetNodeValue(document.DocumentElement, "summary", item.Summary);
-                item.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
 
                 #endregion
 
@@ -972,7 +968,6 @@ namespace nHydrate.Dsl.Custom
                             field = new Field(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, XmlHelper.GetAttributeValue(n, "id", Guid.NewGuid())) });
                             item.Fields.Add(field);
                         }
-                        field.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                         field.Name = XmlHelper.GetAttributeValue(n, "name", string.Empty);
                         field.CodeFacade = XmlHelper.GetAttributeValue(n, "codefacade", field.CodeFacade);
                         nameList.Add(field.Name.ToLower());
@@ -1008,7 +1003,6 @@ namespace nHydrate.Dsl.Custom
                         field.ValidationExpression = XmlHelper.GetAttributeValue(n, "validationexpression", field.ValidationExpression);
                         field.Obsolete = XmlHelper.GetAttributeValue(n, "obsolete", field.Obsolete);
                         field.Summary = XmlHelper.GetNodeValue(n, "summary", field.Summary);
-                        field.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                     }
                     if (item.Fields.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
                         item.nHydrateModel.IsDirty = true;
@@ -1024,8 +1018,6 @@ namespace nHydrate.Dsl.Custom
                     var secItemID = XmlHelper.GetAttributeValue(secNode, "id", Guid.NewGuid());
                     var secFunction = new SecurityFunction(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, XmlHelper.GetAttributeValue(secNode, "id", secItemID)) });
                     item.SecurityFunction = secFunction;
-                    item.SecurityFunction.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
-                    item.SecurityFunction.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
 
                     var ff = Path.Combine(folder, item.Name + ".security.sql");
                     if (File.Exists(ff))
@@ -1046,7 +1038,6 @@ namespace nHydrate.Dsl.Custom
                                 item.SecurityFunction.SecurityFunctionParameters.Add(parameter);
                             }
 
-                            parameter.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                             parameter.CodeFacade = XmlHelper.GetAttributeValue(n, "codefacade", parameter.CodeFacade);
                             parameter.Name = XmlHelper.GetAttributeValue(n, "name", parameter.Name);
                             nameList.Add(parameter.Name.ToLower());
@@ -1059,7 +1050,6 @@ namespace nHydrate.Dsl.Custom
                             parameter.Length = XmlHelper.GetAttributeValue(n, "length", parameter.Length);
                             parameter.Scale = XmlHelper.GetAttributeValue(n, "scale", parameter.Scale);
                             parameter.Summary = XmlHelper.GetNodeValue(n, "summary", parameter.Summary);
-                            parameter.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                         }
                         if (item.SecurityFunction.SecurityFunctionParameters.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
                             item.nHydrateModel.IsDirty = true;
@@ -1490,7 +1480,6 @@ namespace nHydrate.Dsl.Custom
 
                 System.Windows.Forms.Application.DoEvents();
 
-                item.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                 item.Name = XmlHelper.GetAttributeValue(document.DocumentElement, "name", item.Name);
                 item.PrecedenceOrder = XmlHelper.GetAttributeValue(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
                 item.IsGenerated = XmlHelper.GetAttributeValue(document.DocumentElement, "isgenerated", item.IsGenerated);
@@ -1500,7 +1489,6 @@ namespace nHydrate.Dsl.Custom
                 item.IsExisting = XmlHelper.GetAttributeValue(document.DocumentElement, "isexisting", item.IsExisting);
                 item.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(document.DocumentElement, "generatesdoublederived", item.GeneratesDoubleDerived);
                 item.Summary = XmlHelper.GetNodeValue(document.DocumentElement, "summary", item.Summary);
-                item.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
 
                 //Fields
                 var fieldsNodes = document.DocumentElement.SelectSingleNode("//fieldset");
@@ -1517,7 +1505,6 @@ namespace nHydrate.Dsl.Custom
                             item.Fields.Add(field);
                         }
 
-                        field.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                         field.Name = XmlHelper.GetAttributeValue(n, "name", field.Name);
                         field.CodeFacade = XmlHelper.GetAttributeValue(n, "codefacade", field.CodeFacade);
                         nameList.Add(field.Name.ToLower());
@@ -1530,7 +1517,6 @@ namespace nHydrate.Dsl.Custom
                         field.Length = XmlHelper.GetAttributeValue(n, "length", field.Length);
                         field.Scale = XmlHelper.GetAttributeValue(n, "scale", field.Scale);
                         field.Summary = XmlHelper.GetNodeValue(n, "summary", field.Summary);
-                        field.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                     }
                     if (item.Fields.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
                         item.nHydrateModel.IsDirty = true;
@@ -1551,7 +1537,6 @@ namespace nHydrate.Dsl.Custom
                             item.Parameters.Add(parameter);
                         }
 
-                        parameter.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                         parameter.Name = XmlHelper.GetAttributeValue(n, "name", parameter.Name);
                         parameter.CodeFacade = XmlHelper.GetAttributeValue(n, "codefacade", parameter.CodeFacade);
                         parameter.IsOutputParameter = XmlHelper.GetAttributeValue(n, "isoutput", parameter.IsOutputParameter);
@@ -1565,7 +1550,6 @@ namespace nHydrate.Dsl.Custom
                         parameter.Length = XmlHelper.GetAttributeValue(n, "length", parameter.Length);
                         parameter.Scale = XmlHelper.GetAttributeValue(n, "scale", parameter.Scale);
                         parameter.Summary = XmlHelper.GetNodeValue(n, "summary", parameter.Summary);
-                        parameter.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                     }
                     if (item.Parameters.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
                         item.nHydrateModel.IsDirty = true;
@@ -1629,7 +1613,6 @@ namespace nHydrate.Dsl.Custom
 
                 System.Windows.Forms.Application.DoEvents();
 
-                item.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                 item.Name = XmlHelper.GetAttributeValue(document.DocumentElement, "name", item.Name);
                 item.PrecedenceOrder = XmlHelper.GetAttributeValue(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
                 item.IsGenerated = XmlHelper.GetAttributeValue(document.DocumentElement, "isgenerated", item.IsGenerated);
@@ -1637,7 +1620,6 @@ namespace nHydrate.Dsl.Custom
                 item.Schema = XmlHelper.GetAttributeValue(document.DocumentElement, "schema", item.Schema);
                 item.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(document.DocumentElement, "generatesdoublederived", item.GeneratesDoubleDerived);
                 item.Summary = XmlHelper.GetNodeValue(document.DocumentElement, "summary", item.Summary);
-                item.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
 
                 //Fields
                 var fieldsNodes = document.DocumentElement.SelectSingleNode("//fieldset");
@@ -1654,7 +1636,6 @@ namespace nHydrate.Dsl.Custom
                             item.Fields.Add(field);
                         }
 
-                        field.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                         field.Name = XmlHelper.GetAttributeValue(n, "name", field.Name);
                         field.CodeFacade = XmlHelper.GetAttributeValue(n, "codefacade", field.CodeFacade);
                         nameList.Add(field.Name.ToLower());
@@ -1668,7 +1649,6 @@ namespace nHydrate.Dsl.Custom
                         field.Scale = XmlHelper.GetAttributeValue(n, "scale", field.Scale);
                         field.Summary = XmlHelper.GetNodeValue(n, "summary", field.Summary);
                         field.IsPrimaryKey = XmlHelper.GetAttributeValue(n, "isprimarykey", field.IsPrimaryKey);
-                        field.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                     }
                     if (item.Fields.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
                         item.nHydrateModel.IsDirty = true;
@@ -1731,7 +1711,6 @@ namespace nHydrate.Dsl.Custom
 
                 System.Windows.Forms.Application.DoEvents();
 
-                item.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                 item.Name = XmlHelper.GetAttributeValue(document.DocumentElement, "name", item.Name);
                 item.PrecedenceOrder = XmlHelper.GetAttributeValue(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
                 item.IsGenerated = XmlHelper.GetAttributeValue(document.DocumentElement, "isgenerated", item.IsGenerated);
@@ -1740,7 +1719,6 @@ namespace nHydrate.Dsl.Custom
                 item.IsTable = XmlHelper.GetAttributeValue(document.DocumentElement, "istable", item.IsTable);
                 item.ReturnVariable = XmlHelper.GetAttributeValue(document.DocumentElement, "returnvariable", item.ReturnVariable);
                 item.Summary = XmlHelper.GetNodeValue(document.DocumentElement, "summary", item.Summary);
-                item.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
 
                 //Fields
                 var fieldsNodes = document.DocumentElement.SelectSingleNode("//fieldset");
@@ -1757,7 +1735,6 @@ namespace nHydrate.Dsl.Custom
                             item.Fields.Add(field);
                         }
 
-                        field.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                         field.Name = XmlHelper.GetAttributeValue(n, "name", field.Name);
                         field.CodeFacade = XmlHelper.GetAttributeValue(n, "codefacade", field.CodeFacade);
                         nameList.Add(field.Name.ToLower());
@@ -1770,7 +1747,6 @@ namespace nHydrate.Dsl.Custom
                         field.Length = XmlHelper.GetAttributeValue(n, "length", field.Length);
                         field.Scale = XmlHelper.GetAttributeValue(n, "scale", field.Scale);
                         field.Summary = XmlHelper.GetNodeValue(n, "summary", field.Summary);
-                        field.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                     }
                     if (item.Fields.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
                         item.nHydrateModel.IsDirty = true;
@@ -1791,7 +1767,6 @@ namespace nHydrate.Dsl.Custom
                             item.Parameters.Add(parameter);
                         }
 
-                        parameter.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                         parameter.CodeFacade = XmlHelper.GetAttributeValue(n, "codefacade", parameter.CodeFacade);
                         parameter.Name = XmlHelper.GetAttributeValue(n, "name", parameter.Name);
                         nameList.Add(parameter.Name.ToLower());
@@ -1804,7 +1779,6 @@ namespace nHydrate.Dsl.Custom
                         parameter.Length = XmlHelper.GetAttributeValue(n, "length", parameter.Length);
                         parameter.Scale = XmlHelper.GetAttributeValue(n, "scale", parameter.Scale);
                         parameter.Summary = XmlHelper.GetNodeValue(n, "summary", parameter.Summary);
-                        parameter.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                     }
                     if (item.Parameters.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
                         item.nHydrateModel.IsDirty = true;
@@ -1859,10 +1833,8 @@ namespace nHydrate.Dsl.Custom
             {
                 var item = new ModelMetadata(model.Partition);
                 model.ModelMetadata.Add(item);
-                item.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                 item.Key = XmlHelper.GetAttributeValue(n, "key", item.Key);
                 item.Value = XmlHelper.GetAttributeValue(n, "value", item.Value);
-                item.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
             }
             #endregion
 
@@ -1899,10 +1871,8 @@ namespace nHydrate.Dsl.Custom
                     model.Modules.Add(item);
                 }
 
-                item.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                 item.Name = XmlHelper.GetAttributeValue(n, "name", item.Name);
                 item.Summary = XmlHelper.GetNodeValue(n, "summary", item.Summary);
-                item.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
 
                 //Rules
                 var rulesNodes = n.SelectSingleNode("ruleset");
@@ -1913,14 +1883,12 @@ namespace nHydrate.Dsl.Custom
                     {
                         var rule = new ModuleRule(item.Partition);
                         item.ModuleRules.Add(rule);
-                        rule.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                         rule.Name = XmlHelper.GetAttributeValue(m, "name", rule.Name);
                         rule.Status = (ModuleRuleStatusTypeConstants)int.Parse(XmlHelper.GetAttributeValue(m, "status", rule.Status.ToString("d")));
                         rule.DependentModule = XmlHelper.GetAttributeValue(m, "dependentmodule", rule.DependentModule);
                         rule.Inclusion = XmlHelper.GetAttributeValue(m, "inclusion", rule.Inclusion);
                         rule.Enforced = XmlHelper.GetAttributeValue(m, "enforced", rule.Enforced);
                         rule.Summary = XmlHelper.GetNodeValue(m, "summary", rule.Summary);
-                        rule.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(FieldParameter_PropertyChanged);
                     }
                 }
 
@@ -1960,29 +1928,6 @@ namespace nHydrate.Dsl.Custom
         }
 
         #region Private Helpers
-
-        private static void FieldParameter_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            //if (sender is StoredProcedureField)
-            //  (sender as StoredProcedureField).StoredProcedure.nHydrateModel.IsDirty = true;
-            //else if (sender is StoredProcedureParameter)
-            //  (sender as StoredProcedureParameter).StoredProcedure.nHydrateModel.IsDirty = true;
-            //else if (sender is ViewField)
-            //  (sender as ViewField).View.nHydrateModel.IsDirty = true;
-            //else if (sender is FunctionField)
-            //  (sender as FunctionField).Function.nHydrateModel.IsDirty = true;
-            //else if (sender is FunctionParameter)
-            //  (sender as FunctionParameter).Function.nHydrateModel.IsDirty = true;
-
-            //else if (sender is Entity)
-            //  (sender as Entity).nHydrateModel.IsDirty = true;
-            //else if (sender is View)
-            //  (sender as View).nHydrateModel.IsDirty = true;
-            //else if (sender is StoredProcedure)
-            //  (sender as StoredProcedure).nHydrateModel.IsDirty = true;
-            //else if (sender is Function)
-            //  (sender as Function).nHydrateModel.IsDirty = true;
-        }
 
         private static void WriteFileIfNeedBe(string fileName, string contents, List<string> generatedFileList)
         {
@@ -2081,12 +2026,6 @@ namespace nHydrate.Dsl.Custom
         {
             using (var archive = System.IO.Compression.ZipFile.Open(compressedFile, System.IO.Compression.ZipArchiveMode.Update))
             {
-                //if (!overwrite)
-                //{
-                //    archive.ExtractToDirectory(destinationDirectoryName);
-                //    return;
-                //}
-
                 var di = Directory.CreateDirectory(destinationDirectoryName);
                 var destinationDirectoryFullPath = di.FullName;
                 foreach (var file in archive.Entries)

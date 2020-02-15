@@ -12,7 +12,7 @@ namespace nHydrate.Dsl
     {
         #region Dirty
         [System.ComponentModel.Browsable(false)]
-        internal bool IsDirty { get; set; } = false;
+        public bool IsDirty { get; set; } = false;
 
         #endregion
 

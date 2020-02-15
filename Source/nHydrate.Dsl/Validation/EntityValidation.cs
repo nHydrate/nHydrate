@@ -13,7 +13,7 @@ namespace nHydrate.Dsl
         #region Dirty
 
         [System.ComponentModel.Browsable(false)]
-        internal bool IsDirty
+        public bool IsDirty
         {
             get { return _isDirty || this.Fields.IsDirty() || this.Indexes.IsDirty(); }
             set

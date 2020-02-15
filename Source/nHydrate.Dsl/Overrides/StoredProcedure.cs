@@ -6,8 +6,8 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Dsl
 {
-	partial class StoredProcedure : nHydrate.Dsl.IModuleLink, nHydrate.Dsl.IPrecedence, nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer
-	{
+	partial class StoredProcedure : nHydrate.Dsl.IModuleLink, nHydrate.Dsl.IPrecedence, nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
+    {
 		#region Names
 		public string DatabaseName
 		{

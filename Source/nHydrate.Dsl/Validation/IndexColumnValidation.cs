@@ -6,25 +6,25 @@ using Microsoft.VisualStudio.Modeling.Validation;
 
 namespace nHydrate.Dsl
 {
-	[ValidationState(ValidationState.Enabled)]
-	partial class IndexColumn
-	{
-		#region Dirty
-		[System.ComponentModel.Browsable(false)]
-		internal bool IsDirty { get; set; } = false;
+    [ValidationState(ValidationState.Enabled)]
+    partial class IndexColumn
+    {
+        #region Dirty
+        [System.ComponentModel.Browsable(false)]
+        public bool IsDirty { get; set; } = false;
 
         protected override void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
-		{
-			this.IsDirty = true;
-			base.OnPropertyChanged(e);
-		}
-		#endregion
+        {
+            this.IsDirty = true;
+            base.OnPropertyChanged(e);
+        }
+        #endregion
 
-		[ValidationMethod(ValidationCategories.Open | ValidationCategories.Save | ValidationCategories.Menu | ValidationCategories.Custom | ValidationCategories.Load)]
-		public void Validate(ValidationContext context)
-		{
-		}
+        [ValidationMethod(ValidationCategories.Open | ValidationCategories.Save | ValidationCategories.Menu | ValidationCategories.Custom | ValidationCategories.Load)]
+        public void Validate(ValidationContext context)
+        {
+        }
 
-	}
+    }
 }
 

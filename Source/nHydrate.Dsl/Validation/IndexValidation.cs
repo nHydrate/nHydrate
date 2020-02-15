@@ -11,7 +11,7 @@ namespace nHydrate.Dsl
 	{
 		#region Dirty
 		[System.ComponentModel.Browsable(false)]
-		internal bool IsDirty
+		public bool IsDirty
 		{
 			get { return _isDirty || this.IndexColumns.IsDirty(); }
 			set

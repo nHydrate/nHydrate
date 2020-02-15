@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace nHydrate.Dsl
 {
-    partial class IndexColumn
+    partial class IndexColumn: nHydrate.Generator.Common.GeneratorFramework.IDirtyable
     {
         #region Constructors
         // Constructors were not generated for this relationship because it had HasCustomConstructor

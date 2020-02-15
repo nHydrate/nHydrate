@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace nHydrate.Dsl
 {
-    partial class Entity : nHydrate.Dsl.IModuleLink, nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer
+    partial class Entity : nHydrate.Dsl.IModuleLink, nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
     {
         public string DatabaseName => this.Name;
 

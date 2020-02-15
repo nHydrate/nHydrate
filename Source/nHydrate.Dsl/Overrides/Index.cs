@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace nHydrate.Dsl
 {
-    partial class Index : nHydrate.Dsl.IModuleLink
+    partial class Index : nHydrate.Dsl.IModuleLink, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
     {
         #region Constructors
         // Constructors were not generated for this relationship because it had HasCustomConstructor

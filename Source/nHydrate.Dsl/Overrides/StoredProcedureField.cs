@@ -4,7 +4,7 @@ using DslModeling = global::Microsoft.VisualStudio.Modeling;
 
 namespace nHydrate.Dsl
 {
-    partial class StoredProcedureField : nHydrate.Dsl.IContainerParent, nHydrate.Dsl.IField
+    partial class StoredProcedureField : nHydrate.Dsl.IContainerParent, nHydrate.Dsl.IField, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
     {
         #region Constructors
         // Constructors were not generated for this class because it had HasCustomConstructor
