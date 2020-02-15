@@ -18,7 +18,7 @@ namespace nHydrate.Generator.Models
             {
                 foreach (var item in _internalList)
                 {
-                    var c = (CellEntry)item.ColumnRef.Object;
+                    var c = item.ColumnRef.Object as Column;
                     if (string.Compare(c.Name, columnName, 0) == 0)
                         return item;
                 }

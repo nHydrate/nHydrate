@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Windows.Forms.VisualStyles;
 using System.Xml;
 
-namespace nHydrate.Generator.Common.GeneratorFramework
+namespace nHydrate.Generator
 {
     public abstract class BaseModelCollection : BaseModelObject, ICollection, IEnumerable
     {

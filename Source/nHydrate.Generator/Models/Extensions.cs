@@ -53,38 +53,12 @@ namespace nHydrate.Generator.Models
 
         #region IEnumerable IndexOf
 
-        public static int IndexOf<T>(this IEnumerable<T> obj, T value)
-        {
-            return obj
-                    .Select((a, i) => (a.Equals(value)) ? i : -1)
-                    .Max();
-        }
-
-        public static int IndexOf<T>(this IEnumerable<T> obj, T value, IEqualityComparer<T> comparer)
-        {
-            return obj
-                    .Select((a, i) => (comparer.Equals(a, value)) ? i : -1)
-                    .Max();
-        }
-
         public static IEnumerable<T> AsEnumerable<T>(this IEnumerable list)
         {
             var retval = new List<T>();
             foreach (var o in list)
                 retval.Add((T)o);
             return retval;
-        }
-
-        public static T FirstOrDefault<T>(this IEnumerable list)
-        {
-            var count = 0;
-            var r = default(T);
-            foreach (T o in list)
-            {
-                if (count == 0) r = (T)o;
-                count++;
-            }
-            return r;
         }
 
         #endregion
@@ -123,12 +97,6 @@ namespace nHydrate.Generator.Models
             return retval.AsReadOnly();
         }
 
-        public static bool IsInteger(this string s)
-        {
-            int i;
-            return int.TryParse(s, out i);
-        }
-
         public static bool IsHex(this string s)
         {
             try
@@ -145,8 +113,6 @@ namespace nHydrate.Generator.Models
         /// <summary>
         /// Converts a string in the format of '0x123F' to '0x12, 0x3F'
         /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
         public static string ConvertToHexArrayString(this string s)
         {
             if (string.IsNullOrEmpty(s)) return string.Empty;

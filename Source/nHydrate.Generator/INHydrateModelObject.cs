@@ -1,4 +1,6 @@
-namespace nHydrate.Generator.Common.GeneratorFramework
+using nHydrate.Generator.Common.GeneratorFramework;
+
+namespace nHydrate.Generator
 {
     public interface INHydrateModelObject : IXMLable, IModelObject
     {

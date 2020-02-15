@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.ComponentModel;
 using System.Windows.Forms;
-using nHydrate.Generator.Models;
 using System.Collections.Generic;
 using nHydrate.Dsl;
 
@@ -89,7 +88,7 @@ namespace nHydrate.DslPackage.Forms
 
 				//Get a list of relations for the current entity only
 				var relationshipList = new List<EntityAssociationConnector>();
-				foreach (var connector in _diagram.NestedChildShapes.Where(x => x is EntityAssociationConnector).AsEnumerable<EntityAssociationConnector>())
+				foreach (var connector in _diagram.NestedChildShapes.Where(x => x is EntityAssociationConnector).Cast<EntityAssociationConnector>())
 				{
 					if (connector.FromShape == _entityShape)
 					{
@@ -120,7 +119,7 @@ namespace nHydrate.DslPackage.Forms
 		private bool EditItem()
 		{
 			if (lvwMembers.SelectedItems.Count == 0) return false;
-			var connector = lvwMembers.SelectedItems.FirstOrDefault<ListViewItem>().Tag as EntityAssociationConnector;
+			var connector = lvwMembers.SelectedItems.Cast<ListViewItem>().FirstOrDefault().Tag as EntityAssociationConnector;
 			var F = new nHydrate.DslPackage.Forms.RelationshipDialog(_model, _store, connector.ModelElement as EntityHasEntities);
 			if (F.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
@@ -186,7 +185,7 @@ namespace nHydrate.DslPackage.Forms
 		private void cmdDelete_Click(object sender, EventArgs e)
 		{
 			var list = new List<ListViewItem>();
-			list.AddRange(lvwMembers.SelectedItems.AsEnumerable<ListViewItem>());
+			list.AddRange(lvwMembers.SelectedItems.Cast<ListViewItem>());
 			foreach (var li in list)
 			{
 				var connector = li.Tag as EntityAssociationConnector;

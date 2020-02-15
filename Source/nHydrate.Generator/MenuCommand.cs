@@ -1,6 +1,6 @@
 using System.Windows.Forms;
 
-namespace nHydrate.Generator.Common.GeneratorFramework
+namespace nHydrate.Generator
 {
 	public abstract class MenuCommand : MenuItem
 	{

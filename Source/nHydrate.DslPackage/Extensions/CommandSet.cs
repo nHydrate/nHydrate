@@ -3,20 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
-using Microsoft.VisualStudio.Modeling;
 using Microsoft.VisualStudio.Modeling.Diagrams;
 using Microsoft.VisualStudio.Modeling.Shell;
 using System.Windows.Forms;
-using GenFramework = nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Common.Util;
-using nHydrate.Generator.ModelUI;
-using nHydrate.Generator;
-using System.Collections;
-using nHydrate.DslPackage;
 using nHydrate.DslPackage.Forms;
 using nHydrate.Dsl;
 using nHydrate.DslPackage.Objects;
-using nHydrate.Dsl.Objects;
 using Microsoft.VisualStudio.Shell.Interop;
 
 //Menu Documentation

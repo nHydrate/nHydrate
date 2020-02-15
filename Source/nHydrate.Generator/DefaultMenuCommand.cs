@@ -1,4 +1,4 @@
-namespace nHydrate.Generator.Common.GeneratorFramework
+namespace nHydrate.Generator
 {
 	public class DefaultMenuCommand : MenuCommand
 	{

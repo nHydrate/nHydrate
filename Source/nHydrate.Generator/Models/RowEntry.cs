@@ -1,8 +1,8 @@
 #pragma warning disable 0168
 using System;
+using System.Linq;
 using System.Xml;
 using nHydrate.Generator.Common;
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
@@ -113,7 +113,7 @@ namespace nHydrate.Generator.Models
                 foreach (CellEntry cellEntry in this.CellEntries)
                 {
                     var column = cellEntry.ColumnRef.Object as Column;
-                    var pk = table.PrimaryKeyColumns.FirstOrDefault<Column>() as Column;
+                    var pk = table.PrimaryKeyColumns.FirstOrDefault();
                     if (column != null)
                     {
                         if (StringHelper.Match(column.Name, "name"))

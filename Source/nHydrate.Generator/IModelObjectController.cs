@@ -1,6 +1,7 @@
 using System;
+using nHydrate.Generator.Common.GeneratorFramework;
 
-namespace nHydrate.Generator.Common.GeneratorFramework
+namespace nHydrate.Generator
 {
 	public interface INHydrateModelObjectController : IDisposable
 	{

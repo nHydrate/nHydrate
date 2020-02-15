@@ -2,8 +2,9 @@
 using System;
 using System.Collections;
 using System.Windows.Forms;
+using nHydrate.Generator.Common.GeneratorFramework;
 
-namespace nHydrate.Generator.Common.GeneratorFramework
+namespace nHydrate.Generator
 {
 	public abstract class ModelObjectTreeNode : TreeNode
 	{
@@ -113,7 +114,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 				var needUpdate = false;        
 				for(var ii=0;ii<nodeList.Length;ii++)
 				{
-					if (!Util.StringHelper.Match(this.Nodes[ii].Text, nodeList[ii].Text, true))
+					if (!nHydrate.Generator.Common.Util.StringHelper.Match(this.Nodes[ii].Text, nodeList[ii].Text, true))
 						needUpdate = true;
 				}
 

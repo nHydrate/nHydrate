@@ -1,8 +1,7 @@
 #pragma warning disable 0168
 using System;
-using System.ComponentModel;
+using System.Linq;
 using System.Xml;
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
@@ -65,34 +64,34 @@ namespace nHydrate.Generator.Models
                     switch (this.RefType)
                     {
                         case ReferenceType.Column:
-                            retVal = modelRoot.Database.Columns[Ref];
+                            retVal = modelRoot.Database.Columns.GetById(Ref).FirstOrDefault();
                             break;
                         case ReferenceType.Relation:
-                            retVal = modelRoot.Database.Relations.GetById(Ref).FirstOrDefault<Relation>();
+                            retVal = modelRoot.Database.Relations.GetById(Ref).FirstOrDefault();
                             break;
                         case ReferenceType.ViewRelation:
-                            retVal = modelRoot.Database.ViewRelations.GetById(Ref).FirstOrDefault<ViewRelation>();
+                            retVal = modelRoot.Database.ViewRelations.GetById(Ref).FirstOrDefault();
                             break;
                         case ReferenceType.Table:
-                            retVal = modelRoot.Database.Tables[Ref];
+                            retVal = modelRoot.Database.Tables.GetById(Ref).FirstOrDefault();
                             break;
                         case ReferenceType.CustomView:
-                            retVal = modelRoot.Database.CustomViews[Ref];
+                            retVal = modelRoot.Database.CustomViews.GetById(Ref).FirstOrDefault();
                             break;
                         case ReferenceType.CustomViewColumn:
-                            retVal = modelRoot.Database.CustomViewColumns[Ref];
+                            retVal = modelRoot.Database.CustomViewColumns.GetById(Ref).FirstOrDefault();
                             break;
                         case ReferenceType.Parameter:
-                            retVal = modelRoot.Database.CustomRetrieveRuleParameters[Ref];
+                            retVal = modelRoot.Database.CustomRetrieveRuleParameters.GetById(Ref).FirstOrDefault();
                             break;
                         case ReferenceType.CustomStoredProcedureColumn:
-                            retVal = modelRoot.Database.CustomStoredProcedureColumns[Ref];
+                            retVal = modelRoot.Database.CustomStoredProcedureColumns.GetById(Ref).FirstOrDefault();
                             break;
                         case ReferenceType.FunctionColumn:
-                            retVal = modelRoot.Database.FunctionColumns[Ref];
+                            retVal = modelRoot.Database.FunctionColumns.GetById(Ref).FirstOrDefault();
                             break;
                         case ReferenceType.FunctionParameter:
-                            retVal = modelRoot.Database.FunctionParameters[Ref];
+                            retVal = modelRoot.Database.FunctionParameters.GetById(Ref).FirstOrDefault();
                             break;
                         default:
                             throw new Exception("Cannot Handle Reference Type");

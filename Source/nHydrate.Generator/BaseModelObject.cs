@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using nHydrate.Generator.Common.GeneratorFramework;
 
-namespace nHydrate.Generator.Common.GeneratorFramework
+namespace nHydrate.Generator
 {
     public abstract class BaseModelObject : INHydrateModelObject
     {

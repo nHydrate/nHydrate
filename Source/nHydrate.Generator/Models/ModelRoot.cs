@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace nHydrate.Generator.Models
 {
-    public class ModelRoot : BaseModelObject, IModelObject
+    public class ModelRoot : BaseModelObject
     {
         #region Member Variables
 

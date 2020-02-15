@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
@@ -34,7 +35,7 @@ namespace nHydrate.Generator
 
         #region Events
 
-        public event nHydrate.Generator.Common.GeneratorFramework.VerifyDelegate VerifyComplete;
+        public event nHydrate.Generator.VerifyDelegate VerifyComplete;
         protected void OnVerifyComplete(object sender, nHydrate.Generator.Common.EventArgs.MessageCollectionEventArgs e)
         {
             VerifyComplete?.Invoke(sender, e);
