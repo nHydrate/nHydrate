@@ -23,9 +23,6 @@ namespace nHydrate.Generator.Models
         protected const string _def_prompt = "";
         protected const bool _def_isBrowsable = true;
 
-        protected const System.ComponentModel.DataAnnotations.DataType _def_uIDataType =
-            System.ComponentModel.DataAnnotations.DataType.Custom;
-
         protected string _description = _def_description;
         protected string _prompt = _def_prompt;
         protected System.Data.SqlDbType _dataType = _def_type;
@@ -34,7 +31,6 @@ namespace nHydrate.Generator.Models
         protected bool _generated = _def_generated;
         protected bool _allowNull = _def_allowNull;
         protected bool _isBrowsable = _def_isBrowsable;
-        protected System.ComponentModel.DataAnnotations.DataType _uIDataType = _def_uIDataType;
 
         #endregion
 
@@ -48,15 +44,6 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region Property Implementations
-
-        public System.ComponentModel.DataAnnotations.DataType UIDataType
-        {
-            get { return _uIDataType; }
-            set
-            {
-                _uIDataType = value;
-            }
-        }
 
         public string Category { get; set; } = string.Empty;
 

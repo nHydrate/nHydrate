@@ -495,28 +495,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                 sb.AppendLine("		[System.ComponentModel.DataAnnotations.Display(Name = \"" + column.GetFriendlyName() + "\")]");
 
-                if (column.UIDataType != System.ComponentModel.DataAnnotations.DataType.Custom)
-                {
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.DataType(System.ComponentModel.DataAnnotations.DataType." + column.UIDataType.ToString() + ")]");
-                }
-
                 if (!string.IsNullOrEmpty(column.Mask))
                 {
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = @\"" + column.Mask.Replace(@"\\", @"\\\\") + "\")]");
                 }
 
-                //NETCORE Removed
-                //if (column.IsIndexed && column.PrimaryKey)
-                //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.Index(IsUnique = true)]");
-                //else if (column.IsIndexed)
-                //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.Index()]");
-
-                //NETCORE - This causes issues on a derived type
-                //if (column.PrimaryKey)
-                //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
-
-                //if (column.PrimaryKey || _item.Immutable || column.ComputedColumn || column.IsReadOnly)
-                //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
                 if (column.ComputedColumn || column.IsReadOnly)
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
 

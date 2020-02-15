@@ -507,9 +507,6 @@ namespace nHydrate.Generator.Models
                 if (this.Generated != _def_generated)
                     XmlHelper.AddAttribute(node, "generated", this.Generated);
 
-                if (this.UIDataType != _def_uIDataType)
-                    XmlHelper.AddAttribute(node, "uidatatype", this.UIDataType.ToString());
-
                 if (this.Identity != _def_identity)
                     XmlHelper.AddAttribute(node, "identity", (int)this.Identity);
 
@@ -609,7 +606,6 @@ namespace nHydrate.Generator.Models
                 this.Formula = XmlHelper.GetAttributeValue(node, "formula", _def_formula);
                 this.ValidationExpression = XmlHelper.GetAttributeValue(node, "validationExpression", _def_validationExpression);
                 this.Generated = XmlHelper.GetAttributeValue(node, "generated", _def_generated);
-                this.UIDataType = (System.ComponentModel.DataAnnotations.DataType)Enum.Parse(typeof(System.ComponentModel.DataAnnotations.DataType), XmlHelper.GetAttributeValue(node, "uidatatype", _def_uIDataType.ToString()), true);
                 this.Identity = (IdentityTypeConstants)XmlHelper.GetAttributeValue(node, "identity", (int)_def_identity);
                 this.Name = XmlHelper.GetAttributeValue(node, "name", Name);
                 this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", string.Empty);

@@ -466,7 +466,6 @@ namespace nHydrate.DslPackage.Objects
                         newColumn.Category = field.Category;
                         newColumn.SortOrder = field.SortOrder;
                         newColumn.Mask = field.DataFormatString;
-                        newColumn.UIDataType = (System.ComponentModel.DataAnnotations.DataType)Enum.Parse(typeof(System.ComponentModel.DataAnnotations.DataType), field.UIDataType.ToString(), true);
                         newColumn.Obsolete = field.Obsolete;
                         newTable.Columns.Add(newColumn.CreateRef(newColumn.Key));
 

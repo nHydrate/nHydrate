@@ -223,9 +223,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
                     sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
                 sb.AppendLine("		[System.ComponentModel.DisplayName(\"" + column.GetFriendlyName() + "\")]");
 
-                if (column.UIDataType != System.ComponentModel.DataAnnotations.DataType.Custom)
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.DataType(System.ComponentModel.DataAnnotations.DataType." + column.UIDataType.ToString() + ")]");
-
                 if (!string.IsNullOrEmpty(column.Description))
                     sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
 

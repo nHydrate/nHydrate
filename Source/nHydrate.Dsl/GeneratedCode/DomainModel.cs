@@ -200,7 +200,6 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(Field), "Category", Field.CategoryDomainPropertyId, typeof(Field.CategoryPropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "SortOrder", Field.SortOrderDomainPropertyId, typeof(Field.SortOrderPropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "DataFormatString", Field.DataFormatStringDomainPropertyId, typeof(Field.DataFormatStringPropertyHandler)),
-				new DomainMemberInfo(typeof(Field), "UIDataType", Field.UIDataTypeDomainPropertyId, typeof(Field.UIDataTypePropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "DefaultIsFunc", Field.DefaultIsFuncDomainPropertyId, typeof(Field.DefaultIsFuncPropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "ImportedDefaultName", Field.ImportedDefaultNameDomainPropertyId, typeof(Field.ImportedDefaultNamePropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "Obsolete", Field.ObsoleteDomainPropertyId, typeof(Field.ObsoletePropertyHandler)),
@@ -1126,86 +1125,6 @@ namespace nHydrate.Dsl
 		/// </summary>
 		[DslDesign::DescriptionResource("nHydrate.Dsl.IndexTypeConstants/User.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
 		User,
-	}
-}
-namespace nHydrate.Dsl
-{
-	/// <summary>
-	/// DomainEnumeration: UIDataTypeConstants
-	/// </summary>
-	[global::System.CLSCompliant(true)]
-	public enum UIDataTypeConstants
-	{
-		/// <summary>
-		/// Custom
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/Custom.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		Custom = 0,
-		/// <summary>
-		/// DateTime
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/DateTime.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		DateTime = 1,
-		/// <summary>
-		/// Date
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/Date.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		Date = 2,
-		/// <summary>
-		/// Time
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/Time.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		Time = 3,
-		/// <summary>
-		/// PhoneNumber
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/PhoneNumber.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		PhoneNumber = 5,
-		/// <summary>
-		/// Duration
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/Duration.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		Duration = 4,
-		/// <summary>
-		/// Currency
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/Currency.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		Currency = 6,
-		/// <summary>
-		/// Html
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/Html.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		Html = 8,
-		/// <summary>
-		/// Text
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/Text.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		Text = 7,
-		/// <summary>
-		/// MultilineText
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/MultilineText.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		MultilineText = 9,
-		/// <summary>
-		/// EmailAddress
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/EmailAddress.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		EmailAddress = 10,
-		/// <summary>
-		/// Password
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/Password.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		Password = 11,
-		/// <summary>
-		/// Url
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/Url.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		Url = 12,
-		/// <summary>
-		/// ImageUrl
-		/// </summary>
-		[DslDesign::DescriptionResource("nHydrate.Dsl.UIDataTypeConstants/ImageUrl.Description", typeof(global::nHydrate.Dsl.nHydrateDomainModel), "nHydrate.Dsl.GeneratedCode.DomainModelResx")]
-		ImageUrl = 13,
 	}
 }
 namespace nHydrate.Dsl

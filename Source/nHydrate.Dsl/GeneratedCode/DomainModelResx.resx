@@ -933,18 +933,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;DataFormatString&apos; on DomainClass &apos;Field&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.Field/UIDataType.Description" xml:space="preserve">
-    <value>Determines formatting information for the UI</value>
-    <comment>Description for DomainProperty &apos;UIDataType&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/UIDataType.DisplayName" xml:space="preserve">
-    <value>UI Datatype</value>
-    <comment>DisplayName for DomainProperty &apos;UIDataType&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/UIDataType.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;UIDataType&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.Field/DefaultIsFunc.Description" xml:space="preserve">
     <value>Determines if the default value is a function</value>
     <comment>Description for DomainProperty &apos;DefaultIsFunc&apos; on DomainClass &apos;Field&apos;</comment>
@@ -3552,118 +3540,6 @@
   <data name="nHydrate.Dsl.IndexTypeConstants/User.Description" xml:space="preserve">
     <value></value>
     <comment>Description for EnumerationLiteral &apos;User&apos; on DomainEnumeration &apos;IndexTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Custom.DisplayName" xml:space="preserve">
-    <value>Custom</value>
-    <comment>Display name for EnumerationLiteral &apos;Custom&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Custom.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;Custom&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/DateTime.DisplayName" xml:space="preserve">
-    <value>DateTime</value>
-    <comment>Display name for EnumerationLiteral &apos;DateTime&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/DateTime.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;DateTime&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Date.DisplayName" xml:space="preserve">
-    <value>Date</value>
-    <comment>Display name for EnumerationLiteral &apos;Date&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Date.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;Date&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Time.DisplayName" xml:space="preserve">
-    <value>Time</value>
-    <comment>Display name for EnumerationLiteral &apos;Time&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Time.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;Time&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/PhoneNumber.DisplayName" xml:space="preserve">
-    <value>PhoneNumber</value>
-    <comment>Display name for EnumerationLiteral &apos;PhoneNumber&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/PhoneNumber.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;PhoneNumber&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Duration.DisplayName" xml:space="preserve">
-    <value>Duration</value>
-    <comment>Display name for EnumerationLiteral &apos;Duration&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Duration.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;Duration&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Currency.DisplayName" xml:space="preserve">
-    <value>Currency</value>
-    <comment>Display name for EnumerationLiteral &apos;Currency&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Currency.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;Currency&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Html.DisplayName" xml:space="preserve">
-    <value>Html</value>
-    <comment>Display name for EnumerationLiteral &apos;Html&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Html.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;Html&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Text.DisplayName" xml:space="preserve">
-    <value>Text</value>
-    <comment>Display name for EnumerationLiteral &apos;Text&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Text.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;Text&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/MultilineText.DisplayName" xml:space="preserve">
-    <value>MultilineText</value>
-    <comment>Display name for EnumerationLiteral &apos;MultilineText&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/MultilineText.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;MultilineText&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/EmailAddress.DisplayName" xml:space="preserve">
-    <value>EmailAddress</value>
-    <comment>Display name for EnumerationLiteral &apos;EmailAddress&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/EmailAddress.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;EmailAddress&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Password.DisplayName" xml:space="preserve">
-    <value>Password</value>
-    <comment>Display name for EnumerationLiteral &apos;Password&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Password.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;Password&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Url.DisplayName" xml:space="preserve">
-    <value>Url</value>
-    <comment>Display name for EnumerationLiteral &apos;Url&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/Url.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;Url&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/ImageUrl.DisplayName" xml:space="preserve">
-    <value>ImageUrl</value>
-    <comment>Display name for EnumerationLiteral &apos;ImageUrl&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.UIDataTypeConstants/ImageUrl.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for EnumerationLiteral &apos;ImageUrl&apos; on DomainEnumeration &apos;UIDataTypeConstants&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.DeleteActionConstants/NoAction.DisplayName" xml:space="preserve">
     <value>NoAction</value>

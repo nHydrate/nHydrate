@@ -703,12 +703,6 @@
             <xsd:documentation>Identifies the format string for data input and presentation</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: UIDataType -->
-        <xsd:attribute name="uIDataType" type="UIDataTypeConstants" >
-          <xsd:annotation>
-            <xsd:documentation>Determines formatting information for the UI</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: DefaultIsFunc -->
         <xsd:attribute name="defaultIsFunc" type="xsd:boolean" >
           <xsd:annotation>
@@ -3049,26 +3043,6 @@
       <xsd:enumeration value="PrimaryKey"/>
       <xsd:enumeration value="IsIndexed"/>
       <xsd:enumeration value="User"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-  
-  <!-- Enum UIDataTypeConstants -->
-  <xsd:simpleType name="UIDataTypeConstants">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="Custom"/>
-      <xsd:enumeration value="DateTime"/>
-      <xsd:enumeration value="Date"/>
-      <xsd:enumeration value="Time"/>
-      <xsd:enumeration value="PhoneNumber"/>
-      <xsd:enumeration value="Duration"/>
-      <xsd:enumeration value="Currency"/>
-      <xsd:enumeration value="Html"/>
-      <xsd:enumeration value="Text"/>
-      <xsd:enumeration value="MultilineText"/>
-      <xsd:enumeration value="EmailAddress"/>
-      <xsd:enumeration value="Password"/>
-      <xsd:enumeration value="Url"/>
-      <xsd:enumeration value="ImageUrl"/>
     </xsd:restriction>
   </xsd:simpleType>
   

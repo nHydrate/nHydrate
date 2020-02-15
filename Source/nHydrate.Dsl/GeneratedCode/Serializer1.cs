@@ -4235,23 +4235,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// UIDataType
-			if (!serializationContext.Result.Failed)
-			{
-				string attribUIDataType = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "uIDataType");
-				if (attribUIDataType != null)
-				{
-					UIDataTypeConstants valueOfUIDataType;
-					if (DslModeling::SerializationUtilities.TryGetValue<UIDataTypeConstants>(serializationContext, attribUIDataType, out valueOfUIDataType))
-					{
-						instanceOfField.UIDataType = valueOfUIDataType;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "uIDataType", typeof(UIDataTypeConstants), attribUIDataType);
-					}
-				}
-			}
 			// DefaultIsFunc
 			if (!serializationContext.Result.Failed)
 			{
@@ -5091,19 +5074,6 @@ namespace nHydrate.Dsl
 					if (!string.IsNullOrEmpty(propValue))
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "dataFormatString", propValue);
 	
-				}
-			}
-			// UIDataType
-			if (!serializationContext.Result.Failed)
-			{
-				UIDataTypeConstants propValue = instanceOfField.UIDataType;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<UIDataTypeConstants>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "Custom") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "uIDataType", serializedPropValue);
-					}
 				}
 			}
 			// DefaultIsFunc

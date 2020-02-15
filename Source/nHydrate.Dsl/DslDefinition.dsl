@@ -491,11 +491,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="bd854f61-0c58-4072-bc5f-6fe9d40cd6a5" Description="Determines formatting information for the UI" Name="UIDataType" DisplayName="UI Datatype" DefaultValue="Custom" Category="Definition">
-          <Type>
-            <DomainEnumerationMoniker Name="UIDataTypeConstants" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="46c0c3a4-3a50-41c2-8493-c852ec9a9e41" Description="Determines if the default value is a function" Name="DefaultIsFunc" DisplayName="Default Is Func" DefaultValue="false" Category="Definition">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
@@ -1978,24 +1973,6 @@
         <EnumerationLiteral Description="" Name="User" Value="" />
       </Literals>
     </DomainEnumeration>
-    <DomainEnumeration Name="UIDataTypeConstants" Namespace="nHydrate.Dsl" Description="">
-      <Literals>
-        <EnumerationLiteral Description="" Name="Custom" Value="0" />
-        <EnumerationLiteral Description="" Name="DateTime" Value="1" />
-        <EnumerationLiteral Description="" Name="Date" Value="2" />
-        <EnumerationLiteral Description="" Name="Time" Value="3" />
-        <EnumerationLiteral Description="" Name="PhoneNumber" Value="5" />
-        <EnumerationLiteral Description="" Name="Duration" Value="4" />
-        <EnumerationLiteral Description="" Name="Currency" Value="6" />
-        <EnumerationLiteral Description="" Name="Html" Value="8" />
-        <EnumerationLiteral Description="" Name="Text" Value="7" />
-        <EnumerationLiteral Description="" Name="MultilineText" Value="9" />
-        <EnumerationLiteral Description="" Name="EmailAddress" Value="10" />
-        <EnumerationLiteral Description="" Name="Password" Value="11" />
-        <EnumerationLiteral Description="" Name="Url" Value="12" />
-        <EnumerationLiteral Description="" Name="ImageUrl" Value="13" />
-      </Literals>
-    </DomainEnumeration>
     <DomainEnumeration Name="DeleteActionConstants" Namespace="nHydrate.Dsl" Description="Description for nHydrate.Dsl.DeleteActionConstants">
       <Literals>
         <EnumerationLiteral Description="Take no action on principal entity deletion" Name="NoAction" Value="" />
@@ -2386,9 +2363,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="dataFormatString">
             <DomainPropertyMoniker Name="Field/DataFormatString" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="uIDataType">
-            <DomainPropertyMoniker Name="Field/UIDataType" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="defaultIsFunc">
             <DomainPropertyMoniker Name="Field/DefaultIsFunc" />
