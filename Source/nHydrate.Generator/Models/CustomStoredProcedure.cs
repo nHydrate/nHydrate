@@ -22,10 +22,7 @@ namespace nHydrate.Generator.Models
         protected const bool _def_isExisting = false;
         protected const bool _def_generatesDoubleDerived = false;
 
-        protected string _codeFacade = _def_codefacade;
         protected string _sql = string.Empty;
-        protected ReferenceCollection _columns = null;
-        protected ReferenceCollection _parameters = null;
 
         #endregion
 
@@ -46,19 +43,19 @@ namespace nHydrate.Generator.Models
 
         private void Initialize()
         {
-            _columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
-            _columns.ResetKey(Guid.Empty.ToString());
-            _columns.ObjectPlural = "Fields";
-            _columns.ObjectSingular = "Field";
-            _columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
-            _columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
+            Columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
+            Columns.ResetKey(Guid.Empty.ToString());
+            Columns.ObjectPlural = "Fields";
+            Columns.ObjectSingular = "Field";
+            Columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
+            Columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
 
-            _parameters = new ReferenceCollection(this.Root, this, ReferenceType.Parameter);
-            _parameters.ResetKey(Guid.Empty.ToString());
-            _parameters.ObjectPlural = "Parameters";
-            _parameters.ObjectSingular = "Parameter";
-            _parameters.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
-            _parameters.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
+            Parameters = new ReferenceCollection(this.Root, this, ReferenceType.Parameter);
+            Parameters.ResetKey(Guid.Empty.ToString());
+            Parameters.ObjectPlural = "Parameters";
+            Parameters.ObjectSingular = "Parameter";
+            Parameters.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
+            Parameters.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
         }
 
         protected override void OnRootReset(System.EventArgs e)
@@ -80,15 +77,9 @@ namespace nHydrate.Generator.Models
 
         public string Description { get; set; } = _def_description;
 
-        public ReferenceCollection Columns
-        {
-            get { return _columns; }
-        }
+        public ReferenceCollection Columns { get; protected set; } = null;
 
-        public ReferenceCollection Parameters
-        {
-            get { return _parameters; }
-        }
+        public ReferenceCollection Parameters { get; protected set; } = null;
 
         public List<Parameter> GeneratedParameters
         {
@@ -301,10 +292,7 @@ namespace nHydrate.Generator.Models
             return returnVal;
         }
 
-        public string CamelName
-        {
-            get { return StringHelper.DatabaseNameToCamelCase(this.PascalName); }
-        }
+        public string CamelName => StringHelper.DatabaseNameToCamelCase(this.PascalName);
 
         public string PascalName
         {
@@ -322,10 +310,7 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public string DatabaseName
-        {
-            get { return this.Name; }
-        }
+        public string DatabaseName => this.Name;
 
         public IList<CustomStoredProcedureColumn> PrimaryKeyColumns
         {
@@ -360,14 +345,7 @@ namespace nHydrate.Generator.Models
 
         #region ICodeFacadeObject Members
 
-        public string CodeFacade
-        {
-            get { return _codeFacade; }
-            set
-            {
-                _codeFacade = value;
-            }
-        }
+        public string CodeFacade { get; set; } = _def_codefacade;
 
         public string GetCodeFacade()
         {

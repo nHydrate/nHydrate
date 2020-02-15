@@ -20,16 +20,6 @@ namespace nHydrate.Generator.Models
         protected const string _def_timestampColumnName = "TimeStamp";
         protected const string _def_fullIndexSearchColumnName = "full_index_text";
 
-        protected string _createdByColumnName = _def_createdByColumnName;
-        protected string _createdDateColumName = _def_createdDateColumName;
-        protected string _modifiedByColumnName = _def_modifiedByColumnName;
-        protected string _modifiedDateColumnName = _def_modifiedDateColumnName;
-        protected string _fullIndexSearchColumnName = _def_fullIndexSearchColumnName;
-        protected string _timestampColumnName = _def_timestampColumnName;
-        protected string _grantExecUser = string.Empty;
-        protected string _databaseName = string.Empty;
-        protected string _collate = string.Empty;
-
         #endregion
 
         #region Constructor
@@ -67,52 +57,18 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        [Browsable(false)]
         public ColumnCollection Columns { get; }
 
-        [Browsable(false)]
         public RelationCollection Relations { get; }
 
-        [Browsable(false)]
         public ViewRelationCollection ViewRelations { get; }
 
-        [Browsable(false),
-        Description("Determines the name of the database."),
-        Category("Data")]
-        public string DatabaseName
-        {
-            get { return _databaseName; }
-            set
-            {
-                _databaseName = value;
-            }
-        }
+        public string DatabaseName { get; set; } = string.Empty;
 
-        [Browsable(true),
-        Description("Determines the name of the created by column name."),
-        Category("Data")]
-        public string CreatedByColumnName
-        {
-            get { return _createdByColumnName; }
-            set
-            {
-                _createdByColumnName = value;
-            }
-        }
+        public string CreatedByColumnName { get; set; } = _def_createdByColumnName;
 
-        [Browsable(true),
-        Description("Determines the name of the created date column."),
-        Category("Data")]
-        public string CreatedDateColumnName
-        {
-            get { return _createdDateColumName; }
-            set
-            {
-                _createdDateColumName = value;
-            }
-        }
+        public string CreatedDateColumnName { get; set; } = _def_createdDateColumName;
 
-        [Browsable(false)]
         public virtual string CreatedDatePascalName
         {
             get
@@ -124,7 +80,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public virtual string CreatedByPascalName
         {
             get
@@ -136,7 +91,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public virtual string ModifiedDatePascalName
         {
             get
@@ -148,7 +102,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public virtual string ModifiedByPascalName
         {
             get
@@ -160,7 +113,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        [Browsable(false)]
         public virtual string TimestampPascalName
         {
             get
@@ -172,68 +124,23 @@ namespace nHydrate.Generator.Models
             }
         }
 
+        public virtual string CreatedDateDatabaseName => this.CreatedDateColumnName;
 
-        [Browsable(false)]
-        public virtual string CreatedDateDatabaseName
-        {
-            get { return this.CreatedDateColumnName; }
-        }
+        public virtual string CreatedByDatabaseName => this.CreatedByColumnName;
 
-        public virtual string CreatedByDatabaseName
-        {
-            get { return this.CreatedByColumnName; }
-        }
+        public virtual string ModifiedDateDatabaseName => this.ModifiedDateColumnName;
 
-        public virtual string ModifiedDateDatabaseName
-        {
-            get { return this.ModifiedDateColumnName; }
-        }
+        public virtual string ModifiedByDatabaseName => this.ModifiedByColumnName;
 
-        public virtual string ModifiedByDatabaseName
-        {
-            get { return this.ModifiedByColumnName; }
-        }
+        public virtual string TimestampDatabaseName => this.TimestampColumnName;
 
-        public virtual string TimestampDatabaseName
-        {
-            get { return this.TimestampColumnName; }
-        }
+        public string ModifiedByColumnName { get; set; } = _def_modifiedByColumnName;
 
-        public string ModifiedByColumnName
-        {
-            get { return _modifiedByColumnName; }
-            set
-            {
-                _modifiedByColumnName = value;
-            }
-        }
+        public string ModifiedDateColumnName { get; set; } = _def_modifiedDateColumnName;
 
-        public string ModifiedDateColumnName
-        {
-            get { return _modifiedDateColumnName; }
-            set
-            {
-                _modifiedDateColumnName = value;
-            }
-        }
+        public string FullIndexSearchColumnName { get; set; } = _def_fullIndexSearchColumnName;
 
-        public string FullIndexSearchColumnName
-        {
-            get { return _fullIndexSearchColumnName; }
-            set
-            {
-                _fullIndexSearchColumnName = value;
-            }
-        }
-
-        public string TimestampColumnName
-        {
-            get { return _timestampColumnName; }
-            set
-            {
-                _timestampColumnName = value;
-            }
-        }
+        public string TimestampColumnName { get; set; } = _def_timestampColumnName;
 
         public TableCollection Tables { get; }
 
@@ -253,23 +160,9 @@ namespace nHydrate.Generator.Models
 
         public ParameterCollection FunctionParameters { get; }
 
-        public string GrantExecUser
-        {
-            get { return _grantExecUser; }
-            set
-            {
-                _grantExecUser = value;
-            }
-        }
+        public string GrantExecUser { get; set; } = string.Empty;
 
-        public string Collate
-        {
-            get { return _collate; }
-            set
-            {
-                _collate = value;
-            }
-        }
+        public string Collate { get; set; } = string.Empty;
 
         #endregion
 
@@ -396,14 +289,14 @@ namespace nHydrate.Generator.Models
             try
             {
                 this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                _collate = XmlHelper.GetAttributeValue(node, "collate", string.Empty);
-                _createdByColumnName = XmlHelper.GetAttributeValue(node, "createdByColumnName", _createdByColumnName);
-                _createdDateColumName = XmlHelper.GetAttributeValue(node, "createdDateColumName", _createdDateColumName);
-                _modifiedByColumnName = XmlHelper.GetAttributeValue(node, "modifiedByColumnName", _modifiedByColumnName);
-                _modifiedDateColumnName = XmlHelper.GetAttributeValue(node, "modifiedDateColumnName", _modifiedDateColumnName);
-                _timestampColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", _timestampColumnName);
-                _fullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", _fullIndexSearchColumnName);
-                _grantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", _grantExecUser);
+                Collate = XmlHelper.GetAttributeValue(node, "collate", string.Empty);
+                CreatedByColumnName = XmlHelper.GetAttributeValue(node, "createdByColumnName", CreatedByColumnName);
+                CreatedDateColumnName = XmlHelper.GetAttributeValue(node, "createdDateColumName", CreatedDateColumnName);
+                ModifiedByColumnName = XmlHelper.GetAttributeValue(node, "modifiedByColumnName", ModifiedByColumnName);
+                ModifiedDateColumnName = XmlHelper.GetAttributeValue(node, "modifiedDateColumnName", ModifiedDateColumnName);
+                TimestampColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", TimestampColumnName);
+                FullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
+                GrantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", GrantExecUser);
 
                 var relationsNode = node.SelectSingleNode("relations");
                 if (relationsNode != null)

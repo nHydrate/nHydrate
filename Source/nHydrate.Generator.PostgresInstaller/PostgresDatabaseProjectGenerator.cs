@@ -27,15 +27,9 @@ namespace nHydrate.Generator.PostgresInstaller
             get { return "efcorepostgresinstaller.vstemplate"; }
         }
 
-        public override string LocalNamespaceExtension
-        {
-            get { return PostgresDatabaseProjectGenerator.NamespaceExtension; }
-        }
+        public override string LocalNamespaceExtension => PostgresDatabaseProjectGenerator.NamespaceExtension;
 
-        public static string NamespaceExtension
-        {
-            get { return "PostgresInstall"; }
-        }
+        public static string NamespaceExtension => "PostgresInstall";
 
         protected override void OnAfterGenerate()
         {

@@ -20,8 +20,6 @@ namespace nHydrate.Generator.Models
         protected const string _def_description = "";
         protected const bool _def_isTable = false;
 
-        protected string _codeFacade = _def_codefacade;
-
         #endregion
 
         #region Constructor
@@ -310,14 +308,7 @@ namespace nHydrate.Generator.Models
 
         #region ICodeFacadeObject Members
 
-        public string CodeFacade
-        {
-            get { return _codeFacade; }
-            set
-            {
-                _codeFacade = value;
-            }
-        }
+        public string CodeFacade { get; set; } = _def_codefacade;
 
         #endregion
     }

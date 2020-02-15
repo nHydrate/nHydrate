@@ -40,7 +40,6 @@ namespace nHydrate.Generator.Models
         protected const bool _def_generatesDoubleDerived = false;
         protected const bool _def_isTenant = false;
 
-        protected string _codeFacade = _def_codeFacade;
         protected RowEntryCollection _staticData = null;
         protected ReferenceCollection _relationships = null;
         protected ReferenceCollection _viewRelationships = null;
@@ -648,11 +647,7 @@ namespace nHydrate.Generator.Models
             return returnVal;
         }
 
-        public string CamelName
-        {
-            //get { return StringHelper.DatabaseNameToCamelCase(this.Name); }
-            get { return StringHelper.DatabaseNameToCamelCase(this.PascalName); }
-        }
+        public string CamelName => StringHelper.DatabaseNameToCamelCase(this.PascalName);
 
         public string PascalName
         {
@@ -670,10 +665,7 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public string DatabaseName
-        {
-            get { return this.Name; }
-        }
+        public string DatabaseName => this.Name;
 
         public ReadOnlyCollection<Relation> ParentRoleRelations
         {
@@ -728,14 +720,7 @@ namespace nHydrate.Generator.Models
 
         #region ICodeFacadeObject Members
 
-        public string CodeFacade
-        {
-            get { return _codeFacade; }
-            set
-            {
-                _codeFacade = value;
-            }
-        }
+        public string CodeFacade { get; set; } = _def_codeFacade;
 
         public string GetCodeFacade()
         {

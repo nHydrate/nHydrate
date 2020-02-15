@@ -1,20 +1,12 @@
-using nHydrate.Generator.Common.GeneratorFramework;
-
 namespace nHydrate.Generator.Common.EventArgs
 {
 	public class MessageCollectionEventArgs : System.EventArgs
 	{
-		protected MessageCollection _messageCollection = null;
-
-		public MessageCollectionEventArgs(MessageCollection messageCollection)
+        public MessageCollectionEventArgs(MessageCollection messageCollection)
 		{
-			_messageCollection = messageCollection;
+			MessageCollection = messageCollection;
 		}
 
-		public MessageCollection MessageCollection
-		{
-			get { return _messageCollection; }
-		}
-
-	}
+		public MessageCollection MessageCollection { get; } = null;
+    }
 }

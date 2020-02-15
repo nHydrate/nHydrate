@@ -17,10 +17,6 @@ namespace nHydrate.Generator.Models
         protected const string _def_friendlyName = "";
         protected const string _def_default = "";
 
-        protected string _codeFacade = _def_codefacade;
-        protected Reference _parentRef = null;
-        protected Reference _relationshipRef = null;
-
         #endregion
 
         #region Constructor
@@ -40,19 +36,11 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        public Reference RelationshipRef
-        {
-            get { return _relationshipRef; }
-            set { _relationshipRef = value; }
-        }
+        public Reference RelationshipRef { get; set; } = null;
 
         public string Default { get; set; } = _def_default;
 
-        public Reference ParentRef
-        {
-            get { return _parentRef; }
-            set { _parentRef = value; }
-        }
+        public Reference ParentRef { get; set; } = null;
 
         public string FriendlyName { get; set; } = _def_friendlyName;
 
@@ -245,14 +233,7 @@ namespace nHydrate.Generator.Models
 
         #region ICodeFacadeObject Members
 
-        public string CodeFacade
-        {
-            get { return _codeFacade; }
-            set
-            {
-                _codeFacade = value;
-            }
-        }
+        public string CodeFacade { get; set; } = _def_codefacade;
 
         public string GetCodeFacade()
         {

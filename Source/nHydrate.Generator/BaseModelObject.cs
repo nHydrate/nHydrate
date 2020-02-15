@@ -10,7 +10,6 @@ namespace nHydrate.Generator
         #region Class Members
 
         protected INHydrateModelObject _root;
-        protected bool _dirty = false;
 
         #endregion
 
@@ -32,7 +31,6 @@ namespace nHydrate.Generator
 
         public virtual Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; }
 
-        [Browsable(false)]
         public virtual INHydrateModelObjectController Controller { get; set; } = null;
 
         protected event EventHandler RootReset;
@@ -42,7 +40,6 @@ namespace nHydrate.Generator
                 this.RootReset(this, System.EventArgs.Empty);
         }
 
-        [Browsable(false)]
         public virtual INHydrateModelObject Root
         {
             get { return (INHydrateModelObject)_root; }
@@ -55,7 +52,6 @@ namespace nHydrate.Generator
             }
         }
 
-        [Browsable(false)]
         public int Id { get; protected set; }
 
         public void ResetId(int newId)
@@ -70,7 +66,6 @@ namespace nHydrate.Generator
 
         public string Name { get; set; } = string.Empty;
 
-        [Browsable(false)]
         public virtual string Key { get; protected set; } = Guid.NewGuid().ToString();
 
         /// <summary>

@@ -9,14 +9,6 @@ namespace nHydrate.Generator
 
     public class MessageCollection : CollectionBase, System.Collections.Generic.IEnumerable<nHydrate.Generator.Message>
     {
-        #region Member Variables
-
-        #endregion
-
-        #region Constructor
-
-        #endregion
-
         #region Events
 
         public event MessageDelegate AfterMessageAdd;
@@ -32,10 +24,6 @@ namespace nHydrate.Generator
         {
             AfterMessageRemove?.Invoke(sender, e);
         }
-
-        #endregion
-
-        #region Property Implementations
 
         #endregion
 
@@ -81,9 +69,9 @@ namespace nHydrate.Generator
             return retval;
         }
 
-        public Message Add(MessageTypeConstants messageType, string text, INHydrateModelObjectController controller)
+        public Message Add(string text, INHydrateModelObjectController controller)
         {
-            var newItem = new Message(messageType, text, controller);
+            var newItem = new Message(text, controller);
             this.Add(newItem);
             return newItem;
         }

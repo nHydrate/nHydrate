@@ -1,5 +1,4 @@
 using System;
-using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Generator
 {

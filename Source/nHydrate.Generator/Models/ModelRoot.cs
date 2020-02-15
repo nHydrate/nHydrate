@@ -40,10 +40,10 @@ namespace nHydrate.Generator.Models
         {
             Database = new Database(this);
 
-            this.RemovedTables = new ExtendedList<string>();
-            this.RemovedViews = new ExtendedList<string>();
-            this.RemovedStoredProcedures = new ExtendedList<string>();
-            this.RemovedFunctions = new ExtendedList<string>();
+            this.RemovedTables = new List<string>();
+            this.RemovedViews = new List<string>();
+            this.RemovedStoredProcedures = new List<string>();
+            this.RemovedFunctions = new List<string>();
 
             this.MetaData = new MetadataItemCollection();
         }
@@ -138,13 +138,13 @@ namespace nHydrate.Generator.Models
             else return "sysdatetime()";
         }
 
-        public ExtendedList<string> RemovedTables { get; }
+        public List<string> RemovedTables { get; }
 
-        public ExtendedList<string> RemovedViews { get; }
+        public List<string> RemovedViews { get; }
 
-        public ExtendedList<string> RemovedStoredProcedures { get; }
+        public List<string> RemovedStoredProcedures { get; }
 
-        public ExtendedList<string> RemovedFunctions { get; }
+        public List<string> RemovedFunctions { get; }
 
         #endregion
 

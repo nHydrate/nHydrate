@@ -39,11 +39,6 @@ namespace nHydrate.Dsl
         internal System.Drawing.Bitmap CachedImage { get; set; }
 
         #region Names
-        public string CamelName
-        {
-            get { return StringHelper.DatabaseNameToCamelCase(this.PascalName); }
-        }
-
         public string PascalName
         {
             get
@@ -55,10 +50,8 @@ namespace nHydrate.Dsl
             }
         }
 
-        public string DatabaseName
-        {
-            get { return this.Name; }
-        }
+        public string DatabaseName => this.Name;
+
         #endregion
 
         #region Methods

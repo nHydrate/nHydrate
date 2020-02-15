@@ -37,12 +37,10 @@ namespace nHydrate.Generator.Models
         protected const bool _def_isReadOnly = false;
         protected const bool _def_obsolete = false;
 
-        protected string _codeFacade = _def_codefacade;
         protected bool _primaryKey = _def_primaryKey;
         protected IdentityTypeConstants _identity = _def_identity;
         protected string _default = _def_default;
         protected bool _defaultIsFunc = _def_defaultIsFunc;
-        protected Reference _relationshipRef = null;
         private bool _isIndexed = _def_isIndexed;
         protected bool _isUnique = _def_isUnique;
         protected string _collate = string.Empty;
@@ -125,11 +123,7 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public Reference RelationshipRef
-        {
-            get { return _relationshipRef; }
-            set { _relationshipRef = value; }
-        }
+        public Reference RelationshipRef { get; set; } = null;
 
         public string Default
         {
@@ -190,10 +184,7 @@ namespace nHydrate.Generator.Models
 
         public Reference ParentTableRef { get; set; } = null;
 
-        public Table ParentTable
-        {
-            get { return ParentTableRef.Object as Table; }
-        }
+        public Table ParentTable => ParentTableRef.Object as Table;
 
         public string FriendlyName { get; set; } = _def_friendlyName;
 
@@ -481,134 +472,6 @@ namespace nHydrate.Generator.Models
             return this.DataType.GetSQLDefault(this.Default);
         }
 
-        public virtual bool IsValidDefault(string value)
-        {
-            //No default is valid for everything
-            if (string.IsNullOrEmpty(value)) return true;
-            //There is a default and one is not valid so always false
-            if (!this.CanHaveDefault()) return false;
-
-            switch (this.DataType)
-            {
-                case System.Data.SqlDbType.BigInt:
-                    {
-                        return long.TryParse(value, out long v);
-                    }
-                case System.Data.SqlDbType.Binary:
-                case System.Data.SqlDbType.Image:
-                case System.Data.SqlDbType.VarBinary:
-                    if (string.IsNullOrEmpty(value)) return false;
-                    if (value.Length <= 2) return false;
-                    if ((value.Substring(0, 2) == "0x") && (value.Length % 2 == 0) && value.Substring(2, value.Length - 2).IsHex()) return true;
-                    return false;
-                case System.Data.SqlDbType.Bit:
-                    {
-                        var q = value.ToLower();
-                        if (q == "1" || q == "0") return true;
-                        bool v;
-                        return bool.TryParse(value, out v);
-                    }
-                case System.Data.SqlDbType.Char:
-                    return true;
-                case System.Data.SqlDbType.Date:
-                    {
-                        var d = this.GetCodeDefault();
-                        return !string.IsNullOrEmpty(d);
-                    }
-                case System.Data.SqlDbType.DateTime:
-                    {
-                        var d = this.GetCodeDefault();
-                        return !string.IsNullOrEmpty(d);
-                    }
-                case System.Data.SqlDbType.DateTime2:
-                    {
-                        var d = this.GetCodeDefault();
-                        return !string.IsNullOrEmpty(d);
-                    }
-                case System.Data.SqlDbType.DateTimeOffset:
-                    return false;
-                case System.Data.SqlDbType.Decimal:
-                    {
-                        return decimal.TryParse(value, out _);
-                    }
-                case System.Data.SqlDbType.Float:
-                    {
-                        return decimal.TryParse(value, out _);
-                    }
-                case System.Data.SqlDbType.Int:
-                    {
-                        return int.TryParse(value, out _);
-                    }
-                case System.Data.SqlDbType.Money:
-                    {
-                        long v;
-                        return long.TryParse(value, out v);
-                    }
-                case System.Data.SqlDbType.NChar:
-                    return true;
-                case System.Data.SqlDbType.NText:
-                    return true;
-                case System.Data.SqlDbType.NVarChar:
-                    return true;
-                case System.Data.SqlDbType.Real:
-                    {
-                        decimal v;
-                        return decimal.TryParse(value, out v);
-                    }
-                case System.Data.SqlDbType.SmallDateTime:
-                    {
-                        var d = this.GetCodeDefault();
-                        return !string.IsNullOrEmpty(d);
-                    }
-                case System.Data.SqlDbType.SmallInt:
-                    {
-                        Int16 v;
-                        return Int16.TryParse(value, out v);
-                    }
-                case System.Data.SqlDbType.SmallMoney:
-                    {
-                        int v;
-                        return int.TryParse(value, out v);
-                    }
-                case System.Data.SqlDbType.Structured:
-                    return false;
-                case System.Data.SqlDbType.Text:
-                    return true;
-                case System.Data.SqlDbType.Time:
-                    {
-                        var d = this.GetCodeDefault();
-                        return !string.IsNullOrEmpty(d);
-                    }
-                case System.Data.SqlDbType.Timestamp:
-                    return false;
-                case System.Data.SqlDbType.TinyInt:
-                    {
-                        byte v;
-                        return byte.TryParse(value, out v);
-                    }
-                case System.Data.SqlDbType.Udt:
-                    return false;
-                case System.Data.SqlDbType.UniqueIdentifier:
-                    {
-                        if (value.ToLower() == "newid") return true;
-                        if (value.ToLower() == "newsequentialid") return true;
-                        try
-                        {
-                            var v = new Guid(value);
-                            return true;
-                        }
-                        catch { return false; }
-                    }
-                case System.Data.SqlDbType.VarChar:
-                    return true;
-                case System.Data.SqlDbType.Variant:
-                    return false;
-                case System.Data.SqlDbType.Xml:
-                    return false;
-            }
-            return false;
-        }
-
         protected internal void ResetKey()
         {
             this.Key = Guid.NewGuid().ToString();
@@ -864,14 +727,7 @@ namespace nHydrate.Generator.Models
 
         #region ICodeFacadeObject Members
 
-        public string CodeFacade
-        {
-            get { return _codeFacade; }
-            set
-            {
-                _codeFacade = value;
-            }
-        }
+        public string CodeFacade { get; set; } = _def_codefacade;
 
         public string GetCodeFacade()
         {

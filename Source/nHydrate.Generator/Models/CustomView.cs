@@ -19,10 +19,6 @@ namespace nHydrate.Generator.Models
         protected const string _def_description = "";
         protected const bool _def_generatesDoubleDerived = false;
 
-        protected string _codeFacade = _def_codefacade;
-        protected bool _generated = _def_generated;
-        protected string _sql = string.Empty;
-
         #endregion
 
         #region Constructor
@@ -77,23 +73,9 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public bool Generated
-        {
-            get { return _generated; }
-            set
-            {
-                _generated = value;
-            }
-        }
+        public bool Generated { get; set; } = _def_generated;
 
-        public string SQL
-        {
-            get { return _sql; }
-            set
-            {
-                _sql = value;
-            }
-        }
+        public string SQL { get; set; } = string.Empty;
 
         #endregion
 
@@ -215,7 +197,7 @@ namespace nHydrate.Generator.Models
                 var columnsNode = node.SelectSingleNode("columns");
                 Columns.XmlLoad(columnsNode);
 
-                this.Generated = XmlHelper.GetAttributeValue(node, "generated", _generated);
+                this.Generated = XmlHelper.GetAttributeValue(node, "generated", Generated);
                 this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
             }
             catch(Exception ex)
@@ -305,14 +287,7 @@ namespace nHydrate.Generator.Models
 
         #region ICodeFacadeObject Members
 
-        public string CodeFacade
-        {
-            get { return _codeFacade; }
-            set
-            {
-                _codeFacade = value;
-            }
-        }
+        public string CodeFacade { get; set; } = _def_codefacade;
 
         public string GetCodeFacade()
         {

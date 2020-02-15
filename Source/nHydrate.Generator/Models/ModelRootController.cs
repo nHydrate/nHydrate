@@ -67,14 +67,14 @@ namespace nHydrate.Generator.Models
 
 				//Check valid name
 				if (!ValidationHelper.ValidDatabaseIdenitifer(root.CompanyName) || !ValidationHelper.ValidCodeIdentifier(root.CompanyName))
-					retval.Add(MessageTypeConstants.Error, ValidationHelper.ErrorTextInvalidCompany, this);
+					retval.Add(ValidationHelper.ErrorTextInvalidCompany, this);
 				if (!ValidationHelper.ValidDatabaseIdenitifer(root.ProjectName) || !ValidationHelper.ValidCodeIdentifier(root.ProjectName))
-					retval.Add(MessageTypeConstants.Error, ValidationHelper.ErrorTextInvalidProject, this);
+					retval.Add(ValidationHelper.ErrorTextInvalidProject, this);
 
 				if (!string.IsNullOrEmpty(root.DefaultNamespace))
 				{
 					if (!ValidationHelper.IsValidNamespace(root.DefaultNamespace))
-						retval.Add(MessageTypeConstants.Error, ValidationHelper.ErrorTextInvalidNamespace, this);
+						retval.Add(ValidationHelper.ErrorTextInvalidNamespace, this);
 				}
 
 				return retval;
