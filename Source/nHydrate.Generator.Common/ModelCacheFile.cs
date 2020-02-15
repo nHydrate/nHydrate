@@ -14,7 +14,6 @@ namespace nHydrate.Generator.Common
 
         private readonly List<string> _excludeList = new List<string>();
         private int _generatedVersion = 0;
-        private readonly List<string> _generatedModuleList = new List<string>();
         private string _modelFileName = string.Empty;
 
         #endregion
@@ -53,11 +52,6 @@ namespace nHydrate.Generator.Common
         public List<string> ExcludeList
         {
             get { return _excludeList; }
-        }
-
-        public List<string> GeneratedModuleList
-        {
-            get { return _generatedModuleList; }
         }
 
         public int GeneratedVersion
@@ -122,13 +116,6 @@ namespace nHydrate.Generator.Common
                 XmlHelper.AddElement((XmlElement)exludeListNode, "item", key);
             }
 
-            //Save GeneratedModuleList
-            var generatedModuleListNode = XmlHelper.AddElement(document.DocumentElement, "generatedModuleList");
-            foreach (var key in this.GeneratedModuleList)
-            {
-                XmlHelper.AddElement((XmlElement)generatedModuleListNode, "item", key);
-            }
-
             //Table facacde
             var tFacadeNode = XmlHelper.AddElement(document.DocumentElement, "tableFacadeSettings", this.TableFacadeSettings);
 
@@ -167,17 +154,6 @@ namespace nHydrate.Generator.Common
                 foreach (XmlNode node in exludeListNode.ChildNodes)
                 {
                     this.ExcludeList.Add(node.InnerText);
-                }
-            }
-
-            //Get ExcludeList
-            this.GeneratedModuleList.Clear();
-            XmlNode generatedModuleListNode = XmlHelper.GetElement(document.DocumentElement, "generatedModuleList");
-            if (generatedModuleListNode != null)
-            {
-                foreach (XmlNode node in generatedModuleListNode.ChildNodes)
-                {
-                    this.GeneratedModuleList.Add(node.InnerText);
                 }
             }
 

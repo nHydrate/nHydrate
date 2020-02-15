@@ -9,7 +9,7 @@ using DslModeling = global::Microsoft.VisualStudio.Modeling;
 
 namespace nHydrate.Dsl
 {
-    partial class Field : nHydrate.Dsl.IModuleLink, nHydrate.Dsl.IContainerParent, nHydrate.Dsl.IField, IDirtyable
+    partial class Field : nHydrate.Dsl.IContainerParent, nHydrate.Dsl.IField, IDirtyable
     {
         #region Constructors
         /// <summary>
@@ -694,28 +694,6 @@ namespace nHydrate.Dsl
         }
         #endregion
 
-        #region IModuleLink
-
-        IEnumerable<Module> IModuleLink.Modules
-        {
-            get { return this.Modules.AsEnumerable(); }
-        }
-
-        void IModuleLink.AddModule(Module module)
-        {
-            if (!this.Modules.Contains(module))
-                this.Modules.Add(module);
-        }
-
-        void IModuleLink.RemoveModule(Module module)
-        {
-            if (this.Modules.Contains(module))
-                this.Modules.Remove(module);
-        }
-
-        #endregion
-
-
         #region IContainerParent Members
 
         DslModeling.ModelElement IContainerParent.ContainerParent
@@ -849,15 +827,6 @@ namespace nHydrate.Dsl
 
                                     newIndex.IndexType = IndexTypeConstants.PrimaryKey; //Do this last
 
-                                    //If use modules then add the PK to all modules that contain this entity
-                                    if (element.Entity.nHydrateModel.UseModules)
-                                    {
-                                        foreach (var module in element.Modules)
-                                        {
-                                            element.Entity.nHydrateModel.IndexModules.Add(new IndexModule(element.Entity.nHydrateModel.Partition) { IndexID = newIndex.Id, ModuleId = module.Id });
-                                        }
-                                    }
-
                                     transaction.Commit();
                                 }
                             }
@@ -906,15 +875,6 @@ namespace nHydrate.Dsl
                                         element.Entity.Indexes.Remove(existing);
                                     else
                                         existing.IndexType = IndexTypeConstants.PrimaryKey;
-
-                                    //If use modules then add the PK to all modules that contain this entity
-                                    if (element.Entity.nHydrateModel.UseModules && existing.FieldList.Count == 0)
-                                    {
-                                        foreach (var module in element.Modules)
-                                        {
-                                            element.Entity.nHydrateModel.IndexModules.Remove(x => (x.IndexID == existing.Id) && (x.ModuleId == module.Id));
-                                        }
-                                    }
 
                                     transaction.Commit();
                                 }

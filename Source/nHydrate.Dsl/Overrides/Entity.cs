@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace nHydrate.Dsl
 {
-    partial class Entity : nHydrate.Dsl.IModuleLink, nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
+    partial class Entity : nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
     {
         public string DatabaseName => this.Name;
 
@@ -309,38 +309,10 @@ namespace nHydrate.Dsl
             return this.Name;
         }
 
-        #region IModuleLink
-
-        IEnumerable<Module> IModuleLink.Modules
-        {
-            get { return this.Modules.AsEnumerable(); }
-        }
-
-        void IModuleLink.AddModule(Module module)
-        {
-            if (!this.Modules.Contains(module))
-                this.Modules.Add(module);
-        }
-
-        void IModuleLink.RemoveModule(Module module)
-        {
-            if (this.Modules.Contains(module))
-                this.Modules.Remove(module);
-        }
-
-        #endregion
-
         protected override void OnDeleting()
         {
             if (this.nHydrateModel != null)
                 this.nHydrateModel.RemovedTables.Add(this.PascalName);
-
-            foreach (var index in this.Indexes)
-            {
-                var count1 = this.nHydrateModel.IndexModules.Remove(x => x.IndexID == index.Id);
-            }
-
-
             base.OnDeleting();
         }
 

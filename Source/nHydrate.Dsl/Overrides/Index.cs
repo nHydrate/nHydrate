@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace nHydrate.Dsl
 {
-    partial class Index : nHydrate.Dsl.IModuleLink, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
+    partial class Index : nHydrate.Generator.Common.GeneratorFramework.IDirtyable
     {
         #region Constructors
         // Constructors were not generated for this relationship because it had HasCustomConstructor
@@ -77,8 +77,6 @@ namespace nHydrate.Dsl
         {
             if (this.Entity != null)
             {
-                var count1 = this.Entity.nHydrateModel.IndexModules.Remove(x => x.IndexID == this.Id);
-
                 if (!this.Entity.nHydrateModel.IsLoading && !this.Entity.IsDeleting)
                 {
                     //If this is the primary key then CANCEL
@@ -121,42 +119,6 @@ namespace nHydrate.Dsl
             }
             return retval;
         }
-
-        #region IModuleLink
-
-        IEnumerable<Module> IModuleLink.Modules
-        {
-            get
-            {
-                var idList = this.Entity.nHydrateModel.IndexModules
-                    .Where(x => x.IndexID == this.Id)
-                    .ToList()
-                    .Select(x => x.ModuleId);
-                return this.Entity.nHydrateModel.Modules.Where(x => idList.Contains(x.Id)).ToList();
-            }
-        }
-
-        void IModuleLink.AddModule(Module module)
-        {
-            var modules = ((IModuleLink)this).Modules.ToList();
-            if (!modules.Contains(module))
-            {
-                this.Entity.nHydrateModel.IndexModules.Add(new IndexModule(this.Partition) { IndexID = this.Id, ModuleId = module.Id });
-            }
-        }
-
-        void IModuleLink.RemoveModule(Module module)
-        {
-            var modules = ((IModuleLink)this).Modules.ToList();
-            if (modules.Contains(module))
-            {
-                var o = this.Entity.nHydrateModel.IndexModules.FirstOrDefault(x => x.IndexID == this.Id && x.ModuleId == module.Id);
-                if (o != null)
-                    this.Entity.nHydrateModel.IndexModules.Remove(o);
-            }
-        }
-
-        #endregion
 
     }
 

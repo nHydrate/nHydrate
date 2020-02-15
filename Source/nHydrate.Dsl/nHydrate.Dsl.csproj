@@ -145,17 +145,13 @@
     <Compile Include="Custom\DebugHelper.cs" />
     <Compile Include="Custom\SQLFileManagement.cs" />
     <Compile Include="Design\Converters\DatatypeConverter.cs" />
-    <Compile Include="Design\Converters\VisibilityTypeEnumConverter.cs" />
     <Compile Include="Design\Converters\EntityFieldConverter.cs" />
-    <Compile Include="Design\Converters\ModuleRuleInclusionEnumConverter.cs" />
-    <Compile Include="Design\Converters\ModuleConverter.cs" />
     <Compile Include="Design\Converters\TextDecimalScaleConverter.cs" />
     <Compile Include="Design\Converters\TextLengthConverter.cs" />
     <Compile Include="Design\Converters\VersionConverter.cs" />
     <Compile Include="Design\Editors\SecurityFunctionEditor.cs" />
     <Compile Include="Design\Editors\EntityFieldEditor.cs" />
     <Compile Include="Design\Editors\CopyrightEditor.cs" />
-    <Compile Include="Design\Editors\ModuleEditor.cs" />
     <Compile Include="Design\Editors\SQLEditor.cs" />
     <Compile Include="Design\Forms\SecurityFunctionForm.cs">
       <SubType>Form</SubType>
@@ -185,13 +181,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Serializer.tt</DependentUpon>
     </Compile>
+    <Compile Include="GeneratedCode\Shapes.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Shapes.tt</DependentUpon>
+    </Compile>
     <Compile Include="Overrides\IFieldContainer.cs" />
     <Compile Include="Overrides\IField.cs" />
     <Compile Include="Overrides\IDatabaseEntity.cs" />
     <Compile Include="Overrides\IContainerParent.cs" />
     <Compile Include="Overrides\EntityViewAssociationConnector.cs" />
     <Compile Include="Overrides\EntityHasViews.cs" />
-    <Compile Include="Overrides\nHydrateToolboxHelper.cs" />
     <Compile Include="Overrides\FunctionShape.cs" />
     <Compile Include="Overrides\IndexColumn.cs" />
     <Compile Include="Overrides\Index.cs" />
@@ -216,9 +216,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Overrides\Function.cs" />
-    <Compile Include="Overrides\IModuleLink.cs" />
     <Compile Include="Overrides\IPrecedence.cs" />
-    <Compile Include="Overrides\Module.cs" />
     <Compile Include="Overrides\nHydrateDiagram.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -327,12 +325,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SerializationHelper.tt</DependentUpon>
-    </Compile>
-    <Compile Include="GeneratedCode\Shapes.cs">
-      <DependentUpon>Shapes.tt</DependentUpon>
-      <SubType>Code</SubType>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="GeneratedCode\ToolboxHelper.cs">
       <DependentUpon>ToolboxHelper.tt</DependentUpon>

@@ -2,9 +2,6 @@
 using System;
 using System.Linq;
 using nHydrate.Generator.Common.Util;
-using Microsoft.VisualStudio.Modeling.Diagrams;
-using System.Windows.Forms;
-using System.IO;
 
 namespace nHydrate.Dsl
 {
@@ -154,86 +151,6 @@ namespace nHydrate.Dsl
             f.CachedImage = null;
         }
 
-        private void DiagramViewablePropertyChanged(object sender, Microsoft.VisualStudio.Modeling.ElementPropertyChangedEventArgs e)
-        {
-            var model = e.ModelElement as nHydrateModel;
-            if (model != null)
-            {
-                if (e.DomainProperty.Name == "DiagramVisibility")
-                {
-                    var propValue = (VisibilityTypeConstants)e.DomainProperty.GetValue(e.ModelElement);
-
-                    var visibleVW = ((propValue & VisibilityTypeConstants.View) == VisibilityTypeConstants.View);
-                    var visibleSP = ((propValue & VisibilityTypeConstants.StoredProcedure) == VisibilityTypeConstants.StoredProcedure);
-                    var visibleFN = ((propValue & VisibilityTypeConstants.Function) == VisibilityTypeConstants.Function);
-
-                    {
-                        var list = this.Store.ElementDirectory.AllElements
-                                       .Where(x => x is StoredProcedureShape)
-                                       .ToList()
-                                       .Cast<StoredProcedureShape>()
-                                       .ToList();
-
-                        if (visibleSP)
-                        {
-                            list.ForEach(x => x.Show());
-                            using (var transaction = model.Store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
-                            {
-                                list.ForEach(x => x.EnsureCompartments());
-                                list.ForEach(x => this.FixUpChildShapes(x));
-                                list.ForEach(x => x.RebuildShape());
-                                transaction.Commit();
-                            }
-                        }
-                        else list.ForEach(x => x.Hide());
-                    }
-
-                    {
-                        var list = this.Store.ElementDirectory.AllElements
-                                       .Where(x => x is ViewShape)
-                                       .ToList()
-                                       .Cast<ViewShape>()
-                                       .ToList();
-
-                        if (visibleVW)
-                        {
-                            list.ForEach(x => x.Show());
-                            using (var transaction = model.Store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
-                            {
-                                list.ForEach(x => x.EnsureCompartments());
-                                list.ForEach(x => this.FixUpChildShapes(x));
-                                list.ForEach(x => x.RebuildShape());
-                                transaction.Commit();
-                            }
-                        }
-                        else list.ForEach(x => x.Hide());
-                    }
-
-                    {
-                        var list = this.Store.ElementDirectory.AllElements
-                                       .Where(x => x is FunctionShape)
-                                       .ToList()
-                                       .Cast<FunctionShape>()
-                                       .ToList();
-
-                        if (visibleFN)
-                        {
-                            list.ForEach(x => x.Show());
-                            using (var transaction = model.Store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
-                            {
-                                list.ForEach(x => x.EnsureCompartments());
-                                list.ForEach(x => this.FixUpChildShapes(x));
-                                list.ForEach(x => x.RebuildShape());
-                                transaction.Commit();
-                            }
-                        }
-                        else list.ForEach(x => x.Hide());
-                    }
-
-                }
-            }
-        }
-
         private bool _isLoaded = false;
 
         protected void nHydrateDiagram_DiagramAdded(object sender, Microsoft.VisualStudio.Modeling.ElementAddedEventArgs e)
@@ -242,20 +159,6 @@ namespace nHydrate.Dsl
             _isLoaded = true;
 
             var model = this.Diagram.ModelElement as nHydrateModel;
-            if ((model.DiagramVisibility & VisibilityTypeConstants.StoredProcedure) == VisibilityTypeConstants.StoredProcedure)
-                this.Store.ElementDirectory.AllElements.Where(x => x is StoredProcedureShape).ToList().Cast<StoredProcedureShape>().ToList().ForEach(x => x.Show());
-            else
-                this.Store.ElementDirectory.AllElements.Where(x => x is StoredProcedureShape).ToList().Cast<StoredProcedureShape>().ToList().ForEach(x => x.Hide());
-
-            if ((model.DiagramVisibility & VisibilityTypeConstants.View) == VisibilityTypeConstants.View)
-                this.Store.ElementDirectory.AllElements.Where(x => x is ViewShape).ToList().Cast<ViewShape>().ToList().ForEach(x => x.Show());
-            else
-                this.Store.ElementDirectory.AllElements.Where(x => x is ViewShape).ToList().Cast<ViewShape>().ToList().ForEach(x => x.Hide());
-
-            if ((model.DiagramVisibility & VisibilityTypeConstants.Function) == VisibilityTypeConstants.Function)
-                this.Store.ElementDirectory.AllElements.Where(x => x is FunctionShape).ToList().Cast<FunctionShape>().ToList().ForEach(x => x.Show());
-            else
-                this.Store.ElementDirectory.AllElements.Where(x => x is FunctionShape).ToList().Cast<FunctionShape>().ToList().ForEach(x => x.Hide());
 
             //Notify when field is changed so we can refresh icon
             this.Store.EventManagerDirectory.ElementPropertyChanged.Add(
@@ -265,10 +168,6 @@ namespace nHydrate.Dsl
             this.Store.EventManagerDirectory.ElementPropertyChanged.Add(
                 this.Store.DomainDataDirectory.FindDomainClass(typeof(ViewField)),
                 new EventHandler<Microsoft.VisualStudio.Modeling.ElementPropertyChangedEventArgs>(ViewFieldPropertyChanged));
-
-            this.Store.EventManagerDirectory.ElementPropertyChanged.Add(
-                this.Store.DomainDataDirectory.FindDomainClass(typeof(nHydrateModel)),
-                new EventHandler<Microsoft.VisualStudio.Modeling.ElementPropertyChangedEventArgs>(DiagramViewablePropertyChanged));
 
             //Notify when an index column is added
             this.Store.EventManagerDirectory.ElementAdded.Add(
@@ -286,69 +185,6 @@ namespace nHydrate.Dsl
         }
 
         #endregion
-
-        protected override ShapeElement CreateChildShape(Microsoft.VisualStudio.Modeling.ModelElement element)
-        {
-            var shape = base.CreateChildShape(element);
-
-            var model = this.ModelElement as nHydrate.Dsl.nHydrateModel;
-            if (model != null)
-            {
-                if (shape is StoredProcedureShape)
-                {
-                    if ((model.DiagramVisibility & VisibilityTypeConstants.StoredProcedure) == VisibilityTypeConstants.StoredProcedure) shape.Show();
-                    else shape.Hide();
-                }
-                else if (shape is ViewShape)
-                {
-                    if ((model.DiagramVisibility & VisibilityTypeConstants.View) == VisibilityTypeConstants.View) shape.Show();
-                    else shape.Hide();
-                }
-                else if (shape is FunctionShape)
-                {
-                    if ((model.DiagramVisibility & VisibilityTypeConstants.Function) == VisibilityTypeConstants.Function) shape.Show();
-                    else shape.Hide();
-                }
-
-            }
-
-            return shape;
-        }
-
-        public override void OnDragOver(DiagramDragEventArgs e)
-        {
-            if (e.Data.GetFormats().Contains("VSToolboxUniqueID"))
-            {
-                var model = this.Diagram.ModelElement as nHydrateModel;
-                var typeName = (e.Data.GetData("VSToolboxUniqueID") as MemoryStream).GetString().Replace("\0", string.Empty);
-                if (typeName == "nHydrate.DslPackage.ViewToolboxItem")
-                {
-                    if ((model.DiagramVisibility & VisibilityTypeConstants.View) != VisibilityTypeConstants.View)
-                    {
-                        e.Effect = DragDropEffects.None;
-                        return;
-                    }
-                }
-                else if (typeName == "nHydrate.DslPackage.StoredProcedureToolboxItem")
-                {
-                    if ((model.DiagramVisibility & VisibilityTypeConstants.StoredProcedure) != VisibilityTypeConstants.StoredProcedure)
-                    {
-                        e.Effect = DragDropEffects.None;
-                        return;
-                    }
-                }
-                else if (typeName == "nHydrate.DslPackage.FunctionToolboxItem")
-                {
-                    if ((model.DiagramVisibility & VisibilityTypeConstants.Function) != VisibilityTypeConstants.Function)
-                    {
-                        e.Effect = DragDropEffects.None;
-                        return;
-                    }
-                }
-            }
-
-            base.OnDragOver(e);
-        }
 
         protected override void OnChildConfiguring(Microsoft.VisualStudio.Modeling.Diagrams.ShapeElement child, bool createdDuringViewFixup)
         {

@@ -124,11 +124,6 @@ namespace nHydrate.Dsl
                         {
                             context.LogError(string.Format(ValidationHelper.ErrorTextRelationshipMustHaveFields, relation.ParentEntity.Name, relation.ChildEntity.Name), string.Empty, this);
                         }
-                        else if (this.nHydrateModel.UseModules)
-                        {
-                            if (this.nHydrateModel.RelationModules.Count(x => x.RelationID == relation.Id) == 0)
-                                context.LogError(string.Format(ValidationHelper.ErrorTextRelationshipMustBeInModule, this.Name, relation.ChildEntity.Name), string.Empty, this);
-                        }
 
                     }
                 }
@@ -769,23 +764,6 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                #region Parent Table must be in Module
-
-                if (this.nHydrateModel.UseModules)
-                {
-                    var myModules = this.Modules;
-                    var alltables = this.GetTableHierarchy();
-                    foreach (var t in alltables)
-                    {
-                        if (myModules.Intersect(t.Modules).Count() < myModules.Count)
-                        {
-                            context.LogError(string.Format(ValidationHelper.ErrorTextTableInheritMustContainParentInModule, this.Name, t.Name), string.Empty, this);
-                        }
-                    }
-                }
-
-                #endregion
-
                 #region Tenant
 
                 if (this.IsTenant && this.TypedEntity == TypedEntityConstants.DatabaseTable)
@@ -832,46 +810,6 @@ namespace nHydrate.Dsl
                             var f = this.FieldList.ToList().Cast<Field>().FirstOrDefault(x => x.Id == q.TargetFieldId);
                             if (f != null)
                                 context.LogError(string.Format(ValidationHelper.ErrorTextNullableFieldHasDefaultWithRelation, f.Name, this.Name, r.SourceEntity.Name), string.Empty, this);
-                        }
-                    }
-                }
-
-                #endregion
-
-                #region Verify Indexes in some module
-
-                if (this.nHydrateModel.UseModules)
-                {
-                    foreach (var index in this.Indexes)
-                    {
-                        if (!this.nHydrateModel.IndexModules.Any(x => x.IndexID == index.Id))
-                        {
-                            context.LogError(string.Format(ValidationHelper.ErrorTextIndexNotInModule, this.Name, index.ToString()), string.Empty, this);
-                        }
-                    }
-                }
-
-                #endregion
-
-                #region Ensure fields exist in a module if parent index does
-
-                if (this.nHydrateModel.UseModules)
-                {
-                    foreach (var index in this.Indexes)
-                    {
-                        //Get all modules in which this index exists
-                        var moduleList = this.nHydrateModel.IndexModules.Where(x => x.IndexID == index.Id).Select(x => x.ModuleId);
-                        foreach (var moduleId in moduleList)
-                        {
-                            //get all fields that exists in a module
-                            var allFieldList = this.nHydrateModel.Modules.Where(x => x.Id == moduleId).SelectMany(x => x.Fields).Select(x => x.Id).ToList();
-                            //get all field IDs for current index
-                            var indexFieldList = index.FieldList.Select(x => x.Id).ToList();
-                            //ensure that all fields in current index exist in module
-                            if (allFieldList.Count(x => indexFieldList.Contains(x)) != indexFieldList.Count)
-                            {
-                                context.LogError(string.Format(ValidationHelper.ErrorTextModuleContainIndexNotFields, this.Name, index.ToString(), this.nHydrateModel.Modules.First(x => x.Id == moduleId).Name), string.Empty, this);
-                            }
                         }
                     }
                 }

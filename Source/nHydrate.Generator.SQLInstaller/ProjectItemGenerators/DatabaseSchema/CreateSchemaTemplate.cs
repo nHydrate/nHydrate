@@ -67,7 +67,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 this.AppendRemoveDefaults();
                 this.AppendCreateDefaults();
                 this.AppendFixNulls();
-                this.AppendClearSP();
                 this.AppendVersionTable();
             }
             catch (Exception ex)
@@ -360,45 +359,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                     }
                 }
             }
-        }
-
-        #endregion
-
-        #region AppendClearSP
-
-        private void AppendClearSP()
-        {
-            //DO NOT DO THIS RIGHT NOW AS MULTIPLE MODULES IS A PROBLEM
-            return;
-            sb.AppendLine("--CLEAR ALL EXISTING GENERATED STORED PROCEDURES");
-            sb.AppendLine("CREATE TABLE [#tmpDropSP] ([text] varchar(1000))");
-            sb.AppendLine("GO");
-            sb.AppendLine("insert into [#tmpDropSP] select '[' + s.name + '].[' + o.name + ']' as [text] ");
-            sb.AppendLine("from sys.objects o inner join sys.schemas s on o.schema_id = s.schema_id ");
-            sb.AppendLine("where o.name like '" + _model.GetStoredProcedurePrefix() + "_%' and type = 'P'");
-            sb.AppendLine();
-            sb.AppendLine("--LOOP AND REMOVE THESE CONSTRAINTS");
-            sb.AppendLine("DECLARE @mycur CURSOR");
-            sb.AppendLine("DECLARE @test VARCHAR(1000)");
-            sb.AppendLine("SET @mycur = CURSOR");
-            sb.AppendLine("FOR");
-            sb.AppendLine("SELECT [text] FROM #tmpDropSP");
-            sb.AppendLine("OPEN @mycur");
-            sb.AppendLine("FETCH NEXT FROM @mycur INTO @test");
-            sb.AppendLine("WHILE @@FETCH_STATUS = 0");
-            sb.AppendLine("BEGIN");
-            sb.AppendLine("exec(");
-            sb.AppendLine("'");
-            sb.AppendLine("if exists (select * from sys.objects where object_id = object_id(N''' + @test + ''') and OBJECTPROPERTY(object_id, N''IsProcedure'') = 1)");
-            sb.AppendLine("drop procedure ' + @test + '");
-            sb.AppendLine("')");
-            sb.AppendLine("FETCH NEXT FROM @mycur INTO @test");
-            sb.AppendLine("END");
-            sb.AppendLine("DEALLOCATE @mycur");
-            sb.AppendLine();
-            sb.AppendLine("DROP TABLE #tmpDropSP");
-            sb.AppendLine("GO");
-            sb.AppendLine();
         }
 
         #endregion

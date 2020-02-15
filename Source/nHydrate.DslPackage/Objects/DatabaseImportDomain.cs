@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.Modeling;
 using nHydrate.Dsl;
-using nHydrate.DslPackage;
 using System.IO;
 using System.Windows.Forms;
 
@@ -13,9 +11,8 @@ namespace nHydrate.DslPackage.Objects
 {
     internal static class DatabaseImportDomain
     {
-        public static void ImportDatabase(nHydrate.Dsl.nHydrateModel model, Store store, Microsoft.VisualStudio.Modeling.Diagrams.Diagram diagram, nHydrate.DataImport.Database database, Module module)
+        public static void ImportDatabase(nHydrate.Dsl.nHydrateModel model, Store store, Microsoft.VisualStudio.Modeling.Diagrams.Diagram diagram, nHydrate.DataImport.Database database)
         {
-
             try
             {
                 //Find Stored procs with no loaded columns
@@ -204,30 +201,6 @@ namespace nHydrate.DslPackage.Objects
 
                     #region Load Entities
 
-                    #region Merge Module
-                    foreach (var item in database.EntityList.Where(x => x.ImportState == DataImport.ImportStateConstants.Merge))
-                    {
-                        //Add module if necessary
-                        var modelItem = diagramEntities.FirstOrDefault(x => x.Name.ToLower() == item.Name.ToLower());
-                        if (module != null && !modelItem.Modules.Contains(module))
-                        {
-                            modelItem.Modules.Add(module);
-                        }
-
-                        foreach (var field in item.FieldList)
-                        {
-                            var newField = modelItem.Fields.FirstOrDefault(x => x.Name.ToLower() == field.Name.ToLower());
-
-                            //Add module if necessary
-                            if (module != null && newField != null && !newField.Modules.Contains(module))
-                            {
-                                newField.Modules.Add(module);
-                            }
-                        }
-
-                    }
-                    #endregion
-
                     var addedChangedEntities = database.EntityList.Where(x => x.ImportState == DataImport.ImportStateConstants.Added || x.ImportState == DataImport.ImportStateConstants.Modified).ToList();
 
                     #region Entities
@@ -256,13 +229,7 @@ namespace nHydrate.DslPackage.Objects
                         newEntity.Name = entity.Name;
                         newEntity.Schema = entity.Schema;
 
-                        //Add module if necessary
-                        if (module != null && !newEntity.Modules.Contains(module))
-                        {
-                            newEntity.Modules.Add(module);
-                        }
-
-                        PopulateFields(model, module, entity, newEntity);
+                        PopulateFields(model, entity, newEntity);
 
                         //Order columns by database
                         //newEntity.Fields.Sort((x, y) => x.Name.CompareTo(y.Name));
@@ -496,18 +463,6 @@ namespace nHydrate.DslPackage.Objects
 
                     #region Add Stored Procedures
 
-                    #region Merge Module
-                    foreach (var item in database.StoredProcList.Where(x => x.ImportState == DataImport.ImportStateConstants.Merge))
-                    {
-                        //Add module if necessary
-                        var modelItem = diagramStoredProcs.FirstOrDefault(x => x.Name.ToLower() == item.Name.ToLower());
-                        if (module != null && !modelItem.Modules.Contains(module))
-                        {
-                            modelItem.Modules.Add(module);
-                        }
-                    }
-                    #endregion
-
                     foreach (var storedProc in database.StoredProcList.Where(x => x.ImportState == DataImport.ImportStateConstants.Added || x.ImportState == DataImport.ImportStateConstants.Modified))
                     {
                         var newStoredProc = diagramStoredProcs.FirstOrDefault(x => x.Id == storedProc.ID);
@@ -527,12 +482,6 @@ namespace nHydrate.DslPackage.Objects
                         newStoredProc.Name = storedProc.Name;
                         newStoredProc.DatabaseObjectName = newStoredProc.Name; //Ensures the "gen_" prefix is not prepended
 
-                        //Add module if necessary
-                        if (module != null && !newStoredProc.Modules.Contains(module))
-                        {
-                            newStoredProc.Modules.Add(module);
-                        }
-
                         newStoredProc.Schema = storedProc.Schema;
                         newStoredProc.SQL = storedProc.SQL;
 
@@ -546,18 +495,6 @@ namespace nHydrate.DslPackage.Objects
                     #endregion
 
                     #region Add Views
-
-                    #region Merge Module
-                    foreach (var item in database.ViewList.Where(x => x.ImportState == DataImport.ImportStateConstants.Merge))
-                    {
-                        //Add module if necessary
-                        var modelItem = diagramViews.FirstOrDefault(x => x.Name.ToLower() == item.Name.ToLower());
-                        if (module != null && !modelItem.Modules.Contains(module))
-                        {
-                            modelItem.Modules.Add(module);
-                        }
-                    }
-                    #endregion
 
                     foreach (var view in database.ViewList.Where(x => x.ImportState == DataImport.ImportStateConstants.Added || x.ImportState == DataImport.ImportStateConstants.Modified))
                     {
@@ -576,13 +513,6 @@ namespace nHydrate.DslPackage.Objects
                             }
                         }
                         newView.Name = view.Name;
-
-                        //Add module if necessary
-                        if (module != null && !newView.Modules.Contains(module))
-                        {
-                            newView.Modules.Add(module);
-                        }
-
                         newView.Schema = view.Schema;
                         newView.SQL = view.SQL;
 
@@ -596,18 +526,6 @@ namespace nHydrate.DslPackage.Objects
                     #endregion
 
                     #region Add Functions
-
-                    #region Merge Module
-                    foreach (var item in database.FunctionList.Where(x => x.ImportState == DataImport.ImportStateConstants.Merge))
-                    {
-                        //Add module if necessary
-                        var modelItem = diagramFunctions.FirstOrDefault(x => x.Name.ToLower() == item.Name.ToLower());
-                        if (module != null && !modelItem.Modules.Contains(module))
-                        {
-                            modelItem.Modules.Add(module);
-                        }
-                    }
-                    #endregion
 
                     foreach (var function in database.FunctionList.Where(x => x.ImportState == DataImport.ImportStateConstants.Added || x.ImportState == DataImport.ImportStateConstants.Modified))
                     {
@@ -626,15 +544,7 @@ namespace nHydrate.DslPackage.Objects
                         }
                         newFunction.Name = function.Name;
                         newFunction.ReturnVariable = function.ReturnVariable;
-
                         newFunction.IsTable = function.IsTable;
-
-                        //Add module if necessary
-                        if (module != null && !newFunction.Modules.Contains(module))
-                        {
-                            newFunction.Modules.Add(module);
-                        }
-
                         newFunction.Schema = function.Schema;
                         newFunction.SQL = function.SQL;
 
@@ -830,19 +740,13 @@ namespace nHydrate.DslPackage.Objects
             newStoredProc.Fields.Remove(x => !storedProc.FieldList.Select(a => a.Name.ToLower()).ToList().Contains(x.Name.ToLower()));
         }
 
-        public static void PopulateFields(nHydrate.Dsl.nHydrateModel model, Module module, DataImport.Entity importItem, Entity targetItem)
+        public static void PopulateFields(nHydrate.Dsl.nHydrateModel model, DataImport.Entity importItem, Entity targetItem)
         {
             foreach (var field in importItem.FieldList)
             {
                 var newField = targetItem.Fields.FirstOrDefault(x => x.Name.ToLower() == field.Name.ToLower());
                 if (newField == null)
                     newField = new nHydrate.Dsl.Field(model.Partition);
-
-                //Add module if necessary
-                if (module != null && !newField.Modules.Contains(module))
-                {
-                    newField.Modules.Add(module);
-                }
 
                 if (!targetItem.Fields.Contains(newField))
                     targetItem.Fields.Add(newField);

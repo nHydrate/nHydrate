@@ -6,7 +6,7 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Dsl
 {
-    partial class Function : nHydrate.Dsl.IModuleLink, nHydrate.Dsl.IPrecedence, nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
+    partial class Function : nHydrate.Dsl.IPrecedence, nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
     {
         #region Names
         public string DatabaseName => this.Name;
@@ -21,27 +21,6 @@ namespace nHydrate.Dsl
                     return StringHelper.DatabaseNameToPascalCase(this.Name);
             }
         }
-        #endregion
-
-        #region IModuleLink
-
-        IEnumerable<Module> IModuleLink.Modules
-        {
-            get { return this.Modules.AsEnumerable(); }
-        }
-
-        void IModuleLink.AddModule(Module module)
-        {
-            if (!this.Modules.Contains(module))
-                this.Modules.Add(module);
-        }
-
-        void IModuleLink.RemoveModule(Module module)
-        {
-            if (this.Modules.Contains(module))
-                this.Modules.Remove(module);
-        }
-
         #endregion
 
         protected override void OnDeleting()

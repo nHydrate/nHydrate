@@ -199,7 +199,7 @@ namespace nHydrate.DslPackage.Forms
                     targetItem.AllowModifyAudit = importItem.AllowModifyAudit;
                     targetItem.AllowTimestamp = importItem.AllowTimestamp;
                     targetItem.IsTenant = importItem.IsTenant;
-                    DatabaseImportDomain.PopulateFields(_model, null, importItem, targetItem);
+                    DatabaseImportDomain.PopulateFields(_model, importItem, targetItem);
                     this.Text += " [Entity: " + targetItem.Name + "]";
                 }
                 #endregion

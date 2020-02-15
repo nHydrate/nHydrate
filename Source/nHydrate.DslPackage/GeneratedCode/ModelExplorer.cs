@@ -44,12 +44,8 @@ namespace nHydrate.DslPackage
 				this.AddHiddenPath( new global::System.Guid[] { global::nHydrate.Dsl.EntityHasEntities.DomainClassId }); 
 				this.AddHiddenPath( new global::System.Guid[] { global::nHydrate.Dsl.EntityHasEntities.DomainClassId }); 
 				this.AddHiddenPath( new global::System.Guid[] { global::nHydrate.Dsl.nHydrateModelHasRelationFields.DomainClassId }); 
-				this.AddHiddenPath( new global::System.Guid[] { global::nHydrate.Dsl.EntityReferencesModules.DomainClassId }); 
-				this.AddHiddenPath( new global::System.Guid[] { global::nHydrate.Dsl.nHydrateModelHasRelationModules.DomainClassId }); 
 				this.AddHiddenPath( new global::System.Guid[] { global::nHydrate.Dsl.EntityHasEntities.DomainClassId }); 
 				this.AddHiddenPath( new global::System.Guid[] { global::nHydrate.Dsl.EntityHasEntities.DomainClassId }); 
-				this.AddHiddenPath( new global::System.Guid[] { global::nHydrate.Dsl.nHydrateModelHasRelationModules.DomainClassId }); 
-				this.AddHiddenPath( new global::System.Guid[] { global::nHydrate.Dsl.nHydrateModelHasIndexModules.DomainClassId }); 
 			
 			}
 			catch (global::System.InvalidOperationException)

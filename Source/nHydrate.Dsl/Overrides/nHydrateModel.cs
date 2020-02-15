@@ -21,8 +21,6 @@ namespace nHydrate.Dsl
         {
             this.SyncServerToken = Guid.Empty;
             this.IsLoading = true;
-            this.DiagramVisibility = VisibilityTypeConstants.Function | VisibilityTypeConstants.StoredProcedure | VisibilityTypeConstants.View;
-
             this.RemovedTables = new List<string>();
             this.RemovedViews = new List<string>();
             this.RemovedStoredProcedures = new List<string>();
@@ -84,14 +82,6 @@ namespace nHydrate.Dsl
     partial class nHydrateModelBase
     {
         private bool CanMergeRelationField(Microsoft.VisualStudio.Modeling.ProtoElementBase rootElement, Microsoft.VisualStudio.Modeling.ElementGroupPrototype elementGroupPrototype)
-        {
-            return false;
-        }
-        private bool CanMergeRelationModule(Microsoft.VisualStudio.Modeling.ProtoElementBase rootElement, Microsoft.VisualStudio.Modeling.ElementGroupPrototype elementGroupPrototype)
-        {
-            return false;
-        }
-        private bool CanMergeIndexModule(Microsoft.VisualStudio.Modeling.ProtoElementBase rootElement, Microsoft.VisualStudio.Modeling.ElementGroupPrototype elementGroupPrototype)
         {
             return false;
         }

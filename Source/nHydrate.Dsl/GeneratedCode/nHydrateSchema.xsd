@@ -89,36 +89,6 @@
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
-          <!-- Relationship: nHydrateModelHasModules -->
-          <xsd:element name="modules" minOccurs="0" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>Instances of nHydrateModelHasModules</xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element ref="nHydrateModelHasModules" minOccurs="0" maxOccurs="unbounded">
-                  <xsd:annotation>
-                    <xsd:documentation>[Instance of nHydrateModelHasModules needs to be serialized in full-form]</xsd:documentation>
-                  </xsd:annotation>
-                </xsd:element>
-              </xsd:sequence>
-            </xsd:complexType>
-          </xsd:element>
-          <!-- Relationship: nHydrateModelHasRelationModules -->
-          <xsd:element name="relationModules" minOccurs="0" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>Instances of nHydrateModelHasRelationModules</xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element ref="nHydrateModelHasRelationModules" minOccurs="0" maxOccurs="unbounded">
-                  <xsd:annotation>
-                    <xsd:documentation>[Instance of nHydrateModelHasRelationModules needs to be serialized in full-form]</xsd:documentation>
-                  </xsd:annotation>
-                </xsd:element>
-              </xsd:sequence>
-            </xsd:complexType>
-          </xsd:element>
           <!-- Relationship: nHydrateModelHasModelMetadata -->
           <xsd:element name="modelMetadata" minOccurs="0" maxOccurs="1">
             <xsd:annotation>
@@ -129,21 +99,6 @@
                 <xsd:element ref="nHydrateModelHasModelMetadata" minOccurs="0" maxOccurs="unbounded">
                   <xsd:annotation>
                     <xsd:documentation>[Instance of nHydrateModelHasModelMetadata needs to be serialized in full-form]</xsd:documentation>
-                  </xsd:annotation>
-                </xsd:element>
-              </xsd:sequence>
-            </xsd:complexType>
-          </xsd:element>
-          <!-- Relationship: nHydrateModelHasIndexModules -->
-          <xsd:element name="indexModules" minOccurs="0" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>Instances of nHydrateModelHasIndexModules</xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element ref="nHydrateModelHasIndexModules" minOccurs="0" maxOccurs="unbounded">
-                  <xsd:annotation>
-                    <xsd:documentation>[Instance of nHydrateModelHasIndexModules needs to be serialized in full-form]</xsd:documentation>
                   </xsd:annotation>
                 </xsd:element>
               </xsd:sequence>
@@ -246,12 +201,6 @@
             <xsd:documentation>Determines if all tokens are transformed from a lower case/undescore format to title case tokens on generation</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: UseModules -->
-        <xsd:attribute name="useModules" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if generation will be based on modules</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: ShowViews -->
         <xsd:attribute name="showViews" type="xsd:boolean" >
           <xsd:annotation>
@@ -292,12 +241,6 @@
         <xsd:attribute name="modelVersion" type="xsd:string" >
           <xsd:annotation>
             <xsd:documentation>Determines the version of the model. Used for tracking changes and provides an upgrade path for older models</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: DiagramVisibility -->
-        <xsd:attribute name="diagramVisibility" type="VisibilityTypeConstants" >
-          <xsd:annotation>
-            <xsd:documentation>Determines which objects are visible on the diagram</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: OutputTarget -->
@@ -415,21 +358,6 @@
                 <xsd:element ref="entityHasMetadata" minOccurs="0" maxOccurs="unbounded">
                   <xsd:annotation>
                     <xsd:documentation>[Instance of EntityHasMetadata needs to be serialized in full-form]</xsd:documentation>
-                  </xsd:annotation>
-                </xsd:element>
-              </xsd:sequence>
-            </xsd:complexType>
-          </xsd:element>
-          <!-- Relationship: EntityReferencesModules -->
-          <xsd:element name="modules" minOccurs="0" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>Instances of EntityReferencesModules</xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element ref="entityReferencesModules" minOccurs="0" maxOccurs="unbounded">
-                  <xsd:annotation>
-                    <xsd:documentation>[Instance of EntityReferencesModules needs to be serialized in full-form]</xsd:documentation>
                   </xsd:annotation>
                 </xsd:element>
               </xsd:sequence>
@@ -625,21 +553,6 @@
                 <xsd:element ref="fieldHasMetadata" minOccurs="0" maxOccurs="unbounded">
                   <xsd:annotation>
                     <xsd:documentation>[Instance of FieldHasMetadata needs to be serialized in full-form]</xsd:documentation>
-                  </xsd:annotation>
-                </xsd:element>
-              </xsd:sequence>
-            </xsd:complexType>
-          </xsd:element>
-          <!-- Relationship: FieldReferencesModules -->
-          <xsd:element name="modules" minOccurs="0" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>Instances of FieldReferencesModules</xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element ref="fieldReferencesModules" minOccurs="0" maxOccurs="unbounded">
-                  <xsd:annotation>
-                    <xsd:documentation>[Instance of FieldReferencesModules needs to be serialized in full-form]</xsd:documentation>
                   </xsd:annotation>
                 </xsd:element>
               </xsd:sequence>
@@ -869,21 +782,6 @@
                 <xsd:element ref="storedProcedureHasParameters" minOccurs="0" maxOccurs="unbounded">
                   <xsd:annotation>
                     <xsd:documentation>[Instance of StoredProcedureHasParameters needs to be serialized in full-form]</xsd:documentation>
-                  </xsd:annotation>
-                </xsd:element>
-              </xsd:sequence>
-            </xsd:complexType>
-          </xsd:element>
-          <!-- Relationship: StoredProcedureReferencesModules -->
-          <xsd:element name="modules" minOccurs="0" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>Instances of StoredProcedureReferencesModules</xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element ref="storedProcedureReferencesModules" minOccurs="0" maxOccurs="unbounded">
-                  <xsd:annotation>
-                    <xsd:documentation>[Instance of StoredProcedureReferencesModules needs to be serialized in full-form]</xsd:documentation>
                   </xsd:annotation>
                 </xsd:element>
               </xsd:sequence>
@@ -1182,21 +1080,6 @@
                 <xsd:element ref="viewHasFields" minOccurs="0" maxOccurs="unbounded">
                   <xsd:annotation>
                     <xsd:documentation>[Instance of ViewHasFields needs to be serialized in full-form]</xsd:documentation>
-                  </xsd:annotation>
-                </xsd:element>
-              </xsd:sequence>
-            </xsd:complexType>
-          </xsd:element>
-          <!-- Relationship: ViewReferencesModules -->
-          <xsd:element name="modules" minOccurs="0" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>Instances of ViewReferencesModules</xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element ref="viewReferencesModules" minOccurs="0" maxOccurs="unbounded">
-                  <xsd:annotation>
-                    <xsd:documentation>[Instance of ViewReferencesModules needs to be serialized in full-form]</xsd:documentation>
                   </xsd:annotation>
                 </xsd:element>
               </xsd:sequence>
@@ -1603,21 +1486,6 @@
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
-          <!-- Relationship: FunctionReferencesModules -->
-          <xsd:element name="modules" minOccurs="0" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>Instances of FunctionReferencesModules</xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element ref="functionReferencesModules" minOccurs="0" maxOccurs="unbounded">
-                  <xsd:annotation>
-                    <xsd:documentation>[Instance of FunctionReferencesModules needs to be serialized in full-form]</xsd:documentation>
-                  </xsd:annotation>
-                </xsd:element>
-              </xsd:sequence>
-            </xsd:complexType>
-          </xsd:element>
         </xsd:sequence>
         <!-- Id -->
         <xsd:attribute name="Id" type="xsd:string">
@@ -1880,183 +1748,6 @@
     </xsd:complexContent>
   </xsd:complexType>
   
-  <!-- Module -->
-  <xsd:element name="module" type="Module" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="Module">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Relationship: ModuleHasModuleRules -->
-          <xsd:element name="moduleRules" minOccurs="0" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>Instances of ModuleHasModuleRules</xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element ref="moduleHasModuleRules" minOccurs="0" maxOccurs="unbounded">
-                  <xsd:annotation>
-                    <xsd:documentation>[Instance of ModuleHasModuleRules needs to be serialized in full-form]</xsd:documentation>
-                  </xsd:annotation>
-                </xsd:element>
-              </xsd:sequence>
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Name -->
-        <xsd:attribute name="name" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the name of this object</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Summary -->
-        <xsd:attribute name="summary" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines summary text were applicable</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- Module Moniker -->
-  <xsd:element name="moduleMoniker" type="ModuleMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="ModuleMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for Module instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- RelationModule -->
-  <xsd:element name="relationModule" type="RelationModule" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="RelationModule">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: RelationID -->
-        <xsd:attribute name="relationID" type="xsd:string" />
-        <!-- Property: ModuleId -->
-        <xsd:attribute name="moduleId" type="xsd:string" />
-        <!-- Property: Included -->
-        <xsd:attribute name="included" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this relation is included in the module</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: IsEnforced -->
-        <xsd:attribute name="isEnforced" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this relation is enforced in the database</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- RelationModule Moniker -->
-  <xsd:element name="relationModuleMoniker" type="RelationModuleMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="RelationModuleMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for RelationModule instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- ModuleRule -->
-  <xsd:element name="moduleRule" type="ModuleRule" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="ModuleRule">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Status -->
-        <xsd:attribute name="status" type="ModuleRuleStatusTypeConstants" >
-          <xsd:annotation>
-            <xsd:documentation>The grouping for this rule</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: DependentModule -->
-        <xsd:attribute name="dependentModule" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>The module to which the status is applied</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Summary -->
-        <xsd:attribute name="summary" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>A summary of the rule</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Name -->
-        <xsd:attribute name="name" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the name of this rule</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Inclusion -->
-        <xsd:attribute name="inclusion" type="xsd:integer" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the object types that are included by this rule</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Enforced -->
-        <xsd:attribute name="enforced" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this rule is enfored on validation</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- ModuleRule Moniker -->
-  <xsd:element name="moduleRuleMoniker" type="ModuleRuleMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="ModuleRuleMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for ModuleRule instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
   <!-- Index -->
   <xsd:element name="index" type="Index" substitutionGroup="core:modelElement" />
   <xsd:complexType name="Index">
@@ -2215,42 +1906,6 @@
   <xsd:complexType name="ModelMetadataMoniker">
     <xsd:annotation>
       <xsd:documentation>Moniker for ModelMetadata instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- IndexModule -->
-  <xsd:element name="indexModule" type="IndexModule" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="IndexModule">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: IndexID -->
-        <xsd:attribute name="indexID" type="xsd:string" />
-        <!-- Property: ModuleId -->
-        <xsd:attribute name="moduleId" type="xsd:string" />
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- IndexModule Moniker -->
-  <xsd:element name="indexModuleMoniker" type="IndexModuleMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="IndexModuleMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for IndexModule instance.</xsd:documentation>
     </xsd:annotation>
     <xsd:complexContent>
       <xsd:extension base="core:ModelElementMoniker">
@@ -3051,326 +2706,6 @@
     </xsd:complexContent>
   </xsd:complexType>
   
-  <!-- nHydrateModelHasModules -->
-  <xsd:element name="nHydrateModelHasModules" type="NHydrateModelHasModules" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="NHydrateModelHasModules">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Target end Module -->
-          <xsd:element ref="module" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>[Target role-player]</xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- nHydrateModelHasModules Moniker -->
-  <xsd:element name="nHydrateModelHasModulesMoniker" type="NHydrateModelHasModulesMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="NHydrateModelHasModulesMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for nHydrateModelHasModules instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- FunctionReferencesModules -->
-  <xsd:element name="functionReferencesModules" type="FunctionReferencesModules" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="FunctionReferencesModules">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Target end Module -->
-          <xsd:element ref="moduleMoniker" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>[Target role-player]</xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- FunctionReferencesModules Moniker -->
-  <xsd:element name="functionReferencesModulesMoniker" type="FunctionReferencesModulesMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="FunctionReferencesModulesMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for FunctionReferencesModules instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- ViewReferencesModules -->
-  <xsd:element name="viewReferencesModules" type="ViewReferencesModules" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="ViewReferencesModules">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Target end Module -->
-          <xsd:element ref="moduleMoniker" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>[Target role-player]</xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- ViewReferencesModules Moniker -->
-  <xsd:element name="viewReferencesModulesMoniker" type="ViewReferencesModulesMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="ViewReferencesModulesMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for ViewReferencesModules instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- StoredProcedureReferencesModules -->
-  <xsd:element name="storedProcedureReferencesModules" type="StoredProcedureReferencesModules" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="StoredProcedureReferencesModules">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Target end Module -->
-          <xsd:element ref="moduleMoniker" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>[Target role-player]</xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- StoredProcedureReferencesModules Moniker -->
-  <xsd:element name="storedProcedureReferencesModulesMoniker" type="StoredProcedureReferencesModulesMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="StoredProcedureReferencesModulesMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for StoredProcedureReferencesModules instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- EntityReferencesModules -->
-  <xsd:element name="entityReferencesModules" type="EntityReferencesModules" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="EntityReferencesModules">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Target end Module -->
-          <xsd:element ref="moduleMoniker" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>[Target role-player]</xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- EntityReferencesModules Moniker -->
-  <xsd:element name="entityReferencesModulesMoniker" type="EntityReferencesModulesMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="EntityReferencesModulesMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for EntityReferencesModules instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- FieldReferencesModules -->
-  <xsd:element name="fieldReferencesModules" type="FieldReferencesModules" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="FieldReferencesModules">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Target end Module -->
-          <xsd:element ref="moduleMoniker" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>[Target role-player]</xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- FieldReferencesModules Moniker -->
-  <xsd:element name="fieldReferencesModulesMoniker" type="FieldReferencesModulesMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="FieldReferencesModulesMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for FieldReferencesModules instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- nHydrateModelHasRelationModules -->
-  <xsd:element name="nHydrateModelHasRelationModules" type="NHydrateModelHasRelationModules" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="NHydrateModelHasRelationModules">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Target end RelationModule -->
-          <xsd:element ref="relationModule" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>[Target role-player]</xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- nHydrateModelHasRelationModules Moniker -->
-  <xsd:element name="nHydrateModelHasRelationModulesMoniker" type="NHydrateModelHasRelationModulesMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="NHydrateModelHasRelationModulesMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for nHydrateModelHasRelationModules instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- ModuleHasModuleRules -->
-  <xsd:element name="moduleHasModuleRules" type="ModuleHasModuleRules" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="ModuleHasModuleRules">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Target end ModuleRule -->
-          <xsd:element ref="moduleRule" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>[Target role-player]</xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- ModuleHasModuleRules Moniker -->
-  <xsd:element name="moduleHasModuleRulesMoniker" type="ModuleHasModuleRulesMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="ModuleHasModuleRulesMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for ModuleHasModuleRules instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
   <!-- EntityHasIndexes -->
   <xsd:element name="entityHasIndexes" type="EntityHasIndexes" substitutionGroup="core:modelElement" />
   <xsd:complexType name="EntityHasIndexes">
@@ -3552,46 +2887,6 @@
     </xsd:complexContent>
   </xsd:complexType>
   
-  <!-- nHydrateModelHasIndexModules -->
-  <xsd:element name="nHydrateModelHasIndexModules" type="NHydrateModelHasIndexModules" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="NHydrateModelHasIndexModules">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Target end IndexModule -->
-          <xsd:element ref="indexModule" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>[Target role-player]</xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- nHydrateModelHasIndexModules Moniker -->
-  <xsd:element name="nHydrateModelHasIndexModulesMoniker" type="NHydrateModelHasIndexModulesMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="NHydrateModelHasIndexModulesMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for nHydrateModelHasIndexModules instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
   <!-- EntityHasSecurityFunction -->
   <xsd:element name="entityHasSecurityFunction" type="EntityHasSecurityFunction" substitutionGroup="core:modelElement" />
   <xsd:complexType name="EntityHasSecurityFunction">
@@ -3727,22 +3022,6 @@
     </xsd:restriction>
   </xsd:simpleType>
   
-  <!-- Enum ModuleRuleStatusTypeConstants -->
-  <xsd:simpleType name="ModuleRuleStatusTypeConstants">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="Subset">
-        <xsd:annotation>
-          <xsd:documentation>Enforces that all objects should be in common with the dependent module</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="Outerset">
-        <xsd:annotation>
-          <xsd:documentation>Enforces that no objects should be in common with the dependent module</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-    </xsd:restriction>
-  </xsd:simpleType>
-  
   <!-- Enum TypedEntityConstants -->
   <xsd:simpleType name="TypedEntityConstants">
     <xsd:restriction base="xsd:string">
@@ -3764,71 +3043,12 @@
     </xsd:restriction>
   </xsd:simpleType>
   
-  <!-- Enum ModuleRuleInclusionTypeConstants -->
-  <xsd:simpleType name="ModuleRuleInclusionTypeConstants">
-    <xsd:annotation>
-      <xsd:documentation>A list of options for module rule inclusions</xsd:documentation>
-    </xsd:annotation>
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="None">
-        <xsd:annotation>
-          <xsd:documentation>Include no objects in this rule validation</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="View">
-        <xsd:annotation>
-          <xsd:documentation>Include views in this rule validation</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="StoredProcedure">
-        <xsd:annotation>
-          <xsd:documentation>Include stored procedures in this rule validation</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="Entity">
-        <xsd:annotation>
-          <xsd:documentation>Include entities in this rule validation</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="Function">
-        <xsd:annotation>
-          <xsd:documentation>Include functions in this rule validation</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-    </xsd:restriction>
-  </xsd:simpleType>
-  
   <!-- Enum IndexTypeConstants -->
   <xsd:simpleType name="IndexTypeConstants">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="PrimaryKey"/>
       <xsd:enumeration value="IsIndexed"/>
       <xsd:enumeration value="User"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-  
-  <!-- Enum VisibilityTypeConstants -->
-  <xsd:simpleType name="VisibilityTypeConstants">
-    <xsd:annotation>
-      <xsd:documentation>A list of options for module rule inclusions</xsd:documentation>
-    </xsd:annotation>
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="View">
-        <xsd:annotation>
-          <xsd:documentation>Show views on the diagram</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="StoredProcedure">
-        <xsd:annotation>
-          <xsd:documentation>Show stored procedures on the diagram</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="Function">
-        <xsd:annotation>
-          <xsd:documentation>Show functions on the diagram</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="None"/>
     </xsd:restriction>
   </xsd:simpleType>
   

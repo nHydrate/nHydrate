@@ -238,14 +238,6 @@
                 </Strings>
             </Button>
 
-            <Button guid="guidModelMenuCmdSet" id="cmdidMenuModuleDialog" priority="0x0500" type="Button">
-                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
-                <CommandFlag>DynamicVisibility</CommandFlag>
-                <Strings>
-                    <ButtonText>Module Associations...</ButtonText>
-                </Strings>
-            </Button>
-
             <Button guid="guidDiagramMenuCmdSet" id="cmdidMenuAbout" priority="0x0100" type="Button">
                 <Parent guid="guidDiagramMenuCmdSet" id="DiagramSubMenuGroup" />
                 <CommandFlag>DynamicVisibility</CommandFlag>
@@ -400,7 +392,6 @@
             <IDSymbol name="cmdidMenuRelationShowSource" value="0x00012" />
             <IDSymbol name="cmdidMenuRelationShowTarget" value="0x00013" />
             <IDSymbol name="cmdidMenuShowOnDiagram" value="0x00014" />
-            <IDSymbol name="cmdidMenuModuleDialog" value="0x00016" />
         </GuidSymbol>
 
         <GuidSymbol name="guidDiagramMenuCmdSet" value="{55457976-07EF-4CF1-AE6C-FA5E2D926EA9}">

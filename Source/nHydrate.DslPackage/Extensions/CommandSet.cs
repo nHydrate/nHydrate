@@ -53,7 +53,6 @@ namespace nHydrate.DslPackage
         private const int cmdidMenuRelationShowSource = 18;
         private const int cmdidMenuRelationShowTarget = 19;
         private const int cmdidMenuShowOnDiagram = 20;
-        private const int cmdidMenuModuleDialog = 22;
         private const int cmdidMenuAbout = 21;
         private const int cmdidMenuZoom = 0x00101;
 
@@ -138,10 +137,8 @@ namespace nHydrate.DslPackage
                 var importDatabaseForm = new ImportDatabaseForm(model, database, this.CurrentDocData);
                 if (importDatabaseForm.ShowDialog() == DialogResult.OK)
                 {
-                    var module = model.Modules.FirstOrDefault(x => x.Name == importDatabaseForm.ModuleName);
-
                     ((nHydrateDocData)this.CurrentDocData).IsImporting = true;
-                    nHydrate.DslPackage.Objects.DatabaseImportDomain.ImportDatabase(model, store, this.CurrentDocView.CurrentDiagram, importDatabaseForm.NewDatabase, module);
+                    nHydrate.DslPackage.Objects.DatabaseImportDomain.ImportDatabase(model, store, this.CurrentDocView.CurrentDiagram, importDatabaseForm.NewDatabase);
                     if (postArrange) this.ArrangeDiagram();
                     this.CurrentDocView.CurrentDiagram.Reroute();
                     ((nHydrateDocData)this.CurrentDocData).IsImporting = false;
@@ -933,38 +930,6 @@ namespace nHydrate.DslPackage
         }
         #endregion
 
-        #region ModuleDialog
-        private void OnStatusMenuModuleDialog(object sender, EventArgs e)
-        {
-            var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
-            var command = sender as MenuCommand;
-            command.Visible = this.IsDiagramSelected() && model.UseModules;
-        }
-
-        private void OnMenuCommandModuleDialog(object sender, EventArgs e)
-        {
-            var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
-
-            var uiKey = ProgressHelper.ProgressingStarted("Loading Modules...");
-            ModuleMappings F = null;
-            try
-            {
-                F = new ModuleMappings(model);
-            }
-            catch (Exception ex)
-            {
-                ProgressHelper.ProgressingComplete(uiKey);
-                throw;
-            }
-            finally
-            {
-                ProgressHelper.ProgressingComplete(uiKey);
-            }
-
-            F.ShowDialog();
-        }
-        #endregion
-
         #region About
         private void OnStatusMenuAbout(object sender, EventArgs e)
         {
@@ -1181,7 +1146,6 @@ namespace nHydrate.DslPackage
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuRelationShowSource), new EventHandler(OnMenuCommandRelationShowSource), new CommandID(guidModelMenuCmdSet, cmdidMenuRelationShowSource)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuRelationShowTarget), new EventHandler(OnMenuCommandRelationShowTarget), new CommandID(guidModelMenuCmdSet, cmdidMenuRelationShowTarget)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuShowOnDiagram), new EventHandler(OnMenuCommandShowOnDiagram), new CommandID(guidModelMenuCmdSet, cmdidMenuShowOnDiagram)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuModuleDialog), new EventHandler(OnMenuCommandModuleDialog), new CommandID(guidModelMenuCmdSet, cmdidMenuModuleDialog)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuAbout), new EventHandler(OnMenuCommandAbout), new CommandID(guidDiagramMenuCmdSet, cmdidMenuAbout)));
 
             //Cut/Copy/Paste

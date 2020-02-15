@@ -6,111 +6,87 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Dsl
 {
-	partial class StoredProcedure : nHydrate.Dsl.IModuleLink, nHydrate.Dsl.IPrecedence, nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
+    partial class StoredProcedure : nHydrate.Dsl.IPrecedence, nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
     {
-		#region Names
-		public string DatabaseName
-		{
-			get { return this.Name; }
-		}
+        #region Names
+        public string DatabaseName => this.Name;
 
-		public string PascalName
-		{
-			get
-			{
-				if (!string.IsNullOrEmpty(this.CodeFacade))
-					return StringHelper.DatabaseNameToPascalCase(this.CodeFacade);
-				else
-					return StringHelper.DatabaseNameToPascalCase(this.Name);
-			}
-		}
-		#endregion
+        public string PascalName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(this.CodeFacade))
+                    return StringHelper.DatabaseNameToPascalCase(this.CodeFacade);
+                else
+                    return StringHelper.DatabaseNameToPascalCase(this.Name);
+            }
+        }
+        #endregion
 
-		public override string ToString()
-		{
-			return this.Name;
-		}
+        public override string ToString()
+        {
+            return this.Name;
+        }
 
-		#region IModuleLink
+        protected override void OnDeleting()
+        {
+            if (this.nHydrateModel != null)
+                this.nHydrateModel.RemovedStoredProcedures.Add(this.PascalName);
+            base.OnDeleting();
+        }
 
-		IEnumerable<Module> IModuleLink.Modules
-		{
-			get { return this.Modules.AsEnumerable(); }
-		}
+        int IPrecedence.PrecedenceOrder
+        {
+            get { return this.PrecedenceOrder; }
+            set { this.PrecedenceOrder = value; }
+        }
 
-		void IModuleLink.AddModule(Module module)
-		{
-			if (!this.Modules.Contains(module))
-				this.Modules.Add(module);
-		}
+        string IPrecedence.Name
+        {
+            get { return this.Name; }
+            set { this.Name = value; }
+        }
 
-		void IModuleLink.RemoveModule(Module module)
-		{
-			if (this.Modules.Contains(module))
-				this.Modules.Remove(module);
-		}
+        string IPrecedence.TypeName
+        {
+            get { return "Stored Procedure"; }
+        }
 
-		#endregion
+        Guid IPrecedence.ID
+        {
+            get { return this.Id; }
+        }
 
-		protected override void OnDeleting()
-		{
-			if (this.nHydrateModel != null)
-				this.nHydrateModel.RemovedStoredProcedures.Add(this.PascalName);
-			base.OnDeleting();
-		}
+        #region IFieldContainer Members
 
-		int IPrecedence.PrecedenceOrder
-		{
-			get { return this.PrecedenceOrder; }
-			set { this.PrecedenceOrder = value; }
-		}
+        public IEnumerable<IField> FieldList
+        {
+            get { return this.Fields; }
+        }
 
-		string IPrecedence.Name
-		{
-			get { return this.Name; }
-			set { this.Name = value; }
-		}
+        #endregion
 
-		string IPrecedence.TypeName
-		{
-			get { return "Stored Procedure"; }
-		}
+    }
 
-		Guid IPrecedence.ID
-		{
-			get { return this.Id; }
-		}
+    partial class StoredProcedureBase
+    {
+        partial class NamePropertyHandler
+        {
+            protected override void OnValueChanged(StoredProcedureBase element, string oldValue, string newValue)
+            {
+                if (element.nHydrateModel != null && !element.nHydrateModel.IsLoading)
+                {
+                    if (string.IsNullOrEmpty(newValue))
+                        throw new Exception("The name must have a value.");
 
-		#region IFieldContainer Members
+                    var count = element.nHydrateModel.StoredProcedures.Count(x => x.Name.ToLower() == newValue.ToLower() && x.Id != element.Id);
+                    if (count > 0)
+                        throw new Exception("There is already an object with the specified name. The change has been cancelled.");
+                }
+                base.OnValueChanged(element, oldValue, newValue);
+            }
+        }
 
-		public IEnumerable<IField> FieldList
-		{
-			get { return this.Fields; }
-		}
-
-		#endregion
-
-	}
-
-	partial class StoredProcedureBase
-	{
-		partial class NamePropertyHandler
-		{
-			protected override void OnValueChanged(StoredProcedureBase element, string oldValue, string newValue)
-			{
-				if (element.nHydrateModel != null && !element.nHydrateModel.IsLoading)
-				{
-					if (string.IsNullOrEmpty(newValue))
-						throw new Exception("The name must have a value.");
-
-					var count = element.nHydrateModel.StoredProcedures.Count(x => x.Name.ToLower() == newValue.ToLower() && x.Id != element.Id);
-					if (count > 0)
-						throw new Exception("There is already an object with the specified name. The change has been cancelled.");
-				}
-				base.OnValueChanged(element, oldValue, newValue);
-			}
-		}
-
-	}
+    }
 }
 

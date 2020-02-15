@@ -29,26 +29,6 @@ namespace nHydrate.DslPackage.Objects
         {
             this.ErrorList = new List<string>();
             GeneratedFileList = new List<nHydrate.Generator.Common.EventArgs.ProjectItemGeneratedEventArgs>();
-
-            //Verify registered version
-            if (!nHydrate.Generator.Common.GeneratorFramework.AddinAppData.Instance.PremiumValidated)
-            {
-                //REGISTERED FEATURES:
-                //Entity > 50
-                //Use Modules
-                //Use Functions
-                //if (model.Modules.Count > 0 ||
-                //  model.Entities.Count(x => x.IsGenerated) > 50 ||
-                //  model.Functions.Count > 0)
-                //{
-                //  if (MessageBox.Show("You must register this product to use the following functionality:\n\n1. Use more than 50 Entities\n2. Use Modules\n3.Use Functions\n\nDo you wish to go to the nHydrate.org website and register this software?", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information) == DialogResult.Yes)
-                //  {
-                //    System.Diagnostics.Process.Start("http://www.nhydrate.org");
-                //  }
-                //  return;
-                //}
-            }
-
             try
             {
                 #region Generation
@@ -69,14 +49,12 @@ namespace nHydrate.DslPackage.Objects
                 if (generatorTypeList.Count == 0)
                     return; //add message box
 
-                var generateModuleList = new List<string>();
-
-                if (ChooseGenerators(model, genList, generatorTypeList, excludeList, g, generateModuleList))
+                if (ChooseGenerators(model, genList, generatorTypeList, excludeList, g))
                 {
                     //Perform actual generation
                     if (genList.Count > 0)
                     {
-                        PerformGeneration(model, genList, diagram.Store, docData, excludeList, g, generateModuleList);
+                        PerformGeneration(model, genList, diagram.Store, docData, excludeList, g);
                     }
 
                     model.RemovedTables.Clear();
@@ -116,8 +94,7 @@ namespace nHydrate.DslPackage.Objects
             List<nHydrateGeneratorProject> genList,
             List<Type> generatorTypeList,
             List<Type> excludeList,
-            nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper genHelper,
-            List<string> generateModuleList)
+            nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper genHelper)
         {
             if (!genList.Any())
             {
@@ -142,19 +119,10 @@ namespace nHydrate.DslPackage.Objects
             }
 
             //Show generator list
-            var allModules = model.Modules.Select(x => x.Name).ToList();
-            if (!model.UseModules) allModules.Clear();
-            using (var F = new GenerateSettings(genList.First(), generatorTypeList, null, allModules))
+            using (var F = new GenerateSettings(genList.First(), generatorTypeList, null))
             {
                 if (F.ShowDialog() != DialogResult.OK) return false;
                 excludeList.AddRange(F.ExcludeList);
-                generateModuleList.AddRange(F.SelectedModules);
-            }
-
-            //If we are using modules then filter on the selected ones
-            if (model.UseModules)
-            {
-                genList = genList.Where(x => generateModuleList.Contains((x.Model as nHydrate.Generator.Models.ModelRoot).ModuleName)).ToList();
             }
 
             return true;
@@ -169,8 +137,7 @@ namespace nHydrate.DslPackage.Objects
             Microsoft.VisualStudio.Modeling.Store store,
             Microsoft.VisualStudio.Modeling.Shell.ModelingDocData docData,
             List<Type> excludeList,
-            nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper genHelper,
-            List<string> generateModuleList)
+            nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper genHelper)
         {
             _totalFileCount = 0;
             _processedFileCount = 0;
@@ -179,8 +146,6 @@ namespace nHydrate.DslPackage.Objects
             {
                 var startTime = DateTime.Now;
                 var isLicenseError = false;
-                var fullModuleGenList = genList.Select(x => new ModuleVersionInfo() { ModuleName = (x.Model as nHydrate.Generator.Models.ModelRoot).ModuleName }).ToList();
-
                 try
                 {
                     //Get the last version we generated on this machine
@@ -208,15 +173,7 @@ namespace nHydrate.DslPackage.Objects
                     _startTime = DateTime.Now;
                     foreach (var item in genList)
                     {
-                        if (model.UseModules)
-                        {
-                            if (generateModuleList.Contains((item.Model as nHydrate.Generator.Models.ModelRoot).ModuleName))
-                                genHelper.GenerateAll(item, excludeList);
-                        }
-                        else
-                        {
-                            genHelper.GenerateAll(item, excludeList);
-                        }
+                        genHelper.GenerateAll(item, excludeList);
                     }
 
                     var modelKey = (genList.FirstOrDefault()?.Model as nHydrate.Generator.Models.ModelRoot)?.Key;
@@ -281,76 +238,40 @@ namespace nHydrate.DslPackage.Objects
         #endregion
 
         #region BuildModelList
+
         private List<nHydrateGeneratorProject> BuildModelList(nHydrateModel model, Microsoft.VisualStudio.Modeling.Diagrams.Diagram diagram, Microsoft.VisualStudio.Modeling.Shell.ModelingDocData docData)
         {
             var genList = new List<nHydrateGeneratorProject>();
 
-            if (model.UseModules)
-            {
-                foreach (var module in model.Modules)
-                {
-                    var genProject = new nHydrateGeneratorProject();
-                    genList.Add(genProject);
-                    var root = CreatePOCOModel(model, diagram, module);
-                    root.SetKey(module.Id.ToString());
-                    root.GeneratorProject = genProject;
-                    genProject.RootController.Object = root;
-                    var fi = new System.IO.FileInfo(docData.FileName);
-                    genProject.FileName = docData.FileName + "." + module.Name + ".generating";
-                    var document = new System.Xml.XmlDocument();
-                    document.LoadXml("<modelRoot guid=\"" + module.Id + "\" type=\"nHydrate.Generator.nHydrateGeneratorProject\" assembly=\"nHydrate.Generator.dll\"><ModelRoot></ModelRoot></modelRoot>");
-                    ((nHydrate.Generator.Common.GeneratorFramework.IXMLable)root).XmlAppend(document.DocumentElement.ChildNodes[0]);
-                    System.IO.File.WriteAllText(genProject.FileName, document.ToIndentedString());
+            var genProject = new nHydrateGeneratorProject();
+            genList.Add(genProject);
+            var root = CreatePOCOModel(model, diagram);
+            root.SetKey(model.Id.ToString());
+            root.GeneratorProject = genProject;
+            genProject.RootController.Object = root;
+            var fi = new System.IO.FileInfo(docData.FileName);
+            genProject.FileName = docData.FileName + ".generating";
+            var document = new System.Xml.XmlDocument();
+            document.LoadXml("<modelRoot guid=\"" + model.Id + "\" type=\"nHydrate.Generator.nHydrateGeneratorProject\" assembly=\"nHydrate.Generator.dll\"><ModelRoot></ModelRoot></modelRoot>");
+            ((nHydrate.Generator.Common.GeneratorFramework.IXMLable) root).XmlAppend(document.DocumentElement.ChildNodes[0]);
+            System.IO.File.WriteAllText(genProject.FileName, document.ToIndentedString());
 
-                    ProcessRenamed(genProject.FileName + ".sql.lastgen", root);
+            ProcessRenamed(genProject.FileName + ".sql.lastgen", root);
 
-                    root.RemovedTables.AddRange(model.RemovedTables);
-                    root.RemovedViews.AddRange(model.RemovedViews);
-                    root.RemovedStoredProcedures.AddRange(model.RemovedStoredProcedures);
-                    root.RemovedFunctions.AddRange(model.RemovedFunctions);
+            root.RemovedTables.AddRange(model.RemovedTables);
 
-                    //Remove non-generated items from the project
-                    root.RemovedTables.AddRange(model.Entities.Where(x => !x.IsGenerated).Select(x => x.Name));
-                    root.RemovedTables.AddRange(model.Views.Where(x => !x.IsGenerated).Select(x => x.Name));
-                    root.RemovedTables.AddRange(model.StoredProcedures.Where(x => !x.IsGenerated).Select(x => x.Name));
-                    root.RemovedTables.AddRange(model.Functions.Where(x => !x.IsGenerated).Select(x => x.Name));
-                    //Remove EnumOnly type-tables from the project
-                    root.RemovedTables.AddRange(model.Entities.Where(x => x.TypedEntity == TypedEntityConstants.EnumOnly && x.IsGenerated).Select(x => x.Name));
-                }
-            }
-            else
-            {
-                var genProject = new nHydrateGeneratorProject();
-                genList.Add(genProject);
-                var root = CreatePOCOModel(model, diagram, null);
-                root.SetKey(model.Id.ToString());
-                root.GeneratorProject = genProject;
-                genProject.RootController.Object = root;
-                var fi = new System.IO.FileInfo(docData.FileName);
-                genProject.FileName = docData.FileName + ".generating";
-                var document = new System.Xml.XmlDocument();
-                document.LoadXml("<modelRoot guid=\"" + model.Id + "\" type=\"nHydrate.Generator.nHydrateGeneratorProject\" assembly=\"nHydrate.Generator.dll\"><ModelRoot></ModelRoot></modelRoot>");
-                ((nHydrate.Generator.Common.GeneratorFramework.IXMLable)root).XmlAppend(document.DocumentElement.ChildNodes[0]);
-                System.IO.File.WriteAllText(genProject.FileName, document.ToIndentedString());
+            //NOTE: This caused diff scripts to be generated EVERY time so removed for now
+            //Remove associative tables since they cause issues if they exist
+            //root.RemovedTables.AddRange(model.Entities.Where(x => x.IsAssociative && x.IsGenerated).Select(x => x.Name));
 
-                ProcessRenamed(genProject.FileName + ".sql.lastgen", root);
-
-                root.RemovedTables.AddRange(model.RemovedTables);
-
-                //NOTE: This caused diff scripts to be generated EVERY time so removed for now
-                //Remove associative tables since they cause issues if they exist
-                //root.RemovedTables.AddRange(model.Entities.Where(x => x.IsAssociative && x.IsGenerated).Select(x => x.Name));
-
-                root.RemovedViews.AddRange(model.RemovedViews);
-                root.RemovedStoredProcedures.AddRange(model.RemovedStoredProcedures);
-                root.RemovedFunctions.AddRange(model.RemovedFunctions);
-                root.RemovedTables.AddRange(model.Views.Where(x => !x.IsGenerated).Select(x => x.Name));
-                root.RemovedTables.AddRange(model.StoredProcedures.Where(x => !x.IsGenerated).Select(x => x.Name));
-                root.RemovedTables.AddRange(model.Functions.Where(x => !x.IsGenerated).Select(x => x.Name));
-                //Remove EnumOnly type-tables from the project
-                root.RemovedTables.AddRange(model.Entities.Where(x => x.TypedEntity == TypedEntityConstants.EnumOnly && x.IsGenerated).Select(x => x.Name));
-
-            }
+            root.RemovedViews.AddRange(model.RemovedViews);
+            root.RemovedStoredProcedures.AddRange(model.RemovedStoredProcedures);
+            root.RemovedFunctions.AddRange(model.RemovedFunctions);
+            root.RemovedTables.AddRange(model.Views.Where(x => !x.IsGenerated).Select(x => x.Name));
+            root.RemovedTables.AddRange(model.StoredProcedures.Where(x => !x.IsGenerated).Select(x => x.Name));
+            root.RemovedTables.AddRange(model.Functions.Where(x => !x.IsGenerated).Select(x => x.Name));
+            //Remove EnumOnly type-tables from the project
+            root.RemovedTables.AddRange(model.Entities.Where(x => x.TypedEntity == TypedEntityConstants.EnumOnly && x.IsGenerated).Select(x => x.Name));
 
             return genList;
         }
@@ -410,7 +331,7 @@ namespace nHydrate.DslPackage.Objects
         #endregion
 
         #region CreatePOCOModel
-        private nHydrate.Generator.Models.ModelRoot CreatePOCOModel(nHydrateModel model, Microsoft.VisualStudio.Modeling.Diagrams.Diagram diagram, Module ownerModule)
+        private nHydrate.Generator.Models.ModelRoot CreatePOCOModel(nHydrateModel model, Microsoft.VisualStudio.Modeling.Diagrams.Diagram diagram)
         {
             try
             {
@@ -440,9 +361,6 @@ namespace nHydrate.DslPackage.Objects
                 }
                
 
-                if (ownerModule != null)
-                    root.ModuleName = ownerModule.Name;
-
                 root.Database.CreatedByColumnName = model.CreatedByColumnName;
                 root.Database.CreatedDateColumnName = model.CreatedDateColumnName;
                 root.Database.ModifiedByColumnName = model.ModifiedByColumnName;
@@ -452,7 +370,7 @@ namespace nHydrate.DslPackage.Objects
                 root.Database.Collate = model.Collate;
 
                 #region Load the entities
-                foreach (var entity in model.Entities.Where(x => x.IsGenerated).Where(x => ownerModule == null || x.Modules.Contains(ownerModule)))
+                foreach (var entity in model.Entities.Where(x => x.IsGenerated))
                 {
                     #region Table Info
                     var newTable = root.Database.Tables.Add();
@@ -517,7 +435,7 @@ namespace nHydrate.DslPackage.Objects
                     #endregion
 
                     #region Load the fields for this entity
-                    var fieldList = entity.Fields.Where(x => x.IsGenerated).Where(x => ownerModule == null || x.Modules.Contains(ownerModule)).ToList();
+                    var fieldList = entity.Fields.Where(x => x.IsGenerated).ToList();
                     foreach (var field in fieldList.OrderBy(x => x.SortOrder))
                     {
                         var newColumn = root.Database.Columns.Add();
@@ -565,25 +483,10 @@ namespace nHydrate.DslPackage.Objects
 
                     #region Indexes
 
-                    //Find all index for this entity in module
-                    List<Index> indexList = null;
-                    if (ownerModule != null)
-                    {
-                        indexList = new List<Index>();
-                        indexList.AddRange(entity.Indexes.Where(x => x.IndexType == IndexTypeConstants.PrimaryKey).ToList());
-                        foreach (var im in model.IndexModules.Where(x => x.ModuleId == ownerModule.Id))
-                        {
-                            indexList.AddRange(entity.Indexes.Where(x => x.IndexType != IndexTypeConstants.PrimaryKey && x.Id == im.IndexID));
-                        }
-                    }
-                    else
-                    {
-                        indexList = entity.Indexes.ToList();
-                    }
-
+                    var indexList = entity.Indexes.ToList();
                     foreach (var index in indexList)
                     {
-                        var indexColumns = index.IndexColumns.Where(x => x.GetField() != null && (ownerModule == null || x.GetField().Modules.Contains(ownerModule))).ToList();
+                        var indexColumns = index.IndexColumns.Where(x => x.GetField() != null).ToList();
                         if (indexColumns.Count > 0)
                         {
                             var newIndex = new nHydrate.Generator.Models.TableIndex(newTable.Root)
@@ -677,24 +580,6 @@ namespace nHydrate.DslPackage.Objects
                             if (parentTable != null && childTable != null && !childTable.IsInheritedFrom(parentTable))
                             {
                                 var isValidRelation = true;
-                                if (ownerModule != null)
-                                {
-                                    isValidRelation = ((IModuleLink)relation).Modules.Contains(ownerModule);
-                                }
-
-                                if (model.UseModules && isValidRelation)
-                                {
-                                    //If using modules then check that this relation's fields are in this module
-                                    foreach (var columnSet in fieldList)
-                                    {
-                                        var field1 = parent.Fields.FirstOrDefault(x => x.Id == columnSet.SourceFieldId);
-                                        var field2 = child.Fields.FirstOrDefault(x => x.Id == columnSet.TargetFieldId);
-                                        if (!field1.Modules.Contains(ownerModule)) isValidRelation = false;
-                                        if (!field2.Modules.Contains(ownerModule)) isValidRelation = false;
-                                    }
-
-                                }
-
                                 if (isValidRelation)
                                 {
                                     var newRelation = root.Database.Relations.Add();
@@ -716,23 +601,7 @@ namespace nHydrate.DslPackage.Objects
                                             break;
                                     }
 
-                                    if (ownerModule == null)
-                                    {
-                                        newRelation.Enforce = relation.IsEnforced;
-                                    }
-                                    else
-                                    {
-                                        var relationModule = model.RelationModules.FirstOrDefault(x => x.RelationID == relation.Id && x.ModuleId == ownerModule.Id);
-                                        if (relationModule == null)
-                                        {
-                                            //I do not think this should ever happen??
-                                            newRelation.Enforce = false;
-                                        }
-                                        else
-                                        {
-                                            newRelation.Enforce = relationModule.IsEnforced;
-                                        }
-                                    }
+                                    newRelation.Enforce = relation.IsEnforced;
 
                                     //Create the column links
                                     foreach (var columnSet in fieldList)
@@ -774,7 +643,7 @@ namespace nHydrate.DslPackage.Objects
                 #endregion
 
                 #region Views
-                foreach (var view in model.Views.Where(x => x.IsGenerated).Where(x => ownerModule == null || x.Modules.Contains(ownerModule)))
+                foreach (var view in model.Views.Where(x => x.IsGenerated))
                 {
                     var newView = root.Database.CustomViews.Add();
                     newView.ResetKey(view.Id.ToString());
@@ -832,23 +701,6 @@ namespace nHydrate.DslPackage.Objects
                             if (parentTable != null && childTable != null)
                             {
                                 var isValidRelation = true;
-                                if (ownerModule != null)
-                                {
-                                    isValidRelation = ((IModuleLink)relation).Modules.Contains(ownerModule);
-                                }
-
-                                if (model.UseModules && isValidRelation)
-                                {
-                                    //If using modules then check that this relation's fields are in this module
-                                    foreach (var columnSet in fieldList)
-                                    {
-                                        var field1 = parent.Fields.FirstOrDefault(x => x.Id == columnSet.SourceFieldId);
-                                        var field2 = child.Fields.FirstOrDefault(x => x.Id == columnSet.TargetFieldId);
-                                        if (!field1.Modules.Contains(ownerModule)) isValidRelation = false;
-                                    }
-
-                                }
-
                                 if (isValidRelation)
                                 {
                                     var newRelation = root.Database.ViewRelations.Add();
@@ -896,7 +748,7 @@ namespace nHydrate.DslPackage.Objects
                 #endregion
 
                 #region Stored Procedures
-                foreach (var storedProc in model.StoredProcedures.Where(x => x.IsGenerated).Where(x => ownerModule == null || x.Modules.Contains(ownerModule)))
+                foreach (var storedProc in model.StoredProcedures.Where(x => x.IsGenerated))
                 {
                     var newStoredProc = root.Database.CustomStoredProcedures.Add();
                     newStoredProc.ResetKey(storedProc.Id.ToString());
@@ -958,7 +810,7 @@ namespace nHydrate.DslPackage.Objects
                 #endregion
 
                 #region Functions
-                foreach (var function in model.Functions.Where(x => x.IsGenerated).Where(x => ownerModule == null || x.Modules.Contains(ownerModule)))
+                foreach (var function in model.Functions.Where(x => x.IsGenerated))
                 {
                     var newFunction = root.Database.Functions.Add();
                     newFunction.ResetKey(function.Id.ToString());
@@ -1115,12 +967,6 @@ namespace nHydrate.DslPackage.Objects
             hash ^= (hash >> 11);
             hash += (hash << 15);
             return (int)(hash % int.MaxValue);
-        }
-
-        private class ModuleVersionInfo
-        {
-            public string ModuleName { get; set; }
-            public int ServerVersion { get; set; }
         }
 
     }

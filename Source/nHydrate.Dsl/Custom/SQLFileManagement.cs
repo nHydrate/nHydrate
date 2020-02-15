@@ -32,7 +32,6 @@ namespace nHydrate.Dsl.Custom
                 var modelFolder = GetModelFolder(rootFolder, folderName);
                 var generatedFileList = new List<string>();
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.ModelMetadata, modelFolder, diagram, generatedFileList);
-                nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Modules, modelFolder, diagram, generatedFileList);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Views, modelFolder, diagram, generatedFileList); //must come before entities (view relations)
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Entities, modelFolder, diagram, generatedFileList);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.StoredProcedures, modelFolder, diagram, generatedFileList);
@@ -200,7 +199,6 @@ namespace nHydrate.Dsl.Custom
 
                 //Save other files
                 SaveEntityIndexes(folder, item, generatedFileList);
-                SaveModules(folder, item, generatedFileList);
                 SaveRelations(folder, item, generatedFileList);
                 SaveEntityStaticData(folder, item, generatedFileList);
                 SaveEntityMetaData(folder, item, generatedFileList);
@@ -251,109 +249,6 @@ namespace nHydrate.Dsl.Custom
             var f = Path.Combine(folder, item.Name + ".indexes.xml");
             WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
 
-        }
-
-        private static void SaveModules(string folder, Entity item, List<string> generatedFileList)
-        {
-            var document = new XmlDocument();
-            document.LoadXml(@"<configuration type=""entity.modules"" id=""" + item.Id + @"""></configuration>");
-
-            XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-
-            //Fields
-            foreach (var field in item.Fields)
-            {
-                foreach (var module in field.Modules)
-                {
-                    var newNode = XmlHelper.AddElement(document.DocumentElement, "map");
-                    XmlHelper.AddAttribute(newNode, "source", field.Id);
-                    XmlHelper.AddAttribute(newNode, "module", module.Id);
-                    XmlHelper.AddAttribute(newNode, "type", "field");
-                    XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-                }
-            }
-
-            //Relations
-            foreach (var relation in item.RelationshipList)
-            {
-                foreach (var rm in item.nHydrateModel.RelationModules.Where(x => x.RelationID == relation.Id))
-                {
-                    var newNode = XmlHelper.AddElement(document.DocumentElement, "map");
-                    XmlHelper.AddAttribute(newNode, "source", relation.InternalId);
-                    XmlHelper.AddAttribute(newNode, "module", rm.ModuleId);
-                    XmlHelper.AddAttribute(newNode, "isenforced", rm.IsEnforced);
-                    XmlHelper.AddAttribute(newNode, "type", "relation");
-                    XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-                }
-            }
-
-            //Indexes
-            foreach (var index in item.IndexList)
-            {
-                foreach (var rm in item.nHydrateModel.IndexModules.Where(x => x.IndexID == index.Id))
-                {
-                    var newNode = XmlHelper.AddElement(document.DocumentElement, "map");
-                    XmlHelper.AddAttribute(newNode, "source", index.Id);
-                    XmlHelper.AddAttribute(newNode, "module", rm.ModuleId);
-                    XmlHelper.AddAttribute(newNode, "type", "index");
-                    XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-                }
-            }
-
-            var f = Path.Combine(folder, item.Name + ".modules.xml");
-            WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
-
-        }
-
-        private static void SaveModules(string folder, View item, List<string> generatedFileList)
-        {
-            var document = new XmlDocument();
-            document.LoadXml(@"<configuration type=""view.modules"" id=""" + item.Id + @"""></configuration>");
-
-            XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-            foreach (var module in item.Modules)
-            {
-                var newNode = XmlHelper.AddElement(document.DocumentElement, "map");
-                XmlHelper.AddAttribute(newNode, "module", module.Id);
-                XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-            }
-
-            var f = Path.Combine(folder, item.Name + ".modules.xml");
-            WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
-        }
-
-        private static void SaveModules(string folder, StoredProcedure item, List<string> generatedFileList)
-        {
-            var document = new XmlDocument();
-            document.LoadXml(@"<configuration type=""storedprocedure.modules"" id=""" + item.Id + @"""></configuration>");
-
-            XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-            foreach (var module in item.Modules)
-            {
-                var newNode = XmlHelper.AddElement(document.DocumentElement, "map");
-                XmlHelper.AddAttribute(newNode, "module", module.Id);
-                XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-            }
-
-            var f = Path.Combine(folder, item.Name + ".modules.xml");
-            WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
-        }
-
-        private static void SaveModules(string folder, Function item, List<string> generatedFileList)
-        {
-            var document = new XmlDocument();
-            document.LoadXml(@"<configuration type=""function.modules"" id=""" + item.Id + @"""></configuration>");
-
-            XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-            foreach (var module in item.Modules)
-            {
-                var newNode = XmlHelper.AddElement(document.DocumentElement, "map");
-                XmlHelper.AddAttribute(newNode, "module", module.Id);
-                XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-            }
-
-            var f = Path.Combine(folder, item.Name + ".modules.xml");
-            WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
         }
 
         private static void SaveToDisk(nHydrateModel modelRoot, IEnumerable<ModelMetadata> list, string rootFolder, nHydrateDiagram diagram, List<string> generatedFileList)
@@ -632,10 +527,6 @@ namespace nHydrate.Dsl.Custom
                 XmlHelper.AddLineBreak(document.DocumentElement);
                 var f = Path.Combine(folder, item.Name + ".configuration.xml");
                 WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
-
-                //Save other files
-                SaveModules(folder, item, generatedFileList);
-
             }
             #endregion
 
@@ -700,10 +591,6 @@ namespace nHydrate.Dsl.Custom
                 XmlHelper.AddLineBreak(document.DocumentElement);
                 var f = Path.Combine(folder, item.Name + ".configuration.xml");
                 WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
-
-                //Save other files
-                SaveModules(folder, item, generatedFileList);
-
             }
             #endregion
 
@@ -792,60 +679,9 @@ namespace nHydrate.Dsl.Custom
                 XmlHelper.AddLineBreak(document.DocumentElement);
                 var f = Path.Combine(folder, item.Name + ".configuration.xml");
                 WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
-
-                //Save other files
-                SaveModules(folder, item, generatedFileList);
-
             }
             #endregion
 
-            WriteReadMeFile(folder, generatedFileList);
-        }
-
-        /// <summary>
-        /// Saves Modules to disk
-        /// </summary>
-        private static void SaveToDisk(nHydrateModel modelRoot, IEnumerable<Module> list, string rootFolder, nHydrateDiagram diagram, List<string> generatedFileList)
-        {
-            var folder = rootFolder;
-            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-            var document = new XmlDocument();
-            document.LoadXml(@"<configuration type=""module""></configuration>");
-
-            foreach (var item in list)
-            {
-                var moduleNode = XmlHelper.AddElement(document.DocumentElement, "module") as XmlElement;
-                XmlHelper.AddLineBreak(moduleNode);
-                XmlHelper.AddCData(moduleNode, "summary", item.Summary);
-                XmlHelper.AddAttribute(moduleNode, "id", item.Id);
-                XmlHelper.AddAttribute(moduleNode, "name", item.Name);
-                XmlHelper.AddLineBreak(moduleNode);
-
-                var rulesNodes = XmlHelper.AddElement(moduleNode, "ruleset") as XmlElement;
-                XmlHelper.AddLineBreak((XmlElement)rulesNodes);
-
-                foreach (var rule in item.ModuleRules.OrderBy(x => x.Name))
-                {
-                    var fieldNode = XmlHelper.AddElement(rulesNodes, "rule");
-
-                    XmlHelper.AddLineBreak((XmlElement)fieldNode);
-                    XmlHelper.AddCData((XmlElement)fieldNode, "summary", rule.Summary);
-                    XmlHelper.AddLineBreak((XmlElement)fieldNode);
-
-                    XmlHelper.AddAttribute(fieldNode, "status", rule.Status.ToString("d"));
-                    XmlHelper.AddAttribute(fieldNode, "dependentmodule", rule.DependentModule);
-                    XmlHelper.AddAttribute(fieldNode, "name", rule.Name);
-                    XmlHelper.AddAttribute(fieldNode, "inclusion", rule.Inclusion);
-                    XmlHelper.AddAttribute(fieldNode, "enforced", rule.Enforced);
-
-                    XmlHelper.AddLineBreak((XmlElement)rulesNodes);
-                }
-
-            }
-
-            var f = Path.Combine(folder, "modules.configuration.xml");
-            WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
             WriteReadMeFile(folder, generatedFileList);
         }
 
@@ -878,7 +714,6 @@ namespace nHydrate.Dsl.Custom
                 }
 
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.ModelMetadata, model, modelFolder, store);
-                nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Modules, model, modelFolder, store);
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Views, model, modelFolder, store); //must coem before entities (view relations)
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Entities, model, modelFolder, store);
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.StoredProcedures, model, modelFolder, store);
@@ -1066,7 +901,6 @@ namespace nHydrate.Dsl.Custom
             foreach (var item in model.Entities)
             {
                 LoadEntityRelations(folder, item);
-                LoadModules(folder, item);
                 LoadEntityStaticData(folder, item);
                 LoadEntityMetaData(folder, item);
             }
@@ -1295,154 +1129,6 @@ namespace nHydrate.Dsl.Custom
 
         }
 
-        private static void LoadModules(string folder, Entity item)
-        {
-            XmlDocument document = null;
-            var fileName = Path.Combine(folder, item.Name + ".modules.xml");
-            if (!File.Exists(fileName)) return;
-            try
-            {
-                document = new XmlDocument();
-                document.Load(fileName);
-            }
-            catch (Exception ex)
-            {
-                //Do Nothing
-                MessageBox.Show("The file '" + fileName + "' is not valid and could not be loaded!", "Load Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            try
-            {
-                foreach (XmlNode n in document.DocumentElement)
-                {
-                    var sourceId = XmlHelper.GetAttributeValue(n, "source", Guid.Empty);
-                    var moduleId = XmlHelper.GetAttributeValue(n, "module", Guid.Empty);
-
-                    var field = item.Fields.FirstOrDefault(x => x.Id == sourceId);
-                    var relation = item.RelationshipList.FirstOrDefault(x => x.InternalId == sourceId);
-                    var module = item.nHydrateModel.Modules.FirstOrDefault(x => x.Id == moduleId);
-                    var index = item.IndexList.FirstOrDefault(x => x.Id == sourceId);
-
-                    //If field...
-                    if (module != null && field != null)
-                    {
-                        if (!item.Modules.Contains(module))
-                            item.Modules.Add(module);
-                        if (!field.Modules.Contains(module))
-                            field.Modules.Add(module);
-                    }
-
-                    //If relation...
-                    if (module != null && relation != null)
-                    {
-                        if (item.nHydrateModel.RelationModules.Count(x => x.RelationID == relation.Id && x.ModuleId == module.Id) == 0)
-                        {
-                            var rm = new RelationModule(item.Partition) { RelationID = relation.Id, ModuleId = module.Id };
-                            item.nHydrateModel.RelationModules.Add(rm);
-                            rm.IsEnforced = XmlHelper.GetAttributeValue(n, "isenforced", relation.IsEnforced);
-                        }
-                    }
-
-                    //If index...
-                    if (module != null && index != null)
-                    {
-                        if (item.nHydrateModel.IndexModules.Count(x => x.IndexID == index.Id && x.ModuleId == module.Id) == 0)
-                        {
-                            var rm = new IndexModule(item.Partition) { IndexID = index.Id, ModuleId = module.Id };
-                            item.nHydrateModel.IndexModules.Add(rm);
-                        }
-                    }
-
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        private static void LoadModules(string folder, View item)
-        {
-            XmlDocument document = null;
-            var fileName = Path.Combine(folder, item.Name + ".modules.xml");
-            if (!File.Exists(fileName)) return;
-            try
-            {
-                document = new XmlDocument();
-                document.Load(fileName);
-            }
-            catch (Exception ex)
-            {
-                //Do Nothing
-                MessageBox.Show("The file '" + fileName + "' is not valid and could not be loaded!", "Load Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            foreach (XmlNode n in document.DocumentElement)
-            {
-                var moduleId = XmlHelper.GetAttributeValue(n, "module", Guid.Empty);
-                var module = item.nHydrateModel.Modules.FirstOrDefault(x => x.Id == moduleId);
-                if (module != null)
-                    item.Modules.Add(module);
-            }
-
-        }
-
-        private static void LoadModules(string folder, StoredProcedure item)
-        {
-            XmlDocument document = null;
-            var fileName = Path.Combine(folder, item.Name + ".modules.xml");
-            if (!File.Exists(fileName)) return;
-            try
-            {
-                document = new XmlDocument();
-                document.Load(fileName);
-            }
-            catch (Exception ex)
-            {
-                //Do Nothing
-                MessageBox.Show("The file '" + fileName + "' is not valid and could not be loaded!", "Load Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            foreach (XmlNode n in document.DocumentElement)
-            {
-                var moduleId = XmlHelper.GetAttributeValue(n, "module", Guid.Empty);
-                var module = item.nHydrateModel.Modules.FirstOrDefault(x => x.Id == moduleId);
-                if (module != null)
-                    item.Modules.Add(module);
-            }
-
-        }
-
-        private static void LoadModules(string folder, Function item)
-        {
-            XmlDocument document = null;
-            var fileName = Path.Combine(folder, item.Name + ".modules.xml");
-            if (!File.Exists(fileName)) return;
-            try
-            {
-                document = new XmlDocument();
-                document.Load(fileName);
-            }
-            catch (Exception ex)
-            {
-                //Do Nothing
-                MessageBox.Show("The file '" + fileName + "' is not valid and could not be loaded!", "Load Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            foreach (XmlNode n in document.DocumentElement)
-            {
-                var moduleId = XmlHelper.GetAttributeValue(n, "module", Guid.Empty);
-                var module = item.nHydrateModel.Modules.FirstOrDefault(x => x.Id == moduleId);
-                if (module != null)
-                    item.Modules.Add(module);
-            }
-
-        }
-
         private static void LoadFromDisk(IEnumerable<StoredProcedure> list, nHydrateModel model, string rootFolder, Microsoft.VisualStudio.Modeling.Store store)
         {
             var folder = Path.Combine(rootFolder, FOLDER_SP);
@@ -1551,8 +1237,6 @@ namespace nHydrate.Dsl.Custom
                         item.nHydrateModel.IsDirty = true;
                 }
 
-                LoadModules(folder, item);
-
             }
             #endregion
 
@@ -1650,7 +1334,6 @@ namespace nHydrate.Dsl.Custom
                         item.nHydrateModel.IsDirty = true;
                 }
 
-                LoadModules(folder, item);
             }
             #endregion
 
@@ -1780,7 +1463,6 @@ namespace nHydrate.Dsl.Custom
                         item.nHydrateModel.IsDirty = true;
                 }
 
-                LoadModules(folder, item);
             }
             #endregion
 
@@ -1831,63 +1513,6 @@ namespace nHydrate.Dsl.Custom
                 model.ModelMetadata.Add(item);
                 item.Key = XmlHelper.GetAttributeValue(n, "key", item.Key);
                 item.Value = XmlHelper.GetAttributeValue(n, "value", item.Value);
-            }
-            #endregion
-
-        }
-
-        private static void LoadFromDisk(IEnumerable<Module> list, nHydrateModel model, string rootFolder, Microsoft.VisualStudio.Modeling.Store store)
-        {
-            var folder = rootFolder;
-            if (!Directory.Exists(folder)) return;
-
-            #region Load other parameter/field information
-            var fileName = Path.Combine(folder, "modules.configuration.xml");
-            if (!File.Exists(fileName)) return;
-            XmlDocument document = null;
-            try
-            {
-                document = new XmlDocument();
-                document.Load(fileName);
-            }
-            catch (Exception ex)
-            {
-                //Do Nothing
-                MessageBox.Show("The file '" + fileName + "' is not valid and could not be loaded!", "Load Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            foreach (XmlNode n in document.DocumentElement.ChildNodes)
-            {
-                var id = XmlHelper.GetAttributeValue(n, "id", Guid.NewGuid());
-                var item = model.Modules.FirstOrDefault(x => x.Id == id);
-                if (item == null)
-                {
-                    item = new Module(model.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, id) });
-                    model.Modules.Add(item);
-                }
-
-                item.Name = XmlHelper.GetAttributeValue(n, "name", item.Name);
-                item.Summary = XmlHelper.GetNodeValue(n, "summary", item.Summary);
-
-                //Rules
-                var rulesNodes = n.SelectSingleNode("ruleset");
-                if (rulesNodes != null)
-                {
-                    var nameList = new List<string>();
-                    foreach (XmlNode m in rulesNodes.ChildNodes)
-                    {
-                        var rule = new ModuleRule(item.Partition);
-                        item.ModuleRules.Add(rule);
-                        rule.Name = XmlHelper.GetAttributeValue(m, "name", rule.Name);
-                        rule.Status = (ModuleRuleStatusTypeConstants)int.Parse(XmlHelper.GetAttributeValue(m, "status", rule.Status.ToString("d")));
-                        rule.DependentModule = XmlHelper.GetAttributeValue(m, "dependentmodule", rule.DependentModule);
-                        rule.Inclusion = XmlHelper.GetAttributeValue(m, "inclusion", rule.Inclusion);
-                        rule.Enforced = XmlHelper.GetAttributeValue(m, "enforced", rule.Enforced);
-                        rule.Summary = XmlHelper.GetNodeValue(m, "summary", rule.Summary);
-                    }
-                }
-
             }
             #endregion
 

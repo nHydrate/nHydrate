@@ -11,7 +11,6 @@ namespace nHydrate.DataImport
 		Added = 1,
 		Modified = 2,
 		Deleted = 3,
-		Merge = 4,
 	}
 
 	public abstract class DatabaseBaseObject

@@ -124,8 +124,6 @@ namespace nHydrate.Generator.Models
 
         public bool EmitSafetyScripts { get; set; } = true;
 
-        public string ModuleName { get; set; } = string.Empty;
-
         public Database Database { get; set; } = null;
 
         public VersionHistoryCollection VersionHistoryList => _versionHistoryList;
@@ -184,9 +182,6 @@ namespace nHydrate.Generator.Models
                 XmlHelper.AddAttribute(node, "tenantColumnName", this.TenantColumnName);
                 XmlHelper.AddAttribute(node, "tenantPrefix", this.TenantPrefix);
 
-                if (!string.IsNullOrEmpty(this.ModuleName))
-                    XmlHelper.AddAttribute(node, "moduleName", this.ModuleName);
-
                 XmlHelper.AddAttribute(node, "defaultNamespace", this.DefaultNamespace);
                 XmlHelper.AddAttribute(node, "storedProcedurePrefix", this.StoredProcedurePrefix);
 
@@ -234,7 +229,6 @@ namespace nHydrate.Generator.Models
                 this.TenantPrefix = XmlHelper.GetAttributeValue(node, "tenantPrefix", _def_tenantPrefix);
                 this.CompanyName = XmlHelper.GetAttributeValue(node, "companyName", this.CompanyName);
                 this.EmitSafetyScripts = XmlHelper.GetAttributeValue(node, "emitSafetyScripts", this.EmitSafetyScripts);
-                this.ModuleName = XmlHelper.GetAttributeValue(node, "moduleName", this.ModuleName);
 
                 //There is a messagebox in the property set to DO NOT use the property, use the member variable
                 DefaultNamespace = XmlHelper.GetAttributeValue(node, "defaultNamespace", _def_defaultNamespace);

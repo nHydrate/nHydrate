@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GenerateSettings));
             this.wizard1 = new nHydrate.Wizard.Wizard();
             this.pageTemplates = new nHydrate.Wizard.WizardPage();
+            this.label2 = new System.Windows.Forms.Label();
             this.linkShowAll = new System.Windows.Forms.LinkLabel();
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -38,21 +39,16 @@
             this.tvwProjects = new System.Windows.Forms.TreeView();
             this.pageFinish = new nHydrate.Wizard.WizardPage();
             this.lblFinish = new System.Windows.Forms.Label();
-            this.pageModules = new nHydrate.Wizard.WizardPage();
-            this.chkModule = new System.Windows.Forms.CheckedListBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.wizard1.SuspendLayout();
             this.pageTemplates.SuspendLayout();
             this.pageFinish.SuspendLayout();
-            this.pageModules.SuspendLayout();
             this.SuspendLayout();
             // 
             // wizard1
             // 
             this.wizard1.ButtonFlatStyle = System.Windows.Forms.FlatStyle.Standard;
-            this.wizard1.Controls.Add(this.pageTemplates);
             this.wizard1.Controls.Add(this.pageFinish);
-            this.wizard1.Controls.Add(this.pageModules);
+            this.wizard1.Controls.Add(this.pageTemplates);
             this.wizard1.HeaderImage = ((System.Drawing.Image)(resources.GetObject("wizard1.HeaderImage")));
             this.wizard1.Location = new System.Drawing.Point(0, 0);
             this.wizard1.Name = "wizard1";
@@ -60,7 +56,6 @@
             this.wizard1.TabIndex = 0;
             this.wizard1.WizardPages.AddRange(new nHydrate.Wizard.WizardPage[] {
             this.pageTemplates,
-            this.pageModules,
             this.pageFinish});
             // 
             // pageTemplates
@@ -77,6 +72,19 @@
             this.pageTemplates.Size = new System.Drawing.Size(518, 316);
             this.pageTemplates.TabIndex = 7;
             this.pageTemplates.Title = "Generators";
+            // 
+            // label2
+            // 
+            this.label2.BackColor = System.Drawing.Color.PapayaWhip;
+            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(12, 72);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(494, 40);
+            this.label2.TabIndex = 11;
+            this.label2.Text = "NOTE: This version of nHydrate only supports .NET Core. If you are using Entity F" +
+    "ramework 4.x - 6.x, do not generate with this modeler. The older modeler is avai" +
+    "lable on the nHydrate.com website.";
             // 
             // linkShowAll
             // 
@@ -143,7 +151,7 @@
             this.pageFinish.Description = "Generator selection complete!";
             this.pageFinish.Location = new System.Drawing.Point(0, 0);
             this.pageFinish.Name = "pageFinish";
-            this.pageFinish.Size = new System.Drawing.Size(518, 378);
+            this.pageFinish.Size = new System.Drawing.Size(518, 316);
             this.pageFinish.TabIndex = 9;
             this.pageFinish.Title = "Finish";
             // 
@@ -156,41 +164,6 @@
             this.lblFinish.Size = new System.Drawing.Size(494, 113);
             this.lblFinish.TabIndex = 0;
             this.lblFinish.Text = "Press the Finish button to apply the selected generators and create code.";
-            // 
-            // pageModules
-            // 
-            this.pageModules.Controls.Add(this.chkModule);
-            this.pageModules.Description = "Choose the modules to apply the generators";
-            this.pageModules.Location = new System.Drawing.Point(0, 0);
-            this.pageModules.Name = "pageModules";
-            this.pageModules.Size = new System.Drawing.Size(518, 378);
-            this.pageModules.TabIndex = 8;
-            this.pageModules.Title = "Modules";
-            // 
-            // chkModule
-            // 
-            this.chkModule.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkModule.CheckOnClick = true;
-            this.chkModule.FormattingEnabled = true;
-            this.chkModule.IntegralHeight = false;
-            this.chkModule.Location = new System.Drawing.Point(12, 76);
-            this.chkModule.Name = "chkModule";
-            this.chkModule.Size = new System.Drawing.Size(494, 299);
-            this.chkModule.TabIndex = 4;
-            // 
-            // label2
-            // 
-            this.label2.BackColor = System.Drawing.Color.PapayaWhip;
-            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(12, 72);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(494, 40);
-            this.label2.TabIndex = 11;
-            this.label2.Text = "NOTE: This version of nHydrate only supports .NET Core. If you are using Entity F" +
-    "ramework 4.x - 6.x, do not generate with this modeler. The older modeler is avai" +
-    "lable on the nHydrate.com website.";
             // 
             // GenerateSettings
             // 
@@ -210,7 +183,6 @@
             this.pageTemplates.ResumeLayout(false);
             this.pageTemplates.PerformLayout();
             this.pageFinish.ResumeLayout(false);
-            this.pageModules.ResumeLayout(false);
             this.ResumeLayout(false);
 
 		}
@@ -219,13 +191,11 @@
 
 		private Wizard.Wizard wizard1;
 		private Wizard.WizardPage pageFinish;
-		private Wizard.WizardPage pageModules;
 		private Wizard.WizardPage pageTemplates;
 		private System.Windows.Forms.TextBox txtDescription;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ListBox lstDependency;
 		private System.Windows.Forms.TreeView tvwProjects;
-		private System.Windows.Forms.CheckedListBox chkModule;
 		private System.Windows.Forms.Label lblFinish;
         private System.Windows.Forms.LinkLabel linkShowAll;
         private System.Windows.Forms.Label label2;

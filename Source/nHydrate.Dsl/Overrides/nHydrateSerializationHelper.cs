@@ -217,24 +217,6 @@ namespace nHydrate.Dsl
 
             #endregion
 
-            //If using modules from a previous model version then perform this one time action of 
-            //assigning the indexes to all modules  so user will not be confronted with a a huge action to perform after upgrade
-            if (dslVersion <= new Version(5, 1, 2, 118) && modelRoot.UseModules)
-            {
-                using (var transaction = modelRoot.Store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
-                {
-                    foreach (var module in modelRoot.Modules)
-                    {
-                        var contained = module.GetEntities().ToList();
-                        foreach (var index in modelRoot.Entities.Where(x => contained.Contains(x)).SelectMany(x => x.IndexList))
-                        {
-                            _model.IndexModules.Add(new IndexModule(_model.Partition) { IndexID = index.Id, ModuleId = module.Id });
-                        }
-                    }
-                    transaction.Commit();
-                }
-            }
-
             return modelRoot;
         }
 

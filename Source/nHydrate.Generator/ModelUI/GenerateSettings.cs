@@ -17,7 +17,6 @@ namespace nHydrate.Generator.ModelUI
         private List<Type> _generatorTypeList = null;
         private readonly Dictionary<string, Type> _generatorMap = new Dictionary<string, Type>();
         private readonly IGenerator _generator = null;
-        private List<string> _moduleList = null;
         private List<Type> _invisibleList = new List<Type>();
 
         #endregion
@@ -28,7 +27,6 @@ namespace nHydrate.Generator.ModelUI
         {
             InitializeComponent();
 
-            chkModule.ItemCheck += new ItemCheckEventHandler(chkModule_ItemCheck);
             this.tvwProjects.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.tvwProjects_AfterCheck);
             this.tvwProjects.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwProjects_AfterSelect);
             wizard1.Cancel += new System.ComponentModel.CancelEventHandler(wizard1_Cancel);
@@ -37,13 +35,12 @@ namespace nHydrate.Generator.ModelUI
             wizard1.AfterSwitchPages += new Wizard.Wizard.AfterSwitchPagesEventHandler(wizard1_AfterSwitchPages);
         }
 
-        public GenerateSettings(IGenerator generator, List<Type> generatorTypeList, List<Type> wizardTypeList, List<string> moduleList)
+        public GenerateSettings(IGenerator generator, List<Type> generatorTypeList, List<Type> wizardTypeList)
             : this()
         {
             try
             {
                 _generator = generator;
-                _moduleList = moduleList;
                 _generatorTypeList = generatorTypeList;
                 _wizardTypeList = wizardTypeList;
 
@@ -58,21 +55,6 @@ namespace nHydrate.Generator.ModelUI
                     }
                 }
                 this.LoadGenerators(true);
-
-                //Add modules
-                foreach (var s in moduleList.OrderBy(x => x))
-                {
-                    chkModule.Items.Add(s);
-                    if (cacheFile.GeneratedModuleList.Count(x => x.ToLower() == s.ToLower()) > 0)
-                        chkModule.SetItemChecked(chkModule.Items.Count - 1, true);
-                }
-
-                if (moduleList.Count == 0)
-                {
-                    wizard1.WizardPages.Remove(pageModules);
-                }
-
-                wizard1.FinishEnabled = (moduleList.Count == 0);
 
             }
             catch (Exception ex)
@@ -105,19 +87,6 @@ namespace nHydrate.Generator.ModelUI
                 //Add all invisible generators to list
                 _invisibleList.ForEach(x => retval.Add(x));
 
-                return retval;
-            }
-        }
-
-        public List<string> SelectedModules
-        {
-            get
-            {
-                var retval = new List<string>();
-                foreach (string item in chkModule.CheckedItems)
-                {
-                    retval.Add(item);
-                }
                 return retval;
             }
         }
@@ -165,11 +134,6 @@ namespace nHydrate.Generator.ModelUI
             }
         }
 
-        private bool IsModulesChecked()
-        {
-            return (chkModule.CheckedItems.Count > 0);
-        }
-
         private bool IsTemplatesChecked()
         {
             var checkedCount = 0;
@@ -187,26 +151,11 @@ namespace nHydrate.Generator.ModelUI
 
         private void wizard1_Finish(object sender, EventArgs e)
         {
-            if (chkModule.Items.Count > 0)
-            {
-                if (chkModule.CheckedItems.Count == 0)
-                {
-                    MessageBox.Show("You must select one or more modules for generation.", "Check Modules", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-
             var cacheFile = new ModelCacheFile(_generator);
             cacheFile.ExcludeList.Clear();
             foreach (var t in this.ExcludeList)
             {
                 cacheFile.ExcludeList.Add(t.FullName);
-            }
-
-            cacheFile.GeneratedModuleList.Clear();
-            foreach (string s in chkModule.CheckedItems)
-            {
-                cacheFile.GeneratedModuleList.Add(s);
             }
 
             cacheFile.Save();
@@ -290,57 +239,11 @@ namespace nHydrate.Generator.ModelUI
 
         private void wizard1_AfterSwitchPages(object sender, Wizard.Wizard.AfterSwitchPagesEventArgs e)
         {
-            if (_moduleList.Count == 0)
-            {
-                wizard1.FinishEnabled = true;
-            }
-            else
-            {
-                var checkedCount = 0;
-                foreach (TreeNode n in tvwProjects.Nodes)
-                {
-                    if (n.Checked) checkedCount++;
-                }
-
-                wizard1.FinishEnabled =
-                    (checkedCount > 0) &&
-                    (chkModule.CheckedItems.Count > 0);
-            }
+            wizard1.FinishEnabled = true;
         }
 
         private void wizard1_BeforeSwitchPages(object sender, Wizard.Wizard.BeforeSwitchPagesEventArgs e)
         {
-            if (e.OldIndex < e.NewIndex)
-            {
-                if (wizard1.WizardPages[e.OldIndex] == pageTemplates)
-                {
-                    if (_moduleList.Count > 0)
-                    {
-                        if (!this.IsTemplatesChecked())
-                        {
-                            e.Cancel = true;
-                            MessageBox.Show("You must choose items to generate.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                }
-                else if (wizard1.WizardPages[e.OldIndex] == pageModules)
-                {
-                    if (_moduleList.Count > 0)
-                    {
-                        if (!this.IsModulesChecked())
-                        {
-                            e.Cancel = true;
-                            MessageBox.Show("You must choose one or more modules.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                }
-
-            }
-        }
-
-        private void chkModule_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            wizard1.FinishEnabled = (IsModulesChecked() && IsTemplatesChecked());
         }
 
         #endregion

@@ -41,7 +41,6 @@ namespace nHydrate.DslPackage.Forms
 				_model = model;
 				_store = store;
 				_allowConfigure = allowConfigure;
-				chkEnforce.Visible = !model.UseModules;
 
 				//Load the Form
 				var parent = connector.ParentEntity;

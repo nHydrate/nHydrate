@@ -172,13 +172,6 @@ namespace nHydrate.Dsl
                 }
                 #endregion
 
-                #region Verify Entity is in some module
-                if (this.Entity.nHydrateModel.UseModules && (this.Modules.Count == 0) && this.IsGenerated)
-                {
-                    context.LogError(string.Format(ValidationHelper.ErrorTextModuleItemNotInModule, this.Entity.Name + "." + this.Name), string.Empty, this);
-                }
-                #endregion
-
             }
             catch (Exception ex)
             {

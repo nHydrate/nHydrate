@@ -33,6 +33,12 @@ namespace nHydrate.DslPackage.Forms
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.wizard1 = new nHydrate.Wizard.Wizard();
             this.pageConnection = new nHydrate.Wizard.WizardPage();
+            this.grpConnectionStringPostgres = new System.Windows.Forms.GroupBox();
+            this.lblConnectionString = new System.Windows.Forms.Label();
+            this.txtConnectionStringPostgres = new nHydrate.Generator.Common.Forms.CueTextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.optDatabaseTypePostgres = new System.Windows.Forms.RadioButton();
+            this.optDatabaseTypeSQL = new System.Windows.Forms.RadioButton();
             this.cmdTestConnection = new System.Windows.Forms.Button();
             this.DatabaseConnectionControl1 = new nHydrate.DslPackage.Forms.DatabaseConnectionControl();
             this.pageSummary = new nHydrate.Wizard.WizardPage();
@@ -41,9 +47,6 @@ namespace nHydrate.DslPackage.Forms
             this.panel2 = new System.Windows.Forms.Panel();
             this.chkIgnoreRelations = new System.Windows.Forms.CheckBox();
             this.chkInheritance = new System.Windows.Forms.CheckBox();
-            this.chkMergeModule = new System.Windows.Forms.CheckBox();
-            this.lblModule = new System.Windows.Forms.Label();
-            this.cboModule = new System.Windows.Forms.ComboBox();
             this.chkSettingPK = new System.Windows.Forms.CheckBox();
             this.pnlMain = new System.Windows.Forms.Panel();
             this.cmdViewDiff = new System.Windows.Forms.Button();
@@ -54,14 +57,10 @@ namespace nHydrate.DslPackage.Forms
             this.tvwRefresh = new System.Windows.Forms.TreeView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tvwDelete = new System.Windows.Forms.TreeView();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.optDatabaseTypeSQL = new System.Windows.Forms.RadioButton();
-            this.optDatabaseTypePostgres = new System.Windows.Forms.RadioButton();
-            this.grpConnectionStringPostgres = new System.Windows.Forms.GroupBox();
-            this.lblConnectionString = new System.Windows.Forms.Label();
-            this.txtConnectionStringPostgres = new nHydrate.Generator.Common.Forms.CueTextBox();
             this.wizard1.SuspendLayout();
             this.pageConnection.SuspendLayout();
+            this.grpConnectionStringPostgres.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.pageSummary.SuspendLayout();
             this.pageEntities.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -70,8 +69,6 @@ namespace nHydrate.DslPackage.Forms
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.grpConnectionStringPostgres.SuspendLayout();
             this.SuspendLayout();
             // 
             // imageList1
@@ -88,9 +85,9 @@ namespace nHydrate.DslPackage.Forms
             // wizard1
             // 
             this.wizard1.ButtonFlatStyle = System.Windows.Forms.FlatStyle.Standard;
+            this.wizard1.Controls.Add(this.pageEntities);
             this.wizard1.Controls.Add(this.pageConnection);
             this.wizard1.Controls.Add(this.pageSummary);
-            this.wizard1.Controls.Add(this.pageEntities);
             this.wizard1.HeaderImage = ((System.Drawing.Image)(resources.GetObject("wizard1.HeaderImage")));
             this.wizard1.Location = new System.Drawing.Point(0, 0);
             this.wizard1.Name = "wizard1";
@@ -113,6 +110,71 @@ namespace nHydrate.DslPackage.Forms
             this.pageConnection.Size = new System.Drawing.Size(653, 495);
             this.pageConnection.TabIndex = 7;
             this.pageConnection.Title = "Database Connection";
+            // 
+            // grpConnectionStringPostgres
+            // 
+            this.grpConnectionStringPostgres.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpConnectionStringPostgres.Controls.Add(this.lblConnectionString);
+            this.grpConnectionStringPostgres.Controls.Add(this.txtConnectionStringPostgres);
+            this.grpConnectionStringPostgres.Location = new System.Drawing.Point(12, 396);
+            this.grpConnectionStringPostgres.Name = "grpConnectionStringPostgres";
+            this.grpConnectionStringPostgres.Size = new System.Drawing.Size(619, 57);
+            this.grpConnectionStringPostgres.TabIndex = 82;
+            this.grpConnectionStringPostgres.TabStop = false;
+            this.grpConnectionStringPostgres.Visible = false;
+            // 
+            // lblConnectionString
+            // 
+            this.lblConnectionString.AutoSize = true;
+            this.lblConnectionString.Location = new System.Drawing.Point(19, 27);
+            this.lblConnectionString.Name = "lblConnectionString";
+            this.lblConnectionString.Size = new System.Drawing.Size(112, 13);
+            this.lblConnectionString.TabIndex = 5;
+            this.lblConnectionString.Text = "Database connection:";
+            // 
+            // txtConnectionStringPostgres
+            // 
+            this.txtConnectionStringPostgres.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtConnectionStringPostgres.Cue = "<Enter Connectionstring>";
+            this.txtConnectionStringPostgres.Location = new System.Drawing.Point(136, 24);
+            this.txtConnectionStringPostgres.Name = "txtConnectionStringPostgres";
+            this.txtConnectionStringPostgres.Size = new System.Drawing.Size(469, 20);
+            this.txtConnectionStringPostgres.TabIndex = 8;
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.optDatabaseTypePostgres);
+            this.panel1.Controls.Add(this.optDatabaseTypeSQL);
+            this.panel1.Location = new System.Drawing.Point(12, 67);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(619, 52);
+            this.panel1.TabIndex = 81;
+            // 
+            // optDatabaseTypePostgres
+            // 
+            this.optDatabaseTypePostgres.AutoSize = true;
+            this.optDatabaseTypePostgres.Location = new System.Drawing.Point(157, 13);
+            this.optDatabaseTypePostgres.Name = "optDatabaseTypePostgres";
+            this.optDatabaseTypePostgres.Size = new System.Drawing.Size(66, 17);
+            this.optDatabaseTypePostgres.TabIndex = 0;
+            this.optDatabaseTypePostgres.Text = "Postgres";
+            this.optDatabaseTypePostgres.UseVisualStyleBackColor = true;
+            // 
+            // optDatabaseTypeSQL
+            // 
+            this.optDatabaseTypeSQL.AutoSize = true;
+            this.optDatabaseTypeSQL.Checked = true;
+            this.optDatabaseTypeSQL.Location = new System.Drawing.Point(17, 13);
+            this.optDatabaseTypeSQL.Name = "optDatabaseTypeSQL";
+            this.optDatabaseTypeSQL.Size = new System.Drawing.Size(80, 17);
+            this.optDatabaseTypeSQL.TabIndex = 0;
+            this.optDatabaseTypeSQL.TabStop = true;
+            this.optDatabaseTypeSQL.Text = "SQL Server";
+            this.optDatabaseTypeSQL.UseVisualStyleBackColor = true;
             // 
             // cmdTestConnection
             // 
@@ -140,7 +202,7 @@ namespace nHydrate.DslPackage.Forms
     "\' to import the new objects.";
             this.pageSummary.Location = new System.Drawing.Point(0, 0);
             this.pageSummary.Name = "pageSummary";
-            this.pageSummary.Size = new System.Drawing.Size(653, 506);
+            this.pageSummary.Size = new System.Drawing.Size(653, 495);
             this.pageSummary.TabIndex = 9;
             this.pageSummary.Title = "Summary";
             // 
@@ -160,7 +222,7 @@ namespace nHydrate.DslPackage.Forms
             this.txtSummary.ReadOnly = true;
             this.txtSummary.RightBracket = ')';
             this.txtSummary.ShowLineNumbers = false;
-            this.txtSummary.Size = new System.Drawing.Size(629, 415);
+            this.txtSummary.Size = new System.Drawing.Size(629, 404);
             this.txtSummary.TabIndex = 2;
             // 
             // pageEntities
@@ -170,7 +232,7 @@ namespace nHydrate.DslPackage.Forms
             this.pageEntities.Description = "Choose the objects to import.";
             this.pageEntities.Location = new System.Drawing.Point(0, 0);
             this.pageEntities.Name = "pageEntities";
-            this.pageEntities.Size = new System.Drawing.Size(653, 506);
+            this.pageEntities.Size = new System.Drawing.Size(653, 495);
             this.pageEntities.TabIndex = 8;
             this.pageEntities.Title = "Choose Objects";
             // 
@@ -178,12 +240,9 @@ namespace nHydrate.DslPackage.Forms
             // 
             this.panel2.Controls.Add(this.chkIgnoreRelations);
             this.panel2.Controls.Add(this.chkInheritance);
-            this.panel2.Controls.Add(this.chkMergeModule);
-            this.panel2.Controls.Add(this.lblModule);
-            this.panel2.Controls.Add(this.cboModule);
             this.panel2.Controls.Add(this.chkSettingPK);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 452);
+            this.panel2.Location = new System.Drawing.Point(0, 441);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(653, 54);
             this.panel2.TabIndex = 75;
@@ -209,34 +268,6 @@ namespace nHydrate.DslPackage.Forms
             this.chkInheritance.Text = "Assume Inheritance";
             this.chkInheritance.UseVisualStyleBackColor = true;
             // 
-            // chkMergeModule
-            // 
-            this.chkMergeModule.AutoSize = true;
-            this.chkMergeModule.Location = new System.Drawing.Point(8, 31);
-            this.chkMergeModule.Name = "chkMergeModule";
-            this.chkMergeModule.Size = new System.Drawing.Size(94, 17);
-            this.chkMergeModule.TabIndex = 71;
-            this.chkMergeModule.Text = "Merge Module";
-            this.chkMergeModule.UseVisualStyleBackColor = true;
-            // 
-            // lblModule
-            // 
-            this.lblModule.AutoSize = true;
-            this.lblModule.Location = new System.Drawing.Point(305, 8);
-            this.lblModule.Name = "lblModule";
-            this.lblModule.Size = new System.Drawing.Size(115, 13);
-            this.lblModule.TabIndex = 74;
-            this.lblModule.Text = "Associate with module:";
-            // 
-            // cboModule
-            // 
-            this.cboModule.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboModule.FormattingEnabled = true;
-            this.cboModule.Location = new System.Drawing.Point(437, 6);
-            this.cboModule.Name = "cboModule";
-            this.cboModule.Size = new System.Drawing.Size(206, 21);
-            this.cboModule.TabIndex = 74;
-            // 
             // chkSettingPK
             // 
             this.chkSettingPK.AutoSize = true;
@@ -260,7 +291,7 @@ namespace nHydrate.DslPackage.Forms
             this.pnlMain.Margin = new System.Windows.Forms.Padding(0);
             this.pnlMain.Name = "pnlMain";
             this.pnlMain.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlMain.Size = new System.Drawing.Size(653, 374);
+            this.pnlMain.Size = new System.Drawing.Size(653, 363);
             this.pnlMain.TabIndex = 73;
             // 
             // cmdViewDiff
@@ -351,71 +382,6 @@ namespace nHydrate.DslPackage.Forms
             this.tvwDelete.Size = new System.Drawing.Size(619, 297);
             this.tvwDelete.TabIndex = 69;
             // 
-            // panel1
-            // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.optDatabaseTypePostgres);
-            this.panel1.Controls.Add(this.optDatabaseTypeSQL);
-            this.panel1.Location = new System.Drawing.Point(12, 67);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(619, 52);
-            this.panel1.TabIndex = 81;
-            // 
-            // optDatabaseTypeSQL
-            // 
-            this.optDatabaseTypeSQL.AutoSize = true;
-            this.optDatabaseTypeSQL.Checked = true;
-            this.optDatabaseTypeSQL.Location = new System.Drawing.Point(17, 13);
-            this.optDatabaseTypeSQL.Name = "optDatabaseTypeSQL";
-            this.optDatabaseTypeSQL.Size = new System.Drawing.Size(80, 17);
-            this.optDatabaseTypeSQL.TabIndex = 0;
-            this.optDatabaseTypeSQL.TabStop = true;
-            this.optDatabaseTypeSQL.Text = "SQL Server";
-            this.optDatabaseTypeSQL.UseVisualStyleBackColor = true;
-            // 
-            // optDatabaseTypePostgres
-            // 
-            this.optDatabaseTypePostgres.AutoSize = true;
-            this.optDatabaseTypePostgres.Location = new System.Drawing.Point(157, 13);
-            this.optDatabaseTypePostgres.Name = "optDatabaseTypePostgres";
-            this.optDatabaseTypePostgres.Size = new System.Drawing.Size(66, 17);
-            this.optDatabaseTypePostgres.TabIndex = 0;
-            this.optDatabaseTypePostgres.Text = "Postgres";
-            this.optDatabaseTypePostgres.UseVisualStyleBackColor = true;
-            // 
-            // grpConnectionStringPostgres
-            // 
-            this.grpConnectionStringPostgres.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpConnectionStringPostgres.Controls.Add(this.lblConnectionString);
-            this.grpConnectionStringPostgres.Controls.Add(this.txtConnectionStringPostgres);
-            this.grpConnectionStringPostgres.Location = new System.Drawing.Point(12, 396);
-            this.grpConnectionStringPostgres.Name = "grpConnectionStringPostgres";
-            this.grpConnectionStringPostgres.Size = new System.Drawing.Size(619, 57);
-            this.grpConnectionStringPostgres.TabIndex = 82;
-            this.grpConnectionStringPostgres.TabStop = false;
-            this.grpConnectionStringPostgres.Visible = false;
-            // 
-            // lblConnectionString
-            // 
-            this.lblConnectionString.AutoSize = true;
-            this.lblConnectionString.Location = new System.Drawing.Point(19, 27);
-            this.lblConnectionString.Name = "lblConnectionString";
-            this.lblConnectionString.Size = new System.Drawing.Size(112, 13);
-            this.lblConnectionString.TabIndex = 5;
-            this.lblConnectionString.Text = "Database connection:";
-            // 
-            // txtConnectionStringPostgres
-            // 
-            this.txtConnectionStringPostgres.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtConnectionStringPostgres.Cue = "<Enter Connectionstring>";
-            this.txtConnectionStringPostgres.Location = new System.Drawing.Point(136, 24);
-            this.txtConnectionStringPostgres.Name = "txtConnectionStringPostgres";
-            this.txtConnectionStringPostgres.Size = new System.Drawing.Size(469, 20);
-            this.txtConnectionStringPostgres.TabIndex = 8;
-            // 
             // ImportDatabaseForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -434,6 +400,10 @@ namespace nHydrate.DslPackage.Forms
             this.wizard1.PerformLayout();
             this.pageConnection.ResumeLayout(false);
             this.pageConnection.PerformLayout();
+            this.grpConnectionStringPostgres.ResumeLayout(false);
+            this.grpConnectionStringPostgres.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.pageSummary.ResumeLayout(false);
             this.pageEntities.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
@@ -443,10 +413,6 @@ namespace nHydrate.DslPackage.Forms
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.grpConnectionStringPostgres.ResumeLayout(false);
-            this.grpConnectionStringPostgres.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -469,9 +435,6 @@ namespace nHydrate.DslPackage.Forms
 		private System.Windows.Forms.CheckBox chkSettingPK;
 		private nHydrate.DslPackage.Forms.DatabaseConnectionControl DatabaseConnectionControl1;
 		private System.Windows.Forms.Button cmdTestConnection;
-		private System.Windows.Forms.Label lblModule;
-		private System.Windows.Forms.ComboBox cboModule;
-		private System.Windows.Forms.CheckBox chkMergeModule;
 		private System.Windows.Forms.CheckBox chkInheritance;
 		private System.Windows.Forms.CheckBox chkIgnoreRelations;
 		private System.Windows.Forms.Button cmdViewDiff;

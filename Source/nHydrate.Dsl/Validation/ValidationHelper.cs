@@ -14,7 +14,6 @@ namespace nHydrate.Dsl
         public static readonly string ErrorTextInvalidIdentifierFuncParam = "The parameter identifier '{0}' for function '{1}' is the wrong format, contains invalid characters, or is a reserved word.";
         public static readonly string ErrorTextInvalidIdentifierFuncField = "The field identifier '{0}' for function '{1}' is the wrong format, contains invalid characters, or is a reserved word.";
 
-        public static readonly string ErrorTextInvalidIdentifierModule = "The module identifier '{0}' is the wrong format, contains invalid characters, or is a reserved word.";
         public static readonly string ErrorTextInvalidIdentifierView = "The view identifier '{0}' is the wrong format, contains invalid characters, or is a reserved word.";
         public static readonly string ErrorTextInvalidFieldIdentifierView = "The view {0} has an invalid field identifier '{1}' that is the wrong format, contains invalid characters, or is a reserved word.";
         public static readonly string ErrorTextInvalidIdentifierSP = "The stored procedure identifier '{0}' is the wrong format, contains invalid characters, or is a reserved word.";
@@ -36,8 +35,6 @@ namespace nHydrate.Dsl
         public static readonly string ErrorTextPreDefinedNameField = "The parameter '{0}' cannot use the predefined name.";
         public static readonly string ErrorTextInvalidInheritance = "The inheritance chain is not valid. All entities must have the same primary keys in type and name and other fields must have unique names across the inheritance chain.";
         public static readonly string ErrorTextNoTables = "There must be one or more entities defined.";
-        public static readonly string ErrorTextMinMaxValueMismatch = "The minimum value cannot be greater than the maximum value.";
-        public static readonly string ErrorTextMinMaxValueInvalidType = "The minimum and maximum values can only be set for numeric fields.";
         public static readonly string ErrorTextTableColumnNonPrimaryRelationNotUnique = "The field '{0}' in entity '{1}' must be marked unique because there is a non-primary key relationship that depends on it.";
         public static readonly string WarningTextTableColumnNonPrimaryRelationNotUnique = "The field '{0}' in entity '{1}' is marked unique but is not a primary key in a relationship. There will be no Entity Framework navigation property for this relationship.";
         public static readonly string ErrorTextTableProjectSameName = "The entity '{0}' cannot have the same name as the project.";
@@ -88,23 +85,11 @@ namespace nHydrate.Dsl
         public static readonly string ErrorTextInvalidStoredProcPrefix = "The stored procedure prefix must be set";
         public static readonly string ErrorTextTableAssociativeNeedsNonOverlappingColumns = "The associative table '{0}' must contain the primary keys of the parent entities with no overlapping columns.";
         public static readonly string ErrorTextTableAssociativeNeedsOnlyPK = "The associative table '{0}' can only contain primary key fields.";
-        public static readonly string ErrorTextNoModules = "The must be one or more modules.";
-        public static readonly string ErrorTextModulesNotUnique = "All modules must have unqiue names.";
-        public static readonly string ErrorTextModuleEntityFieldMismatch = "The field '{0}' is in module '{1}' but its parent entity is not.";
-        public static readonly string ErrorTextModuleItemNotInModule = "The object '{0}' is not in any module.";
-        public static readonly string ErrorTextModuleEntityPKMismatch = "The entity '{0}' is in module '{1}' so one or more of its primary key fields must be as well.";
-        public static readonly string WarningTextModuleEntityPKMismatch = "The entity '{0}' is in module '{1}' but some of its primary keys are not.";
         public static readonly string ErrorTextFunctionZeroFields = "The function '{0}' must have one or more fields.";
         public static readonly string ErrorTextFunctionScalerMultipleFields = "The scaler function '{0}' must have exactly one field.";
-        public static readonly string WarningTextRelationNotInModule = "This relation is not in any module.";
-        public static readonly string WarningTextRelationNotInModuleWithParentChildTables = "The parent entity '{0}' and child entity '{1}' are both in module '{2}' but a relation between them is not.";
-        public static readonly string WarningErrorModuleRuleInvalid = "A rule for the module '{0}' does not have a dependent module.";
-        public static readonly string WarningErrorModuleRuleLogicFail = "The module '{0}' has an {1} rule with dependent module '{2}' that fails. ";
-        public static readonly string WarningErrorModuleRuleNoDependentModule = "The module '{0}' has an {1} rule with no dependent module.";
         public static readonly string ErrorTextRelationFieldDuplicated = "The relation {0}->{1} cannot have duplicate columns between the parent and child entities.";
         public static readonly string ErrorTextRelationChildNotNullable = "The relation {0}->{1} is set to OnDelete SetNull but the child columns are not nullable.";
         public static readonly string ErrorTextRelationshipMustHaveFields = "The relation {0}->{1} must have one or fields defined.";
-        public static readonly string ErrorTextModuleIsEmpty = "The module '{0}' must have at least one generated entity in it.";
         public static readonly string ErrorTextColumnMaxLengthViolation = "The defined length of item '{0}' is greater than the maximum length of {1} for the {2} data type.";
         public static readonly string ErrorTextColumnIdentityHasDefault = "The identity field {0} cannot have a default.";
         public static readonly string ErrorTextFunctionReturnVarNotValid = "The function return variable '{0}' for function '{1}' is not a valid identifier.";
@@ -115,8 +100,6 @@ namespace nHydrate.Dsl
         public static readonly string ErrorTextEntityIndexIsPossibleDuplicate = "The Entity '{0}' has one or more indexes that are possible duplicates. They have the same indexed columns in different order.";
         public static readonly string ErrorTextEntityIndexIsDuplicate = "The Entity '{0}' has one or more indexes that are duplicated.";
         public static readonly string ErrorTextEntityIndexMultipleClustered = "The Entity '{0}' has more than one clustered index.";
-        public static readonly string ErrorTextRelationshipMustBeInModule = "The Entity '{0}' has a relationship with '{1}' that is not in any module.";
-        public static readonly string ErrorTextTableInheritMustContainParentInModule = "The ancestor entity '{1}' must be in all modules with the child entity '{0}'.";
         public static readonly string ErrorTextDuplicateParameters = "The object {0} has duplicate parameter names.";
         public static readonly string ErrorTextOutputTargetInvalid = "The OutputTarget is not a valid format for a solution folder.";
         public static readonly string ErrorTextOnlyOneTimestamp = "The entity '{0}' may only have one timestamp field including the AllowTimestamp setting.";
@@ -126,12 +109,9 @@ namespace nHydrate.Dsl
         public static readonly string ErrorTextClusteredGuid = "The UniqueIdentifier field '{0}' on entity '{1}' is in a clustered index. This may impact performance.";
         public static readonly string ErrorTextNullableFieldHasDefault = "The field '{0}' in entity '{1}' is a nullable field but has a default. The field will never by null.";
         public static readonly string ErrorTextNullableFieldHasDefaultWithRelation = "The field '{0}' in entity '{1}' is a nullable field in a relationship as the foreign key with entity '{2}'. A default is not allowed as it may cause foreign key violations.";
-        public static readonly string ErrorTextModuleContainIndexNotFields = "The entity '{0}' has an index with fields [{1}] in module '{2}' but one or more of the fields is not in the module.";
-        public static readonly string ErrorTextIndexNotInModule = "The entity '{0}' has index [{1}] that must be in a module.";
         public static readonly string ErrorTextVersionNegative = "The major version number cannot be negative.";
         public static readonly string ErrorTextDateTimeDeprecated = "The field '{0}' is marked DateTime. In SQL 2008 and above DateTime2 provides better functionality.";
         public static readonly string ErrorTextSecurityFunction = "The security function for entity '{0}' is not valid.";
-        public static readonly string ErrorTextColumnNoRange4Identity = "The identity field {0} cannot have a Min/Max value.";
         public static readonly string ErrorTextFKNeedIndex = "The field {0} is a foreign key but there is no index on this field.";
 
         public const string ValidCodeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";

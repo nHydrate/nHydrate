@@ -66,9 +66,6 @@ namespace nHydrate.Generator
         {
             var retval = model.CompanyName + "." + model.ProjectName;
 
-            if (!string.IsNullOrEmpty(model.ModuleName))
-                retval += "." + model.ModuleName;
-
             if (string.IsNullOrEmpty(model.DefaultNamespace))
                 return retval;
             else
@@ -135,7 +132,6 @@ namespace nHydrate.Generator
                 var model = this.Model as ModelRoot;
                 if (model == null) return false;
                 if (model.Database.Tables.Count > 50) return true;
-                if (!string.IsNullOrEmpty(model.ModuleName)) return true;
                 return false;
             }
         }
@@ -144,33 +140,6 @@ namespace nHydrate.Generator
 
         public void HandleCommand(string command)
         {
-            //if (command == "ImportModel")
-            //{
-            //  try
-            //  {
-            //    var importForm = new ImportDatabaseForm();
-            //    importForm.CurrentDatabase = (this.Model as ModelRoot).Database;
-            //    importForm.ShowDialog();
-
-            //    switch (importForm.Status)
-            //    {
-            //      case SqlSchemaToModel.ImportReturnConstants.Aborted:
-            //        MessageBox.Show("The import was cancelled.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //        break;
-            //      case SqlSchemaToModel.ImportReturnConstants.NoChange:
-            //        MessageBox.Show("This model is up-to-date. There are no changes to refresh.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //        break;
-            //      case SqlSchemaToModel.ImportReturnConstants.Success:
-            //        MessageBox.Show("The import was completed successfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //        break;
-            //    }
-
-            //  }
-            //  catch (Exception ex)
-            //  {
-            //    throw;
-            //  }
-            //}
         }
 
         #endregion

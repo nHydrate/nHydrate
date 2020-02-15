@@ -88,11 +88,6 @@
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="9e140ef2-050f-4fe9-b014-8d0da9f5d22e" Description="Determines if generation will be based on modules" Name="UseModules" DisplayName="Use Modules" DefaultValue="false" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="7eccc5be-839a-41a9-b187-0893eb0f3ea9" Description="Determines if views are visible on the diagram" Name="ShowViews" DisplayName="Show Views" DefaultValue="false" Category="Diagram" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
@@ -126,18 +121,6 @@
         <DomainProperty Id="cfac3b29-311d-4da5-8d93-bb442283b51f" Description="Determines the version of the model. Used for tracking changes and provides an upgrade path for older models" Name="ModelVersion" DisplayName="Model Version" DefaultValue="" Category="Definition" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="ceb0f015-ea20-4762-a324-e3c7fc567b0c" Description="Determines which objects are visible on the diagram" Name="DiagramVisibility" DisplayName="Diagram Visibility" DefaultValue="" Category="Diagram">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.VisibilityTypeEnumConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <DomainEnumerationMoniker Name="VisibilityTypeConstants" />
           </Type>
         </DomainProperty>
         <DomainProperty Id="be71ee12-7759-4612-930e-e53430febfb8" Description="The target location for generated projects" Name="OutputTarget" DisplayName="Output Target" Category="Definition" IsBrowsable="false">
@@ -210,34 +193,10 @@
         </ElementMergeDirective>
         <ElementMergeDirective>
           <Index>
-            <DomainClassMoniker Name="Module" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>nHydrateModelHasModules.Modules</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-        <ElementMergeDirective UsesCustomAccept="true">
-          <Index>
-            <DomainClassMoniker Name="RelationModule" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>nHydrateModelHasRelationModules.RelationModules</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-        <ElementMergeDirective>
-          <Index>
             <DomainClassMoniker Name="ModelMetadata" />
           </Index>
           <LinkCreationPaths>
             <DomainPath>nHydrateModelHasModelMetadata.ModelMetadata</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-        <ElementMergeDirective UsesCustomAccept="true">
-          <Index>
-            <DomainClassMoniker Name="IndexModule" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>nHydrateModelHasIndexModules.IndexModules</DomainPath>
           </LinkCreationPaths>
         </ElementMergeDirective>
       </ElementMergeDirectives>
@@ -1316,121 +1275,6 @@
         </DomainProperty>
       </Properties>
     </DomainClass>
-    <DomainClass Id="f687b04b-616b-4974-8352-711274c9c4f2" Description="" Name="Module" DisplayName="Module" Namespace="nHydrate.Dsl" GeneratesDoubleDerived="true">
-      <Properties>
-        <DomainProperty Id="f2770b4c-a625-40ac-8e12-55b79189db0d" Description="Determines the name of this object" Name="Name" DisplayName="Name" DefaultValue="" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="ba753fd5-2278-453f-b97a-567b28bf3733" Description="Determines summary text were applicable" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-      <ElementMergeDirectives>
-        <ElementMergeDirective>
-          <Index>
-            <DomainClassMoniker Name="ModuleRule" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>ModuleHasModuleRules.ModuleRules</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-      </ElementMergeDirectives>
-    </DomainClass>
-    <DomainClass Id="07b9652b-9383-4cc4-b4c8-f2a54310cd11" Description="" Name="RelationModule" DisplayName="Relation Module" Namespace="nHydrate.Dsl">
-      <Properties>
-        <DomainProperty Id="2ffa9779-00ca-45f7-bf42-72119e743976" Description="" Name="RelationID" DisplayName="Relation ID" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Guid" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="14e732fe-8d5f-48c0-ad33-0108c3b2bfe9" Description="" Name="ModuleId" DisplayName="Module Id" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Guid" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="ab270741-6ed5-48af-b807-349665bd8e85" Description="Determines if this relation is included in the module" Name="Included" DisplayName="Included" DefaultValue="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="433141c2-8f16-43ab-bb8c-92b1ea954f92" Description="Determines if this relation is enforced in the database" Name="IsEnforced" DisplayName="Is Enforced" DefaultValue="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-    </DomainClass>
-    <DomainClass Id="66829b88-3323-4787-ac26-5aafe4dea717" Description="" Name="ModuleRule" DisplayName="Module Rule" Namespace="nHydrate.Dsl">
-      <Properties>
-        <DomainProperty Id="b262ea94-0839-4fab-9205-ae0caad1ee07" Description="The grouping for this rule" Name="Status" DisplayName="Status" DefaultValue="Subset" Category="Definition">
-          <Type>
-            <DomainEnumerationMoniker Name="ModuleRuleStatusTypeConstants" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="48dfe36f-e01d-4d61-a60a-761deb208079" Description="The module to which the status is applied" Name="DependentModule" DisplayName="Dependent Module" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Editors.ModuleEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.ModuleConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Guid" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="b38f468b-d7b6-4e03-8b6f-78fcac0d559b" Description="A summary of the rule" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="e5291183-c926-4577-846e-1ed24b827e1d" Description="Determines the name of this rule" Name="Name" DisplayName="Name" DefaultValue="" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="d7f3b90b-0732-4c32-bb77-54bf759ce9f9" Description="Determines the object types that are included by this rule" Name="Inclusion" DisplayName="Inclusion" DefaultValue="0" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.ModuleRuleInclusionEnumConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="a66fcddc-6c16-4f84-b051-662ad3fcc5af" Description="Determines if this rule is enfored on validation" Name="Enforced" DisplayName="Enforced" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-    </DomainClass>
     <DomainClass Id="ced4ceba-e07d-4396-b2fe-a981c60933d0" Description="A defined index for an entity" Name="Index" DisplayName="Index" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
       <Properties>
         <DomainProperty Id="a8689c72-62db-4c31-8f4e-a65b2ed97cea" Description="" Name="ParentEntityID" DisplayName="Parent Entity" Category="Definition" IsBrowsable="false">
@@ -1533,20 +1377,6 @@
         <DomainProperty Id="621eaec6-e972-4324-9236-6199be7b1612" Description="The value of this metadata" Name="Value" DisplayName="Value" Category="Data">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-    </DomainClass>
-    <DomainClass Id="776ac2d1-1c43-4b77-81f2-a4187e374f56" Description="" Name="IndexModule" DisplayName="Index Module" Namespace="nHydrate.Dsl">
-      <Properties>
-        <DomainProperty Id="b38a2405-6511-434e-ac57-70866a9ad29c" Description="" Name="IndexID" DisplayName="Index ID" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Guid" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="f4f123c3-878c-4add-8a3e-d7996be83978" Description="" Name="ModuleId" DisplayName="Module Id" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Guid" />
           </Type>
         </DomainProperty>
       </Properties>
@@ -1945,134 +1775,6 @@
         </DomainRole>
       </Target>
     </DomainRelationship>
-    <DomainRelationship Id="7dc59c60-a41c-40cd-8089-23ede64cf6ba" Description="" Name="nHydrateModelHasModules" DisplayName="NHydrate Model Has Modules" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="536fb7b9-3fc4-42e0-992a-ee28c53b75d6" Description="" Name="nHydrateModel" DisplayName="NHydrate Model" PropertyName="Modules" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Modules">
-          <RolePlayer>
-            <DomainClassMoniker Name="nHydrateModel" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="fc4998e0-9a90-49b4-956d-190bbd952e61" Description="" Name="Module" DisplayName="Module" PropertyName="nHydrateModel" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="nHydrate Model">
-          <RolePlayer>
-            <DomainClassMoniker Name="Module" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="f1cd3837-4ae7-4258-9092-f6af1931d0e6" Description="" Name="FunctionReferencesModules" DisplayName="Function References Modules" Namespace="nHydrate.Dsl">
-      <Source>
-        <DomainRole Id="bc343ccc-e73c-401a-b686-fe036ef819fe" Description="" Name="Function" DisplayName="Function" PropertyName="Modules" PropertyDisplayName="Modules">
-          <RolePlayer>
-            <DomainClassMoniker Name="Function" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="c9223f95-89ed-43b9-b4f1-18acf2b072e8" Description="" Name="Module" DisplayName="Module" PropertyName="Functions" PropertyDisplayName="Functions">
-          <RolePlayer>
-            <DomainClassMoniker Name="Module" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="864ca82b-4b9f-4789-aff6-8d09a35458be" Description="" Name="ViewReferencesModules" DisplayName="View References Modules" Namespace="nHydrate.Dsl">
-      <Source>
-        <DomainRole Id="e3badaaf-3c03-4591-bc64-3a24b52672be" Description="" Name="View" DisplayName="View" PropertyName="Modules" PropertyDisplayName="Modules">
-          <RolePlayer>
-            <DomainClassMoniker Name="View" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="e0aa72a9-f768-42d6-8cdd-761c0e29b5bf" Description="" Name="Module" DisplayName="Module" PropertyName="Views" PropertyDisplayName="Views">
-          <RolePlayer>
-            <DomainClassMoniker Name="Module" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="14f0b73a-8b9c-440f-8104-95dd375446e9" Description="" Name="StoredProcedureReferencesModules" DisplayName="Stored Procedure References Modules" Namespace="nHydrate.Dsl">
-      <Source>
-        <DomainRole Id="74dc297f-50d0-407d-865c-b02d1dbf55fd" Description="" Name="StoredProcedure" DisplayName="Stored Procedure" PropertyName="Modules" PropertyDisplayName="Modules">
-          <RolePlayer>
-            <DomainClassMoniker Name="StoredProcedure" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="974a57aa-20c4-4835-b4da-65adb984e565" Description="" Name="Module" DisplayName="Module" PropertyName="StoredProcedures" PropertyDisplayName="Stored Procedures">
-          <RolePlayer>
-            <DomainClassMoniker Name="Module" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="bc309d93-1b8b-491e-9e04-7114b1f3991c" Description="" Name="EntityReferencesModules" DisplayName="Entity References Modules" Namespace="nHydrate.Dsl">
-      <Source>
-        <DomainRole Id="9921890f-3210-4d22-a80b-ad60a04babf4" Description="" Name="Entity" DisplayName="Entity" PropertyName="Modules" PropertyDisplayName="Modules">
-          <RolePlayer>
-            <DomainClassMoniker Name="Entity" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="634b3be3-b507-4353-93e7-1e35acb25a2d" Description="" Name="Module" DisplayName="Module" PropertyName="Entities" PropertyDisplayName="Entities">
-          <RolePlayer>
-            <DomainClassMoniker Name="Module" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="f07e8dd2-a74e-4e61-b7f7-b704a373d9c0" Description="" Name="FieldReferencesModules" DisplayName="Field References Modules" Namespace="nHydrate.Dsl">
-      <Source>
-        <DomainRole Id="ba2d3941-91ea-4ad6-9922-11adc3ea6303" Description="" Name="Field" DisplayName="Field" PropertyName="Modules" PropertyDisplayName="Modules">
-          <RolePlayer>
-            <DomainClassMoniker Name="Field" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="18791071-92e0-4629-b63f-9d80f106413c" Description="" Name="Module" DisplayName="Module" PropertyName="Fields" PropertyDisplayName="Fields">
-          <RolePlayer>
-            <DomainClassMoniker Name="Module" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="d6fcf125-9fc1-4537-a9fc-80b04ab84d22" Description="" Name="nHydrateModelHasRelationModules" DisplayName="nHydrate Model Has Relation Modules" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="b398c97f-1a9d-40a2-b428-944678ec75eb" Description="" Name="nHydrateModel" DisplayName="nHydrate Model" PropertyName="RelationModules" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" IsPropertyBrowsable="false" PropertyDisplayName="Relation Modules">
-          <RolePlayer>
-            <DomainClassMoniker Name="nHydrateModel" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="5b5fe496-4fcb-47b7-a6f8-9c06961b103c" Description="" Name="RelationModule" DisplayName="Relation Module" PropertyName="nHydrateModel" Multiplicity="One" PropagatesDelete="true" IsPropertyBrowsable="false" PropertyDisplayName="nHydrate Model">
-          <RolePlayer>
-            <DomainClassMoniker Name="RelationModule" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="63aea98f-70cb-494c-8c26-8d263ba80627" Description="" Name="ModuleHasModuleRules" DisplayName="Module Has Module Rules" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="c7332f35-4438-4f33-945e-6af7f43330cc" Description="" Name="Module" DisplayName="Module" PropertyName="ModuleRules" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Module Rules">
-          <RolePlayer>
-            <DomainClassMoniker Name="Module" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="249cd8e2-030c-4c5a-bcde-4c055b4d052e" Description="" Name="ModuleRule" DisplayName="Module Rule" PropertyName="Module" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="Module">
-          <RolePlayer>
-            <DomainClassMoniker Name="ModuleRule" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
     <DomainRelationship Id="1caea208-6608-47d1-a106-efb54a86e7c4" Description="" Name="EntityHasIndexes" DisplayName="Entity Has Indexes" Namespace="nHydrate.Dsl" IsEmbedding="true">
       <Source>
         <DomainRole Id="7c69ce01-ab6b-4507-bedd-fa784b25a493" Description="" Name="Entity" DisplayName="Entity" PropertyName="Indexes" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Indexes">
@@ -2157,22 +1859,6 @@
         <DomainRole Id="19b19e10-a398-468d-a504-aa47bd30287b" Description="Description for nHydrate.Dsl.EntityHasViews.ChildView" Name="ChildView" DisplayName="Child View" PropertyName="ParentEntity" PropertyDisplayName="Parent Entity">
           <RolePlayer>
             <DomainClassMoniker Name="View" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="4ce7e656-14e7-421e-9368-3091700c1eda" Description="Description for nHydrate.Dsl.nHydrateModelHasIndexModules" Name="nHydrateModelHasIndexModules" DisplayName="NHydrate Model Has Index Modules" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="3b7768ac-9f51-4b4e-af67-3c2d59f179a1" Description="Description for nHydrate.Dsl.nHydrateModelHasIndexModules.nHydrateModel" Name="nHydrateModel" DisplayName="NHydrate Model" PropertyName="IndexModules" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Index Modules">
-          <RolePlayer>
-            <DomainClassMoniker Name="nHydrateModel" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="94543612-9ccf-4034-b59e-746d39d2d19e" Description="Description for nHydrate.Dsl.nHydrateModelHasIndexModules.IndexModule" Name="IndexModule" DisplayName="Index Module" PropertyName="nHydrateModel" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="NHydrate Model">
-          <RolePlayer>
-            <DomainClassMoniker Name="IndexModule" />
           </RolePlayer>
         </DomainRole>
       </Target>
@@ -2278,12 +1964,6 @@
     <ExternalType Name="Color" Namespace="System.Drawing" />
     <ExternalType Name="DashStyle" Namespace="System.Drawing.Drawing2D" />
     <ExternalType Name="LinearGradientMode" Namespace="System.Drawing.Drawing2D" />
-    <DomainEnumeration Name="ModuleRuleStatusTypeConstants" Namespace="nHydrate.Dsl" Description="">
-      <Literals>
-        <EnumerationLiteral Description="Enforces that all objects should be in common with the dependent module" Name="Subset" Value="" />
-        <EnumerationLiteral Description="Enforces that no objects should be in common with the dependent module" Name="Outerset" Value="" />
-      </Literals>
-    </DomainEnumeration>
     <DomainEnumeration Name="TypedEntityConstants" Namespace="nHydrate.Dsl" Description="Description for nHydrate.Dsl.TypedEntityConstants">
       <Literals>
         <EnumerationLiteral Description="This is not a typed entity" Name="None" Value="" />
@@ -2291,35 +1971,12 @@
         <EnumerationLiteral Description="The typed entity is a code-only enumeration" Name="EnumOnly" Value="" />
       </Literals>
     </DomainEnumeration>
-    <DomainEnumeration Name="ModuleRuleInclusionTypeConstants" Namespace="nHydrate.Dsl" Description="A list of options for module rule inclusions">
-      <Literals>
-        <EnumerationLiteral Description="Include no objects in this rule validation" Name="None" Value="0" />
-        <EnumerationLiteral Description="Include views in this rule validation" Name="View" Value="2" />
-        <EnumerationLiteral Description="Include stored procedures in this rule validation" Name="StoredProcedure" Value="4" />
-        <EnumerationLiteral Description="Include entities in this rule validation" Name="Entity" Value="1" />
-        <EnumerationLiteral Description="Include functions in this rule validation" Name="Function" Value="8" />
-      </Literals>
-      <Attributes>
-        <ClrAttribute Name="System.Flags" />
-      </Attributes>
-    </DomainEnumeration>
     <DomainEnumeration Name="IndexTypeConstants" Namespace="nHydrate.Dsl" Description="">
       <Literals>
         <EnumerationLiteral Description="" Name="PrimaryKey" Value="" />
         <EnumerationLiteral Description="" Name="IsIndexed" Value="" />
         <EnumerationLiteral Description="" Name="User" Value="" />
       </Literals>
-    </DomainEnumeration>
-    <DomainEnumeration Name="VisibilityTypeConstants" Namespace="nHydrate.Dsl" Description="A list of options for module rule inclusions">
-      <Literals>
-        <EnumerationLiteral Description="Show views on the diagram" Name="View" Value="4" />
-        <EnumerationLiteral Description="Show stored procedures on the diagram" Name="StoredProcedure" Value="2" />
-        <EnumerationLiteral Description="Show functions on the diagram" Name="Function" Value="1" />
-        <EnumerationLiteral Description="" Name="None" Value="0" />
-      </Literals>
-      <Attributes>
-        <ClrAttribute Name="System.Flags" />
-      </Attributes>
     </DomainEnumeration>
     <DomainEnumeration Name="UIDataTypeConstants" Namespace="nHydrate.Dsl" Description="">
       <Literals>
@@ -2494,15 +2151,6 @@
           <XmlRelationshipData UseFullForm="true" RoleElementName="functions">
             <DomainRelationshipMoniker Name="nHydrateModelHasFunctions" />
           </XmlRelationshipData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="modules">
-            <DomainRelationshipMoniker Name="nHydrateModelHasModules" />
-          </XmlRelationshipData>
-          <XmlPropertyData XmlName="useModules">
-            <DomainPropertyMoniker Name="nHydrateModel/UseModules" />
-          </XmlPropertyData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="relationModules">
-            <DomainRelationshipMoniker Name="nHydrateModelHasRelationModules" />
-          </XmlRelationshipData>
           <XmlPropertyData XmlName="showViews">
             <DomainPropertyMoniker Name="nHydrateModel/ShowViews" />
           </XmlPropertyData>
@@ -2527,9 +2175,6 @@
           <XmlRelationshipData UseFullForm="true" RoleElementName="modelMetadata">
             <DomainRelationshipMoniker Name="nHydrateModelHasModelMetadata" />
           </XmlRelationshipData>
-          <XmlPropertyData XmlName="diagramVisibility">
-            <DomainPropertyMoniker Name="nHydrateModel/DiagramVisibility" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="outputTarget">
             <DomainPropertyMoniker Name="nHydrateModel/OutputTarget" />
           </XmlPropertyData>
@@ -2539,9 +2184,6 @@
           <XmlPropertyData XmlName="tenantColumnName">
             <DomainPropertyMoniker Name="nHydrateModel/TenantColumnName" />
           </XmlPropertyData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="indexModules">
-            <DomainRelationshipMoniker Name="nHydrateModelHasIndexModules" />
-          </XmlRelationshipData>
           <XmlPropertyData XmlName="emitSafetyScripts">
             <DomainPropertyMoniker Name="nHydrateModel/EmitSafetyScripts" />
           </XmlPropertyData>
@@ -2600,9 +2242,6 @@
           </XmlRelationshipData>
           <XmlRelationshipData UseFullForm="true" RoleElementName="entityMetadata">
             <DomainRelationshipMoniker Name="EntityHasMetadata" />
-          </XmlRelationshipData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="modules">
-            <DomainRelationshipMoniker Name="EntityReferencesModules" />
           </XmlRelationshipData>
           <XmlPropertyData XmlName="generatesDoubleDerived">
             <DomainPropertyMoniker Name="Entity/GeneratesDoubleDerived" />
@@ -2739,9 +2378,6 @@
           <XmlPropertyData XmlName="isBrowsable">
             <DomainPropertyMoniker Name="Field/IsBrowsable" />
           </XmlPropertyData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="modules">
-            <DomainRelationshipMoniker Name="FieldReferencesModules" />
-          </XmlRelationshipData>
           <XmlPropertyData XmlName="category">
             <DomainPropertyMoniker Name="Field/Category" />
           </XmlPropertyData>
@@ -2818,9 +2454,6 @@
           <XmlPropertyData XmlName="databaseObjectName">
             <DomainPropertyMoniker Name="StoredProcedure/DatabaseObjectName" />
           </XmlPropertyData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="modules">
-            <DomainRelationshipMoniker Name="StoredProcedureReferencesModules" />
-          </XmlRelationshipData>
           <XmlPropertyData XmlName="generatesDoubleDerived">
             <DomainPropertyMoniker Name="StoredProcedure/GeneratesDoubleDerived" />
           </XmlPropertyData>
@@ -2937,9 +2570,6 @@
           </XmlPropertyData>
           <XmlRelationshipData UseFullForm="true" RoleElementName="fields">
             <DomainRelationshipMoniker Name="ViewHasFields" />
-          </XmlRelationshipData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="modules">
-            <DomainRelationshipMoniker Name="ViewReferencesModules" />
           </XmlRelationshipData>
           <XmlPropertyData XmlName="generatesDoubleDerived">
             <DomainPropertyMoniker Name="View/GeneratesDoubleDerived" />
@@ -3091,9 +2721,6 @@
           <XmlRelationshipData UseFullForm="true" RoleElementName="fields">
             <DomainRelationshipMoniker Name="FunctionHasFields" />
           </XmlRelationshipData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="modules">
-            <DomainRelationshipMoniker Name="FunctionReferencesModules" />
-          </XmlRelationshipData>
           <XmlPropertyData XmlName="isTable">
             <DomainPropertyMoniker Name="Function/IsTable" />
           </XmlPropertyData>
@@ -3184,84 +2811,6 @@
       <XmlClassData TypeName="FunctionShape" MonikerAttributeName="" SerializeId="true" MonikerElementName="functionShapeMoniker" ElementName="functionShape" MonikerTypeName="FunctionShapeMoniker">
         <CompartmentShapeMoniker Name="FunctionShape" />
       </XmlClassData>
-      <XmlClassData TypeName="NHydrateModelHasModules" MonikerAttributeName="" SerializeId="true" MonikerElementName="nHydrateModelHasModulesMoniker" ElementName="nHydrateModelHasModules" MonikerTypeName="NHydrateModelHasModulesMoniker">
-        <DomainRelationshipMoniker Name="nHydrateModelHasModules" />
-      </XmlClassData>
-      <XmlClassData TypeName="Module" MonikerAttributeName="" SerializeId="true" MonikerElementName="moduleMoniker" ElementName="module" MonikerTypeName="ModuleMoniker">
-        <DomainClassMoniker Name="Module" />
-        <ElementData>
-          <XmlPropertyData XmlName="name">
-            <DomainPropertyMoniker Name="Module/Name" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="Module/Summary" />
-          </XmlPropertyData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="moduleRules">
-            <DomainRelationshipMoniker Name="ModuleHasModuleRules" />
-          </XmlRelationshipData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="FunctionReferencesModules" MonikerAttributeName="" SerializeId="true" MonikerElementName="functionReferencesModulesMoniker" ElementName="functionReferencesModules" MonikerTypeName="FunctionReferencesModulesMoniker">
-        <DomainRelationshipMoniker Name="FunctionReferencesModules" />
-      </XmlClassData>
-      <XmlClassData TypeName="ViewReferencesModules" MonikerAttributeName="" SerializeId="true" MonikerElementName="viewReferencesModulesMoniker" ElementName="viewReferencesModules" MonikerTypeName="ViewReferencesModulesMoniker">
-        <DomainRelationshipMoniker Name="ViewReferencesModules" />
-      </XmlClassData>
-      <XmlClassData TypeName="StoredProcedureReferencesModules" MonikerAttributeName="" SerializeId="true" MonikerElementName="storedProcedureReferencesModulesMoniker" ElementName="storedProcedureReferencesModules" MonikerTypeName="StoredProcedureReferencesModulesMoniker">
-        <DomainRelationshipMoniker Name="StoredProcedureReferencesModules" />
-      </XmlClassData>
-      <XmlClassData TypeName="EntityReferencesModules" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityReferencesModulesMoniker" ElementName="entityReferencesModules" MonikerTypeName="EntityReferencesModulesMoniker">
-        <DomainRelationshipMoniker Name="EntityReferencesModules" />
-      </XmlClassData>
-      <XmlClassData TypeName="FieldReferencesModules" MonikerAttributeName="" SerializeId="true" MonikerElementName="fieldReferencesModulesMoniker" ElementName="fieldReferencesModules" MonikerTypeName="FieldReferencesModulesMoniker">
-        <DomainRelationshipMoniker Name="FieldReferencesModules" />
-      </XmlClassData>
-      <XmlClassData TypeName="NHydrateModelHasRelationModules" MonikerAttributeName="" SerializeId="true" MonikerElementName="nHydrateModelHasRelationModulesMoniker" ElementName="nHydrateModelHasRelationModules" MonikerTypeName="NHydrateModelHasRelationModulesMoniker">
-        <DomainRelationshipMoniker Name="nHydrateModelHasRelationModules" />
-      </XmlClassData>
-      <XmlClassData TypeName="RelationModule" MonikerAttributeName="" SerializeId="true" MonikerElementName="relationModuleMoniker" ElementName="relationModule" MonikerTypeName="RelationModuleMoniker">
-        <DomainClassMoniker Name="RelationModule" />
-        <ElementData>
-          <XmlPropertyData XmlName="relationID">
-            <DomainPropertyMoniker Name="RelationModule/RelationID" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="moduleId">
-            <DomainPropertyMoniker Name="RelationModule/ModuleId" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="included">
-            <DomainPropertyMoniker Name="RelationModule/Included" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="isEnforced">
-            <DomainPropertyMoniker Name="RelationModule/IsEnforced" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="ModuleHasModuleRules" MonikerAttributeName="" SerializeId="true" MonikerElementName="moduleHasModuleRulesMoniker" ElementName="moduleHasModuleRules" MonikerTypeName="ModuleHasModuleRulesMoniker">
-        <DomainRelationshipMoniker Name="ModuleHasModuleRules" />
-      </XmlClassData>
-      <XmlClassData TypeName="ModuleRule" MonikerAttributeName="" SerializeId="true" MonikerElementName="moduleRuleMoniker" ElementName="moduleRule" MonikerTypeName="ModuleRuleMoniker">
-        <DomainClassMoniker Name="ModuleRule" />
-        <ElementData>
-          <XmlPropertyData XmlName="status">
-            <DomainPropertyMoniker Name="ModuleRule/Status" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="dependentModule">
-            <DomainPropertyMoniker Name="ModuleRule/DependentModule" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="ModuleRule/Summary" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="name">
-            <DomainPropertyMoniker Name="ModuleRule/Name" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="inclusion">
-            <DomainPropertyMoniker Name="ModuleRule/Inclusion" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="enforced">
-            <DomainPropertyMoniker Name="ModuleRule/Enforced" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
       <XmlClassData TypeName="EntityHasIndexes" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityHasIndexesMoniker" ElementName="entityHasIndexes" MonikerTypeName="EntityHasIndexesMoniker">
         <DomainRelationshipMoniker Name="EntityHasIndexes" />
       </XmlClassData>
@@ -3344,20 +2893,6 @@
       </XmlClassData>
       <XmlClassData TypeName="EntityViewAssociationConnector" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityViewAssociationConnectorMoniker" ElementName="entityViewAssociationConnector" MonikerTypeName="EntityViewAssociationConnectorMoniker">
         <ConnectorMoniker Name="EntityViewAssociationConnector" />
-      </XmlClassData>
-      <XmlClassData TypeName="NHydrateModelHasIndexModules" MonikerAttributeName="" SerializeId="true" MonikerElementName="nHydrateModelHasIndexModulesMoniker" ElementName="nHydrateModelHasIndexModules" MonikerTypeName="NHydrateModelHasIndexModulesMoniker">
-        <DomainRelationshipMoniker Name="nHydrateModelHasIndexModules" />
-      </XmlClassData>
-      <XmlClassData TypeName="IndexModule" MonikerAttributeName="" SerializeId="true" MonikerElementName="indexModuleMoniker" ElementName="indexModule" MonikerTypeName="IndexModuleMoniker">
-        <DomainClassMoniker Name="IndexModule" />
-        <ElementData>
-          <XmlPropertyData XmlName="indexID">
-            <DomainPropertyMoniker Name="IndexModule/IndexID" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="moduleId">
-            <DomainPropertyMoniker Name="IndexModule/ModuleId" />
-          </XmlPropertyData>
-        </ElementData>
       </XmlClassData>
       <XmlClassData TypeName="EntityHasSecurityFunction" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityHasSecurityFunctionMoniker" ElementName="entityHasSecurityFunction" MonikerTypeName="EntityHasSecurityFunctionMoniker">
         <DomainRelationshipMoniker Name="EntityHasSecurityFunction" />
@@ -3520,12 +3055,8 @@
       <DomainPath>EntityHasEntities.ChildEntities</DomainPath>
       <DomainPath>EntityHasEntities.ParentEntity</DomainPath>
       <DomainPath>nHydrateModelHasRelationFields.RelationFields</DomainPath>
-      <DomainPath>EntityReferencesModules.Modules</DomainPath>
-      <DomainPath>nHydrateModelHasRelationModules.RelationModules</DomainPath>
       <DomainPath>EntityHasEntities.ChildEntities</DomainPath>
       <DomainPath>EntityHasEntities.ParentEntity</DomainPath>
-      <DomainPath>nHydrateModelHasRelationModules.nHydrateModel</DomainPath>
-      <DomainPath>nHydrateModelHasIndexModules.IndexModules</DomainPath>
     </HiddenNodes>
   </ExplorerBehavior>
   <ConnectionBuilders>
@@ -3543,101 +3074,6 @@
           <RolePlayerConnectDirective>
             <AcceptingClass>
               <DomainClassMoniker Name="Entity" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </TargetDirectives>
-      </LinkConnectDirective>
-    </ConnectionBuilder>
-    <ConnectionBuilder Name="FunctionReferencesModulesBuilder">
-      <LinkConnectDirective>
-        <DomainRelationshipMoniker Name="FunctionReferencesModules" />
-        <SourceDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="Function" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </SourceDirectives>
-        <TargetDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="Module" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </TargetDirectives>
-      </LinkConnectDirective>
-    </ConnectionBuilder>
-    <ConnectionBuilder Name="ViewReferencesModulesBuilder">
-      <LinkConnectDirective>
-        <DomainRelationshipMoniker Name="ViewReferencesModules" />
-        <SourceDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="View" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </SourceDirectives>
-        <TargetDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="Module" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </TargetDirectives>
-      </LinkConnectDirective>
-    </ConnectionBuilder>
-    <ConnectionBuilder Name="StoredProcedureReferencesModulesBuilder">
-      <LinkConnectDirective>
-        <DomainRelationshipMoniker Name="StoredProcedureReferencesModules" />
-        <SourceDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="StoredProcedure" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </SourceDirectives>
-        <TargetDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="Module" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </TargetDirectives>
-      </LinkConnectDirective>
-    </ConnectionBuilder>
-    <ConnectionBuilder Name="EntityReferencesModulesBuilder">
-      <LinkConnectDirective>
-        <DomainRelationshipMoniker Name="EntityReferencesModules" />
-        <SourceDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="Entity" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </SourceDirectives>
-        <TargetDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="Module" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </TargetDirectives>
-      </LinkConnectDirective>
-    </ConnectionBuilder>
-    <ConnectionBuilder Name="FieldReferencesModulesBuilder">
-      <LinkConnectDirective>
-        <DomainRelationshipMoniker Name="FieldReferencesModules" />
-        <SourceDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="Field" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </SourceDirectives>
-        <TargetDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="Module" />
             </AcceptingClass>
           </RolePlayerConnectDirective>
         </TargetDirectives>

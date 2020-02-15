@@ -90,33 +90,12 @@ namespace nHydrate.DslPackage.Forms
 
             DatabaseConnectionControl1.LoadSettings();
 
-            cboModule.Items.Add("(Choose One)");
-            model.Modules.ForEach(x => cboModule.Items.Add(x.Name));
-            cboModule.SelectedIndex = 0;
-            cboModule.Enabled = model.UseModules;
-            chkMergeModule.Visible = model.UseModules;
-
             EnableButtons();
         }
 
         #endregion
 
         #region Properties
-
-        public string ModuleName
-        {
-            get
-            {
-                if (cboModule.SelectedIndex > 0)
-                {
-                    return (string)cboModule.SelectedItem;
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-        }
 
         private TreeNode SelectedNode
         {
@@ -235,8 +214,6 @@ namespace nHydrate.DslPackage.Forms
                 txtSummary.AppendText("Override primary key: " + chkSettingPK.Checked.ToString() + "\r\n");
                 txtSummary.AppendText("Assume Inheritance: " + chkInheritance.Checked.ToString() + "\r\n");
                 txtSummary.AppendText("Import Relations: " + (!chkIgnoreRelations.Checked).ToString() + "\r\n");
-                if (cboModule.SelectedIndex > 0)
-                    txtSummary.AppendText("Associate with Module '" + (string)cboModule.SelectedItem + "'" + "\r\n");
                 txtSummary.AppendText("Totals: Adding 0, Refreshing 0, Deleting 0" + "\r\n");
 
             }
@@ -1069,15 +1046,7 @@ namespace nHydrate.DslPackage.Forms
 
         private void wizard1_Finish(object sender, EventArgs e)
         {
-            if (chkMergeModule.Checked && cboModule.SelectedIndex == -1)
-            {
-                MessageBox.Show("The merge module checkbox is selected but there is no selected module.", "Invalid Merge Module", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
             var modifiedState = ImportStateConstants.Modified;
-            if (chkMergeModule.Checked)
-                modifiedState = ImportStateConstants.Merge;
 
             #region Entities
 

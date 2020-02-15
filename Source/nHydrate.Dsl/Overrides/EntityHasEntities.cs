@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace nHydrate.Dsl
 {
-    partial class EntityHasEntities : nHydrate.Dsl.IModuleLink
+    partial class EntityHasEntities
     {
         #region Constructors
         // Constructors were not generated for this relationship because it had HasCustomConstructor
@@ -254,46 +254,8 @@ namespace nHydrate.Dsl
         {
             //Remove from relation mapped collections
             var count1 = this.ParentEntity.nHydrateModel.RelationFields.Remove(x => x.RelationID == this.Id);
-            var count2 = this.ParentEntity.nHydrateModel.RelationModules.Remove(x => x.RelationID == this.Id);
-
             base.OnDeleting();
         }
-
-        #region IModuleLink
-
-        IEnumerable<Module> IModuleLink.Modules
-        {
-            get
-            {
-                var idList = this.ParentEntity.nHydrateModel.RelationModules
-                    .Where(x => x.RelationID == this.Id)
-                    .ToList()
-                    .Select(x => x.ModuleId);
-                return this.ParentEntity.nHydrateModel.Modules.Where(x => idList.Contains(x.Id)).ToList();
-            }
-        }
-
-        void IModuleLink.AddModule(Module module)
-        {
-            var modules = ((IModuleLink)this).Modules.ToList();
-            if (!modules.Contains(module))
-            {
-                this.ParentEntity.nHydrateModel.RelationModules.Add(new RelationModule(this.Partition) { RelationID = this.Id, ModuleId = module.Id });
-            }
-        }
-
-        void IModuleLink.RemoveModule(Module module)
-        {
-            var modules = ((IModuleLink)this).Modules.ToList();
-            if (modules.Contains(module))
-            {
-                var o = this.ParentEntity.nHydrateModel.RelationModules.FirstOrDefault(x => x.RelationID == this.Id && x.ModuleId == module.Id);
-                if (o != null)
-                    this.ParentEntity.nHydrateModel.RelationModules.Remove(o);
-            }
-        }
-
-        #endregion
 
     }
 
