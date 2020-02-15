@@ -34,6 +34,12 @@ namespace nHydrate.Generator.Models
         {
         }
 
+        public FunctionColumn()
+            : base(null)
+        {
+            //Only needed for BaseModelCollection<T>
+        }
+
         #endregion
 
         #region Property Implementations

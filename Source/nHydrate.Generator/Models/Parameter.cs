@@ -45,6 +45,10 @@ namespace nHydrate.Generator.Models
         {
         }
 
+        public Parameter()
+        {
+            //Only needed for BaseModelCollection<T>
+        }
         #endregion
 
         #region Property Implementations

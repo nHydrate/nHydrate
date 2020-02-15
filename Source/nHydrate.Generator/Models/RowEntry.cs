@@ -20,10 +20,25 @@ namespace nHydrate.Generator.Models
         public RowEntry(INHydrateModelObject root)
             : base(root)
         {
-            _cellEntries = new CellEntryCollection(this.Root);
+            this.Initialize();
+        }
+
+        public RowEntry()
+        {
+            //Only needed for BaseModelCollection<T>
         }
 
         #endregion
+
+        private void Initialize()
+        {
+            _cellEntries = new CellEntryCollection(this.Root);
+        }
+
+        protected override void OnRootReset(System.EventArgs e)
+        {
+            this.Initialize();
+        }
 
         #region Property Implementations
 

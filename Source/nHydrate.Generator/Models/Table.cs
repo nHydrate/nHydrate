@@ -21,13 +21,6 @@ namespace nHydrate.Generator.Models
     {
         #region Member Variables
 
-        public enum UnitTestSettingsConstants
-        {
-            //NoTest,
-            StubOnly,
-            FullTest,
-        }
-
         protected const bool _def_associativeTable = false;
         protected const bool _def_generated = true;
         protected const bool _def_hasHistory = false;
@@ -43,7 +36,6 @@ namespace nHydrate.Generator.Models
         protected const string _def_dbSchema = "dbo";
         protected const string _def_description = "";
         protected const string _def_codeFacade = "";
-        protected const UnitTestSettingsConstants _def_allowUnitTest = UnitTestSettingsConstants.StubOnly;
         protected const bool _def_isAbstract = false;
         protected const bool _def_generatesDoubleDerived = false;
         protected const bool _def_isTenant = false;
@@ -65,8 +57,6 @@ namespace nHydrate.Generator.Models
         protected ReferenceCollection _viewRelationships = null;
         protected List<TableIndex> _tableIndexList = new List<TableIndex>();
         private string _parentTableKey = null;
-        private UnitTestSettingsConstants _allowUnitTest = _def_allowUnitTest;
-        private List<int> _unitTestTableIdPreLoad = new List<int>();
         private bool _allowAuditTracking = _def_allowAuditTracking;
         private bool _immutable = _def_immutable;
         private bool _enforePrimaryKey = _def_enforePrimaryKey;
@@ -132,23 +122,6 @@ namespace nHydrate.Generator.Models
         public List<TableIndex> TableIndexList
         {
             get { return _tableIndexList; }
-        }
-
-        public UnitTestSettingsConstants AllowUnitTest
-        {
-            get
-            {
-                return _def_allowUnitTest; //NOT SUPPORTED
-                if (!this.Immutable)
-                    return _allowUnitTest;
-                else //If the table cannot be modified then no unit test
-                    return UnitTestSettingsConstants.StubOnly;
-            }
-            set
-            {
-                _allowUnitTest = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("AllowUnitTest"));
-            }
         }
 
         public TypedTableConstants TypedTable
@@ -567,19 +540,6 @@ namespace nHydrate.Generator.Models
             return retval.Where(x => x.ChildTable.Generated && x.ParentTable.Generated);
         }
 
-        internal void PostLoad()
-        {
-            //foreach (int id in _unitTestTableIdPreLoad)
-            //{
-            //  Table[] tArray = ((ModelRoot)this.Root).Database.Tables.GetById(id);
-            //  if (tArray.Length == 1)
-            //  {
-            //    _unitTestDependencies.Add(tArray[0]);
-            //  }
-            //}
-            //_unitTestTableIdPreLoad.Clear();
-        }
-
         public IEnumerable<Column> GetForeignKeyColumns()
         {
             var retval = new List<Column>();
@@ -670,13 +630,6 @@ namespace nHydrate.Generator.Models
                 this.Columns.XmlAppend(columnsNode);
                 node.AppendChild(columnsNode);
 
-                //XmlNode unitTestNode = oDoc.CreateElement("unitTestDependencies");
-                //node.AppendChild(unitTestNode);
-                //foreach (Table t in this.UnitTestDependencies)
-                //{
-                //  XmlHelper.AddElement((XmlElement)unitTestNode, "tableid", t.Id.ToString());
-                //}
-
                 if (this.Generated != _def_generated)
                     XmlHelper.AddAttribute(node, "generated", this.Generated);
 
@@ -688,9 +641,6 @@ namespace nHydrate.Generator.Models
 
                 if (this.EnforcePrimaryKey != _def_enforePrimaryKey)
                     XmlHelper.AddAttribute(node, "enforePrimaryKey", this.EnforcePrimaryKey);
-
-                if (this.AllowUnitTest != _def_allowUnitTest)
-                    XmlHelper.AddAttribute(node, "allowUnitTest", (int)this.AllowUnitTest);
 
                 if (this.AllowModifiedAudit != _def_modifiedAudit)
                     XmlHelper.AddAttribute(node, "modifiedAudit", this.AllowModifiedAudit);
@@ -775,22 +725,12 @@ namespace nHydrate.Generator.Models
                 this.Immutable = XmlHelper.GetAttributeValue(node, "immutable", _def_immutable);
                 this.IsTenant = XmlHelper.GetAttributeValue(node, "isTenant", _def_isTenant);
                 this.EnforcePrimaryKey = XmlHelper.GetAttributeValue(node, "enforePrimaryKey", _def_enforePrimaryKey);
-                this.AllowUnitTest = (UnitTestSettingsConstants)Enum.Parse(typeof(UnitTestSettingsConstants), XmlHelper.GetAttributeValue(node, "allowUnitTest", _def_allowUnitTest.ToString()), true);
 
                 this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
                 var staticDataNode = node.SelectSingleNode("staticData");
                 if (staticDataNode != null)
                     this.StaticData.XmlLoad(staticDataNode);
-
-                //var unitTestNode = node.SelectSingleNode("unitTestDependencies");
-                //if (unitTestNode != null)
-                //{
-                //  foreach (XmlNode n in unitTestNode.ChildNodes)
-                //  {
-                //    _unitTestTableIdPreLoad.Add(int.Parse(n.InnerText));
-                //  }
-                //}
 
                 this.AssociativeTable = XmlHelper.GetAttributeValue(node, "associativeTable", _associativeTable);
                 this.HasHistory = XmlHelper.GetAttributeValue(node, "hasHistory", _hasHistory);

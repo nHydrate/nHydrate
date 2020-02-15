@@ -40,6 +40,18 @@ namespace nHydrate.Generator.Models
         public CustomStoredProcedure(INHydrateModelObject root)
             : base(root)
         {
+            this.Initialize();
+        }
+
+        public CustomStoredProcedure()
+        {
+            //Only needed for BaseModelCollection<T>
+        }
+
+        #endregion
+
+        private void Initialize()
+        {
             _columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
             _columns.ResetKey(Guid.Empty.ToString());
             _columns.ObjectPlural = "Fields";
@@ -55,7 +67,10 @@ namespace nHydrate.Generator.Models
             _parameters.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
         }
 
-        #endregion
+        protected override void OnRootReset(System.EventArgs e)
+        {
+            this.Initialize();
+        }
 
         #region Property Implementations
 

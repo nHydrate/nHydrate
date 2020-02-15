@@ -71,7 +71,7 @@ namespace nHydrate.Generator.Models
                             retVal = modelRoot.Database.Relations.GetById(Ref).FirstOrDefault<Relation>();
                             break;
                         case ReferenceType.ViewRelation:
-                            retVal = modelRoot.Database.ViewRelations.GetById(Ref);
+                            retVal = modelRoot.Database.ViewRelations.GetById(Ref).FirstOrDefault<ViewRelation>();
                             break;
                         case ReferenceType.Table:
                             retVal = modelRoot.Database.Tables[Ref];

@@ -17,12 +17,12 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
         #region Constructor
 
-        public BaseModelObject(INHydrateModelObject root)
+        protected BaseModelObject(INHydrateModelObject root)
         {
             _root = root;
         }
 
-        public BaseModelObject()
+        protected BaseModelObject()
         {
             //This should only be used for BaseModelCollection<T>
         }

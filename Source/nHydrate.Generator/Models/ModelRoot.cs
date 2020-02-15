@@ -39,7 +39,7 @@ namespace nHydrate.Generator.Models
         protected string _defaultNamespace = _def_defaultNamespace;
         protected IGenerator _generatorProject = null;
         private string _storedProcedurePrefix = _def_storedProcedurePrefix;
-        private readonly VersionHistoryCollection _versionHistoryList = new VersionHistoryCollection();
+        private readonly VersionHistoryCollection _versionHistoryList = new VersionHistoryCollection(null);
         private string _moduleName = string.Empty;
         private string _modeToolVersion = string.Empty;
         protected string _tenantColumnName = _def_tenantColumnName;

@@ -11,7 +11,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 {
     public abstract class BaseModelCollection : BaseModelObject, ICollection, IEnumerable
     {
-        public BaseModelCollection(INHydrateModelObject root)
+        protected BaseModelCollection(INHydrateModelObject root)
             : base(root)
         {
         }
@@ -69,7 +69,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         protected readonly List<T> _internalList = new List<T>();
         #endregion
 
-        protected abstract string NodeOldName { get; }
+        protected virtual string NodeOldName { get; } = "";
         protected abstract string NodeName { get; }
 
         #region IXMLable Members
@@ -164,9 +164,10 @@ namespace nHydrate.Generator.Common.GeneratorFramework
             }
         }
 
-        public virtual void Add(T value)
+        public virtual T Add(T value)
         {
             _internalList.Add(value);
+            return value;
         }
 
         #endregion

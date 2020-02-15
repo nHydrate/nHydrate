@@ -44,7 +44,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                     projectItemDataType = _model.Database.Tables.Add("PROPERTY_ITEM_DATA_TYPE");
 
                     Column column = null;
-                    column = _model.Database.Columns.Add("property_item_data_type_id");
+                    column = _model.Database.Columns.Add(new Column { Name = "property_item_data_type_id"});
                     column.ParentTableRef = projectItemDataType.CreateRef();
                     column.DataType = System.Data.SqlDbType.Int;
                     column.PrimaryKey = true;
@@ -52,7 +52,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                     column.AllowNull = false;
                     projectItemDataType.Columns.Add(column.CreateRef());
 
-                    column = _model.Database.Columns.Add("name");
+                    column = _model.Database.Columns.Add(new Column { Name = "name"});
                     column.ParentTableRef = projectItemDataType.CreateRef();
                     column.DataType = System.Data.SqlDbType.VarChar;
                     column.Length = 50;
@@ -70,7 +70,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         #region Create the PROPERTY_ITEM_DEFINE table
                         var projectItemDefineTable = _model.Database.Tables.Add(table.DatabaseName + "_PROPERTY_ITEM_DEFINE");
 
-                        column = _model.Database.Columns.Add("property_item_define_id");
+                        column = _model.Database.Columns.Add(new Column { Name = "property_item_define_id"});
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.Int;
                         column.PrimaryKey = true;
@@ -78,7 +78,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         column.AllowNull = false;
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
-                        column = _model.Database.Columns.Add("name");
+                        column = _model.Database.Columns.Add(new Column { Name = "name"});
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.VarChar;
                         column.Length = 50;
@@ -88,7 +88,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         column.FriendlyName = "Name";
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
-                        column = _model.Database.Columns.Add("property_item_data_type");
+                        column = _model.Database.Columns.Add(new Column { Name = "property_item_data_type"});
                         column.EnumType = "PropertyBagDataTypeConstants";
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.Int;
@@ -110,7 +110,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         projectItemDataType.Relationships.Add(relation2.CreateRef());
                         //RELATIONRELATIONRELATIONRELATIONRELATIONRELATIONRELATIONRELATIONRELATIONRELATION            
 
-                        column = _model.Database.Columns.Add("group");
+                        column = _model.Database.Columns.Add(new Column { Name = "group"});
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.VarChar;
                         column.Length = 50;
@@ -120,7 +120,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         column.FriendlyName = "Group";
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
-                        column = _model.Database.Columns.Add("sort_index");
+                        column = _model.Database.Columns.Add(new Column { Name = "sort_index"});
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.Int;
                         column.AllowNull = false;
@@ -129,7 +129,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         column.FriendlyName = "Sort order";
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
-                        column = _model.Database.Columns.Add("minimum_value");
+                        column = _model.Database.Columns.Add(new Column { Name = "minimum_value"});
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.VarChar;
                         column.Length = 50;
@@ -138,7 +138,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         column.FriendlyName = "Minimum value";
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
-                        column = _model.Database.Columns.Add("maximum_value");
+                        column = _model.Database.Columns.Add(new Column {Name = "maximum_value"});
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.VarChar;
                         column.Length = 50;
@@ -147,7 +147,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         column.FriendlyName = "Maximum value";
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
-                        column = _model.Database.Columns.Add("max_length");
+                        column = _model.Database.Columns.Add(new Column { Name = "max_length"});
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.Int;
                         column.UIVisible = true;
@@ -156,7 +156,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
 
-                        column = _model.Database.Columns.Add("is_required");
+                        column = _model.Database.Columns.Add(new Column { Name = "is_required"});
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.Bit;
                         column.AllowNull = false;
@@ -170,7 +170,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         #region Create the PROPERTY_ITEM table
                         var projectItemValueTable = _model.Database.Tables.Add(table.DatabaseName + "_PROPERTY_ITEM");
 
-                        column = _model.Database.Columns.Add("property_item_id");
+                        column = _model.Database.Columns.Add(new Column { Name = "property_item_id"});
                         column.ParentTableRef = projectItemValueTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.Int;
                         column.PrimaryKey = true;
@@ -178,13 +178,13 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         column.Identity = IdentityTypeConstants.Database;
                         projectItemValueTable.Columns.Add(column.CreateRef());
 
-                        column = _model.Database.Columns.Add("property_item_define_id");
+                        column = _model.Database.Columns.Add(new Column { Name = "property_item_define_id"});
                         column.ParentTableRef = projectItemValueTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.Int;
                         column.AllowNull = false;
                         projectItemValueTable.Columns.Add(column.CreateRef());
 
-                        column = _model.Database.Columns.Add("item_value");
+                        column = _model.Database.Columns.Add(new Column { Name = "item_value"});
                         column.ParentTableRef = projectItemValueTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.VarChar;
                         column.Length = 1024;
@@ -194,7 +194,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         //Create all primary keys
                         foreach (var pkColumn in table.PrimaryKeyColumns.OrderBy(x => x.Name))
                         {
-                            column = _model.Database.Columns.Add(pkColumn.DatabaseName);
+                            column = _model.Database.Columns.Add(new Column { Name = pkColumn.DatabaseName});
                             column.ParentTableRef = projectItemValueTable.CreateRef();
                             column.DataType = pkColumn.DataType;
                             column.Length = pkColumn.Length;

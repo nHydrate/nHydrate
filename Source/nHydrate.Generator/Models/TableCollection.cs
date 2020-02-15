@@ -65,12 +65,6 @@ namespace nHydrate.Generator.Models
                     _internalList.Add(newTable);
                 }
 
-                //Now run the postload operations
-                foreach (Table t in this)
-                {
-                    t.PostLoad();
-                }
-
                 //Remove relationships in error
                 foreach (Table t in this)
                 {
@@ -235,13 +229,6 @@ namespace nHydrate.Generator.Models
             {
                 var table = this.GetById(tableId)[0];
 
-                ////Remove all unit test dependencies
-                //foreach (Table t in this)
-                //{
-                //  if (t.UnitTestDependencies.Contains(table))
-                //    t.UnitTestDependencies.Remove(table);
-                //}
-
                 var deleteList = new ArrayList();
                 foreach (Relation relation in ((ModelRoot)this.Root).Database.Relations)
                 {
@@ -259,8 +246,13 @@ namespace nHydrate.Generator.Models
                 //Remove actual columns
                 for (var ii = table.Columns.Count - 1; ii >= 0; ii--)
                 {
-                    ((ModelRoot)this.Root).Database.Columns.Remove(((Column)table.Columns[0].Object).Id);
+                    //((ModelRoot)this.Root).Database.Columns.Remove(((Column)table.Columns[0].Object).Id);
+                    var id = ((Column) table.Columns[0].Object).Id;
+                    var c = ((ModelRoot) this.Root).Database.Columns.FirstOrDefault(x => x.Id == id);
+                    if (c != null)
+                        ((ModelRoot) this.Root).Database.Columns.Remove(c);
                 }
+
                 //Remove column references
                 table.Columns.Clear();
 

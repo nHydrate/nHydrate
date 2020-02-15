@@ -19,6 +19,11 @@ namespace nHydrate.Generator.Models
         {
         }
 
+        public ColumnRelationship()
+        {
+            //Only needed for BaseModelCollection<T>
+        }
+
         #endregion
 
         #region Property Implementations

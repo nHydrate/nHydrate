@@ -35,6 +35,12 @@ namespace nHydrate.Generator.Models
         {
         }
 
+        public CustomStoredProcedureColumn()
+            :base(null)
+        {
+            //Only needed for BaseModelCollection<T>
+        }
+
         #endregion
 
         #region Property Implementations

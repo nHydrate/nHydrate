@@ -161,7 +161,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             if (_item.IsTenant)
                 sb.AppendLine("	[TenantEntity]");
 
-            foreach (var meta in _item.MetaData)
+            foreach (var meta in _item.MetaData.ToList())
             {
                 sb.AppendLine("	[CustomMetadata(Key = \"" + StringHelper.ConvertTextToSingleLineCodeString(meta.Key) + "\", Value = \"" + meta.Value.Replace("\"", "\\\"") + "\")]");
             }
@@ -525,7 +525,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 //if (!string.IsNullOrEmpty(column.Description))
                 //    sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
 
-                foreach (var meta in column.MetaData)
+                foreach (var meta in column.MetaData.ToList())
                 {
                     sb.AppendLine("	[CustomMetadata(Key = \"" + StringHelper.ConvertTextToSingleLineCodeString(meta.Key) + "\", Value = \"" + meta.Value.Replace("\"", "\\\"") + "\")]");
                 }

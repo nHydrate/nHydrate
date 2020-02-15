@@ -435,7 +435,7 @@ namespace nHydrate.DslPackage.Objects
                 foreach (var md in model.ModelMetadata)
                 {
                     var newmd = new Generator.Models.MetadataItem();
-                    newmd.Key = md.Key;
+                    newmd.ResetKey(md.Key);
                     newmd.Value = md.Value;
                     root.MetaData.Add(newmd);
                 }
@@ -482,7 +482,9 @@ namespace nHydrate.DslPackage.Objects
                     //Add metadata
                     foreach (var md in entity.EntityMetadata)
                     {
-                        newTable.MetaData.Add(new nHydrate.Generator.Models.MetadataItem() { Key = md.Key, Value = md.Value });
+                        var newItem = new nHydrate.Generator.Models.MetadataItem() { Value = md.Value };
+                        newItem.ResetKey(md.Key);
+                        newTable.MetaData.Add(newItem);
                     }
 
                     if (entity.SecurityFunction != null)
@@ -560,7 +562,9 @@ namespace nHydrate.DslPackage.Objects
                         //Add metadata
                         foreach (var md in field.FieldMetadata)
                         {
-                            newColumn.MetaData.Add(new nHydrate.Generator.Models.MetadataItem() { Key = md.Key, Value = md.Value });
+                            var newItem = new nHydrate.Generator.Models.MetadataItem() { Value = md.Value};
+                            newItem.ResetKey(md.Key);
+                            newColumn.MetaData.Add(newItem);
                         }
 
                     }

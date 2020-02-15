@@ -69,14 +69,30 @@ namespace nHydrate.Generator.Models
         public Column(INHydrateModelObject root)
             : base(root)
         {
-            this.MetaData = new MetadataItemCollection();
+            this.Initialize();
+        }
+
+        public Column()
+            : base(null)
+        {
+            //Only needed for BaseModelCollection<T>
         }
 
         #endregion
 
+        private void Initialize()
+        {
+            this.MetaData = new MetadataItemCollection();
+        }
+
+        protected override void OnRootReset(System.EventArgs e)
+        {
+            this.Initialize();
+        }
+
         #region Property Implementations
 
-        public MetadataItemCollection MetaData { get; }
+        public MetadataItemCollection MetaData { get; private set; }
 
         public bool IsReadOnly
         {

@@ -31,10 +31,25 @@ namespace nHydrate.Generator.Models
         public ViewRelation(INHydrateModelObject root)
             : base(root)
         {
-            _columnRelationships = new ViewColumnRelationshipCollection(this.Root);
+            this.Initialize();
+        }
+
+        public ViewRelation()
+        {
+            //Only needed for BaseModelCollection<T>
         }
 
         #endregion
+
+        private void Initialize()
+        {
+            _columnRelationships = new ViewColumnRelationshipCollection(this.Root);
+        }
+
+        protected override void OnRootReset(System.EventArgs e)
+        {
+            this.Initialize();
+        }
 
         #region Events
 

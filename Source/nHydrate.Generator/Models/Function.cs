@@ -35,6 +35,18 @@ namespace nHydrate.Generator.Models
         public Function(INHydrateModelObject root)
             : base(root)
         {
+            this.Initialize();
+        }
+
+        public Function()
+        {
+            //Only needed for BaseModelCollection<T>
+        }
+
+        #endregion
+
+        private void Initialize()
+        {
             this.Columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
             this.Columns.ResetKey(Guid.Empty.ToString());
             this.Columns.ObjectPlural = "Fields";
@@ -50,7 +62,10 @@ namespace nHydrate.Generator.Models
             this.Parameters.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
         }
 
-        #endregion
+        protected override void OnRootReset(System.EventArgs e)
+        {
+            this.Initialize();
+        }
 
         #region Property Implementations
 
@@ -76,9 +91,9 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public ReferenceCollection Columns { get; }
+        public ReferenceCollection Columns { get; private set; }
 
-        public ReferenceCollection Parameters { get; }
+        public ReferenceCollection Parameters { get; private set; }
 
         public IEnumerable<Parameter> GeneratedParameters
         {

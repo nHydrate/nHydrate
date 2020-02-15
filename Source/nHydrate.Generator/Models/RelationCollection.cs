@@ -102,13 +102,14 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public override void Add(Relation value)
+        public override Relation Add(Relation value)
         {
             if (this.ContainsId(value.Id))
             {
                 value.ResetId(NextIndex());
             }
             _internalList.Add(value);
+            return value;
         }
 
         public override bool Contains(string name)

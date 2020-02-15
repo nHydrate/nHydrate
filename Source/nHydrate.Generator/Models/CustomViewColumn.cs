@@ -37,6 +37,12 @@ namespace nHydrate.Generator.Models
         {
         }
 
+        public CustomViewColumn()
+            : base(null)
+        {
+
+        }
+
         #endregion
 
         #region Property Implementations

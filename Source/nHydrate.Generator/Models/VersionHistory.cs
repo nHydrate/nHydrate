@@ -4,7 +4,7 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-    public class VersionHistory : IXMLable
+    public class VersionHistory : BaseModelObject, IXMLable
     {
         public VersionHistory()
         {
@@ -19,7 +19,7 @@ namespace nHydrate.Generator.Models
 
         public string Version { get; private set; }
 
-        public void XmlAppend(System.Xml.XmlNode node)
+        public override void XmlAppend(System.Xml.XmlNode node)
         {
             var oDoc = node.OwnerDocument;
 
@@ -29,7 +29,7 @@ namespace nHydrate.Generator.Models
 
         }
 
-        public void XmlLoad(System.Xml.XmlNode node)
+        public override void XmlLoad(System.Xml.XmlNode node)
         {
             this.CreatedDate = DateTime.ParseExact(
                 XmlHelper.GetAttributeValue(node, "createdDate",
