@@ -56,7 +56,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _default = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Default"));
             }
         }
 
@@ -72,7 +71,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _friendlyName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("friendlyName"));
             }
         }
 
@@ -82,7 +80,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _sortOrder = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("sortOrder"));
             }
         }
 
@@ -92,7 +89,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _UIVisible = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("UIVisible"));
             }
         }
 
@@ -256,7 +252,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _codeFacade = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("codeFacade"));
             }
         }
 

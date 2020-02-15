@@ -86,13 +86,11 @@ namespace nHydrate.Generator
         public void ResetId(int newId)
         {
             this.Id = newId;
-            this.OnPropertyChanged(this, new PropertyChangedEventArgs("Id"));
         }
 
         public virtual void SetKey(string key)
         {
             this.Key = key;
-            this.OnPropertyChanged(this, new PropertyChangedEventArgs("Key"));
         }
 
         public string Name
@@ -101,7 +99,6 @@ namespace nHydrate.Generator
             set
             {
                 _name = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Name"));
             }
         }
         [Browsable(false)]

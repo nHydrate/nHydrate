@@ -35,7 +35,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateRe
 
         public override string FileName
         {
-            get { return string.Format("3_CreateRelations.sql"); }
+            get { return "3_CreateRelations.sql"; }
         }
 
         #endregion

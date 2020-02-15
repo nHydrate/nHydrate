@@ -316,8 +316,7 @@ namespace nHydrate.DslPackage
             base.Load(fileName, isReload);
 
             modelRoot = this.RootElement as nHydrateModel;
-            var isDirty = 0;
-            this.IsDirty(out isDirty);
+            this.IsDirty(out var isDirty);
             if (modelRoot.IsDirty || (isDirty != 0))
             {
                 this.SetDocDataDirty(0);

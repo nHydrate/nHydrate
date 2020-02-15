@@ -41,9 +41,6 @@ namespace nHydrate.Dsl
 		{
 			try
 			{
-				//var id = string.Empty;
-				//var name = string.Empty;
-				//var description = string.Empty;
 				var pk = entity.PrimaryKeyFields.FirstOrDefault();
 				if (pk == null) return false;
 				var processed = new List<string>();
@@ -65,21 +62,20 @@ namespace nHydrate.Dsl
 		{
 			//Some of these are not fool-proof but they are close enough!!
 			var retval = true;
-			foreach (var data in dataList)
+            long vlong;
+            int vint;
+            bool vbool;
+            decimal vdecimal;
+            DateTime vdate;
+            short vshort;
+            byte vbyte;
+            foreach (var data in dataList)
 			{
 				//var column = entity.Store.ElementDirectory.AllElements.FirstOrDefault(x => x.Id == data.Id) as Field;
 				var column = entity.Fields.FirstOrDefault(x => x.Id == data.ColumnKey);
 				if (column == null) return true; //No Verification
 
-				long vlong;
-				int vint;
-				bool vbool;
-				decimal vdecimal;
-				DateTime vdate;
-				short vshort;
-				byte vbyte;
-
-				if (column.Nullable && data.Value.ToLower() == "(null)")
+                if (column.Nullable && data.Value.ToLower() == "(null)")
 				{
 					//Do nothing. This is a nullable field so set to NULL
 				}

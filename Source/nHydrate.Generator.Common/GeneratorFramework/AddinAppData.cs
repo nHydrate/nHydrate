@@ -15,9 +15,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         private const string REG_LOCATION = @"Software\nHydrate.org\nHydrate Modeler";
         private const string REG_INSTALLDIR_PROPERTY = "InstallDir";
 
-        private static readonly AddinAppData _instance = null;
         private readonly FileInfo _addinDataStoreFile = null;
-        private readonly AddinProperties _addInProperties = null;
 
         #endregion
 
@@ -27,7 +25,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         {
             try
             {
-                _instance = new AddinAppData();
+                Instance = new AddinAppData();
             }
             catch (Exception ex)
             {
@@ -45,12 +43,12 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                 fullFileName = appDataFolder;
 
                 _addinDataStoreFile = new FileInfo(fullFileName);
-                _addInProperties = new AddinProperties();
+                Properties = new AddinProperties();
                 if (_addinDataStoreFile.Exists)
                 {
                     var serializer = new XmlSerializer(typeof(AddinProperties));
                     var tr = new StreamReader(_addinDataStoreFile.FullName);
-                    _addInProperties = (AddinProperties)serializer.Deserialize(tr);
+                    Properties = (AddinProperties)serializer.Deserialize(tr);
                     tr.Close();
                 }
             }
@@ -64,15 +62,9 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
         #region Properties
 
-        private AddinProperties Properties
-        {
-            get { return _addInProperties; }
-        }
+        private AddinProperties Properties { get; } = null;
 
-        public static AddinAppData Instance
-        {
-            get { return _instance; }
-        }
+        public static AddinAppData Instance { get; } = null;
 
         public string ExtensionDirectory
         {

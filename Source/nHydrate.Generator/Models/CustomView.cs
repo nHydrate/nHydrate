@@ -21,12 +21,8 @@ namespace nHydrate.Generator.Models
         protected const bool _def_generatesDoubleDerived = false;
 
         protected string _codeFacade = _def_codefacade;
-        protected string _description = _def_description;
         protected bool _generated = _def_generated;
         protected string _sql = string.Empty;
-        protected ReferenceCollection _columns = null;
-        private string _dbSchema = _def_dbSchema;
-        private bool _generatesDoubleDerived = _def_generatesDoubleDerived;
 
         #endregion
 
@@ -47,12 +43,12 @@ namespace nHydrate.Generator.Models
 
         private void Initialize()
         {
-            _columns = new ReferenceCollection(this.Root, this, ReferenceType.CustomViewColumn);
-            _columns.ResetKey(Guid.Empty.ToString());
-            _columns.ObjectPlural = "Fields";
-            _columns.ObjectSingular = "Field";
-            _columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
-            _columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
+            Columns = new ReferenceCollection(this.Root, this, ReferenceType.CustomViewColumn);
+            Columns.ResetKey(Guid.Empty.ToString());
+            Columns.ObjectPlural = "Fields";
+            Columns.ObjectSingular = "Field";
+            Columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
+            Columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
         }
 
         protected override void OnRootReset(System.EventArgs e)
@@ -64,40 +60,13 @@ namespace nHydrate.Generator.Models
 
         public int PrecedenceOrder { get; set; }
 
-        public string DBSchema
-        {
-            get { return _dbSchema; }
-            set
-            {
-                _dbSchema = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("DBSchema"));
-            }
-        }
+        public string DBSchema { get; set; } = _def_dbSchema;
 
-        public bool GeneratesDoubleDerived
-        {
-            get { return _generatesDoubleDerived; }
-            set
-            {
-                _generatesDoubleDerived = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("GeneratesDoubleDerived"));
-            }
-        }
+        public bool GeneratesDoubleDerived { get; set; } = _def_generatesDoubleDerived;
 
-        public string Description
-        {
-            get { return _description; }
-            set
-            {
-                _description = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Description"));
-            }
-        }
+        public string Description { get; set; } = _def_description;
 
-        public ReferenceCollection Columns
-        {
-            get { return _columns; }
-        }
+        public ReferenceCollection Columns { get; protected set; } = null;
 
         public IEnumerable<CustomViewColumn> GeneratedColumns
         {
@@ -115,7 +84,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _generated = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Generated"));
             }
         }
 
@@ -125,7 +93,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _sql = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ViewSql"));
             }
         }
 
@@ -348,7 +315,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _codeFacade = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("codeFacade"));
             }
         }
 

@@ -52,7 +52,6 @@ namespace nHydrate.Wizard
         private Font headerTitleFont = null;
         private Font welcomeFont = null;
         private Font welcomeTitleFont = null;
-        private bool _allowAutoClose = true;
         private FlatStyle _buttonFlatStyle = FlatStyle.Standard;
 
         #endregion
@@ -269,11 +268,7 @@ namespace nHydrate.Wizard
 
         [Browsable(true)]
         [DefaultValue(true)]
-        public bool AllowAutoClose
-        {
-            get { return _allowAutoClose; }
-            set { _allowAutoClose = value; }
-        }
+        public bool AllowAutoClose { get; set; } = true;
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -741,29 +736,23 @@ namespace nHydrate.Wizard
         {
 
             #region Fields
-            private int oldIndex;
-            protected int newIndex;
+
             #endregion
 
             #region Constructor
             internal AfterSwitchPagesEventArgs(int oldIndex, int newIndex)
             {
-                this.oldIndex = oldIndex;
-                this.newIndex = newIndex;
+                this.OldIndex = oldIndex;
+                this.NewIndex = newIndex;
             }
 
             #endregion
 
             #region Properties
-            public int OldIndex
-            {
-                get { return this.oldIndex; }
-            }
+            public int OldIndex { get; }
 
-            public int NewIndex
-            {
-                get { return this.newIndex; }
-            }
+            public int NewIndex { get; protected set; }
+
             #endregion
 
         }
@@ -772,7 +761,7 @@ namespace nHydrate.Wizard
         {
 
             #region Fields
-            private bool cancel = false;
+
             #endregion
 
             #region Constructor
@@ -785,16 +774,12 @@ namespace nHydrate.Wizard
             #endregion
 
             #region Properties
-            public bool Cancel
-            {
-                get { return this.cancel; }
-                set { this.cancel = value; }
-            }
+            public bool Cancel { get; set; } = false;
 
-            public new int NewIndex
+            private new int NewIndex
             {
-                get { return base.newIndex; }
-                set { base.newIndex = value; }
+                get { return base.NewIndex; }
+                set { base.NewIndex = value; }
             }
             #endregion
 

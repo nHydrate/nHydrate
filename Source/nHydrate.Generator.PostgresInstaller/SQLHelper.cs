@@ -99,9 +99,13 @@ namespace nHydrate.Generator.PostgresInstaller
                 #endregion
 
                 #region Loop and DELETE tables
-                foreach (var oldT in modelOld.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly))
+
+                foreach (var oldT in modelOld.Database.Tables.Where(x =>
+                    x.Generated && x.TypedTable != TypedTableConstants.EnumOnly))
                 {
-                    var newT = modelNew.Database.Tables.FirstOrDefault(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly) && x.Key.ToLower() == oldT.Key.ToLower());
+                    var newT = modelNew.Database.Tables.FirstOrDefault(x =>
+                        x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly) &&
+                        x.Key.ToLower() == oldT.Key.ToLower());
                     if (newT == null)
                     {
                         //DELETE TABLE
@@ -115,19 +119,20 @@ namespace nHydrate.Generator.PostgresInstaller
                         //If the old model had audit tracking and the new one does not, add a TODO in the script
                         var tableName = "__AUDIT__" + Globals.GetTableDatabaseName(modelOld, oldT);
                         sb.AppendLine("--TODO: REMOVE AUDIT TABLE '" + tableName + "'");
-                        sb.AppendLine("--The previous model had audit tracking turn on for table '" + Globals.GetTableDatabaseName(modelOld, oldT) + "' and now it is turned off.");
-                        sb.AppendLine("--The audit table will not be removed automatically. If you want to remove it, uncomment the following script.");
+                        sb.AppendLine("--The previous model had audit tracking turn on for table '" +
+                                      Globals.GetTableDatabaseName(modelOld, oldT) + "' and now it is turned off.");
+                        sb.AppendLine(
+                            "--The audit table will not be removed automatically. If you want to remove it, uncomment the following script.");
                         sb.AppendLine("--DROP TABLE [" + tableName + "]");
                         sb.AppendLine("--GO");
                         sb.AppendLine();
                     }
-                    //else if (tList[0].DatabaseName != oldT.DatabaseName)
-                    //{
-                    //  //RENAME TABLE
-                    //  sb.AppendLine("if exists(select * from sys.objects where name = '" + oldT.DatabaseName + "' and type = 'U')");
-                    //  sb.AppendLine("exec sp_rename [" + oldT.DatabaseName + "], [" + tList[0].DatabaseName + "]");
-                    //}
+                    else if (newT.DatabaseName != oldT.DatabaseName)
+                    {
+                        //RENAME TABLE
+                    }
                 }
+
                 #endregion
 
                 #region Loop and Modify tables
@@ -736,8 +741,7 @@ namespace nHydrate.Generator.PostgresInstaller
                         .Replace("{", string.Empty)
                         .Replace("}", string.Empty));
 
-                    Guid g;
-                    if (Guid.TryParse(v, out g))
+                    if (Guid.TryParse(v, out var g))
                         tempBuilder.Append("'" + g.ToString() + "'");
                 }
             }
@@ -1031,14 +1035,6 @@ namespace nHydrate.Generator.PostgresInstaller
                 sb.AppendLine($"select * from {table.GetPostgresSchema()}.\"{table.DatabaseName}\"");
                 sb.AppendLine($"WHERE (\"{model.TenantColumnName}\" = current_user);");
                 sb.AppendLine("--GO");
-
-                //if (!string.IsNullOrEmpty(model.Database.GrantExecUser))
-                //{
-                //    grantSB.AppendLine($"GRANT ALL ON [{table.GetPostgresSchema()}].[{itemName}] TO [{model.Database.GrantExecUser}]");
-                //    grantSB.AppendLine($"--MODELID: " + table.Key);
-                //    grantSB.AppendLine("--GO");
-                //    grantSB.AppendLine();
-                //}
                 return sb.ToString();
             }
             catch (Exception ex)

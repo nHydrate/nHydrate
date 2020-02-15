@@ -8,12 +8,11 @@ namespace nHydrate.DslPackage.Forms
     public partial class DatabaseConnectionControl : UserControl
     {
         private DataImportOptions _importOptions = new DataImportOptions();
-        private string _fileName = string.Empty;
 
         public DatabaseConnectionControl()
         {
             InitializeComponent();
-            _fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"nHydrate\nHydrate.ConnectionDialog.config.xml");
+            FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"nHydrate\nHydrate.ConnectionDialog.config.xml");
             this.RefreshEnabled();
         }
 
@@ -81,11 +80,7 @@ namespace nHydrate.DslPackage.Forms
             _importOptions.UseWinAuth = chkWinAuth.Checked;
         }
 
-        public string FileName
-        {
-            get { return _fileName; }
-            set { _fileName = value; }
-        }
+        public string FileName { get; set; } = string.Empty;
 
         public void LoadSettings()
         {

@@ -16,35 +16,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
             return model.UseUTCTime ? "DateTime.UtcNow" : "DateTime.Now";
         }
 
-        public static IEnumerable<Column> GetValidSearchColumns(Table _currentTable)
-        {
-            try
-            {
-                var validColumns = new List<Column>();
-                foreach (var column in _currentTable.GeneratedColumns)
-                {
-                    if (!(column.DataType == System.Data.SqlDbType.Binary ||
-                        column.DataType == System.Data.SqlDbType.Image ||
-                        column.DataType == System.Data.SqlDbType.NText ||
-                        column.DataType == System.Data.SqlDbType.Text ||
-                        column.DataType == System.Data.SqlDbType.Timestamp ||
-                        column.DataType == System.Data.SqlDbType.Udt ||
-                        column.DataType == System.Data.SqlDbType.VarBinary ||
-                        column.DataType == System.Data.SqlDbType.Variant ||
-                    column.DataType == System.Data.SqlDbType.Money))
-                    {
-                        validColumns.Add(column);
-                    }
-                }
-                return validColumns.OrderBy(x => x.Name).AsEnumerable();
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(_currentTable.DatabaseName + ": Failed on generation of select or template", ex);
-            }
-        }
-
         public static string BuildSelectList(Table table, ModelRoot model)
         {
             return BuildSelectList(table, model, false);
@@ -106,43 +77,9 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
             return output.ToString();
         }
 
-        public static string BuildPrimaryKeySelectList(ModelRoot model, Table table, bool qualifiedNames)
-        {
-            var index = 0;
-            var output = new StringBuilder();
-            foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
-            {
-                output.Append("	[");
-                if (qualifiedNames)
-                {
-                    output.Append(Globals.GetTableDatabaseName(model, table));
-                    output.Append("].[");
-                }
-                output.Append(column.DatabaseName + "]");
-                if (index < table.PrimaryKeyColumns.Count - 1)
-                    output.Append(",");
-                output.AppendLine();
-                index++;
-            }
-            return output.ToString();
-        }
-
         public static string GetTableDatabaseName(ModelRoot model, Table table)
         {
             return table.DatabaseName;
-        }
-
-        public static Column GetColumnByName(ReferenceCollection referenceCollection, string name)
-        {
-            foreach (Reference r in referenceCollection)
-            {
-                if (r.Object is Column)
-                {
-                    if (string.Compare(((Column)r.Object).Name, name, true) == 0)
-                        return (Column)r.Object;
-                }
-            }
-            return null;
         }
 
         public static Column GetColumnByKey(ReferenceCollection referenceCollection, string columnKey)

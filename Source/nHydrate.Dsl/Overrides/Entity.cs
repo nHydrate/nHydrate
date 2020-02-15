@@ -3,28 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using nHydrate.Generator.Common.Util;
-using DslModeling = global::Microsoft.VisualStudio.Modeling;
-using DslDesign = global::Microsoft.VisualStudio.Modeling.Design;
 using System.ComponentModel;
 
 namespace nHydrate.Dsl
 {
     partial class Entity : nHydrate.Dsl.IModuleLink, nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer
     {
-        public string CamelName
-        {
-            get { return StringHelper.DatabaseNameToCamelCase(this.PascalName); }
-        }
-
-        public string DatabaseName
-        {
-            get { return this.Name; }
-        }
-
-        protected override void OnCopy(DslModeling.ModelElement sourceElement)
-        {
-            base.OnCopy(sourceElement);
-        }
+        public string DatabaseName => this.Name;
 
         public string PascalName
         {
@@ -97,19 +82,6 @@ namespace nHydrate.Dsl
                     .ToList();
             }
         }
-
-        //public IList<EntityInheritsEntity> ParentRelationshipList
-        //{
-        //    get
-        //    {
-        //        return this.Store.ElementDirectory.AllElements
-        //            .Where(x => x is EntityInheritsEntity)
-        //            .ToList()
-        //            .Cast<EntityInheritsEntity>()
-        //            .Where(x => x.ChildDerivedEntities == this)
-        //            .ToList();
-        //    }
-        //}
 
         public IList<EntityHasViews> RelationshipViewList
         {

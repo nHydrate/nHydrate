@@ -102,7 +102,6 @@ namespace nHydrate.Generator.Models
                     _parentTableRef = value;
                     this.RefreshRoleName();
                     this.OnAfterParentTableChange(this, new EventArgs());
-                    this.OnPropertyChanged(this, new PropertyChangedEventArgs("parentTableRef"));
                 }
             }
         }
@@ -118,7 +117,6 @@ namespace nHydrate.Generator.Models
                     _childViewRef = value;
                     this.RefreshRoleName();
                     this.OnAfterChildTableChange(this, new EventArgs());
-                    this.OnPropertyChanged(this, new PropertyChangedEventArgs("childTableRef"));
                 }
             }
         }
@@ -131,7 +129,6 @@ namespace nHydrate.Generator.Models
                 if (_roleName != value)
                 {
                     _roleName = value;
-                    this.OnPropertyChanged(this, new PropertyChangedEventArgs("RoleName"));
                 }
             }
         }
@@ -144,7 +141,6 @@ namespace nHydrate.Generator.Models
                 if (_constraintName != value)
                 {
                     _constraintName = value;
-                    this.OnPropertyChanged(this, new PropertyChangedEventArgs("ConstraintName"));
                 }
             }
         }
@@ -155,7 +151,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _description = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Description"));
             }
         }
 

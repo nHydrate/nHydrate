@@ -136,7 +136,7 @@ namespace nHydrate.DslPackage
                 var postArrange = (this.CurrentDocView.CurrentDiagram.NestedChildShapes.Count == 0);
 
                 var database = nHydrate.DslPackage.Objects.DatabaseImportDomain.Convert(model, this.CurrentDocView.CurrentDiagram);
-                var importDatabaseForm = new ImportDatabaseForm(model, store, this.CurrentDocView.CurrentDiagram, database, this.CurrentDocData);
+                var importDatabaseForm = new ImportDatabaseForm(model, database, this.CurrentDocData);
                 if (importDatabaseForm.ShowDialog() == DialogResult.OK)
                 {
                     var module = model.Modules.FirstOrDefault(x => x.Name == importDatabaseForm.ModuleName);

@@ -252,30 +252,16 @@ namespace nHydrate.Generator.Models
 
         #region ICollection Members
 
-        public override bool IsSynchronized
-        {
-            get { return false; }
-        }
+        public override bool IsSynchronized => false;
 
-        public override int Count
-        {
-            get
-            {
-                return _references.Count;
-            }
-        }
+        public override int Count => _references.Count;
 
         public override void CopyTo(Array array, int index)
         {
             _references.CopyTo((Reference[])array, index);
         }
 
-        private readonly object _syncRoot = "QQQ";
-
-        public override object SyncRoot
-        {
-            get { return _syncRoot; }
-        }
+        public override object SyncRoot { get; } = "QQQ";
 
         #endregion
 

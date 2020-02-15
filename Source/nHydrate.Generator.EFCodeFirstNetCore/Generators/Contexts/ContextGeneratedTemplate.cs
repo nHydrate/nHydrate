@@ -421,8 +421,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             {
                 foreach (var column in table.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
                 {
-                    string pascalRoleName;
-                    if (table.IsColumnRelatedToTypeTable(column, out pascalRoleName) || (column.PrimaryKey && table.TypedTable != TypedTableConstants.None))
+                    if (table.IsColumnRelatedToTypeTable(column, out var pascalRoleName) || (column.PrimaryKey && table.TypedTable != TypedTableConstants.None))
                     {
                         var typeTable = table.GetRelatedTypeTableByColumn(column, out pascalRoleName);
                         if (typeTable == null) typeTable = table;

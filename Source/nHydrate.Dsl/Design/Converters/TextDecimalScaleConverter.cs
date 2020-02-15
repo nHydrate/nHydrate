@@ -133,8 +133,7 @@ namespace nHydrate.Dsl.Design.Converters
         {
             if (value is string)
             {
-                int v;
-                if (int.TryParse(value.ToString(), out v))
+                if (int.TryParse(value.ToString(), out var v))
                 {
                     return v;
                 }

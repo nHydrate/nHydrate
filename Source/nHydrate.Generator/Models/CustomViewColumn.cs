@@ -18,16 +18,6 @@ namespace nHydrate.Generator.Models
         protected const string _def_friendlyName = "";
         protected const bool _def_isPrimaryKey = false;
 
-        protected string _codeFacade = _def_codefacade;
-        protected string _default = _def_default;
-        protected Reference _parentViewRef = null;
-        protected Reference _relationshipRef = null;
-        protected string _friendlyName = _def_friendlyName;
-        protected int _sortOrder = _def_sortOrder;
-        protected bool _UIVisible = _def_UIVisible;
-        private string _enumType = string.Empty;
-        protected bool _isPrimaryKey = _def_isPrimaryKey;
-
         #endregion
 
         #region Constructor
@@ -47,73 +37,21 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        public bool IsPrimaryKey
-        {
-            get { return _isPrimaryKey; }
-            set
-            {
-                _isPrimaryKey = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("IsPrimaryKey"));
-            }
-        }
+        public bool IsPrimaryKey { get; set; } = _def_isPrimaryKey;
 
-        public Reference RelationshipRef
-        {
-            get { return _relationshipRef; }
-            set { _relationshipRef = value; }
-        }
+        public Reference RelationshipRef { get; set; } = null;
 
-        public string Default
-        {
-            get { return _default; }
-            set
-            {
-                _default = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Default"));
-            }
-        }
+        public string Default { get; set; } = _def_default;
 
-        public Reference ParentViewRef
-        {
-            get { return _parentViewRef; }
-            set { _parentViewRef = value; }
-        }
+        public Reference ParentViewRef { get; set; } = null;
 
-        public string FriendlyName
-        {
-            get { return _friendlyName; }
-            set
-            {
-                _friendlyName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("friendlyName"));
-            }
-        }
+        public string FriendlyName { get; set; } = _def_friendlyName;
 
-        public int SortOrder
-        {
-            get { return _sortOrder; }
-            set
-            {
-                _sortOrder = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("sortOrder"));
-            }
-        }
+        public int SortOrder { get; set; } = _def_sortOrder;
 
-        public bool UIVisible
-        {
-            get { return _UIVisible; }
-            set
-            {
-                _UIVisible = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("UIVisible"));
-            }
-        }
+        public bool UiVisible { get; set; } = _def_UIVisible;
 
-        internal string EnumType
-        {
-            get { return _enumType; }
-            set { _enumType = value; }
-        }
+        internal string EnumType { get; set; } = string.Empty;
 
         public override string DatabaseType
         {
@@ -171,8 +109,8 @@ namespace nHydrate.Generator.Models
                 if (this.FriendlyName != _def_friendlyName)
                     XmlHelper.AddAttribute(node, "dataFieldFriendlyName", this.FriendlyName);
 
-                if (this.UIVisible != _def_UIVisible)
-                    XmlHelper.AddAttribute(node, "dataFieldVisibility", this.UIVisible);
+                if (this.UiVisible != _def_UIVisible)
+                    XmlHelper.AddAttribute(node, "dataFieldVisibility", this.UiVisible);
 
                 if (this.SortOrder != _def_sortOrder)
                     XmlHelper.AddAttribute(node, "dataFieldSortOrder", this.SortOrder);
@@ -230,7 +168,7 @@ namespace nHydrate.Generator.Models
                 this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", _def_codefacade);
                 this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
                 this.FriendlyName = XmlHelper.GetAttributeValue(node, "dataFieldFriendlyName", _def_friendlyName);
-                this.UIVisible = XmlHelper.GetAttributeValue(node, "dataFieldVisibility", _def_UIVisible);
+                this.UiVisible = XmlHelper.GetAttributeValue(node, "dataFieldVisibility", _def_UIVisible);
                 this.SortOrder = XmlHelper.GetAttributeValue(node, "dataFieldSortOrder", _def_sortOrder);
                 this.IsPrimaryKey = XmlHelper.GetAttributeValue(node, "isPrimaryKey", _def_isPrimaryKey);
 
@@ -338,15 +276,7 @@ namespace nHydrate.Generator.Models
 
         #region ICodeFacadeObject Members
 
-        public string CodeFacade
-        {
-            get { return _codeFacade; }
-            set
-            {
-                _codeFacade = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("codeFacade"));
-            }
-        }
+        public string CodeFacade { get; set; } = _def_codefacade;
 
         public string GetCodeFacade()
         {

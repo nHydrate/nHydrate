@@ -12,12 +12,7 @@ namespace nHydrate.Dsl
     {
         #region Dirty
         [System.ComponentModel.Browsable(false)]
-        internal bool IsDirty
-        {
-            get { return _isDirty; }
-            set { _isDirty = value; }
-        }
-        private bool _isDirty = false;
+        internal bool IsDirty { get; set; } = false;
 
         protected override void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
         {

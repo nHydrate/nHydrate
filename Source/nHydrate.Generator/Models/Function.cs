@@ -21,12 +21,6 @@ namespace nHydrate.Generator.Models
         protected const bool _def_isTable = false;
 
         protected string _codeFacade = _def_codefacade;
-        protected string _description = _def_description;
-        protected bool _generated = _def_generated;
-        protected string _sql = string.Empty;
-        private string _dbSchema = _def_dbSchema;
-        private bool _isTable = _def_isTable;
-        private string _returnVariable = string.Empty;
 
         #endregion
 
@@ -71,25 +65,9 @@ namespace nHydrate.Generator.Models
 
         public int PrecedenceOrder { get; set; }
 
-        public string DBSchema
-        {
-            get { return _dbSchema; }
-            set
-            {
-                _dbSchema = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("DBSchema"));
-            }
-        }
+        public string DBSchema { get; set; } = _def_dbSchema;
 
-        public string Description
-        {
-            get { return _description; }
-            set
-            {
-                _description = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Description"));
-            }
-        }
+        public string Description { get; set; } = _def_description;
 
         public ReferenceCollection Columns { get; private set; }
 
@@ -130,45 +108,13 @@ namespace nHydrate.Generator.Models
             return retval.OrderBy(x => x.Name).ToList();
         }
 
-        public bool Generated
-        {
-            get { return _generated; }
-            set
-            {
-                _generated = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Generated"));
-            }
-        }
+        public bool Generated { get; set; } = _def_generated;
 
-        public string SQL
-        {
-            get { return _sql; }
-            set
-            {
-                _sql = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ViewSql"));
-            }
-        }
+        public string SQL { get; set; } = string.Empty;
 
-        public bool IsTable
-        {
-            get { return _isTable; }
-            set
-            {
-                _isTable = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("IsTable"));
-            }
-        }
+        public bool IsTable { get; set; } = _def_isTable;
 
-        public string ReturnVariable
-        {
-            get { return _returnVariable; }
-            set
-            {
-                _returnVariable = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ReturnVariable"));
-            }
-        }
+        public string ReturnVariable { get; set; } = string.Empty;
 
         #endregion
 
@@ -285,7 +231,7 @@ namespace nHydrate.Generator.Models
                 if (parametersNode != null)
                     this.Parameters.XmlLoad(parametersNode);
 
-                this.Generated = XmlHelper.GetAttributeValue(node, "generated", _generated);
+                this.Generated = XmlHelper.GetAttributeValue(node, "generated", Generated);
                 this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
                 this.Dirty = false;
@@ -372,7 +318,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _codeFacade = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("codeFacade"));
             }
         }
 

@@ -5,7 +5,6 @@ namespace nHydrate.Generator.Common
     public static class ValidationHelper
     {
         public static readonly string ErrorTextInvalidCompany = "The company name is the wrong format or contains invalid characters.";
-        public static readonly string ErrorTextInvalidCompanyAbbreviation = "This company abbreviation is the wrong format or contains invalid characters.";
         public static readonly string ErrorTextInvalidProject = "The project name is the wrong format or contains invalid characters.";
         public static readonly string ErrorTextInvalidNamespace = "The defined namespace is not valid. It must be in the format A.B.*.";
 
@@ -32,7 +31,7 @@ namespace nHydrate.Generator.Common
                 return false;
 
             //The database does actualy allow spaces
-            var validchars2 = ValidCodeChars + " /#";
+            const string validchars2 = ValidCodeChars + " /#";
 
             foreach (var c in name)
             {

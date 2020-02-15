@@ -220,7 +220,7 @@ namespace nHydrate.Dsl
             else if (this.DataType == DataTypeConstants.UniqueIdentifier)
             {
                 if ((StringHelper.Match(userValue, "newid", true)) || (StringHelper.Match(userValue, "newid()", true)))
-                    defaultValue = String.Format("Guid.NewGuid()");
+                    defaultValue = "Guid.NewGuid()";
                 else if (string.IsNullOrEmpty(userValue))
                     defaultValue = "System.Guid.Empty";
                 else
@@ -777,8 +777,7 @@ namespace nHydrate.Dsl
                             {
                                 if (typearr.Length == 2)
                                 {
-                                    int len;
-                                    if (int.TryParse(typearr[1], out len))
+                                    if (int.TryParse(typearr[1], out var len))
                                     {
                                         element.DataType = d.Value;
                                         element.Length = len;

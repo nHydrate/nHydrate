@@ -91,7 +91,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _databaseName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("DatabaseName"));
             }
         }
 
@@ -104,7 +103,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _createdByColumnName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("CreatedByColumnName"));
             }
         }
 
@@ -117,7 +115,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _createdDateColumName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("CreatedDateColumnName"));
             }
         }
 
@@ -214,7 +211,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _modifiedByColumnName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ModifiedByColumnName"));
             }
         }
 
@@ -224,7 +220,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _modifiedDateColumnName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ModifiedDateColumnName"));
             }
         }
 
@@ -234,7 +229,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _fullIndexSearchColumnName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("FullIndexSearchColumnName"));
             }
         }
 
@@ -244,7 +238,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _timestampColumnName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("TimestampColumnName"));
             }
         }
 
@@ -272,7 +265,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _grantExecUser = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("GrantExecUser"));
             }
         }
 
@@ -282,7 +274,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _collate = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Collate"));
             }
         }
 

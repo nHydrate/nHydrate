@@ -20,7 +20,7 @@ namespace nHydrate.DslPackage.Objects
 		Immutable,
 	}
 
-	public partial class FindWindowColumnItem
+	public class FindWindowColumnItem
 	{
 		public string Name { get; set; }
 		public bool Visible { get; set; }

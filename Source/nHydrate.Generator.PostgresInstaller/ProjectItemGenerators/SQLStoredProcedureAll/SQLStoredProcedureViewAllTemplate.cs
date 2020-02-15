@@ -9,16 +9,12 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredPr
     {
         private StringBuilder sb = new StringBuilder();
         private CustomView _view;
-        private bool _singleFile = false;
-        private StringBuilder _grantSB = null;
 
         #region Constructors
-        public SQLStoredProcedureViewAllTemplate(ModelRoot model, CustomView view, bool singleFile, StringBuilder grantSB)
+        public SQLStoredProcedureViewAllTemplate(ModelRoot model, CustomView view)
             : base(model)
         {
             _view = view;
-            _singleFile = singleFile;
-            _grantSB = grantSB;
         }
         #endregion
 
@@ -33,10 +29,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredPr
             }
         }
 
-        public override string FileName
-        {
-            get { return string.Format("{0}.sql", _view.PascalName); }
-        }
+        public override string FileName => $"{_view.PascalName}.sql";
 
         #endregion
 
@@ -46,18 +39,10 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredPr
             try
             {
                 ISQLGenerate generator = null;
-
-                if (!_singleFile)
-                {
-                    sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
-                    sb.AppendLine();
-                }
-
                 sb.AppendLine($"--This SQL is generated for the model defined view [{_view.DatabaseName}]");
                 sb.AppendLine();
                 nHydrate.Generator.GenerationHelper.AppendCopyrightInSQL(sb, _model);
-
-                generator = new SQLSelectViewTemplate(_model, _view, _grantSB);
+                generator = new SQLSelectViewTemplate(_model, _view);
                 generator.GenerateContent(sb);
 
             }

@@ -136,7 +136,7 @@ namespace nHydrate.Generator.Common.Util
 		public static string DatabaseNameToCamelCase(string databaseName)
 		{
 			databaseName = databaseName.ToLower();
-			var regexp = "_.";
+			const string regexp = "_.";
 			var digitregex = new Regex(regexp);
 			var parameterName = digitregex.Replace(databaseName, new MatchEvaluator(ReplaceWithUpper));
 			return parameterName;

@@ -11,8 +11,6 @@ namespace nHydrate.Generator.Models
     {
         #region Member Variables
 
-        protected CellEntryCollection _cellEntries = null;
-
         #endregion
 
         #region Constructor
@@ -32,7 +30,7 @@ namespace nHydrate.Generator.Models
 
         private void Initialize()
         {
-            _cellEntries = new CellEntryCollection(this.Root);
+            CellEntries = new CellEntryCollection(this.Root);
         }
 
         protected override void OnRootReset(System.EventArgs e)
@@ -42,11 +40,7 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        public CellEntryCollection CellEntries
-        {
-            get { return _cellEntries; }
-            set { _cellEntries = value; }
-        }
+        public CellEntryCollection CellEntries { get; set; } = null;
 
         #endregion
 

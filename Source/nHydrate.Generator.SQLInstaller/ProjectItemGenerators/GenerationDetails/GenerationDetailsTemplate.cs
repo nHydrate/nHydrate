@@ -37,7 +37,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.GenerationDetail
 
         public override string FileName
         {
-            get { return string.Format("GenerationDetails.txt"); }
+            get { return "GenerationDetails.txt"; }
         }
 
         #endregion
@@ -51,7 +51,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.GenerationDetail
                 sb.AppendLine("Generation Details");
                 sb.AppendLine();
 
-                sb.AppendLine($"Version {_model.Version.ToString()}");
+                sb.AppendLine($"Version {_model.Version}");
                 sb.AppendLine($"Table Count: {_model.Database.Tables.Count(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly)}");
                 sb.AppendLine($"Tenant Table Count: {_model.Database.Tables.Count(x => x.Generated && x.IsTenant)}");
                 sb.AppendLine($"View Count: {_model.Database.CustomViews.Count(x => x.Generated)}");

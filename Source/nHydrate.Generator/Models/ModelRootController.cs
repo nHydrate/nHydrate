@@ -70,8 +70,6 @@ namespace nHydrate.Generator.Models
 					retval.Add(MessageTypeConstants.Error, ValidationHelper.ErrorTextInvalidCompany, this);
 				if (!ValidationHelper.ValidDatabaseIdenitifer(root.ProjectName) || !ValidationHelper.ValidCodeIdentifier(root.ProjectName))
 					retval.Add(MessageTypeConstants.Error, ValidationHelper.ErrorTextInvalidProject, this);
-				if (!ValidationHelper.ValidDatabaseIdenitifer(root.CompanyAbbreviation) || !ValidationHelper.ValidCodeIdentifier(root.CompanyAbbreviation))
-					retval.Add(MessageTypeConstants.Error, ValidationHelper.ErrorTextInvalidCompanyAbbreviation, this);
 
 				if (!string.IsNullOrEmpty(root.DefaultNamespace))
 				{

@@ -23,18 +23,11 @@ namespace nHydrate.Generator.Models
         protected const string _def_codefacade = "";
 
         protected string _description = _def_description;
-        protected System.Data.SqlDbType _dataType = _def_type;
         protected int _length = _def_length;
         protected int _scale = _def_scale;
         protected bool _generated = _def_generated;
-        protected bool _allowNull = _def_allowNull;
         protected string _default = _def_default;
-        protected Reference _parentTableRef = null;
         protected Reference _relationshipRef = null;
-        protected int _sortOrder = _def_sortOrder;
-        private string _enumType = string.Empty;
-        private bool _isOutputParameter = _def_isOutputParameter;
-        protected string _codeFacade = _def_codefacade;
 
         #endregion
 
@@ -59,7 +52,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _generated = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("generated"));
             }
         }
 
@@ -69,7 +61,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _description = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Description"));
             }
         }
 
@@ -85,7 +76,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _default = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Default"));
             }
         }
 
@@ -101,7 +91,6 @@ namespace nHydrate.Generator.Models
             {
                 if (value < 0) value = 0;
                 _length = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Length"));
             }
         }
 
@@ -117,25 +106,12 @@ namespace nHydrate.Generator.Models
             {
                 if (value < 0) value = 0;
                 _scale = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Scale"));
             }
         }
 
-        public int SortOrder
-        {
-            get { return _sortOrder; }
-            set
-            {
-                _sortOrder = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("sortOrder"));
-            }
-        }
+        public int SortOrder { get; set; } = _def_sortOrder;
 
-        public Reference ParentTableRef
-        {
-            get { return _parentTableRef; }
-            set { _parentTableRef = value; }
-        }
+        public Reference ParentTableRef { get; set; } = null;
 
         public virtual string DatabaseType
         {
@@ -148,41 +124,13 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public System.Data.SqlDbType DataType
-        {
-            get { return _dataType; }
-            set
-            {
-                _dataType = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Type"));
-            }
-        }
+        public System.Data.SqlDbType DataType { get; set; } = _def_type;
 
-        public bool AllowNull
-        {
-            get { return _allowNull; }
-            set
-            {
-                _allowNull = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("allowNull"));
-            }
-        }
+        public bool AllowNull { get; set; } = _def_allowNull;
 
-        internal string EnumType
-        {
-            get { return _enumType; }
-            set { _enumType = value; }
-        }
+        internal string EnumType { get; set; } = string.Empty;
 
-        public bool IsOutputParameter
-        {
-            get { return _isOutputParameter; }
-            set
-            {
-                _isOutputParameter = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("isOutputParameter"));
-            }
-        }
+        public bool IsOutputParameter { get; set; } = _def_isOutputParameter;
 
         #endregion
 
@@ -286,16 +234,16 @@ namespace nHydrate.Generator.Models
                 this.Default = XmlHelper.GetAttributeValue(node, "default", _def_default);
                 this.Length = XmlHelper.GetAttributeValue(node, "length", _length);
                 this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
-                this.SortOrder = XmlHelper.GetAttributeValue(node, "sortOrder", _sortOrder);
+                this.SortOrder = XmlHelper.GetAttributeValue(node, "sortOrder", SortOrder);
 
                 var parentTableRefNode = node.SelectSingleNode("parentTableRef");
                 ParentTableRef = new Reference(this.Root);
                 ParentTableRef.XmlLoad(parentTableRefNode);
 
-                _dataType = (System.Data.SqlDbType)XmlHelper.GetAttributeValue(node, "type", (int)_def_type);
+                DataType = (System.Data.SqlDbType)XmlHelper.GetAttributeValue(node, "type", (int)_def_type);
 
-                this.AllowNull = XmlHelper.GetAttributeValue(node, "allowNull", _allowNull);
-                this.IsOutputParameter = XmlHelper.GetAttributeValue(node, "isOutputParameter", _isOutputParameter);
+                this.AllowNull = XmlHelper.GetAttributeValue(node, "allowNull", AllowNull);
+                this.IsOutputParameter = XmlHelper.GetAttributeValue(node, "isOutputParameter", IsOutputParameter);
 
                 this.Dirty = false;
             }
@@ -551,15 +499,7 @@ namespace nHydrate.Generator.Models
 
         #region ICodeFacadeObject Members
 
-        public string CodeFacade
-        {
-            get { return _codeFacade; }
-            set
-            {
-                _codeFacade = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("codeFacade"));
-            }
-        }
+        public string CodeFacade { get; set; } = _def_codefacade;
 
         public string GetCodeFacade()
         {
@@ -659,7 +599,7 @@ namespace nHydrate.Generator.Models
             else if (this.DataType == System.Data.SqlDbType.UniqueIdentifier)
             {
                 if ((StringHelper.Match(this.Default, "newid", true)) || (StringHelper.Match(this.Default, "newid()", true)))
-                    defaultValue = String.Format("Guid.NewGuid()");
+                    defaultValue = "Guid.NewGuid()";
                 else if (string.IsNullOrEmpty(this.Default))
                     defaultValue = "System.Guid.Empty";
                 else if (!string.IsNullOrEmpty(this.Default) && this.Default.Length == 36)
@@ -687,9 +627,9 @@ namespace nHydrate.Generator.Models
             {
                 defaultValue = "false";
                 if (this.Default == "0")
-                    defaultValue = String.Format("false");
+                    defaultValue = "false";
                 else if (this.Default == "1")
-                    defaultValue = String.Format("true");
+                    defaultValue = "true";
             }
             else
             {

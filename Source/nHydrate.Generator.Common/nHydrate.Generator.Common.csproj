@@ -205,9 +205,6 @@
     <Compile Include="EventArgs\ProjectItemGenerationCompleteEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EventArgs\PropertyChangedEventArgs.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Exceptions\LicenseException.cs" />
     <Compile Include="Forms\CommonLibrary.cs" />
     <Compile Include="Forms\CueBox.cs">

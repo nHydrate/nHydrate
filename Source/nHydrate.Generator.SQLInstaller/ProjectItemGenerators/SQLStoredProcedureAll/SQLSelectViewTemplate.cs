@@ -8,7 +8,7 @@ using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedureAll
 {
-	class SQLSelectViewTemplate : ISQLGenerate
+	internal class SQLSelectViewTemplate : ISQLGenerate
 	{
 		private ModelRoot _model;
 		private CustomView _currentView;

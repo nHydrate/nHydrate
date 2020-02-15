@@ -20,31 +20,9 @@ namespace nHydrate.Generator
                 throw new Exception("The model object cannot be null!");
 
             _object = modelObject;
-            if (_object != null)
-                ((BaseModelObject)this.Object).PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(ObjectPropertyChanged);
 
-            this.IsPopupUI = false;
             modelObject.Controller = this;
             this.HeaderImage = ImageHelper.GetImage(ImageConstants.Default);
-        }
-
-        #endregion
-
-        #region Events
-
-        public event ItemChanagedEventHandler ItemChanged;
-        public void OnItemChanged(object sender, System.EventArgs e)
-        {
-            ItemChanged?.Invoke(sender, e);
-        }
-
-        public event PropertyValueChangedEventHandler PropertyValueChanged;
-        protected virtual void OnPropertyValueChanged(PropertyValueChangedEventArgs e)
-        {
-            if (this.PropertyValueChanged != null)
-            {
-                this.PropertyValueChanged(this, e);
-            }
         }
 
         #endregion
@@ -63,11 +41,6 @@ namespace nHydrate.Generator
         }
 
         /// <summary>
-        /// Determines if this UI should be on a dialog box
-        /// </summary>
-        public virtual bool IsPopupUI { get; set; }
-
-        /// <summary>
         /// 
         /// </summary>
         public virtual string HeaderText { get; set; }
@@ -81,41 +54,6 @@ namespace nHydrate.Generator
         /// 
         /// </summary>
         public virtual System.Drawing.Bitmap HeaderImage { get; set; }
-
-        #endregion
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            UIControl.Dispose();
-        }
-
-        #endregion
-
-        #region UIControl
-
-        public virtual ModelObjectUserInterface UIControl
-        {
-            get
-            {
-                if (this._userInterface == null)
-                {
-                    var pg = new nHydrate.Generator.PropertyGrid();
-                    pg.SelectedObject = this.Object;
-                    pg.Dock = System.Windows.Forms.DockStyle.Fill;
-                    pg.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(pg_PropertyValueChanged);
-                    this._userInterface = pg;
-                }
-                this._userInterface.Enabled = this.IsEnabled;
-                return this._userInterface;
-            }
-        }
-
-        private void pg_PropertyValueChanged(object s, System.Windows.Forms.PropertyValueChangedEventArgs e)
-        {
-            this.OnPropertyValueChanged(e);
-        }
 
         #endregion
 
@@ -138,15 +76,6 @@ namespace nHydrate.Generator
 
         #endregion
 
-        #region Event Handlers
-
-        protected virtual void ObjectPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            this.OnItemChanged(this, new System.EventArgs());
-        }
-
-        #endregion
-
         public virtual INHydrateModelObject Object
         {
             get { return _object; }
@@ -157,6 +86,10 @@ namespace nHydrate.Generator
         public abstract MenuCommand[] GetMenuCommands();
         public abstract bool DeleteObject();
         public abstract void Refresh();
+
+        public void Dispose()
+        {
+        }
 
     }
 }

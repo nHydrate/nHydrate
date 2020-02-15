@@ -11,8 +11,7 @@ namespace nHydrate.DslPackage.Forms
 	{
 		private int _leftPercentWidth = 50;
 		private bool _isLoading = false;
-		private bool _isDirty = false;
-		private SQLObject _sourceItem;
+        private SQLObject _sourceItem;
 		private SQLObject _targetItem;
 		private bool _isScrolling = false;
 
@@ -278,13 +277,9 @@ namespace nHydrate.DslPackage.Forms
 			}
 		}
 
-		private bool IsDirty
-		{
-			get { return _isDirty; }
-			set { _isDirty = value; }
-		}
+		private bool IsDirty { get; set; } = false;
 
-		private void ResizeColumns()
+        private void ResizeColumns()
 		{
 			var colwidth = (this.Width - 70) / 8;
 			lstFields.Columns[0].Width = 24;

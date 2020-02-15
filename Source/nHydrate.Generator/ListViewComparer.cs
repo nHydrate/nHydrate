@@ -7,42 +7,28 @@ namespace nHydrate.Generator.Common.Forms
 	{
 		#region Class Members
 
-		private readonly Array _typeList = null;
-		private readonly ListView _listView = null;
-		protected int _column = -1;
-
-		#endregion
+        #endregion
 
 		#region Constructor
 
 		public ListViewComparer(ListView listView, Array typeList)
 		{
-			_listView = listView;
-			_listView.ColumnClick += new ColumnClickEventHandler(ErrorControl_ColumnClick);
-			_typeList = typeList;
+			ListView = listView;
+			ListView.ColumnClick += new ColumnClickEventHandler(ErrorControl_ColumnClick);
+			TypeList = typeList;
 		}
 
 		#endregion
 
 		#region Property Implementations
 
-		public int Column
-		{
-			get { return _column; }
-			set { _column = value; }
-		}
+		public int Column { get; set; } = -1;
 
-		protected Array TypeList
-		{
-			get { return _typeList; }
-		}
+        protected Array TypeList { get; } = null;
 
-		protected ListView ListView
-		{
-			get { return _listView; }
-		}
+        protected ListView ListView { get; } = null;
 
-		#endregion
+        #endregion
 
 		#region IComparer Members
 

@@ -263,7 +263,6 @@
     </Compile>
     <Compile Include="Extensions\CommandSet.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
-    <Compile Include="Extensions\MenuFunctions.cs" />
     <Compile Include="Extensions\nHydrateExplorer.cs">
       <SubType>Component</SubType>
     </Compile>

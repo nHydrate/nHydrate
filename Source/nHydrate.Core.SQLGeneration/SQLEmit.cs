@@ -13,7 +13,8 @@ namespace nHydrate.Core.SQLGeneration
 {
     public static class SQLEmit
     {
-        public static string GetSQLCreateTable(ModelRoot model, Table table, string tableAliasName = null, bool emitPK = true)
+        public static string GetSQLCreateTable(ModelRoot model, Table table, string tableAliasName = null,
+            bool emitPK = true)
         {
             try
             {
@@ -26,7 +27,8 @@ namespace nHydrate.Core.SQLGeneration
                     tableName = tableAliasName;
 
                 sb.AppendLine("--CREATE TABLE [" + tableName + "]");
-                sb.AppendLine($"if not exists(select * from sys.tables t inner join sys.schemas s on t.schema_id = s.schema_id where t.name = '{tableName}' and s.name = '{table.GetSQLSchema()}')");
+                sb.AppendLine(
+                    $"if not exists(select * from sys.tables t inner join sys.schemas s on t.schema_id = s.schema_id where t.name = '{tableName}' and s.name = '{table.GetSQLSchema()}')");
                 sb.AppendLine($"CREATE TABLE [{table.GetSQLSchema()}].[{tableName}] (");
 
                 var firstLoop = true;
@@ -36,6 +38,7 @@ namespace nHydrate.Core.SQLGeneration
                     else firstLoop = false;
                     sb.Append("\t" + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true));
                 }
+
                 AppendModifiedAudit(model, table, sb);
                 AppendCreateAudit(model, table, sb);
                 AppendTimestamp(model, table, sb);
@@ -83,13 +86,16 @@ namespace nHydrate.Core.SQLGeneration
             var columnList = table.GetColumns().Where(x => x.Generated).ToList();
             foreach (var column in columnList)
             {
-                if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
+                if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText ||
+                      column.DataType == System.Data.SqlDbType.Image))
                 {
-                    sb.Append("\t" + AppendColumnDefinition(column, allowDefault: false, allowIdentity: false, forceNull: true, allowFormula: false, allowComputed: false));
+                    sb.Append("\t" + AppendColumnDefinition(column, allowDefault: false, allowIdentity: false,
+                        forceNull: true, allowFormula: false, allowComputed: false));
                     if (columnList.IndexOf(column) < columnList.Count - 1) sb.Append(",");
                     sb.AppendLine();
                 }
             }
+
             sb.Append(")");
             sb.AppendLine();
             return sb.ToString();
@@ -172,6 +178,7 @@ namespace nHydrate.Core.SQLGeneration
                 sb.AppendLine("exec sp_rename @objname='" + defaultName + "', @newname='" + defaultName2 + "';");
                 sb.AppendLine();
             }
+
             if (oldTable.AllowModifiedAudit)
             {
                 var defaultName = ("DF__" + oldTable.DatabaseName + "_" + model.Database.ModifiedDateColumnName).ToUpper();
@@ -204,14 +211,6 @@ namespace nHydrate.Core.SQLGeneration
 
             sb.AppendLine($"if exists(select * from sys.objects where name = '{tName}' and type = 'U') AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '{column.DatabaseName}' and o.name = '{tName}')");
             sb.AppendLine($"ALTER TABLE [{column.ParentTable.GetSQLSchema()}].[{tName}] ADD " + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true));
-
-            //if (!column.AllowNull)
-            //{
-            //  sb.AppendLine();
-            //  sb.AppendLine("--THIS IS A NON-NULLABLE FIELD. AT THIS POINT IT IS NULLABLE. ADD DATA TO THIS FIELD BEFORE IT IS SET TO NON-NULLABLE.");
-            //  sb.AppendLine("ALTER TABLE [" + column.ParentTable.GetSQLSchema() + "].[" + tName + "] ADD " + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true));
-            //  sb.AppendLine();
-            //}
             return sb.ToString();
         }
 
@@ -220,13 +219,15 @@ namespace nHydrate.Core.SQLGeneration
             var childTable = relation.ChildTable;
             var parentTable = relation.ParentTable;
             var model = relation.Root as ModelRoot;
-            var indexName = "FK_" + relation.DatabaseRoleName + "_" + Globals.GetTableDatabaseName(model, childTable) + "_" + Globals.GetTableDatabaseName(model, parentTable);
+            var indexName = "FK_" + relation.DatabaseRoleName + "_" + Globals.GetTableDatabaseName(model, childTable) +
+                            "_" + Globals.GetTableDatabaseName(model, parentTable);
             var sb = new StringBuilder();
             foreach (var c in indexName)
             {
                 if (ValidationHelper.ValidCodeChars.Contains(c)) sb.Append(c);
                 else sb.Append("_");
             }
+
             return sb.ToString();
         }
 
@@ -239,6 +240,7 @@ namespace nHydrate.Core.SQLGeneration
                 if (ValidationHelper.ValidCodeChars.Contains(c)) sb.Append(c);
                 else sb.Append("_");
             }
+
             return sb.ToString();
         }
 
@@ -249,9 +251,12 @@ namespace nHydrate.Core.SQLGeneration
             {
                 var defaultName = $"DF__{column.ParentTable.DatabaseName}_{column.DatabaseName}".ToUpper();
                 sb.AppendLine($"--ADD CONSTRAINT FOR '[{column.ParentTable.DatabaseName}].[{column.DatabaseName}]'");
-                sb.AppendLine($"if exists (select * from sys.tables t inner join sys.schemas s on t.schema_id = s.schema_id where t.name = '{column.ParentTable.DatabaseName}' and s.name = '{column.ParentTable.GetSQLSchema()}') and not exists(select constid FROM sysconstraints where id=OBJECT_ID('{column.ParentTable.DatabaseName}') AND COL_NAME(id,colid)='{column.DatabaseName}' AND OBJECTPROPERTY(constid, 'IsDefaultCnst') = 1)");
-                sb.AppendLine($"ALTER TABLE [{column.ParentTable.GetSQLSchema()}].[{column.ParentTable.DatabaseName}] ADD CONSTRAINT [{defaultName}] DEFAULT {column.GetSQLDefault()} FOR [{column.DatabaseName}]");
+                sb.AppendLine(
+                    $"if exists (select * from sys.tables t inner join sys.schemas s on t.schema_id = s.schema_id where t.name = '{column.ParentTable.DatabaseName}' and s.name = '{column.ParentTable.GetSQLSchema()}') and not exists(select constid FROM sysconstraints where id=OBJECT_ID('{column.ParentTable.DatabaseName}') AND COL_NAME(id,colid)='{column.DatabaseName}' AND OBJECTPROPERTY(constid, 'IsDefaultCnst') = 1)");
+                sb.AppendLine(
+                    $"ALTER TABLE [{column.ParentTable.GetSQLSchema()}].[{column.ParentTable.DatabaseName}] ADD CONSTRAINT [{defaultName}] DEFAULT {column.GetSQLDefault()} FOR [{column.DatabaseName}]");
             }
+
             return sb.ToString();
         }
 
@@ -261,9 +266,12 @@ namespace nHydrate.Core.SQLGeneration
             sb.AppendLine($"--DROP CONSTRAINT FOR '[{column.ParentTable.DatabaseName}].[{column.DatabaseName}]'");
             if (upgradeScript)
                 sb.AppendLine("DECLARE @defaultName varchar(max)");
-            sb.AppendLine("SET @defaultName = (SELECT d.name FROM sys.columns c inner join sys.default_constraints d on c.column_id = d.parent_column_id and c.object_id = d.parent_object_id inner join sys.objects o on d.parent_object_id = o.object_id where o.name = '" + column.ParentTable.DatabaseName + "' and c.name = '" + column.DatabaseName + "')");
+            sb.AppendLine(
+                "SET @defaultName = (SELECT d.name FROM sys.columns c inner join sys.default_constraints d on c.column_id = d.parent_column_id and c.object_id = d.parent_object_id inner join sys.objects o on d.parent_object_id = o.object_id where o.name = '" +
+                column.ParentTable.DatabaseName + "' and c.name = '" + column.DatabaseName + "')");
             sb.AppendLine("if @defaultName IS NOT NULL");
-            sb.AppendLine($"exec('ALTER TABLE [{column.ParentTable.GetSQLSchema()}].[{column.ParentTable.DatabaseName}] DROP CONSTRAINT ' + @defaultName)");
+            sb.AppendLine(
+                $"exec('ALTER TABLE [{column.ParentTable.GetSQLSchema()}].[{column.ParentTable.DatabaseName}] DROP CONSTRAINT ' + @defaultName)");
             if (upgradeScript)
                 sb.AppendLine("GO");
             return sb.ToString();
@@ -281,14 +289,16 @@ namespace nHydrate.Core.SQLGeneration
             #region Delete Defaults
 
             sb.AppendLine("--DELETE DEFAULT");
-            sb.Append($"select 'ALTER TABLE [{t.GetSQLSchema()}].[{t.DatabaseName}] DROP CONSTRAINT ' + [name] as 'sql' ");
+            sb.Append(
+                $"select 'ALTER TABLE [{t.GetSQLSchema()}].[{t.DatabaseName}] DROP CONSTRAINT ' + [name] as 'sql' ");
             sb.Append("into #t ");
             sb.Append("from sys.objects ");
             sb.Append("where object_id IN( ");
             sb.Append("select SC.default_object_id ");
             sb.Append("FROM sys.objects SO INNER JOIN sys.columns SC ON SO.object_id = SC.object_id ");
             sb.Append("LEFT JOIN sys.default_constraints SM ON SC.default_object_id = SM.parent_column_id ");
-            sb.AppendLine($"WHERE SO.type = 'U' and SO.name = '{t.DatabaseName}' and SC.name = '{column.DatabaseName}')");
+            sb.AppendLine(
+                $"WHERE SO.type = 'U' and SO.name = '{t.DatabaseName}' and SC.name = '{column.DatabaseName}')");
             sb.AppendLine("declare @sql [nvarchar] (1000)");
             sb.AppendLine("SELECT @sql = MAX([sql]) from #t");
             sb.AppendLine("exec (@sql)");
@@ -316,13 +326,16 @@ namespace nHydrate.Core.SQLGeneration
                     if (removeRelationship)
                     {
                         var objectName = "FK_" +
-                                         parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, childT) +
+                                         parentR.DatabaseRoleName + "_" +
+                                         Globals.GetTableDatabaseName((ModelRoot) t.Root, childT) +
                                          "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, parentT);
                         objectName = objectName.ToUpper();
 
                         sb.AppendLine("--REMOVE FOREIGN KEY");
-                        sb.AppendLine("if exists(select * from sys.objects where name = '" + objectName + "' and type = 'F' and type_desc = 'FOREIGN_KEY_CONSTRAINT')");
-                        sb.AppendLine("ALTER TABLE [" + childT.GetSQLSchema() + "].[" + childT.DatabaseName + "] DROP CONSTRAINT [" + objectName + "]");
+                        sb.AppendLine("if exists(select * from sys.objects where name = '" + objectName +
+                                      "' and type = 'F' and type_desc = 'FOREIGN_KEY_CONSTRAINT')");
+                        sb.AppendLine("ALTER TABLE [" + childT.GetSQLSchema() + "].[" + childT.DatabaseName +
+                                      "] DROP CONSTRAINT [" + objectName + "]");
                         sb.AppendLine();
                     }
                 }
@@ -352,13 +365,16 @@ namespace nHydrate.Core.SQLGeneration
                         if (removeRelationship)
                         {
                             var objectName = "FK_" +
-                                             parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, childT) +
+                                             parentR.DatabaseRoleName + "_" +
+                                             Globals.GetTableDatabaseName((ModelRoot) t.Root, childT) +
                                              "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, parentT);
                             objectName = objectName.ToUpper();
 
                             sb.AppendLine("--REMOVE FOREIGN KEY");
-                            sb.AppendLine("if exists(select * from sys.objects where name = '" + objectName + "' and type = 'F' and type_desc = 'FOREIGN_KEY_CONSTRAINT')");
-                            sb.AppendLine("ALTER TABLE [" + childT.GetSQLSchema() + "].[" + childT.DatabaseName + "] DROP CONSTRAINT [" + objectName + "]");
+                            sb.AppendLine("if exists(select * from sys.objects where name = '" + objectName +
+                                          "' and type = 'F' and type_desc = 'FOREIGN_KEY_CONSTRAINT')");
+                            sb.AppendLine("ALTER TABLE [" + childT.GetSQLSchema() + "].[" + childT.DatabaseName +
+                                          "] DROP CONSTRAINT [" + objectName + "]");
                             sb.AppendLine();
                         }
                     }
@@ -383,7 +399,8 @@ namespace nHydrate.Core.SQLGeneration
 
                 //Delete Primary Key
                 sb.AppendLine($"--DELETE PRIMARY KEY FOR TABLE [{t.DatabaseName}]");
-                sb.AppendLine($"if exists(select * from sys.objects where name = '{objectName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
+                sb.AppendLine(
+                    $"if exists(select * from sys.objects where name = '{objectName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
                 sb.AppendLine($"ALTER TABLE [{t.GetSQLSchema()}].[{t.DatabaseName}] DROP CONSTRAINT [{objectName}]");
                 sb.AppendLine();
             }
@@ -417,8 +434,11 @@ namespace nHydrate.Core.SQLGeneration
             #region Delete actual column
 
             sb.AppendLine("--DROP COLUMN");
-            sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + column.DatabaseName + "' and o.name = '" + t.DatabaseName + "')");
-            sb.AppendLine($"ALTER TABLE [{t.GetSQLSchema()}].[{t.DatabaseName}] DROP COLUMN [" + column.DatabaseName + "]");
+            sb.AppendLine(
+                "if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" +
+                column.DatabaseName + "' and o.name = '" + t.DatabaseName + "')");
+            sb.AppendLine($"ALTER TABLE [{t.GetSQLSchema()}].[{t.DatabaseName}] DROP COLUMN [" + column.DatabaseName +
+                          "]");
 
             #endregion
 
@@ -436,12 +456,16 @@ namespace nHydrate.Core.SQLGeneration
             //RENAME COLUMN
             var sb = new StringBuilder();
             sb.AppendLine($"--RENAME COLUMN '{table.DatabaseName}.{oldColumn}'");
-            sb.AppendLine($"if exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where c.name = '{oldColumn}' and t.name = '{table.DatabaseName}' and s.name = '{table.GetSQLSchema()}')");
+            sb.AppendLine(
+                $"if exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where c.name = '{oldColumn}' and t.name = '{table.DatabaseName}' and s.name = '{table.GetSQLSchema()}')");
             if (!StringHelper.Match(oldColumn, newColumn, true))
             {
-                sb.AppendLine($"\t\tAND not exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where c.name = '{newColumn}' and t.name = '{table.DatabaseName}' and s.name = '{table.GetSQLSchema()}')");
+                sb.AppendLine(
+                    $"\t\tAND not exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where c.name = '{newColumn}' and t.name = '{table.DatabaseName}' and s.name = '{table.GetSQLSchema()}')");
             }
-            sb.AppendLine($"EXEC sp_rename @objname = '[{table.GetSQLSchema()}].[{table.DatabaseName}].[{oldColumn}]', @newname = '{newColumn}', @objtype = 'COLUMN';");
+
+            sb.AppendLine(
+                $"EXEC sp_rename @objname = '[{table.GetSQLSchema()}].[{table.DatabaseName}].[{oldColumn}]', @newname = '{newColumn}', @objtype = 'COLUMN';");
             return sb.ToString();
         }
 
@@ -476,7 +500,8 @@ namespace nHydrate.Core.SQLGeneration
                         {
                             sb.AppendLine($"--RENAME INDEX [{oldTable.DatabaseName}].[{oldIndexName}]");
                             sb.AppendLine($"if exists (select * from sys.indexes where name = '{oldIndexName}')");
-                            sb.AppendLine($"exec sp_rename @objname='newTable.GetSQLSchema().{newTable.DatabaseName}.{oldIndexName}', @newname='{newIndexName}', @objtype='INDEX';");
+                            sb.AppendLine(
+                                $"exec sp_rename @objname='newTable.GetSQLSchema().{newTable.DatabaseName}.{oldIndexName}', @newname='{newIndexName}', @objtype='INDEX';");
                             sb.AppendLine();
                         }
                     }
@@ -506,13 +531,16 @@ namespace nHydrate.Core.SQLGeneration
                     if (removeRelationship)
                     {
                         var objectName = "FK_" +
-                                         parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot)oldTable.Root, childT) +
-                                                         "_" + Globals.GetTableDatabaseName((ModelRoot)oldTable.Root, parentT);
+                                         parentR.DatabaseRoleName + "_" +
+                                         Globals.GetTableDatabaseName((ModelRoot) oldTable.Root, childT) +
+                                         "_" + Globals.GetTableDatabaseName((ModelRoot) oldTable.Root, parentT);
                         objectName = objectName.ToUpper();
 
                         sb.AppendLine("--REMOVE FOREIGN KEY");
-                        sb.AppendLine($"if exists(select * from sys.objects where name = '{objectName}' and type = 'F')");
-                        sb.AppendLine($"ALTER TABLE [{childT.GetSQLSchema()}].[{childT.DatabaseName}] DROP CONSTRAINT [{objectName}]");
+                        sb.AppendLine(
+                            $"if exists(select * from sys.objects where name = '{objectName}' and type = 'F')");
+                        sb.AppendLine(
+                            $"ALTER TABLE [{childT.GetSQLSchema()}].[{childT.DatabaseName}] DROP CONSTRAINT [{objectName}]");
                         sb.AppendLine();
                     }
                 }
@@ -543,13 +571,16 @@ namespace nHydrate.Core.SQLGeneration
                         if (removeRelationship)
                         {
                             var objectName = "FK_" +
-                                             parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot) oldTable.Root, childT) +
+                                             parentR.DatabaseRoleName + "_" +
+                                             Globals.GetTableDatabaseName((ModelRoot) oldTable.Root, childT) +
                                              "_" + Globals.GetTableDatabaseName((ModelRoot) oldTable.Root, parentT);
                             objectName = objectName.ToUpper();
 
                             sb.AppendLine("--REMOVE FOREIGN KEY");
-                            sb.AppendLine($"if exists(select * from sys.objects where name = '{objectName}' and type = 'F' and type_desc = 'FOREIGN_KEY_CONSTRAINT')");
-                            sb.AppendLine($"ALTER TABLE [{childT.GetSQLSchema()}].[{childT.DatabaseName}] DROP CONSTRAINT [{objectName}]");
+                            sb.AppendLine(
+                                $"if exists(select * from sys.objects where name = '{objectName}' and type = 'F' and type_desc = 'FOREIGN_KEY_CONSTRAINT')");
+                            sb.AppendLine(
+                                $"ALTER TABLE [{childT.GetSQLSchema()}].[{childT.DatabaseName}] DROP CONSTRAINT [{objectName}]");
                             sb.AppendLine();
                         }
                     }
@@ -559,32 +590,19 @@ namespace nHydrate.Core.SQLGeneration
 
             #endregion
 
-            #region Delete Primary Key
-
-            //if (oldColumn.PrimaryKey)
-            //{
-            //    //Drop the primary key so we can modify this column
-            //    var pkName = "PK_" + newTable.DatabaseName.ToUpper();
-            //    sb.AppendLine("--DROP PK BECAUSE THE MODIFIED FIELD IS A PK COLUMN");
-            //    sb.AppendLine($"if exists(select * from sys.objects where name = '{pkName}' and type = 'PK')");
-            //    sb.AppendLine($"ALTER TABLE [{newTable.GetSQLSchema()}].[{newTable.DatabaseName}] DROP CONSTRAINT {pkName}");
-            //    sb.AppendLine("GO");
-            //    sb.AppendLine();
-            //}
-
-            #endregion
-
             #region Delete Indexes
 
             //Only drop indexes if the datatype changed
             if (oldColumn.DataType != newColumn.DataType)
             {
                 //Unique Constraint
-                var indexName = "IX_" + newTable.Name.Replace("-", "") + "_" + newColumn.Name.Replace("-", string.Empty);
+                var indexName = "IX_" + newTable.Name.Replace("-", "") + "_" +
+                                newColumn.Name.Replace("-", string.Empty);
                 indexName = indexName.ToUpper();
                 sb.AppendLine("--DELETE UNIQUE CONTRAINT");
                 sb.AppendLine($"if exists(select * from sys.objects where name = '{indexName}' and type = 'UQ')");
-                sb.AppendLine($"ALTER TABLE [{newTable.GetSQLSchema()}].[{newTable.DatabaseName}] DROP CONSTRAINT [{indexName}]");
+                sb.AppendLine(
+                    $"ALTER TABLE [{newTable.GetSQLSchema()}].[{newTable.DatabaseName}] DROP CONSTRAINT [{indexName}]");
                 sb.AppendLine();
 
                 //Other Index
@@ -608,17 +626,24 @@ namespace nHydrate.Core.SQLGeneration
             #region Update column
 
             //Only change if the column type, length, or nullable values have changed
-            if (oldColumn.DataType != newColumn.DataType || oldColumn.Length != newColumn.Length || oldColumn.AllowNull != newColumn.AllowNull)
+            if (oldColumn.DataType != newColumn.DataType || oldColumn.Length != newColumn.Length ||
+                oldColumn.AllowNull != newColumn.AllowNull)
             {
-                sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + newColumn.DatabaseName + "' and o.name = '" + newTable.DatabaseName + "')");
+                sb.AppendLine(
+                    "if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" +
+                    newColumn.DatabaseName + "' and o.name = '" + newTable.DatabaseName + "')");
                 sb.AppendLine("BEGIN");
 
                 sb.AppendLine(AppendColumnDefaultCreateSQL(newColumn));
                 if (newColumn.ComputedColumn)
                 {
                     sb.AppendLine("--DROP COLUMN");
-                    sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + newColumn.DatabaseName + "' and o.name = '" + newTable.DatabaseName + "')");
-                    sb.AppendLine("ALTER TABLE [" + newTable.GetSQLSchema() + "].[" + newTable.DatabaseName + "] DROP COLUMN " + AppendColumnDefinition(newColumn, allowDefault: false, allowIdentity: false));
+                    sb.AppendLine(
+                        "if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" +
+                        newColumn.DatabaseName + "' and o.name = '" + newTable.DatabaseName + "')");
+                    sb.AppendLine("ALTER TABLE [" + newTable.GetSQLSchema() + "].[" + newTable.DatabaseName +
+                                  "] DROP COLUMN " +
+                                  AppendColumnDefinition(newColumn, allowDefault: false, allowIdentity: false));
                 }
                 else
                 {
@@ -630,26 +655,34 @@ namespace nHydrate.Core.SQLGeneration
                         if (string.IsNullOrEmpty(newColumn.Default))
                         {
                             //There is no default value so just inject a warning
-                            sb.AppendLine("--WARNING: IF YOU NEED TO SET NULL COLUMN VALUES TO A NON-NULL VALUE, DO SO HERE BEFORE MAKING THE COLUMN NON-NULLABLE");
+                            sb.AppendLine(
+                                "--WARNING: IF YOU NEED TO SET NULL COLUMN VALUES TO A NON-NULL VALUE, DO SO HERE BEFORE MAKING THE COLUMN NON-NULLABLE");
                         }
                         else
                         {
                             //There is a default value so add a comment and necessary SQL
-                            sb.AppendLine("--WARNING: IF YOU NEED TO SET NULL COLUMN VALUES TO THE DEFAULT VALUE, UNCOMMENT THE FOLLOWING LINE TO DO SO HERE BEFORE MAKING THE COLUMN NON-NULLABLE");
+                            sb.AppendLine(
+                                "--WARNING: IF YOU NEED TO SET NULL COLUMN VALUES TO THE DEFAULT VALUE, UNCOMMENT THE FOLLOWING LINE TO DO SO HERE BEFORE MAKING THE COLUMN NON-NULLABLE");
 
                             var dValue = newColumn.Default;
                             if (newColumn.DataType.IsTextType() || newColumn.DataType.IsDateType())
                                 dValue = "'" + dValue.Replace("'", "''") + "'";
 
-                            sb.AppendLine("--UPDATE [" + newTable.GetSQLSchema() + "].[" + newTable.DatabaseName + "] SET [" + newColumn.DatabaseName + "] = " + dValue + " WHERE [" + newColumn.DatabaseName + "] IS NULL");
+                            sb.AppendLine("--UPDATE [" + newTable.GetSQLSchema() + "].[" + newTable.DatabaseName +
+                                          "] SET [" + newColumn.DatabaseName + "] = " + dValue + " WHERE [" +
+                                          newColumn.DatabaseName + "] IS NULL");
                         }
+
                         sb.AppendLine();
                     }
 
                     sb.AppendLine("--UPDATE COLUMN");
-                    sb.AppendLine("ALTER TABLE [" + newTable.GetSQLSchema() + "].[" + newTable.DatabaseName + "] ALTER COLUMN " + AppendColumnDefinition(newColumn, allowDefault: false, allowIdentity: false));
+                    sb.AppendLine("ALTER TABLE [" + newTable.GetSQLSchema() + "].[" + newTable.DatabaseName +
+                                  "] ALTER COLUMN " +
+                                  AppendColumnDefinition(newColumn, allowDefault: false, allowIdentity: false));
                     sb.AppendLine();
                 }
+
                 sb.AppendLine("END");
             }
 
@@ -658,7 +691,8 @@ namespace nHydrate.Core.SQLGeneration
             #region Change Identity
 
             //If old column was Identity and it has been removed then remove it
-            if (newColumn.Identity == IdentityTypeConstants.None && oldColumn.Identity == IdentityTypeConstants.Database)
+            if (newColumn.Identity == IdentityTypeConstants.None &&
+                oldColumn.Identity == IdentityTypeConstants.Database)
             {
                 //Check PK
                 if (oldColumn.PrimaryKey)
@@ -666,7 +700,8 @@ namespace nHydrate.Core.SQLGeneration
                     var indexName = "PK_" + newTable.DatabaseName;
                     sb.AppendLine("--UNCOMMENT TO DELETE THE PRIMARY KEY CONSTRAINT IF NECESSARY");
                     sb.AppendLine($"--if exists(select * from sys.indexes where name = '{indexName}')");
-                    sb.AppendLine($"--ALTER TABLE [{newTable.GetSQLSchema()}].[{newTable.DatabaseName}] DROP CONSTRAINT [{indexName}];");
+                    sb.AppendLine(
+                        $"--ALTER TABLE [{newTable.GetSQLSchema()}].[{newTable.DatabaseName}] DROP CONSTRAINT [{indexName}];");
                     sb.AppendLine("--GO");
                     sb.AppendLine();
                 }
@@ -680,23 +715,27 @@ namespace nHydrate.Core.SQLGeneration
                 sb.AppendLine("GO");
                 sb.AppendLine();
                 sb.AppendLine("--DROP THE ORIGINAL COLUMN WITH THE IDENTITY");
-                sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] DROP COLUMN [" + oldColumn.DatabaseName + "]");
+                sb.AppendLine(
+                    "ALTER TABLE [" + newTable.DatabaseName + "] DROP COLUMN [" + oldColumn.DatabaseName + "]");
                 sb.AppendLine("GO");
                 sb.AppendLine();
                 sb.AppendLine("--RENAME THE TEMP COLUMN TO THE ORIGINAL NAME");
-                sb.AppendLine("EXEC sp_rename '" + newTable.DatabaseName + ".__TCOL', '" + newColumn.DatabaseName + "', 'COLUMN';");
+                sb.AppendLine("EXEC sp_rename '" + newTable.DatabaseName + ".__TCOL', '" + newColumn.DatabaseName +
+                              "', 'COLUMN';");
                 sb.AppendLine("GO");
                 sb.AppendLine();
 
                 if (!newColumn.AllowNull)
                 {
                     sb.AppendLine("--MAKE THE NEW COLUMN NOT NULL AS THE ORIGINAL WAS");
-                    sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] ALTER COLUMN [" + newColumn.DatabaseName + "] " + newColumn.DatabaseType + " NOT NULL");
+                    sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] ALTER COLUMN [" +
+                                  newColumn.DatabaseName + "] " + newColumn.DatabaseType + " NOT NULL");
                     sb.AppendLine("GO");
                     sb.AppendLine();
                 }
             }
-            else if (newColumn.Identity == IdentityTypeConstants.Database && oldColumn.Identity == IdentityTypeConstants.None)
+            else if (newColumn.Identity == IdentityTypeConstants.Database &&
+                     oldColumn.Identity == IdentityTypeConstants.None)
             {
                 //sb.AppendLine("--ADD SCRIPT HERE TO CONVERT [" + newTable.DatabaseName + "].[" + newColumn.DatabaseName + "] TO IDENTITY COLUMN");                //Check PK
 
@@ -712,7 +751,8 @@ namespace nHydrate.Core.SQLGeneration
                 sb.AppendLine("  ALTER TABLE ' + QUOTENAME(s.name) + N'.'");
                 sb.AppendLine("  + QUOTENAME(t.name) + N' DROP CONSTRAINT '");
                 sb.AppendLine("  + QUOTENAME(c.name) + ';'");
-                sb.AppendLine("FROM sys.objects AS c INNER JOIN sys.tables AS t ON c.parent_object_id = t.[object_id] INNER JOIN sys.schemas AS s ");
+                sb.AppendLine(
+                    "FROM sys.objects AS c INNER JOIN sys.tables AS t ON c.parent_object_id = t.[object_id] INNER JOIN sys.schemas AS s ");
                 sb.AppendLine("ON t.[schema_id] = s.[schema_id]");
                 sb.AppendLine("WHERE c.[type] IN ('D','C','F','PK','UQ') AND t.name = '" + tableName + "'");
                 sb.AppendLine("ORDER BY c.[type];");
@@ -736,6 +776,7 @@ namespace nHydrate.Core.SQLGeneration
                     fields.Add(model.Database.CreatedByDatabaseName);
                     fields.Add(model.Database.CreatedDateDatabaseName);
                 }
+
                 if (newTable.AllowModifiedAudit && oldTable.AllowModifiedAudit)
                 {
                     fields.Add(model.Database.ModifiedByDatabaseName);
@@ -783,16 +824,18 @@ namespace nHydrate.Core.SQLGeneration
                 var childT = (Table) parentR.ChildTableRef.Object;
                 for (var jj = parentT.ParentRoleRelations.Count - 1; jj >= 0; jj--)
                 {
-                    //Relation chlidR = (Relation)parentT.ParentRoleRelations[jj];
                     if (parentR.ParentTableRef.Object == t)
                     {
                         var objectNameFK = "FK_" +
-                                     parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, childT) +
-                                     "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, parentT);
+                                           parentR.DatabaseRoleName + "_" +
+                                           Globals.GetTableDatabaseName((ModelRoot) t.Root, childT) +
+                                           "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, parentT);
 
                         sb.AppendLine("--REMOVE FOREIGN KEY");
-                        sb.AppendLine("if exists(select * from sys.objects where name = '" + objectNameFK + "' and type = 'F' and type_desc = 'FOREIGN_KEY_CONSTRAINT')");
-                        sb.AppendLine("ALTER TABLE [" + childT.GetSQLSchema() + "].[" + childT.DatabaseName + "] DROP CONSTRAINT [" + objectNameFK + "]");
+                        sb.AppendLine("if exists(select * from sys.objects where name = '" + objectNameFK +
+                                      "' and type = 'F' and type_desc = 'FOREIGN_KEY_CONSTRAINT')");
+                        sb.AppendLine("ALTER TABLE [" + childT.GetSQLSchema() + "].[" + childT.DatabaseName +
+                                      "] DROP CONSTRAINT [" + objectNameFK + "]");
                         sb.AppendLine();
                     }
                 }
@@ -813,13 +856,16 @@ namespace nHydrate.Core.SQLGeneration
                     if (parentR.ChildTableRef.Object == t)
                     {
                         var objectNameFK = "FK_" +
-                                     parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, childT) +
-                                     "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, parentT);
+                                           parentR.DatabaseRoleName + "_" +
+                                           Globals.GetTableDatabaseName((ModelRoot) t.Root, childT) +
+                                           "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, parentT);
                         objectNameFK = objectNameFK.ToUpper();
 
                         sb.AppendLine("--REMOVE FOREIGN KEY");
-                        sb.AppendLine("if exists(select * from sys.objects where name = '" + objectNameFK + "' and type = 'F' and type_desc = 'FOREIGN_KEY_CONSTRAINT')");
-                        sb.AppendLine("ALTER TABLE [" + childT.GetSQLSchema() + "].[" + childT.DatabaseName + "] DROP CONSTRAINT [" + objectNameFK + "]");
+                        sb.AppendLine("if exists(select * from sys.objects where name = '" + objectNameFK +
+                                      "' and type = 'F' and type_desc = 'FOREIGN_KEY_CONSTRAINT')");
+                        sb.AppendLine("ALTER TABLE [" + childT.GetSQLSchema() + "].[" + childT.DatabaseName +
+                                      "] DROP CONSTRAINT [" + objectNameFK + "]");
                         sb.AppendLine();
                     }
                 }
@@ -830,9 +876,10 @@ namespace nHydrate.Core.SQLGeneration
 
             #region Delete Primary Key
 
-            var objectNamePK = "PK_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, t);
+            var objectNamePK = "PK_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, t);
             sb.AppendLine($"--DELETE PRIMARY KEY FOR TABLE [{t.DatabaseName}]");
-            sb.AppendLine($"if exists(select * from sys.objects where name = '{objectNamePK}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
+            sb.AppendLine(
+                $"if exists(select * from sys.objects where name = '{objectNamePK}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
             sb.AppendLine($"ALTER TABLE [{t.GetSQLSchema()}].[{t.DatabaseName}] DROP CONSTRAINT [{objectNamePK}]");
             sb.AppendLine();
 
@@ -874,6 +921,7 @@ namespace nHydrate.Core.SQLGeneration
             #endregion
 
             #region Drop tenant view
+
             if (t.IsTenant)
             {
                 var itemName = model.TenantPrefix + "_" + t.DatabaseName;
@@ -881,12 +929,15 @@ namespace nHydrate.Core.SQLGeneration
                 sb.AppendLine($"if exists (select name from sys.objects where name = '{itemName}'  AND type = 'V')");
                 sb.AppendLine($"DROP VIEW [{itemName}]");
             }
+
             #endregion
 
             #region Drop the actual table
+
             sb.AppendLine($"--DELETE TABLE [{t.DatabaseName}]");
             sb.AppendLine($"if exists (select * from sys.objects where name = '{t.DatabaseName}' and type = 'U')");
             sb.AppendLine($"DROP TABLE [{t.DatabaseName}]");
+
             #endregion
 
             return sb.ToString();
@@ -906,9 +957,11 @@ namespace nHydrate.Core.SQLGeneration
                     foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
                         isIdentity |= (column.Identity == IdentityTypeConstants.Database);
 
-                    sb.AppendLine("--INSERT STATIC DATA FOR TABLE [" + Globals.GetTableDatabaseName(model, table) + "]");
+                    sb.AppendLine("--INSERT STATIC DATA FOR TABLE [" + Globals.GetTableDatabaseName(model, table) +
+                                  "]");
                     if (isIdentity)
-                        sb.AppendLine("SET identity_insert [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] on");
+                        sb.AppendLine("SET identity_insert [" + table.GetSQLSchema() + "].[" +
+                                      Globals.GetTableDatabaseName(model, table) + "] on");
 
                     foreach (var rowEntry in table.StaticData.AsEnumerable<RowEntry>())
                     {
@@ -924,8 +977,10 @@ namespace nHydrate.Core.SQLGeneration
                                 {
                                     if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                     {
-                                        if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
-                                            fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
+                                        if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText ||
+                                            column.DataType == SqlDbType.NVarChar)
+                                            fieldValues.Add(column.Name,
+                                                "N'" + column.Default.Replace("'", "''") + "'");
                                         else
                                             fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
                                     }
@@ -949,7 +1004,8 @@ namespace nHydrate.Core.SQLGeneration
                                     else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
                                 }
 
-                                if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
+                                if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText ||
+                                    column.DataType == SqlDbType.NVarChar)
                                     fieldValues.Add(column.Name, "N" + sqlValue);
                                 else
                                     fieldValues.Add(column.Name, sqlValue);
@@ -978,7 +1034,8 @@ namespace nHydrate.Core.SQLGeneration
                         var valueListString = string.Join(",", valueList);
                         var updateSetString = string.Join(",", updateSetList);
 
-                        sb.Append("if not exists(select * from [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] where ");
+                        sb.Append("if not exists(select * from [" + table.GetSQLSchema() + "].[" +
+                                  Globals.GetTableDatabaseName(model, table) + "] where ");
 
                         var ii = 0;
                         var pkWhereSb = new StringBuilder();
@@ -993,7 +1050,9 @@ namespace nHydrate.Core.SQLGeneration
 
                         sb.Append(pkWhereSb);
                         sb.AppendLine(") ");
-                        sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] (" + fieldListString + ") values (" + valueListString + ");");
+                        sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[" +
+                                      Globals.GetTableDatabaseName(model, table) + "] (" + fieldListString +
+                                      ") values (" + valueListString + ");");
 
                         // TODO: We should not do this as it overwrites existing database data
                         //sb.AppendLine("else ");
@@ -1002,7 +1061,8 @@ namespace nHydrate.Core.SQLGeneration
                     }
 
                     if (isIdentity)
-                        sb.AppendLine("SET identity_insert [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] off");
+                        sb.AppendLine("SET identity_insert [" + table.GetSQLSchema() + "].[" +
+                                      Globals.GetTableDatabaseName(model, table) + "] off");
 
                     sb.AppendLine();
                     sb.AppendLine("GO");
@@ -1043,8 +1103,10 @@ namespace nHydrate.Core.SQLGeneration
                                 {
                                     if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                     {
-                                        if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
-                                            fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
+                                        if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText ||
+                                            column.DataType == SqlDbType.NVarChar)
+                                            fieldValues.Add(column.Name,
+                                                "N'" + column.Default.Replace("'", "''") + "'");
                                         else
                                             fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
                                     }
@@ -1068,7 +1130,8 @@ namespace nHydrate.Core.SQLGeneration
                                     else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
                                 }
 
-                                if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
+                                if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText ||
+                                    column.DataType == SqlDbType.NVarChar)
                                     fieldValues.Add(column.Name, "N" + sqlValue);
                                 else
                                     fieldValues.Add(column.Name, sqlValue);
@@ -1108,7 +1171,9 @@ namespace nHydrate.Core.SQLGeneration
                             ii++;
                         }
 
-                        sb.AppendLine("--UPDATE [" + newT.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, newT) + "] SET " + updateSetString + " WHERE " + pkWhereSb.ToString() + ";");
+                        sb.AppendLine("--UPDATE [" + newT.GetSQLSchema() + "].[" +
+                                      Globals.GetTableDatabaseName(model, newT) + "] SET " + updateSetString +
+                                      " WHERE " + pkWhereSb.ToString() + ";");
 
                     }
 
@@ -1144,15 +1209,21 @@ namespace nHydrate.Core.SQLGeneration
                     if (includeDrop)
                     {
                         sb.AppendLine($"--ADD/DROP CONSTRAINT FOR '[{table.DatabaseName}].[{column.DatabaseName}]'");
-                        sb.AppendLine($"if exists(select * from sys.objects where name = '{defaultName}' and type = 'D' and type_desc = 'DEFAULT_CONSTRAINT')");
-                        sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] DROP CONSTRAINT [{GetDefaultValueConstraintName(column)}]");
+                        sb.AppendLine(
+                            $"if exists(select * from sys.objects where name = '{defaultName}' and type = 'D' and type_desc = 'DEFAULT_CONSTRAINT')");
+                        sb.AppendLine(
+                            $"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] DROP CONSTRAINT [{GetDefaultValueConstraintName(column)}]");
                         sb.AppendLine();
                     }
-                    sb.AppendLine($"if not exists(select * from sys.objects where name = '{defaultName}' and type = 'D' and type_desc = 'DEFAULT_CONSTRAINT')");
-                    sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD {defaultClause} FOR [{column.DatabaseName}]");
+
+                    sb.AppendLine(
+                        $"if not exists(select * from sys.objects where name = '{defaultName}' and type = 'D' and type_desc = 'DEFAULT_CONSTRAINT')");
+                    sb.AppendLine(
+                        $"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD {defaultClause} FOR [{column.DatabaseName}]");
                     sb.AppendLine();
                 }
             }
+
             return sb.ToString();
         }
 
@@ -1167,20 +1238,24 @@ namespace nHydrate.Core.SQLGeneration
             sb.AppendLine("--NOTE: IF YOU HAVE AN NON-MANAGED DEFAULT, UNCOMMENT THIS CODE TO REMOVE IT");
             sb.AppendLine($"--DROP CONSTRAINT FOR '[{table.DatabaseName}].[{column.DatabaseName}]' if one exists");
             sb.AppendLine($"--declare " + variableName + " varchar(500)");
-            sb.AppendLine($"--set {variableName} = (select top 1 c.name from sys.all_columns a inner join sys.tables b on a.object_id = b.object_id inner join sys.default_constraints c on a.default_object_id = c.object_id where b.name='{table.DatabaseName}' and a.name = '{column.DatabaseName}')");
-            sb.AppendLine($"--if ({variableName} IS NOT NULL) exec ('ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] DROP CONSTRAINT [' + {variableName} + ']')");
+            sb.AppendLine(
+                $"--set {variableName} = (select top 1 c.name from sys.all_columns a inner join sys.tables b on a.object_id = b.object_id inner join sys.default_constraints c on a.default_object_id = c.object_id where b.name='{table.DatabaseName}' and a.name = '{column.DatabaseName}')");
+            sb.AppendLine(
+                $"--if ({variableName} IS NOT NULL) exec ('ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] DROP CONSTRAINT [' + {variableName} + ']')");
             return sb.ToString();
         }
 
         public static string GetSqlCreateView(CustomView dbObject, bool isInternal)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("if exists(select * from sys.objects where name = '" + dbObject.DatabaseName + "' and type = 'V' and type_desc = 'VIEW')");
+            sb.AppendLine("if exists(select * from sys.objects where name = '" + dbObject.DatabaseName +
+                          "' and type = 'V' and type_desc = 'VIEW')");
             sb.AppendLine("drop view [" + dbObject.GetSQLSchema() + "].[" + dbObject.DatabaseName + "]");
             if (isInternal)
             {
                 sb.AppendLine($"--MODELID: {dbObject.Key}");
             }
+
             sb.AppendLine("GO");
             sb.AppendLine();
             sb.AppendLine("CREATE VIEW [" + dbObject.GetSQLSchema() + "].[" + dbObject.DatabaseName + "]");
@@ -1191,12 +1266,14 @@ namespace nHydrate.Core.SQLGeneration
             {
                 sb.AppendLine("--MODELID,BODY: " + dbObject.Key);
             }
+
             sb.AppendLine("GO");
             sb.AppendLine("exec sp_refreshview N'[" + dbObject.GetSQLSchema() + "].[" + dbObject.DatabaseName + "]';");
             if (isInternal)
             {
                 sb.AppendLine($"--MODELID: {dbObject.Key}");
             }
+
             sb.AppendLine("GO");
             sb.AppendLine();
             return sb.ToString();
@@ -1207,12 +1284,14 @@ namespace nHydrate.Core.SQLGeneration
             var sb = new StringBuilder();
             var name = dbObject.GetDatabaseObjectName();
 
-            sb.AppendLine("if exists(select * from sys.objects where name = '" + name + "' and type = 'P' and type_desc = 'SQL_STORED_PROCEDURE')");
+            sb.AppendLine("if exists(select * from sys.objects where name = '" + name +
+                          "' and type = 'P' and type_desc = 'SQL_STORED_PROCEDURE')");
             sb.AppendLine("drop procedure [" + dbObject.GetSQLSchema() + "].[" + name + "]");
             if (isInternal)
             {
                 sb.AppendLine($"--MODELID: {dbObject.Key}");
             }
+
             sb.AppendLine("GO");
             sb.AppendLine();
             sb.AppendLine("CREATE PROCEDURE [" + dbObject.GetSQLSchema() + "].[" + name + "]");
@@ -1232,6 +1311,7 @@ namespace nHydrate.Core.SQLGeneration
             {
                 sb.AppendLine("--MODELID,BODY: " + dbObject.Key);
             }
+
             sb.AppendLine("GO");
             sb.AppendLine();
             return sb.ToString();
@@ -1240,12 +1320,14 @@ namespace nHydrate.Core.SQLGeneration
         public static string GetSQLCreateFunction(Function dbObject, bool isInternal)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("if exists(select * from sys.objects where name = '" + dbObject.PascalName + "' and type in('FN','IF','TF'))");
+            sb.AppendLine("if exists(select * from sys.objects where name = '" + dbObject.PascalName +
+                          "' and type in('FN','IF','TF'))");
             sb.AppendLine("drop function [" + dbObject.GetSQLSchema() + "].[" + dbObject.PascalName + "]");
             if (isInternal)
             {
                 sb.AppendLine($"--MODELID: {dbObject.Key}");
             }
+
             sb.AppendLine("GO");
             sb.AppendLine();
             sb.AppendLine("CREATE FUNCTION [" + dbObject.GetSQLSchema() + "].[" + dbObject.PascalName + "]");
@@ -1258,6 +1340,7 @@ namespace nHydrate.Core.SQLGeneration
 
                 sb.Append(BuildFunctionParameterList(plist));
             }
+
             sb.AppendLine(")");
 
             sb.Append("RETURNS ");
@@ -1281,6 +1364,7 @@ namespace nHydrate.Core.SQLGeneration
                     sb.Append(column.DatabaseName + " " + column.DatabaseType);
                     if (columnList.IndexOf(column) < columnList.Count - 1) sb.Append(", ");
                 }
+
                 sb.AppendLine(")");
                 sb.AppendLine("AS");
                 sb.AppendLine();
@@ -1305,6 +1389,7 @@ namespace nHydrate.Core.SQLGeneration
             {
                 sb.AppendLine("--MODELID,BODY: " + dbObject.Key);
             }
+
             sb.AppendLine("GO");
             sb.AppendLine();
 
@@ -1320,6 +1405,7 @@ namespace nHydrate.Core.SQLGeneration
                 if (column != null)
                     columnList.Add(indexColumn, column);
             }
+
             return columnList;
         }
 
@@ -1328,7 +1414,8 @@ namespace nHydrate.Core.SQLGeneration
             //Make sure that the index name is the same each time
             var columnList = GetIndexColumns(table, index);
             var prefix = (index.PrimaryKey ? "PK" : "IDX");
-            var indexName = prefix + "_" + table.Name.Replace("-", "") + "_" + string.Join("_", columnList.Select(x => x.Value.Name));
+            var indexName = prefix + "_" + table.Name.Replace("-", "") + "_" +
+                            string.Join("_", columnList.Select(x => x.Value.Name));
             indexName = indexName.ToUpper();
             return indexName;
         }
@@ -1351,9 +1438,11 @@ namespace nHydrate.Core.SQLGeneration
                     //If this is to be a non-clustered index then check if it exists and is clustered and remove it
                     sb.AppendLine("--DELETE INDEX");
                     if (index.Clustered)
-                        sb.AppendLine($"if exists(select * from sys.indexes where name = '{indexName}' and type_desc = 'NONCLUSTERED')");
+                        sb.AppendLine(
+                            $"if exists(select * from sys.indexes where name = '{indexName}' and type_desc = 'NONCLUSTERED')");
                     else
-                        sb.AppendLine($"if exists(select * from sys.indexes where name = '{indexName}' and type_desc = 'CLUSTERED')");
+                        sb.AppendLine(
+                            $"if exists(select * from sys.indexes where name = '{indexName}' and type_desc = 'CLUSTERED')");
                     sb.AppendLine($"DROP INDEX [{indexName}] ON [{table.GetSQLSchema()}].[{tableName}]");
                     sb.AppendLine("GO");
                     sb.AppendLine("--##SECTION END [SAFETY INDEX TYPE]");
@@ -1364,15 +1453,22 @@ namespace nHydrate.Core.SQLGeneration
                 if (!index.PrimaryKey)
                 {
                     var checkSqlList = new List<string>();
-                    foreach(var c in columnList)
+                    foreach (var c in columnList)
                     {
-                        checkSqlList.Add($"exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where c.name = '{c.Value.DatabaseName}' and t.name = '{table.DatabaseName}' and s.name = '{table.GetSQLSchema()}')");
+                        checkSqlList.Add(
+                            $"exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where c.name = '{c.Value.DatabaseName}' and t.name = '{table.DatabaseName}' and s.name = '{table.GetSQLSchema()}')");
                     }
 
-                    sb.AppendLine($"--INDEX FOR TABLE [{table.DatabaseName}] COLUMNS:" + string.Join(", ", columnList.Select(x => "[" + x.Value.DatabaseName + "]")));
-                    sb.AppendLine($"if not exists(select * from sys.indexes where name = '{indexName}') and " + string.Join(" and ", checkSqlList));
-                    sb.Append($"CREATE " + (index.IsUnique ? "UNIQUE " : string.Empty) + (index.Clustered ? "CLUSTERED " : "NONCLUSTERED ") + "INDEX [" + indexName + "] ON [" + table.GetSQLSchema() + "].[" + tableName + "] (");
-                    sb.Append(string.Join(",", columnList.Select(x => "[" + x.Value.DatabaseName + "] " + (x.Key.Ascending ? "ASC" : "DESC"))));
+                    sb.AppendLine($"--INDEX FOR TABLE [{table.DatabaseName}] COLUMNS:" +
+                                  string.Join(", ", columnList.Select(x => "[" + x.Value.DatabaseName + "]")));
+                    sb.AppendLine($"if not exists(select * from sys.indexes where name = '{indexName}') and " +
+                                  string.Join(" and ", checkSqlList));
+                    sb.Append($"CREATE " + (index.IsUnique ? "UNIQUE " : string.Empty) +
+                              (index.Clustered ? "CLUSTERED " : "NONCLUSTERED ") + "INDEX [" + indexName + "] ON [" +
+                              table.GetSQLSchema() + "].[" + tableName + "] (");
+                    sb.Append(string.Join(",",
+                        columnList.Select(x =>
+                            "[" + x.Value.DatabaseName + "] " + (x.Key.Ascending ? "ASC" : "DESC"))));
                     sb.AppendLine(")");
                 }
 
@@ -1395,6 +1491,7 @@ namespace nHydrate.Core.SQLGeneration
                 sb.AppendLine("if exists(select * from sys.indexes where name = '" + indexName + "')");
                 sb.AppendLine("DROP INDEX [" + indexName + "] ON [" + table.GetSQLSchema() + "].[" + tableName + "]");
             }
+
             return sb.ToString();
         }
 
@@ -1435,11 +1532,13 @@ namespace nHydrate.Core.SQLGeneration
 
                 if (!string.IsNullOrEmpty(model.Database.GrantExecUser))
                 {
-                    grantSB.AppendLine($"GRANT ALL ON [{table.GetSQLSchema()}].[{itemName}] TO [{model.Database.GrantExecUser}]");
+                    grantSB.AppendLine(
+                        $"GRANT ALL ON [{table.GetSQLSchema()}].[{itemName}] TO [{model.Database.GrantExecUser}]");
                     grantSB.AppendLine($"--MODELID: " + table.Key);
                     grantSB.AppendLine("GO");
                     grantSB.AppendLine();
                 }
+
                 return sb.ToString();
             }
             catch (Exception ex)
@@ -1452,8 +1551,10 @@ namespace nHydrate.Core.SQLGeneration
         {
             var sb = new StringBuilder();
             sb.AppendLine($"--ADD COLUMN [{table.DatabaseName}].[{model.TenantColumnName}]");
-            sb.AppendLine($"if exists(select * from sys.objects where name = '{table.DatabaseName}' and type = 'U') AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '{model.TenantColumnName}' and o.name = '{table.DatabaseName}')");
-            sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [{model.TenantColumnName}] [nvarchar] (128) NOT NULL CONSTRAINT [DF__{table.DatabaseName.ToUpper()}_{model.TenantColumnName.ToUpper()}] DEFAULT (suser_sname())");
+            sb.AppendLine(
+                $"if exists(select * from sys.objects where name = '{table.DatabaseName}' and type = 'U') AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '{model.TenantColumnName}' and o.name = '{table.DatabaseName}')");
+            sb.AppendLine(
+                $"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [{model.TenantColumnName}] [nvarchar] (128) NOT NULL CONSTRAINT [DF__{table.DatabaseName.ToUpper()}_{model.TenantColumnName.ToUpper()}] DEFAULT (suser_sname())");
             return sb.ToString();
         }
 
@@ -1467,14 +1568,17 @@ namespace nHydrate.Core.SQLGeneration
                 {
                     var indexName = $"PK_{table.DatabaseName.ToUpper()}";
                     sb.AppendLine($"--PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
-                    sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'PK')");
+                    sb.AppendLine(
+                        $"if not exists(select * from sys.objects where name = '{indexName}' and type = 'PK')");
                     sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] WITH NOCHECK ADD ");
-                    sb.AppendLine($"CONSTRAINT [{indexName}] PRIMARY KEY " + (tableIndex.Clustered ? "CLUSTERED" : "NONCLUSTERED"));
+                    sb.AppendLine($"CONSTRAINT [{indexName}] PRIMARY KEY " +
+                                  (tableIndex.Clustered ? "CLUSTERED" : "NONCLUSTERED"));
                     sb.AppendLine("(");
                     sb.AppendLine("\t" + Globals.GetSQLIndexField(table, tableIndex));
                     sb.Append(")");
                     sb.AppendLine();
                 }
+
                 return sb.ToString();
             }
             catch (Exception ex)
@@ -1488,7 +1592,8 @@ namespace nHydrate.Core.SQLGeneration
             var sb = new StringBuilder();
             var pkName = $"PK_{table.DatabaseName}".ToUpper();
             sb.AppendLine($"--DROP PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
-            sb.AppendLine($"if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
+            sb.AppendLine(
+                $"if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
             sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] DROP CONSTRAINT [{pkName}]");
             sb.AppendLine("GO");
             sb.AppendLine();
@@ -1518,7 +1623,8 @@ namespace nHydrate.Core.SQLGeneration
 
             var sb = new StringBuilder();
             sb.AppendLine($"--DROP PRIMARY KEY FOR TABLE [{tableName}]");
-            sb.AppendLine($"if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
+            sb.AppendLine(
+                $"if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
             sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{tableName}] DROP CONSTRAINT [{pkName}]");
             sb.AppendLine("GO");
             sb.AppendLine();
@@ -1531,9 +1637,11 @@ namespace nHydrate.Core.SQLGeneration
             var targetTable = relation.ChildTable;
 
             var sb = new StringBuilder();
-            sb.AppendLine($"--REMOVE FOREIGN KEY [{relation.ParentTable.DatabaseName}->{relation.ChildTable.DatabaseName}]");
+            sb.AppendLine(
+                $"--REMOVE FOREIGN KEY [{relation.ParentTable.DatabaseName}->{relation.ChildTable.DatabaseName}]");
             sb.AppendLine($"if exists(select * from sys.objects where name = '{indexName}' and type = 'F')");
-            sb.AppendLine($"ALTER TABLE [{targetTable.GetSQLSchema()}].[{targetTable.DatabaseName}] DROP CONSTRAINT [{indexName}]");
+            sb.AppendLine(
+                $"ALTER TABLE [{targetTable.GetSQLSchema()}].[{targetTable.DatabaseName}] DROP CONSTRAINT [{indexName}]");
             return sb.ToString();
         }
 
@@ -1549,8 +1657,10 @@ namespace nHydrate.Core.SQLGeneration
                 (parentTable.TypedTable != TypedTableConstants.EnumOnly) &&
                 (childTable.TypedTable != TypedTableConstants.EnumOnly))
             {
-                sb.AppendLine("--FOREIGN KEY RELATIONSHIP [" + parentTable.DatabaseName + "] -> [" + childTable.DatabaseName + "] (" + GetFieldNames(relation) + ")");
-                sb.AppendLine("if not exists(select * from sys.objects where name = '" + indexName + "' and type = 'F')");
+                sb.AppendLine("--FOREIGN KEY RELATIONSHIP [" + parentTable.DatabaseName + "] -> [" +
+                              childTable.DatabaseName + "] (" + GetFieldNames(relation) + ")");
+                sb.AppendLine(
+                    "if not exists(select * from sys.objects where name = '" + indexName + "' and type = 'F')");
                 sb.AppendLine("ALTER TABLE [" + childTable.GetSQLSchema() + "].[" + childTable.DatabaseName + "] ADD ");
                 sb.AppendLine("CONSTRAINT [" + indexName + "] FOREIGN KEY ");
                 sb.AppendLine("(");
@@ -1560,6 +1670,7 @@ namespace nHydrate.Core.SQLGeneration
                 sb.Append(AppendParentTableColumns(relation, childTable));
                 sb.AppendLine(")");
             }
+
             return sb.ToString();
         }
 
@@ -1569,12 +1680,14 @@ namespace nHydrate.Core.SQLGeneration
 
             var sb = new StringBuilder();
             var objectName = ValidationHelper.MakeDatabaseIdentifier("__security__" + table.Name);
-            sb.AppendLine("if exists(select * from sys.objects where name = '" + objectName + "' and type in('FN','IF','TF'))");
+            sb.AppendLine("if exists(select * from sys.objects where name = '" + objectName +
+                          "' and type in('FN','IF','TF'))");
             sb.AppendLine("drop function [" + table.GetSQLSchema() + "].[" + objectName + "]");
             if (isInternal)
             {
                 sb.AppendLine("--MODELID: " + function.Key);
             }
+
             sb.AppendLine("GO");
             sb.AppendLine();
             sb.AppendLine("CREATE FUNCTION [" + table.GetSQLSchema() + "].[" + objectName + "]");
@@ -1595,6 +1708,7 @@ namespace nHydrate.Core.SQLGeneration
                 facadeColumns.Add(model.Database.CreatedByColumnName);
                 facadeColumns.Add(model.Database.CreatedDateColumnName);
             }
+
             if (table.AllowModifiedAudit)
             {
                 realColumns.Add(model.Database.ModifiedByColumnName);
@@ -1602,6 +1716,7 @@ namespace nHydrate.Core.SQLGeneration
                 facadeColumns.Add(model.Database.ModifiedByColumnName);
                 facadeColumns.Add(model.Database.ModifiedDateColumnName);
             }
+
             if (table.AllowTimestamp)
             {
                 realColumns.Add(model.Database.TimestampColumnName);
@@ -1625,6 +1740,7 @@ namespace nHydrate.Core.SQLGeneration
             {
                 sb.AppendLine("--MODELID,BODY: " + function.Key);
             }
+
             sb.AppendLine("GO");
             sb.AppendLine();
 
@@ -1651,6 +1767,7 @@ namespace nHydrate.Core.SQLGeneration
                     retval.Append(", ");
                 }
             }
+
             return retval.ToString();
         }
 
@@ -1665,7 +1782,7 @@ namespace nHydrate.Core.SQLGeneration
                 //Loop through the ordered columns of the parent table's primary key index
                 //var columnList = crList.OrderBy(x => x.ParentColumn.Name).Select(cr => cr.ChildColumn).ToList();
                 var columnList = crList.Select(cr => cr.ChildColumn).ToList();
-                return  string.Join(",", columnList.Select(x => "	[" + x.Name + "]\r\n"));
+                return string.Join(",", columnList.Select(x => "	[" + x.Name + "]\r\n"));
             }
             catch (Exception ex)
             {
@@ -1757,6 +1874,7 @@ namespace nHydrate.Core.SQLGeneration
                 }
 
             }
+
             return sb.ToString();
 
         }
@@ -1774,7 +1892,8 @@ namespace nHydrate.Core.SQLGeneration
             var tempBuilder = new StringBuilder();
 
             var defaultValue = column.Default + string.Empty;
-            if ((column.DataType == System.Data.SqlDbType.DateTime) || (column.DataType == System.Data.SqlDbType.SmallDateTime))
+            if ((column.DataType == System.Data.SqlDbType.DateTime) ||
+                (column.DataType == System.Data.SqlDbType.SmallDateTime))
             {
                 if (defaultValue.ToLower() == "getdate" || defaultValue.ToLower() == "getdate()" ||
                     defaultValue.ToLower() == "sysdatetime" || defaultValue.ToLower() == "sysdatetime()")
@@ -1785,7 +1904,8 @@ namespace nHydrate.Core.SQLGeneration
                 {
                     tempBuilder.Append("getutcdate()");
                 }
-                else if (defaultValue.ToLower().StartsWith("getdate+") || defaultValue.ToLower().StartsWith("sysdatetime+"))
+                else if (defaultValue.ToLower().StartsWith("getdate+") ||
+                         defaultValue.ToLower().StartsWith("sysdatetime+"))
                 {
                     var br = defaultValue.IndexOf("+") + 1;
                     var t = defaultValue.Substring(br, defaultValue.Length - br);
@@ -1803,7 +1923,7 @@ namespace nHydrate.Core.SQLGeneration
             }
             else if (column.DataType == SqlDbType.UniqueIdentifier)
             {
-                if (defaultValue.ToLower() == "newid" || 
+                if (defaultValue.ToLower() == "newid" ||
                     defaultValue.ToLower() == "newid()" ||
                     defaultValue.ToLower() == "newsequentialid" ||
                     defaultValue.ToLower() == "newsequentialid()" ||
@@ -1811,7 +1931,7 @@ namespace nHydrate.Core.SQLGeneration
                 {
                     tempBuilder.Append(GetDefaultValue(defaultValue));
                 }
-            else
+                else
                 {
                     var v = GetDefaultValue(defaultValue
                         .Replace("'", string.Empty)
@@ -1819,8 +1939,7 @@ namespace nHydrate.Core.SQLGeneration
                         .Replace("{", string.Empty)
                         .Replace("}", string.Empty));
 
-                    Guid g;
-                    if (Guid.TryParse(v, out g))
+                    if (Guid.TryParse(v, out var g))
                         tempBuilder.Append("'" + g.ToString() + "'");
                 }
             }
@@ -1850,6 +1969,7 @@ namespace nHydrate.Core.SQLGeneration
             {
                 tempBuilder.Append(GetDefaultValue(defaultValue));
             }
+
             return tempBuilder.ToString();
         }
 
@@ -1868,6 +1988,7 @@ namespace nHydrate.Core.SQLGeneration
                 tempBuilder.Append("DEFAULT (" + theValue + ")");
                 sb.Append(tempBuilder.ToString());
             }
+
             return sb.ToString();
         }
 
@@ -1885,7 +2006,9 @@ namespace nHydrate.Core.SQLGeneration
             if (table.IsTenant)
             {
                 sb.AppendLine(",");
-                sb.Append("\t[" + model.TenantColumnName + "] [nvarchar] (128) NOT NULL CONSTRAINT [DF__" + table.DatabaseName.ToUpper() + "_" + model.TenantColumnName.ToUpper() + "] DEFAULT (suser_sname())");
+                sb.Append("\t[" + model.TenantColumnName + "] [nvarchar] (128) NOT NULL CONSTRAINT [DF__" +
+                          table.DatabaseName.ToUpper() + "_" + model.TenantColumnName.ToUpper() +
+                          "] DEFAULT (suser_sname())");
             }
         }
 
@@ -1898,7 +2021,8 @@ namespace nHydrate.Core.SQLGeneration
                 defaultName = defaultName.ToUpper();
                 sb.AppendLine(",");
                 sb.AppendLine("\t[" + model.Database.CreatedByColumnName + "] [NVarchar] (50) NULL,");
-                sb.Append("\t[" + model.Database.CreatedDateColumnName + "] " + dateTimeString + " CONSTRAINT [" + defaultName + "] DEFAULT " + model.GetSQLDefaultDate() + " NULL");
+                sb.Append("\t[" + model.Database.CreatedDateColumnName + "] " + dateTimeString + " CONSTRAINT [" +
+                          defaultName + "] DEFAULT " + model.GetSQLDefaultDate() + " NULL");
             }
         }
 
@@ -1911,7 +2035,8 @@ namespace nHydrate.Core.SQLGeneration
                 defaultName = defaultName.ToUpper();
                 sb.AppendLine(",");
                 sb.AppendLine("\t[" + model.Database.ModifiedByColumnName + "] [NVarchar] (50) NULL,");
-                sb.Append("\t[" + model.Database.ModifiedDateColumnName + "] " + dateTimeString + " CONSTRAINT [" + defaultName + "] DEFAULT " + model.GetSQLDefaultDate() + " NULL");
+                sb.Append("\t[" + model.Database.ModifiedDateColumnName + "] " + dateTimeString + " CONSTRAINT [" +
+                          defaultName + "] DEFAULT " + model.GetSQLDefaultDate() + " NULL");
             }
         }
 
@@ -1922,12 +2047,15 @@ namespace nHydrate.Core.SQLGeneration
             {
                 retVal = "newid()";
             }
-            if (StringHelper.Match(modelDefault, "newsequentialid") || StringHelper.Match(modelDefault, "newsequentialid()"))
+
+            if (StringHelper.Match(modelDefault, "newsequentialid") ||
+                StringHelper.Match(modelDefault, "newsequentialid()"))
             {
                 retVal = "newsequentialid()";
             }
             else if (StringHelper.Match(modelDefault, "getdate") || StringHelper.Match(modelDefault, "getdate()") ||
-                StringHelper.Match(modelDefault, "sysdatetime") || StringHelper.Match(modelDefault, "sysdatetime()"))
+                     StringHelper.Match(modelDefault, "sysdatetime") ||
+                     StringHelper.Match(modelDefault, "sysdatetime()"))
             {
                 retVal = "GetDate()";
             }
@@ -1939,14 +2067,17 @@ namespace nHydrate.Core.SQLGeneration
             {
                 retVal = string.Empty;
             }
+
             return retVal;
         }
 
         private static string BuildStoredProcParameterList(CustomStoredProcedure storedProcedure)
         {
             var output = new StringBuilder();
-            var parameterList = storedProcedure.GetParameters().Where(x => x.Generated && x.SortOrder > 0).OrderBy(x => x.SortOrder).ToList();
-            parameterList.AddRange(storedProcedure.GetParameters().Where(x => x.Generated && x.SortOrder == 0).OrderBy(x => x.Name).ToList());
+            var parameterList = storedProcedure.GetParameters().Where(x => x.Generated && x.SortOrder > 0)
+                .OrderBy(x => x.SortOrder).ToList();
+            parameterList.AddRange(storedProcedure.GetParameters().Where(x => x.Generated && x.SortOrder == 0)
+                .OrderBy(x => x.Name).ToList());
 
             var ii = 0;
             foreach (var parameter in parameterList)
@@ -1958,13 +2089,16 @@ namespace nHydrate.Core.SQLGeneration
 
                 ii++;
                 output.Append("\t@" + ValidationHelper.MakeDatabaseScriptIdentifier(parameter.DatabaseName) + " " +
-                    parameter.DatabaseType.ToLower() +
-                    (parameter.GetPredefinedSize() == -1 ? "(" + parameter.GetLengthString() + ") " : string.Empty) + (parameter.IsOutputParameter ? " out " : " = " + defaultValue));
+                              parameter.DatabaseType.ToLower() +
+                              (parameter.GetPredefinedSize() == -1
+                                  ? "(" + parameter.GetLengthString() + ") "
+                                  : string.Empty) + (parameter.IsOutputParameter ? " out " : " = " + defaultValue));
 
                 if (ii != parameterList.Count)
                     output.Append(",");
                 output.AppendLine();
             }
+
             return output.ToString();
         }
 
@@ -1981,13 +2115,17 @@ namespace nHydrate.Core.SQLGeneration
                     defaultValue = "null";
 
                 ii++;
-                output.Append("\t@" + ValidationHelper.MakeDatabaseScriptIdentifier(parameter.DatabaseName) + " " + parameter.DatabaseType.ToLower());
-                output.Append((parameter.GetPredefinedSize() == -1 ? "(" + parameter.GetLengthString() + ")" : string.Empty) + (parameter.IsOutputParameter ? " out " : " = " + defaultValue));
+                output.Append("\t@" + ValidationHelper.MakeDatabaseScriptIdentifier(parameter.DatabaseName) + " " +
+                              parameter.DatabaseType.ToLower());
+                output.Append(
+                    (parameter.GetPredefinedSize() == -1 ? "(" + parameter.GetLengthString() + ")" : string.Empty) +
+                    (parameter.IsOutputParameter ? " out " : " = " + defaultValue));
 
                 if (ii != parameterList.Count())
                     output.Append(",");
                 output.AppendLine();
             }
+
             return output.ToString();
         }
 

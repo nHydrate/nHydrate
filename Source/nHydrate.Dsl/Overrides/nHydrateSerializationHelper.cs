@@ -1,16 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.Modeling.ExtensionEnablement;
-using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.Modeling.Diagrams.ExtensionEnablement;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
 using DslValidation = global::Microsoft.VisualStudio.Modeling.Validation;
 using System.IO;
 using System.Xml;
-using nHydrate.Generator.Common.Util;
-using nHydrate.Dsl.Objects;
 
 namespace nHydrate.Dsl
 {
@@ -315,61 +309,16 @@ namespace nHydrate.Dsl
     /// </summary>
     partial class nHydrateModelSerializer
     {
-
-        protected override void WriteElements(Microsoft.VisualStudio.Modeling.SerializationContext serializationContext, Microsoft.VisualStudio.Modeling.ModelElement element, System.Xml.XmlWriter writer)
-        {
-            base.WriteElements(serializationContext, element, writer);
-
-            //  writer.WriteStartElement("custom");
-            //  writer.WriteCData("my custom stuff here!");
-            //  writer.WriteEndElement();
-        }
-
-        //protected override void WritePropertiesAsAttributes(Microsoft.VisualStudio.Modeling.SerializationContext serializationContext, Microsoft.VisualStudio.Modeling.ModelElement element, System.Xml.XmlWriter writer)
-        //{
-        //  base.WritePropertiesAsAttributes(serializationContext, element, writer);
-
-        //  var instanceOfnHydrateModel = element as nHydrateModel;
-
-        //  // CompanyName
-        //  if (!serializationContext.Result.Failed)
-        //  {
-        //    var propValue = instanceOfnHydrateModel.TestProperty;
-        //    if (!serializationContext.Result.Failed)
-        //    {
-        //      nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "testProperty", propValue.ToString().ToLower());
-        //    }
-        //  }
-        //}
     }
 
     partial class nHydrateSerializationHelperBase
     {
-        /// <summary>
-        /// Customize Model Loading.
-        /// </summary>
-        /// <param name="serializationResult">Stores serialization result from the load operation.</param>
-        /// <param name="partition">Partition in which the new nHydrateModel instance will be created.</param>
-        /// <param name="fileName">Name of the file from which the nHydrateModel instance will be deserialized.</param>
-        /// <param name="modelRoot">The root of the file that was loaded.</param>
         private void OnPostLoadModel(DslModeling::SerializationResult serializationResult, DslModeling::Partition partition, string fileName, nHydrateModel modelRoot)
         {
-            //this.LoadModelAndDiagram
         }
 
-        /// <summary>
-        /// Customize Model and Diagram Loading.
-        /// </summary>
-        /// <param name="serializationResult">Stores serialization result from the load operation.</param>
-        /// <param name="modelPartition">Partition in which the new DslLibrary instance will be created.</param>
-        /// <param name="modelFileName">Name of the file from which the DslLibrary instance will be deserialized.</param>
-        /// <param name="diagramPartition">Partition in which the new DslDesignerDiagram instance will be created.</param>
-        /// <param name="diagramFileName">Name of the file from which the DslDesignerDiagram instance will be deserialized.</param>
-        /// <param name="modelRoot">The root of the file that was loaded.</param>
-        /// <param name="diagram">The diagram matching the modelRoot.</param>
         private void OnPostLoadModelAndDiagram(DslModeling::SerializationResult serializationResult, DslModeling::Partition modelPartition, string modelFileName, DslModeling::Partition diagramPartition, string diagramFileName, nHydrateModel modelRoot, nHydrateDiagram diagram)
         {
-
         }
     }
 

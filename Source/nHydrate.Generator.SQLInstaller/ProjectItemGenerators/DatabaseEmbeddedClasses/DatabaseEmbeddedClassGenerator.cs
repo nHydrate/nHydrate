@@ -448,7 +448,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
             retVal = retVal.Replace("Acme", _model.CompanyName);
             retVal = retVal.Replace("%MODELKEY%", _model.Key);
             retVal = retVal.Replace("%COLLATE%", _model.Database.Collate);
-            retVal = retVal.Replace("ZZ", _model.CompanyAbbreviation);
             var versionNumbers = _model.Version.Split('.');
 
             int major = int.Parse(versionNumbers[0]);

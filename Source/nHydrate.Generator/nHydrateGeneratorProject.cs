@@ -18,8 +18,6 @@ namespace nHydrate.Generator
 
         #region Member Variables
 
-        private string _fileName = string.Empty;
-
         #endregion
 
         #region Constructors
@@ -142,11 +140,7 @@ namespace nHydrate.Generator
             }
         }
 
-        public string FileName
-        {
-            get { return _fileName; }
-            set { _fileName = value; }
-        }
+        public string FileName { get; set; } = string.Empty;
 
         public void HandleCommand(string command)
         {

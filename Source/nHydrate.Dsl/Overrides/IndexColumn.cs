@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using nHydrate.Generator.Common.Util;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
-using DslDesign = global::Microsoft.VisualStudio.Modeling.Design;
 using System.ComponentModel;
 
 namespace nHydrate.Dsl
@@ -12,21 +8,13 @@ namespace nHydrate.Dsl
     partial class IndexColumn
     {
         #region Constructors
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="store">Store where new element is to be created.</param>
-        /// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
+        // Constructors were not generated for this relationship because it had HasCustomConstructor
+        // set to true. Please provide the constructors below in a partial class.
         public IndexColumn(DslModeling::Store store, params DslModeling::PropertyAssignment[] propertyAssignments)
             : this(store != null ? store.DefaultPartitionForClass(DomainClassId) : null, propertyAssignments)
         {
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="partition">Partition where new element is to be created.</param>
-        /// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
         public IndexColumn(DslModeling::Partition partition, params DslModeling::PropertyAssignment[] propertyAssignments)
             : base(partition, propertyAssignments)
         {

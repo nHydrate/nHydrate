@@ -65,8 +65,7 @@ namespace nHydrate.Dsl.Design.Converters
 				}
 				else
 				{
-					double d;
-					if (double.TryParse((string)value, out d))
+                    if (double.TryParse((string)value, out var d))
 						return d;
 					//else
 					//  throw new Exception("Cannot convert to double!");

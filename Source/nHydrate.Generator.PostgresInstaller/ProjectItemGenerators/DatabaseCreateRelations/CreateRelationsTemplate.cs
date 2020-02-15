@@ -29,7 +29,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
 
         public override string FileName
         {
-            get { return string.Format("3_CreateRelations.sql"); }
+            get { return "3_CreateRelations.sql"; }
         }
 
         #endregion

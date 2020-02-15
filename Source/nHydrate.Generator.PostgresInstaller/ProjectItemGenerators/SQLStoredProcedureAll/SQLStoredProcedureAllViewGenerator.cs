@@ -30,15 +30,11 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredPr
                 sb.AppendLine();
 
                 //Defined views
-                var grantSB = new StringBuilder();
                 foreach (var view in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
                 {
-                    var template = new SQLStoredProcedureViewAllTemplate(_model, view, true, grantSB);
+                    var template = new SQLStoredProcedureViewAllTemplate(_model, view);
                     sb.Append(template.FileContent);
                 }
-
-                //Add grants
-                sb.Append(grantSB.ToString());
 
                 var eventArgs = new ProjectItemGeneratedEventArgs("Views.sql", sb.ToString(), ProjectName,
                     this.ParentItemPath, ProjectItemType.Folder, this, true);

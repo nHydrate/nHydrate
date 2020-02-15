@@ -44,23 +44,12 @@ namespace nHydrate.Generator.Models
         protected IdentityTypeConstants _identity = _def_identity;
         protected string _default = _def_default;
         protected bool _defaultIsFunc = _def_defaultIsFunc;
-        protected Reference _parentTableRef = null;
         protected Reference _relationshipRef = null;
-        private string _enumType = string.Empty;
-        private string _friendlyName = _def_friendlyName;
-        private int _sortOrder = _def_sortOrder;
-        private bool _UIVisible = _def_UIVisible;
-        private string _mask = _def_mask;
         private double _min = _def_min;
         private double _max = _def_max;
         private bool _isIndexed = _def_isIndexed;
         protected bool _isUnique = _def_isUnique;
         protected string _collate = string.Empty;
-        protected bool _computedColumn = _def_computedColumn;
-        protected string _formula = _def_formula;
-        protected string _validationExpression = _def_validationExpression;
-        protected bool _isReadOnly = _def_isReadOnly;
-        protected bool _obsolete = _def_obsolete;
 
         #endregion
 
@@ -94,15 +83,7 @@ namespace nHydrate.Generator.Models
 
         public MetadataItemCollection MetaData { get; private set; }
 
-        public bool IsReadOnly
-        {
-            get { return _isReadOnly; }
-            set
-            {
-                _isReadOnly = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("IsReadOnly"));
-            }
-        }
+        public bool IsReadOnly { get; set; } = _def_isReadOnly;
 
         public override bool AllowNull
         {
@@ -115,35 +96,11 @@ namespace nHydrate.Generator.Models
             set { base.AllowNull = value; }
         }
 
-        public bool ComputedColumn
-        {
-            get { return _computedColumn; }
-            set
-            {
-                _computedColumn = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("computedColumn"));
-            }
-        }
+        public bool ComputedColumn { get; set; } = _def_computedColumn;
 
-        public string Formula
-        {
-            get { return _formula; }
-            set
-            {
-                _formula = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("formula"));
-            }
-        }
+        public string Formula { get; set; } = _def_formula;
 
-        public string ValidationExpression
-        {
-            get { return _validationExpression; }
-            set
-            {
-                _validationExpression = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("validationExpression"));
-            }
-        }
+        public string ValidationExpression { get; set; } = _def_validationExpression;
 
         public bool PrimaryKey
         {
@@ -155,7 +112,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _primaryKey = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("primaryKey"));
             }
         }
 
@@ -170,7 +126,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _identity = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Identity"));
             }
         }
 
@@ -190,7 +145,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _default = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Default"));
             }
         }
 
@@ -204,7 +158,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _defaultIsFunc = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("DefaultIsFunc"));
             }
         }
 
@@ -218,7 +171,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _min = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Min"));
             }
         }
 
@@ -232,27 +184,24 @@ namespace nHydrate.Generator.Models
             set
             {
                 _max = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Max"));
             }
         }
 
         public bool IsIndexed
         {
-            get { return (_isIndexed || _primaryKey) && !_computedColumn; }
+            get { return (_isIndexed || _primaryKey) && !ComputedColumn; }
             set
             {
                 _isIndexed = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("IsIndexed"));
             }
         }
 
         public bool IsUnique
         {
-            get { return (_isUnique || _primaryKey) && !_computedColumn; }
+            get { return (_isUnique || _primaryKey) && !ComputedColumn; }
             set
             {
                 _isUnique = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("IsUnique"));
             }
         }
 
@@ -266,70 +215,25 @@ namespace nHydrate.Generator.Models
             set
             {
                 _collate = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Collate"));
             }
         }
 
-        public Reference ParentTableRef
-        {
-            get { return _parentTableRef; }
-            set { _parentTableRef = value; }
-        }
+        public Reference ParentTableRef { get; set; } = null;
 
         public Table ParentTable
         {
-            get { return _parentTableRef.Object as Table; }
+            get { return ParentTableRef.Object as Table; }
         }
 
-        public string FriendlyName
-        {
-            get { return _friendlyName; }
-            set
-            {
-                _friendlyName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("friendlyName"));
-            }
-        }
+        public string FriendlyName { get; set; } = _def_friendlyName;
 
-        public int SortOrder
-        {
-            get { return _sortOrder; }
-            set
-            {
-                _sortOrder = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("sortOrder"));
-            }
-        }
+        public int SortOrder { get; set; } = _def_sortOrder;
 
-        public bool UIVisible
-        {
-            get { return _UIVisible; }
-            set
-            {
-                _UIVisible = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("UIVisible"));
-            }
-        }
+        public bool UIVisible { get; set; } = _def_UIVisible;
 
-        public string Mask
-        {
-            get { return _mask; }
-            set
-            {
-                _mask = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("mask"));
-            }
-        }
+        public string Mask { get; set; } = _def_mask;
 
-        public bool Obsolete
-        {
-            get { return _obsolete; }
-            set
-            {
-                _obsolete = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("obsolete"));
-            }
-        }
+        public bool Obsolete { get; set; } = _def_obsolete;
 
         public override string CorePropertiesHash
         {
@@ -564,7 +468,7 @@ namespace nHydrate.Generator.Models
             else if (this.DataType == System.Data.SqlDbType.UniqueIdentifier)
             {
                 if ((StringHelper.Match(this.Default, "newid", true)) || (StringHelper.Match(this.Default, "newid()", true)))
-                    defaultValue = String.Format("Guid.NewGuid()");
+                    defaultValue = "Guid.NewGuid()";
                 else if (string.IsNullOrEmpty(this.Default))
                     defaultValue = "System.Guid.Empty";
                 else if (this.Default.ToLower().Contains("newsequentialid"))
@@ -593,9 +497,9 @@ namespace nHydrate.Generator.Models
             {
                 defaultValue = "false";
                 if (this.Default == "0")
-                    defaultValue = String.Format("false");
+                    defaultValue = "false";
                 else if (this.Default == "1")
-                    defaultValue = String.Format("true");
+                    defaultValue = "true";
             }
             else
             {
@@ -981,11 +885,7 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public string EnumType
-        {
-            get { return _enumType; }
-            set { _enumType = value; }
-        }
+        public string EnumType { get; set; } = string.Empty;
 
         public override string GetCodeType(bool allowNullable, bool forceNull)
         {
@@ -1013,7 +913,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _codeFacade = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("codeFacade"));
             }
         }
 

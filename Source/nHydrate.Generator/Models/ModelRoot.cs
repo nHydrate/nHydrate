@@ -25,22 +25,8 @@ namespace nHydrate.Generator.Models
         protected const string _def_tenantColumnName = "__tenant_user";
         protected const string _def_tenantPrefix = "__vw_tenant";
 
-        protected Database _database = null;
-        protected string _companyName = string.Empty;
-        protected bool _emitSafetyScripts = true;
-        protected string _companyAbbreviation = string.Empty;
-        protected string _copyright = string.Empty;
-        protected string _projectName = string.Empty;
-        protected bool _useUTCTime = _def_useUTCTime;
         protected string _version = _def_version;
-        protected bool _transformNames = _def_transformNames;
-        protected bool _enableCustomChangeEvents = _def_enableCustomChangeEvents;
-        protected bool _supportLegacySearchObject = _def_supportLegacySearchObject;
-        protected string _defaultNamespace = _def_defaultNamespace;
-        protected IGenerator _generatorProject = null;
-        private string _storedProcedurePrefix = _def_storedProcedurePrefix;
         private readonly VersionHistoryCollection _versionHistoryList = new VersionHistoryCollection(null);
-        private string _moduleName = string.Empty;
         private string _modeToolVersion = string.Empty;
         protected string _tenantColumnName = _def_tenantColumnName;
         protected string _tenantPrefix = _def_tenantPrefix;
@@ -52,7 +38,7 @@ namespace nHydrate.Generator.Models
         public ModelRoot(INHydrateModelObject root)
             : base(root)
         {
-            _database = new Database(this);
+            Database = new Database(this);
 
             this.RemovedTables = new ExtendedList<string>();
             this.RemovedViews = new ExtendedList<string>();
@@ -72,7 +58,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _tenantColumnName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("TenantColumnName"));
             }
         }
 
@@ -82,7 +67,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _tenantPrefix = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("TenantPrefix"));
             }
         }
 
@@ -107,87 +91,21 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public string DefaultNamespace
-        {
-            get { return _defaultNamespace; }
-            set
-            {
-                if (_defaultNamespace != value)
-                {
-                    //if (MessageBox.Show("Changing this setting will cause all generated assemblies to have this value as the base name and namespace. Leaving this field blank will result in assemblies having a base name of CompanyName.ProjectName.\n\n Do you wish to proceed?", "Change Settings", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                    {
-                        _defaultNamespace = value;
-                        this.OnPropertyChanged(this, new PropertyChangedEventArgs("DefaultNamespace"));
-                    }
-                }
-            }
-        }
+        public string DefaultNamespace { get; set; } = _def_defaultNamespace;
 
-        public bool TransformNames
-        {
-            get { return _transformNames; }
-            set
-            {
-                _transformNames = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("TransformNames"));
-            }
-        }
+        public bool TransformNames { get; set; } = _def_transformNames;
 
-        public bool EnableCustomChangeEvents
-        {
-            get { return _enableCustomChangeEvents; }
-            set
-            {
-                _enableCustomChangeEvents = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("EnableCustomChangeEvents"));
-            }
-        }
+        public bool EnableCustomChangeEvents { get; set; } = _def_enableCustomChangeEvents;
 
-        public bool SupportLegacySearchObject
-        {
-            get { return _supportLegacySearchObject; }
-            set
-            {
-                _supportLegacySearchObject = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("SupportLegacySearchObject"));
-            }
-        }
+        public bool SupportLegacySearchObject { get; set; } = _def_supportLegacySearchObject;
 
-        public string StoredProcedurePrefix
-        {
-            get { return _storedProcedurePrefix; }
-            set
-            {
-                _storedProcedurePrefix = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("StoredProcedurePrefix"));
-            }
-        }
+        public string StoredProcedurePrefix { get; set; } = _def_storedProcedurePrefix;
 
-        public IGenerator GeneratorProject
-        {
-            get { return _generatorProject; }
-            set { _generatorProject = value; }
-        }
+        public IGenerator GeneratorProject { get; set; } = null;
 
-        public string ProjectName
-        {
-            get { return _projectName; }
-            set
-            {
-                _projectName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ProjectName"));
-            }
-        }
+        public string ProjectName { get; set; } = string.Empty;
 
-        public bool UseUTCTime
-        {
-            get { return _useUTCTime; }
-            set
-            {
-                _useUTCTime = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("UseUTCTime"));
-            }
-        }
+        public bool UseUTCTime { get; set; } = _def_useUTCTime;
 
         public string Version
         {
@@ -197,69 +115,22 @@ namespace nHydrate.Generator.Models
                 if (_version != value)
                 {
                     _version = value;
-                    this.OnPropertyChanged(this, new PropertyChangedEventArgs("Version"));
                     this.VersionHistoryList.Add(new VersionHistory(_version));
                 }
             }
         }
 
-        public string CompanyName
-        {
-            get { return _companyName; }
-            set
-            {
-                _companyName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("CompanyName"));
-            }
-        }
+        public string CompanyName { get; set; } = string.Empty;
 
-        public bool EmitSafetyScripts
-        {
-            get { return _emitSafetyScripts; }
-            set
-            {
-                _emitSafetyScripts = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("EmitSafetyScripts"));
-            }
-        }
+        public bool EmitSafetyScripts { get; set; } = true;
 
-        public string ModuleName
-        {
-            get { return _moduleName; }
-            set
-            {
-                _moduleName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ModuleName"));
-            }
-        }
+        public string ModuleName { get; set; } = string.Empty;
 
-        public string CompanyAbbreviation
-        {
-            get { return _companyAbbreviation; }
-            set
-            {
-                _companyAbbreviation = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("CompanyAbbreviation"));
-            }
-        }
-
-        public Database Database
-        {
-            get { return _database; }
-            set { _database = value; }
-        }
+        public Database Database { get; set; } = null;
 
         public VersionHistoryCollection VersionHistoryList => _versionHistoryList;
 
-        public string Copyright
-        {
-            get { return _copyright; }
-            set
-            {
-                _copyright = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Copyright"));
-            }
-        }
+        public string Copyright { get; set; } = string.Empty;
 
         public virtual string GetSQLDefaultDate()
         {
@@ -316,7 +187,6 @@ namespace nHydrate.Generator.Models
                 if (!string.IsNullOrEmpty(this.ModuleName))
                     XmlHelper.AddAttribute(node, "moduleName", this.ModuleName);
 
-                XmlHelper.AddAttribute(node, "companyAbbreviation", this.CompanyAbbreviation);
                 XmlHelper.AddAttribute(node, "defaultNamespace", this.DefaultNamespace);
                 XmlHelper.AddAttribute(node, "storedProcedurePrefix", this.StoredProcedurePrefix);
 
@@ -364,11 +234,10 @@ namespace nHydrate.Generator.Models
                 this.TenantPrefix = XmlHelper.GetAttributeValue(node, "tenantPrefix", _def_tenantPrefix);
                 this.CompanyName = XmlHelper.GetAttributeValue(node, "companyName", this.CompanyName);
                 this.EmitSafetyScripts = XmlHelper.GetAttributeValue(node, "emitSafetyScripts", this.EmitSafetyScripts);
-                this.CompanyAbbreviation = XmlHelper.GetAttributeValue(node, "companyAbbreviation", this.CompanyAbbreviation);
                 this.ModuleName = XmlHelper.GetAttributeValue(node, "moduleName", this.ModuleName);
 
                 //There is a messagebox in the property set to DO NOT use the property, use the member variable
-                _defaultNamespace = XmlHelper.GetAttributeValue(node, "defaultNamespace", _def_defaultNamespace);
+                DefaultNamespace = XmlHelper.GetAttributeValue(node, "defaultNamespace", _def_defaultNamespace);
 
                 var databaseNode = node.SelectSingleNode("database");
                 if (databaseNode != null)
@@ -376,7 +245,7 @@ namespace nHydrate.Generator.Models
 
                 var copyrightNode = node.SelectSingleNode("copyright");
                 if (copyrightNode != null)
-                    _copyright = copyrightNode.InnerText;
+                    Copyright = copyrightNode.InnerText;
 
                 var versionHistoryListNode = node.SelectSingleNode("versionHistoryList");
                 if (versionHistoryListNode != null)

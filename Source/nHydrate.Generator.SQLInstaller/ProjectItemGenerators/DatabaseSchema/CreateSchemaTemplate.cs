@@ -35,12 +35,12 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         public override string FileName
         {
-            get { return string.Format("1_CreateSchema.sql"); }
+            get { return "1_CreateSchema.sql"; }
         }
 
         internal string OldFileName
         {
-            get { return string.Format("CreateSchema.sql"); }
+            get { return "CreateSchema.sql"; }
         }
 
         #endregion

@@ -9,17 +9,9 @@ namespace nHydrate.Dsl
 	partial class Function : nHydrate.Dsl.IModuleLink, nHydrate.Dsl.IPrecedence, nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer
 	{
 		#region Names
-		public string CamelName
-		{
-			get { return StringHelper.DatabaseNameToCamelCase(this.PascalName); }
-		}
+		public string DatabaseName => this.Name;
 
-		public string DatabaseName
-		{
-			get { return this.Name; }
-		}
-
-		public string PascalName
+        public string PascalName
 		{
 			get
 			{

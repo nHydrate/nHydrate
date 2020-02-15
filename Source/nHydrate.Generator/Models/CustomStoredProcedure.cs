@@ -22,16 +22,10 @@ namespace nHydrate.Generator.Models
         protected const bool _def_isExisting = false;
         protected const bool _def_generatesDoubleDerived = false;
 
-        protected bool _isExisting = _def_isExisting;
-        protected string _databaseObjectName = string.Empty;
         protected string _codeFacade = _def_codefacade;
-        protected string _description = _def_description;
-        protected bool _generated = _def_generated;
         protected string _sql = string.Empty;
         protected ReferenceCollection _columns = null;
         protected ReferenceCollection _parameters = null;
-        private string _dbSchema = _def_dbSchema;
-        private bool _generatesDoubleDerived = _def_generatesDoubleDerived;
 
         #endregion
 
@@ -76,55 +70,15 @@ namespace nHydrate.Generator.Models
 
         public int PrecedenceOrder { get; set; }
 
-        public string DatabaseObjectName
-        {
-            get { return _databaseObjectName; }
-            set
-            {
-                _databaseObjectName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("DatabaseObjectName"));
-            }
-        }
+        public string DatabaseObjectName { get; set; } = string.Empty;
 
-        public bool IsExisting
-        {
-            get { return _isExisting; }
-            set
-            {
-                _isExisting = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("IsExisting"));
-            }
-        }
+        public bool IsExisting { get; set; } = _def_isExisting;
 
-        public string DBSchema
-        {
-            get { return _dbSchema; }
-            set
-            {
-                _dbSchema = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("DBSchema"));
-            }
-        }
+        public string DBSchema { get; set; } = _def_dbSchema;
 
-        public bool GeneratesDoubleDerived
-        {
-            get { return _generatesDoubleDerived; }
-            set
-            {
-                _generatesDoubleDerived = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("GeneratesDoubleDerived"));
-            }
-        }
+        public bool GeneratesDoubleDerived { get; set; } = _def_generatesDoubleDerived;
 
-        public string Description
-        {
-            get { return _description; }
-            set
-            {
-                _description = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Description"));
-            }
-        }
+        public string Description { get; set; } = _def_description;
 
         public ReferenceCollection Columns
         {
@@ -152,15 +106,7 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public bool Generated
-        {
-            get { return _generated; }
-            set
-            {
-                _generated = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Generated"));
-            }
-        }
+        public bool Generated { get; set; } = _def_generated;
 
         public string SQL
         {
@@ -172,7 +118,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _sql = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ViewSql"));
             }
         }
 
@@ -329,7 +274,7 @@ namespace nHydrate.Generator.Models
                 if (parametersNode != null)
                     this.Parameters.XmlLoad(parametersNode);
 
-                this.Generated = XmlHelper.GetAttributeValue(node, "generated", _generated);
+                this.Generated = XmlHelper.GetAttributeValue(node, "generated", Generated);
                 this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
                 this.Dirty = false;
@@ -423,7 +368,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _codeFacade = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("codeFacade"));
             }
         }
 

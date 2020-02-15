@@ -140,8 +140,7 @@ namespace nHydrate.Generator.Common.Util
 				if (attribute == null) return defaultValue;
 				else
 				{
-					double d;
-					if (double.TryParse(attribute.Value, NumberStyles.Number, _cultureProvider, out d))
+                    if (double.TryParse(attribute.Value, NumberStyles.Number, _cultureProvider, out var d))
 						return d;
 					else
 						return defaultValue;
@@ -161,8 +160,7 @@ namespace nHydrate.Generator.Common.Util
 				if (attribute == null) return defaultValue;
 				else
 				{
-					Guid d;
-					if (Guid.TryParse(attribute.Value, out d))
+                    if (Guid.TryParse(attribute.Value, out var d))
 						return d;
 					else
 						return defaultValue;
@@ -182,8 +180,7 @@ namespace nHydrate.Generator.Common.Util
 				if (attribute == null) return defaultValue;
 				else
 				{
-					int d;
-					if (int.TryParse(attribute.Value, NumberStyles.Number, _cultureProvider, out d))
+                    if (int.TryParse(attribute.Value, NumberStyles.Number, _cultureProvider, out var d))
 						return d;
 					else
 						return defaultValue;
@@ -205,8 +202,7 @@ namespace nHydrate.Generator.Common.Util
 				else if (attribute.Value == "1") return true;
 				else
 				{
-					bool d;
-					if (bool.TryParse(attribute.Value, out d))
+                    if (bool.TryParse(attribute.Value, out var d))
 						return d;
 					else
 						return defaultValue;

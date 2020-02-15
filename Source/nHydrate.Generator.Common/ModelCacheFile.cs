@@ -155,8 +155,7 @@ namespace nHydrate.Generator.Common
             //Get GeneratedVersion
             _generatedVersion = int.Parse(XmlHelper.GetAttributeValue(document.DocumentElement, "GeneratedVersion", _generatedVersion.ToString()));
 
-            Version v;
-            if (Version.TryParse(XmlHelper.GetAttributeValue(document.DocumentElement, "ModelerVersion", this.ModelerVersion.ToString()), out v))
+            if (Version.TryParse(XmlHelper.GetAttributeValue(document.DocumentElement, "ModelerVersion", this.ModelerVersion.ToString()), out var v))
                 this.ModelerVersion = v;
 
 

@@ -265,14 +265,11 @@ namespace nHydrate.DataImport.SqlClient
                 type = udtTypes[type];
             }
 
-            int xType;
-            SqlNativeTypes sType;
-
-            if (int.TryParse(type, out xType))
+            if (int.TryParse(type, out var xType))
             {
                 return GetSQLDataType((SqlNativeTypes)xType);
             }
-            else if (Enum.TryParse<SqlNativeTypes>(type, out sType))
+            else if (Enum.TryParse<SqlNativeTypes>(type, out var sType))
             {
                 return GetSQLDataType(sType);
             }

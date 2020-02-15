@@ -13,12 +13,6 @@ namespace nHydrate.Generator.Models
     {
         #region Member Variables
 
-        private string _description = string.Empty;
-        private string _importedName = string.Empty;
-        private bool _isUnique = false;
-        private bool _clustered = false;
-        private bool _primaryKey = false;
-
         #endregion
 
         #region Constructor
@@ -34,55 +28,15 @@ namespace nHydrate.Generator.Models
 
         public List<TableIndexColumn> IndexColumnList => new List<TableIndexColumn>();
 
-        public string ImportedName
-        {
-            get { return _importedName; }
-            set
-            {
-                _importedName = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ImportedName"));
-            }
-        }
+        public string ImportedName { get; set; } = string.Empty;
 
-        public string Description
-        {
-            get { return _description; }
-            set
-            {
-                _description = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Description"));
-            }
-        }
+        public string Description { get; set; } = string.Empty;
 
-        public bool Clustered
-        {
-            get { return _clustered; }
-            set
-            {
-                _clustered = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("clustered"));
-            }
-        }
+        public bool Clustered { get; set; } = false;
 
-        public bool IsUnique
-        {
-            get { return this._isUnique; }
-            set
-            {
-                _isUnique = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("isUnique"));
-            }
-        }
+        public bool IsUnique { get; set; } = false;
 
-        public bool PrimaryKey
-        {
-            get { return this._primaryKey; }
-            set
-            {
-                _primaryKey = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("primaryKey"));
-            }
-        }
+        public bool PrimaryKey { get; set; } = false;
 
         #endregion
 

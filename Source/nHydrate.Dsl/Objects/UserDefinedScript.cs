@@ -39,12 +39,10 @@ namespace nHydrate.Dsl.Objects
 				this.IsValid = true;
 				this.Name = (new FileInfo(this.FileName)).Name;
 
-				Guid g;
-				if (Guid.TryParse(gText, out g)) this.ID = g;
+                if (Guid.TryParse(gText, out var g)) this.ID = g;
 				else this.IsValid = false;
 
-				int prec;
-				if (int.TryParse(pText, out prec)) this.PrecedenceOrder = prec;
+                if (int.TryParse(pText, out var prec)) this.PrecedenceOrder = prec;
 				else this.IsValid = false;
 
 			}

@@ -41,30 +41,14 @@ namespace nHydrate.Generator.Models
         protected const bool _def_isTenant = false;
 
         protected string _codeFacade = _def_codeFacade;
-        protected string _description = _def_description;
-        protected bool _associativeTable = _def_associativeTable;
-        protected bool _generated = _def_generated;
-        protected bool _hasHistory = _def_hasHistory;
-        protected bool _modifiedAudit = _def_modifiedAudit;
-        protected bool _createAudit = _def_createAudit;
-        protected bool _allowTimestamp = _def_timestamp;
-        protected TypedTableConstants _isTypeTable = _def_isTypeTable;
-        protected bool _createMetaData = _def_createMetaData;
-        protected bool _fullIndexSearch = _def_fullIndexSearch;
         protected RowEntryCollection _staticData = null;
-        protected ReferenceCollection _columns = null;
         protected ReferenceCollection _relationships = null;
         protected ReferenceCollection _viewRelationships = null;
         protected List<TableIndex> _tableIndexList = new List<TableIndex>();
         private string _parentTableKey = null;
         private bool _allowAuditTracking = _def_allowAuditTracking;
         private bool _immutable = _def_immutable;
-        private bool _enforePrimaryKey = _def_enforePrimaryKey;
-        private string _dbSchema = _def_dbSchema;
         private bool _isAbstract = _def_isAbstract;
-        private bool _generatesDoubleDerived = _def_generatesDoubleDerived;
-        private bool _isTenant = _def_isTenant;
-        private SecurityFunction _security;
 
         #endregion
 
@@ -75,21 +59,21 @@ namespace nHydrate.Generator.Models
         {
             this.MetaData = new MetadataItemCollection();
 
-            _security = new SecurityFunction(root, this);
-            _security.ResetKey(Guid.Empty.ToString());
+            Security = new SecurityFunction(root, this);
+            Security.ResetKey(Guid.Empty.ToString());
 
             _staticData = new RowEntryCollection(this.Root);
-            _columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
-            _columns.ResetKey(Guid.Empty.ToString());
+            Columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
+            Columns.ResetKey(Guid.Empty.ToString());
             _relationships = new ReferenceCollection(this.Root, this, ReferenceType.Relation);
             _relationships.ResetKey(Guid.Empty.ToString());
             _viewRelationships = new ReferenceCollection(this.Root, this, ReferenceType.Relation);
             _viewRelationships.ResetKey(Guid.Empty.ToString());
 
-            _columns.ObjectPlural = "Fields";
-            _columns.ObjectSingular = "Field";
-            _columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
-            _columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
+            Columns.ObjectPlural = "Fields";
+            Columns.ObjectSingular = "Field";
+            Columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
+            Columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
 
             _relationships.ObjectPlural = "Relationships";
             _relationships.ObjectSingular = "Relationship";
@@ -107,15 +91,7 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        public bool IsTenant
-        {
-            get { return _isTenant; }
-            set
-            {
-                _isTenant = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("IsTenant"));
-            }
-        }
+        public bool IsTenant { get; set; } = _def_isTenant;
 
         public MetadataItemCollection MetaData { get; }
 
@@ -124,55 +100,19 @@ namespace nHydrate.Generator.Models
             get { return _tableIndexList; }
         }
 
-        public TypedTableConstants TypedTable
-        {
-            get { return _isTypeTable; }
-            set
-            {
-                _isTypeTable = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("IsTypeTable"));
-            }
-        }
+        public TypedTableConstants TypedTable { get; set; } = _def_isTypeTable;
 
-        public string DBSchema
-        {
-            get { return _dbSchema; }
-            set
-            {
-                _dbSchema = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("DBSchema"));
-            }
-        }
+        public string DBSchema { get; set; } = _def_dbSchema;
 
         public bool IsAbstract
         {
             get { return false; }
-            set
-            {
-                _isAbstract = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("IsAbstract"));
-            }
+            set { _isAbstract = value; }
         }
 
-        public bool GeneratesDoubleDerived
-        {
-            get { return _generatesDoubleDerived; }
-            set
-            {
-                _generatesDoubleDerived = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("GeneratesDoubleDerived"));
-            }
-        }
+        public bool GeneratesDoubleDerived { get; set; } = _def_generatesDoubleDerived;
 
-        public string Description
-        {
-            get { return _description; }
-            set
-            {
-                _description = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Description"));
-            }
-        }
+        public string Description { get; set; } = _def_description;
 
         public bool Immutable
         {
@@ -180,7 +120,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _immutable = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Immutable"));
             }
         }
 
@@ -234,10 +173,7 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public ReferenceCollection Columns
-        {
-            get { return _columns; }
-        }
+        public ReferenceCollection Columns { get; } = null;
 
         public IEnumerable<Column> GeneratedColumns
         {
@@ -259,76 +195,24 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public bool Generated
-        {
-            get { return _generated; }
-            set
-            {
-                _generated = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Generated"));
-            }
-        }
+        public bool Generated { get; set; } = _def_generated;
 
-        public bool AllowModifiedAudit
-        {
-            get { return _modifiedAudit; }
-            set
-            {
-                _modifiedAudit = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("modifiedAudit"));
-            }
-        }
+        public bool AllowModifiedAudit { get; set; } = _def_modifiedAudit;
 
-        public bool AllowCreateAudit
-        {
-            get { return _createAudit; }
-            set
-            {
-                _createAudit = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("createAudit"));
-            }
-        }
+        public bool AllowCreateAudit { get; set; } = _def_createAudit;
 
-        public bool AllowTimestamp
-        {
-            get { return _allowTimestamp; }
-            set
-            {
-                _allowTimestamp = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Timestamp"));
-            }
-        }
+        public bool AllowTimestamp { get; set; } = _def_timestamp;
 
-        public bool EnforcePrimaryKey
-        {
-            get { return _enforePrimaryKey; }
-            set { _enforePrimaryKey = value; }
-        }
+        public bool EnforcePrimaryKey { get; set; } = _def_enforePrimaryKey;
 
-        public bool FullIndexSearch
-        {
-            get { return _fullIndexSearch; }
-            set
-            {
-                _fullIndexSearch = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("FullIndexSearch"));
-            }
-        }
+        public bool FullIndexSearch { get; set; } = _def_fullIndexSearch;
 
         public RowEntryCollection StaticData
         {
             get { return _staticData; }
         }
 
-        public bool AssociativeTable
-        {
-            get { return _associativeTable; }
-            set
-            {
-                _associativeTable = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("associativeTable"));
-            }
-        }
+        public bool AssociativeTable { get; set; } = _def_associativeTable;
 
         public bool AllowAuditTracking
         {
@@ -342,34 +226,14 @@ namespace nHydrate.Generator.Models
             set
             {
                 _allowAuditTracking = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("allowAuditTracking"));
             }
         }
 
-        public bool HasHistory
-        {
-            get { return _hasHistory; }
-            set
-            {
-                _hasHistory = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("hasHistory"));
-            }
-        }
+        public bool HasHistory { get; set; } = _def_hasHistory;
 
-        public bool CreateMetaData
-        {
-            get { return _createMetaData; }
-            set
-            {
-                _createMetaData = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("createMetaData"));
-            }
-        }
+        public bool CreateMetaData { get; set; } = _def_createMetaData;
 
-        public SecurityFunction Security
-        {
-            get { return _security; }
-        }
+        public SecurityFunction Security { get; }
 
         #endregion
 
@@ -732,8 +596,8 @@ namespace nHydrate.Generator.Models
                 if (staticDataNode != null)
                     this.StaticData.XmlLoad(staticDataNode);
 
-                this.AssociativeTable = XmlHelper.GetAttributeValue(node, "associativeTable", _associativeTable);
-                this.HasHistory = XmlHelper.GetAttributeValue(node, "hasHistory", _hasHistory);
+                this.AssociativeTable = XmlHelper.GetAttributeValue(node, "associativeTable", AssociativeTable);
+                this.HasHistory = XmlHelper.GetAttributeValue(node, "hasHistory", HasHistory);
                 this.CreateMetaData = XmlHelper.GetAttributeValue(node, "createMetaData", _def_createMetaData);
                 this.FullIndexSearch = XmlHelper.GetAttributeValue(node, "fullIndexSearch", _def_fullIndexSearch);
 
@@ -742,11 +606,11 @@ namespace nHydrate.Generator.Models
                 this.DBSchema = XmlHelper.GetAttributeValue(node, "dbschema", _def_dbSchema);
                 this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", _def_codeFacade);
                 this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
-                this.AllowModifiedAudit = XmlHelper.GetAttributeValue(node, "modifiedAudit", _modifiedAudit);
+                this.AllowModifiedAudit = XmlHelper.GetAttributeValue(node, "modifiedAudit", AllowModifiedAudit);
                 this.AllowCreateAudit = XmlHelper.GetAttributeValue(node, "createAudit", _def_createAudit);
-                this.TypedTable = (TypedTableConstants)XmlHelper.GetAttributeValue(node, "typedTable", int.Parse(_isTypeTable.ToString("d")));
+                this.TypedTable = (TypedTableConstants)XmlHelper.GetAttributeValue(node, "typedTable", int.Parse(TypedTable.ToString("d")));
                 //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                this.AllowTimestamp = XmlHelper.GetAttributeValue(node, "timestamp", _allowTimestamp);
+                this.AllowTimestamp = XmlHelper.GetAttributeValue(node, "timestamp", AllowTimestamp);
                 this.AllowAuditTracking = XmlHelper.GetAttributeValue(node, "allowAuditTracking", _def_allowAuditTracking);
                 this.IsAbstract = XmlHelper.GetAttributeValue(node, "isAbstract", _def_isAbstract);
                 this.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(node, "generatesDoubleDerived", _def_generatesDoubleDerived);
@@ -872,7 +736,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _codeFacade = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("codeFacade"));
             }
         }
 

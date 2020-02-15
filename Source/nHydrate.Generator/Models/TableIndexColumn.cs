@@ -12,9 +12,6 @@ namespace nHydrate.Generator.Models
     {
         #region Member Variables
 
-        private bool _ascending = true;
-        private Guid _fieldID = Guid.Empty;
-
         #endregion
 
         #region Constructor
@@ -28,25 +25,9 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        public bool Ascending
-        {
-            get { return _ascending; }
-            set
-            {
-                _ascending = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("ascending"));
-            }
-        }
+        public bool Ascending { get; set; } = true;
 
-        public Guid FieldID
-        {
-            get { return _fieldID; }
-            set
-            {
-                _fieldID = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("fieldID"));
-            }
-        }
+        public Guid FieldID { get; set; } = Guid.Empty;
 
         #endregion
 

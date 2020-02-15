@@ -212,8 +212,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                                 key = "_" + key;
 
                             //If there is a sort value then format as attribute
-                            int svalue;
-                            if (int.TryParse(sort, out svalue))
+                            if (int.TryParse(sort, out var svalue))
                             {
                                 sort = ", Order = " + svalue;
                             }

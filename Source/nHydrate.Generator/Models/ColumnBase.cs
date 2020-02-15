@@ -34,7 +34,6 @@ namespace nHydrate.Generator.Models
         protected bool _generated = _def_generated;
         protected bool _allowNull = _def_allowNull;
         protected bool _isBrowsable = _def_isBrowsable;
-        protected string _category = string.Empty;
         protected System.ComponentModel.DataAnnotations.DataType _uIDataType = _def_uIDataType;
 
         #endregion
@@ -56,19 +55,10 @@ namespace nHydrate.Generator.Models
             set
             {
                 _uIDataType = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("UIDataType"));
             }
         }
 
-        public string Category
-        {
-            get { return _category; }
-            set
-            {
-                _category = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("category"));
-            }
-        }
+        public string Category { get; set; } = string.Empty;
 
         public virtual bool Generated
         {
@@ -76,7 +66,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _generated = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("generated"));
             }
         }
 
@@ -86,7 +75,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _description = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Description"));
             }
         }
 
@@ -96,7 +84,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _prompt = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Prompt"));
             }
         }
 
@@ -112,7 +99,6 @@ namespace nHydrate.Generator.Models
             {
                 if (value < 0) value = 0;
                 _length = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Length"));
             }
         }
 
@@ -128,7 +114,6 @@ namespace nHydrate.Generator.Models
             {
                 if (value < 0) value = 0;
                 _scale = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Scale"));
             }
         }
 
@@ -139,7 +124,6 @@ namespace nHydrate.Generator.Models
             {
                 _length = this.GetDefaultSize(value);
                 _dataType = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("Type"));
             }
         }
 
@@ -149,7 +133,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _allowNull = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("allowNull"));
             }
         }
 
@@ -159,7 +142,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _isBrowsable = value;
-                this.OnPropertyChanged(this, new PropertyChangedEventArgs("isBrowsable"));
             }
         }
 

@@ -11,9 +11,6 @@ namespace nHydrate.Dsl
 {
     public static partial class Extensions
     {
-        /// <summary>
-        /// Returns the field mappings for a relation
-        /// </summary>
         public static IEnumerable<RelationField> FieldMapList(this EntityHasEntities item)
         {
             return item.ParentEntity.nHydrateModel.RelationFields
@@ -21,9 +18,6 @@ namespace nHydrate.Dsl
                        .ToList();
         }
 
-        /// <summary>
-        /// Returns the field mappings for a relation
-        /// </summary>
         public static IEnumerable<RelationField> FieldMapList(this EntityHasViews item)
         {
             return item.ParentEntity.nHydrateModel.RelationFields
@@ -31,70 +25,6 @@ namespace nHydrate.Dsl
                        .ToList();
         }
 
-        public static bool VariableLengthType(this Field field)
-        {
-            switch (field.DataType)
-            {
-                case DataTypeConstants.BigInt:
-                    return false;
-                case DataTypeConstants.Binary:
-                    return true;
-                case DataTypeConstants.Bit:
-                    return false;
-                case DataTypeConstants.Char:
-                    return true;
-                case DataTypeConstants.DateTime:
-                    return false;
-                case DataTypeConstants.Decimal:
-                    return true;
-                case DataTypeConstants.Float:
-                    return false;
-                case DataTypeConstants.Image:
-                    return false;
-                case DataTypeConstants.Int:
-                    return false;
-                case DataTypeConstants.Money:
-                    return false;
-                case DataTypeConstants.NChar:
-                    return true;
-                case DataTypeConstants.NText:
-                    return false;
-                case DataTypeConstants.NVarChar:
-                    return true;
-                case DataTypeConstants.Real:
-                    return false;
-                case DataTypeConstants.SmallDateTime:
-                    return false;
-                case DataTypeConstants.SmallInt:
-                    return false;
-                case DataTypeConstants.SmallMoney:
-                    return false;
-                case DataTypeConstants.Text:
-                    return false;
-                case DataTypeConstants.Timestamp:
-                    return false;
-                case DataTypeConstants.TinyInt:
-                    return false;
-                case DataTypeConstants.Udt:
-                    return false;
-                case DataTypeConstants.UniqueIdentifier:
-                    return false;
-                case DataTypeConstants.VarBinary:
-                    return true;
-                case DataTypeConstants.VarChar:
-                    return true;
-                case DataTypeConstants.Variant:
-                    return false;
-                case DataTypeConstants.Xml:
-                    return false;
-                default:
-                    return false;
-            }
-        }
-
-        /// <summary>
-        /// Determines if the data type is a database character type of Binary,Image,VarBinary
-        /// </summary>
         public static bool IsBinaryType(this DataTypeConstants dataType)
         {
             switch (dataType)
@@ -108,9 +38,6 @@ namespace nHydrate.Dsl
             }
         }
 
-        /// <summary>
-        /// Determines if the data type is a database character type of Char,NChar,NText,NVarChar,Text,VarChar,Xml
-        /// </summary>
         public static bool IsTextType(this DataTypeConstants dataType)
         {
             switch (dataType)
@@ -128,35 +55,11 @@ namespace nHydrate.Dsl
             }
         }
 
-        /// <summary>
-        /// Determines if the data type is a database character type of DateTime,DateTime2,DateTimeOffset,SmallDateTime
-        /// </summary>
-        public static bool IsDateType(this DataTypeConstants dataType)
-        {
-            switch (dataType)
-            {
-                case DataTypeConstants.DateTime:
-                case DataTypeConstants.DateTime2:
-                case DataTypeConstants.DateTimeOffset:
-                case DataTypeConstants.SmallDateTime:
-                    return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Determines if the type is a number either floating point or integer
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         public static bool IsNumericType(this DataTypeConstants dataType)
         {
             return dataType.IsDecimalType() || dataType.IsIntegerType();
         }
 
-        /// <summary>
-        /// Determines if the data type is a database character type of Decimal,Float,Real
-        /// </summary>
         public static bool IsDecimalType(this DataTypeConstants dataType)
         {
             switch (dataType)
@@ -169,9 +72,6 @@ namespace nHydrate.Dsl
             return false;
         }
 
-        /// <summary>
-        /// Determines if the data type is a database character type of Int,BigInt,TinyInt,SmallInt
-        /// </summary>
         public static bool IsIntegerType(this DataTypeConstants dataType)
         {
             switch (dataType)
@@ -185,11 +85,6 @@ namespace nHydrate.Dsl
             return false;
         }
 
-        /// <summary>
-        /// Determines if this type supports the MAX syntax in SQL 2008
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         public static bool SupportsMax(this DataTypeConstants type)
         {
             switch (type)
@@ -203,13 +98,6 @@ namespace nHydrate.Dsl
             }
         }
 
-        /// <summary>
-        /// Verifies that length does not exceed the maximum length value for the specified variable length data type
-        /// Predefined length like integers are not processed
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="length"></param>
-        /// <returns>The lesser of the values maximum length and the specified length</returns>
         public static int ValidateDataTypeMax(this DataTypeConstants type, int length)
         {
             switch (type)
@@ -233,9 +121,6 @@ namespace nHydrate.Dsl
             return length;
         }
 
-        /// <summary>
-        /// Gets the scale of the data type (decimals only)
-        /// </summary>
         public static int GetPredefinedScale(this DataTypeConstants type)
         {
             //Returns -1 if variable
@@ -248,11 +133,6 @@ namespace nHydrate.Dsl
             }
         }
 
-        /// <summary>
-        /// Gets the size of the data type
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>Returns -1 for variable types and 1 for blob fields</remarks>
         public static int GetPredefinedSize(this DataTypeConstants type)
         {
             //Returns -1 if variable
@@ -304,225 +184,6 @@ namespace nHydrate.Dsl
             }
         }
 
-        public static bool DefaultIsString(this Field field)
-        {
-            switch (field.DataType)
-            {
-                case DataTypeConstants.BigInt:
-                    return false;
-                case DataTypeConstants.Binary:
-                    return true;
-                case DataTypeConstants.Bit:
-                    return false;
-                case DataTypeConstants.Char:
-                    return true;
-                case DataTypeConstants.DateTime:
-                    return false;
-                case DataTypeConstants.Decimal:
-                    return false;
-                case DataTypeConstants.Float:
-                    return false;
-                case DataTypeConstants.Image:
-                    return true;
-                case DataTypeConstants.Int:
-                    return false;
-                case DataTypeConstants.Money:
-                    return false;
-                case DataTypeConstants.NChar:
-                    return true;
-                case DataTypeConstants.NText:
-                    return true;
-                case DataTypeConstants.NVarChar:
-                    return true;
-                case DataTypeConstants.Real:
-                    return false;
-                case DataTypeConstants.SmallDateTime:
-                    return false;
-                case DataTypeConstants.SmallInt:
-                    return false;
-                case DataTypeConstants.SmallMoney:
-                    return false;
-                case DataTypeConstants.Text:
-                    return true;
-                case DataTypeConstants.Timestamp:
-                    return false;
-                case DataTypeConstants.TinyInt:
-                    return false;
-                case DataTypeConstants.Udt:
-                    return false;
-                case DataTypeConstants.UniqueIdentifier:
-                    return true;
-                case DataTypeConstants.VarBinary:
-                    return true;
-                case DataTypeConstants.VarChar:
-                    return true;
-                case DataTypeConstants.Variant:
-                    return true;
-                case DataTypeConstants.Xml:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        /// <summary>
-        /// Determines if the nullable type in code is native like 'string' or made up of a composite type like 'decimal?'
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool CodeNullableTypeIsNative(this Field field)
-        {
-            switch (field.DataType)
-            {
-                case DataTypeConstants.BigInt:
-                    return false;
-                case DataTypeConstants.Binary:
-                    return false;
-                case DataTypeConstants.Bit:
-                    return false;
-                case DataTypeConstants.Char:
-                    return true;
-                case DataTypeConstants.DateTime:
-                    return false;
-                case DataTypeConstants.Decimal:
-                    return false;
-                case DataTypeConstants.Float:
-                    return false;
-                case DataTypeConstants.Image:
-                    return false;
-                case DataTypeConstants.Int:
-                    return false;
-                case DataTypeConstants.Money:
-                    return false;
-                case DataTypeConstants.NChar:
-                    return true;
-                case DataTypeConstants.NText:
-                    return true;
-                case DataTypeConstants.NVarChar:
-                    return true;
-                case DataTypeConstants.Real:
-                    return false;
-                case DataTypeConstants.SmallDateTime:
-                    return false;
-                case DataTypeConstants.SmallInt:
-                    return false;
-                case DataTypeConstants.SmallMoney:
-                    return false;
-                case DataTypeConstants.Text:
-                    return true;
-                case DataTypeConstants.Timestamp:
-                    return false;
-                case DataTypeConstants.TinyInt:
-                    return false;
-                case DataTypeConstants.Udt:
-                    return false;
-                case DataTypeConstants.UniqueIdentifier:
-                    return false;
-                case DataTypeConstants.VarBinary:
-                    return false;
-                case DataTypeConstants.VarChar:
-                    return true;
-                case DataTypeConstants.Variant:
-                    return false;
-                case DataTypeConstants.Xml:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        public static string DefaultValueCodeString(this Field field)
-        {
-            switch (field.DataType)
-            {
-
-                case DataTypeConstants.BigInt:
-                    return "long.MinValue";
-                case DataTypeConstants.Binary:
-                    return "new System.Byte[]{}";
-                case DataTypeConstants.Bit:
-                    return "false";
-                case DataTypeConstants.Char:
-                    return "string.Empty";
-                case DataTypeConstants.DateTime:
-                    return "DateTime.MinValue";
-                case DataTypeConstants.Decimal:
-                    return "0.0m";
-                case DataTypeConstants.Float:
-                    return "0.0f";
-                case DataTypeConstants.Image:
-                    return "new System.Byte[]{}";
-                case DataTypeConstants.Int:
-                    return "int.MinValue";
-                case DataTypeConstants.Money:
-                    return "0.00m";
-                case DataTypeConstants.NChar:
-                    return "string.Empty";
-                case DataTypeConstants.NText:
-                    return "string.Empty";
-                case DataTypeConstants.NVarChar:
-                    return "string.Empty";
-                case DataTypeConstants.Real:
-                    return "System.Single.MinValue";
-                case DataTypeConstants.SmallDateTime:
-                    return "DateTime.MinValue";
-                case DataTypeConstants.SmallInt:
-                    return "0";
-                case DataTypeConstants.SmallMoney:
-                    return "0.00m";
-                case DataTypeConstants.Text:
-                    return "string.Empty";
-                case DataTypeConstants.Timestamp:
-                    return "new System.Byte[]{}";
-                case DataTypeConstants.TinyInt:
-                    return "0";
-                case DataTypeConstants.Udt:
-                    return "string.Empty";
-                case DataTypeConstants.UniqueIdentifier:
-                    return "Guid.NewGuid()";
-                case DataTypeConstants.VarBinary:
-                    return "new System.Byte[]{}";
-                case DataTypeConstants.VarChar:
-                    return "string.Empty";
-                case DataTypeConstants.Variant:
-                    return "string.Empty";
-                case DataTypeConstants.Xml:
-                    return "string.Empty";
-                default:
-                    return "string.Empty";
-            }
-        }
-
-        /// <summary>
-        /// Determines if this field type can be made into a range query
-        /// </summary>
-        public static bool IsRangeType(this Field field)
-        {
-            switch (field.DataType)
-            {
-                case DataTypeConstants.BigInt:
-                //case DataTypeConstants.Char:
-                case DataTypeConstants.Date:
-                case DataTypeConstants.DateTime:
-                case DataTypeConstants.DateTime2:
-                case DataTypeConstants.Decimal:
-                case DataTypeConstants.Float:
-                case DataTypeConstants.Int:
-                case DataTypeConstants.Money:
-                //case DataTypeConstants.NChar:
-                //case DataTypeConstants.NVarChar:
-                case DataTypeConstants.Real:
-                case DataTypeConstants.SmallDateTime:
-                case DataTypeConstants.SmallInt:
-                case DataTypeConstants.SmallMoney:
-                case DataTypeConstants.Time:
-                case DataTypeConstants.TinyInt:
-                    //case DataTypeConstants.VarChar:
-                    return true;
-            }
-            return false;
-        }
-
         public static Field GetSourceField(this RelationField relationField, EntityHasEntities relation)
         {
             return relation.ParentEntity.Fields.FirstOrDefault(x => x.Id == relationField.SourceFieldId);
@@ -543,11 +204,6 @@ namespace nHydrate.Dsl
             return relation.ChildView.Fields.FirstOrDefault(x => x.Id == relationField.TargetFieldId);
         }
 
-        /// <summary>
-        /// Determine if the specified type is supported
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         public static bool IsSupportedType(this DataTypeConstants type)
         {
             switch (type)
@@ -564,15 +220,6 @@ namespace nHydrate.Dsl
                 default:
                     return true;
             }
-        }
-
-        public static double ToDouble(this string s)
-        {
-            double d;
-            if (double.TryParse(s, out d))
-                return d;
-            else
-                return double.NaN;
         }
 
         public static bool IsHex(this string s)
@@ -1137,8 +784,7 @@ namespace nHydrate.Dsl
 
         public static DataTypeConstants? GetDataTypeFromName(string name)
         {
-            DataTypeConstants d;
-            if (Enum.TryParse<DataTypeConstants>(name, true, out d))
+            if (Enum.TryParse<DataTypeConstants>(name, true, out var d))
             {
                 return d;
             }

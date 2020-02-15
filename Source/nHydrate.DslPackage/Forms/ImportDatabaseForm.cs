@@ -26,9 +26,6 @@ namespace nHydrate.DslPackage.Forms
 
         private bool _addOnly = false;
         private nHydrateModel _model = null;
-        private Microsoft.VisualStudio.Modeling.Store _store = null;
-        private Microsoft.VisualStudio.Modeling.Diagrams.Diagram _diagram = null;
-        private Microsoft.VisualStudio.Modeling.Shell.ModelingDocData _docData = null;
 
         #endregion
 
@@ -64,16 +61,11 @@ namespace nHydrate.DslPackage.Forms
 
         public ImportDatabaseForm(
             nHydrateModel model,
-            Microsoft.VisualStudio.Modeling.Store store,
-            Microsoft.VisualStudio.Modeling.Diagrams.Diagram diagram,
             nHydrate.DataImport.Database currentDatabase,
             Microsoft.VisualStudio.Modeling.Shell.ModelingDocData docData)
             : this()
         {
             _model = model;
-            _store = store;
-            _diagram = diagram;
-            _docData = docData;
             this.CurrentDatabase = currentDatabase;
 
             this.DatabaseConnectionControl1.FileName = Path.Combine((new FileInfo(docData.FileName)).DirectoryName, "importconnection.cache");

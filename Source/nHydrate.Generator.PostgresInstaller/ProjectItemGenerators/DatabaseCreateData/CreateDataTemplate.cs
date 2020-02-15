@@ -37,12 +37,12 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
 
         public override string FileName
         {
-            get { return string.Format("2_CreateData.sql"); }
+            get { return "2_CreateData.sql"; }
         }
 
         internal string OldFileName
         {
-            get { return string.Format("CreateData.sql"); }
+            get { return "CreateData.sql"; }
         }
 
         #endregion

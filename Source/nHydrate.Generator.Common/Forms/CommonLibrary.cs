@@ -8,7 +8,7 @@ namespace nHydrate.Generator.Common.Forms
 	{
 		#region ListViewItemComparer
 
-		public partial class ListViewItemComparer : IComparer
+		public class ListViewItemComparer : IComparer
 		{
 			private int _column;
 			private readonly SortOrder _sort;

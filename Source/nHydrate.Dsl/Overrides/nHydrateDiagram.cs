@@ -1,48 +1,27 @@
 #pragma warning disable 0168
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using nHydrate.Generator.Common.Util;
 using Microsoft.VisualStudio.Modeling.Diagrams;
 using System.Windows.Forms;
 using System.IO;
-using DslModeling = global::Microsoft.VisualStudio.Modeling;
-using DslDesign = global::Microsoft.VisualStudio.Modeling.Design;
-using DslDiagrams = global::Microsoft.VisualStudio.Modeling.Diagrams;
 
 namespace nHydrate.Dsl
 {
     partial class nHydrateDiagram
     {
         ///Determine if this diagram is loading from disk
-        public bool IsLoading
-        {
-            get { return _isLoading; }
-            set { _isLoading = value; }
-        }
-
-        private bool _isLoading = false;
+        public bool IsLoading { get; set; } = false;
 
         #region Constructors
 
         //Constructors were not generated for this class because it had HasCustomConstructor
         //set to true. Please provide the constructors below in a partial class.
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="store">Store where new element is to be created.</param>
-        /// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
         public nHydrateDiagram(Microsoft.VisualStudio.Modeling.Store store, params Microsoft.VisualStudio.Modeling.PropertyAssignment[] propertyAssignments)
             : this(store != null ? store.DefaultPartitionForClass(DomainClassId) : null, propertyAssignments)
         {
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="partition">Partition where new element is to be created.</param>
-        /// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
         public nHydrateDiagram(Microsoft.VisualStudio.Modeling.Partition partition, params Microsoft.VisualStudio.Modeling.PropertyAssignment[] propertyAssignments)
             : base(partition, propertyAssignments)
         {
@@ -54,7 +33,6 @@ namespace nHydrate.Dsl
             this.DisplayType = true;
             this.IsLoading = true;
             this.DiagramAdded += new EventHandler<Microsoft.VisualStudio.Modeling.ElementAddedEventArgs>(nHydrateDiagram_DiagramAdded);
-            //this.ElementAdded += new EventHandler<Microsoft.VisualStudio.Modeling.ElementAddedEventArgs>(nHydrateDiagram_ElementAdded);
             TextManagerEvents.RegisterForTextManagerEvents();
         }
 
@@ -71,16 +49,6 @@ namespace nHydrate.Dsl
         #endregion
 
         #region Events
-
-        protected override void OnElementDeleted(Microsoft.VisualStudio.Modeling.ElementDeletedEventArgs e)
-        {
-            base.OnElementDeleted(e);
-        }
-
-        public override void OnBeginEdit(DiagramItemEventArgs e)
-        {
-            base.OnBeginEdit(e);
-        }
 
         protected override void OnElementAdded(Microsoft.VisualStudio.Modeling.ElementAddedEventArgs e)
         {
@@ -185,10 +153,6 @@ namespace nHydrate.Dsl
             var f = e.ModelElement as ViewField;
             f.CachedImage = null;
         }
-
-        //private void AnyPropertyChangedHandler(object sender, Microsoft.VisualStudio.Modeling.ElementPropertyChangedEventArgs e)
-        //{
-        //}
 
         private void DiagramViewablePropertyChanged(object sender, Microsoft.VisualStudio.Modeling.ElementPropertyChangedEventArgs e)
         {
@@ -316,9 +280,6 @@ namespace nHydrate.Dsl
                 this.Store.DomainDataDirectory.FindDomainClass(typeof(Field)),
                 new EventHandler<Microsoft.VisualStudio.Modeling.ElementAddedEventArgs>(FieldAdded));
 
-            //this.Store.EventManagerDirectory.ElementPropertyChanged.Add(
-            //  new EventHandler<Microsoft.VisualStudio.Modeling.ElementPropertyChangedEventArgs>(AnyPropertyChangedHandler));
-
             this.IsLoading = false;
             model.IsDirty = true;
 
@@ -352,16 +313,6 @@ namespace nHydrate.Dsl
             }
 
             return shape;
-        }
-
-        public override bool DoHitTest(PointD point, DiagramHitTestInfo hitTestInfo, bool includeTolerance)
-        {
-            return base.DoHitTest(point, hitTestInfo, includeTolerance);
-        }
-
-        public override void OnDragDrop(DiagramDragEventArgs e)
-        {
-            base.OnDragDrop(e);
         }
 
         public override void OnDragOver(DiagramDragEventArgs e)
@@ -461,16 +412,6 @@ namespace nHydrate.Dsl
                     else if (child.ModelElement is View)
                     {
                         var item = child.ModelElement as View;
-                        //if ((item.nHydrateModel.DiagramVisibility & VisibilityTypeConstants.View) != VisibilityTypeConstants.View)
-                        //{
-                        //  if (MessageBox.Show("This type of object cannot be created by dragging onto the diagram because it is not visualized on the diagram. You can change the 'DiagramVisibility' property of the model to visualize it. Otherwise you can only create this object type by using the model tree window.\n\nWould you like to toggle on visualization for this object?", "Information", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes)
-                        //  {
-                        //    child.Delete();
-                        //    return;
-                        //  }
-                        //  item.nHydrateModel.DiagramVisibility = (item.nHydrateModel.DiagramVisibility | VisibilityTypeConstants.View);
-                        //}
-
                         if (item.Fields.Count == 0)
                         {
                             var field = new ViewField(item.Partition)
@@ -484,16 +425,6 @@ namespace nHydrate.Dsl
                     else if (child.ModelElement is StoredProcedure)
                     {
                         var item = child.ModelElement as StoredProcedure;
-                        //if ((item.nHydrateModel.DiagramVisibility & VisibilityTypeConstants.StoredProcedure) != VisibilityTypeConstants.StoredProcedure)
-                        //{
-                        //  if (MessageBox.Show("This type of object cannot be created by dragging onto the diagram because it is not visualized on the diagram. You can change the 'DiagramVisibility' property of the model to visualize it. Otherwise you can only create this object type by using the model tree window.\n\nWould you like to toggle on visualization for this object?", "Information", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes)
-                        //  {
-                        //    child.Delete();
-                        //    return;
-                        //  }
-                        //  item.nHydrateModel.DiagramVisibility = (item.nHydrateModel.DiagramVisibility | VisibilityTypeConstants.StoredProcedure);
-                        //}
-
                         if (item.Fields.Count == 0)
                         {
                             var field = new StoredProcedureField(item.Partition)
@@ -516,16 +447,6 @@ namespace nHydrate.Dsl
                     else if (child.ModelElement is Function)
                     {
                         var item = child.ModelElement as Function;
-                        //if ((item.nHydrateModel.DiagramVisibility & VisibilityTypeConstants.Function) != VisibilityTypeConstants.Function)
-                        //{
-                        //  if (MessageBox.Show("This type of object cannot be created by dragging onto the diagram because it is not visualized on the diagram. You can change the 'DiagramVisibility' property of the model to visualize it. Otherwise you can only create this object type by using the model tree window.\n\nWould you like to toggle on visualization for this object?", "Information", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes)
-                        //  {
-                        //    child.Delete();
-                        //    return;
-                        //  }
-                        //  item.nHydrateModel.DiagramVisibility = (item.nHydrateModel.DiagramVisibility | VisibilityTypeConstants.Function);
-                        //}
-
                         if (item.Fields.Count == 0)
                         {
                             var field = new FunctionField(item.Partition)
@@ -566,65 +487,6 @@ namespace nHydrate.Dsl
             var dte = GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
             nHydrate.Generator.Common.Util.EnvDTEHelper.Instance.SetDTE(dte);
         }
-
-        protected override bool CalculateDerivedVisible(ShapeElement source)
-        {
-            return base.CalculateDerivedVisible(source);
-        }
-
-        public override bool CanShapeContainConnectors(ShapeElement parentCandidate)
-        {
-            return base.CanShapeContainConnectors(parentCandidate);
-        }
-
-        public override void CoerceSelection(DiagramItem item, DiagramClientView view, bool isAddition)
-        {
-            base.CoerceSelection(item, view, isAddition);
-        }
-
-        protected override ShapeElement DetermineHighlightShape(ShapeElement shape)
-        {
-            return base.DetermineHighlightShape(shape);
-        }
-
-        public override void DrawResizeFeedback(DiagramPaintEventArgs e, RectangleD bounds)
-        {
-            base.DrawResizeFeedback(e, bounds);
-        }
-
-        public override ShapeElement FixUpChildShapes(Microsoft.VisualStudio.Modeling.ModelElement childElement)
-        {
-            return base.FixUpChildShapes(childElement);
-        }
-
-        public override System.Collections.IList FixUpDiagramSelection(ShapeElement newChildShape)
-        {
-            return base.FixUpDiagramSelection(newChildShape);
-        }
-
-        public override System.Collections.ICollection GetChildElements(Microsoft.VisualStudio.Modeling.ModelElement parentElement)
-        {
-            return base.GetChildElements(parentElement);
-        }
-
-        //protected override void InitializeShapeFields(IList<Microsoft.VisualStudio.Modeling.Diagrams.ShapeField> shapeFields)
-        //{
-        //  base.InitializeShapeFields(shapeFields);
-
-        //  var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-        //  var imageStream = assembly.GetManifestResourceStream(assembly.GetName().Name + ".Resources.nhydrate-background.png");
-        //  var backgroundField = new ImageField("background", new System.Drawing.Bitmap(imageStream));
-
-        //  backgroundField.DefaultFocusable = false;
-        //  backgroundField.DefaultSelectable = false;
-        //  backgroundField.DefaultVisibility = true;
-        //  shapeFields.Add(backgroundField);
-
-        //  backgroundField.AnchoringBehavior.SetTopAnchor(AnchoringBehavior.Edge.Top, 0.01);
-        //  backgroundField.AnchoringBehavior.SetTopAnchor(AnchoringBehavior.Edge.Left, 0.01);
-        //  backgroundField.AnchoringBehavior.SetTopAnchor(AnchoringBehavior.Edge.Right, 0.01);
-        //  backgroundField.AnchoringBehavior.SetTopAnchor(AnchoringBehavior.Edge.Bottom, 0.01);
-        //}
 
     }
 

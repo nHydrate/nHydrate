@@ -16,9 +16,8 @@ namespace nHydrate.Generator.Common.Util
         {
             var textManager = GetService();
             var container = textManager as IConnectionPointContainer;
-            IConnectionPoint textManagerEventsConnection;
             var eventGuid = typeof (IVsTextManagerEvents).GUID;
-            container.FindConnectionPoint(ref eventGuid, out textManagerEventsConnection);
+            container.FindConnectionPoint(ref eventGuid, out var textManagerEventsConnection);
             var textManagerEvents = new TextManagerEvents();
             uint textManagerCookie;
             textManagerEventsConnection.Advise(textManagerEvents, out textManagerCookie);

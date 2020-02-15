@@ -87,8 +87,7 @@ namespace nHydrate.DslPackage.Forms
 						//Length
 						if (arr.Length > 2 && !string.IsNullOrEmpty(arr[2]))
 						{
-							int l;
-							if (!int.TryParse(arr[2], out l))
+                            if (!int.TryParse(arr[2], out var l))
 							{
 								errors.Add("There was an error with the 'Length' on line " + index);
 							}
@@ -101,8 +100,7 @@ namespace nHydrate.DslPackage.Forms
 						//AllowNull
 						if (arr.Length > 3)
 						{
-							bool b;
-							if (!bool.TryParse(arr[3], out b))
+                            if (!bool.TryParse(arr[3], out var b))
 							{
 								errors.Add("There was an error with 'Allow Null' on line " + index);
 							}

@@ -948,8 +948,7 @@ namespace nHydrate.Dsl.Custom
                 item.IsTenant = XmlHelper.GetAttributeValue(document.DocumentElement, "isTenant", item.IsTenant);
 
                 var tev = XmlHelper.GetAttributeValue(document.DocumentElement, "typedentity", item.TypedEntity.ToString());
-                TypedEntityConstants te;
-                if (Enum.TryParse<TypedEntityConstants>(tev, true, out te))
+                if (Enum.TryParse<TypedEntityConstants>(tev, true, out var te))
                     item.TypedEntity = te;
 
                 item.Schema = XmlHelper.GetAttributeValue(document.DocumentElement, "schema", item.Schema);
@@ -980,13 +979,11 @@ namespace nHydrate.Dsl.Custom
                         field.Nullable = XmlHelper.GetAttributeValue(n, "nullable", field.Nullable);
 
                         var dtv = XmlHelper.GetAttributeValue(n, "datatype", field.DataType.ToString());
-                        DataTypeConstants dt;
-                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out dt))
+                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
                             field.DataType = dt;
 
                         var itv = XmlHelper.GetAttributeValue(n, "identity", field.Identity.ToString());
-                        IdentityTypeConstants it;
-                        if (Enum.TryParse<IdentityTypeConstants>(itv, true, out it))
+                        if (Enum.TryParse<IdentityTypeConstants>(itv, true, out var it))
                             field.Identity = it;
 
                         field.DataFormatString = XmlHelper.GetNodeValue(n, "dataformatstring", field.DataFormatString);
@@ -1055,8 +1052,7 @@ namespace nHydrate.Dsl.Custom
                             nameList.Add(parameter.Name.ToLower());
                             parameter.Nullable = XmlHelper.GetAttributeValue(n, "nullable", parameter.Nullable);
                             var dtv = XmlHelper.GetAttributeValue(n, "datatype", parameter.DataType.ToString());
-                            DataTypeConstants dt;
-                            if (Enum.TryParse<DataTypeConstants>(dtv, true, out dt))
+                            if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
                                 parameter.DataType = dt;
                             parameter.Default = XmlHelper.GetAttributeValue(n, "default", parameter.Default);
                             parameter.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", parameter.IsGenerated);
@@ -1527,8 +1523,7 @@ namespace nHydrate.Dsl.Custom
                         nameList.Add(field.Name.ToLower());
                         field.Nullable = XmlHelper.GetAttributeValue(n, "nullable", field.Nullable);
                         var dtv = XmlHelper.GetAttributeValue(n, "datatype", field.DataType.ToString());
-                        DataTypeConstants dt;
-                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out dt))
+                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
                             field.DataType = dt;
                         field.Default = XmlHelper.GetAttributeValue(n, "default", field.Default);
                         field.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", field.IsGenerated);
@@ -1563,8 +1558,7 @@ namespace nHydrate.Dsl.Custom
                         nameList.Add(parameter.Name.ToLower());
                         parameter.Nullable = XmlHelper.GetAttributeValue(n, "nullable", parameter.Nullable);
                         var dtv = XmlHelper.GetAttributeValue(n, "datatype", parameter.DataType.ToString());
-                        DataTypeConstants dt;
-                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out dt))
+                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
                             parameter.DataType = dt;
                         parameter.Default = XmlHelper.GetAttributeValue(n, "default", parameter.Default);
                         parameter.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", parameter.IsGenerated);
@@ -1666,8 +1660,7 @@ namespace nHydrate.Dsl.Custom
                         nameList.Add(field.Name.ToLower());
                         field.Nullable = XmlHelper.GetAttributeValue(n, "nullable", field.Nullable);
                         var dtv = XmlHelper.GetAttributeValue(n, "datatype", field.DataType.ToString());
-                        DataTypeConstants dt;
-                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out dt))
+                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
                             field.DataType = dt;
                         field.Default = XmlHelper.GetAttributeValue(n, "default", field.Default);
                         field.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", field.IsGenerated);
@@ -1770,8 +1763,7 @@ namespace nHydrate.Dsl.Custom
                         nameList.Add(field.Name.ToLower());
                         field.Nullable = XmlHelper.GetAttributeValue(n, "nullable", field.Nullable);
                         var dtv = XmlHelper.GetAttributeValue(n, "datatype", field.DataType.ToString());
-                        DataTypeConstants dt;
-                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out dt))
+                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
                             field.DataType = dt;
                         field.Default = XmlHelper.GetAttributeValue(n, "default", field.Default);
                         field.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", field.IsGenerated);
@@ -1805,8 +1797,7 @@ namespace nHydrate.Dsl.Custom
                         nameList.Add(parameter.Name.ToLower());
                         parameter.Nullable = XmlHelper.GetAttributeValue(n, "nullable", parameter.Nullable);
                         var dtv = XmlHelper.GetAttributeValue(n, "datatype", parameter.DataType.ToString());
-                        DataTypeConstants dt;
-                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out dt))
+                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
                             parameter.DataType = dt;
                         parameter.Default = XmlHelper.GetAttributeValue(n, "default", parameter.Default);
                         parameter.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", parameter.IsGenerated);

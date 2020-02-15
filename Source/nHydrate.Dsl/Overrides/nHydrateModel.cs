@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using nHydrate.Generator.Common.Util;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
 
@@ -10,21 +9,13 @@ namespace nHydrate.Dsl
 {
     partial class nHydrateModel
     {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="store">Store where new element is to be created.</param>
-        /// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
+        //Constructors were not generated for this class because it had HasCustomConstructor
+        //set to true. Please provide the constructors below in a partial class.
         public nHydrateModel(DslModeling::Store store, params DslModeling::PropertyAssignment[] propertyAssignments)
             : this(store != null ? store.DefaultPartitionForClass(DomainClassId) : null, propertyAssignments)
         {
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="partition">Partition where new element is to be created.</param>
-        /// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
         public nHydrateModel(DslModeling::Partition partition, params DslModeling::PropertyAssignment[] propertyAssignments)
             : base(partition, propertyAssignments)
         {
@@ -68,30 +59,15 @@ namespace nHydrate.Dsl
             }
         }
 
-        public string CreatedByPascalName
-        {
-            get { return StringHelper.DatabaseNameToPascalCase(this.CreatedByColumnName); }
-        }
+        public string CreatedByPascalName => StringHelper.DatabaseNameToPascalCase(this.CreatedByColumnName);
 
-        public string CreatedDatePascalName
-        {
-            get { return StringHelper.DatabaseNameToPascalCase(this.CreatedDateColumnName); }
-        }
+        public string CreatedDatePascalName => StringHelper.DatabaseNameToPascalCase(this.CreatedDateColumnName);
 
-        public string ModifiedByPascalName
-        {
-            get { return StringHelper.DatabaseNameToPascalCase(this.ModifiedByColumnName); }
-        }
+        public string ModifiedByPascalName => StringHelper.DatabaseNameToPascalCase(this.ModifiedByColumnName);
 
-        public string ModifiedDatePascalName
-        {
-            get { return StringHelper.DatabaseNameToPascalCase(this.ModifiedDateColumnName); }
-        }
+        public string ModifiedDatePascalName => StringHelper.DatabaseNameToPascalCase(this.ModifiedDateColumnName);
 
-        public string TimestampPascalName
-        {
-            get { return StringHelper.DatabaseNameToPascalCase(this.TimestampColumnName); }
-        }
+        public string TimestampPascalName => StringHelper.DatabaseNameToPascalCase(this.TimestampColumnName);
 
         public List<string> RemovedTables { get; }
         public List<string> RemovedViews { get; }
@@ -111,17 +87,14 @@ namespace nHydrate.Dsl
         {
             return false;
         }
-
         private bool CanMergeRelationModule(Microsoft.VisualStudio.Modeling.ProtoElementBase rootElement, Microsoft.VisualStudio.Modeling.ElementGroupPrototype elementGroupPrototype)
         {
             return false;
         }
-
         private bool CanMergeIndexModule(Microsoft.VisualStudio.Modeling.ProtoElementBase rootElement, Microsoft.VisualStudio.Modeling.ElementGroupPrototype elementGroupPrototype)
         {
             return false;
         }
-
     }
 
 }

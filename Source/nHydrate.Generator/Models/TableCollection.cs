@@ -129,10 +129,10 @@ namespace nHydrate.Generator.Models
                 checkList = new List<string>();
                 foreach (Table t in this)
                 {
-                    if (checkList.Contains(t.Key.ToString()))
+                    if (checkList.Contains(t.Key))
                         System.Diagnostics.Debug.Write(string.Empty);
                     else
-                        checkList.Add(t.Key.ToString());
+                        checkList.Add(t.Key);
                 }
 
                 this.Dirty = false;

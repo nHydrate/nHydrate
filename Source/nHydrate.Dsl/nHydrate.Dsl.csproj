@@ -183,7 +183,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Serializer.tt</DependentUpon>
     </Compile>
-    <Compile Include="Objects\ModelerOptions.cs" />
     <Compile Include="Objects\PrecedenceUtil.cs" />
     <Compile Include="Objects\UserDefinedScript.cs" />
     <Compile Include="Overrides\IFieldContainer.cs" />
@@ -194,7 +193,6 @@
     <Compile Include="Overrides\EntityHasViews.cs" />
     <Compile Include="Overrides\nHydrateToolboxHelper.cs" />
     <Compile Include="Overrides\FunctionShape.cs" />
-    <Compile Include="Overrides\ViewSerializer.cs" />
     <Compile Include="Overrides\IndexColumn.cs" />
     <Compile Include="Overrides\Index.cs" />
     <Compile Include="Overrides\FunctionField.cs" />

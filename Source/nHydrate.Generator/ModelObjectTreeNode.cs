@@ -22,14 +22,7 @@ namespace nHydrate.Generator
 		public ModelObjectTreeNode(INHydrateModelObjectController controller)
 		{      
 			_controller = controller;
-			_controller.ItemChanged += new ItemChanagedEventHandler(ControllerItemChanged);
 			_object = _controller.Object;
-			this.Refresh();
-		}
-
-		private void ControllerItemChanged(object sender, System.EventArgs e)
-		{
-			this.Object.Dirty = true;
 			this.Refresh();
 		}
 
