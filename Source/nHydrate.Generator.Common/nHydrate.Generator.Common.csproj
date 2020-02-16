@@ -188,9 +188,6 @@
     <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
       <Link>Properties\AssemblyInfoGeneratorCommon.cs</Link>
     </Compile>
-    <Compile Include="EventArgs\BooleanEventArgs.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="EventArgs\ProjectItemGeneratedErrorEventArgs.cs" />
     <Compile Include="EventArgs\ProjectItemDeletedEventArgs.cs" />
     <Compile Include="EventArgs\ProgressEventArgs.cs">

@@ -7,8 +7,6 @@ namespace nHydrate.Dsl
 {
     partial class View : nHydrate.Dsl.IPrecedence, nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
     {
-        public string CamelName => StringHelper.DatabaseNameToCamelCase(this.PascalName);
-
         public string DatabaseName => this.Name;
 
         public string PascalName

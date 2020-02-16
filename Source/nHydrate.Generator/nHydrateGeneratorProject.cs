@@ -10,7 +10,7 @@ using nHydrate.Generator.Models;
 namespace nHydrate.Generator
 {
     [GeneratorAttribute("{4B5CFCAF-C668-4d40-947C-83B2AAEBB2B5}", "nHydrate Model")]
-    public class nHydrateGeneratorProject : INHydrateGenerator, IXMLable
+    public class nHydrateGeneratorProject : IGenerator, IXMLable
     {
         #region Constants
         public const string EFCoreFile = "nHydrate.EFCore.dll";

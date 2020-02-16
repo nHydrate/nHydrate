@@ -164,9 +164,6 @@
     <Compile Include="BaseModelObjectController.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BaseUIControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="DatabaseConnectionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -182,8 +179,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="INHydrateModelObject.cs" />
-    <Compile Include="INHydrateGenerator.cs" />
-    <Compile Include="ListViewComparer.cs" />
     <Compile Include="MenuCommand.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -200,9 +195,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ModelObjectTreeNode.cs" />
-    <Compile Include="ModelObjectUserInterface.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Models\ColumnBase.cs" />
     <Compile Include="Models\SecurityFunction.cs" />
     <Compile Include="Models\ViewColumnRelationship.cs" />
@@ -320,10 +312,6 @@
     <Compile Include="ProjectItemGenerators\BaseProjectItemGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <EmbeddedResource Include="BaseUIControl.resx">
-      <DependentUpon>BaseUIControl.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Images\Attribute.ico" />
     <EmbeddedResource Include="Images\AttributeForeignKey.ico" />
     <EmbeddedResource Include="Images\AttributePrimaryKey.ico" />
@@ -401,10 +389,6 @@
       <DependentUpon>DatabaseConnectionControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Images\TableType.ico" />
-    <EmbeddedResource Include="ModelObjectUserInterface.resx">
-      <DependentUpon>ModelObjectUserInterface.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

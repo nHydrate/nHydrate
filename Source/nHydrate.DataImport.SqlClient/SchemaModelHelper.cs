@@ -8,7 +8,7 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.DataImport.SqlClient
 {
-    public class SchemaModelHelper : ISchemaModelHelper
+    public class SchemaModelHelper
     {
         #region Public Methods
 
@@ -33,36 +33,6 @@ namespace nHydrate.DataImport.SqlClient
             return valid;
         }
 
-        public bool IsSupportedSQLVersion(string connectionString)
-        {
-            var ds = DatabaseHelper.ExecuteDataset(connectionString, "SELECT SERVERPROPERTY('productversion')");
-            var version = (string)ds.Tables[0].Rows[0][0];
-            if (version.StartsWith("10."))
-                return true;
-            else if (version.StartsWith("9."))
-                return true;
-            else
-                return false;
-        }
-
-        public SQLServerTypeConstants GetSQLVersion(string connectionString)
-        {
-            var ds = DatabaseHelper.ExecuteDataset(connectionString, "SELECT SERVERPROPERTY('productversion')");
-            var version = (string)ds.Tables[0].Rows[0][0];
-            if (version.StartsWith("10."))
-            {
-                var ds2 = DatabaseHelper.ExecuteDataset(connectionString, "SELECT SERVERPROPERTY('Edition')");
-                var version2 = (string)ds2.Tables[0].Rows[0][0];
-                if (version2 == "SQL Azure")
-                    return SQLServerTypeConstants.SQLAzure;
-                else
-                    return SQLServerTypeConstants.SQL2008;
-            }
-            else
-            {
-                return SQLServerTypeConstants.SQL2005;
-            }
-        }
 
         #endregion
 
