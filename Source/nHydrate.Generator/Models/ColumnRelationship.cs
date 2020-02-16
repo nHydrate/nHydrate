@@ -41,13 +41,7 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public Column ChildColumn
-        {
-            get
-            {
-                return ChildColumnRef?.Object as Column;
-            }
-        }
+        public Column ChildColumn => ChildColumnRef?.Object as Column;
 
         #endregion
 

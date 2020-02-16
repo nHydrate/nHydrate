@@ -409,161 +409,111 @@ namespace nHydrate.Generator.Models
 
         public override void XmlAppend(XmlNode node)
         {
-            try
+            var oDoc = node.OwnerDocument;
+
+            node.AddAttribute("key", this.Key);
+            node.AddAttribute("name", this.Name);
+            node.AddAttribute("dbschema", this.DBSchema, _def_dbSchema);
+            node.AddAttribute("codeFacade", this.CodeFacade, _def_codeFacade);
+            node.AddAttribute("description", this.Description, _def_description);
+
+            if (this.Relationships.Count > 0)
             {
-                var oDoc = node.OwnerDocument;
-
-                node.AddAttribute("key", this.Key);
-                node.AddAttribute("name", this.Name);
-
-                if (this.DBSchema != _def_dbSchema)
-                    node.AddAttribute("dbschema", this.DBSchema);
-
-                if (this.CodeFacade != _def_codeFacade)
-                    node.AddAttribute("codeFacade", this.CodeFacade);
-
-                if (this.Description != _def_description)
-                    node.AddAttribute("description", this.Description);
-
-                if (this.Relationships.Count > 0)
-                {
-                    var relationshipsNode = oDoc.CreateElement("r");
-                    this.Relationships.XmlAppend(relationshipsNode);
-                    node.AppendChild(relationshipsNode);
-                }
-
-                var tableIndexListNode = oDoc.CreateElement("til");
-                TableIndexList.XmlAppend(tableIndexListNode);
-                node.AppendChild(tableIndexListNode);
-
-                var columnsNode = oDoc.CreateElement("c");
-                this.Columns.XmlAppend(columnsNode);
-                node.AppendChild(columnsNode);
-
-                if (this.Generated != _def_generated)
-                    node.AddAttribute("generated", this.Generated);
-
-                if (this.IsTenant != _def_isTenant)
-                    node.AddAttribute("isTenant", this.IsTenant);
-
-                if (this.Immutable != _def_immutable)
-                    node.AddAttribute("immutable", this.Immutable);
-
-                if (this.EnforcePrimaryKey != _def_enforePrimaryKey)
-                    node.AddAttribute("enforePrimaryKey", this.EnforcePrimaryKey);
-
-                if (this.AllowModifiedAudit != _def_modifiedAudit)
-                    node.AddAttribute("modifiedAudit", this.AllowModifiedAudit);
-
-                if (this.TypedTable != _def_isTypeTable)
-                    node.AddAttribute("typedTable", this.TypedTable.ToString("d"));
-
-                if (this.AllowCreateAudit != _def_createAudit)
-                    node.AddAttribute("createAudit", this.AllowCreateAudit);
-
-                if (this.AllowTimestamp != _def_timestamp)
-                    node.AddAttribute("timestamp", this.AllowTimestamp);
-
-                if (this.IsAbstract != _def_isAbstract)
-                    node.AddAttribute("isAbstract", this.IsAbstract);
-
-                if (this.GeneratesDoubleDerived != _def_generatesDoubleDerived)
-                    node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived);
-
-                node.AddAttribute("id", this.Id);
-
-                if (this.StaticData.Count > 0)
-                {
-                    var staticDataNode = oDoc.CreateElement("staticData");
-                    this.StaticData.XmlAppend(staticDataNode);
-                    node.AppendChild(staticDataNode);
-                }
-
-                if (this.AssociativeTable != _def_associativeTable)
-                    node.AddAttribute("associativeTable", this.AssociativeTable);
-
-                if (this.HasHistory != _def_hasHistory)
-                    node.AddAttribute("hasHistory", this.HasHistory);
-
-                if (this.CreateMetaData != _def_createMetaData)
-                    node.AddAttribute("createMetaData", this.CreateMetaData);
-
-                if (this.FullIndexSearch != _def_fullIndexSearch)
-                    node.AddAttribute("fullIndexSearch", this.FullIndexSearch);
-
-                if (this.AllowAuditTracking != _def_allowAuditTracking)
-                    node.AddAttribute("allowAuditTracking", this.AllowAuditTracking);
-
-                if (this.MetaData.Count > 0)
-                {
-                    var metadataNode = oDoc.CreateElement("metadata");
-                    this.MetaData.XmlAppend(metadataNode);
-                    node.AppendChild(metadataNode);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
+                var relationshipsNode = oDoc.CreateElement("r");
+                this.Relationships.XmlAppend(relationshipsNode);
+                node.AppendChild(relationshipsNode);
             }
 
+            var tableIndexListNode = oDoc.CreateElement("til");
+            TableIndexList.XmlAppend(tableIndexListNode);
+            node.AppendChild(tableIndexListNode);
+
+            var columnsNode = oDoc.CreateElement("c");
+            this.Columns.XmlAppend(columnsNode);
+            node.AppendChild(columnsNode);
+
+            node.AddAttribute("generated", this.Generated, _def_generated);
+            node.AddAttribute("isTenant", this.IsTenant, _def_isTenant);
+            node.AddAttribute("immutable", this.Immutable, _def_immutable);
+            node.AddAttribute("enforePrimaryKey", this.EnforcePrimaryKey, _def_enforePrimaryKey);
+            node.AddAttribute("modifiedAudit", this.AllowModifiedAudit, _def_modifiedAudit);
+            node.AddAttribute("typedTable", this.TypedTable.ToString("d"), _def_isTypeTable.ToString("d"));
+            node.AddAttribute("createAudit", this.AllowCreateAudit, _def_createAudit);
+            node.AddAttribute("timestamp", this.AllowTimestamp, _def_timestamp);
+            node.AddAttribute("isAbstract", this.IsAbstract, _def_isAbstract);
+            node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived, _def_generatesDoubleDerived);
+            node.AddAttribute("id", this.Id);
+
+            if (this.StaticData.Count > 0)
+            {
+                var staticDataNode = oDoc.CreateElement("staticData");
+                this.StaticData.XmlAppend(staticDataNode);
+                node.AppendChild(staticDataNode);
+            }
+
+            node.AddAttribute("associativeTable", this.AssociativeTable, _def_associativeTable);
+            node.AddAttribute("hasHistory", this.HasHistory, _def_hasHistory);
+            node.AddAttribute("createMetaData", this.CreateMetaData, _def_createMetaData);
+            node.AddAttribute("fullIndexSearch", this.FullIndexSearch, _def_fullIndexSearch);
+            node.AddAttribute("allowAuditTracking", this.AllowAuditTracking, _def_allowAuditTracking);
+
+            if (this.MetaData.Count > 0)
+            {
+                var metadataNode = oDoc.CreateElement("metadata");
+                this.MetaData.XmlAppend(metadataNode);
+                node.AppendChild(metadataNode);
+            }
         }
 
         public override void XmlLoad(XmlNode node)
         {
-            try
-            {
-                var relationshipsNode = node.SelectSingleNode("relationships"); //deprecated, use "r"
-                if (relationshipsNode == null) relationshipsNode = node.SelectSingleNode("r");
-                if (relationshipsNode != null)
-                    this.Relationships.XmlLoad(relationshipsNode);
+            var relationshipsNode = node.SelectSingleNode("relationships"); //deprecated, use "r"
+            if (relationshipsNode == null) relationshipsNode = node.SelectSingleNode("r");
+            if (relationshipsNode != null)
+                this.Relationships.XmlLoad(relationshipsNode);
 
-                var columnsNode = node.SelectSingleNode("columns"); //deprecated, use "c"
-                if (columnsNode == null) columnsNode = node.SelectSingleNode("c");
-                if (columnsNode != null)
-                    this.Columns.XmlLoad(columnsNode);
+            var columnsNode = node.SelectSingleNode("columns"); //deprecated, use "c"
+            if (columnsNode == null) columnsNode = node.SelectSingleNode("c");
+            if (columnsNode != null)
+                this.Columns.XmlLoad(columnsNode);
 
-                var tableIndexListNode = node.SelectSingleNode("til");
-                if (tableIndexListNode != null)
-                    TableIndexList.XmlLoad(tableIndexListNode, this.Root);
+            var tableIndexListNode = node.SelectSingleNode("til");
+            if (tableIndexListNode != null)
+                TableIndexList.XmlLoad(tableIndexListNode, this.Root);
 
-                this.Generated = XmlHelper.GetAttributeValue(node, "generated", _def_generated);
-                this.Immutable = XmlHelper.GetAttributeValue(node, "immutable", _def_immutable);
-                this.IsTenant = XmlHelper.GetAttributeValue(node, "isTenant", _def_isTenant);
-                this.EnforcePrimaryKey = XmlHelper.GetAttributeValue(node, "enforePrimaryKey", _def_enforePrimaryKey);
+            this.Generated = XmlHelper.GetAttributeValue(node, "generated", _def_generated);
+            this.Immutable = XmlHelper.GetAttributeValue(node, "immutable", _def_immutable);
+            this.IsTenant = XmlHelper.GetAttributeValue(node, "isTenant", _def_isTenant);
+            this.EnforcePrimaryKey = XmlHelper.GetAttributeValue(node, "enforePrimaryKey", _def_enforePrimaryKey);
 
-                this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
+            this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
-                var staticDataNode = node.SelectSingleNode("staticData");
-                if (staticDataNode != null)
-                    this.StaticData.XmlLoad(staticDataNode);
+            var staticDataNode = node.SelectSingleNode("staticData");
+            if (staticDataNode != null)
+                this.StaticData.XmlLoad(staticDataNode);
 
-                this.AssociativeTable = XmlHelper.GetAttributeValue(node, "associativeTable", AssociativeTable);
-                this.HasHistory = XmlHelper.GetAttributeValue(node, "hasHistory", HasHistory);
-                this.CreateMetaData = XmlHelper.GetAttributeValue(node, "createMetaData", _def_createMetaData);
-                this.FullIndexSearch = XmlHelper.GetAttributeValue(node, "fullIndexSearch", _def_fullIndexSearch);
+            this.AssociativeTable = XmlHelper.GetAttributeValue(node, "associativeTable", AssociativeTable);
+            this.HasHistory = XmlHelper.GetAttributeValue(node, "hasHistory", HasHistory);
+            this.CreateMetaData = XmlHelper.GetAttributeValue(node, "createMetaData", _def_createMetaData);
+            this.FullIndexSearch = XmlHelper.GetAttributeValue(node, "fullIndexSearch", _def_fullIndexSearch);
 
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                this.Name = XmlHelper.GetAttributeValue(node, "name", string.Empty);
-                this.DBSchema = XmlHelper.GetAttributeValue(node, "dbschema", _def_dbSchema);
-                this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", _def_codeFacade);
-                this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
-                this.AllowModifiedAudit = XmlHelper.GetAttributeValue(node, "modifiedAudit", AllowModifiedAudit);
-                this.AllowCreateAudit = XmlHelper.GetAttributeValue(node, "createAudit", _def_createAudit);
-                this.TypedTable = (TypedTableConstants)XmlHelper.GetAttributeValue(node, "typedTable", int.Parse(TypedTable.ToString("d")));
-                this.AllowTimestamp = XmlHelper.GetAttributeValue(node, "timestamp", AllowTimestamp);
-                this.AllowAuditTracking = XmlHelper.GetAttributeValue(node, "allowAuditTracking", _def_allowAuditTracking);
-                this.IsAbstract = XmlHelper.GetAttributeValue(node, "isAbstract", _def_isAbstract);
-                this.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(node, "generatesDoubleDerived", _def_generatesDoubleDerived);
-                _parentTableKey = XmlHelper.GetAttributeValue(node, "parentTableKey", string.Empty);
+            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+            this.Name = XmlHelper.GetAttributeValue(node, "name", string.Empty);
+            this.DBSchema = XmlHelper.GetAttributeValue(node, "dbschema", _def_dbSchema);
+            this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", _def_codeFacade);
+            this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
+            this.AllowModifiedAudit = XmlHelper.GetAttributeValue(node, "modifiedAudit", AllowModifiedAudit);
+            this.AllowCreateAudit = XmlHelper.GetAttributeValue(node, "createAudit", _def_createAudit);
+            this.TypedTable = (TypedTableConstants) XmlHelper.GetAttributeValue(node, "typedTable", int.Parse(TypedTable.ToString("d")));
+            this.AllowTimestamp = XmlHelper.GetAttributeValue(node, "timestamp", AllowTimestamp);
+            this.AllowAuditTracking = XmlHelper.GetAttributeValue(node, "allowAuditTracking", _def_allowAuditTracking);
+            this.IsAbstract = XmlHelper.GetAttributeValue(node, "isAbstract", _def_isAbstract);
+            this.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(node, "generatesDoubleDerived", _def_generatesDoubleDerived);
+            _parentTableKey = XmlHelper.GetAttributeValue(node, "parentTableKey", string.Empty);
 
-                var metadataNode = node.SelectSingleNode("metadata");
-                if (metadataNode != null)
-                    this.MetaData.XmlLoad(metadataNode);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var metadataNode = node.SelectSingleNode("metadata");
+            if (metadataNode != null)
+                this.MetaData.XmlLoad(metadataNode);
         }
 
         #endregion

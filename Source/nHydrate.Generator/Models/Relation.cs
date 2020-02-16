@@ -450,10 +450,7 @@ namespace nHydrate.Generator.Models
 
             node.AddAttribute("key", this.Key);
             node.AddAttribute("enforce", this.Enforce);
-
-            if (this.Description != _def_description)
-                node.AddAttribute("description", this.Description);
-
+            node.AddAttribute("description", this.Description, _def_description);
             node.AddAttribute("deleteAction", this.DeleteAction.ToString());
 
             var columnRelationshipsNode = oDoc.CreateElement("crl");

@@ -161,58 +161,37 @@ namespace nHydrate.Generator.Models
 
         public override void XmlAppend(XmlNode node)
         {
-            try
+            var oDoc = node.OwnerDocument;
+
+            node.AddAttribute("key", this.Key);
+            node.AddAttribute("generated", this.Generated, _def_generated);
+            node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
+            node.AddAttribute("name", this.Name);
+            node.AddAttribute("description", this.Description, _def_description);
+
+            if (RelationshipRef != null)
             {
-                var oDoc = node.OwnerDocument;
-
-                node.AddAttribute("key", this.Key);
-
-                if (this.Generated != _def_generated)
-                    XmlHelper.AddAttribute((XmlElement)node, "generated", this.Generated.ToString());
-
-                if (this.CodeFacade != _def_codefacade)
-                    node.AddAttribute("codeFacade", this.CodeFacade);
-
-                XmlHelper.AddAttribute((XmlElement)node, "name", this.Name);
-
-                if (this.Description != _def_description)
-                    node.AddAttribute("description", this.Description);
-
-                if (RelationshipRef != null)
-                {
-                    var relationshipRefNode = oDoc.CreateElement("relationshipRef");
-                    RelationshipRef.XmlAppend(relationshipRefNode);
-                    node.AppendChild(relationshipRefNode);
-                }
-
-                if (this.Default != _def_default)
-                    XmlHelper.AddAttribute((XmlElement)node, "default", this.Default);
-
-                if (this.Length != _def_length)
-                    XmlHelper.AddAttribute((XmlElement)node, "length", this.Length);
-
-                XmlHelper.AddAttribute((XmlElement)node, "id", this.Id);
-
-                if (this.SortOrder != _def_sortOrder)
-                    XmlHelper.AddAttribute((XmlElement)node, "sortOrder", this.SortOrder);
-
-                var parentTableRefNode = oDoc.CreateElement("parentTableRef");
-                this.ParentTableRef.XmlAppend(parentTableRefNode);
-                node.AppendChild(parentTableRefNode);
-
-                XmlHelper.AddAttribute((XmlElement)node, "type", (int)this.DataType);
-
-                if (this.AllowNull != _def_allowNull)
-                    XmlHelper.AddAttribute((XmlElement)node, "allowNull", this.AllowNull);
-
-                if (this.IsOutputParameter != _def_isOutputParameter)
-                    XmlHelper.AddAttribute((XmlElement)node, "isOutputParameter", this.IsOutputParameter);
-
+                var relationshipRefNode = oDoc.CreateElement("relationshipRef");
+                RelationshipRef.XmlAppend(relationshipRefNode);
+                node.AppendChild(relationshipRefNode);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            node.AddAttribute("default", this.Default, _def_default);
+            node.AddAttribute("length", this.Length, _def_length);
+            node.AddAttribute("id", this.Id);
+            node.AddAttribute("sortOrder", this.SortOrder, _def_sortOrder);
+
+            var parentTableRefNode = oDoc.CreateElement("parentTableRef");
+            this.ParentTableRef.XmlAppend(parentTableRefNode);
+            node.AppendChild(parentTableRefNode);
+
+            node.AddAttribute("type", (int) this.DataType);
+
+            if (this.AllowNull != _def_allowNull)
+                node.AddAttribute("allowNull", this.AllowNull);
+
+            if (this.IsOutputParameter != _def_isOutputParameter)
+                node.AddAttribute("isOutputParameter", this.IsOutputParameter);
         }
 
         public override void XmlLoad(XmlNode node)

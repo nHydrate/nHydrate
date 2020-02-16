@@ -197,50 +197,32 @@ namespace nHydrate.Generator.Models
 
         public override void XmlAppend(XmlNode node)
         {
-            try
-            {
-                var oDoc = node.OwnerDocument;
+            var oDoc = node.OwnerDocument;
 
-                node.AddAttribute("key", this.Key);
-                node.AddAttribute("name", this.Name);
-                node.AddAttribute("databaseobjectname", this.DatabaseObjectName);
-                node.AddAttribute("isexisting", this.IsExisting);
+            node.AddAttribute("key", this.Key);
+            node.AddAttribute("name", this.Name);
+            node.AddAttribute("databaseobjectname", this.DatabaseObjectName);
+            node.AddAttribute("isexisting", this.IsExisting);
+            node.AddAttribute("dbschema", this.DBSchema, _def_dbSchema);
+            node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
+            node.AddAttribute("description", this.Description, _def_description);
+            node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived, _def_generatesDoubleDerived);
+            var columnsNode = oDoc.CreateElement("columns");
+            this.Columns.XmlAppend(columnsNode);
+            node.AppendChild(columnsNode);
 
-                if (this.DBSchema != _def_dbSchema)
-                    node.AddAttribute("dbschema", this.DBSchema);
+            var parametersNode = oDoc.CreateElement("parameters");
+            this.Parameters.XmlAppend(parametersNode);
+            node.AppendChild(parametersNode);
 
-                if (this.CodeFacade != _def_codefacade)
-                    node.AddAttribute("codeFacade", this.CodeFacade);
+            var sqlNode = oDoc.CreateElement("sql");
+            sqlNode.AppendChild(oDoc.CreateCDataSection(this.SQL));
+            node.AppendChild(sqlNode);
 
-                if (this.Description != _def_description)
-                    node.AddAttribute("description", this.Description);
+            if (this.Generated != _def_generated)
+                node.AddAttribute("generated", this.Generated);
 
-                if (this.GeneratesDoubleDerived != _def_generatesDoubleDerived)
-                    node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived);
-
-                var columnsNode = oDoc.CreateElement("columns");
-                this.Columns.XmlAppend(columnsNode);
-                node.AppendChild(columnsNode);
-
-                var parametersNode = oDoc.CreateElement("parameters");
-                this.Parameters.XmlAppend(parametersNode);
-                node.AppendChild(parametersNode);
-
-                var sqlNode = oDoc.CreateElement("sql");
-                sqlNode.AppendChild(oDoc.CreateCDataSection(this.SQL));
-                node.AppendChild(sqlNode);
-
-                if (this.Generated != _def_generated)
-                    XmlHelper.AddAttribute((XmlElement)node, "generated", this.Generated);
-
-                node.AddAttribute("id", this.Id);
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
+            node.AddAttribute("id", this.Id);
         }
 
         public override void XmlLoad(XmlNode node)

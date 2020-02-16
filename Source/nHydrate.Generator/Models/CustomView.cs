@@ -144,43 +144,27 @@ namespace nHydrate.Generator.Models
 
         public override void XmlAppend(XmlNode node)
         {
-            try
-            {
-                var oDoc = node.OwnerDocument;
+            var oDoc = node.OwnerDocument;
 
-                node.AddAttribute("key", this.Key);
-                node.AddAttribute("name", this.Name);
+            node.AddAttribute("key", this.Key);
+            node.AddAttribute("name", this.Name);
+            node.AddAttribute("dbschema", this.DBSchema, _def_dbSchema);
+            node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
+            node.AddAttribute("description", this.Description, _def_description);
+            node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived, _def_generatesDoubleDerived);
 
-                if (this.DBSchema != _def_dbSchema)
-                    node.AddAttribute("dbschema", this.DBSchema);
+            var columnsNode = oDoc.CreateElement("columns");
+            this.Columns.XmlAppend(columnsNode);
+            node.AppendChild(columnsNode);
 
-                if (this.CodeFacade != _def_codefacade)
-                    node.AddAttribute("codeFacade", this.CodeFacade);
+            var viewSqlNode = oDoc.CreateElement("sql");
+            viewSqlNode.AppendChild(oDoc.CreateCDataSection(this.SQL));
+            node.AppendChild(viewSqlNode);
 
-                if (this.Description != _def_description)
-                    node.AddAttribute("description", this.Description);
+            if (this.Generated != _def_generated)
+                node.AddAttribute("generated", this.Generated);
 
-                if (this.GeneratesDoubleDerived != _def_generatesDoubleDerived)
-                    node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived);
-
-                var columnsNode = oDoc.CreateElement("columns");
-                this.Columns.XmlAppend(columnsNode);
-                node.AppendChild(columnsNode);
-
-                var viewSqlNode = oDoc.CreateElement("sql");
-                viewSqlNode.AppendChild(oDoc.CreateCDataSection(this.SQL));
-                node.AppendChild(viewSqlNode);
-
-                if (this.Generated != _def_generated)
-                    XmlHelper.AddAttribute((XmlElement)node, "generated", this.Generated);
-
-                node.AddAttribute("id", this.Id);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
+            node.AddAttribute("id", this.Id);
         }
 
         public override void XmlLoad(XmlNode node)

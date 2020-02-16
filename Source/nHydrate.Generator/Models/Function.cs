@@ -165,77 +165,53 @@ namespace nHydrate.Generator.Models
 
         public override void XmlAppend(XmlNode node)
         {
-            try
-            {
-                var oDoc = node.OwnerDocument;
+            var oDoc = node.OwnerDocument;
 
-                node.AddAttribute("key", this.Key);
-                node.AddAttribute("name", this.Name);
-                node.AddAttribute("istable", this.IsTable);
+            node.AddAttribute("key", this.Key);
+            node.AddAttribute("name", this.Name);
+            node.AddAttribute("istable", this.IsTable);
+            node.AddAttribute("dbschema", this.DBSchema, _def_dbSchema);
+            node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
+            node.AddAttribute("description", this.Description, _def_description);
+            node.AddAttribute("returnVariable", this.ReturnVariable, string.Empty);
 
-                if (this.DBSchema != _def_dbSchema)
-                    node.AddAttribute("dbschema", this.DBSchema);
+            var columnsNode = oDoc.CreateElement("columns");
+            this.Columns.XmlAppend(columnsNode);
+            node.AppendChild(columnsNode);
 
-                if (this.CodeFacade != _def_codefacade)
-                    node.AddAttribute("codeFacade", this.CodeFacade);
+            var parametersNode = oDoc.CreateElement("parameters");
+            this.Parameters.XmlAppend(parametersNode);
+            node.AppendChild(parametersNode);
 
-                if (this.Description != _def_description)
-                    node.AddAttribute("description", this.Description);
+            var sqlNode = oDoc.CreateElement("sql");
+            sqlNode.AppendChild(oDoc.CreateCDataSection(this.SQL));
+            node.AppendChild(sqlNode);
 
-                if (this.ReturnVariable != string.Empty)
-                    node.AddAttribute("returnVariable", this.ReturnVariable);
+            if (this.Generated != _def_generated)
+                node.AddAttribute("generated", this.Generated);
 
-                var columnsNode = oDoc.CreateElement("columns");
-                this.Columns.XmlAppend(columnsNode);
-                node.AppendChild(columnsNode);
-
-                var parametersNode = oDoc.CreateElement("parameters");
-                this.Parameters.XmlAppend(parametersNode);
-                node.AppendChild(parametersNode);
-
-                var sqlNode = oDoc.CreateElement("sql");
-                sqlNode.AppendChild(oDoc.CreateCDataSection(this.SQL));
-                node.AppendChild(sqlNode);
-
-                if (this.Generated != _def_generated)
-                    XmlHelper.AddAttribute((XmlElement)node, "generated", this.Generated);
-
-                node.AddAttribute("id", this.Id);
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
+            node.AddAttribute("id", this.Id);
         }
 
         public override void XmlLoad(XmlNode node)
         {
-            try
-            {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                this.Name = XmlHelper.GetAttributeValue(node, "name", string.Empty);
-                this.IsTable = XmlHelper.GetAttributeValue(node, "istable", _def_isTable);
-                this.ReturnVariable = XmlHelper.GetAttributeValue(node, "returnVariable", string.Empty);
-                this.DBSchema = XmlHelper.GetAttributeValue(node, "dbschema", _def_dbSchema);
-                this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", _def_codefacade);
-                this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
-                this.SQL = XmlHelper.GetNodeValue(node, "sql", string.Empty);
-                var columnsNode = node.SelectSingleNode("columns");
-                Columns.XmlLoad(columnsNode);
+            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+            this.Name = XmlHelper.GetAttributeValue(node, "name", string.Empty);
+            this.IsTable = XmlHelper.GetAttributeValue(node, "istable", _def_isTable);
+            this.ReturnVariable = XmlHelper.GetAttributeValue(node, "returnVariable", string.Empty);
+            this.DBSchema = XmlHelper.GetAttributeValue(node, "dbschema", _def_dbSchema);
+            this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", _def_codefacade);
+            this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
+            this.SQL = XmlHelper.GetNodeValue(node, "sql", string.Empty);
+            var columnsNode = node.SelectSingleNode("columns");
+            Columns.XmlLoad(columnsNode);
 
-                var parametersNode = node.SelectSingleNode("parameters");
-                if (parametersNode != null)
-                    this.Parameters.XmlLoad(parametersNode);
+            var parametersNode = node.SelectSingleNode("parameters");
+            if (parametersNode != null)
+                this.Parameters.XmlLoad(parametersNode);
 
-                this.Generated = XmlHelper.GetAttributeValue(node, "generated", Generated);
-                this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            this.Generated = XmlHelper.GetAttributeValue(node, "generated", Generated);
+            this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
         }
 
         #endregion
