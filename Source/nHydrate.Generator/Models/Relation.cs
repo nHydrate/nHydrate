@@ -524,16 +524,7 @@ namespace nHydrate.Generator.Models
             return returnVal;
         }
 
-        public string PascalRoleName
-        {
-            get
-            {
-                if (((ModelRoot)this.Root).TransformNames)
-                    return StringHelper.DatabaseNameToPascalCase(RoleName);
-                else
-                    return StringHelper.FirstCharToUpper(this.RoleName);
-            }
-        }
+        public string PascalRoleName => StringHelper.FirstCharToUpper(this.RoleName);
 
         public string DatabaseRoleName
         {

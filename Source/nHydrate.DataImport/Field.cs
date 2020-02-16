@@ -8,12 +8,10 @@ namespace nHydrate.DataImport
         {
             this.DataType = System.Data.SqlDbType.VarChar;
             this.IsBrowsable = true;
-            this.Collate = string.Empty;
             this.DefaultValue = string.Empty;
         }
 
         public System.Data.SqlDbType DataType { get; set; }
-        public string Collate { get; set; }
         public bool Identity { get; set; }
         public string DefaultValue { get; set; }
         public bool PrimaryKey { get; set; }
@@ -73,7 +71,6 @@ namespace nHydrate.DataImport
                     this.Length + "|" +
                     this.IsComputed + "|" +
                     this.Scale + "|" +
-                    this.Collate + "|" +
                     this.PrimaryKey + "|" +
                     this.IsBrowsable + "|" +
                     this.DataType.ToString();
@@ -91,7 +88,6 @@ namespace nHydrate.DataImport
             if (this.Name != o.Name) return false;
             if (this.IsIndexed != o.IsIndexed) return false;
             if (this.IsUnique != o.IsUnique) return false;
-            if (this.Collate != o.Collate) return false;
             if (this.DefaultValue != o.DefaultValue) return false;
             if (this.IsComputed != o.IsComputed) return false;
             if (this.Identity != o.Identity) return false;

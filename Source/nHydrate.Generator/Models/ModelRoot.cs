@@ -1,7 +1,6 @@
 #pragma warning disable 0168
 using System;
 using System.Collections;
-using System.ComponentModel;
 using System.Linq;
 using System.Xml;
 using nHydrate.Generator.Common;
@@ -17,7 +16,6 @@ namespace nHydrate.Generator.Models
 
         protected internal const string _def_version = "0.0.0.0";
         protected const bool _def_useUTCTime = false;
-        protected const bool _def_transformNames = false;
         protected const bool _def_enableCustomChangeEvents = false;
         protected const bool _def_supportLegacySearchObject = false;
         protected const string _def_defaultNamespace = "";
@@ -92,8 +90,6 @@ namespace nHydrate.Generator.Models
         }
 
         public string DefaultNamespace { get; set; } = _def_defaultNamespace;
-
-        public bool TransformNames { get; set; } = _def_transformNames;
 
         public bool EnableCustomChangeEvents { get; set; } = _def_enableCustomChangeEvents;
 
@@ -170,7 +166,6 @@ namespace nHydrate.Generator.Models
 
                 node.AddAttribute("key", this.Key);
                 node.AddAttribute("projectName", this.ProjectName);
-                node.AddAttribute("transformNames", this.TransformNames);
                 node.AddAttribute("enableCustomChangeEvents", this.EnableCustomChangeEvents);
                 node.AddAttribute("supportLegacySearchObject", this.SupportLegacySearchObject);
                 node.AddAttribute("useUTCTime", this.UseUTCTime.ToString());
@@ -211,7 +206,6 @@ namespace nHydrate.Generator.Models
             {
                 this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
                 this.ProjectName = XmlHelper.GetAttributeValue(node, "projectName", string.Empty);
-                this.TransformNames = XmlHelper.GetAttributeValue(node, "transformNames", _def_transformNames);
                 this.EnableCustomChangeEvents = XmlHelper.GetAttributeValue(node, "enableCustomChangeEvents", _def_enableCustomChangeEvents);
                 this.SupportLegacySearchObject = XmlHelper.GetAttributeValue(node, "supportLegacySearchObject", _def_supportLegacySearchObject);
                 _version = XmlHelper.GetAttributeValue(node, "version", _def_version);

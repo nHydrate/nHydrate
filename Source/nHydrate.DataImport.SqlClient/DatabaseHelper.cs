@@ -347,33 +347,6 @@ namespace nHydrate.DataImport.SqlClient
 
         #endregion
 
-        #region GetDatabaseCollation
-
-        internal static string GetDatabaseCollation(string connectionString)
-        {
-            System.Data.SqlClient.SqlConnection connection = null;
-            try
-            {
-                var sql = "SELECT DATABASEPROPERTYEX('" + GetDatabaseName(connectionString) + "', 'Collation') SQLCOLLATION";
-                connection = new System.Data.SqlClient.SqlConnection(connectionString);
-                var command = new SqlCommand(sql, connection);
-                connection.Open();
-                var retval = (string)command.ExecuteScalar();
-                return retval;
-            }
-            catch (Exception /*ignored*/)
-            {
-                throw;
-            }
-            finally
-            {
-                if (connection != null && connection.State == ConnectionState.Open)
-                    connection.Close();
-            }
-        }
-
-        #endregion
-
         #region GetDatabaseName
 
         internal static string GetDatabaseName(string connectionString)

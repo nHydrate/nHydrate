@@ -6,7 +6,7 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Dsl
 {
-    partial class StoredProcedure : nHydrate.Dsl.IPrecedence, nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
+    partial class StoredProcedure : nHydrate.Dsl.IDatabaseEntity, nHydrate.Dsl.IFieldContainer, nHydrate.Generator.Common.GeneratorFramework.IDirtyable
     {
         #region Names
         public string DatabaseName => this.Name;
@@ -33,28 +33,6 @@ namespace nHydrate.Dsl
             if (this.nHydrateModel != null)
                 this.nHydrateModel.RemovedStoredProcedures.Add(this.PascalName);
             base.OnDeleting();
-        }
-
-        int IPrecedence.PrecedenceOrder
-        {
-            get { return this.PrecedenceOrder; }
-            set { this.PrecedenceOrder = value; }
-        }
-
-        string IPrecedence.Name
-        {
-            get { return this.Name; }
-            set { this.Name = value; }
-        }
-
-        string IPrecedence.TypeName
-        {
-            get { return "Stored Procedure"; }
-        }
-
-        Guid IPrecedence.ID
-        {
-            get { return this.Id; }
         }
 
         #region IFieldContainer Members

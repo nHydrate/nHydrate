@@ -557,11 +557,6 @@ namespace nHydrate.DslPackage.Objects
                     model.Functions.Remove(x => database.FunctionList.Where(z => z.ImportState == DataImport.ImportStateConstants.Deleted).Select(a => a.Name).ToList().Contains(x.Name));
                     #endregion
 
-                    //Reset Precedense if necessary
-                    model.StoredProcedures.Where(x => x.PrecedenceOrder == 0).ToList().ForEach(x => x.PrecedenceOrder = ++model.MaxPrecedenceOrder);
-                    model.Views.Where(x => x.PrecedenceOrder == 0).ToList().ForEach(x => x.PrecedenceOrder = ++model.MaxPrecedenceOrder);
-                    model.Functions.Where(x => x.PrecedenceOrder == 0).ToList().ForEach(x => x.PrecedenceOrder = ++model.MaxPrecedenceOrder);
-
                     transaction.Commit();
                 }
             }
@@ -785,8 +780,7 @@ namespace nHydrate.DslPackage.Objects
         public static nHydrate.DataImport.Database Convert(nHydrateModel model, Microsoft.VisualStudio.Modeling.Diagrams.Diagram diagram)
         {
             var database = new nHydrate.DataImport.Database();
-            database.Collate = model.Collate;
-
+            
             #region Load the entities
             foreach (var entity in model.Entities)
             {
@@ -806,7 +800,6 @@ namespace nHydrate.DslPackage.Objects
                     var newField = new nHydrate.DataImport.Field();
                     newField.ID = field.Id;
                     newField.Nullable = field.Nullable;
-                    newField.Collate = field.Collate;
                     newField.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), field.DataType.ToString());
                     newField.DefaultValue = field.Default;
                     newField.Identity = (field.Identity == IdentityTypeConstants.Database);

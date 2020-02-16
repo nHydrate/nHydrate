@@ -168,8 +168,6 @@ namespace nHydrate.DslPackage
         public static string GetChangedText(this nHydrate.DataImport.Field item, nHydrate.DataImport.Field target)
         {
             var retval = string.Empty;
-            if (item.Collate != target.Collate)
-                retval += "Collate: " + item.Collate + "->" + target.Collate + "\r\n";
             if (item.DataType != target.DataType)
                 retval += "DataType: " + item.DataType + "->" + target.DataType + "\r\n";
             if (item.DefaultValue != target.DefaultValue)
@@ -198,8 +196,6 @@ namespace nHydrate.DslPackage
         public static string GetChangedText(this nHydrate.DataImport.Parameter item, nHydrate.DataImport.Parameter target)
         {
             var retval = string.Empty;
-            if (item.Collate != target.Collate)
-                retval += "Collate: " + item.Collate + "->" + target.Collate + "\r\n";
             if (item.DataType != target.DataType)
                 retval += "DataType: " + item.DataType + "->" + target.DataType + "\r\n";
             if (item.DefaultValue != target.DefaultValue)
@@ -252,8 +248,6 @@ namespace nHydrate.DslPackage
         public static string GetChangedText(this nHydrate.DataImport.StoredProc item, nHydrate.DataImport.StoredProc target)
         {
             var retval = string.Empty;
-            if (item.Collate != target.Collate)
-                retval += "Collate: " + item.Collate + "->" + target.Collate + "\r\n";
             if (item.Name != target.Name)
                 retval += "Name: " + item.Name + "->" + target.Name + "\r\n";
             if (item.Schema != target.Schema)
@@ -313,8 +307,6 @@ namespace nHydrate.DslPackage
         public static string GetChangedText(this nHydrate.DataImport.View item, nHydrate.DataImport.View target)
         {
             var retval = string.Empty;
-            if (item.Collate != target.Collate)
-                retval += "Collate: " + item.Collate + "->" + target.Collate + "\r\n";
             if (item.Name != target.Name)
                 retval += "Name: " + item.Name + "->" + target.Name + "\r\n";
             if (item.Schema != target.Schema)
@@ -351,8 +343,6 @@ namespace nHydrate.DslPackage
         public static string GetChangedText(this nHydrate.DataImport.Function item, nHydrate.DataImport.Function target)
         {
             var retval = string.Empty;
-            if (item.Collate != target.Collate)
-                retval += "Collate: " + item.Collate + "->" + target.Collate + "\r\n";
             if (item.IsTable != target.IsTable)
                 retval += "IsTable: " + item.IsTable + "->" + target.IsTable + "\r\n";
             if (item.Name != target.Name)
@@ -443,9 +433,7 @@ namespace nHydrate.DslPackage
             var newField = new Field(original.Partition)
             {
                 Name = original.Name,
-                Category = original.Category,
                 CodeFacade = original.CodeFacade,
-                Collate = original.Collate,
                 DataType = original.DataType,
                 Default = original.Default,
                 Formula = original.Formula,
@@ -459,7 +447,6 @@ namespace nHydrate.DslPackage
                 Nullable = original.Nullable,
                 Scale = original.Scale,
                 Summary = original.Summary,
-                ValidationExpression = original.ValidationExpression,
             };
             return newField;
         }
@@ -517,7 +504,6 @@ namespace nHydrate.DslPackage
             {
                 retval.FieldList.Add(new nHydrate.DataImport.Field()
                 {
-                    Collate = f.Collate,
                     DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), f.DataType.ToString(), true),
                     DefaultValue = f.Default,
                     Identity = (f.Identity == IdentityTypeConstants.Database),

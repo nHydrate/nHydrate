@@ -6,12 +6,10 @@ namespace nHydrate.DataImport
 		{
 			this.DataType = System.Data.SqlDbType.VarChar;
 			this.DefaultValue = string.Empty;
-			this.Collate = string.Empty;
 			this.SortOrder = 0;
 		}
 
 		public System.Data.SqlDbType DataType { get; set; }
-		public string Collate { get; set; }
 		public string DefaultValue { get; set; }
 		public bool PrimaryKey { get; set; }
 		public bool Nullable { get; set; }
@@ -37,7 +35,6 @@ namespace nHydrate.DataImport
 				return false;
 
 			if (this.Name != o.Name) return false;
-			if (this.Collate != o.Collate) return false;
 			if (this.DefaultValue != o.DefaultValue) return false;
 			if (this.PrimaryKey != o.PrimaryKey) return false;
 			if (this.Nullable != o.Nullable) return false;

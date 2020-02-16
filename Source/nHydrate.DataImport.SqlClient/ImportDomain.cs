@@ -31,7 +31,6 @@ namespace nHydrate.DataImport.SqlClient
             try
             {
                 var database = new Database();
-                database.Collate = DatabaseHelper.GetDatabaseCollation(connectionString);
 
                 #region Load user defined types
                 LoadUdts(database, connectionString);
@@ -93,13 +92,6 @@ namespace nHydrate.DataImport.SqlClient
                                 newColumn.Length = (byte)columnReader["precision"];
                                 newColumn.Scale = (int)columnReader["scale"];
                             }
-
-                            if (columnReader["collation"] != System.DBNull.Value)
-                            {
-                                if (database.Collate != (string)columnReader["collation"])
-                                    newColumn.Collate = (string)columnReader["collation"];
-                            }
-
                         }
                         else if (entity != null)
                         {
@@ -840,7 +832,6 @@ namespace nHydrate.DataImport.SqlClient
         public Entity GetEntity(string connectionString, string name, IEnumerable<SpecialField> auditFields)
         {
             var database = new Database();
-            database.Collate = DatabaseHelper.GetDatabaseCollation(connectionString);
 
             #region Load Entities
             using (var tableReader = DatabaseHelper.ExecuteReader(connectionString, CommandType.Text, SchemaModelHelper.GetSqlDatabaseTables()))
@@ -896,12 +887,6 @@ namespace nHydrate.DataImport.SqlClient
                         {
                             newColumn.Length = (byte)columnReader["precision"];
                             newColumn.Scale = (int)columnReader["scale"];
-                        }
-
-                        if (columnReader["collation"] != System.DBNull.Value)
-                        {
-                            if (database.Collate != (string)columnReader["collation"])
-                                newColumn.Collate = (string)columnReader["collation"];
                         }
 
                     }
@@ -972,7 +957,6 @@ namespace nHydrate.DataImport.SqlClient
         public View GetView(string connectionString, string name, IEnumerable<SpecialField> auditFields)
         {
             var database = new Database();
-            database.Collate = DatabaseHelper.GetDatabaseCollation(connectionString);
 
             LoadViews(database, connectionString);
 
@@ -989,7 +973,6 @@ namespace nHydrate.DataImport.SqlClient
         public StoredProc GetStoredProcedure(string connectionString, string procName, IEnumerable<SpecialField> auditFields)
         {
             var database = new Database();
-            database.Collate = DatabaseHelper.GetDatabaseCollation(connectionString);
 
             LoadStoredProcedures(database, procName, connectionString);
 
@@ -1006,7 +989,6 @@ namespace nHydrate.DataImport.SqlClient
         public Function GetFunction(string connectionString, string name, IEnumerable<SpecialField> auditFields)
         {
             var database = new Database();
-            database.Collate = DatabaseHelper.GetDatabaseCollation(connectionString);
 
             LoadFunctions(database, connectionString);
 

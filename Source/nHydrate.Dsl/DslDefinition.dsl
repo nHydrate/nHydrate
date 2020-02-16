@@ -19,11 +19,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="bc3b0b9e-6e90-4e4c-a859-e11747c420fc" Description="Determines the prefix for generated stored procedures" Name="StoredProcedurePrefix" DisplayName="Stored Procedure Prefix" DefaultValue="gen" Category="Database" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="5be892eb-5e4f-4065-ad4a-ee6b1c65c8d4" Description="Specifies whether UTC or local time is used for the created and modified audits" Name="UseUTCTime" DisplayName="Use UTCTime" DefaultValue="false" Category="Definition" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
@@ -71,24 +66,9 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="f4344b62-7cd9-4937-b07a-7056d72fc1fa" Description="Determines if all tokens are transformed from a lower case/undescore format to title case tokens on generation" Name="TransformNames" DisplayName="Transform Names" DefaultValue="false" Category="Code" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="b677c102-9e9a-4944-81e2-58029dcf4667" Description="Determines the database collation" Name="Collate" DisplayName="Collate" Category="Database" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="6fbe9eae-bebb-4ede-b0df-3f8ea4153633" Description="Determines if model objects are duplicated on disk for easy editing" Name="ModelToDisk" DisplayName="Model To Disk" DefaultValue="false" Category="Behavior" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="d45a19f0-de09-44a9-840e-0a03202ac87e" Description="Determines the last used precedence for model objects used for installer generation" Name="MaxPrecedenceOrder" DisplayName="Max Precedence Order" DefaultValue="0" Category="Definition" IsBrowsable="false" IsUIReadOnly="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
           </Type>
         </DomainProperty>
         <DomainProperty Id="cfac3b29-311d-4da5-8d93-bb442283b51f" Description="Determines the version of the model. Used for tracking changes and provides an upgrade path for older models" Name="ModelVersion" DisplayName="Model Version" DefaultValue="" Category="Definition" IsBrowsable="false">
@@ -306,11 +286,6 @@
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="893044a6-ae4a-4ec8-9e29-bde5c497f3e3" Description="Determines the field collation" Name="Collate" DisplayName="Collate" Category="Database">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="9c86b99a-81ab-4d2d-80f5-dfcba41f42be" Description="Determines if this field is based on a calculated database column" Name="IsCalculated" DisplayName="Is Calculated" DefaultValue="false" Category="Database">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
@@ -394,11 +369,6 @@
             <ExternalTypeMoniker Name="/System/Int32" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="69413108-0594-46d1-a223-61548de5dff6" Description="The validation pattern used for UI controls to validate this field value" Name="ValidationExpression" DisplayName="Validation Expression" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="6bb3c3d0-f62d-46cb-90c6-9e64709cb13a" Description="Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier." Name="CodeFacade" DisplayName="Code Facade" Category="Code">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
@@ -407,11 +377,6 @@
         <DomainProperty Id="232598d5-1d67-46f0-8f5f-6357b90eaa38" Description="Determines if the property can be set in code" Name="IsReadOnly" DisplayName="Is Read Only" DefaultValue="false" Category="Code">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="7ebd917a-67bb-45c4-93b7-066920658f80" Description="Determines the property grid category of this item" Name="Category" DisplayName="Category" Category="Code">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
         <DomainProperty Id="2078ed80-ab07-48a9-826b-bd2fe6942a70" Description="Order Entered/Database order" Name="SortOrder" DisplayName="Sort Order" DefaultValue="0" IsBrowsable="false">
@@ -505,11 +470,6 @@
         <DomainProperty Id="e12501b1-2015-49e6-a3ae-e6ac387f9cb3" Description="If True, will generate both a base class with all functionality and a partial class to support customization through overrides" Name="GeneratesDoubleDerived" DisplayName="Generates Double Derived" DefaultValue="false" Category="Code" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="5d5f712c-bc88-4720-895a-d550d32f5d61" Description="Determines the order generated scripts are run" Name="PrecedenceOrder" DisplayName="Precedence Order" DefaultValue="0" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
           </Type>
         </DomainProperty>
       </Properties>
@@ -730,11 +690,6 @@
         <DomainProperty Id="dfeb167d-e6f0-4275-a826-83ac314d814f" Description="If True, will generate both a base class with all functionality and a partial class to support customization through overrides" Name="GeneratesDoubleDerived" DisplayName="Generates Double Derived" DefaultValue="false" Category="Code" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="9f1807fb-1e99-4ce6-8052-44c94e072930" Description="Determines the order generated scripts are run" Name="PrecedenceOrder" DisplayName="Precedence Order" DefaultValue="0" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
           </Type>
         </DomainProperty>
       </Properties>
@@ -972,11 +927,6 @@
         <DomainProperty Id="31dfa463-ae1c-4f18-8150-865486249cae" Description="Optional variable name used in function declaration return type" Name="ReturnVariable" DisplayName="Return Variable" Category="Definition">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="6b307dc7-05cb-4302-a521-622a47e64a2a" Description="Determines the order generated scripts are run" Name="PrecedenceOrder" DisplayName="Precedence Order" DefaultValue="0" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
           </Type>
         </DomainProperty>
       </Properties>
@@ -1786,9 +1736,6 @@
           <XmlPropertyData XmlName="projectName">
             <DomainPropertyMoniker Name="nHydrateModel/ProjectName" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="storedProcedurePrefix">
-            <DomainPropertyMoniker Name="nHydrateModel/StoredProcedurePrefix" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="useUTCTime">
             <DomainPropertyMoniker Name="nHydrateModel/UseUTCTime" />
           </XmlPropertyData>
@@ -1816,20 +1763,11 @@
           <XmlRelationshipData UseFullForm="true" RoleElementName="relationFields">
             <DomainRelationshipMoniker Name="nHydrateModelHasRelationFields" />
           </XmlRelationshipData>
-          <XmlPropertyData XmlName="transformNames">
-            <DomainPropertyMoniker Name="nHydrateModel/TransformNames" />
-          </XmlPropertyData>
           <XmlRelationshipData UseFullForm="true" RoleElementName="functions">
             <DomainRelationshipMoniker Name="nHydrateModelHasFunctions" />
           </XmlRelationshipData>
-          <XmlPropertyData XmlName="collate">
-            <DomainPropertyMoniker Name="nHydrateModel/Collate" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="modelToDisk">
             <DomainPropertyMoniker Name="nHydrateModel/ModelToDisk" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="maxPrecedenceOrder">
-            <DomainPropertyMoniker Name="nHydrateModel/MaxPrecedenceOrder" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="modelVersion">
             <DomainPropertyMoniker Name="nHydrateModel/ModelVersion" />
@@ -1971,9 +1909,6 @@
           <XmlPropertyData XmlName="nullable">
             <DomainPropertyMoniker Name="Field/Nullable" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="collate">
-            <DomainPropertyMoniker Name="Field/Collate" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="isCalculated">
             <DomainPropertyMoniker Name="Field/IsCalculated" />
           </XmlPropertyData>
@@ -2007,9 +1942,6 @@
           <XmlPropertyData XmlName="scale">
             <DomainPropertyMoniker Name="Field/Scale" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="validationExpression">
-            <DomainPropertyMoniker Name="Field/ValidationExpression" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="codeFacade">
             <DomainPropertyMoniker Name="Field/CodeFacade" />
           </XmlPropertyData>
@@ -2018,9 +1950,6 @@
           </XmlRelationshipData>
           <XmlPropertyData XmlName="isReadOnly">
             <DomainPropertyMoniker Name="Field/IsReadOnly" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="category">
-            <DomainPropertyMoniker Name="Field/Category" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="sortOrder">
             <DomainPropertyMoniker Name="Field/SortOrder" />
@@ -2091,9 +2020,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="generatesDoubleDerived">
             <DomainPropertyMoniker Name="StoredProcedure/GeneratesDoubleDerived" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="precedenceOrder">
-            <DomainPropertyMoniker Name="StoredProcedure/PrecedenceOrder" />
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>
@@ -2196,9 +2122,6 @@
           </XmlRelationshipData>
           <XmlPropertyData XmlName="generatesDoubleDerived">
             <DomainPropertyMoniker Name="View/GeneratesDoubleDerived" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="precedenceOrder">
-            <DomainPropertyMoniker Name="View/PrecedenceOrder" />
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>
@@ -2340,9 +2263,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="returnVariable">
             <DomainPropertyMoniker Name="Function/ReturnVariable" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="precedenceOrder">
-            <DomainPropertyMoniker Name="Function/PrecedenceOrder" />
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>

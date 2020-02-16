@@ -13,11 +13,8 @@ namespace nHydrate.DataImport
 			this.FunctionList = new List<Function>();
 			this.IndexList = new List<Index>();
 			this.UserDefinedTypes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-			this.Collate = string.Empty;
 			this.IgnoreRelations = false;
 		}
-
-		public string Collate { get; set; }
 
 		public List<Entity> EntityList { get; }
 		public List<StoredProc> StoredProcList { get; }

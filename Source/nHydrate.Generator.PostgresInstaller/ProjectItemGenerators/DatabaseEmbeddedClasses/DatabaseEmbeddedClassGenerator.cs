@@ -441,7 +441,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseEmb
             var retVal = input;
             retVal = retVal.Replace("Acme", _model.CompanyName);
             retVal = retVal.Replace("%MODELKEY%", _model.Key);
-            retVal = retVal.Replace("%COLLATE%", _model.Database.Collate);
             var versionNumbers = _model.Version.Split('.');
 
             int major = int.Parse(versionNumbers[0]);

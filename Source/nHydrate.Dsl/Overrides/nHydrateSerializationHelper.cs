@@ -201,21 +201,6 @@ namespace nHydrate.Dsl
 
             #endregion
 
-            #region Handle the Precedence
-
-            if (modelRoot.StoredProcedures.Count > 0)
-                modelRoot.MaxPrecedenceOrder = Math.Max(modelRoot.StoredProcedures.Max(x => x.PrecedenceOrder), modelRoot.MaxPrecedenceOrder);
-            if (modelRoot.Views.Count > 0)
-                modelRoot.MaxPrecedenceOrder = Math.Max(modelRoot.Views.Max(x => x.PrecedenceOrder), modelRoot.MaxPrecedenceOrder);
-            if (modelRoot.Functions.Count > 0)
-                modelRoot.MaxPrecedenceOrder = Math.Max(modelRoot.Functions.Max(x => x.PrecedenceOrder), modelRoot.MaxPrecedenceOrder);
-
-            modelRoot.StoredProcedures.Where(x => x.PrecedenceOrder == 0).ToList().ForEach(x => x.PrecedenceOrder = ++modelRoot.MaxPrecedenceOrder);
-            modelRoot.Views.Where(x => x.PrecedenceOrder == 0).ToList().ForEach(x => x.PrecedenceOrder = ++modelRoot.MaxPrecedenceOrder);
-            modelRoot.Functions.Where(x => x.PrecedenceOrder == 0).ToList().ForEach(x => x.PrecedenceOrder = ++modelRoot.MaxPrecedenceOrder);
-
-            #endregion
-
             return modelRoot;
         }
 

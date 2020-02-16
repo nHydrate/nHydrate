@@ -63,60 +63,15 @@ namespace nHydrate.Generator.Models
 
         public string CreatedDateColumnName { get; set; } = _def_createdDateColumName;
 
-        public virtual string CreatedDatePascalName
-        {
-            get
-            {
-                if (((ModelRoot)this.Root).TransformNames)
-                    return StringHelper.DatabaseNameToPascalCase(this.CreatedDateColumnName);
-                else
-                    return this.CreatedDateColumnName;
-            }
-        }
+        public virtual string CreatedDatePascalName => this.CreatedDateColumnName;
 
-        public virtual string CreatedByPascalName
-        {
-            get
-            {
-                if (((ModelRoot)this.Root).TransformNames)
-                    return StringHelper.DatabaseNameToPascalCase(this.CreatedByColumnName);
-                else
-                    return this.CreatedByColumnName;
-            }
-        }
+        public virtual string CreatedByPascalName => this.CreatedByColumnName;
 
-        public virtual string ModifiedDatePascalName
-        {
-            get
-            {
-                if (((ModelRoot)this.Root).TransformNames)
-                    return StringHelper.DatabaseNameToPascalCase(this.ModifiedDateColumnName);
-                else
-                    return this.ModifiedDateColumnName;
-            }
-        }
+        public virtual string ModifiedDatePascalName => this.ModifiedDateColumnName;
 
-        public virtual string ModifiedByPascalName
-        {
-            get
-            {
-                if (((ModelRoot)this.Root).TransformNames)
-                    return StringHelper.DatabaseNameToPascalCase(this.ModifiedByColumnName);
-                else
-                    return this.ModifiedByColumnName;
-            }
-        }
+        public virtual string ModifiedByPascalName => this.ModifiedByColumnName;
 
-        public virtual string TimestampPascalName
-        {
-            get
-            {
-                if (((ModelRoot)this.Root).TransformNames)
-                    return StringHelper.DatabaseNameToPascalCase(this.TimestampColumnName);
-                else
-                    return this.TimestampColumnName;
-            }
-        }
+        public virtual string TimestampPascalName => this.TimestampColumnName;
 
         public virtual string CreatedDateDatabaseName => this.CreatedDateColumnName;
 
@@ -155,8 +110,6 @@ namespace nHydrate.Generator.Models
         public ParameterCollection FunctionParameters { get; }
 
         public string GrantExecUser { get; set; } = string.Empty;
-
-        public string Collate { get; set; } = string.Empty;
 
         #endregion
 
@@ -218,8 +171,7 @@ namespace nHydrate.Generator.Models
                 XmlHelper.AddAttribute((XmlElement)node, "timestampColumnName", TimestampColumnName);
                 XmlHelper.AddAttribute((XmlElement)node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
                 XmlHelper.AddAttribute((XmlElement)node, "grantExecUser", GrantExecUser);
-                XmlHelper.AddAttribute((XmlElement)node, "collate", Collate);
-
+                
                 var columnsNode = oDoc.CreateElement("columns");
                 Columns.XmlAppend(columnsNode);
                 node.AppendChild(columnsNode);
@@ -279,7 +231,6 @@ namespace nHydrate.Generator.Models
             try
             {
                 this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                Collate = XmlHelper.GetAttributeValue(node, "collate", string.Empty);
                 CreatedByColumnName = XmlHelper.GetAttributeValue(node, "createdByColumnName", CreatedByColumnName);
                 CreatedDateColumnName = XmlHelper.GetAttributeValue(node, "createdDateColumName", CreatedDateColumnName);
                 ModifiedByColumnName = XmlHelper.GetAttributeValue(node, "modifiedByColumnName", ModifiedByColumnName);

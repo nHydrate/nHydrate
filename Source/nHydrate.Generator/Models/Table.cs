@@ -531,15 +531,10 @@ namespace nHydrate.Generator.Models
         {
             get
             {
-                if ((!string.IsNullOrEmpty(this.CodeFacade)) && (((ModelRoot)this.Root).TransformNames))
+                if (!string.IsNullOrEmpty(this.CodeFacade))
                     return StringHelper.DatabaseNameToPascalCase(this.CodeFacade);
-                if ((this.CodeFacade == "") && (((ModelRoot)this.Root).TransformNames))
+                else
                     return StringHelper.DatabaseNameToPascalCase(this.Name);
-                if ((!string.IsNullOrEmpty(this.CodeFacade)) && !(((ModelRoot)this.Root).TransformNames))
-                    return this.CodeFacade;
-                if ((this.CodeFacade == string.Empty) && !(((ModelRoot)this.Root).TransformNames))
-                    return this.Name;
-                return this.Name; //Default
             }
         }
 

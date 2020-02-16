@@ -142,9 +142,6 @@ namespace nHydrate.Dsl.Custom
                         XmlHelper.AddAttribute(fieldNode, "scale", field.Scale);
                         XmlHelper.AddAttribute(fieldNode, "sortorder", field.SortOrder);
                         XmlHelper.AddAttribute(fieldNode, "isreadonly", field.IsReadOnly);
-                        XmlHelper.AddAttribute(fieldNode, "category", field.Category);
-                        XmlHelper.AddAttribute(fieldNode, "collate", field.Collate);
-                        XmlHelper.AddAttribute(fieldNode, "validationexpression", field.ValidationExpression);
                         XmlHelper.AddAttribute(fieldNode, "obsolete", field.Obsolete);
 
                         XmlHelper.AddLineBreak((XmlElement)fieldsNodes);
@@ -398,7 +395,6 @@ namespace nHydrate.Dsl.Custom
                 XmlHelper.AddLineBreak(document.DocumentElement);
 
                 XmlHelper.AddAttribute(document.DocumentElement, "id", item.Id);
-                XmlHelper.AddAttribute(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
                 XmlHelper.AddAttribute(document.DocumentElement, "codefacade", item.CodeFacade);
                 XmlHelper.AddAttribute(document.DocumentElement, "databaseobjectname", item.DatabaseObjectName);
                 XmlHelper.AddAttribute(document.DocumentElement, "isexisting", item.IsExisting);
@@ -485,7 +481,6 @@ namespace nHydrate.Dsl.Custom
                 XmlHelper.AddLineBreak(document.DocumentElement);
 
                 XmlHelper.AddAttribute(document.DocumentElement, "id", item.Id);
-                XmlHelper.AddAttribute(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
                 XmlHelper.AddAttribute(document.DocumentElement, "codefacade", item.CodeFacade);
                 XmlHelper.AddAttribute(document.DocumentElement, "schema", item.Schema);
                 XmlHelper.AddAttribute(document.DocumentElement, "generatesdoublederived", item.GeneratesDoubleDerived);
@@ -547,7 +542,6 @@ namespace nHydrate.Dsl.Custom
                 XmlHelper.AddLineBreak(document.DocumentElement);
 
                 XmlHelper.AddAttribute(document.DocumentElement, "id", item.Id);
-                XmlHelper.AddAttribute(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
                 XmlHelper.AddAttribute(document.DocumentElement, "codefacade", item.CodeFacade);
                 XmlHelper.AddAttribute(document.DocumentElement, "schema", item.Schema);
                 XmlHelper.AddAttribute(document.DocumentElement, "istable", item.IsTable);
@@ -748,9 +742,6 @@ namespace nHydrate.Dsl.Custom
                         field.Scale = XmlHelper.GetAttributeValue(n, "scale", field.Scale);
                         field.SortOrder = XmlHelper.GetAttributeValue(n, "sortorder", field.SortOrder);
                         field.IsReadOnly = XmlHelper.GetAttributeValue(n, "isreadonly", field.IsReadOnly);
-                        field.Category = XmlHelper.GetAttributeValue(n, "category", field.Category);
-                        field.Collate = XmlHelper.GetAttributeValue(n, "collate", field.Collate);
-                        field.ValidationExpression = XmlHelper.GetAttributeValue(n, "validationexpression", field.ValidationExpression);
                         field.Obsolete = XmlHelper.GetAttributeValue(n, "obsolete", field.Obsolete);
                         field.Summary = XmlHelper.GetNodeValue(n, "summary", field.Summary);
                     }
@@ -995,7 +986,6 @@ namespace nHydrate.Dsl.Custom
                 System.Windows.Forms.Application.DoEvents();
 
                 item.Name = XmlHelper.GetAttributeValue(document.DocumentElement, "name", item.Name);
-                item.PrecedenceOrder = XmlHelper.GetAttributeValue(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
                 item.CodeFacade = XmlHelper.GetAttributeValue(document.DocumentElement, "codefacade", item.CodeFacade);
                 item.Schema = XmlHelper.GetAttributeValue(document.DocumentElement, "schema", item.Schema);
                 item.DatabaseObjectName = XmlHelper.GetAttributeValue(document.DocumentElement, "databaseobjectname", item.DatabaseObjectName);
@@ -1123,7 +1113,6 @@ namespace nHydrate.Dsl.Custom
                 System.Windows.Forms.Application.DoEvents();
 
                 item.Name = XmlHelper.GetAttributeValue(document.DocumentElement, "name", item.Name);
-                item.PrecedenceOrder = XmlHelper.GetAttributeValue(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
                 item.CodeFacade = XmlHelper.GetAttributeValue(document.DocumentElement, "codefacade", item.CodeFacade);
                 item.Schema = XmlHelper.GetAttributeValue(document.DocumentElement, "schema", item.Schema);
                 item.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(document.DocumentElement, "generatesdoublederived", item.GeneratesDoubleDerived);
@@ -1218,7 +1207,6 @@ namespace nHydrate.Dsl.Custom
                 System.Windows.Forms.Application.DoEvents();
 
                 item.Name = XmlHelper.GetAttributeValue(document.DocumentElement, "name", item.Name);
-                item.PrecedenceOrder = XmlHelper.GetAttributeValue(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
                 item.CodeFacade = XmlHelper.GetAttributeValue(document.DocumentElement, "codefacade", item.CodeFacade);
                 item.Schema = XmlHelper.GetAttributeValue(document.DocumentElement, "schema", item.Schema);
                 item.IsTable = XmlHelper.GetAttributeValue(document.DocumentElement, "istable", item.IsTable);

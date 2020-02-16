@@ -52,8 +52,6 @@ namespace nHydrate.Generator.Models
 
         #region Property Implementations
 
-        public int PrecedenceOrder { get; set; }
-
         public string DBSchema { get; set; } = _def_dbSchema;
 
         public bool GeneratesDoubleDerived { get; set; } = _def_generatesDoubleDerived;
@@ -208,22 +206,14 @@ namespace nHydrate.Generator.Models
         {
             get
             {
-                if ((!string.IsNullOrEmpty(this.CodeFacade)) && (((ModelRoot)this.Root).TransformNames))
+                if (!string.IsNullOrEmpty(this.CodeFacade))
                     return StringHelper.DatabaseNameToPascalCase(this.CodeFacade);
-                else if ((this.CodeFacade == "") && (((ModelRoot)this.Root).TransformNames))
+                else
                     return StringHelper.DatabaseNameToPascalCase(this.Name);
-                if ((!string.IsNullOrEmpty(this.CodeFacade)) && !(((ModelRoot)this.Root).TransformNames))
-                    return this.CodeFacade;
-                else if ((this.CodeFacade == "") && !(((ModelRoot)this.Root).TransformNames))
-                    return this.Name;
-                return this.Name; //Default
             }
         }
 
-        public string DatabaseName
-        {
-            get { return this.Name; }
-        }
+        public string DatabaseName => this.Name;
 
         public IList<CustomViewColumn> PrimaryKeyColumns
         {

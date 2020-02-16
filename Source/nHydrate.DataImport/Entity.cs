@@ -10,11 +10,9 @@ namespace nHydrate.DataImport
 			this.FieldList = new List<Field>();
 			this.RelationshipList = new List<Relationship>();
 			this.Schema = string.Empty;
-			this.Collate = string.Empty;
 		}
 
 		public string Schema { get; set; }
-		public string Collate { get; set; }
 		public override List<Field> FieldList { get; internal set; }
 		public override List<Parameter> ParameterList { get; internal set; }
 		public List<Relationship> RelationshipList { get; }
@@ -44,7 +42,6 @@ namespace nHydrate.DataImport
 				var prehash =
 					this.Name + "|" +
 					schema + " | " +
-					this.Collate + "|" +
 					this.AllowCreateAudit + "|" +
 					this.AllowModifyAudit + "|" +
 					this.AllowTimestamp + "|" +

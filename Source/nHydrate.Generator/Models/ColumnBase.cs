@@ -1,7 +1,5 @@
 using System;
-using System.ComponentModel;
 using System.Xml;
-using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
 
@@ -39,8 +37,6 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region Property Implementations
-
-        public string Category { get; set; } = string.Empty;
 
         public virtual string Description { get; set; } = _def_description;
 
@@ -233,16 +229,7 @@ namespace nHydrate.Generator.Models
         public abstract Reference CreateRef();
         public abstract Reference CreateRef(string key);
 
-        public virtual string CamelName
-        {
-            get
-            {
-                if (((ModelRoot)this.Root).TransformNames)
-                    return StringHelper.DatabaseNameToCamelCase(this.PascalName);
-                else
-                    return StringHelper.FirstCharToLower(this.PascalName);
-            }
-        }
+        public virtual string CamelName => StringHelper.FirstCharToLower(this.PascalName);
 
         public abstract string PascalName { get; }
 

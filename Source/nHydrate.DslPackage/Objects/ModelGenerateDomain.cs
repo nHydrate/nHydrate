@@ -336,7 +336,6 @@ namespace nHydrate.DslPackage.Objects
             try
             {
                 var root = new nHydrate.Generator.Models.ModelRoot(null);
-                root.TransformNames = model.TransformNames;
                 root.EnableCustomChangeEvents = model.EmitChangeScripts;
                 root.CompanyName = model.CompanyName;
                 root.EmitSafetyScripts = model.EmitSafetyScripts;
@@ -366,7 +365,6 @@ namespace nHydrate.DslPackage.Objects
                 root.Database.ModifiedDateColumnName = model.ModifiedDateColumnName;
                 root.Database.TimestampColumnName = model.TimestampColumnName;
                 root.Database.GrantExecUser = model.GrantUser;
-                root.Database.Collate = model.Collate;
 
                 #region Load the entities
                 foreach (var entity in model.Entities)
@@ -408,7 +406,6 @@ namespace nHydrate.DslPackage.Objects
                         newColumn.ResetKey(field.Id.ToString());
                         newColumn.ResetId(HashString(newColumn.Key));
                         newColumn.AllowNull = field.Nullable;
-                        newColumn.Collate = field.Collate;
                         newColumn.CodeFacade = field.CodeFacade;
                         newColumn.ComputedColumn = field.IsCalculated;
                         newColumn.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), field.DataType.ToString());
@@ -425,8 +422,6 @@ namespace nHydrate.DslPackage.Objects
                         newColumn.ParentTableRef = newTable.CreateRef(newTable.Key);
                         newColumn.PrimaryKey = field.IsPrimaryKey;
                         newColumn.Scale = field.Scale;
-                        newColumn.ValidationExpression = field.ValidationExpression;
-                        newColumn.Category = field.Category;
                         newColumn.SortOrder = field.SortOrder;
                         newColumn.Obsolete = field.Obsolete;
                         newTable.Columns.Add(newColumn.CreateRef(newColumn.Key));
@@ -615,7 +610,6 @@ namespace nHydrate.DslPackage.Objects
                     newView.Name = view.Name;
                     newView.SQL = view.SQL;
                     newView.GeneratesDoubleDerived = view.GeneratesDoubleDerived;
-                    newView.PrecedenceOrder = view.PrecedenceOrder;
 
                     foreach (var field in view.Fields)
                     {
@@ -651,7 +645,6 @@ namespace nHydrate.DslPackage.Objects
                     newStoredProc.Name = storedProc.Name;
                     newStoredProc.SQL = storedProc.SQL;
                     newStoredProc.GeneratesDoubleDerived = storedProc.GeneratesDoubleDerived;
-                    newStoredProc.PrecedenceOrder = storedProc.PrecedenceOrder;
                     newStoredProc.IsExisting = storedProc.IsExisting;
 
                     foreach (var field in storedProc.Fields)
@@ -709,7 +702,6 @@ namespace nHydrate.DslPackage.Objects
                     newFunction.SQL = function.SQL;
                     newFunction.IsTable = function.IsTable;
                     newFunction.ReturnVariable = function.ReturnVariable;
-                    newFunction.PrecedenceOrder = function.PrecedenceOrder;
 
                     foreach (var field in function.Fields)
                     {

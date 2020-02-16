@@ -169,18 +169,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;ProjectName&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.nHydrateModel/StoredProcedurePrefix.Description" xml:space="preserve">
-    <value>Determines the prefix for generated stored procedures</value>
-    <comment>Description for DomainProperty &apos;StoredProcedurePrefix&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/StoredProcedurePrefix.DisplayName" xml:space="preserve">
-    <value>Stored Procedure Prefix</value>
-    <comment>DisplayName for DomainProperty &apos;StoredProcedurePrefix&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/StoredProcedurePrefix.Category" xml:space="preserve">
-    <value>Database</value>
-    <comment>Category for DomainProperty &apos;StoredProcedurePrefix&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.nHydrateModel/UseUTCTime.Description" xml:space="preserve">
     <value>Specifies whether UTC or local time is used for the created and modified audits</value>
     <comment>Description for DomainProperty &apos;UseUTCTime&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
@@ -277,30 +265,6 @@
     <value>Database</value>
     <comment>Category for DomainProperty &apos;GrantUser&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.nHydrateModel/TransformNames.Description" xml:space="preserve">
-    <value>Determines if all tokens are transformed from a lower case/undescore format to title case tokens on generation</value>
-    <comment>Description for DomainProperty &apos;TransformNames&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/TransformNames.DisplayName" xml:space="preserve">
-    <value>Transform Names</value>
-    <comment>DisplayName for DomainProperty &apos;TransformNames&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/TransformNames.Category" xml:space="preserve">
-    <value>Code</value>
-    <comment>Category for DomainProperty &apos;TransformNames&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/Collate.Description" xml:space="preserve">
-    <value>Determines the database collation</value>
-    <comment>Description for DomainProperty &apos;Collate&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/Collate.DisplayName" xml:space="preserve">
-    <value>Collate</value>
-    <comment>DisplayName for DomainProperty &apos;Collate&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/Collate.Category" xml:space="preserve">
-    <value>Database</value>
-    <comment>Category for DomainProperty &apos;Collate&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.nHydrateModel/ModelToDisk.Description" xml:space="preserve">
     <value>Determines if model objects are duplicated on disk for easy editing</value>
     <comment>Description for DomainProperty &apos;ModelToDisk&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
@@ -312,18 +276,6 @@
   <data name="nHydrate.Dsl.nHydrateModel/ModelToDisk.Category" xml:space="preserve">
     <value>Behavior</value>
     <comment>Category for DomainProperty &apos;ModelToDisk&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/MaxPrecedenceOrder.Description" xml:space="preserve">
-    <value>Determines the last used precedence for model objects used for installer generation</value>
-    <comment>Description for DomainProperty &apos;MaxPrecedenceOrder&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/MaxPrecedenceOrder.DisplayName" xml:space="preserve">
-    <value>Max Precedence Order</value>
-    <comment>DisplayName for DomainProperty &apos;MaxPrecedenceOrder&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/MaxPrecedenceOrder.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;MaxPrecedenceOrder&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.nHydrateModel/ModelVersion.Description" xml:space="preserve">
     <value>Determines the version of the model. Used for tracking changes and provides an upgrade path for older models</value>
@@ -613,18 +565,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Nullable&apos; on DomainClass &apos;Field&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.Field/Collate.Description" xml:space="preserve">
-    <value>Determines the field collation</value>
-    <comment>Description for DomainProperty &apos;Collate&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/Collate.DisplayName" xml:space="preserve">
-    <value>Collate</value>
-    <comment>DisplayName for DomainProperty &apos;Collate&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/Collate.Category" xml:space="preserve">
-    <value>Database</value>
-    <comment>Category for DomainProperty &apos;Collate&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.Field/IsCalculated.Description" xml:space="preserve">
     <value>Determines if this field is based on a calculated database column</value>
     <comment>Description for DomainProperty &apos;IsCalculated&apos; on DomainClass &apos;Field&apos;</comment>
@@ -757,18 +697,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Scale&apos; on DomainClass &apos;Field&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.Field/ValidationExpression.Description" xml:space="preserve">
-    <value>The validation pattern used for UI controls to validate this field value</value>
-    <comment>Description for DomainProperty &apos;ValidationExpression&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/ValidationExpression.DisplayName" xml:space="preserve">
-    <value>Validation Expression</value>
-    <comment>DisplayName for DomainProperty &apos;ValidationExpression&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/ValidationExpression.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;ValidationExpression&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.Field/CodeFacade.Description" xml:space="preserve">
     <value>Determines the object name used in the API. If this property is blank the &apos;Name&apos; property is used in the API. This property can be used to mask the database identifier.</value>
     <comment>Description for DomainProperty &apos;CodeFacade&apos; on DomainClass &apos;Field&apos;</comment>
@@ -792,18 +720,6 @@
   <data name="nHydrate.Dsl.Field/IsReadOnly.Category" xml:space="preserve">
     <value>Code</value>
     <comment>Category for DomainProperty &apos;IsReadOnly&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/Category.Description" xml:space="preserve">
-    <value>Determines the property grid category of this item</value>
-    <comment>Description for DomainProperty &apos;Category&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/Category.DisplayName" xml:space="preserve">
-    <value>Category</value>
-    <comment>DisplayName for DomainProperty &apos;Category&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/Category.Category" xml:space="preserve">
-    <value>Code</value>
-    <comment>Category for DomainProperty &apos;Category&apos; on DomainClass &apos;Field&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.Field/SortOrder.Description" xml:space="preserve">
     <value>Order Entered/Database order</value>
@@ -960,14 +876,6 @@
   <data name="nHydrate.Dsl.StoredProcedure/GeneratesDoubleDerived.Category" xml:space="preserve">
     <value>Code</value>
     <comment>Category for DomainProperty &apos;GeneratesDoubleDerived&apos; on DomainClass &apos;StoredProcedure&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.StoredProcedure/PrecedenceOrder.Description" xml:space="preserve">
-    <value>Determines the order generated scripts are run</value>
-    <comment>Description for DomainProperty &apos;PrecedenceOrder&apos; on DomainClass &apos;StoredProcedure&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.StoredProcedure/PrecedenceOrder.DisplayName" xml:space="preserve">
-    <value>Precedence Order</value>
-    <comment>DisplayName for DomainProperty &apos;PrecedenceOrder&apos; on DomainClass &apos;StoredProcedure&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.StoredProcedureField.Description" xml:space="preserve">
     <value></value>
@@ -1276,14 +1184,6 @@
   <data name="nHydrate.Dsl.View/GeneratesDoubleDerived.Category" xml:space="preserve">
     <value>Code</value>
     <comment>Category for DomainProperty &apos;GeneratesDoubleDerived&apos; on DomainClass &apos;View&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.View/PrecedenceOrder.Description" xml:space="preserve">
-    <value>Determines the order generated scripts are run</value>
-    <comment>Description for DomainProperty &apos;PrecedenceOrder&apos; on DomainClass &apos;View&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.View/PrecedenceOrder.DisplayName" xml:space="preserve">
-    <value>Precedence Order</value>
-    <comment>DisplayName for DomainProperty &apos;PrecedenceOrder&apos; on DomainClass &apos;View&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.ViewField.Description" xml:space="preserve">
     <value></value>
@@ -1644,14 +1544,6 @@
   <data name="nHydrate.Dsl.Function/ReturnVariable.Category" xml:space="preserve">
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;ReturnVariable&apos; on DomainClass &apos;Function&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Function/PrecedenceOrder.Description" xml:space="preserve">
-    <value>Determines the order generated scripts are run</value>
-    <comment>Description for DomainProperty &apos;PrecedenceOrder&apos; on DomainClass &apos;Function&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Function/PrecedenceOrder.DisplayName" xml:space="preserve">
-    <value>Precedence Order</value>
-    <comment>DisplayName for DomainProperty &apos;PrecedenceOrder&apos; on DomainClass &apos;Function&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.FunctionParameter.Description" xml:space="preserve">
     <value></value>

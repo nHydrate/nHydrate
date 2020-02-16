@@ -25,10 +25,8 @@ namespace nHydrate.Generator.Models
         protected const bool _def_isUnique = false;
         protected const string _def_formula = "";
         protected const bool _def_computedColumn = false;
-        protected const string _def_collate = "";
         protected const string _def_default = "";
         protected const bool _def_defaultIsFunc = false;
-        protected const string _def_validationExpression = "";
         protected const bool _def_isReadOnly = false;
         protected const bool _def_obsolete = false;
 
@@ -38,7 +36,6 @@ namespace nHydrate.Generator.Models
         protected bool _defaultIsFunc = _def_defaultIsFunc;
         private bool _isIndexed = _def_isIndexed;
         protected bool _isUnique = _def_isUnique;
-        protected string _collate = string.Empty;
 
         #endregion
 
@@ -88,8 +85,6 @@ namespace nHydrate.Generator.Models
         public bool ComputedColumn { get; set; } = _def_computedColumn;
 
         public string Formula { get; set; } = _def_formula;
-
-        public string ValidationExpression { get; set; } = _def_validationExpression;
 
         public bool PrimaryKey
         {
@@ -164,19 +159,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public string Collate
-        {
-            get
-            {
-                if (this.ComputedColumn) return _def_collate;
-                else return _collate;
-            }
-            set
-            {
-                _collate = value;
-            }
-        }
-
         public Reference ParentTableRef { get; set; } = null;
 
         public Table ParentTable => ParentTableRef.Object as Table;
@@ -196,7 +178,6 @@ namespace nHydrate.Generator.Models
                     this.Default + "|" +
                     this.Length + "|" +
                     this.Scale + "|" +
-                    this.Collate + "|" +
                     this.PrimaryKey + "|" +
                     this.DataType.ToString();
                 //return HashHelper.Hash(prehash);
@@ -215,7 +196,6 @@ namespace nHydrate.Generator.Models
                     this.Default + "|" +
                     this.Length + "|" +
                     this.Scale + "|" +
-                    this.Collate + "|" +
                     //this.PrimaryKey + "|" +
                     this.DataType.ToString();
                 //return HashHelper.Hash(prehash);
@@ -403,7 +383,6 @@ namespace nHydrate.Generator.Models
                 node.AddAttribute("computedColumn", this.ComputedColumn, _def_computedColumn);
                 node.AddAttribute("isReadOnly", this.IsReadOnly, _def_isReadOnly);
                 node.AddAttribute("formula", this.Formula, _def_formula);
-                node.AddAttribute("validationExpression", this.ValidationExpression, _def_validationExpression);
                 node.AddAttribute("identity", (int) this.Identity, (int) _def_identity);
                 node.AddAttribute("name", this.Name);
                 node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
@@ -421,11 +400,9 @@ namespace nHydrate.Generator.Models
 
                 node.AddAttribute("isIndexed", this.IsIndexed, _def_isIndexed);
                 node.AddAttribute("isUnique", this.IsUnique, _def_isUnique);
-                node.AddAttribute("collate", this.Collate, _def_collate);
                 node.AddAttribute("id", this.Id);
                 node.AddAttribute("type", (int) this.DataType);
                 node.AddAttribute("allowNull", this.AllowNull, _def_allowNull);
-                node.AddAttribute("category", this.Category, string.Empty);
                 node.AddAttribute("obsolete", this.Obsolete, _def_obsolete);
 
                 if (RelationshipRef != null)
@@ -462,7 +439,6 @@ namespace nHydrate.Generator.Models
                 this.ComputedColumn = XmlHelper.GetAttributeValue(node, "computedColumn", _def_computedColumn);
                 this.IsReadOnly = XmlHelper.GetAttributeValue(node, "isReadOnly", _def_isReadOnly);
                 this.Formula = XmlHelper.GetAttributeValue(node, "formula", _def_formula);
-                this.ValidationExpression = XmlHelper.GetAttributeValue(node, "validationExpression", _def_validationExpression);
                 this.Identity = (IdentityTypeConstants)XmlHelper.GetAttributeValue(node, "identity", (int)_def_identity);
                 this.Name = XmlHelper.GetAttributeValue(node, "name", Name);
                 this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", string.Empty);
@@ -472,7 +448,6 @@ namespace nHydrate.Generator.Models
                 this.Obsolete = XmlHelper.GetAttributeValue(node, "obsolete", _def_obsolete);
                 this.IsIndexed = XmlHelper.GetAttributeValue(node, "isIndexed", _def_isIndexed);
                 this.IsUnique = XmlHelper.GetAttributeValue(node, "isUnique", _def_isUnique);
-                this.Collate = XmlHelper.GetAttributeValue(node, "collate", _def_collate);
                 var relationshipRefNode = node.SelectSingleNode("relationshipRef");
                 if (relationshipRefNode != null)
                 {
@@ -504,7 +479,6 @@ namespace nHydrate.Generator.Models
                 }
 
                 this.AllowNull = XmlHelper.GetAttributeValue(node, "allowNull", _def_allowNull);
-                this.Category = XmlHelper.GetAttributeValue(node, "category", string.Empty);
 
                 var metadataNode = node.SelectSingleNode("metadata");
                 if (metadataNode != null)
@@ -539,17 +513,10 @@ namespace nHydrate.Generator.Models
         {
             get
             {
-                if ((!string.IsNullOrEmpty(this.CodeFacade)) && (((ModelRoot)this.Root).TransformNames))
+                if (!string.IsNullOrEmpty(this.CodeFacade))
                     return StringHelper.DatabaseNameToPascalCase(this.CodeFacade);
-                else if ((this.CodeFacade == "") && (((ModelRoot)this.Root).TransformNames))
+                else
                     return StringHelper.DatabaseNameToPascalCase(this.Name);
-                if ((!string.IsNullOrEmpty(this.CodeFacade)) && !(((ModelRoot)this.Root).TransformNames))
-                    return this.CodeFacade;
-                else if ((this.CodeFacade == "") && !(((ModelRoot)this.Root).TransformNames))
-                    return this.Name; //return StringHelper.FirstCharToUpper(this.Name);
-
-                //return StringHelper.FirstCharToUpper(this.Name); //Default
-                return this.Name; //Default
             }
         }
 

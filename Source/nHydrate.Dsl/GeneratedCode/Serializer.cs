@@ -206,23 +206,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// StoredProcedurePrefix
-			if (!serializationContext.Result.Failed)
-			{
-				string attribStoredProcedurePrefix = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "storedProcedurePrefix");
-				if (attribStoredProcedurePrefix != null)
-				{
-					global::System.String valueOfStoredProcedurePrefix;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribStoredProcedurePrefix, out valueOfStoredProcedurePrefix))
-					{
-						instanceOfnHydrateModel.StoredProcedurePrefix = valueOfStoredProcedurePrefix;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "storedProcedurePrefix", typeof(global::System.String), attribStoredProcedurePrefix);
-					}
-				}
-			}
 			// UseUTCTime
 			if (!serializationContext.Result.Failed)
 			{
@@ -359,40 +342,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// TransformNames
-			if (!serializationContext.Result.Failed)
-			{
-				string attribTransformNames = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "transformNames");
-				if (attribTransformNames != null)
-				{
-					global::System.Boolean valueOfTransformNames;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribTransformNames, out valueOfTransformNames))
-					{
-						instanceOfnHydrateModel.TransformNames = valueOfTransformNames;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "transformNames", typeof(global::System.Boolean), attribTransformNames);
-					}
-				}
-			}
-			// Collate
-			if (!serializationContext.Result.Failed)
-			{
-				string attribCollate = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "collate");
-				if (attribCollate != null)
-				{
-					global::System.String valueOfCollate;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribCollate, out valueOfCollate))
-					{
-						instanceOfnHydrateModel.Collate = valueOfCollate;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "collate", typeof(global::System.String), attribCollate);
-					}
-				}
-			}
 			// ModelToDisk
 			if (!serializationContext.Result.Failed)
 			{
@@ -407,23 +356,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "modelToDisk", typeof(global::System.Boolean), attribModelToDisk);
-					}
-				}
-			}
-			// MaxPrecedenceOrder
-			if (!serializationContext.Result.Failed)
-			{
-				string attribMaxPrecedenceOrder = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "maxPrecedenceOrder");
-				if (attribMaxPrecedenceOrder != null)
-				{
-					global::System.Int32 valueOfMaxPrecedenceOrder;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Int32>(serializationContext, attribMaxPrecedenceOrder, out valueOfMaxPrecedenceOrder))
-					{
-						instanceOfnHydrateModel.MaxPrecedenceOrder = valueOfMaxPrecedenceOrder;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "maxPrecedenceOrder", typeof(global::System.Int32), attribMaxPrecedenceOrder);
 					}
 				}
 			}
@@ -1379,18 +1311,6 @@ namespace nHydrate.Dsl
 	
 				}
 			}
-			// StoredProcedurePrefix
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.String propValue = instanceOfnHydrateModel.StoredProcedurePrefix;
-				if (!serializationContext.Result.Failed)
-				{
-					if (propValue != null && (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(propValue, "gen") != 0))
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "storedProcedurePrefix", propValue);
-					}
-				}
-			}
 			// UseUTCTime
 			if (!serializationContext.Result.Failed)
 			{
@@ -1487,30 +1407,6 @@ namespace nHydrate.Dsl
 	
 				}
 			}
-			// TransformNames
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfnHydrateModel.TransformNames;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "transformNames", serializedPropValue);
-					}
-				}
-			}
-			// Collate
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.String propValue = instanceOfnHydrateModel.Collate;
-				if (!serializationContext.Result.Failed)
-				{
-					if (!string.IsNullOrEmpty(propValue))
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "collate", propValue);
-	
-				}
-			}
 			// ModelToDisk
 			if (!serializationContext.Result.Failed)
 			{
@@ -1521,19 +1417,6 @@ namespace nHydrate.Dsl
 					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "modelToDisk", serializedPropValue);
-					}
-				}
-			}
-			// MaxPrecedenceOrder
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Int32 propValue = instanceOfnHydrateModel.MaxPrecedenceOrder;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Int32>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "0") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "maxPrecedenceOrder", serializedPropValue);
 					}
 				}
 			}
@@ -3547,23 +3430,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// Collate
-			if (!serializationContext.Result.Failed)
-			{
-				string attribCollate = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "collate");
-				if (attribCollate != null)
-				{
-					global::System.String valueOfCollate;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribCollate, out valueOfCollate))
-					{
-						instanceOfField.Collate = valueOfCollate;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "collate", typeof(global::System.String), attribCollate);
-					}
-				}
-			}
 			// IsCalculated
 			if (!serializationContext.Result.Failed)
 			{
@@ -3751,23 +3617,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// ValidationExpression
-			if (!serializationContext.Result.Failed)
-			{
-				string attribValidationExpression = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "validationExpression");
-				if (attribValidationExpression != null)
-				{
-					global::System.String valueOfValidationExpression;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribValidationExpression, out valueOfValidationExpression))
-					{
-						instanceOfField.ValidationExpression = valueOfValidationExpression;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "validationExpression", typeof(global::System.String), attribValidationExpression);
-					}
-				}
-			}
 			// CodeFacade
 			if (!serializationContext.Result.Failed)
 			{
@@ -3799,23 +3648,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isReadOnly", typeof(global::System.Boolean), attribIsReadOnly);
-					}
-				}
-			}
-			// Category
-			if (!serializationContext.Result.Failed)
-			{
-				string attribCategory = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "category");
-				if (attribCategory != null)
-				{
-					global::System.String valueOfCategory;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribCategory, out valueOfCategory))
-					{
-						instanceOfField.Category = valueOfCategory;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "category", typeof(global::System.String), attribCategory);
 					}
 				}
 			}
@@ -4442,17 +4274,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// Collate
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.String propValue = instanceOfField.Collate;
-				if (!serializationContext.Result.Failed)
-				{
-					if (!string.IsNullOrEmpty(propValue))
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "collate", propValue);
-	
-				}
-			}
 			// IsCalculated
 			if (!serializationContext.Result.Failed)
 			{
@@ -4587,17 +4408,6 @@ namespace nHydrate.Dsl
 					nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "scale", serializedPropValue);
 				}
 			}
-			// ValidationExpression
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.String propValue = instanceOfField.ValidationExpression;
-				if (!serializationContext.Result.Failed)
-				{
-					if (!string.IsNullOrEmpty(propValue))
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "validationExpression", propValue);
-	
-				}
-			}
 			// CodeFacade
 			if (!serializationContext.Result.Failed)
 			{
@@ -4620,17 +4430,6 @@ namespace nHydrate.Dsl
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isReadOnly", serializedPropValue);
 					}
-				}
-			}
-			// Category
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.String propValue = instanceOfField.Category;
-				if (!serializationContext.Result.Failed)
-				{
-					if (!string.IsNullOrEmpty(propValue))
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "category", propValue);
-	
 				}
 			}
 			// SortOrder
@@ -5092,23 +4891,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "generatesDoubleDerived", typeof(global::System.Boolean), attribGeneratesDoubleDerived);
-					}
-				}
-			}
-			// PrecedenceOrder
-			if (!serializationContext.Result.Failed)
-			{
-				string attribPrecedenceOrder = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "precedenceOrder");
-				if (attribPrecedenceOrder != null)
-				{
-					global::System.Int32 valueOfPrecedenceOrder;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Int32>(serializationContext, attribPrecedenceOrder, out valueOfPrecedenceOrder))
-					{
-						instanceOfStoredProcedure.PrecedenceOrder = valueOfPrecedenceOrder;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "precedenceOrder", typeof(global::System.Int32), attribPrecedenceOrder);
 					}
 				}
 			}
@@ -5778,19 +5560,6 @@ namespace nHydrate.Dsl
 					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "generatesDoubleDerived", serializedPropValue);
-					}
-				}
-			}
-			// PrecedenceOrder
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Int32 propValue = instanceOfStoredProcedure.PrecedenceOrder;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Int32>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "0") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "precedenceOrder", serializedPropValue);
 					}
 				}
 			}
@@ -8008,23 +7777,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// PrecedenceOrder
-			if (!serializationContext.Result.Failed)
-			{
-				string attribPrecedenceOrder = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "precedenceOrder");
-				if (attribPrecedenceOrder != null)
-				{
-					global::System.Int32 valueOfPrecedenceOrder;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Int32>(serializationContext, attribPrecedenceOrder, out valueOfPrecedenceOrder))
-					{
-						instanceOfView.PrecedenceOrder = valueOfPrecedenceOrder;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "precedenceOrder", typeof(global::System.Int32), attribPrecedenceOrder);
-					}
-				}
-			}
 		}
 	
 		/// <summary>
@@ -8603,19 +8355,6 @@ namespace nHydrate.Dsl
 					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "generatesDoubleDerived", serializedPropValue);
-					}
-				}
-			}
-			// PrecedenceOrder
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Int32 propValue = instanceOfView.PrecedenceOrder;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Int32>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "0") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "precedenceOrder", serializedPropValue);
 					}
 				}
 			}
@@ -12802,23 +12541,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// PrecedenceOrder
-			if (!serializationContext.Result.Failed)
-			{
-				string attribPrecedenceOrder = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "precedenceOrder");
-				if (attribPrecedenceOrder != null)
-				{
-					global::System.Int32 valueOfPrecedenceOrder;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Int32>(serializationContext, attribPrecedenceOrder, out valueOfPrecedenceOrder))
-					{
-						instanceOfFunction.PrecedenceOrder = valueOfPrecedenceOrder;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "precedenceOrder", typeof(global::System.Int32), attribPrecedenceOrder);
-					}
-				}
-			}
 		}
 	
 		/// <summary>
@@ -13473,19 +13195,6 @@ namespace nHydrate.Dsl
 					if (!string.IsNullOrEmpty(propValue))
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "returnVariable", propValue);
 	
-				}
-			}
-			// PrecedenceOrder
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Int32 propValue = instanceOfFunction.PrecedenceOrder;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Int32>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "0") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "precedenceOrder", serializedPropValue);
-					}
 				}
 			}
 		}

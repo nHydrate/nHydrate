@@ -135,12 +135,6 @@
             <xsd:documentation>Specifies the name of the generated assembly</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: StoredProcedurePrefix -->
-        <xsd:attribute name="storedProcedurePrefix" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the prefix for generated stored procedures</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: UseUTCTime -->
         <xsd:attribute name="useUTCTime" type="xsd:boolean" >
           <xsd:annotation>
@@ -189,28 +183,10 @@
             <xsd:documentation>Determines the database user to grant access permissions to for database objects</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: TransformNames -->
-        <xsd:attribute name="transformNames" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if all tokens are transformed from a lower case/undescore format to title case tokens on generation</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Collate -->
-        <xsd:attribute name="collate" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the database collation</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: ModelToDisk -->
         <xsd:attribute name="modelToDisk" type="xsd:boolean" >
           <xsd:annotation>
             <xsd:documentation>Determines if model objects are duplicated on disk for easy editing</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: MaxPrecedenceOrder -->
-        <xsd:attribute name="maxPrecedenceOrder" type="xsd:integer" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the last used precedence for model objects used for installer generation</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: ModelVersion -->
@@ -511,12 +487,6 @@
             <xsd:documentation>Determines if this item allows null values</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: Collate -->
-        <xsd:attribute name="collate" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the field collation</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: IsCalculated -->
         <xsd:attribute name="isCalculated" type="xsd:boolean" >
           <xsd:annotation>
@@ -583,12 +553,6 @@
             <xsd:documentation>Determines the scale of some data types</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: ValidationExpression -->
-        <xsd:attribute name="validationExpression" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>The validation pattern used for UI controls to validate this field value</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: CodeFacade -->
         <xsd:attribute name="codeFacade" type="xsd:string" >
           <xsd:annotation>
@@ -599,12 +563,6 @@
         <xsd:attribute name="isReadOnly" type="xsd:boolean" >
           <xsd:annotation>
             <xsd:documentation>Determines if the property can be set in code</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Category -->
-        <xsd:attribute name="category" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the property grid category of this item</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: SortOrder -->
@@ -750,12 +708,6 @@
         <xsd:attribute name="generatesDoubleDerived" type="xsd:boolean" >
           <xsd:annotation>
             <xsd:documentation>If True, will generate both a base class with all functionality and a partial class to support customization through overrides</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: PrecedenceOrder -->
-        <xsd:attribute name="precedenceOrder" type="xsd:integer" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the order generated scripts are run</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
       </xsd:extension>
@@ -1012,12 +964,6 @@
         <xsd:attribute name="generatesDoubleDerived" type="xsd:boolean" >
           <xsd:annotation>
             <xsd:documentation>If True, will generate both a base class with all functionality and a partial class to support customization through overrides</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: PrecedenceOrder -->
-        <xsd:attribute name="precedenceOrder" type="xsd:integer" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the order generated scripts are run</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
       </xsd:extension>
@@ -1401,12 +1347,6 @@
         <xsd:attribute name="returnVariable" type="xsd:string" >
           <xsd:annotation>
             <xsd:documentation>Optional variable name used in function declaration return type</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: PrecedenceOrder -->
-        <xsd:attribute name="precedenceOrder" type="xsd:integer" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the order generated scripts are run</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
       </xsd:extension>

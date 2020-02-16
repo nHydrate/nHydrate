@@ -167,11 +167,6 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                if (string.IsNullOrEmpty(this.StoredProcedurePrefix))
-                {
-                    context.LogError(ValidationHelper.ErrorTextInvalidStoredProcPrefix, string.Empty, this);
-                }
-
             }
             catch (Exception ex)
             {

@@ -555,16 +555,6 @@ namespace nHydrate.Dsl
             set { base.IsUnique = value; }
         }
 
-        public override string Collate
-        {
-            get
-            {
-                if (this.IsCalculated) return string.Empty;
-                else return base.Collate;
-            }
-            set { base.Collate = value; }
-        }
-
         public override string Default
         {
             get

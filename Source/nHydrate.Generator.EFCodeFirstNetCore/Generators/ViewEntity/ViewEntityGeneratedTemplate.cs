@@ -217,8 +217,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
                 sb.AppendLine("		/// </summary>");
                 if (column.IsPrimaryKey)
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key]");
-                if (!string.IsNullOrEmpty(column.Category))
-                    sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
 
                 if (!string.IsNullOrEmpty(column.Description))
                     sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");

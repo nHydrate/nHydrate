@@ -1776,10 +1776,6 @@ namespace nHydrate.Core.SQLGeneration
                         sb.Append(" IDENTITY (1, 1)");
                 }
 
-                //Add collation
-                if (column.DataType.IsTextType() && !string.IsNullOrEmpty(column.Collate))
-                    sb.Append(" COLLATE " + column.Collate);
-
                 //Add NULLable
                 if (!forceNull && !column.AllowNull) sb.Append(" NOT");
                 sb.Append(" NULL");

@@ -52,17 +52,7 @@ namespace nHydrate.Dsl
             var model = this.ModelElement as nHydrate.Dsl.nHydrateModel;
             if (!model.IsLoading)
             {
-                if (e.ModelElement is IPrecedence)
-                {
-                    var element = e.ModelElement as IPrecedence;
-                    using (var transaction = model.Store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
-                    {
-                        element.PrecedenceOrder = ++model.MaxPrecedenceOrder;
-                        transaction.Commit();
-                    }
-                }
             }
-
             base.OnElementAdded(e);
         }
 

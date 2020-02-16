@@ -484,9 +484,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		/// <remarks>" + column.GetIntellisenseRemarks() + "</remarks>");
 
-                if (!string.IsNullOrEmpty(column.Category))
-                    sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
-
                 sb.AppendLine("		[System.ComponentModel.DataAnnotations.Display(Name = \"" + column.Name + "\")]");
 
                 if (column.ComputedColumn || column.IsReadOnly)
@@ -1602,9 +1599,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 ////If not nullable then it is required
                 if (!column.AllowNull)
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = \"'" + column.Name + "' is required.\", AllowEmptyStrings = true)]");
-
-                if (!string.IsNullOrEmpty(column.ValidationExpression))
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.RegularExpression(@\"" + column.ValidationExpression.Replace("\"", "\"\"") + "\")]");
 
                 if (column.PrimaryKey)
                 {

@@ -15,7 +15,6 @@ namespace nHydrate.DataImport
 		}
 
 		public string Schema { get; set; }
-		public string Collate { get; set; }
 		public override List<Field> FieldList { get; internal set; }
 		public override List<Parameter> ParameterList { get; internal set; }
 
@@ -40,7 +39,6 @@ namespace nHydrate.DataImport
 				var prehash =
 					this.Name + "|" +
 					schema +
-					this.Collate + "|" +
 					this.SQL + "|";
 				return HashHelper.Hash(prehash);
 				//return prehash;
