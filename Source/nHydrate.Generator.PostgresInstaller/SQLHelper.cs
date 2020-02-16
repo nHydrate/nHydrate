@@ -547,7 +547,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 sb.AppendLine($"CREATE TABLE IF NOT EXISTS {table.GetPostgresSchema()}.\"{tableName}\" (");
 
                 var firstLoop = true;
-                foreach (var column in table.GeneratedColumns.OrderBy(x => x.SortOrder))
+                foreach (var column in table.GetColumns().OrderBy(x => x.SortOrder))
                 {
                     if (!firstLoop) sb.AppendLine(",");
                     else firstLoop = false;
@@ -866,7 +866,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 var index = 0;
                 foreach (var indexColumn in tableIndex.IndexColumnList)
                 {
-                    var column = table.GeneratedColumns.FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
+                    var column = table.GetColumns().FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
                     sb.Append("\"" + column.DatabaseName + "\"");
                     if (index < tableIndex.IndexColumnList.Count - 1)
                         sb.Append(",");
@@ -885,7 +885,7 @@ namespace nHydrate.Generator.PostgresInstaller
             var columnList = new Dictionary<TableIndexColumn, Column>();
             foreach (var indexColumn in index.IndexColumnList)
             {
-                var column = table.GeneratedColumns.FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
+                var column = table.GetColumns().FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
                 if (column != null)
                     columnList.Add(indexColumn, column);
             }

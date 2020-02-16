@@ -33,7 +33,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
             }
             else
             {
-                columnList.AddRange(table.GeneratedColumns);
+                columnList.AddRange(table.GetColumns());
             }
 
             foreach (var column in columnList.OrderBy(x => x.Name))

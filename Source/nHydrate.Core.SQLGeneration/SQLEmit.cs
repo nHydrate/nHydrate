@@ -32,7 +32,7 @@ namespace nHydrate.Core.SQLGeneration
                 sb.AppendLine($"CREATE TABLE [{table.GetSQLSchema()}].[{tableName}] (");
 
                 var firstLoop = true;
-                foreach (var column in table.GeneratedColumns.OrderBy(x => x.SortOrder))
+                foreach (var column in table.GetColumns().OrderBy(x => x.SortOrder))
                 {
                     if (!firstLoop) sb.AppendLine(",");
                     else firstLoop = false;
@@ -1337,7 +1337,6 @@ namespace nHydrate.Core.SQLGeneration
             {
                 var plist = dbObject.GetGeneratedParametersDatabaseOrder().ToList();
                 plist.ForEach(x => x.Length = 0);
-
                 sb.Append(BuildFunctionParameterList(plist));
             }
 
@@ -1401,7 +1400,7 @@ namespace nHydrate.Core.SQLGeneration
             var columnList = new Dictionary<TableIndexColumn, Column>();
             foreach (var indexColumn in index.IndexColumnList)
             {
-                var column = table.GeneratedColumns.FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
+                var column = table.GetColumns().FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
                 if (column != null)
                     columnList.Add(indexColumn, column);
             }

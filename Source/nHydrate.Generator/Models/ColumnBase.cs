@@ -147,10 +147,7 @@ namespace nHydrate.Generator.Models
         /// <summary>
         /// Determines if this data type supports a user-defined size
         /// </summary>
-        public virtual bool IsDefinedSize
-        {
-            get { return this.PredefinedSize != -1; }
-        }
+        public virtual bool IsDefinedSize => this.PredefinedSize != -1;
 
         /// <summary>
         /// Determines if this data type supports a user-defined scale

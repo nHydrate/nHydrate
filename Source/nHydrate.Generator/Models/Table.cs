@@ -125,24 +125,6 @@ namespace nHydrate.Generator.Models
 
         public ReferenceCollection Columns { get; } = null;
 
-        public IEnumerable<Column> GeneratedColumns
-        {
-            get
-            {
-                return this.GetColumns()
-                    .OrderBy(x => x.Name);
-            }
-        }
-
-        public IEnumerable<Column> GeneratedColumnsFullHierarchy
-        {
-            get
-            {
-                return this.GetColumnsFullHierarchy()
-                    .OrderBy(x => x.Name);
-            }
-        }
-
         public bool AllowModifiedAudit { get; set; } = _def_modifiedAudit;
 
         public bool AllowCreateAudit { get; set; } = _def_createAudit;
@@ -153,10 +135,7 @@ namespace nHydrate.Generator.Models
 
         public bool FullIndexSearch { get; set; } = _def_fullIndexSearch;
 
-        public RowEntryCollection StaticData
-        {
-            get { return _staticData; }
-        }
+        public RowEntryCollection StaticData => _staticData;
 
         public bool AssociativeTable { get; set; } = _def_associativeTable;
 
@@ -182,10 +161,7 @@ namespace nHydrate.Generator.Models
 
         public override string ToString()
         {
-            var retval = this.Name;
-            //if(!string.IsNullOrEmpty(this.CodeFacade))
-            //  retval += " AS " + this.CodeFacade;
-            return retval;
+            return this.Name;
         }
 
         protected internal System.Data.DataTable CreateDataTable()
@@ -287,21 +263,15 @@ namespace nHydrate.Generator.Models
 
         public IEnumerable<Column> GetColumns()
         {
-            try
+            var list = new List<Column>();
+            foreach (var r in this.Columns.ToList())
             {
-                var list = new List<Column>();
-                foreach (var r in this.Columns.ToList())
-                {
-                    var c = r.Object as Column;
-                    if (c == null) System.Diagnostics.Debug.Write(string.Empty);
-                    else list.Add(c);
-                }
-                return list.OrderBy(x => x.Name);
+                var c = r.Object as Column;
+                if (c == null) System.Diagnostics.Debug.Write(string.Empty);
+                else list.Add(c);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            return list.OrderBy(x => x.Name);
         }
 
         public IEnumerable<Column> GetColumnsByType(System.Data.SqlDbType type)
@@ -319,44 +289,22 @@ namespace nHydrate.Generator.Models
 
         public RelationCollection GetRelations()
         {
-            try
+            var retval = new RelationCollection(this.Root);
+            foreach (var r in this.Relationships.AsEnumerable())
             {
-                var retval = new RelationCollection(this.Root);
-                foreach (var r in this.Relationships.AsEnumerable())
+                var relation = r.Object as Relation;
+                if (relation != null)
                 {
-                    var relation = r.Object as Relation;
-                    if (relation != null)
-                    {
-                        retval.Add(relation);
-                    }
+                    retval.Add(relation);
                 }
-                return retval;
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            return retval;
         }
 
         public IEnumerable<Relation> GetRelationsWhereChild(bool fullHierarchy = false)
         {
             return ((ModelRoot)_root).Database.GetRelationsWhereChild(this, fullHierarchy);
-        }
-
-        public IEnumerable<Column> GetForeignKeyColumns()
-        {
-            var retval = new List<Column>();
-            var whereChildRelations = this.GetRelationsWhereChild().ToList();
-            foreach (var r in whereChildRelations)
-            {
-                foreach (var cr in r.ColumnRelationships.ToList())
-                {
-                    var column = cr.ChildColumnRef.Object as Column;
-                    if (column != null)
-                        retval.Add(column);
-                }
-            }
-            return retval;
         }
 
         public bool IsColumnRelatedToTypeTable(Column column, out string roleName)

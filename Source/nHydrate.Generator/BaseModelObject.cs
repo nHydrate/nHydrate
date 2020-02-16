@@ -68,10 +68,6 @@ namespace nHydrate.Generator
 
         public virtual string Key { get; protected set; } = Guid.NewGuid().ToString();
 
-        /// <summary>
-        /// Resets the unique key
-        /// </summary>
-        /// <param name="newKey"></param>
         public void ResetKey(string newKey)
         {
             if (string.IsNullOrEmpty(newKey))

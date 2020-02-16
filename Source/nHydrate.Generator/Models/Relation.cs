@@ -29,8 +29,6 @@ namespace nHydrate.Generator.Models
 
         protected Reference _parentTableRef = null;
         protected Reference _childTableRef = null;
-        protected string _roleName = _def_roleName;
-        protected string _constraintName = string.Empty;
         protected ColumnRelationshipCollection _columnRelationships = null;
         private bool _enforce = _def_enforce;
         private string _description = _def_description;
@@ -142,29 +140,9 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public string RoleName
-        {
-            get { return _roleName; }
-            set
-            {
-                if (_roleName != value)
-                {
-                    _roleName = value;
-                }
-            }
-        }
+        public string RoleName { get; set; } = _def_roleName;
 
-        public string ConstraintName
-        {
-            get { return _constraintName; }
-            set
-            {
-                if (_constraintName != value)
-                {
-                    _constraintName = value;
-                }
-            }
-        }
+        public string ConstraintName { get; set; } = string.Empty;
 
         public bool IsRequired
         {
@@ -267,22 +245,6 @@ namespace nHydrate.Generator.Models
             set
             {
                 _deleteAction = value;
-            }
-        }
-
-        public string LinkHash
-        {
-            get
-            {
-                var retval = string.Empty;
-                if (this.ParentTable != null) retval += this.ParentTable.Name.ToLower() + "|";
-                if (this.ChildTable != null) retval += this.ChildTable.Name.ToLower() + "|";
-                foreach (var cr in this.ColumnRelationships.ToList())
-                {
-                    if (cr.ParentColumn != null) retval += cr.ParentColumn.Name.ToLower() + "|";
-                    if (cr.ChildColumn != null) retval += cr.ChildColumn.Name.ToLower() + "|";
-                }
-                return retval;
             }
         }
 

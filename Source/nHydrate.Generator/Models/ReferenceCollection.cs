@@ -1,10 +1,8 @@
 #pragma warning disable 0168
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
@@ -14,10 +12,6 @@ namespace nHydrate.Generator.Models
         #region Member Variables
 
         protected List<Reference> _references = null;
-        protected string _objectSingular = "Reference";
-        protected string _objectPlural = "References";
-        protected int _imageIndex = -1;
-        protected int _selectedImageIndex = -1;
         protected INHydrateModelObject _parent = null;
         protected ReferenceType _refType = ReferenceType.Table;
 
@@ -47,55 +41,13 @@ namespace nHydrate.Generator.Models
             get { return _parent; }
         }
 
-        public string ObjectSingular
-        {
-            get { return _objectSingular; }
-            set { _objectSingular = value; }
-        }
+        public string ObjectSingular { get; set; } = "Reference";
 
-        public string ObjectPlural
-        {
-            get { return _objectPlural; }
-            set { _objectPlural = value; }
-        }
+        public string ObjectPlural { get; set; } = "References";
 
-        public int ImageIndex
-        {
-            get { return _imageIndex; }
-            set { _imageIndex = value; }
-        }
+        public int ImageIndex { get; set; } = -1;
 
-        public int SelectedImageIndex
-        {
-            get { return _selectedImageIndex; }
-            set { _selectedImageIndex = value; }
-        }
-
-        #endregion
-
-        #region Methods
-
-        public Reference[] GetById(int id)
-        {
-            var retval = new ArrayList();
-            foreach (Reference element in this)
-            {
-                if (element.Ref == id)
-                    retval.Add(element);
-            }
-            return (Reference[])retval.ToArray(typeof(Reference));
-        }
-
-        private Random _rnd = new Random();
-        internal int NextIndex()
-        {
-            var retval = _rnd.Next(1, int.MaxValue);
-            while (this.ToList<Reference>().Count(x => x.Ref == retval) != 0)
-            {
-                retval = _rnd.Next(1, int.MaxValue);
-            }
-            return retval;
-        }
+        public int SelectedImageIndex { get; set; } = -1;
 
         #endregion
 
@@ -150,7 +102,6 @@ namespace nHydrate.Generator.Models
         public Reference this[int index]
         {
             get { return _references[index]; }
-            //set { _references[index] = value; }
         }
 
         public Reference this[string name]
@@ -271,7 +222,6 @@ namespace nHydrate.Generator.Models
         }
 
         #endregion
-
 
         #region IEnumerable<Reference> Members
 

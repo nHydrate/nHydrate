@@ -363,11 +363,6 @@ namespace nHydrate.Generator.Models
             return this.DataType.GetSQLDefault(this.Default);
         }
 
-        protected internal void ResetKey()
-        {
-            this.Key = Guid.NewGuid().ToString();
-        }
-
         #endregion
 
         #region IXMLable Members

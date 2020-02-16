@@ -136,7 +136,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
                 {
                     sb.AppendLine("--TABLE [" + table.DatabaseName + "] ADD FIELDS");
-                    foreach (var column in table.GeneratedColumns.OrderBy(x => x.SortOrder))
+                    foreach (var column in table.GetColumns().OrderBy(x => x.SortOrder))
                         sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlAddColumn(column, false));
                     sb.AppendLine("GO");
                 }

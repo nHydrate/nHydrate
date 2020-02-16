@@ -1,4 +1,3 @@
-#pragma warning disable 0168
 using System;
 using System.Windows.Forms;
 using nHydrate.Generator.Common;
@@ -38,33 +37,24 @@ namespace nHydrate.Generator.Models
 
         public override MessageCollection Verify()
         {
-            try
+            var retval = new MessageCollection();
+            retval.AddRange(base.Verify());
+
+            var root = (ModelRoot) this.Object;
+
+            //Check valid name
+            if (!ValidationHelper.ValidDatabaseIdenitifer(root.CompanyName) || !ValidationHelper.ValidCodeIdentifier(root.CompanyName))
+                retval.Add(ValidationHelper.ErrorTextInvalidCompany, this);
+            if (!ValidationHelper.ValidDatabaseIdenitifer(root.ProjectName) || !ValidationHelper.ValidCodeIdentifier(root.ProjectName))
+                retval.Add(ValidationHelper.ErrorTextInvalidProject, this);
+
+            if (!string.IsNullOrEmpty(root.DefaultNamespace))
             {
-                var retval = new MessageCollection();
-                retval.AddRange(base.Verify());
-
-                var root = (ModelRoot)this.Object;
-
-                //Check valid name
-                if (!ValidationHelper.ValidDatabaseIdenitifer(root.CompanyName) || !ValidationHelper.ValidCodeIdentifier(root.CompanyName))
-                    retval.Add(ValidationHelper.ErrorTextInvalidCompany, this);
-                if (!ValidationHelper.ValidDatabaseIdenitifer(root.ProjectName) || !ValidationHelper.ValidCodeIdentifier(root.ProjectName))
-                    retval.Add(ValidationHelper.ErrorTextInvalidProject, this);
-
-                if (!string.IsNullOrEmpty(root.DefaultNamespace))
-                {
-                    if (!ValidationHelper.IsValidNamespace(root.DefaultNamespace))
-                        retval.Add(ValidationHelper.ErrorTextInvalidNamespace, this);
-                }
-
-                return retval;
-
-            }
-            catch (Exception ex)
-            {
-                throw;
+                if (!ValidationHelper.IsValidNamespace(root.DefaultNamespace))
+                    retval.Add(ValidationHelper.ErrorTextInvalidNamespace, this);
             }
 
+            return retval;
         }
 
     }

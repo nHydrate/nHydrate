@@ -128,11 +128,6 @@ namespace nHydrate.Generator.Models
             return false;
         }
 
-        public IEnumerable<Table> GetGeneratedTables()
-        {
-            return (from x in this.Tables select x);
-        }
-
         public IEnumerable<Relation> GetRelationsWhereChild(Table table)
         {
             return GetRelationsWhereChild(table, false);
@@ -343,13 +338,7 @@ namespace nHydrate.Generator.Models
                 {
                     if (usedList.Contains(column.Key.ToString()))
                     {
-                        column.ResetKey();
-                        //removeList.Add(column);
-                        //var columnName = string.Empty;
-                        //if ((column.ParentTableRef != null) && (column.ParentTableRef.Object != null))
-                        //  columnName = (column.ParentTableRef.Object as Table).Name + ".";
-                        //columnName += column.Name;
-                        //MessageBox.Show("Columns were found with matching keys. This offending column '" + columnName + "' will not be loaded.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        column.ResetKey(Guid.NewGuid().ToString());
                     }
                     usedList.Add(column.Key.ToString());
                 }

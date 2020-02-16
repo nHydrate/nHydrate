@@ -21,7 +21,7 @@ namespace nHydrate.Core.SQLGeneration
                 var index = 0;
                 foreach (var indexColumn in tableIndex.IndexColumnList)
                 {
-                    var column = table.GeneratedColumns.FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
+                    var column = table.GetColumns().FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
                     sb.Append("[" + column.DatabaseName + "]");
                     if (index < tableIndex.IndexColumnList.Count - 1)
                         sb.Append(",");

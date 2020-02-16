@@ -47,7 +47,6 @@ namespace nHydrate.DslPackage
             relation.SourceEntity.Name.ToLower() + "|" +
             relation.TargetEntity.Name.ToLower() + " | ";
 
-                //var columnList = relation.FieldMapList().OrderBy(x => x.GetTargetField(relation).Name.ToLower()).ToList();
                 var columnList = relation.FieldMapList().Where(x => x.GetTargetField(relation) != null && x.GetSourceField(relation) != null).ToList();
                 columnList = columnList.OrderBy(x => x.GetTargetField(relation).Name.ToLower()).ToList();
                 prehash += string.Join("-|-", columnList.Select(x => x.GetTargetField(relation).Name.ToLower())) + "~";

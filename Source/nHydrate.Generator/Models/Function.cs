@@ -67,20 +67,6 @@ namespace nHydrate.Generator.Models
 
         public ReferenceCollection Parameters { get; private set; }
 
-        public IEnumerable<Parameter> GeneratedParameters
-        {
-            get { return this.GetParameters(); }
-        }
-
-        public IEnumerable<FunctionColumn> GeneratedColumns
-        {
-            get
-            {
-                return this.GetColumns()
-                    .OrderBy(x => x.Name);
-            }
-        }
-
         public IList<Parameter> GetGeneratedParametersDatabaseOrder()
         {
             var parameterList = this.GetParameters().Where(x => x.SortOrder > 0).OrderBy(x => x.SortOrder).ToList();
@@ -221,10 +207,7 @@ namespace nHydrate.Generator.Models
             return returnVal;
         }
 
-        public string CamelName
-        {
-            get { return StringHelper.DatabaseNameToCamelCase(this.PascalName); }
-        }
+        public string CamelName => StringHelper.DatabaseNameToCamelCase(this.PascalName);
 
         public string PascalName
         {
@@ -237,10 +220,7 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public string DatabaseName
-        {
-            get { return this.Name; }
-        }
+        public string DatabaseName => this.Name;
 
         #endregion
 
@@ -250,8 +230,8 @@ namespace nHydrate.Generator.Models
             get
             {
                 var sb = new StringBuilder();
-                this.GeneratedColumns.ToList().ForEach(x => sb.Append(x.CorePropertiesHash));
-                this.GeneratedParameters.ToList().ForEach(x => sb.Append(x.CorePropertiesHash));
+                this.GetColumns().ToList().ForEach(x => sb.Append(x.CorePropertiesHash));
+                this.GetParameters().ToList().ForEach(x => sb.Append(x.CorePropertiesHash));
 
                 var prehash =
                     this.Name + "|" +
