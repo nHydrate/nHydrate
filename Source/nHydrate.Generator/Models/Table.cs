@@ -40,7 +40,6 @@ namespace nHydrate.Generator.Models
         protected const bool _def_isTenant = false;
 
         protected RowEntryCollection _staticData = null;
-        protected List<TableIndex> _tableIndexList = new List<TableIndex>();
         private string _parentTableKey = null;
         private bool _allowAuditTracking = _def_allowAuditTracking;
         private bool _immutable = _def_immutable;
@@ -84,10 +83,7 @@ namespace nHydrate.Generator.Models
 
         public MetadataItemCollection MetaData { get; }
 
-        public List<TableIndex> TableIndexList
-        {
-            get { return _tableIndexList; }
-        }
+        public List<TableIndex> TableIndexList { get; } = new List<TableIndex>();
 
         public TypedTableConstants TypedTable { get; set; } = _def_isTypeTable;
 
@@ -106,10 +102,7 @@ namespace nHydrate.Generator.Models
         public bool Immutable
         {
             get { return _immutable || this.TypedTable != TypedTableConstants.None; }
-            set
-            {
-                _immutable = value;
-            }
+            set { _immutable = value; }
         }
 
         public ReferenceCollection Relationships { get; } = null;
@@ -184,10 +177,7 @@ namespace nHydrate.Generator.Models
                     this.TypedTable == TypedTableConstants.DatabaseTable) &&
                     !this.AssociativeTable;
             }
-            set
-            {
-                _allowAuditTracking = value;
-            }
+            set { _allowAuditTracking = value; }
         }
 
         public bool HasHistory { get; set; } = _def_hasHistory;
@@ -448,7 +438,7 @@ namespace nHydrate.Generator.Models
                 }
 
                 var tableIndexListNode = oDoc.CreateElement("til");
-                _tableIndexList.XmlAppend(tableIndexListNode);
+                TableIndexList.XmlAppend(tableIndexListNode);
                 node.AppendChild(tableIndexListNode);
 
                 var columnsNode = oDoc.CreateElement("c");
@@ -544,7 +534,7 @@ namespace nHydrate.Generator.Models
 
                 var tableIndexListNode = node.SelectSingleNode("til");
                 if (tableIndexListNode != null)
-                    _tableIndexList.XmlLoad(tableIndexListNode, this.Root);
+                    TableIndexList.XmlLoad(tableIndexListNode, this.Root);
 
                 this.Generated = XmlHelper.GetAttributeValue(node, "generated", _def_generated);
                 this.Immutable = XmlHelper.GetAttributeValue(node, "immutable", _def_immutable);
@@ -570,7 +560,6 @@ namespace nHydrate.Generator.Models
                 this.AllowModifiedAudit = XmlHelper.GetAttributeValue(node, "modifiedAudit", AllowModifiedAudit);
                 this.AllowCreateAudit = XmlHelper.GetAttributeValue(node, "createAudit", _def_createAudit);
                 this.TypedTable = (TypedTableConstants)XmlHelper.GetAttributeValue(node, "typedTable", int.Parse(TypedTable.ToString("d")));
-                //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 this.AllowTimestamp = XmlHelper.GetAttributeValue(node, "timestamp", AllowTimestamp);
                 this.AllowAuditTracking = XmlHelper.GetAttributeValue(node, "allowAuditTracking", _def_allowAuditTracking);
                 this.IsAbstract = XmlHelper.GetAttributeValue(node, "isAbstract", _def_isAbstract);

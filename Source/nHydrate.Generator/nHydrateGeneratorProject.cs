@@ -5,7 +5,7 @@ using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator
 {
-    [GeneratorAttribute("{4B5CFCAF-C668-4d40-947C-83B2AAEBB2B5}", "nHydrate Model")]
+    [Generator("{4B5CFCAF-C668-4d40-947C-83B2AAEBB2B5}", "nHydrate Model")]
     public class nHydrateGeneratorProject : IGenerator
     {
         public nHydrateGeneratorProject()

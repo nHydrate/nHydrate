@@ -616,7 +616,6 @@ namespace nHydrate.Generator.Models
                 this.SortOrder = XmlHelper.GetAttributeValue(node, "dataFieldSortOrder", _def_sortOrder);
                 this.Mask = XmlHelper.GetAttributeValue(node, "mask", _def_mask);
                 this.Obsolete = XmlHelper.GetAttributeValue(node, "obsolete", _def_obsolete);
-                //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 this.IsIndexed = XmlHelper.GetAttributeValue(node, "isIndexed", _def_isIndexed);
                 this.IsUnique = XmlHelper.GetAttributeValue(node, "isUnique", _def_isUnique);
                 this.Collate = XmlHelper.GetAttributeValue(node, "collate", _def_collate);

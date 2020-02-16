@@ -25,7 +25,7 @@ using Npgsql;
 
 namespace PROJECTNAMESPACE
 {
-    internal class SqlServers
+    internal class DatabaseServer
     {
         #region Class Members
 
@@ -35,7 +35,7 @@ namespace PROJECTNAMESPACE
 
         #region database discovery
 
-        private SqlServers()
+        private DatabaseServer()
         {
         }
 
@@ -108,7 +108,7 @@ namespace PROJECTNAMESPACE
                     cmdCreateDb.CommandText = $"CREATE DATABASE \"{setup.NewDatabaseName}\"" + fileInfo;
                     cmdCreateDb.CommandType = System.Data.CommandType.Text;
                     cmdCreateDb.Connection = conn;
-                    SqlServers.ExecuteCommand(cmdCreateDb);
+                    DatabaseServer.ExecuteCommand(cmdCreateDb);
                 }
 
                 using (var conn = new NpgsqlConnection(setup.ConnectionString))
@@ -119,7 +119,7 @@ namespace PROJECTNAMESPACE
                     command.CommandText = "CREATE EXTENSION \"uuid-ossp\";";
                     command.CommandType = System.Data.CommandType.Text;
                     command.Connection = conn;
-                    SqlServers.ExecuteCommand(command);
+                    DatabaseServer.ExecuteCommand(command);
                 }
 
             }
@@ -315,7 +315,7 @@ namespace PROJECTNAMESPACE
                         var dropCommand = new NpgsqlCommand(dropSQL, connection);
                         dropCommand.Transaction = transaction;
                         dropCommand.CommandTimeout = 0;
-                        SqlServers.ExecuteCommand(dropCommand);
+                        DatabaseServer.ExecuteCommand(dropCommand);
                     }
                 }
                 catch (Exception ex)
@@ -344,7 +344,7 @@ namespace PROJECTNAMESPACE
                     }
 
                     _timer.Restart();
-                    SqlServers.ExecuteCommand(command);
+                    DatabaseServer.ExecuteCommand(command);
                     _timer.Stop();
 
                     if (!string.IsNullOrEmpty(setup.LogFilename))
@@ -826,7 +826,7 @@ namespace PROJECTNAMESPACE
                     conn.Open();
                     using (var command = new NpgsqlCommand(GetVersionUpdateScript(), conn))
                     {
-                        SqlServers.ExecuteCommand(command);
+                        DatabaseServer.ExecuteCommand(command);
                     }
                     return true;
                 }
@@ -1043,7 +1043,7 @@ namespace PROJECTNAMESPACE
                                                         "\"ModelKey\" UUID NOT NULL)", conn))
                 {
                     command3.Transaction = transaction;
-                    SqlServers.ExecuteCommand(command3);
+                    DatabaseServer.ExecuteCommand(command3);
                 }
 
                 var sql = new StringBuilder();
@@ -1051,7 +1051,7 @@ namespace PROJECTNAMESPACE
                 using (var command3 = new NpgsqlCommand(sql.ToString(), conn))
                 {
                     command3.Transaction = transaction;
-                    SqlServers.ExecuteCommand(command3);
+                    DatabaseServer.ExecuteCommand(command3);
                 }
 
                 //Save items to the table
@@ -1070,7 +1070,7 @@ namespace PROJECTNAMESPACE
                         command.Parameters.Add(new NpgsqlParameter { DbType = DbType.String, Value = item.Hash, ParameterName = "@Hash", IsNullable = false });
                         command.Parameters.Add(new NpgsqlParameter { DbType = DbType.Guid, Value = item.ModelKey, ParameterName = "@ModelKey", IsNullable = false });
                         command.Parameters.Add(new NpgsqlParameter { DbType = DbType.String, Value = item.Status, ParameterName = "@Status", IsNullable = true });
-                        SqlServers.ExecuteCommand(command);
+                        DatabaseServer.ExecuteCommand(command);
                     }
                 }
 

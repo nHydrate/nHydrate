@@ -13,44 +13,6 @@ namespace nHydrate.Generator.Models
 {
     public static class Extensions
     {
-        #region Relations
-
-        public static IEnumerable<Relation> GetAllChildRelations(this IEnumerable<Table> tableList)
-        {
-            var retval = new List<Relation>();
-            foreach (var table in tableList)
-            {
-                foreach (var relation in table.ChildRoleRelations)
-                {
-                    retval.Add(relation);
-                }
-            }
-            return retval;
-        }
-
-        #endregion
-
-        #region CorePropertiesHash
-
-        public static string GetCorePropertiesHash(this IEnumerable<ColumnBase> list)
-        {
-            var sortedList = new SortedDictionary<string, ColumnBase>();
-            foreach (var c in list.OrderBy(x => x.Name))
-            {
-                sortedList.Add(c.Name + "-" + c.Key, c);
-            }
-
-            var hash = string.Empty;
-            foreach (var key in sortedList.Keys)
-            {
-                var c = sortedList[key];
-                hash += c.CorePropertiesHash;
-            }
-            return hash;
-        }
-
-        #endregion
-
         #region IEnumerable IndexOf
 
         public static IEnumerable<T> AsEnumerable<T>(this IEnumerable list)
@@ -64,11 +26,6 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region Menus
-
-        public static void AddMenuItem(this List<MenuCommand> menuList, string text)
-        {
-            AddMenuItem(menuList, text, null);
-        }
 
         public static void AddMenuItem(this List<MenuCommand> menuList, string text, EventHandler handler)
         {

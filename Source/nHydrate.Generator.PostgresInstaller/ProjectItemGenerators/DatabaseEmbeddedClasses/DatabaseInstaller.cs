@@ -325,7 +325,7 @@ namespace PROJECTNAMESPACE
             if (setup.InstallStatus == InstallStatusConstants.Create)
             {
                 //Connection cannot reference an existing database
-                if (SqlServers.TestConnectionString(setup.ConnectionString))
+                if (DatabaseServer.TestConnectionString(setup.ConnectionString))
                     throw new Exception("The connection string references an existing database.");
 
                 //The new database name must be specified
@@ -337,12 +337,12 @@ namespace PROJECTNAMESPACE
                 if (builder.Database.ToLower() != setup.NewDatabaseName.ToLower())
                     throw new Exception("A new database name does not match the specified connection string.");
 
-                SqlServers.CreateDatabase(setup);
+                DatabaseServer.CreateDatabase(setup);
             }
             else if (setup.InstallStatus == InstallStatusConstants.Upgrade)
             {
                 //The connection string must reference an existing database
-                if (!SqlServers.TestConnectionString(setup.ConnectionString))
+                if (!DatabaseServer.TestConnectionString(setup.ConnectionString))
                     throw new Exception("The connection string does not reference a valid database.");
             }
 

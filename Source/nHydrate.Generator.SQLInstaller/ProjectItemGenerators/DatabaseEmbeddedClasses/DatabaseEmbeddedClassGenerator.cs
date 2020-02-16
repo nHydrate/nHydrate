@@ -345,14 +345,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
 
         #endregion
 
-        //private void GenerateArchiveReaderCs()
-        //{
-        //  var fileName = "ArchiveReader.cs";
-        //  var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
-        //  var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
-        //  OnProjectItemGenerated(this, eventArgs);
-        //}
-
         #region XmlHelper.cs
 
         private void GenerateXmlHelperCs()

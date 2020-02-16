@@ -89,7 +89,7 @@
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\InstallSettings.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseEmbeddedClassGenerator.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.cs" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\SqlServers.cs" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseServer.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\UpgradeInstaller.cs" />
     <Compile Include="PostgresDatabaseProjectGenerator.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseSchema\CreateSchemaGenerator.cs" />

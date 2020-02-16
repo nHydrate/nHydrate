@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using nHydrate.Dsl;
 
 namespace nHydrate.DslPackage
@@ -16,7 +15,7 @@ namespace nHydrate.DslPackage
                 if (item.ModelElement is Entity)
                 {
                     var e = item.ModelElement as Entity;
-                    if (e.Name == entityName)
+                    if (e != null && e.Name == entityName)
                         return item;
                 }
             }

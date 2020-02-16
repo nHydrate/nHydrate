@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.ComponentModel;
 using System.Xml;
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models

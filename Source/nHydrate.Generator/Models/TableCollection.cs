@@ -4,7 +4,6 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
@@ -320,19 +319,7 @@ namespace nHydrate.Generator.Models
             return false;
         }
 
-        protected internal string GetUniqueName()
-        {
-            //const string baseName = "Table";
-            //int ii = 1;
-            //string newName = baseName + ii.ToString();
-            //while (this.Contains(newName))
-            //{
-            //  ii++;
-            //  newName = baseName + ii.ToString();
-            //}
-            //return newName;
-            return "[New Table]";
-        }
+        protected internal string GetUniqueName() => "[New Table]";
 
         public IEnumerable<Column> GetAllColumns()
         {

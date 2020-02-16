@@ -2,7 +2,6 @@
 using System;
 using System.ComponentModel;
 using System.Xml;
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
 using System.Collections.Generic;
 using System.Text;

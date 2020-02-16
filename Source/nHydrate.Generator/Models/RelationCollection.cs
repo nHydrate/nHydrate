@@ -18,31 +18,6 @@ namespace nHydrate.Generator.Models
         protected override string NodeOldName => "relation";
         protected override string NodeName => "r";
 
-        public ReadOnlyCollection<Relation> FindByParentColumn(Column column)
-        {
-            try
-            {
-                var retval = new List<Relation>();
-                if (column == null) return retval.AsReadOnly();
-                foreach (Relation relation in this)
-                {
-                    foreach (ColumnRelationship columnRelationship in relation.ColumnRelationships)
-                    {
-                        if (columnRelationship.ParentColumnRef != null && columnRelationship.ParentColumnRef.Object != null)
-                        {
-                            if (StringHelper.Match(columnRelationship.ParentColumnRef.Object.Key, column.Key, true))
-                                retval.Add(relation);
-                        }
-                    }
-                }
-                return retval.AsReadOnly();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
         public override void Remove(Relation element)
         {
             try

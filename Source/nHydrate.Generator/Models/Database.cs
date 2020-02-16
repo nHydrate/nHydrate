@@ -367,8 +367,6 @@ namespace nHydrate.Generator.Models
                 this.FullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", _def_fullIndexSearchColumnName);
                 this.GrantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", string.Empty);
 
-                //_createdDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-
                 #region Are any of these columns orphans
                 var deleteColumnList = new List<Column>();
                 var index = 0;

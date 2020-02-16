@@ -353,7 +353,7 @@ namespace PROJECTNAMESPACE
                     var sortByVersionScripts = new SortedDictionary<string, EmbeddedResourceName>(upgradeSchemaScripts, new UpgradeFileNameComparer());
                     foreach (var item in sortByVersionScripts)
                     {
-                        var hashValue = string.Join("\r\n--GO\r\n", SqlServers.ReadSQLFileSectionsFromResource(item.Key, setup)).CalculateMD5Hash();
+                        var hashValue = string.Join("\r\n--GO\r\n", DatabaseServer.ReadSQLFileSectionsFromResource(item.Key, setup)).CalculateMD5Hash();
                         var fileName = item.Key.Substring(item.Key.IndexOf(UPGRADE_GENERATED_FOLDER) + UPGRADE_GENERATED_FOLDER.Length, item.Key.Length - (item.Key.IndexOf(UPGRADE_GENERATED_FOLDER) + UPGRADE_GENERATED_FOLDER.Length));
                         var di = _databaseItems.FirstOrDefault(x => x.name == item.Key);
 
@@ -425,7 +425,7 @@ namespace PROJECTNAMESPACE
                     var sortByVersionScripts = new SortedDictionary<string, EmbeddedResourceName>(upgradeSchemaScripts, new UpgradeFileNameComparer());
                     foreach (var item in sortByVersionScripts)
                     {
-                        var hashValue = string.Join("\r\n--GO\r\n", SqlServers.ReadSQLFileSectionsFromResource(item.Key, setup)).CalculateMD5Hash();
+                        var hashValue = string.Join("\r\n--GO\r\n", DatabaseServer.ReadSQLFileSectionsFromResource(item.Key, setup)).CalculateMD5Hash();
                         var fileName = item.Key.Substring(item.Key.IndexOf(UPGRADE_GENERATED_FOLDER) + UPGRADE_GENERATED_FOLDER.Length, item.Key.Length - (item.Key.IndexOf(UPGRADE_GENERATED_FOLDER) + UPGRADE_GENERATED_FOLDER.Length));
                         var fileVersion = new GeneratedVersion(fileName);
                         _databaseItems.Add(new nHydrateDbObject()
@@ -630,8 +630,8 @@ namespace PROJECTNAMESPACE
                     if (hashItem == null) _newItems.Add(scripts[file].FullName);
                     if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
                     {
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
+                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
+                        else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
                     }
                 }
             }
@@ -644,8 +644,8 @@ namespace PROJECTNAMESPACE
                     if (hashItem == null) _newItems.Add(scripts[file].FullName);
                     if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
                     {
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
+                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
+                        else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
                     }
                 }
             }
@@ -658,8 +658,8 @@ namespace PROJECTNAMESPACE
                     if (hashItem == null) _newItems.Add(scripts[file].FullName);
                     if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
                     {
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
+                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
+                        else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
                     }
                 }
             }
@@ -669,8 +669,8 @@ namespace PROJECTNAMESPACE
                 var scripts = this.GetResourceNameUnderLocation(ALWAYS_FOLDER);
                 foreach (var file in scripts.Keys)
                 {
-                    if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
-                    else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
+                    if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
+                    else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
                 }
             }
 
@@ -699,8 +699,8 @@ namespace PROJECTNAMESPACE
                     if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
                     {
                         setup.DebugScriptName = ern.FullName;
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
+                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
+                        else DatabaseServer.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
                     }
                 }
             }
@@ -735,8 +735,8 @@ namespace PROJECTNAMESPACE
                     if (!setup.UseHash || skipHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
                     {
                         setup.DebugScriptName = ern.FullName;
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
+                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, ern.FullName, null, _databaseItems, setup);
+                        else DatabaseServer.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
                     }
                 }
                 setup.DebugScriptName = null;
@@ -769,8 +769,8 @@ namespace PROJECTNAMESPACE
                     if (hashItem == null) _newItems.Add(scripts[file].FullName);
                     if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
                     {
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
+                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
+                        else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
                     }
                 }
             }
@@ -783,8 +783,8 @@ namespace PROJECTNAMESPACE
                     if (hashItem == null) _newItems.Add(scripts[file].FullName);
                     if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
                     {
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
+                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
+                        else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
                     }
                 }
             }
@@ -797,8 +797,8 @@ namespace PROJECTNAMESPACE
                     if (hashItem == null) _newItems.Add(scripts[file].FullName);
                     if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
                     {
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
+                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
+                        else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
                     }
                 }
             }
@@ -808,8 +808,8 @@ namespace PROJECTNAMESPACE
                 var scripts = this.GetResourceNameUnderLocation(ALWAYS_FOLDER);
                 foreach (var file in scripts.Keys)
                 {
-                    if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
-                    else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
+                    if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
+                    else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
                 }
             }
 
@@ -878,8 +878,8 @@ namespace PROJECTNAMESPACE
                     if (hashItem == null) _newItems.Add(scripts[file].FullName);
                     if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
                     {
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
+                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, null, _databaseItems, setup);
+                        else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
                     }
                 }
             }
@@ -892,8 +892,8 @@ namespace PROJECTNAMESPACE
                     if (hashItem == null) _newItems.Add(scripts[file].FullName);
                     if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
                     {
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
+                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, null, _databaseItems, setup);
+                        else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
                     }
                 }
             }
@@ -906,8 +906,8 @@ namespace PROJECTNAMESPACE
                     if (hashItem == null) _newItems.Add(scripts[file].FullName);
                     if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
                     {
-                        if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, null, _databaseItems, setup);
-                        else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
+                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, null, _databaseItems, setup);
+                        else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
                     }
                 }
             }
@@ -917,8 +917,8 @@ namespace PROJECTNAMESPACE
                 var scripts = this.GetResourceNameUnderLocation(ALWAYS_FOLDER);
                 foreach (var file in scripts.Keys)
                 {
-                    if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, file, null, null, _databaseItems, setup);
-                    else SqlServers.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
+                    if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, null, _databaseItems, setup);
+                    else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
                 }
             }
 
@@ -1001,7 +1001,7 @@ namespace PROJECTNAMESPACE
                 {
                     var key = item.Key;
                     var sql = item.Value;
-                    SqlServers.ExecuteSQL(_connection, _transaction, sql, setup, _scripts2, successOrderScripts);
+                    DatabaseServer.ExecuteSQL(_connection, _transaction, sql, setup, _scripts2, successOrderScripts);
                 }
                 runFailed = (_scripts2.Count < failedScripts.Count && _scripts2.Count > 0);
                 failedScripts = _scripts2;
@@ -1010,7 +1010,7 @@ namespace PROJECTNAMESPACE
             if (failedScripts.Count > 0)
             {
                 //This will throw a proper error
-                SqlServers.ExecuteSQL(_connection, _transaction, failedScripts.First().Value, setup);
+                DatabaseServer.ExecuteSQL(_connection, _transaction, failedScripts.First().Value, setup);
                 //Use this for debugging if necessary
                 var sql = string.Join("\r\n\r\n--GO\r\n--SCRIPT BREAK\r\n\r\n", failedScripts.Select(x => x.Value));
             }
@@ -1018,30 +1018,30 @@ namespace PROJECTNAMESPACE
             {
                 //Only do this in debug
 #if (DEBUG)
-				if (System.Diagnostics.Debugger.IsAttached)
-				{
-					var nOrderFile = System.IO.Path.Combine(new System.IO.FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).DirectoryName, "installer.norder");
-					//If there are no failures then ensure that there is no "norder" file
-					if (System.IO.File.Exists(nOrderFile))
-						System.IO.File.Delete(nOrderFile);
+                if (System.Diagnostics.Debugger.IsAttached)
+                {
+                    var nOrderFile = System.IO.Path.Combine(new System.IO.FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).DirectoryName, "installer.norder");
+                    //If there are no failures then ensure that there is no "norder" file
+                    if (System.IO.File.Exists(nOrderFile))
+                        System.IO.File.Delete(nOrderFile);
 
-					//On success, write the XML file with the proper order
-					try
-					{
-						var document = new System.Xml.XmlDocument();
-						document.LoadXml("<root type=\"installer\"></root>");
-						document.DocumentElement.AppendChild(document.CreateWhitespace("\r\n"));
-						foreach (var k in successOrderScripts)
-						{
-							document.DocumentElement.AddElement("key", k.ToString());
-							document.DocumentElement.AppendChild(document.CreateWhitespace("\r\n"));
-						}
-						document.Save(nOrderFile);
-					}
-					catch (Exception ex)
-					{
-					}
-				}
+                    //On success, write the XML file with the proper order
+                    try
+                    {
+                        var document = new System.Xml.XmlDocument();
+                        document.LoadXml("<root type=\"installer\"></root>");
+                        document.DocumentElement.AppendChild(document.CreateWhitespace("\r\n"));
+                        foreach (var k in successOrderScripts)
+                        {
+                            document.DocumentElement.AddElement("key", k.ToString());
+                            document.DocumentElement.AppendChild(document.CreateWhitespace("\r\n"));
+                        }
+                        document.Save(nOrderFile);
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
 #endif
             }
         }
@@ -1062,8 +1062,8 @@ namespace PROJECTNAMESPACE
                         if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(ern.FullName, setup)))
                         {
                             setup.DebugScriptName = ern.FullName;
-                            if (sb == null) SqlServers.RunEmbeddedFile(_connection, _transaction, ern.FullName, failedScripts, _databaseItems, setup);
-                            else SqlServers.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
+                            if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, ern.FullName, failedScripts, _databaseItems, setup);
+                            else DatabaseServer.ReadSQLFileSectionsFromResource(ern.FullName, setup).ToList().ForEach(s => AppendCleanScript(ern.FullName, s, sb));
                         }
                         setup.DebugScriptName = null;
                     }
@@ -1098,7 +1098,7 @@ namespace PROJECTNAMESPACE
                         if (!ern.FullName.Contains(subFolder + ".Internal"))
                         {
                             var current = _databaseItems.FirstOrDefault(x => x.name.ToLower() == ern.FullName.ToLower());
-                            var scripts = SqlServers.GetEmbeddedScripts(ern.FullName, setup);
+                            var scripts = DatabaseServer.GetEmbeddedScripts(ern.FullName, setup);
 
                             #region Strip internal stuff for hashing
                             var script = string.Join("\r\n--GO\r\n", scripts);
@@ -1166,7 +1166,7 @@ namespace PROJECTNAMESPACE
             var reorderedScripts = new Dictionary<string, List<string>>();
             if (l.Values.Count > 0)
             {
-                var xml = SqlServers.GetEmbeddedResource(l.Values.First().FullName);
+                var xml = DatabaseServer.GetEmbeddedResource(l.Values.First().FullName);
                 var document = new XmlDocument();
                 try
                 {
@@ -1218,7 +1218,7 @@ namespace PROJECTNAMESPACE
                 {
                     foreach (var sql in scriptItem)
                     {
-                        SqlServers.ExecuteSQL(_connection, _transaction, sql, setup, failedScripts, successOrderScripts);
+                        DatabaseServer.ExecuteSQL(_connection, _transaction, sql, setup, failedScripts, successOrderScripts);
                     }
                 }
             }
@@ -1243,7 +1243,7 @@ namespace PROJECTNAMESPACE
                             if (hashItem == null) _newItems.Add(scripts[file].FullName);
                             if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
                             {
-                                SqlServers.RunEmbeddedFile(_connection, _transaction, scripts[file].FullName, failedScripts, successOrderScripts, _databaseItems, setup);
+                                DatabaseServer.RunEmbeddedFile(_connection, _transaction, scripts[file].FullName, failedScripts, successOrderScripts, _databaseItems, setup);
                             }
                         }
                     }
@@ -1276,7 +1276,7 @@ namespace PROJECTNAMESPACE
                             if (hashItem == null) _newItems.Add(scripts[file].FullName);
                             if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
                             {
-                                SqlServers.RunEmbeddedFile(_connection, _transaction, scripts[file].FullName, failedScripts, successOrderScripts, _databaseItems, setup);
+                                DatabaseServer.RunEmbeddedFile(_connection, _transaction, scripts[file].FullName, failedScripts, successOrderScripts, _databaseItems, setup);
                             }
                         }
                     }
@@ -1309,7 +1309,7 @@ namespace PROJECTNAMESPACE
                             if (hashItem == null) _newItems.Add(scripts[file].FullName);
                             if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
                             {
-                                SqlServers.RunEmbeddedFile(_connection, _transaction, scripts[file].FullName, failedScripts, successOrderScripts, _databaseItems, setup);
+                                DatabaseServer.RunEmbeddedFile(_connection, _transaction, scripts[file].FullName, failedScripts, successOrderScripts, _databaseItems, setup);
                             }
                         }
                     }
@@ -1501,7 +1501,7 @@ namespace PROJECTNAMESPACE
 
         private string GetFileHash(string name, InstallSetup setup)
         {
-            return string.Join("\r\n--GO\r\n", SqlServers.ReadSQLFileSectionsFromResource(name, setup)).CalculateMD5Hash();
+            return string.Join("\r\n--GO\r\n", DatabaseServer.ReadSQLFileSectionsFromResource(name, setup)).CalculateMD5Hash();
         }
 
     }
@@ -2079,11 +2079,11 @@ namespace PROJECTNAMESPACE
 
         // Performs a single block transform of MD5 for a given set of ABCD inputs
         /* If implementing your own hashing framework, be sure to set the initial ABCD correctly according to RFC 1321:
-		//    A = 0x67452301;
-		//    B = 0xefcdab89;
-		//    C = 0x98badcfe;
-		//    D = 0x10325476;
-		*/
+        //    A = 0x67452301;
+        //    B = 0xefcdab89;
+        //    C = 0x98badcfe;
+        //    D = 0x10325476;
+        */
         /// <summary />
         internal static void ComputeHashBlock(byte[] input, ref ABCDStruct ABCDValue, int ibStart)
         {

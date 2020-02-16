@@ -42,8 +42,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseEmb
                 GenerateDatabaseInstallerCs();
                 GenerateInstallSettings();
                 GenerateDatabaseInstallerDesignerCs();
-                GenerateSqlServersCs();
-                //GenerateArchiveReaderCs();
+                GenerateDatabaseServerCs();
                 GenerateXmlHelperCs();
                 GenerateProgramCs();
                 GenerateUpgradeInstaller();
@@ -336,48 +335,17 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseEmb
 
         #endregion
 
-        #region SqlServers.cs
+        #region DatabaseServer.cs
 
-        private void GenerateSqlServersCs()
+        private void GenerateDatabaseServerCs()
         {
-            var fileName = "SqlServers.cs";
+            var fileName = "DatabaseServer.cs";
             var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
-
-            ////need to replace text with all entities in metadata table
-            //var sb = new StringBuilder();
-            //sb.AppendLine();
-            //foreach (var item in _model.Database.Tables.Where(x => x.Generated))
-            //{
-            //  sb.Append("					command = new SqlCommand(\"insert into [__nhydratemetadata] (name,type,codefacade,immutable,isassociative,parent,summary,typedtable) values (");
-            //  sb.Append("'" + item.Name + "',");
-            //  sb.Append("1,");
-            //  sb.Append("'" + StringHelper.ConvertTextToSingleLineCodeString(item.CodeFacade) + "',");
-            //  sb.Append((item.Immutable ? "1" : "0") + ",");
-            //  sb.Append((item.AssociativeTable ? "1" : "0") + ",");
-            //  sb.Append(StringHelper.ConvertTextToSingleLineCodeString((item.ParentTable == null ? "null" : item.ParentTable.Name)) + ",");
-            //  sb.Append("'" + StringHelper.ConvertTextToSingleLineCodeString(item.Description, true) + "',");
-            //  sb.Append(item.TypedTable.ToString("d"));
-            //  sb.AppendLine(")\");");
-            //}
-            //sb.AppendLine("					command.Transaction = transaction;");
-            //sb.AppendLine("					command.ExecuteNonQuery();");
-            //sb.AppendLine();
-
-            //fileContent = fileContent.Replace("//{{METADATA}}", sb.ToString());
-
             var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
             OnProjectItemGenerated(this, eventArgs);
         }
 
         #endregion
-
-        //private void GenerateArchiveReaderCs()
-        //{
-        //  var fileName = "ArchiveReader.cs";
-        //  var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
-        //  var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
-        //  OnProjectItemGenerated(this, eventArgs);
-        //}
 
         #region XmlHelper.cs
 
