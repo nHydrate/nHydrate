@@ -719,21 +719,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             foreach (var item in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
-                var hasSecurity = item.Security.IsValid();
                 var name = item.PascalName;
                 var scope = "public";
-                if (hasSecurity)
-                {
-                    name += "__INTERNAL";
-                    scope = "protected";
-                }
-                else if (item.AssociativeTable)
+                if (item.AssociativeTable)
                     scope = "protected";
 
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Entity set for " + item.PascalName);
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		" + (hasSecurity ? $"{scope} internal" : scope) + " virtual DbSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + name + " { get; set; }");
+                sb.AppendLine($"		{scope} virtual DbSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + name + " { get; set; }");
                 sb.AppendLine();
             }
 
@@ -875,15 +869,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             {
                 sb.AppendLine($"			else if (entity is {GetLocalNamespace()}.Entity.{table.PascalName})");
                 sb.AppendLine("			{");
-                if (table.Security.IsValid())
-                {
-                    sb.AppendLine($"				this.{table.PascalName}__INTERNAL.Add(({GetLocalNamespace()}.Entity.{table.PascalName})entity);");
-                }
-                else
-                {
-                    //sb.AppendLine($"				this.{table.PascalName}.Add(({GetLocalNamespace()}.Entity.{table.PascalName})entity);");
-                    sb.AppendLine($"				this.Add(entity);");
-                }
+                sb.AppendLine($"				this.Add(entity);");
                 sb.AppendLine("			}");
             }
 
@@ -950,12 +936,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		public virtual void RemoveItem(IBusinessObject entity)");
             sb.AppendLine("		{");
             sb.AppendLine("			if (entity == null) return;");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && !x.Immutable && x.Security.IsValid()).OrderBy(x => x.PascalName).ToList())
-            {
-                var name = table.GetAbsoluteBaseTable().PascalName+"__INTERNAL";
-                sb.AppendLine("			else if (entity is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ") this." + name + ".Remove(entity as " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ");");
-            }
-
             sb.AppendLine("			else this.Remove(entity);");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -966,7 +946,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             #region Connection String
             sb.AppendLine("		#region Connection String");
-            sb.AppendLine();
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Returns the connection string used for this context object");
             sb.AppendLine("		/// </summary>");
@@ -977,54 +956,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("				try");
             sb.AppendLine("				{");
             sb.AppendLine("					if (this.Database.GetDbConnection() != null && !string.IsNullOrEmpty(this.Database.GetDbConnection().ConnectionString))");
-            sb.AppendLine("					{");
             sb.AppendLine("						return Util.StripEFCS2Normal(this.Database.GetDbConnection().ConnectionString);");
-            sb.AppendLine("					}");
-            sb.AppendLine("					else");
-            sb.AppendLine("					{");
-            sb.AppendLine("						return null;");
-            sb.AppendLine("					}");
+            sb.AppendLine("					else return null;");
             sb.AppendLine("				}");
-            sb.AppendLine("				catch (Exception)");
-            sb.AppendLine("				{");
-            sb.AppendLine("					return null;");
-            sb.AppendLine("				}");
+            sb.AppendLine("				catch (Exception) { return null; }");
             sb.AppendLine("			}");
             sb.AppendLine("		}");
-            sb.AppendLine();
-
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Returns the globally configured connection string for this context type");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		internal static string GetConnectionString()");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			try");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				var a = System.Configuration.ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"];");
-            //sb.AppendLine("				if (a != null)");
-            //sb.AppendLine("				{");
-            //sb.AppendLine("					var s = a.ConnectionString;");
-            //sb.AppendLine("					var regEx = new System.Text.RegularExpressions.Regex(\"provider connection string\\\\s*=\\\\s*\\\"([^\\\"]*)\");");
-            //sb.AppendLine("					var m = regEx.Match(s);");
-            //sb.AppendLine("					var connString = s;");
-            //sb.AppendLine("					if (m != null && m.Groups.Count > 1)");
-            //sb.AppendLine("					{");
-            //sb.AppendLine("						connString = m.Groups[1].Value;");
-            //sb.AppendLine("					}");
-            //sb.AppendLine("					return connString;");
-            //sb.AppendLine("				}");
-            //sb.AppendLine("				else");
-            //sb.AppendLine("				{");
-            //sb.AppendLine("					throw new Exception(\"The connection string was not found.\");");
-            //sb.AppendLine("				}");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			catch (Exception)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				throw new Exception(\"The connection string was not found.\");");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-
             sb.AppendLine("		#endregion");
             sb.AppendLine();
 
@@ -1035,7 +972,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             #region Tables
-            foreach (var item in _model.Database.Tables.Where(x => x.Generated && !x.Security.IsValid() && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
+            foreach (var item in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + item.PascalName);
@@ -1098,7 +1035,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     }
                 }
 
-                //sb.Append("			var retval = this.Database.SqlQuery<" + item.PascalName + ">(\"[" + item.GetDatabaseObjectName() + "] " + string.Join(", ", spParamString) + "\"");
                 sb.Append("			var retval = this.Set<" + item.PascalName + ">().FromSql(\"[" + item.GetDatabaseObjectName() + "] " + string.Join(", ", spParamString) + "\"");
 
                 if (parameterList.Count > 0)
@@ -1238,94 +1174,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 }
 
                 sb.AppendLine("			var retval = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.CreateQuery<" + item.PascalName + ">(\"[" + _model.ProjectName + "Entities].[" + item.PascalName + "](" + string.Join(", ", parameterList.Select(x => "@" + x.PascalName)) + ")\", " + string.Join(", ", parameterList.Select(x => x.CamelName + "Parameter")) + ");");
-
-                //Add code here to handle output parameters
-                foreach (var parameter in parameterList.Where(x => x.IsOutputParameter))
-                {
-                    sb.AppendLine("			" + parameter.CamelName + " = (" + parameter.GetCodeType() + ")" + parameter.CamelName + "Parameter.Value;");
-                }
-
-                sb.AppendLine("			return retval;");
-
-                sb.AppendLine("		}");
-                sb.AppendLine();
-            }
-
-            #endregion
-
-            #region Table Security
-            var securedTables = _model.Database.Tables.Where(x => x.Generated && x.Security.IsValid()).OrderBy(x => x.PascalName).ToList();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		protected List<string> _paramList = new List<string>();");
-
-            foreach (var item in securedTables)
-            {
-                var function = item.Security;
-                var objectName = ValidationHelper.MakeDatabaseIdentifier("__security__" + item.Name);
-
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Security function for '" + item.PascalName + "' entity");
-                sb.AppendLine("		/// </summary>");
-
-                //NETCORE REMOVED
-                //sb.AppendLine("		[DbFunction(\"" + _model.ProjectName + "Entities\", \"" + objectName + "\")]");
-
-                sb.Append("		public virtual IQueryable<" + item.PascalName + "> " + item.PascalName + "(");
-                var parameterList = function.GetParameters().Where(x => x.Generated).ToList();
-                foreach (var parameter in parameterList)
-                {
-                    if (parameter.IsOutputParameter) sb.Append("out ");
-                    sb.Append(parameter.GetCodeType() + " " + parameter.CamelName);
-                    if (parameterList.IndexOf(parameter) < parameterList.Count - 1)
-                        sb.Append(", ");
-                }
-                sb.AppendLine(")");
-                sb.AppendLine("		{");
-
-                if (parameterList.Any())
-                {
-                    sb.AppendLine("			var index = 0;");
-                    sb.AppendLine();
-                }
-
-                var paramIndex = 1;
-                foreach (var parameter in parameterList)
-                {
-                    var pid = HashHelper.HashAlphaNumeric(parameter.Key);
-                    sb.AppendLine("			var paramName" + paramIndex + " = \"X" + pid + "\";");
-                    sb.AppendLine("			index = 0;");
-                    sb.AppendLine("			while (_paramList.Contains(paramName" + paramIndex + " + index)) index++;");
-                    sb.AppendLine("			paramName" + paramIndex + " += index;");
-                    sb.AppendLine("			_paramList.Add(paramName" + paramIndex + ");");
-                    sb.AppendLine("			if (_paramList.Count > 25) _paramList.RemoveAt(0);");
-
-                    if (parameter.IsOutputParameter)
-                    {
-                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new SqlParameter(paramName" + paramIndex + ", typeof(" + parameter.GetCodeType() + "));");
-                    }
-                    else if (parameter.AllowNull)
-                    {
-                        sb.AppendLine("			SqlParameter " + parameter.CamelName + "Parameter = null;");
-                        sb.AppendLine("			if (" + parameter.CamelName + " != null) { " + parameter.CamelName + "Parameter = new SqlParameter(paramName" + paramIndex + ", " + parameter.CamelName + "); }");
-                        sb.AppendLine("			else { " + parameter.CamelName + "Parameter = new SqlParameter(paramName" + paramIndex + ", typeof(" + parameter.GetCodeType() + ")); }");
-                    }
-                    else
-                    {
-                        sb.AppendLine("			var " + parameter.CamelName + "Parameter = new SqlParameter(paramName" + paramIndex + ", " + parameter.CamelName + ");");
-                    }
-                    sb.AppendLine();
-                    paramIndex++;
-                }
-
-                paramIndex = 1;
-                var inputParams = string.Join(", ", (parameterList.Select(x => "@\" + paramName" + paramIndex++ + " + \"")));
-
-                var inputParamVars = string.Join(", ", (parameterList.Select(x => x.CamelName + "Parameter")));
-
-                //NETCORE Removed
-                sb.AppendLine("#pragma warning disable EF1000");
-                sb.AppendLine("			var retval = this." + item.PascalName + "__INTERNAL.FromSql(\"SELECT * FROM [" + item.GetSQLSchema() + "].[" + objectName + "](" + inputParams + ")\"" + (string.IsNullOrEmpty(inputParamVars) ? string.Empty : ", " + inputParamVars) + ");");
-                sb.AppendLine("#pragma warning restore EF1000");
 
                 //Add code here to handle output parameters
                 foreach (var parameter in parameterList.Where(x => x.IsOutputParameter))

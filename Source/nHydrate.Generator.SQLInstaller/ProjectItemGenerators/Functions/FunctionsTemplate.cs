@@ -83,30 +83,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Functions
 
                 #endregion
 
-                #region Table Security Functions
-
-                var tableList = _model.Database.Tables.Where(x => x.Generated && x.Security.IsValid()).OrderBy(x => x.PascalName).ToList();
-                foreach (var table in tableList)
-                {
-                    sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSQLCreateTableSecurityFunction(table, _model, true));
-                }
-
-                //Add Grants
-                if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))
-                {
-                    foreach (var table in tableList)
-                    {
-                        var function = table.Security;
-                        var objectName = ValidationHelper.MakeDatabaseIdentifier("__security__" + table.Name);
-                        sb.AppendFormat("GRANT ALL ON [" + table.GetSQLSchema() + "].[{0}] TO [{1}]", objectName, _model.Database.GrantExecUser).AppendLine();
-                        sb.AppendLine("--MODELID: " + function.Key);
-                        sb.AppendLine("GO");
-                        sb.AppendLine();
-                    }
-                }
-
-                #endregion
-
             }
             catch (Exception ex)
             {

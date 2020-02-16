@@ -91,23 +91,6 @@ namespace nHydrate.Dsl.Design.Converters
                             retval = column.Length.ToString();
                         }
                     }
-                    else if (context.Instance is nHydrate.Dsl.SecurityFunctionParameter)
-                    {
-                        var column = context.Instance as nHydrate.Dsl.SecurityFunctionParameter;
-                        if (column.DataType.SupportsMax())
-                        {
-                            if (column.Length == 0) retval = "max";
-                            else retval = column.Length.ToString();
-                        }
-                        else if (column.DataType.GetPredefinedSize() != -1)
-                        {
-                            retval = "predefined";
-                        }
-                        else
-                        {
-                            retval = column.Length.ToString();
-                        }
-                    }
 
                     return retval;
                 }
@@ -158,17 +141,6 @@ namespace nHydrate.Dsl.Design.Converters
                 else
                     return false;
             }
-            else if (context.Instance is nHydrate.Dsl.SecurityFunctionParameter)
-            {
-                var column = context.Instance as nHydrate.Dsl.SecurityFunctionParameter;
-                if (sourceType == typeof(string))
-                    return true;
-                else if (sourceType == typeof(int))
-                    return true;
-                else
-                    return false;
-            }
-
             return false;
         }
 

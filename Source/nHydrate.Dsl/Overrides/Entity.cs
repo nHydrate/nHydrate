@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using nHydrate.Generator.Common.Util;
-using System.ComponentModel;
 
 namespace nHydrate.Dsl
 {
@@ -347,11 +346,6 @@ namespace nHydrate.Dsl
             }
         }
 
-        private string GetSecurityValue()
-        {
-            return (this.SecurityFunction != null) ? "(Has Security)" : "";
-        }
-
         private void SetSecurityValue(string v)
         {
         }
@@ -369,21 +363,4 @@ namespace nHydrate.Dsl
 
     }
 
-    [RefreshProperties(RefreshProperties.All)]
-    partial class SecurityFunction
-    {
-        public override string ToString()
-        {
-            return this.SQL;
-        }
-    }
-
-    [RefreshProperties(RefreshProperties.All)]
-    partial class SecurityFunctionParameter
-    {
-        public override string ToString()
-        {
-            return this.Name;
-        }
-    }
 }

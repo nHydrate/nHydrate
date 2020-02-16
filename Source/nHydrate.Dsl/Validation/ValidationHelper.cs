@@ -110,7 +110,6 @@ namespace nHydrate.Dsl
         public static readonly string ErrorTextNullableFieldHasDefaultWithRelation = "The field '{0}' in entity '{1}' is a nullable field in a relationship as the foreign key with entity '{2}'. A default is not allowed as it may cause foreign key violations.";
         public static readonly string ErrorTextVersionNegative = "The major version number cannot be negative.";
         public static readonly string ErrorTextDateTimeDeprecated = "The field '{0}' is marked DateTime. In SQL 2008 and above DateTime2 provides better functionality.";
-        public static readonly string ErrorTextSecurityFunction = "The security function for entity '{0}' is not valid.";
         public static readonly string ErrorTextFKNeedIndex = "The field {0} is a foreign key but there is no index on this field.";
 
         public const string ValidCodeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";

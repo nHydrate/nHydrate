@@ -824,23 +824,6 @@ namespace nHydrate.Dsl
                 }
 
                 #endregion
-
-                #region Security Functions
-
-                if (this.SecurityFunction != null)
-                {
-                    bool isValid = !string.IsNullOrEmpty(this.SecurityFunction.SQL);
-                    foreach (var p in this.SecurityFunction.SecurityFunctionParameters)
-                    {
-                        if (!ValidationHelper.ValidEntityName(p.Name)) isValid = false;
-                    }
-
-                    if (!isValid)
-                        context.LogError(string.Format(ValidationHelper.ErrorTextSecurityFunction, this.Name), string.Empty, this);
-                }
-
-                #endregion
-
             }
             catch (Exception ex)
             {

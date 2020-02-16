@@ -54,9 +54,6 @@ namespace nHydrate.Generator.Models
         {
             this.MetaData = new MetadataItemCollection();
 
-            Security = new SecurityFunction(root, this);
-            Security.ResetKey(Guid.Empty.ToString());
-
             _staticData = new RowEntryCollection(this.Root);
             Columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
             Columns.ResetKey(Guid.Empty.ToString());
@@ -183,8 +180,6 @@ namespace nHydrate.Generator.Models
         public bool HasHistory { get; set; } = _def_hasHistory;
 
         public bool CreateMetaData { get; set; } = _def_createMetaData;
-
-        public SecurityFunction Security { get; }
 
         #endregion
 
@@ -505,11 +500,6 @@ namespace nHydrate.Generator.Models
                     this.MetaData.XmlAppend(metadataNode);
                     node.AppendChild(metadataNode);
                 }
-
-                var securityNode = oDoc.CreateElement("security");
-                this.Security.XmlAppend(securityNode);
-                node.AppendChild(securityNode);
-
             }
             catch (Exception ex)
             {
@@ -569,10 +559,6 @@ namespace nHydrate.Generator.Models
                 var metadataNode = node.SelectSingleNode("metadata");
                 if (metadataNode != null)
                     this.MetaData.XmlLoad(metadataNode);
-
-                var securityNode = node.SelectSingleNode("security");
-                if (securityNode != null)
-                    this.Security.XmlLoad(securityNode);
             }
             catch (Exception ex)
             {

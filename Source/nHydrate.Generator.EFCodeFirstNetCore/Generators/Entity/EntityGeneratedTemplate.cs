@@ -656,13 +656,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 {
                     var parentTable = (Table)relation.ParentTableRef.Object;
                     var childTable = (Table)relation.ChildTableRef.Object;
-                    var isPublic = true;
-                    var scope = "public";
-                    if (childTable.Security.IsValid())
-                    {
-                        scope = "protected internal";
-                        isPublic = false;
-                    }
 
                     //If not both generated then do not process this code block
                     if (!parentTable.Generated || !childTable.Generated)
@@ -684,19 +677,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine($"		/// The navigation definition for walking {_item.PascalName}->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:1)"));
                         sb.AppendLine("		/// </summary>");
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
-                        sb.AppendLine("		" + scope + " virtual " + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; set; }");
+                        sb.AppendLine("		public virtual " + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; set; }");
                         sb.AppendLine();
-
-                        //if (isPublic)
-                        //{
-                        //    //Add interface map
-                        //    sb.AppendLine("		" + this.InterfaceAssemblyNamespace + ".Entity.I" + childTable.PascalName + " " + this.InterfaceAssemblyNamespace + ".Entity.I" + _item.PascalName + "." + relation.PascalRoleName + childTable.PascalName + "");
-                        //    sb.AppendLine("		{");
-                        //    sb.AppendLine("			get { return this." + relation.PascalRoleName + childTable.PascalName + "; }");
-                        //    sb.AppendLine("			set { this." + relation.PascalRoleName + childTable.PascalName + " = (" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ")value; }");
-                        //    sb.AppendLine("		}");
-                        //    sb.AppendLine();
-                        //}
                     }
 
                     //Process the associative tables
@@ -742,7 +724,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		/// <summary>");
                         sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:N)"));
                         sb.AppendLine("		/// </summary>");
-                        sb.AppendLine($"		{scope} virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {relation.PascalRoleName}{childTable.PascalName}List");
+                        sb.AppendLine($"		public virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {relation.PascalRoleName}{childTable.PascalName}List");
                         sb.AppendLine("		{");
                         sb.AppendLine("			get; protected internal set;");
                         sb.AppendLine("		}");

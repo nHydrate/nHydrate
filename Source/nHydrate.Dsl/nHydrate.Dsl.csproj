@@ -149,15 +149,8 @@
     <Compile Include="Design\Converters\TextDecimalScaleConverter.cs" />
     <Compile Include="Design\Converters\TextLengthConverter.cs" />
     <Compile Include="Design\Converters\VersionConverter.cs" />
-    <Compile Include="Design\Editors\SecurityFunctionEditor.cs" />
     <Compile Include="Design\Editors\EntityFieldEditor.cs" />
     <Compile Include="Design\Editors\SQLEditor.cs" />
-    <Compile Include="Design\Forms\SecurityFunctionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Design\Forms\SecurityFunctionForm.Designer.cs">
-      <DependentUpon>SecurityFunctionForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Design\Forms\SQLForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -174,7 +167,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PropertiesGrid.tt</DependentUpon>
     </Compile>
-    <Compile Include="GeneratedCode\Serializer1.cs">
+    <Compile Include="GeneratedCode\Serializer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Serializer.tt</DependentUpon>
@@ -333,9 +326,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Versioning.txt" />
-    <EmbeddedResource Include="Design\Forms\SecurityFunctionForm.resx">
-      <DependentUpon>SecurityFunctionForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GeneratedCode\DomainModelResx.resx">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -423,7 +413,7 @@
     </None>
     <None Include="GeneratedCode\Serializer.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Serializer1.cs</LastGenOutput>
+      <LastGenOutput>Serializer.cs</LastGenOutput>
     </None>
     <None Include="GeneratedCode\Shapes.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

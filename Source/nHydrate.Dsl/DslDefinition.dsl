@@ -258,18 +258,6 @@
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="41752180-d536-4d6b-b5a0-45ae43f8c7a3" Description="Determines if this table has secured access" Name="Security" DisplayName="Security" DefaultValue="" Kind="CustomStorage" Category="Security">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Editors.SecurityFunctionEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="e3468fb2-910f-48e4-8ad7-7dbe952c4c5b" Description="Description for nHydrate.Dsl.Entity.Copy State Info" Name="CopyStateInfo" DisplayName="Copy State Info" Kind="CustomStorage" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
@@ -307,14 +295,6 @@
           </Index>
           <LinkCreationPaths>
             <DomainPath>EntityHasIndexes.Indexes</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-        <ElementMergeDirective>
-          <Index>
-            <DomainClassMoniker Name="SecurityFunction" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>EntityHasSecurityFunction.SecurityFunction</DomainPath>
           </LinkCreationPaths>
         </ElementMergeDirective>
       </ElementMergeDirectives>
@@ -1349,114 +1329,6 @@
         </DomainProperty>
       </Properties>
     </DomainClass>
-    <DomainClass Id="1e5bf9d9-6c1b-44eb-a238-0b88d669b189" Description="Description for nHydrate.Dsl.SecurityFunction" Name="SecurityFunction" DisplayName="Security Function" Namespace="nHydrate.Dsl">
-      <Properties>
-        <DomainProperty Id="442b861a-5046-480b-9d80-91526a63dacc" Description="Determines SQL statement used to create the database stored procedure object" Name="SQL" DisplayName="SQL" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Editors.SQLEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-      <ElementMergeDirectives>
-        <ElementMergeDirective>
-          <Index>
-            <DomainClassMoniker Name="SecurityFunctionParameter" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>SecurityFunctionHasSecurityFunctionParameters.SecurityFunctionParameters</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-      </ElementMergeDirectives>
-    </DomainClass>
-    <DomainClass Id="c6986337-c218-4441-9154-556d20066753" Description="Description for nHydrate.Dsl.SecurityFunctionParameter" Name="SecurityFunctionParameter" DisplayName="Security Function Parameter" Namespace="nHydrate.Dsl">
-      <Properties>
-        <DomainProperty Id="69345b69-7253-46f3-b72f-f74b278bcf5d" Description="Determines the name of this object" Name="Name" DisplayName="Name" DefaultValue="" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="c66fcb75-560d-4bca-9cbb-45f73275a180" Description="Determines if this item allows null values" Name="Nullable" DisplayName="Nullable" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="39261e47-0ea7-4517-bf21-f6264543e58b" Description="Determines the data type of this field" Name="DataType" DisplayName="Datatype" DefaultValue="VarChar" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.DatatypeConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <DomainEnumerationMoniker Name="DataTypeConstants" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="388dbdf1-95de-45e8-b478-1e1642961be8" Description="Determines the summary of this object" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="d113df78-35f6-4d9b-89dd-57cafa29caf8" Description="Determines the default value of this object" Name="Default" DisplayName="Default" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="e0b39dab-197c-4449-b9be-664af9d39cd8" Description="Determines if this item is used when generating" Name="IsGenerated" DisplayName="Is Generated" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="ff1f7ace-16f5-4e9c-8e8a-67d2fbdc5921" Description="Determines the size of this field in bytes" Name="Length" DisplayName="Length" DefaultValue="50" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.TextLengthConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="f7bc69e4-a8b2-4a57-9870-e7eaf46d2e1f" Description="Determines the scale of some data types" Name="Scale" DisplayName="Scale" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.TextDecimalScaleConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="10d9be44-ac7b-4e81-86a4-4363d7fdafcf" Description="" Name="SortOrder" DisplayName="Sort Order" DefaultValue="0" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="010816bf-2934-47e1-9323-a30aa9691250" Description="Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier." Name="CodeFacade" DisplayName="Code Facade" Category="Code">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-    </DomainClass>
   </Classes>
   <Relationships>
     <DomainRelationship Id="cd23608d-a10a-4e2e-9ff7-0897d5701618" Description="" Name="nHydrateModelHasEntities" DisplayName="nHydrate Model Has Elements" Namespace="nHydrate.Dsl" IsEmbedding="true">
@@ -1791,38 +1663,6 @@
         </DomainRole>
       </Target>
     </DomainRelationship>
-    <DomainRelationship Id="daa3bb78-a012-4074-b164-446cdf4e7c63" Description="Description for nHydrate.Dsl.EntityHasSecurityFunction" Name="EntityHasSecurityFunction" DisplayName="Entity Has Security Function" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="43c74558-2e05-4067-bad8-9dd65eddeeaf" Description="Description for nHydrate.Dsl.EntityHasSecurityFunction.Entity" Name="Entity" DisplayName="Entity" PropertyName="SecurityFunction" Multiplicity="ZeroOne" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" Category="Security" PropertyDisplayName="Security Function">
-          <RolePlayer>
-            <DomainClassMoniker Name="Entity" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="96cc7081-dfc6-4acc-ac93-67c5cde791df" Description="Description for nHydrate.Dsl.EntityHasSecurityFunction.SecurityFunction" Name="SecurityFunction" DisplayName="Security Function" PropertyName="Entity" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="Entity">
-          <RolePlayer>
-            <DomainClassMoniker Name="SecurityFunction" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="a49d2dab-f2d3-44cd-9573-468fa8928e4e" Description="Description for nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters" Name="SecurityFunctionHasSecurityFunctionParameters" DisplayName="Security Function Has Security Function Parameters" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="43336824-46a7-4b78-995a-bdd257c22603" Description="Description for nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.SecurityFunction" Name="SecurityFunction" DisplayName="Security Function" PropertyName="SecurityFunctionParameters" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Security Function Parameters">
-          <RolePlayer>
-            <DomainClassMoniker Name="SecurityFunction" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="20c53308-6b36-494f-9eba-ff83a9a74218" Description="Description for nHydrate.Dsl.SecurityFunctionHasSecurityFunctionParameters.SecurityFunctionParameter" Name="SecurityFunctionParameter" DisplayName="Security Function Parameter" PropertyName="SecurityFunction" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="Security Function">
-          <RolePlayer>
-            <DomainClassMoniker Name="SecurityFunctionParameter" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
   </Relationships>
   <Types>
     <ExternalType Name="DateTime" Namespace="System" />
@@ -2151,12 +1991,6 @@
           </XmlRelationshipData>
           <XmlPropertyData XmlName="isTenant">
             <DomainPropertyMoniker Name="Entity/IsTenant" />
-          </XmlPropertyData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="securityFunction">
-            <DomainRelationshipMoniker Name="EntityHasSecurityFunction" />
-          </XmlRelationshipData>
-          <XmlPropertyData XmlName="security">
-            <DomainPropertyMoniker Name="Entity/Security" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="copyStateInfo">
             <DomainPropertyMoniker Name="Entity/CopyStateInfo" />
@@ -2765,58 +2599,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="value">
             <DomainPropertyMoniker Name="ModelMetadata/Value" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="EntityHasSecurityFunction" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityHasSecurityFunctionMoniker" ElementName="entityHasSecurityFunction" MonikerTypeName="EntityHasSecurityFunctionMoniker">
-        <DomainRelationshipMoniker Name="EntityHasSecurityFunction" />
-      </XmlClassData>
-      <XmlClassData TypeName="SecurityFunction" MonikerAttributeName="" SerializeId="true" MonikerElementName="securityFunctionMoniker" ElementName="securityFunction" MonikerTypeName="SecurityFunctionMoniker">
-        <DomainClassMoniker Name="SecurityFunction" />
-        <ElementData>
-          <XmlPropertyData XmlName="sQL">
-            <DomainPropertyMoniker Name="SecurityFunction/SQL" />
-          </XmlPropertyData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="securityFunctionParameters">
-            <DomainRelationshipMoniker Name="SecurityFunctionHasSecurityFunctionParameters" />
-          </XmlRelationshipData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="SecurityFunctionHasSecurityFunctionParameters" MonikerAttributeName="" SerializeId="true" MonikerElementName="securityFunctionHasSecurityFunctionParametersMoniker" ElementName="securityFunctionHasSecurityFunctionParameters" MonikerTypeName="SecurityFunctionHasSecurityFunctionParametersMoniker">
-        <DomainRelationshipMoniker Name="SecurityFunctionHasSecurityFunctionParameters" />
-      </XmlClassData>
-      <XmlClassData TypeName="SecurityFunctionParameter" MonikerAttributeName="" SerializeId="true" MonikerElementName="securityFunctionParameterMoniker" ElementName="securityFunctionParameter" MonikerTypeName="SecurityFunctionParameterMoniker">
-        <DomainClassMoniker Name="SecurityFunctionParameter" />
-        <ElementData>
-          <XmlPropertyData XmlName="name">
-            <DomainPropertyMoniker Name="SecurityFunctionParameter/Name" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="nullable">
-            <DomainPropertyMoniker Name="SecurityFunctionParameter/Nullable" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="dataType">
-            <DomainPropertyMoniker Name="SecurityFunctionParameter/DataType" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="SecurityFunctionParameter/Summary" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="default">
-            <DomainPropertyMoniker Name="SecurityFunctionParameter/Default" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="isGenerated">
-            <DomainPropertyMoniker Name="SecurityFunctionParameter/IsGenerated" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="length">
-            <DomainPropertyMoniker Name="SecurityFunctionParameter/Length" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="scale">
-            <DomainPropertyMoniker Name="SecurityFunctionParameter/Scale" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="sortOrder">
-            <DomainPropertyMoniker Name="SecurityFunctionParameter/SortOrder" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="codeFacade">
-            <DomainPropertyMoniker Name="SecurityFunctionParameter/CodeFacade" />
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>

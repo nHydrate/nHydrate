@@ -55,14 +55,6 @@ namespace nHydrate.Dsl.Design.Converters
                         else
                             retval = column.Scale.ToString();
                     }
-                    else if (context.Instance is nHydrate.Dsl.SecurityFunctionParameter)
-                    {
-                        var column = context.Instance as nHydrate.Dsl.SecurityFunctionParameter;
-                        if (column.DataType.GetPredefinedScale() != -1)
-                            retval = "undefined";
-                        else
-                            retval = column.Scale.ToString();
-                    }
 
                     return retval;
                 }
@@ -106,16 +98,6 @@ namespace nHydrate.Dsl.Design.Converters
             else if (context.Instance is nHydrate.Dsl.ViewField)
             {
                 var column = context.Instance as nHydrate.Dsl.ViewField;
-                if (sourceType == typeof(string))
-                    return true;
-                else if (sourceType == typeof(int))
-                    return true;
-                else
-                    return false;
-            }
-            else if (context.Instance is nHydrate.Dsl.SecurityFunctionParameter)
-            {
-                var column = context.Instance as nHydrate.Dsl.SecurityFunctionParameter;
                 if (sourceType == typeof(string))
                     return true;
                 else if (sourceType == typeof(int))

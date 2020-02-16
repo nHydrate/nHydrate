@@ -100,8 +100,7 @@ namespace nHydrate.Generator.Models
 
                 XmlHelper.AddAttribute(node, "name", this.Name);
 
-                if (this.CodeFacade != _def_codefacade)
-                    XmlHelper.AddAttribute(node, "codeFacade", this.CodeFacade);
+                XmlHelper.AddAttribute(node, "codeFacade", this.CodeFacade, _def_codefacade);
 
                 if (this.Description != _def_description)
                     XmlHelper.AddAttribute(node, "description", this.Description);

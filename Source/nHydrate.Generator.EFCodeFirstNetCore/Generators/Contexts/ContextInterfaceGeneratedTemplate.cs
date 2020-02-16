@@ -95,16 +95,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             foreach (var item in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary />");
-                if (item.Security.IsValid())
-                {
-                    var paramset = item.Security.GetParameters().Where(x => x.Generated).ToList();
-                    var paramString = string.Join(", ", paramset.Select(x => x.GetCodeType(true) + " " + x.CamelName).ToList());
-                    sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "(" + paramString + ");");
-                }
-                else
-                {
-                    sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + " { get ; }");
-                }
+                sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + " { get ; }");
                 sb.AppendLine();
             }
             #endregion
