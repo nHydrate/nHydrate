@@ -87,8 +87,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseUpgrade
                         }
                         File.Copy(fileName, newFile);
                         var fileText = File.ReadAllText(newFile);
-                        fileText = fileText.Replace("Widgetsphere.Generator.", "nHydrate.Generator.");
-                        fileText = fileText.Replace("WidgetsphereGeneratorProject", "nHydrateGeneratorProject");
                         File.WriteAllText(newFile, fileText);
                         System.Threading.Thread.Sleep(500);
 

@@ -66,12 +66,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
         public static IGenerator OpenModel(string filePath)
         {
-            return OpenModel(filePath, out _);
-        }
-
-        public static IGenerator OpenModel(string filePath, out LoadResultConstants loadResult)
-        {
-            loadResult = LoadResultConstants.Failed;
             IGenerator retVal = null;
             var file = new FileInfo(filePath);
             var xmlAttributeAssembleValue = string.Empty;
@@ -90,14 +84,8 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                     try { assemblyUri = new Uri(xmlAttributeAssembleValue); }
                     catch { }
 
-                    //Change the old name to the new name
-                    if (xmlAttributeAssembleValue.ToLower() == "widgetsphere.generator.dll")
-                        xmlAttributeAssembleValue = "nHydrate.Generator.dll";
-
                     if (assemblyUri != null) assemblyName = new FileInfo(assemblyUri.AbsolutePath);
                     else assemblyName = new FileInfo(xmlAttributeAssembleValue);
-
-                    //processKey = UIHelper.ProgressingStarted();
 
                     var assemblyFile = Path.Combine(AddinAppData.Instance.ExtensionDirectory, assemblyName.Name);
                     var currentAssemblyFile = new FileInfo(assemblyFile);
@@ -106,22 +94,15 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                         retVal = (IGenerator)ReflectionHelper.CreateInstance(currentAssemblyFile.FullName, type);
                         retVal.XmlLoad(xDoc.DocumentElement);
                         retVal.FileName = filePath;
-                        //UIHelper.ProgressingComplete(processKey);
-                        loadResult = retVal.ProcessPostModelLoad();
                     }
                     else
                     {
-                        //UIHelper.ProgressingComplete(processKey);
                         GlobalHelper.ShowError("The model cannot be opened. You do not have the appropriate assembly. " + currentAssemblyFile.FullName);
                     }
                 }
                 catch (Exception ex)
                 {
                     throw new Exception(file.FullName + " does not have the correct format.", ex);
-                }
-                finally
-                {
-                    //UIHelper.ProgressingComplete(processKey);
                 }
             }
             else

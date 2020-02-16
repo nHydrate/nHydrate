@@ -1,9 +1,5 @@
 #pragma warning disable 0168
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.DslPackage.Forms.Objects
 {
@@ -13,15 +9,6 @@ namespace nHydrate.DslPackage.Forms.Objects
 
         protected internal const string MyXMLNodeName = "options";
         private const string startXPath = @"//" + MyXMLNodeName + @"/";
-
-        private string _connectionString = string.Empty;
-        private string _server = string.Empty;
-        private string _database = string.Empty;
-        private string _uid = string.Empty;
-        private string _pwd = string.Empty;
-        private bool _useConnectionString = true;
-        private string _cacheFolder = string.Empty;
-        private bool _useWinAuth = false;
 
         #endregion
 
@@ -44,53 +31,21 @@ namespace nHydrate.DslPackage.Forms.Objects
             }
         }
 
-        public string ConnectionString
-        {
-            get { return _connectionString; }
-            set { _connectionString = value; }
-        }
+        public string ConnectionString { get; set; } = string.Empty;
 
-        public string Server
-        {
-            get { return _server; }
-            set { _server = value; }
-        }
+        public string Server { get; set; } = string.Empty;
 
-        public string Database
-        {
-            get { return _database; }
-            set { _database = value; }
-        }
+        public string Database { get; set; } = string.Empty;
 
-        public string UID
-        {
-            get { return _uid; }
-            set { _uid = value; }
-        }
+        public string UID { get; set; } = string.Empty;
 
-        public string PWD
-        {
-            get { return _pwd; }
-            set { _pwd = value; }
-        }
+        public string PWD { get; set; } = string.Empty;
 
-        public bool UseConnectionString
-        {
-            get { return _useConnectionString; }
-            set { _useConnectionString = value; }
-        }
+        public bool UseConnectionString { get; set; } = true;
 
-        public string CacheFolder
-        {
-            get { return _cacheFolder; }
-            set { _cacheFolder = value; }
-        }
+        public string CacheFolder { get; set; } = string.Empty;
 
-        public bool UseWinAuth
-        {
-            get { return _useWinAuth; }
-            set { _useWinAuth = value; }
-        }
+        public bool UseWinAuth { get; set; } = false;
 
         #endregion
 
@@ -127,14 +82,14 @@ namespace nHydrate.DslPackage.Forms.Objects
                 document.InnerXml = xml;
 
                 //Load all properties
-                _connectionString = nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "connectionstring", this.ConnectionString);
-                _server = nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "server", this.Server);
-                _database = nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "database", this.Database);
-                _uid = nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "uid", this.UID);
-                _pwd = nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "pwd", this.PWD);
-                _useConnectionString = bool.Parse(nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "useconnectionstring", this.UseConnectionString.ToString()));
-                _cacheFolder = nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "cachefolder", this.CacheFolder);
-                _useWinAuth = bool.Parse(nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "usewinauth", this.UseWinAuth.ToString()));
+                ConnectionString = nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "connectionstring", this.ConnectionString);
+                Server = nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "server", this.Server);
+                Database = nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "database", this.Database);
+                UID = nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "uid", this.UID);
+                PWD = nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "pwd", this.PWD);
+                UseConnectionString = bool.Parse(nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "useconnectionstring", this.UseConnectionString.ToString()));
+                CacheFolder = nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "cachefolder", this.CacheFolder);
+                UseWinAuth = bool.Parse(nHydrate.Generator.Common.Util.XmlHelper.GetNodeValue(document, startXPath + "usewinauth", this.UseWinAuth.ToString()));
                 return true;
             }
             catch (Exception ex)

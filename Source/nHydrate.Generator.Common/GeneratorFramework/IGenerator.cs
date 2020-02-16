@@ -6,11 +6,10 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         Failed,
         SuccessDirty,
     }
+
     public interface IGenerator : IXMLable
     {
         IModelObject Model { get; }
         string FileName { get; set; }
-        LoadResultConstants ProcessPostModelLoad();
-        bool InLicense { get; }
     }
 }
