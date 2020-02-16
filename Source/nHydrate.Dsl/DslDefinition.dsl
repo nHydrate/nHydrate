@@ -9,18 +9,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="4f568ed1-d9e1-4905-bee0-6e6111581ce5" Description="Determines copyright to add to each file" Name="Copyright" DisplayName="Copyright" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Editors.CopyrightEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="878ea856-ee97-4991-bb04-941062bbea33" Description="Determines the default namespace and base project names of all generated projects. Leave blank for the default value of CompanyName.ProjectName" Name="DefaultNamespace" DisplayName="Default Namespace" Category="Definition">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
@@ -84,21 +72,6 @@
           </Type>
         </DomainProperty>
         <DomainProperty Id="f4344b62-7cd9-4937-b07a-7056d72fc1fa" Description="Determines if all tokens are transformed from a lower case/undescore format to title case tokens on generation" Name="TransformNames" DisplayName="Transform Names" DefaultValue="false" Category="Code" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="7eccc5be-839a-41a9-b187-0893eb0f3ea9" Description="Determines if views are visible on the diagram" Name="ShowViews" DisplayName="Show Views" DefaultValue="false" Category="Diagram" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="2a51cfa1-07fc-4ead-812a-9a7741b5cbde" Description="Determines if stored procedures are visible on the diagram" Name="ShowStoredProcedures" DisplayName="Show Stored Procedures" DefaultValue="false" Category="Diagram" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="9df51744-b095-46bc-840e-b9de79f31b36" Description="Determines if functions are visible on the diagram" Name="ShowFunctions" DisplayName="Show Functions" DefaultValue="false" Category="Diagram" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
@@ -2042,9 +2015,6 @@
           <XmlPropertyData XmlName="companyName">
             <DomainPropertyMoniker Name="nHydrateModel/CompanyName" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="copyright">
-            <DomainPropertyMoniker Name="nHydrateModel/Copyright" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="defaultNamespace">
             <DomainPropertyMoniker Name="nHydrateModel/DefaultNamespace" />
           </XmlPropertyData>
@@ -2087,15 +2057,6 @@
           <XmlRelationshipData UseFullForm="true" RoleElementName="functions">
             <DomainRelationshipMoniker Name="nHydrateModelHasFunctions" />
           </XmlRelationshipData>
-          <XmlPropertyData XmlName="showViews">
-            <DomainPropertyMoniker Name="nHydrateModel/ShowViews" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="showStoredProcedures">
-            <DomainPropertyMoniker Name="nHydrateModel/ShowStoredProcedures" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="showFunctions">
-            <DomainPropertyMoniker Name="nHydrateModel/ShowFunctions" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="collate">
             <DomainPropertyMoniker Name="nHydrateModel/Collate" />
           </XmlPropertyData>

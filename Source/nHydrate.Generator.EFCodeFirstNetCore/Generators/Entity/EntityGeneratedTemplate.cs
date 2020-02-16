@@ -55,7 +55,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             try
             {
                 nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
-                nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 sb.AppendLine("#pragma warning disable 612");
                 this.AppendUsingStatements();
                 sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");

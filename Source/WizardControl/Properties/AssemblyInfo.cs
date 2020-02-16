@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("nHydrate Wizard")]
-[assembly: AssemblyCopyright("Copyright ©  2006-2020")]
+[assembly: AssemblyCopyright("Copyright © 2006-2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

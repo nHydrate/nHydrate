@@ -91,8 +91,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLSelectStoredP
 
                 sb.AppendLine("--This SQL is generated for the model defined stored procedure [" + _currentStoredProcedure.DatabaseName + "]");
                 sb.AppendLine();
-                nHydrate.Generator.GenerationHelper.AppendCopyrightInSQL(sb, _model);
-
                 sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSQLCreateStoredProc(_currentStoredProcedure, true));
 
                 if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))

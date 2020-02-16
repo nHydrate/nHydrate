@@ -340,7 +340,6 @@ namespace nHydrate.DslPackage.Objects
                 root.EnableCustomChangeEvents = model.EmitChangeScripts;
                 root.CompanyName = model.CompanyName;
                 root.EmitSafetyScripts = model.EmitSafetyScripts;
-                root.Copyright = model.Copyright;
                 root.DefaultNamespace = model.DefaultNamespace;
                 root.ProjectName = model.ProjectName;
                 root.SupportLegacySearchObject = false;

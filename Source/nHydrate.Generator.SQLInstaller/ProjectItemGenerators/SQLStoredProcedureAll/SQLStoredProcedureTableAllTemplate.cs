@@ -70,8 +70,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
                 }
 
                 sb.AppendLine("--This SQL is generated for internal stored procedures for table [" + _table.DatabaseName + "]");
-                nHydrate.Generator.GenerationHelper.AppendCopyrightInSQL(sb, _model);
-
                 generator = new SQLSelectAuditBusinessObjectTemplate(_model, _table);
                 generator.GenerateContent(sb);
 

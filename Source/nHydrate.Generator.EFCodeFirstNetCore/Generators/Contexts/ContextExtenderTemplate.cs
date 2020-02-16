@@ -44,7 +44,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
         {
             try
             {
-                nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 sb.AppendLine("using System;");
                 sb.AppendLine("using Microsoft.EntityFrameworkCore;");
                 sb.AppendLine();

@@ -123,12 +123,6 @@
             <xsd:documentation>Specifies the company name that will be used to build namespaces</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: Copyright -->
-        <xsd:attribute name="copyright" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines copyright to add to each file</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: DefaultNamespace -->
         <xsd:attribute name="defaultNamespace" type="xsd:string" >
           <xsd:annotation>
@@ -199,24 +193,6 @@
         <xsd:attribute name="transformNames" type="xsd:boolean" >
           <xsd:annotation>
             <xsd:documentation>Determines if all tokens are transformed from a lower case/undescore format to title case tokens on generation</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: ShowViews -->
-        <xsd:attribute name="showViews" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if views are visible on the diagram</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: ShowStoredProcedures -->
-        <xsd:attribute name="showStoredProcedures" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if stored procedures are visible on the diagram</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: ShowFunctions -->
-        <xsd:attribute name="showFunctions" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if functions are visible on the diagram</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: Collate -->

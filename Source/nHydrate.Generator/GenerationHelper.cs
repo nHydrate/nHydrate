@@ -1,49 +1,9 @@
-using System;
 using System.Text;
-using nHydrate.Generator.Common.Forms;
-using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator
 {
 	public static class GenerationHelper
 	{
-		public static void AppendCopyrightInCode(StringBuilder sb, ModelRoot model)
-		{
-			if (!string.IsNullOrEmpty(model.Copyright))
-			{
-				sb.AppendLine("#region Copyright (c) " + DateTime.Now.Year + " " + model.CompanyName + ", All Rights Reserved");
-
-				var temp = model.Copyright.Replace("\r\n", "\n");
-				temp = temp.Replace("\r", "\n");
-				temp = temp.Replace("%year%", DateTime.Now.Year.ToString());
-				var arr = temp.Split('\n');
-				foreach (var s in arr)
-				{
-					sb.AppendLine("//" + s);
-				}
-				sb.AppendLine("#endregion");
-				sb.AppendLine();
-			}
-		}
-
-		public static void AppendCopyrightInSQL(StringBuilder sb, ModelRoot model)
-		{
-			if (!string.IsNullOrEmpty(model.Copyright))
-			{
-				sb.AppendLine("--Copyright (c) " + DateTime.Now.Year + " " + model.CompanyName + ", All Rights Reserved");
-
-				var temp = model.Copyright.Replace("\r\n", "\n");
-				temp = temp.Replace("\r", "\n");
-				temp = temp.Replace("%year%", DateTime.Now.Year.ToString());
-				var arr = temp.Split('\n');
-				foreach (var s in arr)
-				{
-					sb.AppendLine("--" + s);
-				}
-				sb.AppendLine();
-			}
-		}
-
 		public static void AppendFileGeneatedMessageInCode(StringBuilder sb)
 		{
 			sb.AppendLine("//------------------------------------------------------------------------------");
@@ -56,19 +16,6 @@ namespace nHydrate.Generator
 			sb.AppendLine("//------------------------------------------------------------------------------");
 			sb.AppendLine();
 		}
-
-		public static void ShowError(string text)
-		{
-			var F = new ErrorForm(text, "No other information is available.");
-			F.ShowDialog();
-		}
-
-		public static void ShowError(string text, Exception exception)
-		{
-			var F = new ErrorForm(text, exception.ToString());
-			F.ShowDialog();
-		}
-
 
 	}
 }

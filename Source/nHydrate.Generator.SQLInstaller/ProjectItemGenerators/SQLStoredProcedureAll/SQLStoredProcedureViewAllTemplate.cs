@@ -59,8 +59,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
 
                 sb.AppendLine("--This SQL is generated for the model defined view [" + _view.DatabaseName + "]");
                 sb.AppendLine();
-                nHydrate.Generator.GenerationHelper.AppendCopyrightInSQL(sb, _model);
-
                 generator = new SQLSelectViewTemplate(_model, _view, _grantSB);
                 generator.GenerateContent(sb);
 

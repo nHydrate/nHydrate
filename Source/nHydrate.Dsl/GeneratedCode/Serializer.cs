@@ -172,23 +172,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// Copyright
-			if (!serializationContext.Result.Failed)
-			{
-				string attribCopyright = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "copyright");
-				if (attribCopyright != null)
-				{
-					global::System.String valueOfCopyright;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribCopyright, out valueOfCopyright))
-					{
-						instanceOfnHydrateModel.Copyright = valueOfCopyright;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "copyright", typeof(global::System.String), attribCopyright);
-					}
-				}
-			}
 			// DefaultNamespace
 			if (!serializationContext.Result.Failed)
 			{
@@ -390,57 +373,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "transformNames", typeof(global::System.Boolean), attribTransformNames);
-					}
-				}
-			}
-			// ShowViews
-			if (!serializationContext.Result.Failed)
-			{
-				string attribShowViews = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "showViews");
-				if (attribShowViews != null)
-				{
-					global::System.Boolean valueOfShowViews;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribShowViews, out valueOfShowViews))
-					{
-						instanceOfnHydrateModel.ShowViews = valueOfShowViews;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "showViews", typeof(global::System.Boolean), attribShowViews);
-					}
-				}
-			}
-			// ShowStoredProcedures
-			if (!serializationContext.Result.Failed)
-			{
-				string attribShowStoredProcedures = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "showStoredProcedures");
-				if (attribShowStoredProcedures != null)
-				{
-					global::System.Boolean valueOfShowStoredProcedures;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribShowStoredProcedures, out valueOfShowStoredProcedures))
-					{
-						instanceOfnHydrateModel.ShowStoredProcedures = valueOfShowStoredProcedures;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "showStoredProcedures", typeof(global::System.Boolean), attribShowStoredProcedures);
-					}
-				}
-			}
-			// ShowFunctions
-			if (!serializationContext.Result.Failed)
-			{
-				string attribShowFunctions = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "showFunctions");
-				if (attribShowFunctions != null)
-				{
-					global::System.Boolean valueOfShowFunctions;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribShowFunctions, out valueOfShowFunctions))
-					{
-						instanceOfnHydrateModel.ShowFunctions = valueOfShowFunctions;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "showFunctions", typeof(global::System.Boolean), attribShowFunctions);
 					}
 				}
 			}
@@ -1425,17 +1357,6 @@ namespace nHydrate.Dsl
 	
 				}
 			}
-			// Copyright
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.String propValue = instanceOfnHydrateModel.Copyright;
-				if (!serializationContext.Result.Failed)
-				{
-					if (!string.IsNullOrEmpty(propValue))
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "copyright", propValue);
-	
-				}
-			}
 			// DefaultNamespace
 			if (!serializationContext.Result.Failed)
 			{
@@ -1576,45 +1497,6 @@ namespace nHydrate.Dsl
 					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "transformNames", serializedPropValue);
-					}
-				}
-			}
-			// ShowViews
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfnHydrateModel.ShowViews;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "showViews", serializedPropValue);
-					}
-				}
-			}
-			// ShowStoredProcedures
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfnHydrateModel.ShowStoredProcedures;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "showStoredProcedures", serializedPropValue);
-					}
-				}
-			}
-			// ShowFunctions
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfnHydrateModel.ShowFunctions;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "showFunctions", serializedPropValue);
 					}
 				}
 			}

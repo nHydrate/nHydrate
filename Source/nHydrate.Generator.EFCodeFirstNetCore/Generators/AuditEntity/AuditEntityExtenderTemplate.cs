@@ -55,7 +55,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
         {
             try
             {
-                nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Audit");
                 sb.AppendLine("{");
                 sb.AppendLine("	partial class " + _currentTable.PascalName + "Audit");

@@ -60,7 +60,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Functions
                 sb.AppendLine();
                 sb.AppendLine("--This SQL is generated for functions");
                 sb.AppendLine();
-                nHydrate.Generator.GenerationHelper.AppendCopyrightInSQL(sb, _model);
 
                 #region Functions
 

@@ -128,8 +128,6 @@ namespace nHydrate.Generator.Models
 
         public VersionHistoryCollection VersionHistoryList => _versionHistoryList;
 
-        public string Copyright { get; set; } = string.Empty;
-
         public virtual string GetSQLDefaultDate()
         {
             if (this.UseUTCTime) return "getutcdate()";
@@ -185,12 +183,6 @@ namespace nHydrate.Generator.Models
                 XmlHelper.AddAttribute(node, "defaultNamespace", this.DefaultNamespace);
                 XmlHelper.AddAttribute(node, "storedProcedurePrefix", this.StoredProcedurePrefix);
 
-                var copyright = oDoc.CreateNode(XmlNodeType.Element, "copyright", string.Empty);
-                var copyright2 = oDoc.CreateCDataSection("copyright");
-                copyright2.Value = this.Copyright;
-                copyright.AppendChild(copyright2);
-                node.AppendChild(copyright);
-
                 var databaseNode = oDoc.CreateElement("database");
                 this.Database.XmlAppend(databaseNode);
                 node.AppendChild(databaseNode);
@@ -236,10 +228,6 @@ namespace nHydrate.Generator.Models
                 var databaseNode = node.SelectSingleNode("database");
                 if (databaseNode != null)
                     this.Database.XmlLoad(databaseNode);
-
-                var copyrightNode = node.SelectSingleNode("copyright");
-                if (copyrightNode != null)
-                    Copyright = copyrightNode.InnerText;
 
                 var versionHistoryListNode = node.SelectSingleNode("versionHistoryList");
                 if (versionHistoryListNode != null)

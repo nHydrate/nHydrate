@@ -47,7 +47,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
         {
             try
             {
-                nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 sb.AppendLine("namespace " + this.GetLocalNamespace());
                 sb.AppendLine("{");
                 sb.AppendLine("}");

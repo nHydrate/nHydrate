@@ -133,7 +133,6 @@ namespace nHydrate.Dsl
 			return new DomainMemberInfo[]
 			{
 				new DomainMemberInfo(typeof(nHydrateModel), "CompanyName", nHydrateModel.CompanyNameDomainPropertyId, typeof(nHydrateModel.CompanyNamePropertyHandler)),
-				new DomainMemberInfo(typeof(nHydrateModel), "Copyright", nHydrateModel.CopyrightDomainPropertyId, typeof(nHydrateModel.CopyrightPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "DefaultNamespace", nHydrateModel.DefaultNamespaceDomainPropertyId, typeof(nHydrateModel.DefaultNamespacePropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "ProjectName", nHydrateModel.ProjectNameDomainPropertyId, typeof(nHydrateModel.ProjectNamePropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "StoredProcedurePrefix", nHydrateModel.StoredProcedurePrefixDomainPropertyId, typeof(nHydrateModel.StoredProcedurePrefixPropertyHandler)),
@@ -146,9 +145,6 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(nHydrateModel), "TimestampColumnName", nHydrateModel.TimestampColumnNameDomainPropertyId, typeof(nHydrateModel.TimestampColumnNamePropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "GrantUser", nHydrateModel.GrantUserDomainPropertyId, typeof(nHydrateModel.GrantUserPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "TransformNames", nHydrateModel.TransformNamesDomainPropertyId, typeof(nHydrateModel.TransformNamesPropertyHandler)),
-				new DomainMemberInfo(typeof(nHydrateModel), "ShowViews", nHydrateModel.ShowViewsDomainPropertyId, typeof(nHydrateModel.ShowViewsPropertyHandler)),
-				new DomainMemberInfo(typeof(nHydrateModel), "ShowStoredProcedures", nHydrateModel.ShowStoredProceduresDomainPropertyId, typeof(nHydrateModel.ShowStoredProceduresPropertyHandler)),
-				new DomainMemberInfo(typeof(nHydrateModel), "ShowFunctions", nHydrateModel.ShowFunctionsDomainPropertyId, typeof(nHydrateModel.ShowFunctionsPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "Collate", nHydrateModel.CollateDomainPropertyId, typeof(nHydrateModel.CollatePropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "ModelToDisk", nHydrateModel.ModelToDiskDomainPropertyId, typeof(nHydrateModel.ModelToDiskPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "MaxPrecedenceOrder", nHydrateModel.MaxPrecedenceOrderDomainPropertyId, typeof(nHydrateModel.MaxPrecedenceOrderPropertyHandler)),

@@ -145,18 +145,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;CompanyName&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.nHydrateModel/Copyright.Description" xml:space="preserve">
-    <value>Determines copyright to add to each file</value>
-    <comment>Description for DomainProperty &apos;Copyright&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/Copyright.DisplayName" xml:space="preserve">
-    <value>Copyright</value>
-    <comment>DisplayName for DomainProperty &apos;Copyright&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/Copyright.Category" xml:space="preserve">
-    <value>Documentation</value>
-    <comment>Category for DomainProperty &apos;Copyright&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.nHydrateModel/DefaultNamespace.Description" xml:space="preserve">
     <value>Determines the default namespace and base project names of all generated projects. Leave blank for the default value of CompanyName.ProjectName</value>
     <comment>Description for DomainProperty &apos;DefaultNamespace&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
@@ -300,42 +288,6 @@
   <data name="nHydrate.Dsl.nHydrateModel/TransformNames.Category" xml:space="preserve">
     <value>Code</value>
     <comment>Category for DomainProperty &apos;TransformNames&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/ShowViews.Description" xml:space="preserve">
-    <value>Determines if views are visible on the diagram</value>
-    <comment>Description for DomainProperty &apos;ShowViews&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/ShowViews.DisplayName" xml:space="preserve">
-    <value>Show Views</value>
-    <comment>DisplayName for DomainProperty &apos;ShowViews&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/ShowViews.Category" xml:space="preserve">
-    <value>Diagram</value>
-    <comment>Category for DomainProperty &apos;ShowViews&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/ShowStoredProcedures.Description" xml:space="preserve">
-    <value>Determines if stored procedures are visible on the diagram</value>
-    <comment>Description for DomainProperty &apos;ShowStoredProcedures&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/ShowStoredProcedures.DisplayName" xml:space="preserve">
-    <value>Show Stored Procedures</value>
-    <comment>DisplayName for DomainProperty &apos;ShowStoredProcedures&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/ShowStoredProcedures.Category" xml:space="preserve">
-    <value>Diagram</value>
-    <comment>Category for DomainProperty &apos;ShowStoredProcedures&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/ShowFunctions.Description" xml:space="preserve">
-    <value>Determines if functions are visible on the diagram</value>
-    <comment>Description for DomainProperty &apos;ShowFunctions&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/ShowFunctions.DisplayName" xml:space="preserve">
-    <value>Show Functions</value>
-    <comment>DisplayName for DomainProperty &apos;ShowFunctions&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/ShowFunctions.Category" xml:space="preserve">
-    <value>Diagram</value>
-    <comment>Category for DomainProperty &apos;ShowFunctions&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.nHydrateModel/Collate.Description" xml:space="preserve">
     <value>Determines the database collation</value>

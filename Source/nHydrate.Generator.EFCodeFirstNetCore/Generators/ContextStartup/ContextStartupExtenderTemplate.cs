@@ -48,7 +48,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
         {
             try
             {
-                nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 sb.AppendLine("namespace " + this.GetLocalNamespace());
                 sb.AppendLine("{");
                 sb.AppendLine("	partial class ContextStartup");

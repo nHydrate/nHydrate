@@ -39,7 +39,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
         {
             try
             {
-                nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 sb.AppendLine("namespace " + this.GetLocalNamespace());
                 sb.AppendLine("{");
                 sb.AppendLine("	partial interface I" + _model.ProjectName + "Entities");

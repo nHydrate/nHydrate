@@ -52,7 +52,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             try
             {
                 nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
-                nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
 
                 #region Using
                 sb.AppendLine("using System;");

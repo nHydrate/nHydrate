@@ -45,7 +45,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             try
             {
                 nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
-                nHydrate.Generator.GenerationHelper.AppendCopyrightInCode(sb, _model);
                 sb.AppendLine("#pragma warning disable 0168"); //Suppress variable declared not used
                 sb.AppendLine("#pragma warning disable 0108"); //Hides inherited member audit fields from IAudit
                 this.AppendUsingStatements();

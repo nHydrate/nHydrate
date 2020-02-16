@@ -151,19 +151,12 @@
     <Compile Include="Design\Converters\VersionConverter.cs" />
     <Compile Include="Design\Editors\SecurityFunctionEditor.cs" />
     <Compile Include="Design\Editors\EntityFieldEditor.cs" />
-    <Compile Include="Design\Editors\CopyrightEditor.cs" />
     <Compile Include="Design\Editors\SQLEditor.cs" />
     <Compile Include="Design\Forms\SecurityFunctionForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Design\Forms\SecurityFunctionForm.Designer.cs">
       <DependentUpon>SecurityFunctionForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Design\Forms\CopyrightForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Design\Forms\CopyrightForm.Designer.cs">
-      <DependentUpon>CopyrightForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Design\Forms\SQLForm.cs">
       <SubType>Form</SubType>
@@ -353,9 +346,6 @@
     <Content Include="Resources\nhydrate32-boxed.ico" />
     <Content Include="Resources\storedproc.bmp" />
     <Content Include="Resources\view.bmp" />
-    <EmbeddedResource Include="Design\Forms\CopyrightForm.resx">
-      <DependentUpon>CopyrightForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
