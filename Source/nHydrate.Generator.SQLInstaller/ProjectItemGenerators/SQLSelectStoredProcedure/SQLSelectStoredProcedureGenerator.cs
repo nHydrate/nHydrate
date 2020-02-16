@@ -33,8 +33,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLSelectStoredP
                 sb.AppendLine();
 
                 var grantSB = new StringBuilder();
-                foreach (var storedProcedure in _model.Database.CustomStoredProcedures.Where(x => x.Generated)
-                    .OrderBy(x => x.Name))
+                foreach (var storedProcedure in _model.Database.CustomStoredProcedures.OrderBy(x => x.Name))
                 {
                     var template = new SQLSelectStoredProcedureTemplate(_model, storedProcedure, true, grantSB);
                     sb.Append(template.FileContent);

@@ -35,7 +35,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
 
                 //Defined views
                 var grantSB = new StringBuilder();
-                foreach (var view in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
+                foreach (var view in _model.Database.CustomViews.OrderBy(x => x.Name))
                 {
                     var template = new SQLStoredProcedureViewAllTemplate(_model, view, true, grantSB);
                     sb.Append(template.FileContent);

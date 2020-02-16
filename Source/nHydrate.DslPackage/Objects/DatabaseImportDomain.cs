@@ -788,7 +788,7 @@ namespace nHydrate.DslPackage.Objects
             database.Collate = model.Collate;
 
             #region Load the entities
-            foreach (var entity in model.Entities.Where(x => x.IsGenerated))
+            foreach (var entity in model.Entities)
             {
                 var newEntity = new nHydrate.DataImport.Entity();
                 newEntity.ID = entity.Id;
@@ -871,7 +871,7 @@ namespace nHydrate.DslPackage.Objects
             #endregion
 
             #region Load Stored Procedures
-            foreach (var storedProc in model.StoredProcedures.Where(x => x.IsGenerated))
+            foreach (var storedProc in model.StoredProcedures)
             {
                 var newStoredProc = new nHydrate.DataImport.StoredProc();
                 newStoredProc.ID = storedProc.Id;
@@ -920,7 +920,7 @@ namespace nHydrate.DslPackage.Objects
             #endregion
 
             #region Load Views
-            foreach (var view in model.Views.Where(x => x.IsGenerated))
+            foreach (var view in model.Views)
             {
                 var newView = new nHydrate.DataImport.View();
                 newView.ID = view.Id;
@@ -951,7 +951,7 @@ namespace nHydrate.DslPackage.Objects
             #endregion
 
             #region Load Functions
-            foreach (var function in model.Functions.Where(x => x.IsGenerated))
+            foreach (var function in model.Functions)
             {
                 var newFunction = new nHydrate.DataImport.Function();
                 newFunction.ID = function.Id;

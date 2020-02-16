@@ -91,7 +91,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		/// </summary>");
             sb.AppendLine($"		public static System.Type GetFieldType(this {this.GetLocalNamespace()}.{_model.ProjectName}Entities context, Enum field)");
             sb.AppendLine("		{");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine($"			if (field is {this.GetLocalNamespace()}.Entity.{table.PascalName}.FieldNameConstants)");
                 sb.AppendLine($"				return {this.GetLocalNamespace()}.Entity.{table.PascalName}.GetFieldType(({this.GetLocalNamespace()}.Entity.{table.PascalName}.FieldNameConstants)field);");
@@ -114,7 +114,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		{");
             sb.AppendLine("			switch (entityType)");
             sb.AppendLine("			{");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
                 sb.AppendLine("				case EntityMappingConstants." + table.PascalName + ": return typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ");");
             sb.AppendLine("			}");
             sb.AppendLine("			throw new Exception(\"Unknown entity type!\");");
@@ -337,7 +337,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
 
             sb.AppendLine("        #region Many-to-Many Convenience Extensions");
 
-            foreach (var table in _model.Database.Tables.Where(x => x.AssociativeTable && x.Generated))
+            foreach (var table in _model.Database.Tables.Where(x => x.AssociativeTable))
             {
                 var relations = table.GetRelationsWhereChild().ToList();
                 if (relations.Count == 2)

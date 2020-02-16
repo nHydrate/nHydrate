@@ -63,7 +63,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Functions
 
                 #region Functions
 
-                foreach (var function in _model.Database.Functions.Where(x => x.Generated).OrderBy(x => x.DatabaseName))
+                foreach (var function in _model.Database.Functions.OrderBy(x => x.DatabaseName))
                 {
                     sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSQLCreateFunction(function, true));
                 }
@@ -71,7 +71,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Functions
                 //Add Grants
                 if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))
                 {
-                    foreach (var function in _model.Database.Functions.Where(x => x.Generated).OrderBy(x => x.DatabaseName))
+                    foreach (var function in _model.Database.Functions.OrderBy(x => x.DatabaseName))
                     {
                         if (function.IsTable) sb.AppendFormat("GRANT ALL ON [" + function.GetSQLSchema() + "].[{0}] TO [{1}]", function.PascalName, _model.Database.GrantExecUser).AppendLine();
                         else sb.AppendFormat("GRANT ALL ON [" + function.GetSQLSchema() + "].[{0}] TO [{1}]", function.PascalName, _model.Database.GrantExecUser).AppendLine();

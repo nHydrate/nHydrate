@@ -22,7 +22,6 @@ namespace nHydrate.Dsl
             var timer = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
             try
             {
-                if (!this.IsGenerated) return;
                 //if (!this.IsDirty) return;
 
                 #region Check valid name

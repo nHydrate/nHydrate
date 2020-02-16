@@ -28,7 +28,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
             var columnList = new List<Column>();
             if (useFullHierarchy)
             {
-                foreach (var c in table.GetColumnsFullHierarchy().Where(x => x.Generated).OrderBy(x => x.Name))
+                foreach (var c in table.GetColumnsFullHierarchy().OrderBy(x => x.Name))
                     columnList.Add(c);
             }
             else

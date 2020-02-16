@@ -99,7 +99,7 @@ namespace nHydrate.Dsl
                 var nameList = new HashSet<string>();
 
                 //Check all entities
-                foreach (var entity in this.Entities.Where(x => x.IsGenerated))
+                foreach (var entity in this.Entities)
                 {
                     {
                         var check = entity.PascalName.ToLower();
@@ -112,7 +112,7 @@ namespace nHydrate.Dsl
                 }
 
                 //Check Views
-                foreach (var view in this.Views.Where(x => x.IsGenerated))
+                foreach (var view in this.Views)
                 {
                     var check = view.PascalName.ToLower();
                     if (nameList.Contains(check))
@@ -122,7 +122,7 @@ namespace nHydrate.Dsl
                 }
 
                 //Check Stored Procedures
-                foreach (var sp in this.StoredProcedures.Where(x => x.IsGenerated))
+                foreach (var sp in this.StoredProcedures)
                 {
                     var check = sp.PascalName.ToLower();
                     if (nameList.Contains(check))
@@ -191,7 +191,7 @@ namespace nHydrate.Dsl
             try
             {
                 #region Check for zero tables
-                if (this.Entities.Count(x => x.IsGenerated) == 0)
+                if (this.Entities.Count() == 0)
                 {
                     context.LogError(ValidationHelper.ErrorTextNoTables, string.Empty, this);
                     return;
@@ -199,7 +199,7 @@ namespace nHydrate.Dsl
                 #endregion
 
                 #region Verify that the name is valid
-                foreach (var item in this.Entities.Where(x => x.IsGenerated))
+                foreach (var item in this.Entities)
                 {
                     if (!ValidationHelper.ValidCodeIdentifier(item.PascalName) || !ValidationHelper.ValidEntityName(item.PascalName))
                     {
@@ -219,7 +219,7 @@ namespace nHydrate.Dsl
 
                 #region Check for duplicate names
                 var nameList = new Hashtable();
-                foreach (var table in this.Entities.Where(x => x.IsGenerated))
+                foreach (var table in this.Entities)
                 {
                     var name = table.Name.ToLower();
                     if (nameList.ContainsKey(name))
@@ -239,7 +239,7 @@ namespace nHydrate.Dsl
                     var entity = relation.SourceEntity;
                     var relationFields = this.RelationFields.Where(x => x.RelationID == relation.Id).ToList();
 
-                    if (childTable != null && entity != null && childTable.IsGenerated && entity.IsGenerated)
+                    if (childTable != null && entity != null)
                     {
                         var key = string.Empty;
                         if (StringHelper.Match(entity.Name, childTable.Name, true))
@@ -302,7 +302,7 @@ namespace nHydrate.Dsl
                 if (context.CurrentViolations.Count == 0)
                 {
                     nameList = new Hashtable();
-                    foreach (var table in this.Entities.Where(x => x.IsGenerated))
+                    foreach (var table in this.Entities)
                     {
                         var name = table.PascalName.ToLower();
                         if (nameList.ContainsKey(name))
@@ -332,7 +332,7 @@ namespace nHydrate.Dsl
             try
             {
                 #region Verify that the name is valid
-                foreach (var item in this.Views.Where(x => x.IsGenerated))
+                foreach (var item in this.Views)
                 {
                     if (!ValidationHelper.ValidCodeIdentifier(item.PascalName))
                     {
@@ -352,7 +352,7 @@ namespace nHydrate.Dsl
 
                 #region Check for duplicate names
                 var nameList = new Hashtable();
-                foreach (var customView in this.Views.Where(x => x.IsGenerated))
+                foreach (var customView in this.Views)
                 {
                     var name = customView.Name.ToLower();
                     if (nameList.ContainsKey(name))
@@ -381,7 +381,7 @@ namespace nHydrate.Dsl
             try
             {
                 #region Verify that the name is valid
-                foreach (var item in this.StoredProcedures.Where(x => x.IsGenerated))
+                foreach (var item in this.StoredProcedures)
                 {
                     if (!ValidationHelper.ValidCodeIdentifier(item.PascalName))
                     {
@@ -408,7 +408,7 @@ namespace nHydrate.Dsl
 
                 #region Check for duplicate names
                 var nameList = new Hashtable();
-                foreach (var customStoredProcedure in this.StoredProcedures.Where(x => x.IsGenerated))
+                foreach (var customStoredProcedure in this.StoredProcedures)
                 {
                     var name = customStoredProcedure.Name.ToLower();
                     if (nameList.ContainsKey(name))

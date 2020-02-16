@@ -1,11 +1,5 @@
-using System;
 using System.Linq;
-using System.Collections.Generic;
-using System.Text;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
-using nHydrate.Generator.EFCodeFirstNetCore;
-using nHydrate.Generator.ProjectItemGenerators;
 using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
@@ -25,7 +19,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 
         public override void Generate()
         {
-            foreach (var customView in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var customView in _model.Database.CustomViews.OrderBy(x => x.Name))
             {
                 var template = new ViewEntityGeneratedTemplate(_model, customView);
                 var fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;

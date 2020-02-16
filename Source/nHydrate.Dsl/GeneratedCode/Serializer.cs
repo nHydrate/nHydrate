@@ -2107,23 +2107,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				string attribIsGenerated = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "isGenerated");
-				if (attribIsGenerated != null)
-				{
-					global::System.Boolean valueOfIsGenerated;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribIsGenerated, out valueOfIsGenerated))
-					{
-						instanceOfEntity.IsGenerated = valueOfIsGenerated;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isGenerated", typeof(global::System.Boolean), attribIsGenerated);
-					}
-				}
-			}
 			// Immutable
 			if (!serializationContext.Result.Failed)
 			{
@@ -3081,19 +3064,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfEntity.IsGenerated;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isGenerated", serializedPropValue);
-					}
-				}
-			}
 			// Immutable
 			if (!serializationContext.Result.Failed)
 			{
@@ -3676,23 +3646,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "formula", typeof(global::System.String), attribFormula);
-					}
-				}
-			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				string attribIsGenerated = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "isGenerated");
-				if (attribIsGenerated != null)
-				{
-					global::System.Boolean valueOfIsGenerated;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribIsGenerated, out valueOfIsGenerated))
-					{
-						instanceOfField.IsGenerated = valueOfIsGenerated;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isGenerated", typeof(global::System.Boolean), attribIsGenerated);
 					}
 				}
 			}
@@ -4559,19 +4512,6 @@ namespace nHydrate.Dsl
 	
 				}
 			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfField.IsGenerated;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isGenerated", serializedPropValue);
-					}
-				}
-			}
 			// Identity
 			if (!serializationContext.Result.Failed)
 			{
@@ -5050,23 +4990,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "name", typeof(global::System.String), attribName);
-					}
-				}
-			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				string attribIsGenerated = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "isGenerated");
-				if (attribIsGenerated != null)
-				{
-					global::System.Boolean valueOfIsGenerated;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribIsGenerated, out valueOfIsGenerated))
-					{
-						instanceOfStoredProcedure.IsGenerated = valueOfIsGenerated;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isGenerated", typeof(global::System.Boolean), attribIsGenerated);
 					}
 				}
 			}
@@ -5788,19 +5711,6 @@ namespace nHydrate.Dsl
 	
 				}
 			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfStoredProcedure.IsGenerated;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isGenerated", serializedPropValue);
-					}
-				}
-			}
 			// CodeFacade
 			if (!serializationContext.Result.Failed)
 			{
@@ -6265,23 +6175,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "default", typeof(global::System.String), attribDefault);
-					}
-				}
-			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				string attribIsGenerated = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "isGenerated");
-				if (attribIsGenerated != null)
-				{
-					global::System.Boolean valueOfIsGenerated;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribIsGenerated, out valueOfIsGenerated))
-					{
-						instanceOfStoredProcedureField.IsGenerated = valueOfIsGenerated;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isGenerated", typeof(global::System.Boolean), attribIsGenerated);
 					}
 				}
 			}
@@ -6815,19 +6708,6 @@ namespace nHydrate.Dsl
 	
 				}
 			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfStoredProcedureField.IsGenerated;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isGenerated", serializedPropValue);
-					}
-				}
-			}
 			// Length
 			if (!serializationContext.Result.Failed)
 			{
@@ -7180,23 +7060,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "default", typeof(global::System.String), attribDefault);
-					}
-				}
-			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				string attribIsGenerated = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "isGenerated");
-				if (attribIsGenerated != null)
-				{
-					global::System.Boolean valueOfIsGenerated;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribIsGenerated, out valueOfIsGenerated))
-					{
-						instanceOfStoredProcedureParameter.IsGenerated = valueOfIsGenerated;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isGenerated", typeof(global::System.Boolean), attribIsGenerated);
 					}
 				}
 			}
@@ -7764,19 +7627,6 @@ namespace nHydrate.Dsl
 	
 				}
 			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfStoredProcedureParameter.IsGenerated;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isGenerated", serializedPropValue);
-					}
-				}
-			}
 			// Length
 			if (!serializationContext.Result.Failed)
 			{
@@ -8087,23 +7937,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "name", typeof(global::System.String), attribName);
-					}
-				}
-			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				string attribIsGenerated = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "isGenerated");
-				if (attribIsGenerated != null)
-				{
-					global::System.Boolean valueOfIsGenerated;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribIsGenerated, out valueOfIsGenerated))
-					{
-						instanceOfView.IsGenerated = valueOfIsGenerated;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isGenerated", typeof(global::System.Boolean), attribIsGenerated);
 					}
 				}
 			}
@@ -8727,19 +8560,6 @@ namespace nHydrate.Dsl
 	
 				}
 			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfView.IsGenerated;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isGenerated", serializedPropValue);
-					}
-				}
-			}
 			// CodeFacade
 			if (!serializationContext.Result.Failed)
 			{
@@ -9146,23 +8966,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "summary", typeof(global::System.String), attribSummary);
-					}
-				}
-			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				string attribIsGenerated = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "isGenerated");
-				if (attribIsGenerated != null)
-				{
-					global::System.Boolean valueOfIsGenerated;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribIsGenerated, out valueOfIsGenerated))
-					{
-						instanceOfViewField.IsGenerated = valueOfIsGenerated;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isGenerated", typeof(global::System.Boolean), attribIsGenerated);
 					}
 				}
 			}
@@ -9714,19 +9517,6 @@ namespace nHydrate.Dsl
 					if (!string.IsNullOrEmpty(propValue))
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "summary", propValue);
 	
-				}
-			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfViewField.IsGenerated;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isGenerated", serializedPropValue);
-					}
 				}
 			}
 			// Length
@@ -12927,23 +12717,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				string attribIsGenerated = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "isGenerated");
-				if (attribIsGenerated != null)
-				{
-					global::System.Boolean valueOfIsGenerated;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribIsGenerated, out valueOfIsGenerated))
-					{
-						instanceOfFunction.IsGenerated = valueOfIsGenerated;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isGenerated", typeof(global::System.Boolean), attribIsGenerated);
-					}
-				}
-			}
 			// CodeFacade
 			if (!serializationContext.Result.Failed)
 			{
@@ -13645,19 +13418,6 @@ namespace nHydrate.Dsl
 	
 				}
 			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfFunction.IsGenerated;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isGenerated", serializedPropValue);
-					}
-				}
-			}
 			// CodeFacade
 			if (!serializationContext.Result.Failed)
 			{
@@ -14109,23 +13869,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "default", typeof(global::System.String), attribDefault);
-					}
-				}
-			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				string attribIsGenerated = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "isGenerated");
-				if (attribIsGenerated != null)
-				{
-					global::System.Boolean valueOfIsGenerated;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribIsGenerated, out valueOfIsGenerated))
-					{
-						instanceOfFunctionParameter.IsGenerated = valueOfIsGenerated;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isGenerated", typeof(global::System.Boolean), attribIsGenerated);
 					}
 				}
 			}
@@ -14676,19 +14419,6 @@ namespace nHydrate.Dsl
 	
 				}
 			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfFunctionParameter.IsGenerated;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isGenerated", serializedPropValue);
-					}
-				}
-			}
 			// Length
 			if (!serializationContext.Result.Failed)
 			{
@@ -15054,23 +14784,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "default", typeof(global::System.String), attribDefault);
-					}
-				}
-			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				string attribIsGenerated = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "isGenerated");
-				if (attribIsGenerated != null)
-				{
-					global::System.Boolean valueOfIsGenerated;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribIsGenerated, out valueOfIsGenerated))
-					{
-						instanceOfFunctionField.IsGenerated = valueOfIsGenerated;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isGenerated", typeof(global::System.Boolean), attribIsGenerated);
 					}
 				}
 			}
@@ -15602,19 +15315,6 @@ namespace nHydrate.Dsl
 					if (!string.IsNullOrEmpty(propValue))
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "default", propValue);
 	
-				}
-			}
-			// IsGenerated
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfFunctionField.IsGenerated;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isGenerated", serializedPropValue);
-					}
 				}
 			}
 			// Length

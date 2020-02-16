@@ -77,7 +77,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Unversioned
                 //If the indexes have a name on import then rename it
                 sb.AppendLine("--RENAME OLD INDEXES FROM THE IMPORT DATABASE IF NEEDED");
                 sb.AppendLine();
-                foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+                foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
                 {
                     foreach (var index in table.TableIndexList)
                     {

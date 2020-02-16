@@ -24,7 +24,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
 
         public override void Generate()
         {
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly) && x.AllowAuditTracking).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly) && x.AllowAuditTracking).OrderBy(x => x.Name))
             {
                 var template = new AuditEntityGeneratedTemplate(_model, table);
                 var fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;

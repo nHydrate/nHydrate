@@ -267,11 +267,11 @@ namespace nHydrate.DslPackage.Objects
             root.RemovedViews.AddRange(model.RemovedViews);
             root.RemovedStoredProcedures.AddRange(model.RemovedStoredProcedures);
             root.RemovedFunctions.AddRange(model.RemovedFunctions);
-            root.RemovedTables.AddRange(model.Views.Where(x => !x.IsGenerated).Select(x => x.Name));
-            root.RemovedTables.AddRange(model.StoredProcedures.Where(x => !x.IsGenerated).Select(x => x.Name));
-            root.RemovedTables.AddRange(model.Functions.Where(x => !x.IsGenerated).Select(x => x.Name));
+            root.RemovedTables.AddRange(model.Views.Select(x => x.Name));
+            root.RemovedTables.AddRange(model.StoredProcedures.Select(x => x.Name));
+            root.RemovedTables.AddRange(model.Functions.Select(x => x.Name));
             //Remove EnumOnly type-tables from the project
-            root.RemovedTables.AddRange(model.Entities.Where(x => x.TypedEntity == TypedEntityConstants.EnumOnly && x.IsGenerated).Select(x => x.Name));
+            root.RemovedTables.AddRange(model.Entities.Where(x => x.TypedEntity == TypedEntityConstants.EnumOnly).Select(x => x.Name));
 
             return genList;
         }
@@ -318,8 +318,8 @@ namespace nHydrate.DslPackage.Objects
 
                 //Find tables that WERE generated last time but NOT generated this time, remove the tables
                 {
-                    var item1 = oldRoot.Database.Tables.FirstOrDefault(x => x.Key == t.Key && x.PascalName.ToLower() == t.PascalName.ToLower() && x.Generated);
-                    var item2 = root.Database.Tables.FirstOrDefault(x => x.Key == t.Key && x.PascalName.ToLower() == t.PascalName.ToLower() && !x.Generated);
+                    var item1 = oldRoot.Database.Tables.FirstOrDefault(x => x.Key == t.Key && x.PascalName.ToLower() == t.PascalName.ToLower());
+                    var item2 = root.Database.Tables.FirstOrDefault(x => x.Key == t.Key && x.PascalName.ToLower() == t.PascalName.ToLower());
                     if (item1 != null && item2 != null)
                         root.RemovedTables.Add(item2.Name);
                 }
@@ -369,7 +369,7 @@ namespace nHydrate.DslPackage.Objects
                 root.Database.Collate = model.Collate;
 
                 #region Load the entities
-                foreach (var entity in model.Entities.Where(x => x.IsGenerated))
+                foreach (var entity in model.Entities)
                 {
                     #region Table Info
                     var newTable = root.Database.Tables.Add();
@@ -384,7 +384,6 @@ namespace nHydrate.DslPackage.Objects
                     newTable.DBSchema = entity.Schema;
                     newTable.Description = entity.Summary;
                     newTable.EnforcePrimaryKey = entity.EnforcePrimaryKey;
-                    newTable.Generated = entity.IsGenerated;
                     newTable.Immutable = entity.Immutable;
                     newTable.TypedTable = (nHydrate.Generator.Models.TypedTableConstants)Enum.Parse(typeof(nHydrate.Generator.Models.TypedTableConstants), entity.TypedEntity.ToString(), true);
                     newTable.Name = entity.Name;
@@ -402,7 +401,7 @@ namespace nHydrate.DslPackage.Objects
                     #endregion
 
                     #region Load the fields for this entity
-                    var fieldList = entity.Fields.Where(x => x.IsGenerated).ToList();
+                    var fieldList = entity.Fields.ToList();
                     foreach (var field in fieldList.OrderBy(x => x.SortOrder))
                     {
                         var newColumn = root.Database.Columns.Add();
@@ -417,7 +416,6 @@ namespace nHydrate.DslPackage.Objects
                         newColumn.DefaultIsFunc = field.DefaultIsFunc;
                         newColumn.Description = field.Summary;
                         newColumn.Formula = field.Formula;
-                        newColumn.Generated = field.IsGenerated;
                         newColumn.Identity = (nHydrate.Generator.Models.IdentityTypeConstants)Enum.Parse(typeof(nHydrate.Generator.Models.IdentityTypeConstants), field.Identity.ToString());
                         newColumn.IsIndexed = field.IsIndexed;
                         newColumn.IsReadOnly = field.IsReadOnly;
@@ -606,7 +604,7 @@ namespace nHydrate.DslPackage.Objects
                 #endregion
 
                 #region Views
-                foreach (var view in model.Views.Where(x => x.IsGenerated))
+                foreach (var view in model.Views)
                 {
                     var newView = root.Database.CustomViews.Add();
                     newView.ResetKey(view.Id.ToString());
@@ -614,7 +612,6 @@ namespace nHydrate.DslPackage.Objects
                     newView.CodeFacade = view.CodeFacade;
                     newView.DBSchema = view.Schema;
                     newView.Description = view.Summary;
-                    newView.Generated = view.IsGenerated;
                     newView.Name = view.Name;
                     newView.SQL = view.SQL;
                     newView.GeneratesDoubleDerived = view.GeneratesDoubleDerived;
@@ -631,7 +628,6 @@ namespace nHydrate.DslPackage.Objects
                         newField.Default = field.Default;
                         newField.Description = field.Summary;
                         newField.IsPrimaryKey = field.IsPrimaryKey;
-                        newField.Generated = field.IsGenerated;
                         newField.Length = field.Length;
                         newField.Name = field.Name;
                         newField.Scale = field.Scale;
@@ -643,7 +639,7 @@ namespace nHydrate.DslPackage.Objects
                 #endregion
 
                 #region Stored Procedures
-                foreach (var storedProc in model.StoredProcedures.Where(x => x.IsGenerated))
+                foreach (var storedProc in model.StoredProcedures)
                 {
                     var newStoredProc = root.Database.CustomStoredProcedures.Add();
                     newStoredProc.ResetKey(storedProc.Id.ToString());
@@ -652,7 +648,6 @@ namespace nHydrate.DslPackage.Objects
                     newStoredProc.DatabaseObjectName = storedProc.DatabaseObjectName;
                     newStoredProc.DBSchema = storedProc.Schema;
                     newStoredProc.Description = storedProc.Summary;
-                    newStoredProc.Generated = storedProc.IsGenerated;
                     newStoredProc.Name = storedProc.Name;
                     newStoredProc.SQL = storedProc.SQL;
                     newStoredProc.GeneratesDoubleDerived = storedProc.GeneratesDoubleDerived;
@@ -669,7 +664,6 @@ namespace nHydrate.DslPackage.Objects
                         newField.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), field.DataType.ToString());
                         newField.Default = field.Default;
                         newField.Description = field.Summary;
-                        newField.Generated = field.IsGenerated;
                         newField.Length = field.Length;
                         newField.Name = field.Name;
                         newField.Scale = field.Scale;
@@ -690,7 +684,6 @@ namespace nHydrate.DslPackage.Objects
                         newParameter.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), parameter.DataType.ToString());
                         newParameter.Default = parameter.Default;
                         newParameter.Description = parameter.Summary;
-                        newParameter.Generated = parameter.IsGenerated;
                         newParameter.IsOutputParameter = parameter.IsOutputParameter;
                         newParameter.Length = parameter.Length;
                         newParameter.Name = parameter.Name;
@@ -704,7 +697,7 @@ namespace nHydrate.DslPackage.Objects
                 #endregion
 
                 #region Functions
-                foreach (var function in model.Functions.Where(x => x.IsGenerated))
+                foreach (var function in model.Functions)
                 {
                     var newFunction = root.Database.Functions.Add();
                     newFunction.ResetKey(function.Id.ToString());
@@ -712,7 +705,6 @@ namespace nHydrate.DslPackage.Objects
                     newFunction.CodeFacade = function.CodeFacade;
                     newFunction.DBSchema = function.Schema;
                     newFunction.Description = function.Summary;
-                    newFunction.Generated = function.IsGenerated;
                     newFunction.Name = function.Name;
                     newFunction.SQL = function.SQL;
                     newFunction.IsTable = function.IsTable;
@@ -729,7 +721,6 @@ namespace nHydrate.DslPackage.Objects
                         newField.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), field.DataType.ToString());
                         newField.Default = field.Default;
                         newField.Description = field.Summary;
-                        newField.Generated = field.IsGenerated;
                         newField.Length = field.Length;
                         newField.Name = field.Name;
                         newField.Scale = field.Scale;
@@ -750,7 +741,6 @@ namespace nHydrate.DslPackage.Objects
                         newParameter.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), parameter.DataType.ToString());
                         newParameter.Default = parameter.Default;
                         newParameter.Description = parameter.Summary;
-                        newParameter.Generated = parameter.IsGenerated;
                         newParameter.Length = parameter.Length;
                         newParameter.Name = parameter.Name;
                         newParameter.Scale = parameter.Scale;

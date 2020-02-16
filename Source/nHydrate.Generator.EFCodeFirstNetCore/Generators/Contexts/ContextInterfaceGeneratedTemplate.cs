@@ -92,7 +92,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             #region Tables
-            foreach (var item in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
+            foreach (var item in _model.Database.Tables.Where(x => (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + " { get ; }");
@@ -101,7 +101,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             #region Views
-            foreach (var item in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.PascalName))
+            foreach (var item in _model.Database.CustomViews.OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + " { get ; }");
@@ -110,9 +110,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             #region Stored Proc
-            foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.Generated).OrderBy(x => x.PascalName))
+            foreach (var item in _model.Database.CustomStoredProcedures.OrderBy(x => x.PascalName))
             {
-                var paramset = item.GetParameters().Where(x => x.Generated).ToList();
+                var paramset = item.GetParameters().ToList();
                 var paramString = string.Join(", ", paramset.Select(x => (x.IsOutputParameter ? "out " : "") + x.GetCodeType(true) + " " + x.CamelName).ToList());
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "(" + paramString + ");");
@@ -121,9 +121,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             #region Functions
-            foreach (var item in _model.Database.Functions.Where(x => x.Generated && x.IsTable).OrderBy(x => x.PascalName))
+            foreach (var item in _model.Database.Functions.Where(x => x.IsTable).OrderBy(x => x.PascalName))
             {
-                var paramset = item.GetParameters().Where(x => x.Generated).ToList();
+                var paramset = item.GetParameters().ToList();
                 var paramString = string.Join(", ", paramset.Select(x => x.GetCodeType(true) + " " + x.CamelName).ToList());
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + "(" + paramString + ");");
@@ -159,7 +159,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
         {
             try
             {
-                foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.None).OrderBy(x => x.Name))
+                foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.None).OrderBy(x => x.Name))
                 {
                     if (table.PrimaryKeyColumns.Count == 1)
                     {

@@ -223,11 +223,6 @@
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="5044db17-fb85-4f77-b070-278f87b02f8e" Description="Determines if this item is used when generating" Name="IsGenerated" DisplayName="Is Generated" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="7b18441c-79a6-4b6e-9d2a-b155eb75dbe5" Description="Determines if this entity can be changed" Name="Immutable" DisplayName="Immutable" DefaultValue="false" Category="Code">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
@@ -355,11 +350,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="76a59bb8-81b0-4459-82fe-e604387215bf" Description="Determines if this item is used when generating" Name="IsGenerated" DisplayName="Is Generated" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="29e9a228-046e-468d-930d-ebcaac1c0418" Description="Determines the type of identity for this column" Name="Identity" DisplayName="Identity" DefaultValue="None" Category="Definition">
           <Type>
             <DomainEnumerationMoniker Name="IdentityTypeConstants" />
@@ -480,11 +470,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="41ba3b0e-81bc-4fa0-977e-519fb609a178" Description="Determines if this item is used when generating" Name="IsGenerated" DisplayName="Is Generated" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="9252ed3a-0e26-4bef-b114-0ee1dd2b70ba" Description="Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier." Name="CodeFacade" DisplayName="Code Facade" Category="Code">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
@@ -593,11 +578,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="2a8e214f-140c-4483-ac4f-e79a2d4cf1cb" Description="Determines if this item is used when generating" Name="IsGenerated" DisplayName="Is Generated" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="4aba4368-723c-47c8-80ba-dc03f2bfcc10" Description="Determines the size of this field in bytes" Name="Length" DisplayName="Length" DefaultValue="50" Category="Definition">
           <Attributes>
             <ClrAttribute Name="System.ComponentModel.TypeConverter">
@@ -670,11 +650,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="68eb3263-0a8f-4793-b637-6d622cc7522f" Description="Determines if this item is used when generating" Name="IsGenerated" DisplayName="Is Generated" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="b106a032-1d57-4532-8fd6-8f370e281fe5" Description="Determines the size of this field in bytes" Name="Length" DisplayName="Length" DefaultValue="50" Category="Definition">
           <Attributes>
             <ClrAttribute Name="System.ComponentModel.TypeConverter">
@@ -728,11 +703,6 @@
         <DomainProperty Id="270471bd-00cc-4dae-b6d2-0253f42708a4" Description="Determines the name of this object" Name="Name" DisplayName="Name" Category="Definition" IsElementName="true">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="a6ee4a71-3972-4a41-830d-dfe47ce7a807" Description="Determines if this item is used when generating" Name="IsGenerated" DisplayName="Is Generated" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
         </DomainProperty>
         <DomainProperty Id="b955fb42-785a-4b07-80fd-9b5dc816cb14" Description="Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier." Name="CodeFacade" DisplayName="Code Facade" Category="Code">
@@ -818,11 +788,6 @@
           </Attributes>
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="ee7d6ca9-883e-4d34-9444-18b3ea9c7c6b" Description="Determines if this item is used when generating" Name="IsGenerated" DisplayName="Is Generated" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
         </DomainProperty>
         <DomainProperty Id="6ab91e23-be5f-4ff9-b197-edc5ca1ea970" Description="Determines the size of this field in bytes" Name="Length" DisplayName="Length" DefaultValue="50" Category="Definition">
@@ -977,11 +942,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="7a8be4b7-4cb3-4398-b64f-4c4eeb6384a8" Description="Determines if this item is used when generating" Name="IsGenerated" DisplayName="Is Generated" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="5cb47a54-d2a1-4876-8a4e-76a37b08ba3c" Description="Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier." Name="CodeFacade" DisplayName="Code Facade" Category="Code">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
@@ -1085,11 +1045,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="419b6652-e6b5-4b2a-86b0-f04d3f48deb5" Description="Determines if this item is used when generating" Name="IsGenerated" DisplayName="Is Generated" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="0c316064-28a7-440f-a88a-3c6a94045dec" Description="Determines the size of this field in bytes" Name="Length" DisplayName="Length" DefaultValue="50" Category="Definition">
           <Attributes>
             <ClrAttribute Name="System.ComponentModel.TypeConverter">
@@ -1165,11 +1120,6 @@
         <DomainProperty Id="4fe9787e-6a50-4060-8327-93dce4459689" Description="Determines the default value of this object" Name="Default" DisplayName="Default" Category="Definition">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="767a56f3-75d1-4c8e-a767-a398641a0d8d" Description="Determines if this item is used when generating" Name="IsGenerated" DisplayName="Is Generated" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
         </DomainProperty>
         <DomainProperty Id="9b154c3b-1f7a-4d59-8912-e171efb9a6e7" Description="Determines the size of this field in bytes" Name="Length" DisplayName="Length" DefaultValue="50" Category="Definition">
@@ -1937,9 +1887,6 @@
           <XmlPropertyData XmlName="enforcePrimaryKey">
             <DomainPropertyMoniker Name="Entity/EnforcePrimaryKey" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="isGenerated">
-            <DomainPropertyMoniker Name="Entity/IsGenerated" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="immutable">
             <DomainPropertyMoniker Name="Entity/Immutable" />
           </XmlPropertyData>
@@ -2042,9 +1989,6 @@
           <XmlPropertyData XmlName="formula">
             <DomainPropertyMoniker Name="Field/Formula" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="isGenerated">
-            <DomainPropertyMoniker Name="Field/IsGenerated" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="identity">
             <DomainPropertyMoniker Name="Field/Identity" />
           </XmlPropertyData>
@@ -2130,9 +2074,6 @@
           <XmlRelationshipData UseFullForm="true" RoleElementName="parameters">
             <DomainRelationshipMoniker Name="StoredProcedureHasParameters" />
           </XmlRelationshipData>
-          <XmlPropertyData XmlName="isGenerated">
-            <DomainPropertyMoniker Name="StoredProcedure/IsGenerated" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="codeFacade">
             <DomainPropertyMoniker Name="StoredProcedure/CodeFacade" />
           </XmlPropertyData>
@@ -2180,9 +2121,6 @@
           <XmlPropertyData XmlName="default">
             <DomainPropertyMoniker Name="StoredProcedureField/Default" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="isGenerated">
-            <DomainPropertyMoniker Name="StoredProcedureField/IsGenerated" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="length">
             <DomainPropertyMoniker Name="StoredProcedureField/Length" />
           </XmlPropertyData>
@@ -2218,9 +2156,6 @@
           <XmlPropertyData XmlName="default">
             <DomainPropertyMoniker Name="StoredProcedureParameter/Default" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="isGenerated">
-            <DomainPropertyMoniker Name="StoredProcedureParameter/IsGenerated" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="length">
             <DomainPropertyMoniker Name="StoredProcedureParameter/Length" />
           </XmlPropertyData>
@@ -2246,9 +2181,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="name">
             <DomainPropertyMoniker Name="View/Name" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="isGenerated">
-            <DomainPropertyMoniker Name="View/IsGenerated" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="codeFacade">
             <DomainPropertyMoniker Name="View/CodeFacade" />
@@ -2290,9 +2222,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="summary">
             <DomainPropertyMoniker Name="ViewField/Summary" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="isGenerated">
-            <DomainPropertyMoniker Name="ViewField/IsGenerated" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="length">
             <DomainPropertyMoniker Name="ViewField/Length" />
@@ -2391,9 +2320,6 @@
           <XmlPropertyData XmlName="name">
             <DomainPropertyMoniker Name="Function/Name" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="isGenerated">
-            <DomainPropertyMoniker Name="Function/IsGenerated" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="codeFacade">
             <DomainPropertyMoniker Name="Function/CodeFacade" />
           </XmlPropertyData>
@@ -2444,9 +2370,6 @@
           <XmlPropertyData XmlName="default">
             <DomainPropertyMoniker Name="FunctionParameter/Default" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="isGenerated">
-            <DomainPropertyMoniker Name="FunctionParameter/IsGenerated" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="length">
             <DomainPropertyMoniker Name="FunctionParameter/Length" />
           </XmlPropertyData>
@@ -2481,9 +2404,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="default">
             <DomainPropertyMoniker Name="FunctionField/Default" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="isGenerated">
-            <DomainPropertyMoniker Name="FunctionField/IsGenerated" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="length">
             <DomainPropertyMoniker Name="FunctionField/Length" />

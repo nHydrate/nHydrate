@@ -409,12 +409,6 @@
             <xsd:documentation>Determines if this primary key is enforced in the database</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: IsGenerated -->
-        <xsd:attribute name="isGenerated" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this item is used when generating</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: Immutable -->
         <xsd:attribute name="immutable" type="xsd:boolean" >
           <xsd:annotation>
@@ -551,12 +545,6 @@
         <xsd:attribute name="formula" type="xsd:string" >
           <xsd:annotation>
             <xsd:documentation>The formula for a computed field</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: IsGenerated -->
-        <xsd:attribute name="isGenerated" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this item is used when generating</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: Identity -->
@@ -728,12 +716,6 @@
             <xsd:documentation>Determines the name of this object</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: IsGenerated -->
-        <xsd:attribute name="isGenerated" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this item is used when generating</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: CodeFacade -->
         <xsd:attribute name="codeFacade" type="xsd:string" >
           <xsd:annotation>
@@ -844,12 +826,6 @@
             <xsd:documentation>Determines the default value of this object</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: IsGenerated -->
-        <xsd:attribute name="isGenerated" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this item is used when generating</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: Length -->
         <xsd:attribute name="length" type="xsd:integer" >
           <xsd:annotation>
@@ -928,12 +904,6 @@
         <xsd:attribute name="default" type="xsd:string" >
           <xsd:annotation>
             <xsd:documentation>Determines the default value of this object</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: IsGenerated -->
-        <xsd:attribute name="isGenerated" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this item is used when generating</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: Length -->
@@ -1018,12 +988,6 @@
         <xsd:attribute name="name" type="xsd:string" >
           <xsd:annotation>
             <xsd:documentation>Determines the name of this object</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: IsGenerated -->
-        <xsd:attribute name="isGenerated" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this item is used when generating</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: CodeFacade -->
@@ -1116,12 +1080,6 @@
         <xsd:attribute name="summary" type="xsd:string" >
           <xsd:annotation>
             <xsd:documentation>Determines the summary of this object</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: IsGenerated -->
-        <xsd:attribute name="isGenerated" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this item is used when generating</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: Length -->
@@ -1415,12 +1373,6 @@
             <xsd:documentation>Determines the name of this object</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: IsGenerated -->
-        <xsd:attribute name="isGenerated" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this item is used when generating</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: CodeFacade -->
         <xsd:attribute name="codeFacade" type="xsd:string" >
           <xsd:annotation>
@@ -1525,12 +1477,6 @@
             <xsd:documentation>Determines the default value of this object</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: IsGenerated -->
-        <xsd:attribute name="isGenerated" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this item is used when generating</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: Length -->
         <xsd:attribute name="length" type="xsd:integer" >
           <xsd:annotation>
@@ -1611,12 +1557,6 @@
         <xsd:attribute name="default" type="xsd:string" >
           <xsd:annotation>
             <xsd:documentation>Determines the default value of this object</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: IsGenerated -->
-        <xsd:attribute name="isGenerated" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this item is used when generating</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: Length -->

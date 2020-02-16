@@ -37,7 +37,6 @@ namespace nHydrate.Dsl
             var timer = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
             try
             {
-                if (!this.IsGenerated) return;
                 //if (!this.IsDirty) return;
                 System.Windows.Forms.Application.DoEvents();
 
@@ -206,29 +205,6 @@ namespace nHydrate.Dsl
                     if (immutableCount > 0)
                     {
                         context.LogError(string.Format(ValidationHelper.ErrorTextMutableInherit, this.Name, immutableTable.Name), string.Empty, this);
-                    }
-                }
-
-                #endregion
-
-                #region Check that all tables in inheritance chain are generated
-
-                {
-                    var nonGenCount = 0;
-                    Entity nonGenTable = null;
-                    foreach (var h in heirList)
-                    {
-                        if (!h.IsGenerated)
-                        {
-                            if (nonGenTable == null) nonGenTable = h;
-                            nonGenCount++;
-                        }
-                    }
-
-                    //If the counts are different then show errors
-                    if (nonGenCount > 0)
-                    {
-                        context.LogError(string.Format(ValidationHelper.ErrorTextBaseTableNonGenerated, nonGenTable.Name, this.Name), string.Empty, this);
                     }
                 }
 
@@ -528,7 +504,7 @@ namespace nHydrate.Dsl
                 //Only 1 relation can exist from A->B on the same columns 
                 {
                     var hashList = new List<string>();
-                    var rList = relationshipList.Where(x => x.SourceEntity.IsGenerated && x.TargetEntity.IsGenerated).ToList();
+                    var rList = relationshipList.ToList();
                     foreach (var r in rList)
                     {
                         if (!hashList.Contains(r.LinkHash))
@@ -619,7 +595,7 @@ namespace nHydrate.Dsl
 
                 if (!this.Immutable)
                 {
-                    if (this.GeneratedColumns.Count(x => x.Identity == IdentityTypeConstants.Database) == this.GeneratedColumns.Count(x => x.IsGenerated))
+                    if (this.GeneratedColumns.Count(x => x.Identity == IdentityTypeConstants.Database) == this.GeneratedColumns.Count())
                     {
                         context.LogError(string.Format(ValidationHelper.ErrorTextTableNotHave1IdentityOnly, this.Name), string.Empty, this);
                     }
@@ -651,7 +627,7 @@ namespace nHydrate.Dsl
                         }
                     }
 
-                    if (this.Fields.Count(x => x.IsGenerated && !x.IsPrimaryKey) > 0)
+                    if (this.Fields.Count(x => !x.IsPrimaryKey) > 0)
                     {
                         context.LogError(string.Format(ValidationHelper.ErrorTextTableAssociativeNeedsOnlyPK, this.Name), string.Empty, this);
                     }
@@ -694,7 +670,7 @@ namespace nHydrate.Dsl
                     }
                     else
                     {
-                        foreach (var ic in index.IndexColumns.Where(x => x.Field.IsGenerated).ToList())
+                        foreach (var ic in index.IndexColumns.ToList())
                         {
                             if (ic.GetField() == null)
                             {
@@ -842,8 +818,7 @@ namespace nHydrate.Dsl
 
             try
             {
-                if (!this.IsGenerated) return;
-                var columnList = this.Fields.Where(x => x.IsGenerated).ToList();
+                var columnList = this.Fields.ToList();
 
                 #region Check for duplicate names
 
@@ -925,7 +900,7 @@ namespace nHydrate.Dsl
                 if (columnList.Count != 0)
                 {
                     //Make sure all PK are generated
-                    if (this.PrimaryKeyFields.Count != columnList.Count(x => x.IsGenerated && x.IsPrimaryKey == true))
+                    if (this.PrimaryKeyFields.Count != columnList.Count(x => x.IsPrimaryKey == true))
                         context.LogError(string.Format(ValidationHelper.ErrorTextNoPrimaryKey, this.Name), string.Empty, this);
                     else if (this.PrimaryKeyFields.Count == 0)
                         context.LogError(string.Format(ValidationHelper.ErrorTextNoPrimaryKey, this.Name), string.Empty, this);
@@ -938,7 +913,7 @@ namespace nHydrate.Dsl
                 #region Verify only one timestamp/table
 
                 var timestampcount = this.AllowTimestamp ? 1 : 0;
-                timestampcount += this.Fields.Count(x => x.IsGenerated && x.DataType == DataTypeConstants.Timestamp);
+                timestampcount += this.Fields.Count(x => x.DataType == DataTypeConstants.Timestamp);
                 if (timestampcount > 1)
                 {
                     context.LogError(string.Format(ValidationHelper.ErrorTextOnlyOneTimestamp, this.Name), string.Empty, this);

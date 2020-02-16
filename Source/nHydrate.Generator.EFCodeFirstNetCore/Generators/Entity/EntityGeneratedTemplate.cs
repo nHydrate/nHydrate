@@ -136,7 +136,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             //sb.AppendLine("	[System.ComponentModel.DataAnnotations.MetadataType(typeof(" + this.GetLocalNamespace() + ".Entity.Metadata." + _item.PascalName + "Metadata))]");
 
             //Add known types for all descendants
-            foreach (var table in _item.GetTablesInheritedFromHierarchy().Where(x => x.Generated).OrderBy(x => x.PascalName))
+            foreach (var table in _item.GetTablesInheritedFromHierarchy().OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("	[KnownType(typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "))]");
             }
@@ -404,7 +404,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		public static " + _item.PascalName + " Clone(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " item)");
             sb.AppendLine("		{");
             sb.AppendLine("			var newItem = new " + _item.PascalName + "();");
-            foreach (var column in _item.GeneratedColumns.Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GeneratedColumns.OrderBy(x => x.Name))
             {
                 sb.AppendLine("			newItem." + column.PascalName + " = item." + column.PascalName + ";");
             }
@@ -434,7 +434,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		#region Properties");
             sb.AppendLine();
 
-            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
             {
                 string roleName;
                 Table typeTable = null;
@@ -647,21 +647,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     var parentTable = (Table)relation.ParentTableRef.Object;
                     var childTable = (Table)relation.ChildTableRef.Object;
 
-                    //If not both generated then do not process this code block
-                    if (!parentTable.Generated || !childTable.Generated)
-                    {
-                        //Do Nothing
-                        //One or both is not generated or there is a security function on the child so no gen
-                    }
-
-                    //Do not walk to type tables
-                    //else if ((parentTable.TypedTable != TypedTableConstants.None) || (childTable.TypedTable != TypedTableConstants.None))
-                    //{
-                    //    //Do Nothing
-                    //}
-
                     //1-1 relations
-                    else if (relation.IsOneToOne)
+                    if (relation.IsOneToOne)
                     {
                         sb.AppendLine("		/// <summary>");
                         sb.AppendLine($"		/// The navigation definition for walking {_item.PascalName}->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:1)"));
@@ -685,7 +672,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         else otherRelation = relation2;
                         var targetTable = targetRelation.ParentTableRef.Object as Table;
 
-                        if (targetTable.Generated && (targetTable.TypedTable != TypedTableConstants.EnumOnly))
+                        if ((targetTable.TypedTable != TypedTableConstants.EnumOnly))
                         {
                             sb.AppendLine("		/// <summary>");
                             sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? "" : " (role: '" + otherRelation.PascalRoleName + "') (Multiplicity M:N)"));
@@ -709,7 +696,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     }
 
                     //Process relations where Current Table is the parent
-                    else if (parentTable == _item && parentTable.Generated && childTable.Generated && (childTable.TypedTable != TypedTableConstants.EnumOnly) && !childTable.AssociativeTable)
+                    else if (parentTable == _item && (childTable.TypedTable != TypedTableConstants.EnumOnly) && !childTable.AssociativeTable)
                     {
                         sb.AppendLine("		/// <summary>");
                         sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:N)"));
@@ -739,7 +726,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     }
 
                     //Process relations where Current Table is the child
-                    else if (childTable == _item && parentTable.Generated && childTable.Generated && !parentTable.IsInheritedFrom(_item))
+                    else if (childTable == _item && !parentTable.IsInheritedFrom(_item))
                     {
                         sb.AppendLine("		/// <summary>");
                         sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:N)"));
@@ -770,7 +757,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		#region Property Holders");
             sb.AppendLine();
 
-            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
             {
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine($"		protected {column.GetCodeType()} _{column.CamelName};");
@@ -850,7 +837,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		{");
             sb.AppendLine("			switch (field)");
             sb.AppendLine("			{");
-            foreach (var column in _item.GeneratedColumns.Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GeneratedColumns.OrderBy(x => x.Name))
             {
                 sb.AppendLine("				case " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ":");
                 if (_item.GeneratedColumns.Contains(column))
@@ -1043,7 +1030,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public virtual object GetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, object defaultValue)");
             sb.AppendLine("		{");
-            var allColumns = _item.GeneratedColumns.Where(x => x.Generated).ToList();
+            var allColumns = _item.GeneratedColumns.ToList();
             foreach (var column in allColumns.OrderBy(x => x.Name))
             {
                 var relationParentTable = (Table)column.ParentTableRef.Object;
@@ -1111,153 +1098,152 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		public virtual void SetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, object newValue, bool fixLength)");
             sb.AppendLine("		{");
 
-            var allColumns = _item.GeneratedColumns.Where(x => x.Generated).ToList();
+            var allColumns = _item.GeneratedColumns.ToList();
             var count = 0;
             foreach (var column in allColumns.OrderBy(x => x.Name))
             {
-                if (column.Generated)
-                {
-                    //If not the first one, add an 'ELSE' for speed
-                    if (count == 0) sb.Append("			");
-                    else sb.Append("			else ");
+                //If not the first one, add an 'ELSE' for speed
+                if (count == 0) sb.Append("			");
+                else sb.Append("			else ");
 
-                    sb.AppendLine("if (field == " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")");
-                    sb.AppendLine("			{");
-                    if (column.PrimaryKey)
+                sb.AppendLine("if (field == " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")");
+                sb.AppendLine("			{");
+                if (column.PrimaryKey)
+                {
+                    sb.AppendLine("				throw new Exception(\"Field '\" + field.ToString() + \"' is a primary key and cannot be set!\");");
+                }
+                else if (column.ComputedColumn)
+                {
+                    sb.AppendLine("				throw new Exception(\"Field '\" + field.ToString() + \"' is a computed parameter and cannot be set!\");");
+                }
+                else if (column.IsReadOnly)
+                {
+                    sb.AppendLine("				throw new Exception(\"Field '\" + field.ToString() + \"' is a read-only parameter and cannot be set!\");");
+                }
+                else
+                {
+                    if (column.DataType.IsTextType())
                     {
-                        sb.AppendLine("				throw new Exception(\"Field '\" + field.ToString() + \"' is a primary key and cannot be set!\");");
+                        sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperInternal((string)newValue, fixLength, GetMaxLength(field));");
                     }
-                    else if (column.ComputedColumn)
+                    else if (column.DataType == System.Data.SqlDbType.Float)
                     {
-                        sb.AppendLine("				throw new Exception(\"Field '\" + field.ToString() + \"' is a computed parameter and cannot be set!\");");
+                        if (column.AllowNull)
+                            sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperDoubleNullableInternal(newValue);");
+                        else
+                            sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperDoubleNotNullableInternal(newValue, \"Field '" + column.PascalName + "' does not allow null values!\");");
                     }
-                    else if (column.IsReadOnly)
+                    else if (column.DataType.IsDateType())
                     {
-                        sb.AppendLine("				throw new Exception(\"Field '\" + field.ToString() + \"' is a read-only parameter and cannot be set!\");");
+                        if (column.AllowNull)
+                            sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperDateTimeNullableInternal(newValue);");
+                        else
+                            sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperDateTimeNotNullableInternal(newValue, \"Field '" + column.PascalName + "' does not allow null values!\");");
+                    }
+                    else if (column.DataType == System.Data.SqlDbType.Bit)
+                    {
+                        if (column.AllowNull)
+                            sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperBoolNullableInternal(newValue);");
+                        else
+                            sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperBoolNotNullableInternal(newValue, \"Field '" + column.PascalName + "' does not allow null values!\");");
+                    }
+                    else if (column.DataType == System.Data.SqlDbType.Int)
+                    {
+                        if (column.AllowNull)
+                            sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperIntNullableInternal(newValue);");
+                        else
+                            sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperIntNotNullableInternal(newValue, \"Field '" + column.PascalName + "' does not allow null values!\");");
+                    }
+                    else if (column.DataType == System.Data.SqlDbType.BigInt)
+                    {
+                        if (column.AllowNull)
+                            sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperLongNullableInternal(newValue);");
+                        else
+                            sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperLongNotNullableInternal(newValue, \"Field '" + column.PascalName + "' does not allow null values!\");");
                     }
                     else
                     {
-                        if (column.DataType.IsTextType())
-                        {
-                            sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperInternal((string)newValue, fixLength, GetMaxLength(field));");
-                        }
-                        else if (column.DataType == System.Data.SqlDbType.Float)
-                        {
-                            if (column.AllowNull)
-                                sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperDoubleNullableInternal(newValue);");
-                            else
-                                sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperDoubleNotNullableInternal(newValue, \"Field '" + column.PascalName + "' does not allow null values!\");");
-                        }
-                        else if (column.DataType.IsDateType())
-                        {
-                            if (column.AllowNull)
-                                sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperDateTimeNullableInternal(newValue);");
-                            else
-                                sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperDateTimeNotNullableInternal(newValue, \"Field '" + column.PascalName + "' does not allow null values!\");");
-                        }
-                        else if (column.DataType == System.Data.SqlDbType.Bit)
-                        {
-                            if (column.AllowNull)
-                                sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperBoolNullableInternal(newValue);");
-                            else
-                                sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperBoolNotNullableInternal(newValue, \"Field '" + column.PascalName + "' does not allow null values!\");");
-                        }
-                        else if (column.DataType == System.Data.SqlDbType.Int)
-                        {
-                            if (column.AllowNull)
-                                sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperIntNullableInternal(newValue);");
-                            else
-                                sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperIntNotNullableInternal(newValue, \"Field '" + column.PascalName + "' does not allow null values!\");");
-                        }
-                        else if (column.DataType == System.Data.SqlDbType.BigInt)
-                        {
-                            if (column.AllowNull)
-                                sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperLongNullableInternal(newValue);");
-                            else
-                                sb.AppendLine("				this." + column.PascalName + " = GlobalValues.SetValueHelperLongNotNullableInternal(newValue, \"Field '" + column.PascalName + "' does not allow null values!\");");
-                        }
+                        //All other types
+                        sb.AppendLine("				if (newValue == null)");
+                        sb.AppendLine("				{");
+                        if (column.AllowNull)
+                            sb.AppendLine("					this." + column.PascalName + " = null;");
                         else
+                            sb.AppendLine("					throw new Exception(\"Field '" + column.PascalName + "' does not allow null values!\");");
+                        sb.AppendLine("				}");
+                        sb.AppendLine("				else");
+                        sb.AppendLine("				{");
+                        var relationParentTable = (Table) column.ParentTableRef.Object;
+                        var list = relationParentTable.AllRelationships.FindByChildColumn(column).ToList();
+                        if (list.Count > 0)
                         {
-                            //All other types
-                            sb.AppendLine("				if (newValue == null)");
-                            sb.AppendLine("				{");
-                            if (column.AllowNull)
-                                sb.AppendLine("					this." + column.PascalName + " = null;");
-                            else
-                                sb.AppendLine("					throw new Exception(\"Field '" + column.PascalName + "' does not allow null values!\");");
-                            sb.AppendLine("				}");
-                            sb.AppendLine("				else");
-                            sb.AppendLine("				{");
-                            var relationParentTable = (Table)column.ParentTableRef.Object;
-                            var list = relationParentTable.AllRelationships.FindByChildColumn(column).ToList();
-                            if (list.Count > 0)
+                            var relation = list.First() as Relation;
+                            var pTable = relation.ParentTableRef.Object as Table;
+                            if (pTable.TypedTable != TypedTableConstants.EnumOnly)
                             {
-                                var relation = list.First() as Relation;
-                                var pTable = relation.ParentTableRef.Object as Table;
-                                if (pTable.Generated && pTable.TypedTable != TypedTableConstants.EnumOnly)
-                                {
-                                    var cTable = relation.ChildTableRef.Object as Table;
-                                    var s = pTable.PascalName;
-                                    sb.AppendLine("					if (newValue is " + this.GetLocalNamespace() + ".Entity." + pTable.PascalName + ")");
-                                    sb.AppendLine("					{");
-                                    if (column.EnumType == string.Empty)
-                                    {
-                                        var columnRelationship = relation.ColumnRelationships.GetByParentField(column);
-                                        var parentColumn = (Column)columnRelationship.ParentColumnRef.Object;
-                                        sb.AppendLine("						this." + column.PascalName + " = ((" + this.GetLocalNamespace() + ".Entity." + pTable.PascalName + ")newValue)." + parentColumn.PascalName + ";");
-
-                                        //REMOVE PK FOR NOW
-                                        //sb.AppendLine("					}");
-                                        //sb.AppendLine("					else if (newValue is " + this.GetLocalNamespace() + ".IPrimaryKey)");
-                                        //sb.AppendLine("					{");
-                                        //sb.AppendLine("						this." + column.PascalName + " = ((" + this.GetLocalNamespace() + ".Entity." + pTable.PascalName + "PrimaryKey)newValue)." + parentColumn.PascalName + ";");
-                                    }
-                                    else //This is an Enumeration type
-                                        sb.AppendLine("						throw new Exception(\"Field '" + column.PascalName + "' does not allow values of this type!\");");
-
-                                    sb.AppendLine("					} else");
-                                }
-
-                            }
-                            if (column.AllowStringParse)
-                            {
-                                sb.AppendLine("					if (newValue is string)");
+                                var cTable = relation.ChildTableRef.Object as Table;
+                                var s = pTable.PascalName;
+                                sb.AppendLine("					if (newValue is " + this.GetLocalNamespace() + ".Entity." + pTable.PascalName + ")");
                                 sb.AppendLine("					{");
-                                if (column.EnumType == "")
+                                if (column.EnumType == string.Empty)
                                 {
-                                    sb.AppendLine("						this." + column.PascalName + " = " + column.GetCodeType(false) + ".Parse((string)newValue);");
-                                    sb.AppendLine("					} else if (!(newValue is " + column.GetCodeType() + ")) {");
-                                    if (column.GetCodeType() == "int")
-                                        sb.AppendLine("						this." + column.PascalName + " = Convert.ToInt32(newValue);");
-                                    else
-                                        sb.AppendLine("						this." + column.PascalName + " = " + column.GetCodeType(false) + ".Parse(newValue.ToString());");
+                                    var columnRelationship = relation.ColumnRelationships.GetByParentField(column);
+                                    var parentColumn = (Column) columnRelationship.ParentColumnRef.Object;
+                                    sb.AppendLine("						this." + column.PascalName + " = ((" + this.GetLocalNamespace() + ".Entity." + pTable.PascalName + ")newValue)." + parentColumn.PascalName + ";");
+
+                                    //REMOVE PK FOR NOW
+                                    //sb.AppendLine("					}");
+                                    //sb.AppendLine("					else if (newValue is " + this.GetLocalNamespace() + ".IPrimaryKey)");
+                                    //sb.AppendLine("					{");
+                                    //sb.AppendLine("						this." + column.PascalName + " = ((" + this.GetLocalNamespace() + ".Entity." + pTable.PascalName + "PrimaryKey)newValue)." + parentColumn.PascalName + ";");
                                 }
                                 else //This is an Enumeration type
-                                {
-                                    sb.AppendLine("						this." + column.PascalName + " = (" + column.EnumType + ")Enum.Parse(typeof(" + column.EnumType + "), newValue.ToString());");
-                                }
-                                sb.AppendLine("					}");
-                                sb.AppendLine("					else if (newValue is " + this.GetLocalNamespace() + ".IBusinessObject)");
-                                sb.AppendLine("					{");
-                                sb.AppendLine("						throw new Exception(\"An invalid object of type 'IBusinessObject' was passed in. Perhaps a relationship was not enforced correctly.\");");
-                                sb.AppendLine("					}");
-                                sb.AppendLine("					else");
+                                    sb.AppendLine("						throw new Exception(\"Field '" + column.PascalName + "' does not allow values of this type!\");");
+
+                                sb.AppendLine("					} else");
                             }
 
-                            if (column.GetCodeType() == "string")
-                                sb.AppendLine($"					this.{column.PascalName} = newValue.ToString();");
-                            else
-                                sb.AppendLine($"					this.{column.PascalName} = ({column.GetCodeType()})newValue;");
+                        }
 
-                            sb.AppendLine("				}");
-                            //sb.AppendLine("				return;");
-                        } //All non-string types
+                        if (column.AllowStringParse)
+                        {
+                            sb.AppendLine("					if (newValue is string)");
+                            sb.AppendLine("					{");
+                            if (column.EnumType == "")
+                            {
+                                sb.AppendLine("						this." + column.PascalName + " = " + column.GetCodeType(false) + ".Parse((string)newValue);");
+                                sb.AppendLine("					} else if (!(newValue is " + column.GetCodeType() + ")) {");
+                                if (column.GetCodeType() == "int")
+                                    sb.AppendLine("						this." + column.PascalName + " = Convert.ToInt32(newValue);");
+                                else
+                                    sb.AppendLine("						this." + column.PascalName + " = " + column.GetCodeType(false) + ".Parse(newValue.ToString());");
+                            }
+                            else //This is an Enumeration type
+                            {
+                                sb.AppendLine("						this." + column.PascalName + " = (" + column.EnumType + ")Enum.Parse(typeof(" + column.EnumType + "), newValue.ToString());");
+                            }
 
-                    }
-                    sb.AppendLine("			}");
-                    count++;
+                            sb.AppendLine("					}");
+                            sb.AppendLine("					else if (newValue is " + this.GetLocalNamespace() + ".IBusinessObject)");
+                            sb.AppendLine("					{");
+                            sb.AppendLine("						throw new Exception(\"An invalid object of type 'IBusinessObject' was passed in. Perhaps a relationship was not enforced correctly.\");");
+                            sb.AppendLine("					}");
+                            sb.AppendLine("					else");
+                        }
+
+                        if (column.GetCodeType() == "string")
+                            sb.AppendLine($"					this.{column.PascalName} = newValue.ToString();");
+                        else
+                            sb.AppendLine($"					this.{column.PascalName} = ({column.GetCodeType()})newValue;");
+
+                        sb.AppendLine("				}");
+                        //sb.AppendLine("				return;");
+                    } //All non-string types
+
                 }
 
+                sb.AppendLine("			}");
+                count++;
             }
 
             sb.AppendLine("			else");
@@ -1281,7 +1267,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("			if (other == null) return false;");
             sb.AppendLine("			return (");
 
-            var allColumns = _item.GeneratedColumns.Where(x => x.Generated).OrderBy(x => x.Name).ToList();
+            var allColumns = _item.GeneratedColumns.OrderBy(x => x.Name).ToList();
             var index = 0;
             foreach (var column in allColumns)
             {
@@ -1550,8 +1536,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("			{");
             foreach (var column in _item.GeneratedColumns)
             {
-                if (column.Generated)
-                    sb.AppendLine("				case \"" + column.PascalName + "\": return \"" + column.Name + "\";");
+                sb.AppendLine("				case \"" + column.PascalName + "\": return \"" + column.Name + "\";");
             }
 
             if (_item.AllowCreateAudit)
@@ -1608,7 +1593,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		#region Properties");
             sb.AppendLine();
 
-            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
             {
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Metadata information for the '" + column.PascalName + "' parameter");
@@ -1712,8 +1697,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("			{");
             foreach (var column in _item.GeneratedColumns)
             {
-                if (column.Generated)
-                    sb.AppendLine("				case \"" + column.PascalName + "\": return \"" + column.Name + "\";");
+                sb.AppendLine("				case \"" + column.PascalName + "\": return \"" + column.Name + "\";");
             }
             if (_item.AllowCreateAudit)
             {

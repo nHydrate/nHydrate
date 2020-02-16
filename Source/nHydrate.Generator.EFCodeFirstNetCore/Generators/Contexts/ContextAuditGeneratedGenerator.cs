@@ -24,7 +24,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
         {
             get
             {
-                if (_model.Database.Tables.Any(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly) && x.AllowAuditTracking))
+                if (_model.Database.Tables.Any(x => !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly) && x.AllowAuditTracking))
                     return 1;
                 else
                     return 0;

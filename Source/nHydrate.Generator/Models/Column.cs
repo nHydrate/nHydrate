@@ -404,7 +404,6 @@ namespace nHydrate.Generator.Models
                 node.AddAttribute("isReadOnly", this.IsReadOnly, _def_isReadOnly);
                 node.AddAttribute("formula", this.Formula, _def_formula);
                 node.AddAttribute("validationExpression", this.ValidationExpression, _def_validationExpression);
-                node.AddAttribute("generated", this.Generated, _def_generated);
                 node.AddAttribute("identity", (int) this.Identity, (int) _def_identity);
                 node.AddAttribute("name", this.Name);
                 node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
@@ -464,7 +463,6 @@ namespace nHydrate.Generator.Models
                 this.IsReadOnly = XmlHelper.GetAttributeValue(node, "isReadOnly", _def_isReadOnly);
                 this.Formula = XmlHelper.GetAttributeValue(node, "formula", _def_formula);
                 this.ValidationExpression = XmlHelper.GetAttributeValue(node, "validationExpression", _def_validationExpression);
-                this.Generated = XmlHelper.GetAttributeValue(node, "generated", _def_generated);
                 this.Identity = (IdentityTypeConstants)XmlHelper.GetAttributeValue(node, "identity", (int)_def_identity);
                 this.Name = XmlHelper.GetAttributeValue(node, "name", Name);
                 this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", string.Empty);

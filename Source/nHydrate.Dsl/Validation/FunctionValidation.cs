@@ -32,14 +32,13 @@ namespace nHydrate.Dsl
         [ValidationMethod(ValidationCategories.Open | ValidationCategories.Save | ValidationCategories.Menu | ValidationCategories.Custom | ValidationCategories.Load)]
         public void Validate(ValidationContext context)
         {
-            if (!this.IsGenerated) return;
             //if (!this.IsDirty) return;
             System.Windows.Forms.Application.DoEvents();
 
             var timer = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
             try
             {
-                var columnList = this.Fields.Where(x => x.IsGenerated).ToList();
+                var columnList = this.Fields.ToList();
 
                 #region Check valid name
                 if (!ValidationHelper.ValidDatabaseIdenitifer(this.DatabaseName))
@@ -72,11 +71,11 @@ namespace nHydrate.Dsl
 
                 #region Verify there is a result
 
-                if (this.Fields.Count(x => x.IsGenerated) == 0)
+                if (this.Fields.Count() == 0)
                 {
                     context.LogError(string.Format(ValidationHelper.ErrorTextFunctionZeroFields, this.Name), string.Empty, this);
                 }
-                if (this.Fields.Count(x => x.IsGenerated) != 1 && !this.IsTable)
+                if (this.Fields.Count() != 1 && !this.IsTable)
                 {
                     context.LogError(string.Format(ValidationHelper.ErrorTextFunctionScalerMultipleFields, this.Name), string.Empty, this);
                 }

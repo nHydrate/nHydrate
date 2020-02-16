@@ -206,7 +206,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             sb.AppendLine();
 
             var index = 0;
-            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
             {
                 CustomView typeTable = null;
 
@@ -252,7 +252,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             sb.AppendLine("			if (other == null) return false;");
             sb.AppendLine("			return (");
 
-            var allColumns = _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name).ToList();
+            var allColumns = _item.GetColumns().OrderBy(x => x.Name).ToList();
             var index = 0;
             foreach (var column in allColumns)
             {
@@ -296,7 +296,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public object GetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, object defaultValue)");
             sb.AppendLine("		{");
-            var allColumns = _item.GetColumns().Where(x => x.Generated).ToList();
+            var allColumns = _item.GetColumns().ToList();
             foreach (var column in allColumns.OrderBy(x => x.Name))
             {
                 sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")");
@@ -331,7 +331,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             sb.AppendLine("		{");
             sb.AppendLine("			switch (field)");
             sb.AppendLine("			{");
-            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
             {
                 sb.AppendLine("				case " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ":");
                 if (_item.GeneratedColumns.Contains(column))
@@ -499,7 +499,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             sb.AppendLine("		public static " + _item.PascalName + " Clone(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " item)");
             sb.AppendLine("		{");
             sb.AppendLine("			var newItem = new " + _item.PascalName + "();");
-            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
             {
                 sb.AppendLine("			newItem." + column.PascalName + " = item." + column.PascalName + ";");
             }

@@ -26,18 +26,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ComplexTypes
         private List<CustomStoredProcedure> GetListSP()
         {
             return _model.Database.CustomStoredProcedures
-                .Where(x => x.Generated && x.GeneratedColumns.Count > 0)
+                .Where(x => x.GeneratedColumns.Count > 0)
                 .OrderBy(x => x.Name)
                 .ToList();
         }
-
-        //private List<Function> GetListFunc()
-        //{
-        //    return _model.Database.Functions
-        //        .Where(x => x.Generated && x.IsTable)
-        //        .OrderBy(x => x.Name)
-        //        .ToList();
-        //}
 
         public override void Generate()
         {
@@ -49,14 +41,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ComplexTypes
                 OnProjectItemGenerated(this, eventArgs);
             }
 
-            //foreach (var item in GetListFunc())
-            //{
-            //    var template = new ComplexTypesFuncExtenderTemplate(_model, item);
-            //    var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
-            //    var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false);
-            //    OnProjectItemGenerated(this, eventArgs);
-            //}
-
             //Process deleted items
             foreach (var name in _model.RemovedStoredProcedures)
             {
@@ -64,14 +48,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ComplexTypes
                 var eventArgs = new ProjectItemDeletedEventArgs(fullFileName, ProjectName, this);
                 OnProjectItemDeleted(this, eventArgs);
             }
-
-            ////Process deleted items
-            //foreach (var name in _model.RemovedFunctions)
-            //{
-            //    var fullFileName = RELATIVE_OUTPUT_LOCATION + name + ".cs";
-            //    var eventArgs = new ProjectItemDeletedEventArgs(fullFileName, ProjectName, this);
-            //    OnProjectItemDeleted(this, eventArgs);
-            //}
 
             var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
             OnGenerationComplete(this, gcEventArgs);

@@ -101,12 +101,12 @@ namespace nHydrate.Dsl
 			var o = item.Shape.ModelElement as StoredProcedure;
 			var text = "Stored Procedure: " + o.Name + Environment.NewLine;
 			text += "Fields: " + o.Fields.Count + Environment.NewLine;
-			var genFieldCount = o.Fields.Count(x => !x.IsGenerated);
+			var genFieldCount = o.Fields.Count();
 			if (genFieldCount > 0)
 				text += "Generated Fields: " + genFieldCount + Environment.NewLine;
 
 			text += "Parameters: " + o.Parameters.Count + Environment.NewLine;
-			var genParameterCount = o.Parameters.Count(x => !x.IsGenerated);
+			var genParameterCount = o.Parameters.Count();
 			if (genParameterCount > 0)
 				text += "Generated Parameters: " + genParameterCount + Environment.NewLine;
 

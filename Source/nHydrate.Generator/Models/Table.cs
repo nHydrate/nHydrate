@@ -21,7 +21,6 @@ namespace nHydrate.Generator.Models
         #region Member Variables
 
         protected const bool _def_associativeTable = false;
-        protected const bool _def_generated = true;
         protected const bool _def_hasHistory = false;
         protected const bool _def_modifiedAudit = true;
         protected const bool _def_createAudit = true;
@@ -131,7 +130,6 @@ namespace nHydrate.Generator.Models
             get
             {
                 return this.GetColumns()
-                    .Where(x => x.Generated)
                     .OrderBy(x => x.Name);
             }
         }
@@ -141,12 +139,9 @@ namespace nHydrate.Generator.Models
             get
             {
                 return this.GetColumnsFullHierarchy()
-                    .Where(x => x.Generated)
                     .OrderBy(x => x.Name);
             }
         }
-
-        public bool Generated { get; set; } = _def_generated;
 
         public bool AllowModifiedAudit { get; set; } = _def_modifiedAudit;
 
@@ -332,8 +327,7 @@ namespace nHydrate.Generator.Models
                     var relation = r.Object as Relation;
                     if (relation != null)
                     {
-                        if (relation.ChildTable.Generated)
-                            retval.Add(relation);
+                        retval.Add(relation);
                     }
                 }
                 return retval;
@@ -346,8 +340,7 @@ namespace nHydrate.Generator.Models
 
         public IEnumerable<Relation> GetRelationsWhereChild(bool fullHierarchy = false)
         {
-            var retval = ((ModelRoot)_root).Database.GetRelationsWhereChild(this, fullHierarchy);
-            return retval.Where(x => x.ChildTable.Generated && x.ParentTable.Generated);
+            return ((ModelRoot)_root).Database.GetRelationsWhereChild(this, fullHierarchy);
         }
 
         public IEnumerable<Column> GetForeignKeyColumns()
@@ -383,7 +376,7 @@ namespace nHydrate.Generator.Models
             {
                 var parentTable = relation.ParentTableRef.Object as Table;
                 //Type tables have 1 PK
-                if (parentTable.Generated && relation.ColumnRelationships.Count == 1)
+                if (relation.ColumnRelationships.Count == 1)
                 {
                     var parentColumn = relation.ColumnRelationships[0].ParentColumnRef.Object as Column;
                     var childColumn = relation.ColumnRelationships[0].ChildColumnRef.Object as Column;
@@ -432,7 +425,6 @@ namespace nHydrate.Generator.Models
             this.Columns.XmlAppend(columnsNode);
             node.AppendChild(columnsNode);
 
-            node.AddAttribute("generated", this.Generated, _def_generated);
             node.AddAttribute("isTenant", this.IsTenant, _def_isTenant);
             node.AddAttribute("immutable", this.Immutable, _def_immutable);
             node.AddAttribute("enforePrimaryKey", this.EnforcePrimaryKey, _def_enforePrimaryKey);
@@ -481,7 +473,6 @@ namespace nHydrate.Generator.Models
             if (tableIndexListNode != null)
                 TableIndexList.XmlLoad(tableIndexListNode, this.Root);
 
-            this.Generated = XmlHelper.GetAttributeValue(node, "generated", _def_generated);
             this.Immutable = XmlHelper.GetAttributeValue(node, "immutable", _def_immutable);
             this.IsTenant = XmlHelper.GetAttributeValue(node, "isTenant", _def_isTenant);
             this.EnforcePrimaryKey = XmlHelper.GetAttributeValue(node, "enforePrimaryKey", _def_enforePrimaryKey);

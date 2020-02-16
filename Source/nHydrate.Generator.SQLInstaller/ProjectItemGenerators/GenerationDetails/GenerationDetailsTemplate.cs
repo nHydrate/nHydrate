@@ -52,16 +52,16 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.GenerationDetail
                 sb.AppendLine();
 
                 sb.AppendLine($"Version {_model.Version}");
-                sb.AppendLine($"Table Count: {_model.Database.Tables.Count(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly)}");
-                sb.AppendLine($"Tenant Table Count: {_model.Database.Tables.Count(x => x.Generated && x.IsTenant)}");
-                sb.AppendLine($"View Count: {_model.Database.CustomViews.Count(x => x.Generated)}");
-                sb.AppendLine($"StoredProc Count: {_model.Database.CustomStoredProcedures.Count(x => x.Generated)}");
+                sb.AppendLine($"Table Count: {_model.Database.Tables.Count(x => x.TypedTable != TypedTableConstants.EnumOnly)}");
+                sb.AppendLine($"Tenant Table Count: {_model.Database.Tables.Count(x => x.IsTenant)}");
+                sb.AppendLine($"View Count: {_model.Database.CustomViews.Count()}");
+                sb.AppendLine($"StoredProc Count: {_model.Database.CustomStoredProcedures.Count()}");
                 sb.AppendLine();
                 sb.AppendLine($"TABLE LIST");
-                foreach (var item in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.DatabaseName))
+                foreach (var item in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.DatabaseName))
                 {
-                    sb.AppendLine($"{item.DatabaseName}, ColumnCount={item.GetColumns().Count(x => x.Generated)}, IsTenant={item.IsTenant}");
-                    foreach (var column in item.GetColumns().Where(x => x.Generated).OrderBy(x => x.DatabaseName))
+                    sb.AppendLine($"{item.DatabaseName}, ColumnCount={item.GetColumns().Count()}, IsTenant={item.IsTenant}");
+                    foreach (var column in item.GetColumns().OrderBy(x => x.DatabaseName))
                     {
                         sb.AppendLine($"    {column.GetIntellisenseRemarks()}");
                     }

@@ -152,7 +152,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
             //List<Table> tableList = new List<Table>(_currentTable.GetTableHierarchy().Where(x => x.AllowAuditTracking).Reverse());
             foreach (Table table in tableList)
             {
-                foreach (Column column in table.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+                foreach (Column column in table.GetColumns().OrderBy(x => x.Name))
                 {
                     if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
                     {
@@ -217,7 +217,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
             sb.AppendLine("			var differences = new List<I" + _item.PascalName + "AuditResultFieldCompare>();");
             sb.AppendLine();
 
-            foreach (Column column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (Column column in _item.GetColumns().OrderBy(x => x.Name))
             {
                 if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
                 {

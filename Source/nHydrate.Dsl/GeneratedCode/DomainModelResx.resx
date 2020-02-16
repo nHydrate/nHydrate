@@ -501,18 +501,6 @@
     <value>Database</value>
     <comment>Category for DomainProperty &apos;EnforcePrimaryKey&apos; on DomainClass &apos;Entity&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.Entity/IsGenerated.Description" xml:space="preserve">
-    <value>Determines if this item is used when generating</value>
-    <comment>Description for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;Entity&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Entity/IsGenerated.DisplayName" xml:space="preserve">
-    <value>Is Generated</value>
-    <comment>DisplayName for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;Entity&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Entity/IsGenerated.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;Entity&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.Entity/Immutable.Description" xml:space="preserve">
     <value>Determines if this entity can be changed</value>
     <comment>Description for DomainProperty &apos;Immutable&apos; on DomainClass &apos;Entity&apos;</comment>
@@ -696,18 +684,6 @@
   <data name="nHydrate.Dsl.Field/Formula.Category" xml:space="preserve">
     <value>Database</value>
     <comment>Category for DomainProperty &apos;Formula&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/IsGenerated.Description" xml:space="preserve">
-    <value>Determines if this item is used when generating</value>
-    <comment>Description for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/IsGenerated.DisplayName" xml:space="preserve">
-    <value>Is Generated</value>
-    <comment>DisplayName for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/IsGenerated.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;Field&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.Field/Identity.Description" xml:space="preserve">
     <value>Determines the type of identity for this column</value>
@@ -913,18 +889,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Name&apos; on DomainClass &apos;StoredProcedure&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.StoredProcedure/IsGenerated.Description" xml:space="preserve">
-    <value>Determines if this item is used when generating</value>
-    <comment>Description for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;StoredProcedure&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.StoredProcedure/IsGenerated.DisplayName" xml:space="preserve">
-    <value>Is Generated</value>
-    <comment>DisplayName for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;StoredProcedure&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.StoredProcedure/IsGenerated.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;StoredProcedure&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.StoredProcedure/CodeFacade.Description" xml:space="preserve">
     <value>Determines the object name used in the API. If this property is blank the &apos;Name&apos; property is used in the API. This property can be used to mask the database identifier.</value>
     <comment>Description for DomainProperty &apos;CodeFacade&apos; on DomainClass &apos;StoredProcedure&apos;</comment>
@@ -1085,18 +1049,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Default&apos; on DomainClass &apos;StoredProcedureField&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.StoredProcedureField/IsGenerated.Description" xml:space="preserve">
-    <value>Determines if this item is used when generating</value>
-    <comment>Description for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;StoredProcedureField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.StoredProcedureField/IsGenerated.DisplayName" xml:space="preserve">
-    <value>Is Generated</value>
-    <comment>DisplayName for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;StoredProcedureField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.StoredProcedureField/IsGenerated.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;StoredProcedureField&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.StoredProcedureField/Length.Description" xml:space="preserve">
     <value>Determines the size of this field in bytes</value>
     <comment>Description for DomainProperty &apos;Length&apos; on DomainClass &apos;StoredProcedureField&apos;</comment>
@@ -1201,18 +1153,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Default&apos; on DomainClass &apos;StoredProcedureParameter&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.StoredProcedureParameter/IsGenerated.Description" xml:space="preserve">
-    <value>Determines if this item is used when generating</value>
-    <comment>Description for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;StoredProcedureParameter&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.StoredProcedureParameter/IsGenerated.DisplayName" xml:space="preserve">
-    <value>Is Generated</value>
-    <comment>DisplayName for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;StoredProcedureParameter&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.StoredProcedureParameter/IsGenerated.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;StoredProcedureParameter&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.StoredProcedureParameter/Length.Description" xml:space="preserve">
     <value>Determines the size of this field in bytes</value>
     <comment>Description for DomainProperty &apos;Length&apos; on DomainClass &apos;StoredProcedureParameter&apos;</comment>
@@ -1288,18 +1228,6 @@
   <data name="nHydrate.Dsl.View/Name.Category" xml:space="preserve">
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Name&apos; on DomainClass &apos;View&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.View/IsGenerated.Description" xml:space="preserve">
-    <value>Determines if this item is used when generating</value>
-    <comment>Description for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;View&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.View/IsGenerated.DisplayName" xml:space="preserve">
-    <value>Is Generated</value>
-    <comment>DisplayName for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;View&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.View/IsGenerated.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;View&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.View/CodeFacade.Description" xml:space="preserve">
     <value>Determines the object name used in the API. If this property is blank the &apos;Name&apos; property is used in the API. This property can be used to mask the database identifier.</value>
@@ -1424,18 +1352,6 @@
   <data name="nHydrate.Dsl.ViewField/Summary.Category" xml:space="preserve">
     <value>Documentation</value>
     <comment>Category for DomainProperty &apos;Summary&apos; on DomainClass &apos;ViewField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ViewField/IsGenerated.Description" xml:space="preserve">
-    <value>Determines if this item is used when generating</value>
-    <comment>Description for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;ViewField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ViewField/IsGenerated.DisplayName" xml:space="preserve">
-    <value>Is Generated</value>
-    <comment>DisplayName for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;ViewField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ViewField/IsGenerated.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;ViewField&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.ViewField/Length.Description" xml:space="preserve">
     <value>Determines the size of this field in bytes</value>
@@ -1669,18 +1585,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Name&apos; on DomainClass &apos;Function&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.Function/IsGenerated.Description" xml:space="preserve">
-    <value>Determines if this item is used when generating</value>
-    <comment>Description for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;Function&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Function/IsGenerated.DisplayName" xml:space="preserve">
-    <value>Is Generated</value>
-    <comment>DisplayName for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;Function&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Function/IsGenerated.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;Function&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.Function/CodeFacade.Description" xml:space="preserve">
     <value>Determines the object name used in the API. If this property is blank the &apos;Name&apos; property is used in the API. This property can be used to mask the database identifier.</value>
     <comment>Description for DomainProperty &apos;CodeFacade&apos; on DomainClass &apos;Function&apos;</comment>
@@ -1829,18 +1733,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Default&apos; on DomainClass &apos;FunctionParameter&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.FunctionParameter/IsGenerated.Description" xml:space="preserve">
-    <value>Determines if this item is used when generating</value>
-    <comment>Description for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;FunctionParameter&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FunctionParameter/IsGenerated.DisplayName" xml:space="preserve">
-    <value>Is Generated</value>
-    <comment>DisplayName for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;FunctionParameter&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FunctionParameter/IsGenerated.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;FunctionParameter&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.FunctionParameter/Length.Description" xml:space="preserve">
     <value>Determines the size of this field in bytes</value>
     <comment>Description for DomainProperty &apos;Length&apos; on DomainClass &apos;FunctionParameter&apos;</comment>
@@ -1952,18 +1844,6 @@
   <data name="nHydrate.Dsl.FunctionField/Default.Category" xml:space="preserve">
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Default&apos; on DomainClass &apos;FunctionField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FunctionField/IsGenerated.Description" xml:space="preserve">
-    <value>Determines if this item is used when generating</value>
-    <comment>Description for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;FunctionField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FunctionField/IsGenerated.DisplayName" xml:space="preserve">
-    <value>Is Generated</value>
-    <comment>DisplayName for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;FunctionField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FunctionField/IsGenerated.Category" xml:space="preserve">
-    <value>Definition</value>
-    <comment>Category for DomainProperty &apos;IsGenerated&apos; on DomainClass &apos;FunctionField&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.FunctionField/Length.Description" xml:space="preserve">
     <value>Determines the size of this field in bytes</value>

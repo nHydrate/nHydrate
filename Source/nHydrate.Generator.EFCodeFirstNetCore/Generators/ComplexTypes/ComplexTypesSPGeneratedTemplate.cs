@@ -203,7 +203,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ComplexTypes
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public object GetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, object defaultValue)");
             sb.AppendLine("		{");
-            var allColumns = _item.GetColumns().Where(x => x.Generated).ToList();
+            var allColumns = _item.GetColumns().ToList();
             foreach (var column in allColumns.OrderBy(x => x.Name))
             {
                 sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")");
@@ -232,7 +232,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ComplexTypes
             sb.AppendLine("		public virtual object Clone()");
             sb.AppendLine("		{");
             sb.AppendLine("			var newItem = new " + _item.PascalName + "();");
-            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
             {
                 sb.AppendLine("			newItem._" + column.CamelName + " = this._" + column.CamelName + ";");
             }
@@ -254,7 +254,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ComplexTypes
             sb.AppendLine("		{");
             sb.AppendLine("			switch (field)");
             sb.AppendLine("			{");
-            foreach (var column in _item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
             {
                 sb.AppendLine("				case " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ":");
                 if (_item.GeneratedColumns.Contains(column))

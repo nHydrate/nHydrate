@@ -32,14 +32,12 @@ namespace nHydrate.Dsl
         [ValidationMethod(ValidationCategories.Open | ValidationCategories.Save | ValidationCategories.Menu | ValidationCategories.Custom | ValidationCategories.Load)]
         public void Validate(ValidationContext context)
         {
-            if (!this.IsGenerated) return;
-
             System.Windows.Forms.Application.DoEvents();
             var timer = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
             try
             {
                 //if (!this.IsDirty) return;
-                var columnList = this.Fields.Where(x => x.IsGenerated).ToList();
+                var columnList = this.Fields.ToList();
 
                 #region Check valid name
 
@@ -97,7 +95,7 @@ namespace nHydrate.Dsl
 
                 #region Verify there are columns (fix for EF 4.1 bug)
 
-                if (!this.Fields.Any(x => x.IsGenerated))
+                if (!this.Fields.Any())
                 {
                     context.LogError(string.Format(ValidationHelper.ErrorTextStoredProcNoColumns, this.Name), string.Empty, this);
                 }

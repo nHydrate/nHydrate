@@ -25,7 +25,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 
         public override void Generate()
         {
-            foreach (var customView in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var customView in _model.Database.CustomViews.OrderBy(x => x.Name))
             {
                 var template = new ViewEntityExtenderTemplate(_model, customView);
                 var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;

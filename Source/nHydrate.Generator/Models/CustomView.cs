@@ -13,7 +13,6 @@ namespace nHydrate.Generator.Models
     {
         #region Member Variables
 
-        protected const bool _def_generated = true;
         protected const string _def_dbSchema = "dbo";
         protected const string _def_description = "";
         protected const string _def_codefacade = "";
@@ -68,12 +67,9 @@ namespace nHydrate.Generator.Models
             get
             {
                 return this.GetColumns()
-                    .Where(x => x.Generated)
                     .OrderBy(x => x.Name);
             }
         }
-
-        public bool Generated { get; set; } = _def_generated;
 
         public string SQL { get; set; } = string.Empty;
 
@@ -161,9 +157,6 @@ namespace nHydrate.Generator.Models
             viewSqlNode.AppendChild(oDoc.CreateCDataSection(this.SQL));
             node.AppendChild(viewSqlNode);
 
-            if (this.Generated != _def_generated)
-                node.AddAttribute("generated", this.Generated);
-
             node.AddAttribute("id", this.Id);
         }
 
@@ -180,8 +173,6 @@ namespace nHydrate.Generator.Models
                 this.SQL = XmlHelper.GetNodeValue(node, "sql", string.Empty);
                 var columnsNode = node.SelectSingleNode("columns");
                 Columns.XmlLoad(columnsNode);
-
-                this.Generated = XmlHelper.GetAttributeValue(node, "generated", Generated);
                 this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
             }
             catch(Exception ex)

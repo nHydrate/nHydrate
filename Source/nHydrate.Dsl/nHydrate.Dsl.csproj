@@ -257,12 +257,6 @@
     <Compile Include="Validation\nHydrateModel.cs" />
     <Compile Include="Validation\StoredProcedureValidation.cs" />
     <Compile Include="Validation\ValidationHelper.cs" />
-    <None Include="GeneratedCode\nHydrateSchema.xsd">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>nHydrateSchema.tt</DependentUpon>
-      <SubType>Designer</SubType>
-    </None>
     <None Include="GeneratedCode\SerializationHelper.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SerializationHelper.cs</LastGenOutput>
@@ -405,7 +399,6 @@
     </None>
     <None Include="GeneratedCode\nHydrateSchema.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>nHydrateSchema.xsd</LastGenOutput>
     </None>
     <None Include="GeneratedCode\DomainModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

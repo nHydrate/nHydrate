@@ -83,7 +83,7 @@ namespace nHydrate.Core.SQLGeneration
             if (table.AllowCreateAudit || table.AllowModifiedAudit)
                 sb.AppendLine("\t[" + model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL,");
 
-            var columnList = table.GetColumns().Where(x => x.Generated).ToList();
+            var columnList = table.GetColumns().ToList();
             foreach (var column in columnList)
             {
                 if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText ||
@@ -1358,7 +1358,7 @@ namespace nHydrate.Core.SQLGeneration
                 //There is a returned table defined
                 sb.Append("@" + dbObject.ReturnVariable + " TABLE (");
 
-                var columnList = dbObject.GetColumns().Where(x => x.Generated).ToList();
+                var columnList = dbObject.GetColumns().ToList();
                 foreach (var column in columnList)
                 {
                     sb.Append(column.DatabaseName + " " + column.DatabaseType);
@@ -1653,8 +1653,7 @@ namespace nHydrate.Core.SQLGeneration
             var parentTable = relation.ParentTable;
 
             var sb = new StringBuilder();
-            if (childTable.Generated && parentTable.Generated &&
-                (parentTable.TypedTable != TypedTableConstants.EnumOnly) &&
+            if ((parentTable.TypedTable != TypedTableConstants.EnumOnly) &&
                 (childTable.TypedTable != TypedTableConstants.EnumOnly))
             {
                 sb.AppendLine("--FOREIGN KEY RELATIONSHIP [" + parentTable.DatabaseName + "] -> [" +
@@ -2000,9 +1999,9 @@ namespace nHydrate.Core.SQLGeneration
         private static string BuildStoredProcParameterList(CustomStoredProcedure storedProcedure)
         {
             var output = new StringBuilder();
-            var parameterList = storedProcedure.GetParameters().Where(x => x.Generated && x.SortOrder > 0)
+            var parameterList = storedProcedure.GetParameters().Where(x => x.SortOrder > 0)
                 .OrderBy(x => x.SortOrder).ToList();
-            parameterList.AddRange(storedProcedure.GetParameters().Where(x => x.Generated && x.SortOrder == 0)
+            parameterList.AddRange(storedProcedure.GetParameters().Where(x => x.SortOrder == 0)
                 .OrderBy(x => x.Name).ToList());
 
             var ii = 0;

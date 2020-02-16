@@ -177,7 +177,7 @@ namespace nHydrate.Generator.Models
 
         public IEnumerable<Table> GetGeneratedTables()
         {
-            return (from x in this.Tables where x.Generated select x);
+            return (from x in this.Tables select x);
         }
 
         public IEnumerable<Relation> GetRelationsWhereChild(Table table)

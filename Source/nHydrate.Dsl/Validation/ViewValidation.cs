@@ -30,14 +30,12 @@ namespace nHydrate.Dsl
         [ValidationMethod(ValidationCategories.Open | ValidationCategories.Save | ValidationCategories.Menu | ValidationCategories.Custom | ValidationCategories.Load)]
         public void Validate(ValidationContext context)
         {
-            if (!this.IsGenerated) return;
-
             System.Windows.Forms.Application.DoEvents();
             var timer = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
             try
             {
                 //if (!this.IsDirty) return;
-                var columnList = this.Fields.Where(x => x.IsGenerated).ToList();
+                var columnList = this.Fields.ToList();
 
                 #region Check valid name
                 if (!ValidationHelper.ValidDatabaseIdenitifer(this.DatabaseName))
@@ -66,12 +64,12 @@ namespace nHydrate.Dsl
                 #endregion
 
                 #region Check that object has at least one generated column
-                if (this.Fields.Count(x => x.IsGenerated) == 0)
+                if (this.Fields.Count() == 0)
                     context.LogError(ValidationHelper.ErrorTextColumnsRequired, string.Empty, this);
                 #endregion
 
                 #region Verify that there is at least one PK
-                if (this.Fields.Count(x => x.IsPrimaryKey && x.IsGenerated) == 0)
+                if (this.Fields.Count(x => x.IsPrimaryKey) == 0)
                     context.LogError(string.Format(ValidationHelper.ErrorTextNoPrimaryKey, this.Name), string.Empty, this);
                 #endregion
 

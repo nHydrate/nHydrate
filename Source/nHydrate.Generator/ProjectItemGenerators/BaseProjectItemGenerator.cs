@@ -31,7 +31,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                 _model = (ModelRoot)model;
 
                 var hasMetaData = false;
-                foreach (var table in (from x in _model.Database.Tables where x.Generated orderby x.Name select x))
+                foreach (var table in (from x in _model.Database.Tables orderby x.Name select x))
                 {
                     if (table.CreateMetaData)
                         hasMetaData = true;
@@ -61,7 +61,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                     #endregion
                 }
 
-                foreach (var table in (from x in _model.Database.Tables where x.Generated orderby x.Name select x))
+                foreach (var table in (from x in _model.Database.Tables orderby x.Name select x))
                 {
                     if (table.CreateMetaData)
                     {

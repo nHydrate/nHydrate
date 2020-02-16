@@ -74,7 +74,6 @@ namespace nHydrate.Generator.Models
             var oDoc = node.OwnerDocument;
 
             node.AddAttribute("key", this.Key);
-            node.AddAttribute("generated", this.Generated, _def_generated);
             node.AddAttribute("name", this.Name);
             node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
             node.AddAttribute("description", this.Description, _def_description);
@@ -107,7 +106,6 @@ namespace nHydrate.Generator.Models
         public override void XmlLoad(XmlNode node)
         {
             this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-            this.Generated = XmlHelper.GetAttributeValue(node, "generated", _def_generated);
             this.Name = XmlHelper.GetAttributeValue(node, "name", string.Empty);
             this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", _def_codefacade);
             this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);

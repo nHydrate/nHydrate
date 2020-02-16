@@ -74,10 +74,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
                 sb.AppendLine();
 
                 //Get all the columns for this table
-                var columnList = _currentTable.GetColumns().Where(x => x.Generated &
-                    x.DataType != System.Data.SqlDbType.Image &&
-                    x.DataType != System.Data.SqlDbType.Text &&
-                    x.DataType != System.Data.SqlDbType.NText
+                var columnList = _currentTable.GetColumns().Where(x => x.DataType != System.Data.SqlDbType.Image &&
+                                                                       x.DataType != System.Data.SqlDbType.Text &&
+                                                                       x.DataType != System.Data.SqlDbType.NText
                     ).ToList();
 
                 sb.AppendLine("if(@__pageOffset < 1 ) SET @__pageOffset = 1");
@@ -250,10 +249,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
                 sb.AppendLine();
 
                 //Get all the columns for this table
-                var columnList = _currentTable.GetColumns().Where(x => x.Generated &
-                    x.DataType != System.Data.SqlDbType.Image &&
-                    x.DataType != System.Data.SqlDbType.Text &&
-                    x.DataType != System.Data.SqlDbType.NText
+                var columnList = _currentTable.GetColumns().Where(x => x.DataType != System.Data.SqlDbType.Image &&
+                                                                       x.DataType != System.Data.SqlDbType.Text &&
+                                                                       x.DataType != System.Data.SqlDbType.NText
                     ).ToList();
 
                 sb.AppendLine("if(@__pageOffset < 1 ) SET @__pageOffset = 1");

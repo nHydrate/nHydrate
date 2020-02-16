@@ -64,13 +64,13 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.AuditTriggers
         private void AppendAll()
         {
             //Do not emit these scripts unless need be
-            var isTracking = _model.Database.Tables.Any(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly && x.AllowAuditTracking);
+            var isTracking = _model.Database.Tables.Any(x => x.TypedTable != TypedTableConstants.EnumOnly && x.AllowAuditTracking);
             if (!_model.EmitSafetyScripts && !isTracking)
                 return;
 
             sb.AppendLine("--##SECTION BEGIN [AUDIT TRIGGERS]");
             sb.AppendLine();
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
                 sb.AppendLine("--DROP ANY AUDIT TRIGGERS FOR [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "]");
                 sb.AppendLine("if exists(select * from sys.objects where name = '__TR_" + table.DatabaseName + "__INSERT' AND type = 'TR')");
@@ -90,7 +90,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.AuditTriggers
                     var columnText = string.Empty;
                     foreach (var column in table.GetColumns())
                     {
-                        if (column.Generated && !(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
+                        if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
                             columnText += "[" + column.DatabaseName + "],";
                     }
 

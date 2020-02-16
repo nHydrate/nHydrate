@@ -142,12 +142,7 @@ namespace nHydrate.Dsl
             var entity = this.ModelElement as Entity;
             var textColor = TABLE_COLOR_NORMAL_TEXT;
             var newColor = TABLE_COLOR_NORMAL_HEADER;
-            if (!entity.IsGenerated)
-            {
-                newColor = TABLE_COLOR_NONEGEN_HEADER;
-                textColor = TABLE_COLOR_NONEGEN_TEXT;
-            }
-            else if (entity.TypedEntity != TypedEntityConstants.None)
+            if (entity.TypedEntity != TypedEntityConstants.None)
             {
                 newColor = TABLE_COLOR_TYPE_TABLE_HEADER;
                 textColor = TABLE_COLOR_TYPE_TABLE_TEXT;
@@ -188,7 +183,7 @@ namespace nHydrate.Dsl
             text += Environment.NewLine;
 
             text += "Fields: " + o.Fields.Count + Environment.NewLine;
-            var genFieldCount = o.Fields.Count(x => !x.IsGenerated);
+            var genFieldCount = o.Fields.Count();
             if (genFieldCount > 0)
                 text += "Generated Fields: " + genFieldCount + Environment.NewLine;
             text += "Outbound Relations: " + o.RelationshipList.Count() + Environment.NewLine;

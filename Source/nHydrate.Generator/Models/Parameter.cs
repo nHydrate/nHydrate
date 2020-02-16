@@ -15,7 +15,6 @@ namespace nHydrate.Generator.Models
         protected const int _def_length = 1;
         protected const int _def_scale = 0;
         protected const bool _def_allowNull = true;
-        protected const bool _def_generated = true;
         protected const bool _def_isOutputParameter = false;
         protected const string _def_description = "";
         protected const string _def_default = "";
@@ -25,7 +24,6 @@ namespace nHydrate.Generator.Models
         protected string _description = _def_description;
         protected int _length = _def_length;
         protected int _scale = _def_scale;
-        protected bool _generated = _def_generated;
         protected string _default = _def_default;
         protected Reference _relationshipRef = null;
 
@@ -45,15 +43,6 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region Property Implementations
-
-        public bool Generated
-        {
-            get { return _generated; }
-            set
-            {
-                _generated = value;
-            }
-        }
 
         public string Description
         {
@@ -164,7 +153,6 @@ namespace nHydrate.Generator.Models
             var oDoc = node.OwnerDocument;
 
             node.AddAttribute("key", this.Key);
-            node.AddAttribute("generated", this.Generated, _def_generated);
             node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
             node.AddAttribute("name", this.Name);
             node.AddAttribute("description", this.Description, _def_description);
@@ -199,7 +187,6 @@ namespace nHydrate.Generator.Models
             try
             {
                 this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                this.Generated = XmlHelper.GetAttributeValue(node, "generated", _def_generated);
                 this.Name = XmlHelper.GetAttributeValue(node, "name", string.Empty);
                 this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", _def_codefacade);
                 this.Description = XmlHelper.GetAttributeValue(node, "description", _description);

@@ -40,7 +40,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.SQLStoredProcedu
                     sb.AppendLine();
 
                     foreach (var table in _model.Database.Tables
-                        .Where(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+                        .Where(x => (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
                     {
                         var template = new SQLStoredProcedureTableAllTemplate(_model, table, true);
                         sb.Append(template.FileContent);

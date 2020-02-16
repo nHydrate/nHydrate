@@ -83,7 +83,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("	public enum EntityMappingConstants");
             sb.AppendLine("	{");
 
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine($"		/// A mapping for the the {table.PascalName} entity");
@@ -282,7 +282,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			#region Map Tables");
 
             //Tables
-            foreach (var item in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var item in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 string schema = null;
                 if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
@@ -297,7 +297,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             }
 
             //Views
-            foreach (var item in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.DatabaseName))
+            foreach (var item in _model.Database.CustomViews.OrderBy(x => x.DatabaseName))
             {
                 string schema = null;
                 if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
@@ -318,10 +318,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             //Tables
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 sb.AppendLine("			//Field setup for " + table.PascalName + " entity");
-                foreach (var column in table.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+                foreach (var column in table.GetColumns().OrderBy(x => x.Name))
                 {
                     #region Determine if this is a type table Value field and if so ignore
                     {
@@ -392,10 +392,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             }
 
             //Views
-            foreach (var item in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var item in _model.Database.CustomViews.OrderBy(x => x.Name))
             {
                 sb.AppendLine("			//Field setup for " + item.PascalName + " entity");
-                foreach (var column in item.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+                foreach (var column in item.GetColumns().OrderBy(x => x.Name))
                 {
                     sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">()");
                     sb.Append(".Property(d => d." + column.PascalName + ")");
@@ -416,9 +416,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #region Setup ignores for Enum properties
             sb.AppendLine("			#region Ignore Enum Properties");
             sb.AppendLine();
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
-                foreach (var column in table.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+                foreach (var column in table.GetColumns().OrderBy(x => x.Name))
                 {
                     if (table.IsColumnRelatedToTypeTable(column, out var pascalRoleName) || (column.PrimaryKey && table.TypedTable != TypedTableConstants.None))
                     {
@@ -440,7 +440,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			#region Primary Keys");
             sb.AppendLine();
             foreach (var table in _model.Database.Tables
-                .Where(x => x.Generated && (x.TypedTable != Models.TypedTableConstants.EnumOnly))
+                .Where(x => (x.TypedTable != Models.TypedTableConstants.EnumOnly))
                 .OrderBy(x => x.Name))
             {
                 sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
@@ -454,7 +454,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine(" });");
             }
 
-            foreach (var table in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.CustomViews.OrderBy(x => x.Name))
             {
                 sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
                 var columnList = table.GetColumns().Where(x => x.IsPrimaryKey).OrderBy(x => x.Name).ToList();
@@ -475,12 +475,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #region Create annotations for relationships
             sb.AppendLine("			#region Relations");
             sb.AppendLine();
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 foreach (Relation relation in table.GetRelations())
                 {
                     Table childTable = relation.ChildTableRef.Object as Table;
-                    if (childTable.Generated && !childTable.IsInheritedFrom(table) && !childTable.AssociativeTable)
+                    if (!childTable.IsInheritedFrom(table) && !childTable.AssociativeTable)
                     {
                         if (relation.IsOneToOne)
                         {
@@ -556,7 +556,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             }
 
             //Associative tables
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 var relations = table.GetRelationsWhereChild().ToList();
                 if (relations.Count == 2)
@@ -598,7 +598,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			#region Stored Procedures");
             sb.AppendLine();
             
-            foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var item in _model.Database.CustomStoredProcedures.OrderBy(x => x.Name))
             {
                 //Need a fake PK
                 sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().HasKey(x => new { ");
@@ -717,7 +717,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		#region Entity Sets");
             sb.AppendLine();
 
-            foreach (var item in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var item in _model.Database.Tables.Where(x => (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 var name = item.PascalName;
                 var scope = "public";
@@ -731,7 +731,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine();
             }
 
-            foreach (var item in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
+            foreach (var item in _model.Database.CustomViews.OrderBy(x => x.Name))
             {
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Entity set for " + item.PascalName);
@@ -865,7 +865,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			}");
 
             sb.AppendLine("			if (false) { }");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.Immutable).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables.Where(x => !x.Immutable).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine($"			else if (entity is {GetLocalNamespace()}.Entity.{table.PascalName})");
                 sb.AppendLine("			{");
@@ -972,7 +972,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             #region Tables
-            foreach (var item in _model.Database.Tables.Where(x => x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
+            foreach (var item in _model.Database.Tables.Where(x => (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + item.PascalName);
@@ -984,7 +984,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             #region View
-            foreach (var item in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.PascalName))
+            foreach (var item in _model.Database.CustomViews.OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + item.PascalName);
@@ -996,11 +996,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             #region Stored Procedures
-            foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.Generated && x.GeneratedColumns.Count > 0).OrderBy(x => x.PascalName))
+            foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.GeneratedColumns.Count > 0).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary />");
                 sb.Append("		public List<" + item.PascalName + "> " + item.PascalName + "(");
-                var parameterList = item.GetParameters().Where(x => x.Generated).ToList();
+                var parameterList = item.GetParameters().ToList();
                 foreach (var parameter in parameterList)
                 {
                     if (parameter.IsOutputParameter) sb.Append("out ");
@@ -1062,7 +1062,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine();
 
                 //Interface
-                var paramset = item.GetParameters().Where(x => x.Generated).ToList();
+                var paramset = item.GetParameters().ToList();
                 var paramString1 = string.Join(", ", paramset.Select(x => (x.IsOutputParameter ? "out " : "") + x.GetCodeType(true) + " " + x.CamelName).ToList());
                 var paramString2 = string.Join(", ", paramset.Select(x => (x.IsOutputParameter ? "out " : "") + x.CamelName).ToList());
                 sb.AppendLine("		/// <summary />");
@@ -1074,14 +1074,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             }
 
             //Stored procs that are Action (no columns)
-            foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.Generated && x.GeneratedColumns.Count == 0).OrderBy(x => x.PascalName))
+            foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.GeneratedColumns.Count == 0).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Calls the " + item.PascalName + " action");
                 sb.AppendLine("		/// </summary>");
                 sb.Append("		public void " + item.PascalName + "(");
 
-                var parameterList = item.GetParameters().Where(x => x.Generated).ToList();
+                var parameterList = item.GetParameters().ToList();
                 foreach (var parameter in parameterList)
                 {
                     if (parameter.IsOutputParameter) sb.Append("out ");
@@ -1137,14 +1137,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             #region Functions
-            foreach (var item in _model.Database.Functions.Where(x => x.Generated && x.IsTable).OrderBy(x => x.PascalName))
+            foreach (var item in _model.Database.Functions.Where(x => x.IsTable).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		/// " + item.Description);
                 sb.AppendLine("		/// </summary>");
 
                 sb.Append("		public virtual IQueryable<" + item.PascalName + "> " + item.PascalName + "(");
-                var parameterList = item.GetParameters().Where(x => x.Generated).ToList();
+                var parameterList = item.GetParameters().ToList();
                 foreach (var parameter in parameterList)
                 {
                     if (parameter.IsOutputParameter) sb.Append("out ");
@@ -1223,7 +1223,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public static EntityMappingConstants GetEntityFromField(Enum field)");
             sb.AppendLine("		{");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants) return " + this.GetLocalNamespace() + ".EntityMappingConstants." + table.PascalName + ";");
             }
@@ -1244,7 +1244,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		{");
             sb.AppendLine("			switch (table)");
             sb.AppendLine("			{");
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 sb.Append("				case " + this.GetLocalNamespace() + ".EntityMappingConstants." + table.PascalName + ": ");
                 //sb.AppendLine("return Activator.CreateInstance(((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ").GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true).FirstOrDefault()).MetadataClassType) as " + this.GetLocalNamespace() + ".Entity.Metadata." + table.PascalName + "Metadata;");

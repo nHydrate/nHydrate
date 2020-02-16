@@ -126,7 +126,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             #region Map Tables
             sb.AppendLine("			#region Map Tables");
-            foreach (var item in _model.Database.Tables.Where(x => x.Generated && x.AllowAuditTracking && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var item in _model.Database.Tables.Where(x => x.AllowAuditTracking && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 string schema = null;
                 if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
@@ -146,10 +146,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             //Tables
-            foreach (var table in _model.Database.Tables.Where(x => x.Generated && x.AllowAuditTracking && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => x.AllowAuditTracking && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 sb.AppendLine($"			//Field setup for {table.PascalName}Audit entity");
-                foreach (var column in table.GetColumns().Where(x => x.Generated).OrderBy(x => x.Name))
+                foreach (var column in table.GetColumns().OrderBy(x => x.Name))
                 {
                     sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Audit." + table.PascalName + "Audit>().Property(d => d." + column.PascalName + ").HasColumnName(\"" + column.DatabaseName + "\");");
                 }
@@ -173,7 +173,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		#region Entity Sets");
             sb.AppendLine();
 
-            foreach (var item in _model.Database.Tables.Where(x => x.Generated && x.AllowAuditTracking && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var item in _model.Database.Tables.Where(x => x.AllowAuditTracking && !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Entity set for " + item.PascalName);

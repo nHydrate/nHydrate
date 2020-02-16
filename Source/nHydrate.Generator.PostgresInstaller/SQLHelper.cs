@@ -100,12 +100,9 @@ namespace nHydrate.Generator.PostgresInstaller
 
                 #region Loop and DELETE tables
 
-                foreach (var oldT in modelOld.Database.Tables.Where(x =>
-                    x.Generated && x.TypedTable != TypedTableConstants.EnumOnly))
+                foreach (var oldT in modelOld.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly))
                 {
-                    var newT = modelNew.Database.Tables.FirstOrDefault(x =>
-                        x.Generated && (x.TypedTable != TypedTableConstants.EnumOnly) &&
-                        x.Key.ToLower() == oldT.Key.ToLower());
+                    var newT = modelNew.Database.Tables.FirstOrDefault(x => (x.TypedTable != TypedTableConstants.EnumOnly) && x.Key.ToLower() == oldT.Key.ToLower());
                     if (newT == null)
                     {
                         //DELETE TABLE
@@ -1248,8 +1245,7 @@ namespace nHydrate.Generator.PostgresInstaller
             var parentTable = relation.ParentTable;
 
             var sb = new StringBuilder();
-            if (childTable.Generated && parentTable.Generated &&
-                (parentTable.TypedTable != TypedTableConstants.EnumOnly) &&
+            if ((parentTable.TypedTable != TypedTableConstants.EnumOnly) &&
                 (childTable.TypedTable != TypedTableConstants.EnumOnly))
             {
                 sb.AppendLine($"--FOREIGN KEY RELATIONSHIP [{parentTable.DatabaseName}] -> [{childTable.DatabaseName}] ({GetFieldNames(relation)})");
@@ -2148,8 +2144,8 @@ namespace nHydrate.Generator.PostgresInstaller
         private static string BuildStoredProcParameterList(CustomStoredProcedure storedProcedure)
         {
             var output = new StringBuilder();
-            var parameterList = storedProcedure.GetParameters().Where(x => x.Generated && x.SortOrder > 0).OrderBy(x => x.SortOrder).ToList();
-            parameterList.AddRange(storedProcedure.GetParameters().Where(x => x.Generated && x.SortOrder == 0).OrderBy(x => x.Name).ToList());
+            var parameterList = storedProcedure.GetParameters().Where(x => x.SortOrder > 0).OrderBy(x => x.SortOrder).ToList();
+            parameterList.AddRange(storedProcedure.GetParameters().Where(x => x.SortOrder == 0).OrderBy(x => x.Name).ToList());
 
             var ii = 0;
             foreach (var parameter in parameterList)
@@ -2186,7 +2182,7 @@ namespace nHydrate.Generator.PostgresInstaller
             if (table.AllowCreateAudit || table.AllowModifiedAudit)
                 sb.AppendLine("\t\"" + model.Database.ModifiedByDatabaseName + "\" Varchar (50) NULL,");
 
-            var columnList = table.GetColumns().Where(x => x.Generated).ToList();
+            var columnList = table.GetColumns().ToList();
             foreach (var column in columnList)
             {
                 if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))

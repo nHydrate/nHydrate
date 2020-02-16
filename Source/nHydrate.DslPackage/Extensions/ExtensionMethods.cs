@@ -451,7 +451,6 @@ namespace nHydrate.DslPackage
                 Formula = original.Formula,
                 IsCalculated = original.IsCalculated,
                 Identity = original.Identity,
-                IsGenerated = original.IsGenerated,
                 IsIndexed = original.IsIndexed,
                 IsPrimaryKey = original.IsPrimaryKey,
                 IsReadOnly = original.IsReadOnly,

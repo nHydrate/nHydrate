@@ -30,7 +30,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredPr
                 sb.AppendLine();
 
                 //Defined views
-                foreach (var view in _model.Database.CustomViews.Where(x => x.Generated).OrderBy(x => x.Name))
+                foreach (var view in _model.Database.CustomViews.OrderBy(x => x.Name))
                 {
                     var template = new SQLStoredProcedureViewAllTemplate(_model, view);
                     sb.Append(template.FileContent);

@@ -110,7 +110,6 @@ namespace nHydrate.Dsl.Custom
                 XmlHelper.AddAttribute(document.DocumentElement, "typedentity", item.TypedEntity.ToString());
                 XmlHelper.AddAttribute(document.DocumentElement, "schema", item.Schema);
                 XmlHelper.AddAttribute(document.DocumentElement, "generatesdoublederived", item.GeneratesDoubleDerived);
-                XmlHelper.AddAttribute(document.DocumentElement, "isgenerated", item.IsGenerated);
                 XmlHelper.AddAttribute(document.DocumentElement, "isTenant", item.IsTenant);
 
                 #region Fields
@@ -135,7 +134,6 @@ namespace nHydrate.Dsl.Custom
                         XmlHelper.AddAttribute(fieldNode, "default", field.Default);
                         XmlHelper.AddAttribute(fieldNode, "defaultisfunc", field.DefaultIsFunc);
                         XmlHelper.AddAttribute(fieldNode, "formula", field.Formula);
-                        XmlHelper.AddAttribute(fieldNode, "isgenerated", field.IsGenerated);
                         XmlHelper.AddAttribute(fieldNode, "isindexed", field.IsIndexed);
                         XmlHelper.AddAttribute(fieldNode, "isprimarykey", field.IsPrimaryKey);
                         XmlHelper.AddAttribute(fieldNode, "Iscalculated", field.IsCalculated);
@@ -404,7 +402,6 @@ namespace nHydrate.Dsl.Custom
                 XmlHelper.AddAttribute(document.DocumentElement, "codefacade", item.CodeFacade);
                 XmlHelper.AddAttribute(document.DocumentElement, "databaseobjectname", item.DatabaseObjectName);
                 XmlHelper.AddAttribute(document.DocumentElement, "isexisting", item.IsExisting);
-                XmlHelper.AddAttribute(document.DocumentElement, "isgenerated", item.IsGenerated);
                 XmlHelper.AddAttribute(document.DocumentElement, "schema", item.Schema);
                 XmlHelper.AddAttribute(document.DocumentElement, "generatesdoublederived", item.GeneratesDoubleDerived);
 
@@ -425,7 +422,6 @@ namespace nHydrate.Dsl.Custom
                     XmlHelper.AddAttribute(fieldNode, "datatype", field.DataType.ToString());
                     XmlHelper.AddAttribute(fieldNode, "codefacade", field.CodeFacade);
                     XmlHelper.AddAttribute(fieldNode, "default", field.Default);
-                    XmlHelper.AddAttribute(fieldNode, "isgenerated", field.IsGenerated);
                     XmlHelper.AddAttribute(fieldNode, "length", field.Length);
                     XmlHelper.AddAttribute(fieldNode, "scale", field.Scale);
 
@@ -449,7 +445,6 @@ namespace nHydrate.Dsl.Custom
                     XmlHelper.AddAttribute(parameterNode, "datatype", parameter.DataType.ToString());
                     XmlHelper.AddAttribute(parameterNode, "codefacade", parameter.CodeFacade);
                     XmlHelper.AddAttribute(parameterNode, "default", parameter.Default);
-                    XmlHelper.AddAttribute(parameterNode, "isgenerated", parameter.IsGenerated);
                     XmlHelper.AddAttribute(parameterNode, "isoutput", parameter.IsOutputParameter);
                     XmlHelper.AddAttribute(parameterNode, "length", parameter.Length);
                     XmlHelper.AddAttribute(parameterNode, "scale", parameter.Scale);
@@ -492,7 +487,6 @@ namespace nHydrate.Dsl.Custom
                 XmlHelper.AddAttribute(document.DocumentElement, "id", item.Id);
                 XmlHelper.AddAttribute(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
                 XmlHelper.AddAttribute(document.DocumentElement, "codefacade", item.CodeFacade);
-                XmlHelper.AddAttribute(document.DocumentElement, "isgenerated", item.IsGenerated);
                 XmlHelper.AddAttribute(document.DocumentElement, "schema", item.Schema);
                 XmlHelper.AddAttribute(document.DocumentElement, "generatesdoublederived", item.GeneratesDoubleDerived);
 
@@ -513,7 +507,6 @@ namespace nHydrate.Dsl.Custom
                     XmlHelper.AddAttribute(fieldNode, "datatype", field.DataType.ToString());
                     XmlHelper.AddAttribute(fieldNode, "codefacade", field.CodeFacade);
                     XmlHelper.AddAttribute(fieldNode, "default", field.Default);
-                    XmlHelper.AddAttribute(fieldNode, "isgenerated", field.IsGenerated);
                     XmlHelper.AddAttribute(fieldNode, "length", field.Length);
                     XmlHelper.AddAttribute(fieldNode, "scale", field.Scale);
                     XmlHelper.AddAttribute(fieldNode, "isprimarykey", field.IsPrimaryKey);
@@ -556,7 +549,6 @@ namespace nHydrate.Dsl.Custom
                 XmlHelper.AddAttribute(document.DocumentElement, "id", item.Id);
                 XmlHelper.AddAttribute(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
                 XmlHelper.AddAttribute(document.DocumentElement, "codefacade", item.CodeFacade);
-                XmlHelper.AddAttribute(document.DocumentElement, "isgenerated", item.IsGenerated);
                 XmlHelper.AddAttribute(document.DocumentElement, "schema", item.Schema);
                 XmlHelper.AddAttribute(document.DocumentElement, "istable", item.IsTable);
                 XmlHelper.AddAttribute(document.DocumentElement, "returnvariable", item.ReturnVariable);
@@ -578,7 +570,6 @@ namespace nHydrate.Dsl.Custom
                     XmlHelper.AddAttribute(fieldNode, "datatype", field.DataType.ToString());
                     XmlHelper.AddAttribute(fieldNode, "codefacade", field.CodeFacade);
                     XmlHelper.AddAttribute(fieldNode, "default", field.Default);
-                    XmlHelper.AddAttribute(fieldNode, "isgenerated", field.IsGenerated);
                     XmlHelper.AddAttribute(fieldNode, "length", field.Length);
                     XmlHelper.AddAttribute(fieldNode, "scale", field.Scale);
 
@@ -602,7 +593,6 @@ namespace nHydrate.Dsl.Custom
                     XmlHelper.AddAttribute(parameterNode, "datatype", parameter.DataType.ToString());
                     XmlHelper.AddAttribute(parameterNode, "codefacade", parameter.CodeFacade);
                     XmlHelper.AddAttribute(parameterNode, "default", parameter.Default);
-                    XmlHelper.AddAttribute(parameterNode, "isgenerated", parameter.IsGenerated);
                     XmlHelper.AddAttribute(parameterNode, "length", parameter.Length);
                     XmlHelper.AddAttribute(parameterNode, "scale", parameter.Scale);
 
@@ -707,7 +697,6 @@ namespace nHydrate.Dsl.Custom
                 item.EnforcePrimaryKey = XmlHelper.GetAttributeValue(document.DocumentElement, "enforceprimarykey", item.EnforcePrimaryKey);
                 item.IsAssociative = XmlHelper.GetAttributeValue(document.DocumentElement, "isassociative", item.IsAssociative);
                 item.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(document.DocumentElement, "generatesdoublederived", item.GeneratesDoubleDerived);
-                item.IsGenerated = XmlHelper.GetAttributeValue(document.DocumentElement, "isgenerated", item.IsGenerated);
                 item.IsTenant = XmlHelper.GetAttributeValue(document.DocumentElement, "isTenant", item.IsTenant);
 
                 var tev = XmlHelper.GetAttributeValue(document.DocumentElement, "typedentity", item.TypedEntity.ToString());
@@ -751,7 +740,6 @@ namespace nHydrate.Dsl.Custom
                         field.Default = XmlHelper.GetAttributeValue(n, "default", field.Default);
                         field.DefaultIsFunc = XmlHelper.GetAttributeValue(n, "defaultisfunc", field.DefaultIsFunc);
                         field.Formula = XmlHelper.GetAttributeValue(n, "formula", field.Formula);
-                        field.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", field.IsGenerated);
                         field.IsIndexed = XmlHelper.GetAttributeValue(n, "isindexed", field.IsIndexed);
                         field.IsPrimaryKey = XmlHelper.GetAttributeValue(n, "isprimarykey", field.IsPrimaryKey);
                         field.IsCalculated = XmlHelper.GetAttributeValue(n, "Iscalculated", field.IsCalculated);
@@ -1008,7 +996,6 @@ namespace nHydrate.Dsl.Custom
 
                 item.Name = XmlHelper.GetAttributeValue(document.DocumentElement, "name", item.Name);
                 item.PrecedenceOrder = XmlHelper.GetAttributeValue(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
-                item.IsGenerated = XmlHelper.GetAttributeValue(document.DocumentElement, "isgenerated", item.IsGenerated);
                 item.CodeFacade = XmlHelper.GetAttributeValue(document.DocumentElement, "codefacade", item.CodeFacade);
                 item.Schema = XmlHelper.GetAttributeValue(document.DocumentElement, "schema", item.Schema);
                 item.DatabaseObjectName = XmlHelper.GetAttributeValue(document.DocumentElement, "databaseobjectname", item.DatabaseObjectName);
@@ -1039,7 +1026,6 @@ namespace nHydrate.Dsl.Custom
                         if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
                             field.DataType = dt;
                         field.Default = XmlHelper.GetAttributeValue(n, "default", field.Default);
-                        field.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", field.IsGenerated);
                         field.Length = XmlHelper.GetAttributeValue(n, "length", field.Length);
                         field.Scale = XmlHelper.GetAttributeValue(n, "scale", field.Scale);
                         field.Summary = XmlHelper.GetNodeValue(n, "summary", field.Summary);
@@ -1072,7 +1058,6 @@ namespace nHydrate.Dsl.Custom
                         if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
                             parameter.DataType = dt;
                         parameter.Default = XmlHelper.GetAttributeValue(n, "default", parameter.Default);
-                        parameter.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", parameter.IsGenerated);
                         parameter.Length = XmlHelper.GetAttributeValue(n, "length", parameter.Length);
                         parameter.Scale = XmlHelper.GetAttributeValue(n, "scale", parameter.Scale);
                         parameter.Summary = XmlHelper.GetNodeValue(n, "summary", parameter.Summary);
@@ -1139,7 +1124,6 @@ namespace nHydrate.Dsl.Custom
 
                 item.Name = XmlHelper.GetAttributeValue(document.DocumentElement, "name", item.Name);
                 item.PrecedenceOrder = XmlHelper.GetAttributeValue(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
-                item.IsGenerated = XmlHelper.GetAttributeValue(document.DocumentElement, "isgenerated", item.IsGenerated);
                 item.CodeFacade = XmlHelper.GetAttributeValue(document.DocumentElement, "codefacade", item.CodeFacade);
                 item.Schema = XmlHelper.GetAttributeValue(document.DocumentElement, "schema", item.Schema);
                 item.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(document.DocumentElement, "generatesdoublederived", item.GeneratesDoubleDerived);
@@ -1168,7 +1152,6 @@ namespace nHydrate.Dsl.Custom
                         if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
                             field.DataType = dt;
                         field.Default = XmlHelper.GetAttributeValue(n, "default", field.Default);
-                        field.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", field.IsGenerated);
                         field.Length = XmlHelper.GetAttributeValue(n, "length", field.Length);
                         field.Scale = XmlHelper.GetAttributeValue(n, "scale", field.Scale);
                         field.Summary = XmlHelper.GetNodeValue(n, "summary", field.Summary);
@@ -1236,7 +1219,6 @@ namespace nHydrate.Dsl.Custom
 
                 item.Name = XmlHelper.GetAttributeValue(document.DocumentElement, "name", item.Name);
                 item.PrecedenceOrder = XmlHelper.GetAttributeValue(document.DocumentElement, "precedenceorder", item.PrecedenceOrder);
-                item.IsGenerated = XmlHelper.GetAttributeValue(document.DocumentElement, "isgenerated", item.IsGenerated);
                 item.CodeFacade = XmlHelper.GetAttributeValue(document.DocumentElement, "codefacade", item.CodeFacade);
                 item.Schema = XmlHelper.GetAttributeValue(document.DocumentElement, "schema", item.Schema);
                 item.IsTable = XmlHelper.GetAttributeValue(document.DocumentElement, "istable", item.IsTable);
@@ -1266,7 +1248,6 @@ namespace nHydrate.Dsl.Custom
                         if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
                             field.DataType = dt;
                         field.Default = XmlHelper.GetAttributeValue(n, "default", field.Default);
-                        field.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", field.IsGenerated);
                         field.Length = XmlHelper.GetAttributeValue(n, "length", field.Length);
                         field.Scale = XmlHelper.GetAttributeValue(n, "scale", field.Scale);
                         field.Summary = XmlHelper.GetNodeValue(n, "summary", field.Summary);
@@ -1298,7 +1279,6 @@ namespace nHydrate.Dsl.Custom
                         if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
                             parameter.DataType = dt;
                         parameter.Default = XmlHelper.GetAttributeValue(n, "default", parameter.Default);
-                        parameter.IsGenerated = XmlHelper.GetAttributeValue(n, "isgenerated", parameter.IsGenerated);
                         parameter.Length = XmlHelper.GetAttributeValue(n, "length", parameter.Length);
                         parameter.Scale = XmlHelper.GetAttributeValue(n, "scale", parameter.Scale);
                         parameter.Summary = XmlHelper.GetNodeValue(n, "summary", parameter.Summary);

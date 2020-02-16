@@ -87,7 +87,7 @@ namespace nHydrate.Dsl
             var o = item.Shape.ModelElement as View;
             var text = "View: " + o.Name + Environment.NewLine;
             text += "Fields: " + o.Fields.Count + Environment.NewLine;
-            var genFieldCount = o.Fields.Count(x => !x.IsGenerated);
+            var genFieldCount = o.Fields.Count();
             if (genFieldCount > 0)
                 text += "Generated Fields: " + genFieldCount + Environment.NewLine;
 

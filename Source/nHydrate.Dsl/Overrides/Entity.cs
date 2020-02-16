@@ -45,7 +45,7 @@ namespace nHydrate.Dsl
         /// </summary>
         public IEnumerable<Field> GeneratedColumns
         {
-            get { return this.Fields.Where(x => x.IsGenerated).OrderBy(x => x.Name); }
+            get { return this.Fields.OrderBy(x => x.Name); }
         }
 
         /// <summary>
@@ -87,8 +87,7 @@ namespace nHydrate.Dsl
         /// </summary>
         public IEnumerable<EntityHasEntities> GetRelationsWhereChild()
         {
-            var retval = this.nHydrateModel.GetRelationsWhereChild(this);
-            return retval.Where(x => x.TargetEntity.IsGenerated && x.SourceEntity.IsGenerated);
+            return this.nHydrateModel.GetRelationsWhereChild(this);
         }
 
         /// <summary>

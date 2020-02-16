@@ -18,7 +18,6 @@ namespace nHydrate.Generator.Models
         protected const int _def_length = 50;
         protected const int _def_scale = 0;
         protected const bool _def_allowNull = true;
-        protected const bool _def_generated = true;
         protected const string _def_description = "";
         protected const string _def_prompt = "";
         protected const string _def_codefacade = "";
@@ -42,8 +41,6 @@ namespace nHydrate.Generator.Models
         #region Property Implementations
 
         public string Category { get; set; } = string.Empty;
-
-        public virtual bool Generated { get; set; } = _def_generated;
 
         public virtual string Description { get; set; } = _def_description;
 
