@@ -40,7 +40,6 @@ namespace nHydrate.DslPackage
         private const int cmdidMenuArrange = 5;
         private const int cmdidMenuEntityRefreshFromDatabase = 0x001F;
         private const int cmdidMenuEntityRelations = 6;
-        private const int cmdidMenuBulkImportColumns = 7;
         private const int cmdidMenuShowRelatedEntities = 8;
         private const int cmdidMenuStaticData = 9;
         private const int cmdidMenuShowIndexes = 10;
@@ -479,49 +478,6 @@ namespace nHydrate.DslPackage
         }
         #endregion
 
-        #region BulkImportColumns
-        private void OnStatusMenuBulkImportColumns(object sender, EventArgs e)
-        {
-            try
-            {
-                var command = sender as MenuCommand;
-                command.Visible = false;
-                if (this.IsDiagramSelected()) return;
-
-                if (this.CurrentSelection.Count != 1) return;
-
-                foreach (var item in this.CurrentSelection)
-                {
-                    if ((item as EntityShape) != null)
-                        command.Visible = true;
-                    else if ((item as ViewShape) != null)
-                        command.Visible = true;
-                    else if ((item as StoredProcedureShape) != null)
-                        command.Visible = true;
-                    else if ((item as FunctionShape) != null)
-                        command.Visible = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        private void OnMenuCommandBulkImportColumns(object sender, EventArgs e)
-        {
-            foreach (var item in this.CurrentSelection)
-            {
-                var selectedObject = item as ShapeElement;
-                if (selectedObject != null)
-                {
-                    var F = new nHydrate.DslPackage.Forms.ImportColumns(selectedObject.ModelElement as IFieldContainer, this.CurrentDocData.Store);
-                    F.ShowDialog();
-                }
-            }
-        }
-        #endregion
-
         #region ShowRelatedEntities
         private void OnStatusMenuShowRelatedEntities(object sender, EventArgs e)
         {
@@ -596,7 +552,7 @@ namespace nHydrate.DslPackage
                 var selectedObject = item as EntityShape;
                 if (selectedObject != null)
                 {
-                    var F = new nHydrate.DslPackage.Forms.StaticDataForm(selectedObject.ModelElement as Entity, this.CurrentDocData.Store, model, this.CurrentDocData);
+                    var F = new nHydrate.DslPackage.Forms.StaticDataForm(selectedObject.ModelElement as Entity, this.CurrentDocData.Store);
                     F.ShowDialog();
                 }
             }
@@ -1135,7 +1091,6 @@ namespace nHydrate.DslPackage
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuArrange), new EventHandler(OnMenuCommandArrange), new CommandID(guidDiagramMenuCmdSet, cmdidMenuArrange)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuEntityRefreshFromDatabase), new EventHandler(OnMenuCommandEntityRefreshFromDatabase), new CommandID(guidModelMenuCmdSet, cmdidMenuEntityRefreshFromDatabase)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuEntityRelations), new EventHandler(OnMenuCommandEntityRelations), new CommandID(guidModelMenuCmdSet, cmdidMenuEntityRelations)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuBulkImportColumns), new EventHandler(OnMenuCommandBulkImportColumns), new CommandID(guidModelMenuCmdSet, cmdidMenuBulkImportColumns)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuShowRelatedEntities), new EventHandler(OnMenuCommandShowRelatedEntities), new CommandID(guidModelMenuCmdSet, cmdidMenuShowRelatedEntities)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuImportStaticData), new EventHandler(OnMenuCommandImportStaticData), new CommandID(guidModelMenuCmdSet, cmdidMenuStaticData)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuShowIndexes), new EventHandler(OnMenuCommandShowIndexes), new CommandID(guidModelMenuCmdSet, cmdidMenuShowIndexes)));

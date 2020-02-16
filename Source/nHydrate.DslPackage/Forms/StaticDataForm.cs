@@ -13,8 +13,6 @@ namespace nHydrate.DslPackage.Forms
 
         private Entity _entity = null;
         private Microsoft.VisualStudio.Modeling.Store _store = null;
-        private nHydrateModel _model = null;
-        private Microsoft.VisualStudio.Modeling.Shell.ModelingDocData _docData = null;
 
         #endregion
 
@@ -25,13 +23,11 @@ namespace nHydrate.DslPackage.Forms
             InitializeComponent();
         }
 
-        public StaticDataForm(Entity entity, Microsoft.VisualStudio.Modeling.Store store, nHydrateModel model, Microsoft.VisualStudio.Modeling.Shell.ModelingDocData docData)
+        public StaticDataForm(Entity entity, Microsoft.VisualStudio.Modeling.Store store)
             : this()
         {
             _entity = entity;
             _store = store;
-            _model = model;
-            _docData = docData;
             this.LoadData();
         }
 
@@ -74,10 +70,6 @@ namespace nHydrate.DslPackage.Forms
             //Bind the grid
             this.dataGridView1.DataSource = dt;
         }
-
-        #endregion
-
-        #region Class Members
 
         #endregion
 
@@ -180,17 +172,6 @@ namespace nHydrate.DslPackage.Forms
                 jj++;
             }
             Clipboard.SetText(text);
-        }
-
-        private void cmdImport_Click(object sender, EventArgs e)
-        {
-            var F = new ImportStaticDataForm(_entity, _store, _docData);
-            if (F.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                //Bind the grid
-                this.dataGridView1.Columns.Clear();
-                this.dataGridView1.DataSource = F.GetData();
-            }
         }
 
         #endregion

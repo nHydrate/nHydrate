@@ -99,7 +99,6 @@ namespace nHydrate.DslPackage.Forms
             menuItemMainSelect.Click += SelectMenu_Click;
             menuItemMainRefresh.Click += RefreshMenu_Click;
             menuItemMainDelete.Click += DeleteMenu_Click;
-            menuItemMainBulkImport.Click += menuItemMainBulkImport_Click;
             menuItemMainRelationships.Click += menuItemMainRelationships_Click;
             menuItemMainShowRelatedEntities.Click += menuItemMainShowRelatedEntities_Click;
             menuItemMainStaticData.Click += menuItemMainStaticData_Click;
@@ -857,7 +856,7 @@ namespace nHydrate.DslPackage.Forms
             if (lvwMain.SelectedItems.Count == 1)
             {
                 var item = lvwMain.SelectedItems[0].Tag as Microsoft.VisualStudio.Modeling.ModelElement;
-                var F = new nHydrate.DslPackage.Forms.StaticDataForm(item as nHydrate.Dsl.Entity, _model.Store, _model, _docData);
+                var F = new nHydrate.DslPackage.Forms.StaticDataForm(item as nHydrate.Dsl.Entity, _model.Store);
                 F.ShowDialog();
             }
         }
@@ -890,20 +889,9 @@ namespace nHydrate.DslPackage.Forms
             }
         }
 
-        private void menuItemMainBulkImport_Click(object sender, EventArgs e)
-        {
-            if (lvwMain.SelectedItems.Count == 1)
-            {
-                var item = lvwMain.SelectedItems[0].Tag as Microsoft.VisualStudio.Modeling.ModelElement;
-                var F = new nHydrate.DslPackage.Forms.ImportColumns(item as nHydrate.Dsl.Entity, _model.Store);
-                F.ShowDialog();
-            }
-        }
-
         private void mainPopupMenu_Popup(object sender, CancelEventArgs e)
         {
             menuItemMainSep1.Visible = false;
-            menuItemMainBulkImport.Visible = false;
             menuItemMainStaticData.Visible = false;
             menuItemMainViewIndexes.Visible = false;
             menuItemMainShowRelatedEntities.Visible = false;

@@ -315,23 +315,11 @@
     <Compile Include="Forms\ErrorForm.Designer.cs">
       <DependentUpon>ErrorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ImportColumns.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ImportColumns.Designer.cs">
-      <DependentUpon>ImportColumns.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\ImportDatabaseForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ImportDatabaseForm.Designer.cs">
       <DependentUpon>ImportDatabaseForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ImportStaticDataForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ImportStaticDataForm.Designer.cs">
-      <DependentUpon>ImportStaticDataForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\IndexColumnOrder.cs">
       <SubType>Form</SubType>
@@ -518,14 +506,8 @@
     <EmbeddedResource Include="Forms\ErrorForm.resx">
       <DependentUpon>ErrorForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ImportColumns.resx">
-      <DependentUpon>ImportColumns.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ImportDatabaseForm.resx">
       <DependentUpon>ImportDatabaseForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ImportStaticDataForm.resx">
-      <DependentUpon>ImportStaticDataForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\IndexColumnOrder.resx">
       <DependentUpon>IndexColumnOrder.cs</DependentUpon>

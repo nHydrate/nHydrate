@@ -128,14 +128,6 @@
                 </Strings>
             </Button>
 
-            <Button guid="guidModelMenuCmdSet" id="cmdidMenuBulkImportColumns" priority="0x0200" type="Button">
-                <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
-                <CommandFlag>DynamicVisibility</CommandFlag>
-                <Strings>
-                    <ButtonText>Bulk Import Columns...</ButtonText>
-                </Strings>
-            </Button>
-
             <Button guid="guidModelMenuCmdSet" id="cmdidMenuShowRelatedEntities" priority="0x0300" type="Button">
                 <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
                 <CommandFlag>DynamicVisibility</CommandFlag>
@@ -385,7 +377,6 @@
             <IDSymbol name="cmdidMenuRelationDialog" value="0x00004" />
             <IDSymbol name="cmdidMenuEntityRefreshFromDatabase" value="0x001F" />
             <IDSymbol name="cmdidMenuEntityRelations" value="0x00006" />
-            <IDSymbol name="cmdidMenuBulkImportColumns" value="0x00007" />
             <IDSymbol name="cmdidMenuShowRelatedEntities" value="0x00008" />
             <IDSymbol name="cmdidMenuStaticData" value="0x00009" />
             <IDSymbol name="cmdidMenuShowIndexes" value="0x0000A" />
