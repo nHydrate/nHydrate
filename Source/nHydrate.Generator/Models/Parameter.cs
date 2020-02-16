@@ -165,18 +165,18 @@ namespace nHydrate.Generator.Models
             {
                 var oDoc = node.OwnerDocument;
 
-                XmlHelper.AddAttribute(node, "key", this.Key);
+                node.AddAttribute("key", this.Key);
 
                 if (this.Generated != _def_generated)
                     XmlHelper.AddAttribute((XmlElement)node, "generated", this.Generated.ToString());
 
                 if (this.CodeFacade != _def_codefacade)
-                    XmlHelper.AddAttribute(node, "codeFacade", this.CodeFacade);
+                    node.AddAttribute("codeFacade", this.CodeFacade);
 
                 XmlHelper.AddAttribute((XmlElement)node, "name", this.Name);
 
                 if (this.Description != _def_description)
-                    XmlHelper.AddAttribute(node, "description", this.Description);
+                    node.AddAttribute("description", this.Description);
 
                 if (RelationshipRef != null)
                 {

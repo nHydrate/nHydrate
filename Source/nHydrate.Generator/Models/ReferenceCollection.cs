@@ -107,7 +107,7 @@ namespace nHydrate.Generator.Models
             {
                 var oDoc = node.OwnerDocument;
 
-                XmlHelper.AddAttribute(node, "key", this.Key);
+                node.AddAttribute("key", this.Key);
 
                 foreach (var Reference in _references)
                 {

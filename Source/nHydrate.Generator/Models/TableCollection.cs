@@ -33,7 +33,7 @@ namespace nHydrate.Generator.Models
             {
                 var oDoc = node.OwnerDocument;
 
-                XmlHelper.AddAttribute(node, "key", this.Key);
+                node.AddAttribute("key", this.Key);
 
                 foreach (var item in _internalList.OrderBy(x => x.Name))
                 {

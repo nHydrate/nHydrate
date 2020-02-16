@@ -111,9 +111,9 @@ namespace nHydrate.Generator.Models
             {
                 var oDoc = node.OwnerDocument;
 
-                XmlHelper.AddAttribute(node, "key", this.Key);
-                XmlHelper.AddAttribute(node, "ref", this.Ref);
-                XmlHelper.AddAttribute(node, "refType", (int)this.RefType);
+                node.AddAttribute("key", this.Key);
+                node.AddAttribute("ref", this.Ref);
+                node.AddAttribute("refType", (int)this.RefType);
             }
             catch (Exception ex)
             {

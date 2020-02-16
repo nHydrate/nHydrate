@@ -288,76 +288,6 @@ namespace nHydrate.Generator.Models
             return text;
         }
 
-        public virtual bool CanHaveDefault()
-        {
-            switch (this.DataType)
-            {
-                case System.Data.SqlDbType.BigInt:
-                    return true;
-                case System.Data.SqlDbType.Binary:
-                    return true;
-                case System.Data.SqlDbType.Bit:
-                    return true;
-                case System.Data.SqlDbType.Char:
-                    return true;
-                case System.Data.SqlDbType.Date:
-                    return true;
-                case System.Data.SqlDbType.DateTime:
-                    return true;
-                case System.Data.SqlDbType.DateTime2:
-                    return true;
-                case System.Data.SqlDbType.DateTimeOffset:
-                    return false;
-                case System.Data.SqlDbType.Decimal:
-                    return true;
-                case System.Data.SqlDbType.Float:
-                    return true;
-                case System.Data.SqlDbType.Image:
-                    return true;
-                case System.Data.SqlDbType.Int:
-                    return true;
-                case System.Data.SqlDbType.Money:
-                    return true;
-                case System.Data.SqlDbType.NChar:
-                    return true;
-                case System.Data.SqlDbType.NText:
-                    return true;
-                case System.Data.SqlDbType.NVarChar:
-                    return true;
-                case System.Data.SqlDbType.Real:
-                    return true;
-                case System.Data.SqlDbType.SmallDateTime:
-                    return true;
-                case System.Data.SqlDbType.SmallInt:
-                    return true;
-                case System.Data.SqlDbType.SmallMoney:
-                    return true;
-                case System.Data.SqlDbType.Structured:
-                    return false;
-                case System.Data.SqlDbType.Text:
-                    return true;
-                case System.Data.SqlDbType.Time:
-                    return true;
-                case System.Data.SqlDbType.Timestamp:
-                    return false;
-                case System.Data.SqlDbType.TinyInt:
-                    return true;
-                case System.Data.SqlDbType.Udt:
-                    return false;
-                case System.Data.SqlDbType.UniqueIdentifier:
-                    return true;
-                case System.Data.SqlDbType.VarBinary:
-                    return true;
-                case System.Data.SqlDbType.VarChar:
-                    return true;
-                case System.Data.SqlDbType.Variant:
-                    return false;
-                case System.Data.SqlDbType.Xml:
-                    return false;
-            }
-            return false;
-        }
-
         public virtual string GetCodeDefault()
         {
             var defaultValue = string.Empty;
@@ -487,88 +417,40 @@ namespace nHydrate.Generator.Models
             {
                 var oDoc = node.OwnerDocument;
 
-                XmlHelper.AddAttribute(node, "key", this.Key);
-
-                if (this.PrimaryKey != _def_primaryKey)
-                    XmlHelper.AddAttribute(node, "primaryKey", this.PrimaryKey);
-
-                if (this.ComputedColumn != _def_computedColumn)
-                    XmlHelper.AddAttribute(node, "computedColumn", this.ComputedColumn);
-
-                if (this.IsReadOnly != _def_isReadOnly)
-                    XmlHelper.AddAttribute(node, "isReadOnly", this.IsReadOnly);
-
-                if (this.Formula != _def_formula)
-                    XmlHelper.AddAttribute(node, "formula", this.Formula);
-
-                if (this.ValidationExpression != _def_validationExpression)
-                    XmlHelper.AddAttribute(node, "validationExpression", this.ValidationExpression);
-
-                if (this.Generated != _def_generated)
-                    XmlHelper.AddAttribute(node, "generated", this.Generated);
-
-                if (this.Identity != _def_identity)
-                    XmlHelper.AddAttribute(node, "identity", (int)this.Identity);
-
-                XmlHelper.AddAttribute(node, "name", this.Name);
-
-                if (this.CodeFacade != _def_codefacade)
-                    XmlHelper.AddAttribute(node, "codeFacade", this.CodeFacade);
-
-                if (this.Description != _def_description)
-                    XmlHelper.AddAttribute(node, "description", this.Description);
-
-                if (this.Prompt != _def_prompt)
-                    XmlHelper.AddAttribute(node, "prompt", this.Prompt);
-
-                if (this.FriendlyName != _def_friendlyName)
-                    XmlHelper.AddAttribute(node, "dataFieldFriendlyName", this.FriendlyName);
-
-                if (this.UIVisible != _def_UIVisible)
-                    XmlHelper.AddAttribute(node, "dataFieldVisibility", this.UIVisible);
-
-                if (this.SortOrder != _def_sortOrder)
-                    XmlHelper.AddAttribute(node, "dataFieldSortOrder", this.SortOrder);
-
-                if (this.Default != _def_default)
-                    XmlHelper.AddAttribute(node, "default", this.Default);
-
-                if (this.DefaultIsFunc != _def_defaultIsFunc)
-                    XmlHelper.AddAttribute(node, "defaultIsFunc", this.DefaultIsFunc);
+                node.AddAttribute("key", this.Key);
+                node.AddAttribute("primaryKey", this.PrimaryKey, _def_primaryKey);
+                node.AddAttribute("computedColumn", this.ComputedColumn, _def_computedColumn);
+                node.AddAttribute("isReadOnly", this.IsReadOnly, _def_isReadOnly);
+                node.AddAttribute("formula", this.Formula, _def_formula);
+                node.AddAttribute("validationExpression", this.ValidationExpression, _def_validationExpression);
+                node.AddAttribute("generated", this.Generated, _def_generated);
+                node.AddAttribute("identity", (int) this.Identity, (int) _def_identity);
+                node.AddAttribute("name", this.Name);
+                node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
+                node.AddAttribute("description", this.Description, _def_description);
+                node.AddAttribute("prompt", this.Prompt, _def_prompt);
+                node.AddAttribute("dataFieldFriendlyName", this.FriendlyName, _def_friendlyName);
+                node.AddAttribute("dataFieldVisibility", this.UIVisible, _def_UIVisible);
+                node.AddAttribute("dataFieldSortOrder", this.SortOrder, _def_sortOrder);
+                node.AddAttribute("default", this.Default, _def_default);
+                node.AddAttribute("defaultIsFunc", this.DefaultIsFunc, _def_defaultIsFunc);
 
                 if ((this.Length != _def_length) && !this.IsDefinedSize)
-                    XmlHelper.AddAttribute(node, "length", this.Length);
+                    node.AddAttribute("length", this.Length);
 
                 if (this.Scale != _def_scale && !this.IsDefinedScale)
-                    XmlHelper.AddAttribute(node, "scale", this.Scale);
+                    node.AddAttribute("scale", this.Scale);
 
-                if (this.IsIndexed != _def_isIndexed)
-                    XmlHelper.AddAttribute(node, "isIndexed", this.IsIndexed);
-
-                if (this.IsUnique != _def_isUnique)
-                    XmlHelper.AddAttribute(node, "isUnique", this.IsUnique);
-
-                if (this.Collate != _def_collate)
-                    XmlHelper.AddAttribute(node, "collate", this.Collate);
-
-                XmlHelper.AddAttribute(node, "id", this.Id);
-
-                XmlHelper.AddAttribute(node, "type", (int)this.DataType);
-
-                if (this.AllowNull != _def_allowNull)
-                    XmlHelper.AddAttribute(node, "allowNull", this.AllowNull);
-
-                if (this.IsBrowsable != _def_isBrowsable)
-                    XmlHelper.AddAttribute(node, "isBrowsable", this.IsBrowsable);
-
-                if (this.Category != string.Empty)
-                    XmlHelper.AddAttribute(node, "category", this.Category);
-
-                if (this.Mask != _def_mask)
-                    XmlHelper.AddAttribute(node, "mask", this.Mask);
-
-                if (this.Obsolete != _def_obsolete)
-                    XmlHelper.AddAttribute(node, "obsolete", this.Obsolete);
+                node.AddAttribute("isIndexed", this.IsIndexed, _def_isIndexed);
+                node.AddAttribute("isUnique", this.IsUnique, _def_isUnique);
+                node.AddAttribute("collate", this.Collate, _def_collate);
+                node.AddAttribute("id", this.Id);
+                node.AddAttribute("type", (int) this.DataType);
+                node.AddAttribute("allowNull", this.AllowNull, _def_allowNull);
+                node.AddAttribute("isBrowsable", this.IsBrowsable, _def_isBrowsable);
+                node.AddAttribute("category", this.Category, string.Empty);
+                node.AddAttribute("mask", this.Mask, _def_mask);
+                node.AddAttribute("obsolete", this.Obsolete, _def_obsolete);
 
                 if (RelationshipRef != null)
                 {

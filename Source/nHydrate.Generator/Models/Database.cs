@@ -209,7 +209,7 @@ namespace nHydrate.Generator.Models
             {
                 var oDoc = node.OwnerDocument;
 
-                XmlHelper.AddAttribute(node, "key", this.Key);
+                node.AddAttribute("key", this.Key);
 
                 XmlHelper.AddAttribute((XmlElement)node, "createdByColumnName", CreatedByColumnName);
                 XmlHelper.AddAttribute((XmlElement)node, "createdDateColumnName", CreatedDateColumnName);
@@ -248,7 +248,7 @@ namespace nHydrate.Generator.Models
                 this.Relations.XmlAppend(relationsNode);
                 node.AppendChild(relationsNode);
 
-                XmlHelper.AddAttribute(node, "databaseName", this.DatabaseName);
+                node.AddAttribute("databaseName", this.DatabaseName);
 
                 var tablesNode = oDoc.CreateElement("tables");
                 this.Tables.XmlAppend(tablesNode);

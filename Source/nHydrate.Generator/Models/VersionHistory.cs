@@ -23,9 +23,9 @@ namespace nHydrate.Generator.Models
         {
             var oDoc = node.OwnerDocument;
 
-            XmlHelper.AddAttribute(node, "createdDate",
+            node.AddAttribute("createdDate",
                 this.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
-            XmlHelper.AddAttribute(node, "version", this.Version);
+            node.AddAttribute("version", this.Version);
 
         }
 

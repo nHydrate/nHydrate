@@ -413,17 +413,17 @@ namespace nHydrate.Generator.Models
             {
                 var oDoc = node.OwnerDocument;
 
-                XmlHelper.AddAttribute(node, "key", this.Key);
-                XmlHelper.AddAttribute(node, "name", this.Name);
+                node.AddAttribute("key", this.Key);
+                node.AddAttribute("name", this.Name);
 
                 if (this.DBSchema != _def_dbSchema)
-                    XmlHelper.AddAttribute(node, "dbschema", this.DBSchema);
+                    node.AddAttribute("dbschema", this.DBSchema);
 
                 if (this.CodeFacade != _def_codeFacade)
-                    XmlHelper.AddAttribute(node, "codeFacade", this.CodeFacade);
+                    node.AddAttribute("codeFacade", this.CodeFacade);
 
                 if (this.Description != _def_description)
-                    XmlHelper.AddAttribute(node, "description", this.Description);
+                    node.AddAttribute("description", this.Description);
 
                 if (this.Relationships.Count > 0)
                 {
@@ -441,36 +441,36 @@ namespace nHydrate.Generator.Models
                 node.AppendChild(columnsNode);
 
                 if (this.Generated != _def_generated)
-                    XmlHelper.AddAttribute(node, "generated", this.Generated);
+                    node.AddAttribute("generated", this.Generated);
 
                 if (this.IsTenant != _def_isTenant)
-                    XmlHelper.AddAttribute(node, "isTenant", this.IsTenant);
+                    node.AddAttribute("isTenant", this.IsTenant);
 
                 if (this.Immutable != _def_immutable)
-                    XmlHelper.AddAttribute(node, "immutable", this.Immutable);
+                    node.AddAttribute("immutable", this.Immutable);
 
                 if (this.EnforcePrimaryKey != _def_enforePrimaryKey)
-                    XmlHelper.AddAttribute(node, "enforePrimaryKey", this.EnforcePrimaryKey);
+                    node.AddAttribute("enforePrimaryKey", this.EnforcePrimaryKey);
 
                 if (this.AllowModifiedAudit != _def_modifiedAudit)
-                    XmlHelper.AddAttribute(node, "modifiedAudit", this.AllowModifiedAudit);
+                    node.AddAttribute("modifiedAudit", this.AllowModifiedAudit);
 
                 if (this.TypedTable != _def_isTypeTable)
-                    XmlHelper.AddAttribute(node, "typedTable", this.TypedTable.ToString("d"));
+                    node.AddAttribute("typedTable", this.TypedTable.ToString("d"));
 
                 if (this.AllowCreateAudit != _def_createAudit)
-                    XmlHelper.AddAttribute(node, "createAudit", this.AllowCreateAudit);
+                    node.AddAttribute("createAudit", this.AllowCreateAudit);
 
                 if (this.AllowTimestamp != _def_timestamp)
-                    XmlHelper.AddAttribute(node, "timestamp", this.AllowTimestamp);
+                    node.AddAttribute("timestamp", this.AllowTimestamp);
 
                 if (this.IsAbstract != _def_isAbstract)
-                    XmlHelper.AddAttribute(node, "isAbstract", this.IsAbstract);
+                    node.AddAttribute("isAbstract", this.IsAbstract);
 
                 if (this.GeneratesDoubleDerived != _def_generatesDoubleDerived)
-                    XmlHelper.AddAttribute(node, "generatesDoubleDerived", this.GeneratesDoubleDerived);
+                    node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived);
 
-                XmlHelper.AddAttribute(node, "id", this.Id);
+                node.AddAttribute("id", this.Id);
 
                 if (this.StaticData.Count > 0)
                 {
@@ -480,19 +480,19 @@ namespace nHydrate.Generator.Models
                 }
 
                 if (this.AssociativeTable != _def_associativeTable)
-                    XmlHelper.AddAttribute(node, "associativeTable", this.AssociativeTable);
+                    node.AddAttribute("associativeTable", this.AssociativeTable);
 
                 if (this.HasHistory != _def_hasHistory)
-                    XmlHelper.AddAttribute(node, "hasHistory", this.HasHistory);
+                    node.AddAttribute("hasHistory", this.HasHistory);
 
                 if (this.CreateMetaData != _def_createMetaData)
-                    XmlHelper.AddAttribute(node, "createMetaData", this.CreateMetaData);
+                    node.AddAttribute("createMetaData", this.CreateMetaData);
 
                 if (this.FullIndexSearch != _def_fullIndexSearch)
-                    XmlHelper.AddAttribute(node, "fullIndexSearch", this.FullIndexSearch);
+                    node.AddAttribute("fullIndexSearch", this.FullIndexSearch);
 
                 if (this.AllowAuditTracking != _def_allowAuditTracking)
-                    XmlHelper.AddAttribute(node, "allowAuditTracking", this.AllowAuditTracking);
+                    node.AddAttribute("allowAuditTracking", this.AllowAuditTracking);
 
                 if (this.MetaData.Count > 0)
                 {

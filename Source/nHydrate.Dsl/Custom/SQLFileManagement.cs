@@ -350,29 +350,29 @@ namespace nHydrate.Dsl.Custom
                 {
                     var item = ((shape as EntityShape).ModelElement as Entity);
                     var node = XmlHelper.AddElement(document.DocumentElement, "element");
-                    XmlHelper.AddAttribute(node, "id", shape.ModelElement.Id);
-                    XmlHelper.AddAttribute(node, "bounds", shape.AbsoluteBoundingBox.ToXmlValue());
+                    node.AddAttribute("id", shape.ModelElement.Id);
+                    node.AddAttribute("bounds", shape.AbsoluteBoundingBox.ToXmlValue());
                 }
                 else if (shape is ViewShape)
                 {
                     var item = ((shape as ViewShape).ModelElement as View);
                     var node = XmlHelper.AddElement(document.DocumentElement, "element");
-                    XmlHelper.AddAttribute(node, "id", shape.ModelElement.Id);
-                    XmlHelper.AddAttribute(node, "bounds", shape.AbsoluteBoundingBox.ToXmlValue());
+                    node.AddAttribute("id", shape.ModelElement.Id);
+                    node.AddAttribute("bounds", shape.AbsoluteBoundingBox.ToXmlValue());
                 }
                 else if (shape is StoredProcedureShape)
                 {
                     var item = ((shape as StoredProcedureShape).ModelElement as StoredProcedure);
                     var node = XmlHelper.AddElement(document.DocumentElement, "element");
-                    XmlHelper.AddAttribute(node, "id", shape.ModelElement.Id);
-                    XmlHelper.AddAttribute(node, "bounds", shape.AbsoluteBoundingBox.ToXmlValue());
+                    node.AddAttribute("id", shape.ModelElement.Id);
+                    node.AddAttribute("bounds", shape.AbsoluteBoundingBox.ToXmlValue());
                 }
                 else if (shape is FunctionShape)
                 {
                     var item = ((shape as FunctionShape).ModelElement as Function);
                     var node = XmlHelper.AddElement(document.DocumentElement, "element");
-                    XmlHelper.AddAttribute(node, "id", shape.ModelElement.Id);
-                    XmlHelper.AddAttribute(node, "bounds", shape.AbsoluteBoundingBox.ToXmlValue());
+                    node.AddAttribute("id", shape.ModelElement.Id);
+                    node.AddAttribute("bounds", shape.AbsoluteBoundingBox.ToXmlValue());
                 }
             }
             WriteFileIfNeedBe(fileName, document.ToIndentedString(), generatedFileList);

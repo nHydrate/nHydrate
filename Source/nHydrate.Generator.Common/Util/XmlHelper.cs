@@ -274,7 +274,7 @@ namespace nHydrate.Generator.Common.Util
             return document.AppendChild(elemNew);
         }
 
-        public static XmlAttribute AddAttribute(XmlNode node, string name, string value)
+        public static XmlAttribute AddAttribute(this XmlNode node, string name, string value)
         {
             var attrNew = node.OwnerDocument.CreateAttribute(name);
             attrNew.InnerText = value;
@@ -282,21 +282,18 @@ namespace nHydrate.Generator.Common.Util
             return attrNew;
         }
 
-        public static XmlAttribute AddAttribute(XmlNode node, string name, string value, string defaultValue)
+        public static XmlAttribute AddAttribute(this XmlNode node, string name, string value, string defaultValue)
         {
             if (value == defaultValue) return null;
-            var attrNew = node.OwnerDocument.CreateAttribute(name);
-            attrNew.InnerText = value;
-            node.Attributes.Append(attrNew);
-            return attrNew;
+            return node.AddAttribute(name, value);
         }
 
-        public static XmlAttribute AddAttribute(XmlElement node, string name, string value)
+        public static XmlAttribute AddAttribute(this XmlElement node, string name, string value)
         {
             return AddAttribute((XmlNode)node, name, value);
         }
 
-        public static XmlAttribute AddAttribute(XmlNode element, string name, double value)
+        public static XmlAttribute AddAttribute(this XmlNode element, string name, double value)
         {
             var attrNew = element.OwnerDocument.CreateAttribute(name);
             attrNew.InnerText = value.ToString(_cultureProvider);
@@ -304,7 +301,13 @@ namespace nHydrate.Generator.Common.Util
             return attrNew;
         }
 
-        public static XmlAttribute AddAttribute(XmlNode element, string name, Guid value)
+        public static XmlAttribute AddAttribute(this XmlNode node, string name, double value, double defaultValue)
+        {
+            if (value == defaultValue) return null;
+            return node.AddAttribute(name, value);
+        }
+
+        public static XmlAttribute AddAttribute(this XmlNode element, string name, Guid value)
         {
             var attrNew = element.OwnerDocument.CreateAttribute(name);
             attrNew.InnerText = value.ToString();
@@ -312,12 +315,19 @@ namespace nHydrate.Generator.Common.Util
             return attrNew;
         }
 
-        public static XmlAttribute AddAttribute(XmlElement node, string name, double value)
+        public static XmlAttribute AddAttribute(this XmlNode node, string name, Guid value, Guid defaultValue)
+        {
+            if (value == defaultValue) return null;
+            return node.AddAttribute(name, value);
+        }
+
+
+        public static XmlAttribute AddAttribute(this XmlElement node, string name, double value)
         {
             return AddAttribute((XmlNode)node, name, value);
         }
 
-        public static XmlAttribute AddAttribute(XmlNode element, string name, int value)
+        public static XmlAttribute AddAttribute(this XmlNode element, string name, int value)
         {
             var attrNew = element.OwnerDocument.CreateAttribute(name);
             attrNew.InnerText = value.ToString(_cultureProvider);
@@ -325,12 +335,18 @@ namespace nHydrate.Generator.Common.Util
             return attrNew;
         }
 
-        public static XmlAttribute AddAttribute(XmlElement node, string name, int value)
+        public static XmlAttribute AddAttribute(this XmlElement node, string name, int value)
         {
             return AddAttribute((XmlNode)node, name, value);
         }
 
-        public static XmlAttribute AddAttribute(XmlNode element, string name, bool value)
+        public static XmlAttribute AddAttribute(this XmlNode node, string name, bool value, bool defaultValue)
+        {
+            if (value == defaultValue) return null;
+            return node.AddAttribute(name, value);
+        }
+
+        public static XmlAttribute AddAttribute(this XmlNode element, string name, bool value)
         {
             XmlDocument docOwner = null;
             XmlAttribute attrNew = null;
@@ -343,7 +359,7 @@ namespace nHydrate.Generator.Common.Util
             return attrNew;
         }
 
-        public static XmlAttribute AddAttribute(XmlElement element, string name, bool value)
+        public static XmlAttribute AddAttribute(this XmlElement element, string name, bool value)
         {
             return AddAttribute((XmlNode)element, name, value);
         }

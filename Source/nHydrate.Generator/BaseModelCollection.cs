@@ -77,7 +77,7 @@ namespace nHydrate.Generator
         public override void XmlAppend(XmlNode node)
         {
             var oDoc = node.OwnerDocument;
-            XmlHelper.AddAttribute(node, "key", this.Key);
+            node.AddAttribute("key", this.Key);
             foreach (var item in _internalList)
             {
                 var newNode = oDoc.CreateElement(this.NodeName);

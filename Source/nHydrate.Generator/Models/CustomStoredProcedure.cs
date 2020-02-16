@@ -203,22 +203,22 @@ namespace nHydrate.Generator.Models
             {
                 var oDoc = node.OwnerDocument;
 
-                XmlHelper.AddAttribute(node, "key", this.Key);
-                XmlHelper.AddAttribute(node, "name", this.Name);
-                XmlHelper.AddAttribute(node, "databaseobjectname", this.DatabaseObjectName);
-                XmlHelper.AddAttribute(node, "isexisting", this.IsExisting);
+                node.AddAttribute("key", this.Key);
+                node.AddAttribute("name", this.Name);
+                node.AddAttribute("databaseobjectname", this.DatabaseObjectName);
+                node.AddAttribute("isexisting", this.IsExisting);
 
                 if (this.DBSchema != _def_dbSchema)
-                    XmlHelper.AddAttribute(node, "dbschema", this.DBSchema);
+                    node.AddAttribute("dbschema", this.DBSchema);
 
                 if (this.CodeFacade != _def_codefacade)
-                    XmlHelper.AddAttribute(node, "codeFacade", this.CodeFacade);
+                    node.AddAttribute("codeFacade", this.CodeFacade);
 
                 if (this.Description != _def_description)
-                    XmlHelper.AddAttribute(node, "description", this.Description);
+                    node.AddAttribute("description", this.Description);
 
                 if (this.GeneratesDoubleDerived != _def_generatesDoubleDerived)
-                    XmlHelper.AddAttribute(node, "generatesDoubleDerived", this.GeneratesDoubleDerived);
+                    node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived);
 
                 var columnsNode = oDoc.CreateElement("columns");
                 this.Columns.XmlAppend(columnsNode);
@@ -235,7 +235,7 @@ namespace nHydrate.Generator.Models
                 if (this.Generated != _def_generated)
                     XmlHelper.AddAttribute((XmlElement)node, "generated", this.Generated);
 
-                XmlHelper.AddAttribute(node, "id", this.Id);
+                node.AddAttribute("id", this.Id);
 
             }
             catch (Exception ex)

@@ -448,13 +448,13 @@ namespace nHydrate.Generator.Models
         {
             var oDoc = node.OwnerDocument;
 
-            XmlHelper.AddAttribute(node, "key", this.Key);
-            XmlHelper.AddAttribute(node, "enforce", this.Enforce);
+            node.AddAttribute("key", this.Key);
+            node.AddAttribute("enforce", this.Enforce);
 
             if (this.Description != _def_description)
-                XmlHelper.AddAttribute(node, "description", this.Description);
+                node.AddAttribute("description", this.Description);
 
-            XmlHelper.AddAttribute(node, "deleteAction", this.DeleteAction.ToString());
+            node.AddAttribute("deleteAction", this.DeleteAction.ToString());
 
             var columnRelationshipsNode = oDoc.CreateElement("crl");
             ColumnRelationships.XmlAppend(columnRelationshipsNode);
@@ -470,11 +470,11 @@ namespace nHydrate.Generator.Models
                 this.ParentTableRef.XmlAppend(parentTableRefNode);
             node.AppendChild(parentTableRefNode);
 
-            XmlHelper.AddAttribute(node, "id", this.Id);
+            node.AddAttribute("id", this.Id);
             if (this.RoleName != _def_roleName)
-                XmlHelper.AddAttribute(node, "roleName", this.RoleName);
+                node.AddAttribute("roleName", this.RoleName);
             if (this.ConstraintName != _def_constraintname)
-                XmlHelper.AddAttribute(node, "constraintName", this.ConstraintName);
+                node.AddAttribute("constraintName", this.ConstraintName);
         }
 
         public override void XmlLoad(XmlNode node)

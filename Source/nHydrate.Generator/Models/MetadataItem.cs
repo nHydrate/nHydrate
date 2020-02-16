@@ -12,8 +12,8 @@ namespace nHydrate.Generator.Models
 
 		public override void XmlAppend(XmlNode node)
 		{
-			XmlHelper.AddAttribute(node, "key", this.Key);
-			XmlHelper.AddAttribute(node, "value", this.Value);
+			node.AddAttribute("key", this.Key);
+			node.AddAttribute("value", this.Value);
 		}
 
 		public override void XmlLoad(XmlNode node)

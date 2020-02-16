@@ -76,9 +76,9 @@ namespace nHydrate.Generator.Models
             {
                 var oDoc = node.OwnerDocument;
 
-                XmlHelper.AddAttribute(node, "ascending", this.Ascending);
-                XmlHelper.AddAttribute(node, "fieldID", this.FieldID);
-                XmlHelper.AddAttribute(node, "id", this.Id);
+                node.AddAttribute("ascending", this.Ascending);
+                node.AddAttribute("fieldID", this.FieldID);
+                node.AddAttribute("id", this.Id);
             }
             catch (Exception ex)
             {

@@ -93,29 +93,29 @@ namespace nHydrate.Generator.Models
             {
                 var oDoc = node.OwnerDocument;
 
-                XmlHelper.AddAttribute(node, "key", this.Key);
+                node.AddAttribute("key", this.Key);
 
                 if (this.Generated != _def_generated)
-                    XmlHelper.AddAttribute(node, "generated", this.Generated);
+                    node.AddAttribute("generated", this.Generated);
 
-                XmlHelper.AddAttribute(node, "name", this.Name);
+                node.AddAttribute("name", this.Name);
 
-                XmlHelper.AddAttribute(node, "codeFacade", this.CodeFacade, _def_codefacade);
+                node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
 
                 if (this.Description != _def_description)
-                    XmlHelper.AddAttribute(node, "description", this.Description);
+                    node.AddAttribute("description", this.Description);
 
                 if (this.FriendlyName != _def_friendlyName)
-                    XmlHelper.AddAttribute(node, "dataFieldFriendlyName", this.FriendlyName);
+                    node.AddAttribute("dataFieldFriendlyName", this.FriendlyName);
 
                 if (this.UiVisible != _def_UIVisible)
-                    XmlHelper.AddAttribute(node, "dataFieldVisibility", this.UiVisible);
+                    node.AddAttribute("dataFieldVisibility", this.UiVisible);
 
                 if (this.SortOrder != _def_sortOrder)
-                    XmlHelper.AddAttribute(node, "dataFieldSortOrder", this.SortOrder);
+                    node.AddAttribute("dataFieldSortOrder", this.SortOrder);
 
                 if (this.IsPrimaryKey != _def_isPrimaryKey)
-                    XmlHelper.AddAttribute(node, "isPrimaryKey", this.IsPrimaryKey);
+                    node.AddAttribute("isPrimaryKey", this.IsPrimaryKey);
 
                 if (RelationshipRef != null)
                 {
@@ -125,30 +125,30 @@ namespace nHydrate.Generator.Models
                 }
 
                 if (this.Default != _def_default)
-                    XmlHelper.AddAttribute(node, "default", this.Default);
+                    node.AddAttribute("default", this.Default);
 
                 if (this.Length != _def_length)
-                    XmlHelper.AddAttribute(node, "length", this.Length);
+                    node.AddAttribute("length", this.Length);
 
                 if (this.Scale != _def_scale)
-                    XmlHelper.AddAttribute(node, "scale", this.Scale);
+                    node.AddAttribute("scale", this.Scale);
 
-                XmlHelper.AddAttribute(node, "id", this.Id);
+                node.AddAttribute("id", this.Id);
 
                 if (this.SortOrder != _def_sortOrder)
-                    XmlHelper.AddAttribute(node, "sortOrder", this.SortOrder);
+                    node.AddAttribute("sortOrder", this.SortOrder);
 
                 var parentViewRefNode = oDoc.CreateElement("parentTableRef");
                 ParentViewRef.XmlAppend(parentViewRefNode);
                 node.AppendChild(parentViewRefNode);
 
-                XmlHelper.AddAttribute(node, "type", (int)this.DataType);
+                node.AddAttribute("type", (int)this.DataType);
 
                 if (this.AllowNull != _def_allowNull)
-                    XmlHelper.AddAttribute(node, "allowNull", this.AllowNull);
+                    node.AddAttribute("allowNull", this.AllowNull);
 
                 if (this.IsBrowsable != _def_isBrowsable)
-                    XmlHelper.AddAttribute(node, "isBrowsable", this.IsBrowsable);
+                    node.AddAttribute("isBrowsable", this.IsBrowsable);
 
             }
             catch (Exception ex)

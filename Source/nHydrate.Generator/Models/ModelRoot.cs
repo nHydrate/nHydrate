@@ -168,20 +168,20 @@ namespace nHydrate.Generator.Models
             {
                 var oDoc = node.OwnerDocument;
 
-                XmlHelper.AddAttribute(node, "key", this.Key);
-                XmlHelper.AddAttribute(node, "projectName", this.ProjectName);
-                XmlHelper.AddAttribute(node, "transformNames", this.TransformNames);
-                XmlHelper.AddAttribute(node, "enableCustomChangeEvents", this.EnableCustomChangeEvents);
-                XmlHelper.AddAttribute(node, "supportLegacySearchObject", this.SupportLegacySearchObject);
-                XmlHelper.AddAttribute(node, "useUTCTime", this.UseUTCTime.ToString());
-                XmlHelper.AddAttribute(node, "version", this.Version);
-                XmlHelper.AddAttribute(node, "companyName", this.CompanyName);
-                XmlHelper.AddAttribute(node, "emitSafetyScripts", this.EmitSafetyScripts);
-                XmlHelper.AddAttribute(node, "tenantColumnName", this.TenantColumnName);
-                XmlHelper.AddAttribute(node, "tenantPrefix", this.TenantPrefix);
+                node.AddAttribute("key", this.Key);
+                node.AddAttribute("projectName", this.ProjectName);
+                node.AddAttribute("transformNames", this.TransformNames);
+                node.AddAttribute("enableCustomChangeEvents", this.EnableCustomChangeEvents);
+                node.AddAttribute("supportLegacySearchObject", this.SupportLegacySearchObject);
+                node.AddAttribute("useUTCTime", this.UseUTCTime.ToString());
+                node.AddAttribute("version", this.Version);
+                node.AddAttribute("companyName", this.CompanyName);
+                node.AddAttribute("emitSafetyScripts", this.EmitSafetyScripts);
+                node.AddAttribute("tenantColumnName", this.TenantColumnName);
+                node.AddAttribute("tenantPrefix", this.TenantPrefix);
 
-                XmlHelper.AddAttribute(node, "defaultNamespace", this.DefaultNamespace);
-                XmlHelper.AddAttribute(node, "storedProcedurePrefix", this.StoredProcedurePrefix);
+                node.AddAttribute("defaultNamespace", this.DefaultNamespace);
+                node.AddAttribute("storedProcedurePrefix", this.StoredProcedurePrefix);
 
                 var databaseNode = oDoc.CreateElement("database");
                 this.Database.XmlAppend(databaseNode);

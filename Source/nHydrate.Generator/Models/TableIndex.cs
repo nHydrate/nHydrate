@@ -85,13 +85,13 @@ namespace nHydrate.Generator.Models
             {
                 var oDoc = node.OwnerDocument;
 
-                XmlHelper.AddAttribute(node, "key", this.Key);
-                XmlHelper.AddAttribute(node, "isUnique", this.IsUnique);
-                XmlHelper.AddAttribute(node, "primaryKey", this.PrimaryKey);
-                XmlHelper.AddAttribute(node, "clustered", this.Clustered);
-                XmlHelper.AddAttribute(node, "description", this.Description);
-                XmlHelper.AddAttribute(node, "importedName", this.ImportedName);
-                XmlHelper.AddAttribute(node, "id", this.Id);
+                node.AddAttribute("key", this.Key);
+                node.AddAttribute("isUnique", this.IsUnique);
+                node.AddAttribute("primaryKey", this.PrimaryKey);
+                node.AddAttribute("clustered", this.Clustered);
+                node.AddAttribute("description", this.Description);
+                node.AddAttribute("importedName", this.ImportedName);
+                node.AddAttribute("id", this.Id);
 
                 var tableIndexColumnListNode = oDoc.CreateElement("ticl");
                 this.IndexColumnList.XmlAppend(tableIndexColumnListNode);

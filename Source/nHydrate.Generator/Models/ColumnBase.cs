@@ -23,12 +23,9 @@ namespace nHydrate.Generator.Models
         protected const string _def_prompt = "";
         protected const bool _def_isBrowsable = true;
 
-        protected string _description = _def_description;
-        protected string _prompt = _def_prompt;
         protected System.Data.SqlDbType _dataType = _def_type;
         protected int _length = _def_length;
         protected int _scale = _def_scale;
-        protected bool _generated = _def_generated;
         protected bool _allowNull = _def_allowNull;
         protected bool _isBrowsable = _def_isBrowsable;
 
@@ -47,32 +44,11 @@ namespace nHydrate.Generator.Models
 
         public string Category { get; set; } = string.Empty;
 
-        public virtual bool Generated
-        {
-            get { return _generated; }
-            set
-            {
-                _generated = value;
-            }
-        }
+        public virtual bool Generated { get; set; } = _def_generated;
 
-        public virtual string Description
-        {
-            get { return _description; }
-            set
-            {
-                _description = value;
-            }
-        }
+        public virtual string Description { get; set; } = _def_description;
 
-        public virtual string Prompt
-        {
-            get { return _prompt; }
-            set
-            {
-                _prompt = value;
-            }
-        }
+        public virtual string Prompt { get; set; } = _def_prompt;
 
         public virtual int Length
         {
@@ -135,44 +111,6 @@ namespace nHydrate.Generator.Models
         public virtual string DatabaseType
         {
             get { return this.GetSQLDefaultType(); }
-        }
-
-        public virtual string DatabaseTypeRaw
-        {
-            get { return this.GetSQLDefaultType(true); }
-        }
-
-        /// <summary>
-        /// Determines if this field type can be made into a range query
-        /// </summary>
-        public virtual bool IsRangeType
-        {
-            get
-            {
-                switch (this.DataType)
-                {
-                    case System.Data.SqlDbType.BigInt:
-                    //case System.Data.SqlDbType.Char:
-                    case System.Data.SqlDbType.Date:
-                    case System.Data.SqlDbType.DateTime:
-                    case System.Data.SqlDbType.DateTime2:
-                    case System.Data.SqlDbType.Decimal:
-                    case System.Data.SqlDbType.Float:
-                    case System.Data.SqlDbType.Int:
-                    case System.Data.SqlDbType.Money:
-                    //case System.Data.SqlDbType.NChar:
-                    //case System.Data.SqlDbType.NVarChar:
-                    case System.Data.SqlDbType.Real:
-                    case System.Data.SqlDbType.SmallDateTime:
-                    case System.Data.SqlDbType.SmallInt:
-                    case System.Data.SqlDbType.SmallMoney:
-                    case System.Data.SqlDbType.Time:
-                    case System.Data.SqlDbType.TinyInt:
-                        //case System.Data.SqlDbType.VarChar:
-                        return true;
-                }
-                return false;
-            }
         }
 
         public virtual string CorePropertiesHash
@@ -278,56 +216,6 @@ namespace nHydrate.Generator.Models
         {
             var retval = this.Name;
             return retval;
-        }
-
-        /// <summary>
-        /// Determine if the specified type is 
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsSupportedType(System.Data.SqlDbType type)
-        {
-            switch (type)
-            {
-                //case System.Data.SqlDbType.Xml:
-                case System.Data.SqlDbType.Udt:
-                case System.Data.SqlDbType.Structured:
-                case System.Data.SqlDbType.Variant:
-                    //case System.Data.SqlDbType.DateTimeOffset:
-                    //case System.Data.SqlDbType.DateTime2:
-                    //case System.Data.SqlDbType.Time:
-                    //case System.Data.SqlDbType.Date:
-                    return false;
-                default:
-                    return true;
-            }
-        }
-
-        /// <summary>
-        /// Create a valid T-SQL variable from the name
-        /// </summary>
-        /// <returns></returns>
-        public virtual string ToDatabaseCodeIdentifier()
-        {
-            return ValidationHelper.MakeDatabaseScriptIdentifier(this.DatabaseName);
-        }
-
-        /// <summary>
-        /// Determines if this column can be used in a LIKE database operation
-        /// </summary>
-        /// <returns></returns>
-        public bool SupportsLikeOperator()
-        {
-            switch (this.DataType)
-            {
-                case System.Data.SqlDbType.NText:
-                case System.Data.SqlDbType.Text:
-                case System.Data.SqlDbType.Image:
-                case System.Data.SqlDbType.Xml:
-                    return false;
-                default:
-                    return true;
-            }
         }
 
         #endregion
@@ -576,81 +464,6 @@ namespace nHydrate.Generator.Models
                 retval += "?";
 
             return retval;
-
-        }
-
-        /// <summary>
-        /// Gets the method of a datareader that corresponds to this specified datatype
-        /// </summary>
-        public virtual string GetDataReaderMethodName()
-        {
-            switch (this.DataType)
-            {
-                case System.Data.SqlDbType.BigInt:
-                    return "GetInt64";
-                case System.Data.SqlDbType.Binary:
-                    return "GetBytes";
-                case System.Data.SqlDbType.Bit:
-                    return "GetBoolean";
-                case System.Data.SqlDbType.Char:
-                    return "GetString";
-                case System.Data.SqlDbType.DateTime:
-                    return "GetDateTime";
-                case System.Data.SqlDbType.Decimal:
-                    return "GetDecimal";
-                case System.Data.SqlDbType.Float:
-                    return "GetDouble";
-                case System.Data.SqlDbType.Image:
-                    return "GetBytes";
-                case System.Data.SqlDbType.Int:
-                    return "GetInt32";
-                case System.Data.SqlDbType.Money:
-                    return "GetDecimal";
-                case System.Data.SqlDbType.NChar:
-                    return "GetString";
-                case System.Data.SqlDbType.NText:
-                    return "GetString";
-                case System.Data.SqlDbType.NVarChar:
-                    return "GetString";
-                case System.Data.SqlDbType.Real:
-                    return "GetFloat";
-                case System.Data.SqlDbType.UniqueIdentifier:
-                    return "GetGuid";
-                case System.Data.SqlDbType.SmallDateTime:
-                    return "GetDateTime";
-                case System.Data.SqlDbType.SmallInt:
-                    return "GetInt16";
-                case System.Data.SqlDbType.SmallMoney:
-                    return "GetDecimal";
-                case System.Data.SqlDbType.Text:
-                    return "GetString";
-                case System.Data.SqlDbType.Timestamp:
-                    return "GetBytes";
-                case System.Data.SqlDbType.TinyInt:
-                    return "GetByte";
-                case System.Data.SqlDbType.VarBinary:
-                    return "GetBytes";
-                case System.Data.SqlDbType.VarChar:
-                    return "GetString";
-                case System.Data.SqlDbType.Variant:
-                    return "GetObject";
-                case System.Data.SqlDbType.Xml:
-                    return "GetString";
-                case System.Data.SqlDbType.Udt:
-                    return "GetObject";
-                case System.Data.SqlDbType.Structured:
-                    return "GetData";
-                case System.Data.SqlDbType.Date:
-                    return "GetDateTime";
-                case System.Data.SqlDbType.Time:
-                    return "GetDateTime";
-                case System.Data.SqlDbType.DateTime2:
-                    return "GetDateTime";
-                case System.Data.SqlDbType.DateTimeOffset:
-                    return "GetDateTime";
-                default:
-                    throw new Exception("Cannot Map Sql Value To data reader method name");
-            }
 
         }
 

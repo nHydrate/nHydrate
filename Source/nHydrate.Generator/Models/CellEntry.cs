@@ -185,7 +185,7 @@ namespace nHydrate.Generator.Models
                     node.AppendChild(columnRefNode);
                 }
 
-                XmlHelper.AddAttribute(node, "value", this.Value);
+                node.AddAttribute("value", this.Value);
             }
             catch (Exception ex)
             {
