@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Forms;
 using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator.ModelUI
 {
@@ -14,7 +13,6 @@ namespace nHydrate.Generator.ModelUI
         #region Class Members
 
         private List<Type> _wizardTypeList = null;
-        private List<Type> _generatorTypeList = null;
         private readonly Dictionary<string, Type> _generatorMap = new Dictionary<string, Type>();
         private readonly IGenerator _generator = null;
         private List<Type> _invisibleList = new List<Type>();
@@ -41,7 +39,6 @@ namespace nHydrate.Generator.ModelUI
             try
             {
                 _generator = generator;
-                _generatorTypeList = generatorTypeList;
                 _wizardTypeList = wizardTypeList;
 
                 var globalCacheFile = new GlobalCacheFile();
@@ -132,17 +129,6 @@ namespace nHydrate.Generator.ModelUI
             {
                 throw;
             }
-        }
-
-        private bool IsTemplatesChecked()
-        {
-            var checkedCount = 0;
-            foreach (TreeNode n in tvwProjects.Nodes)
-            {
-                if (n.Checked) checkedCount++;
-            }
-
-            return (checkedCount > 0);
         }
 
         #endregion

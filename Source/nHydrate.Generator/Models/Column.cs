@@ -14,7 +14,7 @@ namespace nHydrate.Generator.Models
         Code,
     }
 
-    public class Column : ColumnBase, ICodeFacadeObject, INamedObject
+    public class Column : ColumnBase, INamedObject
     {
         #region Member Variables
 

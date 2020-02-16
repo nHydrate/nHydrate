@@ -13,7 +13,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         public bool AllowStats { get; set; }
         public DateTime LastUpdateCheck { get; set; }
         public DateTime LastNag { get; set; }
-        public string LastVersionChecked { get; set; }
         public string PremiumKey { get; set; }
         public bool PremiumValidated { get; set; }
     }

@@ -7,12 +7,11 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-    public class CustomViewColumn : ColumnBase, ICodeFacadeObject
+    public class CustomViewColumn : ColumnBase
     {
         #region Member Variables
 
         protected const int _def_sortOrder = 0;
-        protected const string _def_codefacade = "";
         protected const string _def_default = "";
         protected const bool _def_isPrimaryKey = false;
 

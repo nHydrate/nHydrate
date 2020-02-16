@@ -54,19 +54,6 @@ namespace nHydrate.Generator.Models
             return retval.AsReadOnly();
         }
 
-        public static bool IsHex(this string s)
-        {
-            try
-            {
-                int i;
-                return Int32.TryParse(s, System.Globalization.NumberStyles.HexNumber, null, out i);
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
         /// <summary>
         /// Converts a string in the format of '0x123F' to '0x12, 0x3F'
         /// </summary>

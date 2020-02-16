@@ -33,103 +33,6 @@ namespace nHydrate.Generator.Models
 
         public string Value { get; set; }
 
-        public virtual bool IsDataValid()
-        {
-            var column = this.ColumnRef.Object as Column;
-            if (column == null) return true; //No Verification
-
-            //Some of these are not fool-proof but they are close enough!!
-
-            var isNull = (this.Value == "(NULL)");
-            switch (column.DataType)
-            {
-                case System.Data.SqlDbType.BigInt:
-                    if (isNull && column.AllowNull) return true;
-                    else return long.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.Binary:
-                    return true; //no validation
-                case System.Data.SqlDbType.Bit:
-                    if (isNull && column.AllowNull) return true;
-                    var v2 = this.Value + string.Empty;
-                    if (v2 == "0") v2 = "false";
-                    if (v2 == "1") v2 = "true";
-                    return bool.TryParse(v2.ToLower(), out _);
-                case System.Data.SqlDbType.Char:
-                    return true;
-                case System.Data.SqlDbType.Date:
-                    if (isNull && column.AllowNull) return true;
-                    else return DateTime.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.DateTime:
-                    if (isNull && column.AllowNull) return true;
-                    else return DateTime.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.DateTime2:
-                    if (isNull && column.AllowNull) return true;
-                    else return DateTime.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.DateTimeOffset:
-                    return true; //no validation
-                case System.Data.SqlDbType.Decimal:
-                    if (isNull && column.AllowNull) return true;
-                    else return decimal.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.Float:
-                    if (isNull && column.AllowNull) return true;
-                    else return decimal.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.Image:
-                    return true;
-                case System.Data.SqlDbType.Int:
-                    if (isNull && column.AllowNull) return true;
-                    else return int.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.Money:
-                    if (isNull && column.AllowNull) return true;
-                    else return decimal.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.NChar:
-                    return true;
-                case System.Data.SqlDbType.NText:
-                    return true;
-                case System.Data.SqlDbType.NVarChar:
-                    return true;
-                case System.Data.SqlDbType.Real:
-                    if (isNull && column.AllowNull) return true;
-                    else return decimal.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.SmallDateTime:
-                    if (isNull && column.AllowNull) return true;
-                    else return DateTime.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.SmallInt:
-                    if (isNull && column.AllowNull) return true;
-                    else return short.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.SmallMoney:
-                    if (isNull && column.AllowNull) return true;
-                    else return decimal.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.Structured:
-                    return true;
-                case System.Data.SqlDbType.Text:
-                    return true;
-                case System.Data.SqlDbType.Time:
-                    if (isNull && column.AllowNull) return true;
-                    else return DateTime.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.Timestamp:
-                    return true; //no validation
-                case System.Data.SqlDbType.TinyInt:
-                    if (isNull && column.AllowNull) return true;
-                    else return byte.TryParse(this.Value, out _);
-                case System.Data.SqlDbType.Udt:
-                    return true; //no validation
-                case System.Data.SqlDbType.UniqueIdentifier:
-                    if (isNull && column.AllowNull) return true;
-                    try { var g = new Guid(this.Value); return true; }
-                    catch { return false; }
-                case System.Data.SqlDbType.VarBinary:
-                    return true; //no validation
-                case System.Data.SqlDbType.VarChar:
-                    return true;
-                case System.Data.SqlDbType.Variant:
-                    return true; //no validation
-                case System.Data.SqlDbType.Xml:
-                    return true;
-                default:
-                    return true;
-            }
-        }
-
         #endregion
 
         #region Methods
@@ -146,22 +49,6 @@ namespace nHydrate.Generator.Models
                      column.DataType == System.Data.SqlDbType.UniqueIdentifier
                 )
                 return "'" + v.Replace("'", "''") + "'";
-            else
-                return v;
-        }
-
-        public string GetCodeData()
-        {
-            var column = this.ColumnRef.Object as Column;
-            var v = this.Value + string.Empty;
-
-            if (column.AllowNull && v == "(NULL)")
-                return null;
-            else if (column.DataType.IsTextType() ||
-                     column.DataType.IsDateType() ||
-                     column.DataType == System.Data.SqlDbType.UniqueIdentifier
-                )
-                return "\"" + v.Replace("\"", @"""") + "\"";
             else
                 return v;
         }

@@ -74,9 +74,6 @@ namespace nHydrate.Dsl
 
         public Guid SyncServerToken { get; set; }
         public string ModelFileName { get; set; }
-
-        public long ServerVersion { get; set; }
-
     }
 
     partial class nHydrateModelBase

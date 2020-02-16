@@ -10,7 +10,7 @@ namespace nHydrate.Generator.Models
     /// <summary>
     /// This is the base for all column classes
     /// </summary>
-    public abstract class ColumnBase : BaseModelObject
+    public abstract class ColumnBase : BaseModelObject, ICodeFacadeObject
     {
         #region Member Variables
 

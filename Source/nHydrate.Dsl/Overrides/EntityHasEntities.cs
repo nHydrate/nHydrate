@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using nHydrate.Generator.Common.Util;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
-using DslDesign = global::Microsoft.VisualStudio.Modeling.Design;
-using System.ComponentModel;
 
 namespace nHydrate.Dsl
 {
@@ -100,11 +96,6 @@ namespace nHydrate.Dsl
             }
         }
 
-        public int UniqueHash
-        {
-            get { return (this.LinkHash + "|" + this.RoleName).GetHashCode(); }
-        }
-
         public Entity GetSecondaryAssociativeTable()
         {
             if (!this.IsManyToMany) return null;
@@ -169,20 +160,6 @@ namespace nHydrate.Dsl
             }
             return null;
         }
-
-        ///// <summary>
-        ///// Determines if this is an inheritance relationship
-        ///// </summary>
-        //public bool IsInherited
-        //{
-        //  get
-        //  {
-        //    if (!this.IsOneToOne) return false;
-        //    var parentTable = this.SourceEntity;
-        //    var childTable = this.TargetEntity;
-        //    return childTable.IsInheritedFrom(parentTable);
-        //  }
-        //}
 
         /// <summary>
         /// Determines if this is a 1:1 relationship

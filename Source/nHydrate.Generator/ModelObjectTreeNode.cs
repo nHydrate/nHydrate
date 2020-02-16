@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.Windows.Forms;
-using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Generator
 {

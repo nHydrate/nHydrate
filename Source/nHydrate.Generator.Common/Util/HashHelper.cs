@@ -31,21 +31,6 @@ namespace nHydrate.Generator.Common.Util
             return Convert.ToBase64String(cryptoByte, 0, cryptoByte.Length);
         }
 
-        public static string HashAlphaNumeric(string str)
-        {
-            if (string.IsNullOrEmpty(str)) return str;
-            var sb = new StringBuilder();
-            foreach (var c in str)
-            {
-                var v = (int)c % 36;
-                if (v <= 25)
-                    sb.Append((char)(v + 97));
-                else
-                    sb.Append((char)(v - 26 + 48));
-            }
-            return sb.ToString();
-        }
-
         public bool Match(string input, string hashValue)
         {
             return StringHelper.Match(this.Encrypt(input), hashValue, true);

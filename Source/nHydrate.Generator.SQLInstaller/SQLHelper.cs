@@ -736,27 +736,5 @@ namespace nHydrate.Generator.SQLInstaller
 
         #endregion
 
-        #region GetSQLSchema
-
-        public static string GetSQLSchema(this Table item)
-        {
-            if (string.IsNullOrEmpty(item.DBSchema)) return "dbo";
-            return item.DBSchema;
-        }
-
-        public static string GetSQLSchema(this CustomStoredProcedure item)
-        {
-            if (string.IsNullOrEmpty(item.DBSchema)) return "dbo";
-            return item.DBSchema;
-        }
-
-        public static string GetSQLSchema(this CustomView item)
-        {
-            if (string.IsNullOrEmpty(item.DBSchema)) return "dbo";
-            return item.DBSchema;
-        }
-
-        #endregion
-
     }
 }

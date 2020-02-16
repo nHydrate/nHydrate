@@ -17,8 +17,6 @@ namespace nHydrate.Dsl
         private readonly System.Drawing.Color TABLE_COLOR_ASS_TEXT = System.Drawing.Color.Black;
         private readonly System.Drawing.Color TABLE_COLOR_NORMAL_HEADER = System.Drawing.Color.FromArgb(0x00, 0x7A, 0xCC);
         private readonly System.Drawing.Color TABLE_COLOR_NORMAL_TEXT = System.Drawing.Color.White;
-        private readonly System.Drawing.Color TABLE_COLOR_NONEGEN_HEADER = System.Drawing.Color.FromArgb(255, 255, 255);
-        private readonly System.Drawing.Color TABLE_COLOR_NONEGEN_TEXT = System.Drawing.Color.Gray;
 
         //private GhostCache cache = new GhostCache();
         private static Dictionary<string, System.Drawing.Bitmap> _images = new Dictionary<string, System.Drawing.Bitmap>();

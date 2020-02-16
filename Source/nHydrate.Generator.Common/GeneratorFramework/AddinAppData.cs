@@ -126,12 +126,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
             set { Properties.LastUpdateCheck = value; }
         }
 
-        public string LastVersionChecked
-        {
-            get { return Properties.LastVersionChecked; }
-            set { Properties.LastVersionChecked = value; }
-        }
-
         public bool AllowStats
         {
             get { return Properties.AllowStats; }

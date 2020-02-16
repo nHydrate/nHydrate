@@ -321,7 +321,6 @@ namespace nHydrate.Generator.Common.Util
             return node.AddAttribute(name, value);
         }
 
-
         public static XmlAttribute AddAttribute(this XmlElement node, string name, double value)
         {
             return AddAttribute((XmlNode)node, name, value);
@@ -393,49 +392,6 @@ namespace nHydrate.Generator.Common.Util
             XmlAttribute attrDelete = null;
             attrDelete = (XmlAttribute)element.Attributes.GetNamedItem(attributeName);
             element.Attributes.Remove(attrDelete);
-        }
-
-        #endregion
-
-        #region UpdateElement
-
-        public static void UpdateElement(XmlElement element, string newValue)
-        {
-            element.InnerText = newValue;
-        }
-
-        public static void UpdateElement(ref XmlDocument document, string Xpath, string newValue)
-        {
-            document.SelectSingleNode(Xpath).InnerText = newValue;
-        }
-
-        public static void UpdateAttribute(XmlElement element, string attributeName, string newValue)
-        {
-            XmlAttribute attrTemp = null;
-            attrTemp = (XmlAttribute)element.Attributes.GetNamedItem(attributeName);
-            if (attrTemp == null)
-                throw new Exception("The attribute was not found!");
-            attrTemp.InnerText = newValue;
-        }
-
-        public static void UpdateAttribute(XmlElement element, string attributeName, bool newValue)
-        {
-            UpdateAttribute(element, attributeName, newValue.ToString().ToLower());
-        }
-
-        public static void UpdateAttribute(XmlElement element, string attributeName, int newValue)
-        {
-            UpdateAttribute(element, attributeName, newValue.ToString());
-        }
-
-        public static void UpdateAttribute(XmlElement element, string attributeName, Single newValue)
-        {
-            UpdateAttribute(element, attributeName, newValue.ToString());
-        }
-
-        public static void UpdateAttribute(XmlElement element, string attributeName, double newValue)
-        {
-            UpdateAttribute(element, attributeName, newValue.ToString());
         }
 
         #endregion

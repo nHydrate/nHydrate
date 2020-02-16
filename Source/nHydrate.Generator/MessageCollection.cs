@@ -5,7 +5,6 @@ using nHydrate.Generator.Common.EventArgs;
 namespace nHydrate.Generator
 {
     public delegate void MessageDelegate(object sender, MessageEventArgs e);
-    public delegate void VerifyDelegate(object sender, MessageCollectionEventArgs e);
 
     public class MessageCollection : CollectionBase, System.Collections.Generic.IEnumerable<nHydrate.Generator.Message>
     {
@@ -31,14 +30,8 @@ namespace nHydrate.Generator
 
         public Message this[int index]
         {
-            get
-            {
-                return (Message)this.InnerList[index];
-            }
-            set
-            {
-                this.InnerList[index] = value;
-            }
+            get { return (Message) this.InnerList[index]; }
+            set { this.InnerList[index] = value; }
         }
 
         public void Insert(int index, Message value)

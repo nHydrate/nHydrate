@@ -94,7 +94,6 @@ namespace nHydrate.Dsl
 
         }
 
-        private FileSystemWatcher _watchFolder = new FileSystemWatcher();
         private nHydrateModel _model = null;
         public override nHydrateModel LoadModelAndDiagram(DslModeling::SerializationResult serializationResult, DslModeling::Partition modelPartition, string modelFileName, DslModeling::Partition diagramPartition, string diagramFileName, DslModeling::ISchemaResolver schemaResolver, DslValidation::ValidationController validationController, DslModeling::ISerializerLocator serializerLocator)
         {

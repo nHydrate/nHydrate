@@ -4,7 +4,6 @@ using System.Linq;
 using System.Collections;
 using System.IO;
 using EnvDTE;
-using VSLangProj;
 using nHydrate.Generator.Common.GeneratorFramework;
 using System.Collections.Generic;
 
@@ -243,25 +242,6 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        //public ProjectItem AddProjectItem(ProjectItem parent, string fileName, bool overwrite, out FileStateInfo fileStateInfo)
-        //{
-        //  fileStateInfo = new FileStateInfo();
-        //  var currentParentFile = new FileInfo(EnvDTEHelper.GetFileName(parent));
-        //  var newFile = new FileInfo(StringHelper.EnsureDirectorySeperatorAtEnd(currentParentFile.Directory.FullName) + fileName);
-        //  fileStateInfo.FileName = newFile.FullName;
-        //  if (newFile.Exists && !overwrite)
-        //  {
-        //    fileStateInfo.FileState = FileStateConstants.Skipped;
-        //    return null;
-        //  }
-        //  else
-        //  {
-        //    var newItem = parent.ProjectItems.AddFromFileCopy(fileName);
-        //    fileStateInfo.FileState = FileStateConstants.Success;
-        //    return newItem;
-        //  }
-        //}
-
         private static HashTable<Project, List<ProjectItemCacheItem>> _projectCache = new HashTable<Project, List<ProjectItemCacheItem>>();
         private Dictionary<string, ProjectItem> _projectItemCache = new Dictionary<string, ProjectItem>();
         private HashTable<ProjectItem, string> _projectItemFileNameCache = new HashTable<ProjectItem, string>();
@@ -321,34 +301,6 @@ namespace nHydrate.Generator.Common.Util
                 throw;
             }
         }
-
-        //public ProjectItem AddProjectItem(ProjectItem parent, string fileName, string content)
-        //{
-        //  var fi = new FileInfo(EnvDTEHelper.GetFileName(parent));
-        //  var directory = StringHelper.EnsureDirectorySeperatorAtEnd(fi.DirectoryName);
-        //  var fullName = directory + fileName;
-        //  File.WriteAllText(fullName, content);
-        //  var newItem = parent.ProjectItems.AddFromFile(fullName);
-        //  return newItem;
-        //}
-
-        //public ProjectItem AddProjectItem(string fileName, out FileStateInfo fileStateInfo)
-        //{
-        //  fileStateInfo = new FileStateInfo();
-        //  try
-        //  {
-        //    var newItem = CurrentProject.ProjectItems.AddFromFile(fileName);
-        //    fileStateInfo.FileState = FileStateConstants.Success;
-        //    fileStateInfo.FileName = fileName;
-        //    return newItem;
-        //  }
-        //  catch (Exception ex)
-        //  {
-        //    fileStateInfo.FileState = FileStateConstants.Failed;
-        //    return null;
-        //  }
-
-        //}
 
         #endregion
 
@@ -479,11 +431,6 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        //public static ProjectItem AddProjectItem(Project project, string fileContent, string relativePathAndName, out FileStateInfo fileStateInfo)
-        //{
-        //  return AddProjectItem(project, fileContent, relativePathAndName, true, out fileStateInfo);
-        //}
-
         public static void DeleteProjectItem(Project project, string relativePathAndName, bool deleteFile, out FileStateInfo fileStateInfo)
         {
             fileStateInfo = new FileStateInfo();
@@ -509,21 +456,6 @@ namespace nHydrate.Generator.Common.Util
                 }
             }
         }
-
-        public static VSProject CastToVSProject(Project project)
-        {
-            if ((project.Kind == PrjKind.prjKindVBProject) || (project.Kind == PrjKind.prjKindCSharpProject) || (project.Kind == PrjKind.prjKindVSAProject))
-            {
-                return (VSProject)project.Object;
-            }
-            else
-                throw new Exception("The project is not a Visual Basic or C# project.");
-        }
-
-        //public Window GetPropertiesWindow()
-        //{
-        //  return _applicationObject.Windows.Item(EnvDTE.Constants.vsWindowKindProperties);
-        //}
 
         public static void SetProperties(ProjectItem projectItem, Hashtable properties)
         {
@@ -1029,25 +961,6 @@ namespace nHydrate.Generator.Common.Util
                 return parentItem;
             }
         }
-
-        //public void RemoveCommands(string startText)
-        //{
-        //  foreach (Command c in _applicationObject.Commands)
-        //  {
-        //    if (c.Name != null)
-        //    {
-        //      if (c.Name.StartsWith(startText))
-        //      {
-        //        WSLog.LogInfo("Removed: {0}", c.Name);
-        //        c.Delete();
-        //      }
-        //      else if (c.Name.IndexOf("nHydrate") != -1)
-        //      {
-        //        WSLog.LogInfo("Left: {0}", c.Name);
-        //      }
-        //    }
-        //  }
-        //}
 
         public bool GetProjectItemExists(string projectName, string parentRelativeName, ProjectItemType parentItemType)
         {

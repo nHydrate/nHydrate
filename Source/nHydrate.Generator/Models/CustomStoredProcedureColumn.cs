@@ -6,7 +6,7 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-    public class CustomStoredProcedureColumn : ColumnBase, ICodeFacadeObject
+    public class CustomStoredProcedureColumn : ColumnBase
     {
         #region Member Variables
 

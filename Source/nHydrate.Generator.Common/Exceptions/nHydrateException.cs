@@ -16,51 +16,51 @@ namespace nHydrate.Generator.Common.Exceptions
         }
 
         /// <summary />
-        public nHydrateException(string Message)
-            : base(Message)
+        public nHydrateException(string message)
+            : base(message)
         {
         }
 
         /// <summary />
-        public nHydrateException(string Message, System.Exception InnerException)
-            : base(Message, InnerException)
+        public nHydrateException(string message, System.Exception innerException)
+            : base(message, innerException)
         {
         }
 
         /// <summary />
-        public nHydrateException(string ErrorCode, string Message)
-            : base(Message)
+        public nHydrateException(string errorCode, string message)
+            : base(message)
         {
-            this.ErrorCode = ErrorCode;
+            this.ErrorCode = errorCode;
         }
 
         /// <summary />
-        public nHydrateException(string ErrorCode, params object[] Arguments)
+        public nHydrateException(string errorCode, params object[] arguments)
         {
-            this.ErrorCode = ErrorCode;
+            this.ErrorCode = errorCode;
             //this.arguments = arguments;
 
-            this.Arguments = new string[Arguments.Length];
+            this.Arguments = new string[arguments.Length];
 
-            for (var length = 0; length < Arguments.Length; ++length)
+            for (var length = 0; length < arguments.Length; ++length)
             {
-                this.Arguments[length] = (string)Arguments[length];
+                this.Arguments[length] = (string)arguments[length];
             }
 
         }
 
         /// <summary />
-        public nHydrateException(string ErrorCode, string Message, System.Exception InnerException)
-            : base(Message, InnerException)
+        public nHydrateException(string errorCode, string message, System.Exception innerException)
+            : base(message, innerException)
         {
-            this.ErrorCode = ErrorCode;
+            this.ErrorCode = errorCode;
         }
 
         /// <summary />
-        public nHydrateException(SerializationInfo SerializationInfo, StreamingContext Context)
-            : base(SerializationInfo, Context)
+        public nHydrateException(SerializationInfo serializationInfo, StreamingContext context)
+            : base(serializationInfo, context)
         {
-            this.ErrorCode = (string)SerializationInfo.GetValue("errorCode", typeof(string));
+            this.ErrorCode = (string)serializationInfo.GetValue("errorCode", typeof(string));
         }
 
     }
