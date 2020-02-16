@@ -613,18 +613,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Name&apos; on DomainClass &apos;Field&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.Field/FriendlyName.Description" xml:space="preserve">
-    <value>Determines a prompt that can be displayed in the UI</value>
-    <comment>Description for DomainProperty &apos;FriendlyName&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/FriendlyName.DisplayName" xml:space="preserve">
-    <value>Friendly Name</value>
-    <comment>DisplayName for DomainProperty &apos;FriendlyName&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/FriendlyName.Category" xml:space="preserve">
-    <value>Code</value>
-    <comment>Category for DomainProperty &apos;FriendlyName&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.Field/Nullable.Description" xml:space="preserve">
     <value>Determines if this item allows null values</value>
     <comment>Description for DomainProperty &apos;Nullable&apos; on DomainClass &apos;Field&apos;</comment>
@@ -828,18 +816,6 @@
   <data name="nHydrate.Dsl.Field/IsReadOnly.Category" xml:space="preserve">
     <value>Code</value>
     <comment>Category for DomainProperty &apos;IsReadOnly&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/IsBrowsable.Description" xml:space="preserve">
-    <value>Determines if this property is browsable in the UI</value>
-    <comment>Description for DomainProperty &apos;IsBrowsable&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/IsBrowsable.DisplayName" xml:space="preserve">
-    <value>Is Browsable</value>
-    <comment>DisplayName for DomainProperty &apos;IsBrowsable&apos; on DomainClass &apos;Field&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Field/IsBrowsable.Category" xml:space="preserve">
-    <value>Code</value>
-    <comment>Category for DomainProperty &apos;IsBrowsable&apos; on DomainClass &apos;Field&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.Field/Category.Description" xml:space="preserve">
     <value>Determines the property grid category of this item</value>
@@ -1048,18 +1024,6 @@
   <data name="nHydrate.Dsl.StoredProcedureField/Name.Category" xml:space="preserve">
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Name&apos; on DomainClass &apos;StoredProcedureField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.StoredProcedureField/FriendlyName.Description" xml:space="preserve">
-    <value>Determines a friend name to display to users</value>
-    <comment>Description for DomainProperty &apos;FriendlyName&apos; on DomainClass &apos;StoredProcedureField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.StoredProcedureField/FriendlyName.DisplayName" xml:space="preserve">
-    <value>Friendly Name</value>
-    <comment>DisplayName for DomainProperty &apos;FriendlyName&apos; on DomainClass &apos;StoredProcedureField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.StoredProcedureField/FriendlyName.Category" xml:space="preserve">
-    <value>Code</value>
-    <comment>Category for DomainProperty &apos;FriendlyName&apos; on DomainClass &apos;StoredProcedureField&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.StoredProcedureField/CodeFacade.Description" xml:space="preserve">
     <value>Determines the object name used in the API. If this property is blank the &apos;Name&apos; property is used in the API. This property can be used to mask the database identifier.</value>
@@ -1412,18 +1376,6 @@
   <data name="nHydrate.Dsl.ViewField/Name.Category" xml:space="preserve">
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Name&apos; on DomainClass &apos;ViewField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ViewField/FriendlyName.Description" xml:space="preserve">
-    <value>Determines a friend name to display to users</value>
-    <comment>Description for DomainProperty &apos;FriendlyName&apos; on DomainClass &apos;ViewField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ViewField/FriendlyName.DisplayName" xml:space="preserve">
-    <value>Friendly Name</value>
-    <comment>DisplayName for DomainProperty &apos;FriendlyName&apos; on DomainClass &apos;ViewField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ViewField/FriendlyName.Category" xml:space="preserve">
-    <value>Code</value>
-    <comment>Category for DomainProperty &apos;FriendlyName&apos; on DomainClass &apos;ViewField&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.ViewField/Nullable.Description" xml:space="preserve">
     <value>Determines if this item allows null values</value>
@@ -1940,18 +1892,6 @@
   <data name="nHydrate.Dsl.FunctionField/Name.Category" xml:space="preserve">
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;Name&apos; on DomainClass &apos;FunctionField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FunctionField/FriendlyName.Description" xml:space="preserve">
-    <value>Determines a friend name to display to users</value>
-    <comment>Description for DomainProperty &apos;FriendlyName&apos; on DomainClass &apos;FunctionField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FunctionField/FriendlyName.DisplayName" xml:space="preserve">
-    <value>Friendly Name</value>
-    <comment>DisplayName for DomainProperty &apos;FriendlyName&apos; on DomainClass &apos;FunctionField&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FunctionField/FriendlyName.Category" xml:space="preserve">
-    <value>Code</value>
-    <comment>Category for DomainProperty &apos;FriendlyName&apos; on DomainClass &apos;FunctionField&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.FunctionField/CodeFacade.Description" xml:space="preserve">
     <value>Determines the object name used in the API. If this property is blank the &apos;Name&apos; property is used in the API. This property can be used to mask the database identifier.</value>

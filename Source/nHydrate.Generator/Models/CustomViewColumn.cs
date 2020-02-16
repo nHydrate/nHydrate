@@ -12,10 +12,8 @@ namespace nHydrate.Generator.Models
         #region Member Variables
 
         protected const int _def_sortOrder = 0;
-        protected const bool _def_UIVisible = false;
         protected const string _def_codefacade = "";
         protected const string _def_default = "";
-        protected const string _def_friendlyName = "";
         protected const bool _def_isPrimaryKey = false;
 
         #endregion
@@ -45,11 +43,7 @@ namespace nHydrate.Generator.Models
 
         public Reference ParentViewRef { get; set; } = null;
 
-        public string FriendlyName { get; set; } = _def_friendlyName;
-
         public int SortOrder { get; set; } = _def_sortOrder;
-
-        public bool UiVisible { get; set; } = _def_UIVisible;
 
         internal string EnumType { get; set; } = string.Empty;
 
@@ -73,18 +67,6 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        #region Methods
-
-        public virtual string GetFriendlyName()
-        {
-            if (string.IsNullOrEmpty(this.FriendlyName))
-                return this.PascalName;
-            else
-                return this.FriendlyName;
-        }
-
-        #endregion
-
         #region IXMLable Members
 
         public override void XmlAppend(XmlNode node)
@@ -104,12 +86,6 @@ namespace nHydrate.Generator.Models
 
                 if (this.Description != _def_description)
                     node.AddAttribute("description", this.Description);
-
-                if (this.FriendlyName != _def_friendlyName)
-                    node.AddAttribute("dataFieldFriendlyName", this.FriendlyName);
-
-                if (this.UiVisible != _def_UIVisible)
-                    node.AddAttribute("dataFieldVisibility", this.UiVisible);
 
                 if (this.SortOrder != _def_sortOrder)
                     node.AddAttribute("dataFieldSortOrder", this.SortOrder);
@@ -146,10 +122,6 @@ namespace nHydrate.Generator.Models
 
                 if (this.AllowNull != _def_allowNull)
                     node.AddAttribute("allowNull", this.AllowNull);
-
-                if (this.IsBrowsable != _def_isBrowsable)
-                    node.AddAttribute("isBrowsable", this.IsBrowsable);
-
             }
             catch (Exception ex)
             {
@@ -166,8 +138,6 @@ namespace nHydrate.Generator.Models
                 this.Name = XmlHelper.GetAttributeValue(node, "name", string.Empty);
                 this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", _def_codefacade);
                 this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
-                this.FriendlyName = XmlHelper.GetAttributeValue(node, "dataFieldFriendlyName", _def_friendlyName);
-                this.UiVisible = XmlHelper.GetAttributeValue(node, "dataFieldVisibility", _def_UIVisible);
                 this.SortOrder = XmlHelper.GetAttributeValue(node, "dataFieldSortOrder", _def_sortOrder);
                 this.IsPrimaryKey = XmlHelper.GetAttributeValue(node, "isPrimaryKey", _def_isPrimaryKey);
 
@@ -193,7 +163,6 @@ namespace nHydrate.Generator.Models
                     _dataType = (System.Data.SqlDbType)int.Parse(typeString);
 
                 this.AllowNull = XmlHelper.GetAttributeValue(node, "allowNull", _allowNull);
-                this.IsBrowsable = XmlHelper.GetAttributeValue(node, "isBrowsable", _def_isBrowsable);
             }
             catch (Exception ex)
             {
@@ -270,20 +239,6 @@ namespace nHydrate.Generator.Models
                 return prehash;
             }
         }
-
-        #region ICodeFacadeObject Members
-
-        public string CodeFacade { get; set; } = _def_codefacade;
-
-        public string GetCodeFacade()
-        {
-            if (this.CodeFacade == "")
-                return this.Name;
-            else
-                return this.CodeFacade;
-        }
-
-        #endregion
 
     }
 }

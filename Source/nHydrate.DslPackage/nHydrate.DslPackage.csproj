@@ -386,6 +386,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CommandSet.tt</DependentUpon>
     </Compile>
+    <Compile Include="GeneratedCode\Package.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Package.tt</DependentUpon>
+    </Compile>
     <Compile Include="Objects\FindWindowColumnItem.cs" />
     <Compile Include="Objects\ModelStatsFile.cs" />
     <Compile Include="Objects\Postgres\ImportDomain.cs" />
@@ -448,11 +453,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ModelExplorer.cs</LastGenOutput>
     </None>
-    <Compile Include="GeneratedCode\Package.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Package.tt</DependentUpon>
-    </Compile>
     <Compile Include="Objects\DatabaseImportDomain.cs" />
     <Compile Include="Objects\DataImportOptions.cs" />
     <Compile Include="Objects\ModelGenerateDomain.cs" />

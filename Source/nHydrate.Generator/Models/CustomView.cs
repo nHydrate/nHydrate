@@ -15,8 +15,8 @@ namespace nHydrate.Generator.Models
 
         protected const bool _def_generated = true;
         protected const string _def_dbSchema = "dbo";
-        protected const string _def_codefacade = "";
         protected const string _def_description = "";
+        protected const string _def_codefacade = "";
         protected const bool _def_generatesDoubleDerived = false;
 
         #endregion
@@ -291,7 +291,7 @@ namespace nHydrate.Generator.Models
 
         public string GetCodeFacade()
         {
-            if(this.CodeFacade == "")
+            if (this.CodeFacade == "")
                 return this.Name;
             else
                 return this.CodeFacade;

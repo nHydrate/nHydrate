@@ -83,18 +83,14 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         column.DataType = System.Data.SqlDbType.VarChar;
                         column.Length = 50;
                         column.AllowNull = false;
-                        column.UIVisible = true;
                         column.SortOrder = 0;
-                        column.FriendlyName = "Name";
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
                         column = _model.Database.Columns.Add(new Column { Name = "property_item_data_type"});
                         column.EnumType = "PropertyBagDataTypeConstants";
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.Int;
-                        column.UIVisible = true;
                         column.SortOrder = 1;
-                        column.FriendlyName = "Data type";
                         column.AllowNull = false;
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
@@ -115,44 +111,34 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         column.DataType = System.Data.SqlDbType.VarChar;
                         column.Length = 50;
                         column.AllowNull = true;
-                        column.UIVisible = true;
                         column.SortOrder = 2;
-                        column.FriendlyName = "Group";
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
                         column = _model.Database.Columns.Add(new Column { Name = "sort_index"});
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.Int;
                         column.AllowNull = false;
-                        column.UIVisible = true;
                         column.SortOrder = 3;
-                        column.FriendlyName = "Sort order";
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
                         column = _model.Database.Columns.Add(new Column { Name = "minimum_value"});
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.VarChar;
                         column.Length = 50;
-                        column.UIVisible = true;
                         column.SortOrder = 4;
-                        column.FriendlyName = "Minimum value";
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
                         column = _model.Database.Columns.Add(new Column {Name = "maximum_value"});
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.VarChar;
                         column.Length = 50;
-                        column.UIVisible = true;
                         column.SortOrder = 5;
-                        column.FriendlyName = "Maximum value";
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
                         column = _model.Database.Columns.Add(new Column { Name = "max_length"});
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.Int;
-                        column.UIVisible = true;
                         column.SortOrder = 6;
-                        column.FriendlyName = "Maximum Length";
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
 
@@ -160,9 +146,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
                         column.DataType = System.Data.SqlDbType.Bit;
                         column.AllowNull = false;
-                        column.UIVisible = true;
                         column.SortOrder = 7;
-                        column.FriendlyName = "Required";
                         projectItemDefineTable.Columns.Add(column.CreateRef());
 
                         #endregion

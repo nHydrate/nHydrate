@@ -449,8 +449,6 @@ namespace nHydrate.DslPackage
                 DataType = original.DataType,
                 Default = original.Default,
                 Formula = original.Formula,
-                FriendlyName = original.FriendlyName,
-                IsBrowsable = original.IsBrowsable,
                 IsCalculated = original.IsCalculated,
                 Identity = original.Identity,
                 IsGenerated = original.IsGenerated,

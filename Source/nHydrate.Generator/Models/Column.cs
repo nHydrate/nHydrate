@@ -20,17 +20,12 @@ namespace nHydrate.Generator.Models
 
         protected const bool _def_primaryKey = false;
         protected const IdentityTypeConstants _def_identity = IdentityTypeConstants.None;
-        protected const bool _def_codeImplementedIdentity = false;
         protected const int _def_sortOrder = 0;
-        protected const bool _def_UIVisible = false;
-        protected const string _def_mask = "";
         protected const bool _def_isIndexed = false;
         protected const bool _def_isUnique = false;
         protected const string _def_formula = "";
         protected const bool _def_computedColumn = false;
         protected const string _def_collate = "";
-        protected const string _def_codefacade = "";
-        protected const string _def_friendlyName = "";
         protected const string _def_default = "";
         protected const bool _def_defaultIsFunc = false;
         protected const string _def_validationExpression = "";
@@ -186,13 +181,7 @@ namespace nHydrate.Generator.Models
 
         public Table ParentTable => ParentTableRef.Object as Table;
 
-        public string FriendlyName { get; set; } = _def_friendlyName;
-
         public int SortOrder { get; set; } = _def_sortOrder;
-
-        public bool UIVisible { get; set; } = _def_UIVisible;
-
-        public string Mask { get; set; } = _def_mask;
 
         public bool Obsolete { get; set; } = _def_obsolete;
 
@@ -237,14 +226,6 @@ namespace nHydrate.Generator.Models
         #endregion
 
         #region Methods
-
-        public virtual string GetFriendlyName()
-        {
-            if (string.IsNullOrEmpty(this.FriendlyName))
-                return this.PascalName;
-            else
-                return this.FriendlyName;
-        }
 
         public bool SupportsIdentity()
         {
@@ -429,8 +410,6 @@ namespace nHydrate.Generator.Models
                 node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
                 node.AddAttribute("description", this.Description, _def_description);
                 node.AddAttribute("prompt", this.Prompt, _def_prompt);
-                node.AddAttribute("dataFieldFriendlyName", this.FriendlyName, _def_friendlyName);
-                node.AddAttribute("dataFieldVisibility", this.UIVisible, _def_UIVisible);
                 node.AddAttribute("dataFieldSortOrder", this.SortOrder, _def_sortOrder);
                 node.AddAttribute("default", this.Default, _def_default);
                 node.AddAttribute("defaultIsFunc", this.DefaultIsFunc, _def_defaultIsFunc);
@@ -447,9 +426,7 @@ namespace nHydrate.Generator.Models
                 node.AddAttribute("id", this.Id);
                 node.AddAttribute("type", (int) this.DataType);
                 node.AddAttribute("allowNull", this.AllowNull, _def_allowNull);
-                node.AddAttribute("isBrowsable", this.IsBrowsable, _def_isBrowsable);
                 node.AddAttribute("category", this.Category, string.Empty);
-                node.AddAttribute("mask", this.Mask, _def_mask);
                 node.AddAttribute("obsolete", this.Obsolete, _def_obsolete);
 
                 if (RelationshipRef != null)
@@ -493,10 +470,7 @@ namespace nHydrate.Generator.Models
                 this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", string.Empty);
                 this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
                 this.Prompt = XmlHelper.GetAttributeValue(node, "prompt", _def_prompt);
-                this.FriendlyName = XmlHelper.GetAttributeValue(node, "dataFieldFriendlyName", _def_friendlyName);
-                this.UIVisible = XmlHelper.GetAttributeValue(node, "dataFieldVisibility", _def_UIVisible);
                 this.SortOrder = XmlHelper.GetAttributeValue(node, "dataFieldSortOrder", _def_sortOrder);
-                this.Mask = XmlHelper.GetAttributeValue(node, "mask", _def_mask);
                 this.Obsolete = XmlHelper.GetAttributeValue(node, "obsolete", _def_obsolete);
                 this.IsIndexed = XmlHelper.GetAttributeValue(node, "isIndexed", _def_isIndexed);
                 this.IsUnique = XmlHelper.GetAttributeValue(node, "isUnique", _def_isUnique);
@@ -532,7 +506,6 @@ namespace nHydrate.Generator.Models
                 }
 
                 this.AllowNull = XmlHelper.GetAttributeValue(node, "allowNull", _def_allowNull);
-                this.IsBrowsable = XmlHelper.GetAttributeValue(node, "isBrowsable", _def_isBrowsable);
                 this.Category = XmlHelper.GetAttributeValue(node, "category", string.Empty);
 
                 var metadataNode = node.SelectSingleNode("metadata");
@@ -598,20 +571,6 @@ namespace nHydrate.Generator.Models
             {
                 return base.GetCodeType(allowNullable, forceNull);
             }
-        }
-
-        #endregion
-
-        #region ICodeFacadeObject Members
-
-        public string CodeFacade { get; set; } = _def_codefacade;
-
-        public string GetCodeFacade()
-        {
-            if (string.IsNullOrEmpty(this.CodeFacade))
-                return this.Name;
-            else
-                return this.CodeFacade;
         }
 
         #endregion

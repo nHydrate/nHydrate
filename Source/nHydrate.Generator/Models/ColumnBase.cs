@@ -21,13 +21,12 @@ namespace nHydrate.Generator.Models
         protected const bool _def_generated = true;
         protected const string _def_description = "";
         protected const string _def_prompt = "";
-        protected const bool _def_isBrowsable = true;
+        protected const string _def_codefacade = "";
 
         protected System.Data.SqlDbType _dataType = _def_type;
         protected int _length = _def_length;
         protected int _scale = _def_scale;
         protected bool _allowNull = _def_allowNull;
-        protected bool _isBrowsable = _def_isBrowsable;
 
         #endregion
 
@@ -99,15 +98,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public virtual bool IsBrowsable
-        {
-            get { return _isBrowsable; }
-            set
-            {
-                _isBrowsable = value;
-            }
-        }
-
         public virtual string DatabaseType
         {
             get { return this.GetSQLDefaultType(); }
@@ -142,6 +132,20 @@ namespace nHydrate.Generator.Models
                 return prehash;
             }
         }
+
+        #region ICodeFacadeObject Members
+
+        public string CodeFacade { get; set; } = _def_codefacade;
+
+        public string GetCodeFacade()
+        {
+            if (this.CodeFacade == "")
+                return this.Name;
+            else
+                return this.CodeFacade;
+        }
+
+        #endregion
 
         #endregion
 

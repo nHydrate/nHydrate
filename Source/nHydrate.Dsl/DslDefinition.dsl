@@ -306,11 +306,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="afae6e3a-195e-4510-b2d2-0fe9fd2738b7" Description="Determines a prompt that can be displayed in the UI" Name="FriendlyName" DisplayName="Friendly Name" Category="Code">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="f990fadc-0b79-46b2-8afc-b83182fbe1cc" Description="Determines if this item allows null values" Name="Nullable" DisplayName="Nullable" DefaultValue="true" Category="Definition">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
@@ -420,11 +415,6 @@
           </Type>
         </DomainProperty>
         <DomainProperty Id="232598d5-1d67-46f0-8f5f-6357b90eaa38" Description="Determines if the property can be set in code" Name="IsReadOnly" DisplayName="Is Read Only" DefaultValue="false" Category="Code">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="9a782fd3-4f83-4f26-b3a6-a5ba715342aa" Description="Determines if this property is browsable in the UI" Name="IsBrowsable" DisplayName="Is Browsable" DefaultValue="true" Category="Code">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
@@ -560,11 +550,6 @@
     <DomainClass Id="09f86d91-8e2f-4a68-a738-8ab1855656d7" Description="" Name="StoredProcedureField" DisplayName="Field" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
       <Properties>
         <DomainProperty Id="27eac854-6501-4f02-8c85-113409246394" Description="Determines the name of this object" Name="Name" DisplayName="Name" DefaultValue="" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="58043103-5d33-4dd8-88df-032ff798f22d" Description="Determines a friend name to display to users" Name="FriendlyName" DisplayName="Friendly Name" Category="Code">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
@@ -797,11 +782,6 @@
     <DomainClass Id="84ea79b9-c696-4742-873b-6d31ce2ae2fb" Description="" Name="ViewField" DisplayName="Field" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
       <Properties>
         <DomainProperty Id="893f6809-7dc3-47ab-8afd-8f3b0b0df7aa" Description="Determines the name of this object" Name="Name" DisplayName="Name" DefaultValue="" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="7948a8f4-56b0-4e24-9f24-9d1bea973202" Description="Determines a friend name to display to users" Name="FriendlyName" DisplayName="Friendly Name" Category="Code">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
@@ -1144,11 +1124,6 @@
     <DomainClass Id="e203d7e8-2878-48e6-99e9-7c8a1daf0a53" Description="" Name="FunctionField" DisplayName="Field" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
       <Properties>
         <DomainProperty Id="159b2e68-0fad-402b-a809-9db545932201" Description="Determines the name of this object" Name="Name" DisplayName="Name" DefaultValue="" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="8c20325a-def5-4428-8657-938f03756251" Description="Determines a friend name to display to users" Name="FriendlyName" DisplayName="Friendly Name" Category="Code">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
@@ -2046,9 +2021,6 @@
           <XmlPropertyData XmlName="name">
             <DomainPropertyMoniker Name="Field/Name" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="friendlyName">
-            <DomainPropertyMoniker Name="Field/FriendlyName" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="nullable">
             <DomainPropertyMoniker Name="Field/Nullable" />
           </XmlPropertyData>
@@ -2102,9 +2074,6 @@
           </XmlRelationshipData>
           <XmlPropertyData XmlName="isReadOnly">
             <DomainPropertyMoniker Name="Field/IsReadOnly" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="isBrowsable">
-            <DomainPropertyMoniker Name="Field/IsBrowsable" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="category">
             <DomainPropertyMoniker Name="Field/Category" />
@@ -2195,9 +2164,6 @@
         <ElementData>
           <XmlPropertyData XmlName="name">
             <DomainPropertyMoniker Name="StoredProcedureField/Name" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="friendlyName">
-            <DomainPropertyMoniker Name="StoredProcedureField/FriendlyName" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="codeFacade">
             <DomainPropertyMoniker Name="StoredProcedureField/CodeFacade" />
@@ -2312,9 +2278,6 @@
         <ElementData>
           <XmlPropertyData XmlName="name">
             <DomainPropertyMoniker Name="ViewField/Name" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="friendlyName">
-            <DomainPropertyMoniker Name="ViewField/FriendlyName" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="nullable">
             <DomainPropertyMoniker Name="ViewField/Nullable" />
@@ -2503,9 +2466,6 @@
         <ElementData>
           <XmlPropertyData XmlName="name">
             <DomainPropertyMoniker Name="FunctionField/Name" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="friendlyName">
-            <DomainPropertyMoniker Name="FunctionField/FriendlyName" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="codeFacade">
             <DomainPropertyMoniker Name="FunctionField/CodeFacade" />

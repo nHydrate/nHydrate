@@ -3560,23 +3560,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// FriendlyName
-			if (!serializationContext.Result.Failed)
-			{
-				string attribFriendlyName = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "friendlyName");
-				if (attribFriendlyName != null)
-				{
-					global::System.String valueOfFriendlyName;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribFriendlyName, out valueOfFriendlyName))
-					{
-						instanceOfField.FriendlyName = valueOfFriendlyName;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "friendlyName", typeof(global::System.String), attribFriendlyName);
-					}
-				}
-			}
 			// Nullable
 			if (!serializationContext.Result.Failed)
 			{
@@ -3863,23 +3846,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isReadOnly", typeof(global::System.Boolean), attribIsReadOnly);
-					}
-				}
-			}
-			// IsBrowsable
-			if (!serializationContext.Result.Failed)
-			{
-				string attribIsBrowsable = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "isBrowsable");
-				if (attribIsBrowsable != null)
-				{
-					global::System.Boolean valueOfIsBrowsable;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribIsBrowsable, out valueOfIsBrowsable))
-					{
-						instanceOfField.IsBrowsable = valueOfIsBrowsable;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isBrowsable", typeof(global::System.Boolean), attribIsBrowsable);
 					}
 				}
 			}
@@ -4510,17 +4476,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// FriendlyName
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.String propValue = instanceOfField.FriendlyName;
-				if (!serializationContext.Result.Failed)
-				{
-					if (!string.IsNullOrEmpty(propValue))
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "friendlyName", propValue);
-	
-				}
-			}
 			// Nullable
 			if (!serializationContext.Result.Failed)
 			{
@@ -4724,19 +4679,6 @@ namespace nHydrate.Dsl
 					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isReadOnly", serializedPropValue);
-					}
-				}
-			}
-			// IsBrowsable
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfField.IsBrowsable;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isBrowsable", serializedPropValue);
 					}
 				}
 			}
@@ -6241,23 +6183,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// FriendlyName
-			if (!serializationContext.Result.Failed)
-			{
-				string attribFriendlyName = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "friendlyName");
-				if (attribFriendlyName != null)
-				{
-					global::System.String valueOfFriendlyName;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribFriendlyName, out valueOfFriendlyName))
-					{
-						instanceOfStoredProcedureField.FriendlyName = valueOfFriendlyName;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "friendlyName", typeof(global::System.String), attribFriendlyName);
-					}
-				}
-			}
 			// CodeFacade
 			if (!serializationContext.Result.Failed)
 			{
@@ -6829,17 +6754,6 @@ namespace nHydrate.Dsl
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "name", propValue);
 					}
-				}
-			}
-			// FriendlyName
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.String propValue = instanceOfStoredProcedureField.FriendlyName;
-				if (!serializationContext.Result.Failed)
-				{
-					if (!string.IsNullOrEmpty(propValue))
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "friendlyName", propValue);
-	
 				}
 			}
 			// CodeFacade
@@ -9167,23 +9081,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// FriendlyName
-			if (!serializationContext.Result.Failed)
-			{
-				string attribFriendlyName = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "friendlyName");
-				if (attribFriendlyName != null)
-				{
-					global::System.String valueOfFriendlyName;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribFriendlyName, out valueOfFriendlyName))
-					{
-						instanceOfViewField.FriendlyName = valueOfFriendlyName;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "friendlyName", typeof(global::System.String), attribFriendlyName);
-					}
-				}
-			}
 			// Nullable
 			if (!serializationContext.Result.Failed)
 			{
@@ -9772,17 +9669,6 @@ namespace nHydrate.Dsl
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "name", propValue);
 					}
-				}
-			}
-			// FriendlyName
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.String propValue = instanceOfViewField.FriendlyName;
-				if (!serializationContext.Result.Failed)
-				{
-					if (!string.IsNullOrEmpty(propValue))
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "friendlyName", propValue);
-	
 				}
 			}
 			// Nullable
@@ -15086,23 +14972,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// FriendlyName
-			if (!serializationContext.Result.Failed)
-			{
-				string attribFriendlyName = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "friendlyName");
-				if (attribFriendlyName != null)
-				{
-					global::System.String valueOfFriendlyName;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribFriendlyName, out valueOfFriendlyName))
-					{
-						instanceOfFunctionField.FriendlyName = valueOfFriendlyName;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "friendlyName", typeof(global::System.String), attribFriendlyName);
-					}
-				}
-			}
 			// CodeFacade
 			if (!serializationContext.Result.Failed)
 			{
@@ -15674,17 +15543,6 @@ namespace nHydrate.Dsl
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "name", propValue);
 					}
-				}
-			}
-			// FriendlyName
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.String propValue = instanceOfFunctionField.FriendlyName;
-				if (!serializationContext.Result.Failed)
-				{
-					if (!string.IsNullOrEmpty(propValue))
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "friendlyName", propValue);
-	
 				}
 			}
 			// CodeFacade

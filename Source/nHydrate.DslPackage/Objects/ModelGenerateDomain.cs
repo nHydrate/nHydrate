@@ -417,7 +417,6 @@ namespace nHydrate.DslPackage.Objects
                         newColumn.DefaultIsFunc = field.DefaultIsFunc;
                         newColumn.Description = field.Summary;
                         newColumn.Formula = field.Formula;
-                        newColumn.FriendlyName = field.FriendlyName;
                         newColumn.Generated = field.IsGenerated;
                         newColumn.Identity = (nHydrate.Generator.Models.IdentityTypeConstants)Enum.Parse(typeof(nHydrate.Generator.Models.IdentityTypeConstants), field.Identity.ToString());
                         newColumn.IsIndexed = field.IsIndexed;
@@ -429,10 +428,8 @@ namespace nHydrate.DslPackage.Objects
                         newColumn.PrimaryKey = field.IsPrimaryKey;
                         newColumn.Scale = field.Scale;
                         newColumn.ValidationExpression = field.ValidationExpression;
-                        newColumn.IsBrowsable = field.IsBrowsable;
                         newColumn.Category = field.Category;
                         newColumn.SortOrder = field.SortOrder;
-                        newColumn.Mask = field.DataFormatString;
                         newColumn.Obsolete = field.Obsolete;
                         newTable.Columns.Add(newColumn.CreateRef(newColumn.Key));
 
@@ -633,7 +630,6 @@ namespace nHydrate.DslPackage.Objects
                         newField.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), field.DataType.ToString());
                         newField.Default = field.Default;
                         newField.Description = field.Summary;
-                        newField.FriendlyName = field.FriendlyName;
                         newField.IsPrimaryKey = field.IsPrimaryKey;
                         newField.Generated = field.IsGenerated;
                         newField.Length = field.Length;
@@ -673,7 +669,6 @@ namespace nHydrate.DslPackage.Objects
                         newField.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), field.DataType.ToString());
                         newField.Default = field.Default;
                         newField.Description = field.Summary;
-                        newField.FriendlyName = field.FriendlyName;
                         newField.Generated = field.IsGenerated;
                         newField.Length = field.Length;
                         newField.Name = field.Name;
@@ -734,7 +729,6 @@ namespace nHydrate.DslPackage.Objects
                         newField.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), field.DataType.ToString());
                         newField.Default = field.Default;
                         newField.Description = field.Summary;
-                        newField.FriendlyName = field.FriendlyName;
                         newField.Generated = field.IsGenerated;
                         newField.Length = field.Length;
                         newField.Name = field.Name;

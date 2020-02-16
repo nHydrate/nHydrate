@@ -511,12 +511,6 @@
             <xsd:documentation>Determines the name of this field</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: FriendlyName -->
-        <xsd:attribute name="friendlyName" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines a prompt that can be displayed in the UI</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: Nullable -->
         <xsd:attribute name="nullable" type="xsd:boolean" >
           <xsd:annotation>
@@ -617,12 +611,6 @@
         <xsd:attribute name="isReadOnly" type="xsd:boolean" >
           <xsd:annotation>
             <xsd:documentation>Determines if the property can be set in code</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: IsBrowsable -->
-        <xsd:attribute name="isBrowsable" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this property is browsable in the UI</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: Category -->
@@ -824,12 +812,6 @@
         <xsd:attribute name="name" type="xsd:string" >
           <xsd:annotation>
             <xsd:documentation>Determines the name of this object</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: FriendlyName -->
-        <xsd:attribute name="friendlyName" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines a friend name to display to users</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: CodeFacade -->
@@ -1110,12 +1092,6 @@
         <xsd:attribute name="name" type="xsd:string" >
           <xsd:annotation>
             <xsd:documentation>Determines the name of this object</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: FriendlyName -->
-        <xsd:attribute name="friendlyName" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines a friend name to display to users</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: Nullable -->
@@ -1605,12 +1581,6 @@
         <xsd:attribute name="name" type="xsd:string" >
           <xsd:annotation>
             <xsd:documentation>Determines the name of this object</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: FriendlyName -->
-        <xsd:attribute name="friendlyName" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines a friend name to display to users</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: CodeFacade -->

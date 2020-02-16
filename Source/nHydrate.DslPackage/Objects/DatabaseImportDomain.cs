@@ -816,7 +816,6 @@ namespace nHydrate.DslPackage.Objects
                     newField.Name = field.Name;
                     newField.PrimaryKey = field.IsPrimaryKey;
                     newField.Scale = field.Scale;
-                    newField.IsBrowsable = field.IsBrowsable;
                     newEntity.FieldList.Add(newField);
                 }
                 #endregion

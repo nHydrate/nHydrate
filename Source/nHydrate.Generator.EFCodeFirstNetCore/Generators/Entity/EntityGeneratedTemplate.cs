@@ -484,20 +484,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		/// <remarks>" + column.GetIntellisenseRemarks() + "</remarks>");
 
-                if (column.IsBrowsable)
-                    sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Always)]");
-                else
-                    sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]");
-
                 if (!string.IsNullOrEmpty(column.Category))
                     sb.AppendLine("		[System.ComponentModel.Category(\"" + column.Category + "\")]");
 
-                sb.AppendLine("		[System.ComponentModel.DataAnnotations.Display(Name = \"" + column.GetFriendlyName() + "\")]");
-
-                if (!string.IsNullOrEmpty(column.Mask))
-                {
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = @\"" + column.Mask.Replace(@"\\", @"\\\\") + "\")]");
-                }
+                sb.AppendLine("		[System.ComponentModel.DataAnnotations.Display(Name = \"" + column.Name + "\")]");
 
                 if (column.ComputedColumn || column.IsReadOnly)
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
@@ -1626,7 +1616,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                 ////If not nullable then it is required
                 if (!column.AllowNull)
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = \"'" + column.GetFriendlyName() + "' is required.\", AllowEmptyStrings = true)]");
+                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = \"'" + column.Name + "' is required.\", AllowEmptyStrings = true)]");
 
                 if (!string.IsNullOrEmpty(column.ValidationExpression))
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.RegularExpression(@\"" + column.ValidationExpression.Replace("\"", "\"\"") + "\")]");
@@ -1634,7 +1624,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 if (column.PrimaryKey)
                 {
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
-                    //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
                 }
 
                 //If PK or calculated then there is no setter (readonly)
@@ -1646,16 +1635,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 {
                     var l = column.GetAnnotationStringLength();
                     if (l > 0)
-                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.StringLength(" + l + ", ErrorMessage = \"The property '" + column.GetFriendlyName() + "' has a maximum length of " + l + "\")]");
-                }
-
-                if (!string.IsNullOrEmpty(column.Mask))
-                {
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = @\"" + column.Mask.Replace(@"\\", @"\\\\") + "\")]");
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.StringLength(" + l + ", ErrorMessage = \"The property '" + column.Name + "' has a maximum length of " + l + "\")]");
                 }
 
                 //Additional display properties
-                sb.Append("		[System.ComponentModel.DataAnnotations.Display(Description = \"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\", Name = \"" + column.GetFriendlyName() + "\", AutoGenerateField = true");
+                sb.Append("		[System.ComponentModel.DataAnnotations.Display(Description = \"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\", Name = \"" + column.Name + "\", AutoGenerateField = true");
                 if (!string.IsNullOrEmpty(column.Prompt))
                     sb.Append(", Prompt = \"" + StringHelper.ConvertTextToSingleLineCodeString(column.Prompt) + "\"");
                 sb.AppendLine(")]");
