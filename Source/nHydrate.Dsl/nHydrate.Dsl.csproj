@@ -176,6 +176,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HelpKeywordHelper.tt</DependentUpon>
     </Compile>
+    <Compile Include="GeneratedCode\PropertiesGrid.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PropertiesGrid.tt</DependentUpon>
+    </Compile>
     <Compile Include="GeneratedCode\Serializer1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -190,8 +195,6 @@
     <Compile Include="Overrides\IField.cs" />
     <Compile Include="Overrides\IDatabaseEntity.cs" />
     <Compile Include="Overrides\IContainerParent.cs" />
-    <Compile Include="Overrides\EntityViewAssociationConnector.cs" />
-    <Compile Include="Overrides\EntityHasViews.cs" />
     <Compile Include="Overrides\FunctionShape.cs" />
     <Compile Include="Overrides\IndexColumn.cs" />
     <Compile Include="Overrides\Index.cs" />
@@ -314,12 +317,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MultiplicityValidation.tt</DependentUpon>
-    </Compile>
-    <Compile Include="GeneratedCode\PropertiesGrid.cs">
-      <DependentUpon>PropertiesGrid.tt</DependentUpon>
-      <SubType>Code</SubType>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="GeneratedCode\SerializationHelper.cs">
       <AutoGen>True</AutoGen>

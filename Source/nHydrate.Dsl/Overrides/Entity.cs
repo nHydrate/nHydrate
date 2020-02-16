@@ -83,19 +83,6 @@ namespace nHydrate.Dsl
             }
         }
 
-        public IList<EntityHasViews> RelationshipViewList
-        {
-            get
-            {
-                return this.Store.ElementDirectory.AllElements
-                    .Where(x => x is EntityHasViews)
-                    .ToList()
-                    .Cast<EntityHasViews>()
-                    .Where(x => x.ParentEntity == this)
-                    .ToList();
-            }
-        }
-
         /// <summary>
         /// Returns generated relations for this table
         /// </summary>

@@ -19,13 +19,6 @@ namespace nHydrate.Dsl
                        .ToList();
         }
 
-        public static IEnumerable<RelationField> FieldMapList(this EntityHasViews item)
-        {
-            return item.ParentEntity.nHydrateModel.RelationFields
-                       .Where(x => x.RelationID == item.Id)
-                       .ToList();
-        }
-
         public static bool IsBinaryType(this DataTypeConstants dataType)
         {
             switch (dataType)
@@ -193,16 +186,6 @@ namespace nHydrate.Dsl
         public static Field GetTargetField(this RelationField relationField, EntityHasEntities relation)
         {
             return relation.ChildEntity.Fields.FirstOrDefault(x => x.Id == relationField.TargetFieldId);
-        }
-
-        public static Field GetSourceField(this RelationField relationField, EntityHasViews relation)
-        {
-            return relation.ParentEntity.Fields.FirstOrDefault(x => x.Id == relationField.SourceFieldId);
-        }
-
-        public static ViewField GetTargetField(this RelationField relationField, EntityHasViews relation)
-        {
-            return relation.ChildView.Fields.FirstOrDefault(x => x.Id == relationField.TargetFieldId);
         }
 
         public static bool IsSupportedType(this DataTypeConstants type)

@@ -199,8 +199,6 @@
     <Compile Include="Models\SecurityFunction.cs" />
     <Compile Include="Models\ViewColumnRelationship.cs" />
     <Compile Include="Models\ViewColumnRelationshipCollection.cs" />
-    <Compile Include="Models\ViewRelation.cs" />
-    <Compile Include="Models\ViewRelationCollection.cs" />
     <Compile Include="Models\TableIndexColumn.cs" />
     <Compile Include="Models\TableIndex.cs" />
     <Compile Include="Models\FunctionCollection.cs" />

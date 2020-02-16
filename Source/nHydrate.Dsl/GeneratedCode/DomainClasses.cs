@@ -4498,21 +4498,6 @@ namespace nHydrate.Dsl
 			}
 		}
 		#endregion
-		#region ChildViews opposite domain role accessor
-		
-		/// <summary>
-		/// Gets a list of ChildViews.
-		/// Description for nHydrate.Dsl.EntityHasViews.ParentEntity
-		/// </summary>
-		public virtual DslModeling::LinkedElementCollection<View> ChildViews
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return GetRoleCollection<DslModeling::LinkedElementCollection<View>, View>(global::nHydrate.Dsl.EntityHasViews.ParentEntityDomainRoleId);
-			}
-		}
-		#endregion
 		#region SecurityFunction opposite domain role accessor
 		/// <summary>
 		/// Gets or sets SecurityFunction.
@@ -11436,21 +11421,6 @@ namespace nHydrate.Dsl
 			get
 			{
 				return GetRoleCollection<DslModeling::LinkedElementCollection<ViewField>, ViewField>(global::nHydrate.Dsl.ViewHasFields.ViewDomainRoleId);
-			}
-		}
-		#endregion
-		#region ParentEntity opposite domain role accessor
-		
-		/// <summary>
-		/// Gets a list of ParentEntity.
-		/// Description for nHydrate.Dsl.EntityHasViews.ChildView
-		/// </summary>
-		public virtual DslModeling::LinkedElementCollection<Entity> ParentEntity
-		{
-			[global::System.Diagnostics.DebuggerStepThrough]
-			get
-			{
-				return GetRoleCollection<DslModeling::LinkedElementCollection<Entity>, Entity>(global::nHydrate.Dsl.EntityHasViews.ChildViewDomainRoleId);
 			}
 		}
 		#endregion

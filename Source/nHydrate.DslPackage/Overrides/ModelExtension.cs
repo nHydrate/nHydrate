@@ -163,15 +163,6 @@ namespace nHydrate.DslPackage
                     relation.ParentEntity.ChildEntities.Remove(relation.ParentEntity.ChildEntities.LastOrDefault());
                 }
             }
-            else if (shape is EntityViewAssociationConnector)
-            {
-                var F = new nHydrate.DslPackage.Forms.RelationshipViewDialog(shape.Diagram.ModelElement as nHydrateModel, shape.Store, (shape as EntityViewAssociationConnector).ModelElement as EntityHasViews);
-                if (F.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
-                    var relation = shape.ModelElement as EntityHasViews;
-                    relation.ParentEntity.ChildViews.Remove(relation.ParentEntity.ChildViews.LastOrDefault());
-                }
-            }
 
         }
 
@@ -185,14 +176,6 @@ namespace nHydrate.DslPackage
                 if (!(shape.Diagram as nHydrateDiagram).IsLoading)
                 {
                     var F = new nHydrate.DslPackage.Forms.RelationshipDialog(shape.Diagram.ModelElement as nHydrateModel, shape.Store, (shape as EntityAssociationConnector).ModelElement as EntityHasEntities);
-                    F.ShowDialog();
-                }
-            }
-            else if (shape is EntityViewAssociationConnector)
-            {
-                if (!(shape.Diagram as nHydrateDiagram).IsLoading)
-                {
-                    var F = new nHydrate.DslPackage.Forms.RelationshipViewDialog(shape.Diagram.ModelElement as nHydrateModel, shape.Store, (shape as EntityViewAssociationConnector).ModelElement as EntityHasViews);
                     F.ShowDialog();
                 }
             }

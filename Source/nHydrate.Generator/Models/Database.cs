@@ -33,8 +33,6 @@ namespace nHydrate.Generator.Models
             this.Columns.ResetKey(Guid.Empty.ToString());
             this.Relations = new RelationCollection(root);
             this.Relations.ResetKey(Guid.Empty.ToString());
-            this.ViewRelations = new ViewRelationCollection(root);
-            this.ViewRelations.ResetKey(Guid.Empty.ToString());
             this.CustomViews = new CustomViewCollection(root);
             this.CustomViews.ResetKey(Guid.Empty.ToString());
             this.CustomStoredProcedures = new CustomStoredProcedureCollection(root);
@@ -60,8 +58,6 @@ namespace nHydrate.Generator.Models
         public ColumnCollection Columns { get; }
 
         public RelationCollection Relations { get; }
-
-        public ViewRelationCollection ViewRelations { get; }
 
         public string DatabaseName { get; set; } = string.Empty;
 
@@ -254,10 +250,6 @@ namespace nHydrate.Generator.Models
                 this.Relations.XmlAppend(relationsNode);
                 node.AppendChild(relationsNode);
 
-                var relationsNode2 = oDoc.CreateElement("viewrelations");
-                this.ViewRelations.XmlAppend(relationsNode2);
-                node.AppendChild(relationsNode2);
-
                 XmlHelper.AddAttribute(node, "databaseName", this.DatabaseName);
 
                 var tablesNode = oDoc.CreateElement("tables");
@@ -301,10 +293,6 @@ namespace nHydrate.Generator.Models
                 var relationsNode = node.SelectSingleNode("relations");
                 if (relationsNode != null)
                     this.Relations.XmlLoad(relationsNode);
-
-                var relationsNode2 = node.SelectSingleNode("viewrelations");
-                if (relationsNode2 != null)
-                    this.ViewRelations.XmlLoad(relationsNode2);
 
                 var tablesNode = node.SelectSingleNode("tables");
                 if (tablesNode != null)

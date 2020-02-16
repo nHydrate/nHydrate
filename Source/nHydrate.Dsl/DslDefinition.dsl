@@ -1818,46 +1818,6 @@
         </DomainRole>
       </Target>
     </DomainRelationship>
-    <DomainRelationship Id="7ee38be2-ed4a-46a1-ae1a-3a61bd64e20f" Description="Association relationship between an entity and a view" Name="EntityHasViews" DisplayName="Entity Has Views" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true" AllowsDuplicates="true">
-      <Properties>
-        <DomainProperty Id="89ec5e65-db89-4578-8da3-2b6b453e72bb" Description="The named relation necessary when there is more than one relation between two entities" Name="RoleName" DisplayName="Role Name" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="cfababba-9bc1-4ccc-93c6-2eb7a409850d" Description="Internal data to track imports" Name="ImportData" DisplayName="Import Data" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="7311f0de-9fed-4f35-abfa-b8b79f2b9ff4" Description="Determines summary text were applicable" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-      <Source>
-        <DomainRole Id="980aab21-bcfb-4594-bce6-e892e91039a1" Description="Description for nHydrate.Dsl.EntityHasViews.ParentEntity" Name="ParentEntity" DisplayName="Parent Entity" PropertyName="ChildViews" PropertyDisplayName="ChildViews">
-          <RolePlayer>
-            <DomainClassMoniker Name="Entity" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="19b19e10-a398-468d-a504-aa47bd30287b" Description="Description for nHydrate.Dsl.EntityHasViews.ChildView" Name="ChildView" DisplayName="Child View" PropertyName="ParentEntity" PropertyDisplayName="Parent Entity">
-          <RolePlayer>
-            <DomainClassMoniker Name="View" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
     <DomainRelationship Id="daa3bb78-a012-4074-b164-446cdf4e7c63" Description="Description for nHydrate.Dsl.EntityHasSecurityFunction" Name="EntityHasSecurityFunction" DisplayName="Entity Has Security Function" Namespace="nHydrate.Dsl" IsEmbedding="true">
       <Source>
         <DomainRole Id="43c74558-2e05-4067-bad8-9dd65eddeeaf" Description="Description for nHydrate.Dsl.EntityHasSecurityFunction.Entity" Name="Entity" DisplayName="Entity" PropertyName="SecurityFunction" Multiplicity="ZeroOne" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" Category="Security" PropertyDisplayName="Security Function">
@@ -2064,7 +2024,6 @@
         <TextDecorator Name="DestEntityRelationTextDecorator" DisplayName="DESTINATION" DefaultText="" FontStyle="Italic" />
       </ConnectorHasDecorators>
     </Connector>
-    <Connector Id="1715d1db-8274-453b-8248-a36e795c89b8" Description="Connect an entity and a view" Name="EntityViewAssociationConnector" DisplayName="Entity View Association Connector" Namespace="nHydrate.Dsl" TooltipType="Variable" FixedTooltipText="Entity View Association Connector" TextColor="DimGray" Color="DimGray" SourceEndStyle="EmptyDiamond" TargetEndStyle="EmptyArrow" Thickness="0.01" />
   </Connectors>
   <XmlSerializationBehavior Name="nHydrateSerializationBehavior" Namespace="nHydrate.Dsl">
     <ClassData>
@@ -2228,9 +2187,6 @@
           </XmlPropertyData>
           <XmlRelationshipData UseFullForm="true" RoleElementName="indexes">
             <DomainRelationshipMoniker Name="EntityHasIndexes" />
-          </XmlRelationshipData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="childViews">
-            <DomainRelationshipMoniker Name="EntityHasViews" />
           </XmlRelationshipData>
           <XmlPropertyData XmlName="isTenant">
             <DomainPropertyMoniker Name="Entity/IsTenant" />
@@ -2851,23 +2807,6 @@
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>
-      <XmlClassData TypeName="EntityHasViews" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityHasViewsMoniker" ElementName="entityHasViews" MonikerTypeName="EntityHasViewsMoniker">
-        <DomainRelationshipMoniker Name="EntityHasViews" />
-        <ElementData>
-          <XmlPropertyData XmlName="roleName">
-            <DomainPropertyMoniker Name="EntityHasViews/RoleName" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="importData">
-            <DomainPropertyMoniker Name="EntityHasViews/ImportData" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="EntityHasViews/Summary" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="EntityViewAssociationConnector" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityViewAssociationConnectorMoniker" ElementName="entityViewAssociationConnector" MonikerTypeName="EntityViewAssociationConnectorMoniker">
-        <ConnectorMoniker Name="EntityViewAssociationConnector" />
-      </XmlClassData>
       <XmlClassData TypeName="EntityHasSecurityFunction" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityHasSecurityFunctionMoniker" ElementName="entityHasSecurityFunction" MonikerTypeName="EntityHasSecurityFunctionMoniker">
         <DomainRelationshipMoniker Name="EntityHasSecurityFunction" />
       </XmlClassData>
@@ -3053,25 +2992,6 @@
         </TargetDirectives>
       </LinkConnectDirective>
     </ConnectionBuilder>
-    <ConnectionBuilder Name="EntityHasViewsBuilder">
-      <LinkConnectDirective>
-        <DomainRelationshipMoniker Name="EntityHasViews" />
-        <SourceDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="Entity" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </SourceDirectives>
-        <TargetDirectives>
-          <RolePlayerConnectDirective>
-            <AcceptingClass>
-              <DomainClassMoniker Name="View" />
-            </AcceptingClass>
-          </RolePlayerConnectDirective>
-        </TargetDirectives>
-      </LinkConnectDirective>
-    </ConnectionBuilder>
   </ConnectionBuilders>
   <Diagram Id="baed03c1-2130-477d-ba88-9e9cb86956de" Description="" Name="nHydrateDiagram" DisplayName="nHydrate Diagram" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true" FillColor="">
     <Properties>
@@ -3235,10 +3155,6 @@
           </PropertyDisplayed>
         </DecoratorMap>
       </ConnectorMap>
-      <ConnectorMap>
-        <ConnectorMoniker Name="EntityViewAssociationConnector" />
-        <DomainRelationshipMoniker Name="EntityHasViews" />
-      </ConnectorMap>
     </ConnectorMaps>
   </Diagram>
   <Designer CopyPasteGeneration="CopyPasteOnly" FileExtension="nhydrate" EditorGuid="29e4af38-a8e4-4323-a69b-b69b971fb6cd">
@@ -3264,9 +3180,6 @@
       <ElementTool Name="StoredProcedure" ToolboxIcon="Resources\storedproc.bmp" Caption="StoredProcedure" Tooltip="Create a Stored Procedure" HelpKeyword="StoredProcedure">
         <DomainClassMoniker Name="StoredProcedure" />
       </ElementTool>
-      <ConnectionTool Name="ViewLink" ToolboxIcon="Resources\ExampleConnectorToolBitmap.bmp" Caption="View Link" Tooltip="Create a link between an entity and a view" HelpKeyword="">
-        <ConnectionBuilderMoniker Name="nHydrate/EntityHasViewsBuilder" />
-      </ConnectionTool>
     </ToolboxTab>
     <Validation UsesMenu="false" UsesOpen="false" UsesSave="false" UsesCustom="true" UsesLoad="false" />
     <DiagramMoniker Name="nHydrateDiagram" />

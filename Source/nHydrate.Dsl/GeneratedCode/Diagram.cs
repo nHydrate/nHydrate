@@ -343,11 +343,6 @@ namespace nHydrate.Dsl
 				global::nHydrate.Dsl.EntityAssociationConnector newShape = new global::nHydrate.Dsl.EntityAssociationConnector(this.Partition);
 				return newShape;
 			}
-			if(element is global::nHydrate.Dsl.EntityHasViews)
-			{
-				global::nHydrate.Dsl.EntityViewAssociationConnector newShape = new global::nHydrate.Dsl.EntityViewAssociationConnector(this.Partition);
-				return newShape;
-			}
 			return base.CreateChildShape(element);
 		}
 		#endregion
@@ -542,7 +537,6 @@ namespace nHydrate.Dsl
 		#region Connect actions
 		private bool changingMouseAction;
 		private global::nHydrate.Dsl.AssociationConnectAction associationConnectAction;
-		private global::nHydrate.Dsl.ViewLinkConnectAction viewLinkConnectAction;
 		/// <summary>
 		/// Virtual method to provide a filter when to select the mouse action
 		/// </summary>
@@ -573,15 +567,6 @@ namespace nHydrate.Dsl
 						this.associationConnectAction.MouseActionDeactivated += new DslDiagrams::MouseAction.MouseActionDeactivatedEventHandler(OnConnectActionDeactivated);
 					}
 					action = this.associationConnectAction;
-				} 
-				else if (SelectedToolboxItemSupportsFilterString(activeView, global::nHydrate.Dsl.nHydrateToolboxHelper.ViewLinkFilterString))
-				{
-					if (this.viewLinkConnectAction == null)
-					{
-						this.viewLinkConnectAction = new global::nHydrate.Dsl.ViewLinkConnectAction(this);
-						this.viewLinkConnectAction.MouseActionDeactivated += new DslDiagrams::MouseAction.MouseActionDeactivatedEventHandler(OnConnectActionDeactivated);
-					}
-					action = this.viewLinkConnectAction;
 				} 
 				else
 				{
@@ -644,11 +629,6 @@ namespace nHydrate.Dsl
 					{
 						this.associationConnectAction.Dispose();
 						this.associationConnectAction = null;
-					}
-					if(this.viewLinkConnectAction != null)
-					{
-						this.viewLinkConnectAction.Dispose();
-						this.viewLinkConnectAction = null;
 					}
 					this.UnsubscribeCompartmentItemsEvents();
 				}
@@ -829,7 +809,6 @@ namespace nHydrate.Dsl
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedure), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.Function), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasEntities), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasViews), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		internal sealed partial class FixUpDiagram : FixUpDiagramBase
 		{
 			[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
@@ -1573,7 +1552,6 @@ namespace nHydrate.Dsl
 		/// Reroute a connector when the role players of its underlying relationship change
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasEntities), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasViews), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		internal sealed class ConnectorRolePlayerChanged : DslModeling::RolePlayerChangeRule
 		{
 			/// <summary>

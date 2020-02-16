@@ -18,7 +18,6 @@ namespace nHydrate.Generator.Models
         CustomView = 8,
         FunctionColumn = 9,
         FunctionParameter = 10,
-        ViewRelation = 11,
     }
 
     public class Reference : BaseModelObject
@@ -68,9 +67,6 @@ namespace nHydrate.Generator.Models
                             break;
                         case ReferenceType.Relation:
                             retVal = modelRoot.Database.Relations.GetById(Ref).FirstOrDefault();
-                            break;
-                        case ReferenceType.ViewRelation:
-                            retVal = modelRoot.Database.ViewRelations.GetById(Ref).FirstOrDefault();
                             break;
                         case ReferenceType.Table:
                             retVal = modelRoot.Database.Tables.GetById(Ref).FirstOrDefault();

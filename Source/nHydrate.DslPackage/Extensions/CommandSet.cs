@@ -277,11 +277,6 @@ namespace nHydrate.DslPackage
                         command.Visible = true;
                         return;
                     }
-                    else if (selectedObject is EntityViewAssociationConnector)
-                    {
-                        command.Visible = true;
-                        return;
-                    }
                 }
             }
             catch (Exception ex)
@@ -302,12 +297,6 @@ namespace nHydrate.DslPackage
                     {
                         var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
                         var F = new nHydrate.DslPackage.Forms.RelationshipDialog(model, store, ((EntityAssociationConnector)selectedObject).ModelElement as EntityHasEntities);
-                        F.ShowDialog();
-                    }
-                    else if (selectedObject is EntityViewAssociationConnector)
-                    {
-                        var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
-                        var F = new nHydrate.DslPackage.Forms.RelationshipViewDialog(model, store, ((EntityViewAssociationConnector)selectedObject).ModelElement as EntityHasViews);
                         F.ShowDialog();
                     }
                 }

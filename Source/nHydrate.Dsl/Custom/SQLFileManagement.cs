@@ -32,7 +32,7 @@ namespace nHydrate.Dsl.Custom
                 var modelFolder = GetModelFolder(rootFolder, folderName);
                 var generatedFileList = new List<string>();
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.ModelMetadata, modelFolder, diagram, generatedFileList);
-                nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Views, modelFolder, diagram, generatedFileList); //must come before entities (view relations)
+                nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Views, modelFolder, diagram, generatedFileList); //must come before entities
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Entities, modelFolder, diagram, generatedFileList);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.StoredProcedures, modelFolder, diagram, generatedFileList);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Functions, modelFolder, diagram, generatedFileList);
@@ -370,35 +370,6 @@ namespace nHydrate.Dsl.Custom
                 }
             }
 
-            foreach (var relation in item.RelationshipViewList)
-            {
-                var relationNode = XmlHelper.AddElement(document.DocumentElement, "relation");
-                XmlHelper.AddAttribute(relationNode, "isviewrelation", "true");
-
-                XmlHelper.AddLineBreak((XmlElement)relationNode);
-                XmlHelper.AddCData((XmlElement)relationNode, "summary", relation.Summary);
-                XmlHelper.AddLineBreak((XmlElement)relationNode);
-
-                XmlHelper.AddAttribute(relationNode, "id", relation.InternalId);
-                XmlHelper.AddAttribute(relationNode, "childid", relation.ChildView.Id);
-                XmlHelper.AddAttribute(relationNode, "rolename", relation.RoleName);
-
-                XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-
-                //Process the columns
-                var relationColumnsNodes = XmlHelper.AddElement((XmlElement)relationNode, "relationfieldset") as XmlElement;
-                XmlHelper.AddLineBreak((XmlElement)relationColumnsNodes);
-                foreach (var relationField in relation.FieldMapList())
-                {
-                    var realtionFieldNode = XmlHelper.AddElement(relationColumnsNodes, "field");
-                    XmlHelper.AddAttribute(realtionFieldNode, "id", relationField.Id);
-                    XmlHelper.AddAttribute(realtionFieldNode, "sourcefieldid", relationField.SourceFieldId);
-                    XmlHelper.AddAttribute(realtionFieldNode, "targetfieldid", relationField.TargetFieldId);
-
-                    XmlHelper.AddLineBreak((XmlElement)relationColumnsNodes);
-                }
-            }
-
             var f = Path.Combine(folder, item.Name + ".relations.xml");
             WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
 
@@ -714,7 +685,7 @@ namespace nHydrate.Dsl.Custom
                 }
 
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.ModelMetadata, model, modelFolder, store);
-                nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Views, model, modelFolder, store); //must coem before entities (view relations)
+                nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Views, model, modelFolder, store); //must come before entities
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Entities, model, modelFolder, store);
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.StoredProcedures, model, modelFolder, store);
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Functions, model, modelFolder, store);
@@ -1025,76 +996,37 @@ namespace nHydrate.Dsl.Custom
 
             foreach (XmlNode n in document.DocumentElement)
             {
-                var isViewRelation = XmlHelper.GetAttributeValue(n, "isviewrelation", false);
-                if (isViewRelation) //View Relation
+                var childid = XmlHelper.GetAttributeValue(n, "childid", Guid.Empty);
+                var child = entity.nHydrateModel.Entities.FirstOrDefault(x => x.Id == childid);
+                if (child != null)
                 {
-                    var childid = XmlHelper.GetAttributeValue(n, "childid", Guid.Empty);
-                    var child = entity.nHydrateModel.Views.FirstOrDefault(x => x.Id == childid);
-                    if (child != null)
-                    {
-                        entity.ChildViews.Add(child);
-                        var connection = entity.Store.CurrentContext.Partitions.First().Value.ElementDirectory.AllElements.Last() as EntityHasViews;
-                        connection.InternalId = XmlHelper.GetAttributeValue(n, "id", Guid.Empty);
-                        connection.RoleName = XmlHelper.GetAttributeValue(n, "rolename", connection.RoleName);
+                    entity.ChildEntities.Add(child);
+                    var connection = entity.Store.CurrentContext.Partitions.First().Value.ElementDirectory.AllElements.Last() as EntityHasEntities;
+                    connection.InternalId = XmlHelper.GetAttributeValue(n, "id", Guid.Empty);
+                    connection.IsEnforced = XmlHelper.GetAttributeValue(n, "isenforced", connection.IsEnforced);
+                    connection.DeleteAction = (DeleteActionConstants) Enum.Parse(typeof(DeleteActionConstants), XmlHelper.GetAttributeValue(n, "deleteaction", connection.DeleteAction.ToString()));
+                    connection.RoleName = XmlHelper.GetAttributeValue(n, "rolename", connection.RoleName);
 
-                        var relationColumnsNode = n.SelectSingleNode("relationfieldset");
-                        if (relationColumnsNode != null)
+                    var relationColumnsNode = n.SelectSingleNode("relationfieldset");
+                    if (relationColumnsNode != null)
+                    {
+                        foreach (XmlNode m in relationColumnsNode.ChildNodes)
                         {
-                            foreach (XmlNode m in relationColumnsNode.ChildNodes)
+                            var sourceFieldID = XmlHelper.GetAttributeValue(m, "sourcefieldid", Guid.Empty);
+                            var targetFieldID = XmlHelper.GetAttributeValue(m, "targetfieldid", Guid.Empty);
+                            var sourceField = entity.Fields.FirstOrDefault(x => x.Id == sourceFieldID);
+                            var targetField = entity.nHydrateModel.Entities.SelectMany(x => x.Fields).FirstOrDefault(x => x.Id == targetFieldID);
+                            if ((sourceField != null) && (targetField != null))
                             {
-                                var sourceFieldID = XmlHelper.GetAttributeValue(m, "sourcefieldid", Guid.Empty);
-                                var targetFieldID = XmlHelper.GetAttributeValue(m, "targetfieldid", Guid.Empty);
-                                var sourceField = entity.Fields.FirstOrDefault(x => x.Id == sourceFieldID);
-                                var targetField = entity.nHydrateModel.Views.SelectMany(x => x.Fields).FirstOrDefault(x => x.Id == targetFieldID);
-                                if ((sourceField != null) && (targetField != null))
-                                {
-                                    var id = XmlHelper.GetAttributeValue(m, "id", Guid.NewGuid());
-                                    var newRelationField = new RelationField(entity.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, id) });
-                                    newRelationField.SourceFieldId = sourceFieldID;
-                                    newRelationField.TargetFieldId = targetFieldID;
-                                    newRelationField.RelationID = connection.Id;
-                                    entity.nHydrateModel.RelationFields.Add(newRelationField);
-                                }
+                                var id = XmlHelper.GetAttributeValue(m, "id", Guid.NewGuid());
+                                var newRelationField = new RelationField(entity.Partition, new PropertyAssignment[] {new PropertyAssignment(ElementFactory.IdPropertyAssignment, id)});
+                                newRelationField.SourceFieldId = sourceFieldID;
+                                newRelationField.TargetFieldId = targetFieldID;
+                                newRelationField.RelationID = connection.Id;
+                                entity.nHydrateModel.RelationFields.Add(newRelationField);
                             }
                         }
                     }
-
-                }
-                else //Normal Relation
-                {
-                    var childid = XmlHelper.GetAttributeValue(n, "childid", Guid.Empty);
-                    var child = entity.nHydrateModel.Entities.FirstOrDefault(x => x.Id == childid);
-                    if (child != null)
-                    {
-                        entity.ChildEntities.Add(child);
-                        var connection = entity.Store.CurrentContext.Partitions.First().Value.ElementDirectory.AllElements.Last() as EntityHasEntities;
-                        connection.InternalId = XmlHelper.GetAttributeValue(n, "id", Guid.Empty);
-                        connection.IsEnforced = XmlHelper.GetAttributeValue(n, "isenforced", connection.IsEnforced);
-                        connection.DeleteAction = (DeleteActionConstants)Enum.Parse(typeof(DeleteActionConstants), XmlHelper.GetAttributeValue(n, "deleteaction", connection.DeleteAction.ToString()));
-                        connection.RoleName = XmlHelper.GetAttributeValue(n, "rolename", connection.RoleName);
-
-                        var relationColumnsNode = n.SelectSingleNode("relationfieldset");
-                        if (relationColumnsNode != null)
-                        {
-                            foreach (XmlNode m in relationColumnsNode.ChildNodes)
-                            {
-                                var sourceFieldID = XmlHelper.GetAttributeValue(m, "sourcefieldid", Guid.Empty);
-                                var targetFieldID = XmlHelper.GetAttributeValue(m, "targetfieldid", Guid.Empty);
-                                var sourceField = entity.Fields.FirstOrDefault(x => x.Id == sourceFieldID);
-                                var targetField = entity.nHydrateModel.Entities.SelectMany(x => x.Fields).FirstOrDefault(x => x.Id == targetFieldID);
-                                if ((sourceField != null) && (targetField != null))
-                                {
-                                    var id = XmlHelper.GetAttributeValue(m, "id", Guid.NewGuid());
-                                    var newRelationField = new RelationField(entity.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, id) });
-                                    newRelationField.SourceFieldId = sourceFieldID;
-                                    newRelationField.TargetFieldId = targetFieldID;
-                                    newRelationField.RelationID = connection.Id;
-                                    entity.nHydrateModel.RelationFields.Add(newRelationField);
-                                }
-                            }
-                        }
-                    }
-
                 }
 
             }

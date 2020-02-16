@@ -285,12 +285,6 @@
     <Compile Include="Forms\FindWindowPopupOptionsForm.Designer.cs">
       <DependentUpon>FindWindowPopupOptionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\RelationshipViewDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\RelationshipViewDialog.Designer.cs">
-      <DependentUpon>RelationshipViewDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\DBObjectDifferenceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -490,9 +484,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FindWindowPopupOptionsForm.resx">
       <DependentUpon>FindWindowPopupOptionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\RelationshipViewDialog.resx">
-      <DependentUpon>RelationshipViewDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DBObjectDifferenceForm.resx">
       <DependentUpon>DBObjectDifferenceForm.cs</DependentUpon>

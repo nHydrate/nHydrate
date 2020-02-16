@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Xml;
 using nHydrate.Generator.Common.GeneratorFramework;
@@ -41,8 +40,6 @@ namespace nHydrate.Generator.Models
         protected const bool _def_isTenant = false;
 
         protected RowEntryCollection _staticData = null;
-        protected ReferenceCollection _relationships = null;
-        protected ReferenceCollection _viewRelationships = null;
         protected List<TableIndex> _tableIndexList = new List<TableIndex>();
         private string _parentTableKey = null;
         private bool _allowAuditTracking = _def_allowAuditTracking;
@@ -64,25 +61,18 @@ namespace nHydrate.Generator.Models
             _staticData = new RowEntryCollection(this.Root);
             Columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
             Columns.ResetKey(Guid.Empty.ToString());
-            _relationships = new ReferenceCollection(this.Root, this, ReferenceType.Relation);
-            _relationships.ResetKey(Guid.Empty.ToString());
-            _viewRelationships = new ReferenceCollection(this.Root, this, ReferenceType.Relation);
-            _viewRelationships.ResetKey(Guid.Empty.ToString());
+            Relationships = new ReferenceCollection(this.Root, this, ReferenceType.Relation);
+            Relationships.ResetKey(Guid.Empty.ToString());
 
             Columns.ObjectPlural = "Fields";
             Columns.ObjectSingular = "Field";
             Columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
             Columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
 
-            _relationships.ObjectPlural = "Relationships";
-            _relationships.ObjectSingular = "Relationship";
-            _relationships.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
-            _relationships.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
-
-            _viewRelationships.ObjectPlural = "View Relationships";
-            _viewRelationships.ObjectSingular = "View Relationship";
-            _viewRelationships.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
-            _viewRelationships.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
+            Relationships.ObjectPlural = "Relationships";
+            Relationships.ObjectSingular = "Relationship";
+            Relationships.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
+            Relationships.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
 
         }
 
@@ -122,35 +112,7 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public ReferenceCollection Relationships
-        {
-            get
-            {
-                try
-                {
-                    return _relationships;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
-        }
-
-        public ReferenceCollection ViewRelationships
-        {
-            get
-            {
-                try
-                {
-                    return _viewRelationships;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
-        }
+        public ReferenceCollection Relationships { get; } = null;
 
         public RelationCollection AllRelationships
         {
