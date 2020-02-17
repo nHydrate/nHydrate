@@ -15,21 +15,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
         }
 
         #region BaseClassTemplate overrides
-        public override string FileName
-        {
-            get { return "ContextStartup.Generated.cs"; }
-        }
-
-        public string ParentItemName
-        {
-            get { return "ContextStartup.cs"; }
-        }
+        public override string FileName => "ContextStartup.Generated.cs";
+        public string ParentItemName => "ContextStartup.cs";
 
         public override string FileContent
         {
             get
             {
-                GenerateContent();
+                this.GenerateContent();
                 return sb.ToString();
             }
         }
@@ -124,10 +117,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
         private void AppendUsingStatements()
         {
             sb.AppendLine("using System;");
-            sb.AppendLine("using System.Linq;");
-            sb.AppendLine("using System.ComponentModel;");
-            sb.AppendLine("using System.Runtime.Serialization;");
-            sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine();
         }
 

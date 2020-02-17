@@ -19,15 +19,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
         }
 
         #region BaseClassTemplate overrides
-        public override string FileName
-        {
-            get { return string.Format("{0}.Generated.cs", _item.PascalName); }
-        }
-
-        public string ParentItemName
-        {
-            get { return string.Format("{0}.cs", _item.PascalName); }
-        }
+        public override string FileName => string.Format("{0}.Generated.cs", _item.PascalName);
+        public string ParentItemName => string.Format("{0}.cs", _item.PascalName);
 
         public override string FileContent
         {
@@ -70,8 +63,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
         private void AppendUsingStatements()
         {
             sb.AppendLine("using System;");
-            sb.AppendLine("using System.Linq;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ";");
             sb.AppendLine();
         }
 

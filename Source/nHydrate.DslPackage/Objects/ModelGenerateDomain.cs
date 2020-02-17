@@ -267,9 +267,6 @@ namespace nHydrate.DslPackage.Objects
             root.RemovedViews.AddRange(model.RemovedViews);
             root.RemovedStoredProcedures.AddRange(model.RemovedStoredProcedures);
             root.RemovedFunctions.AddRange(model.RemovedFunctions);
-            root.RemovedTables.AddRange(model.Views.Select(x => x.Name));
-            root.RemovedTables.AddRange(model.StoredProcedures.Select(x => x.Name));
-            root.RemovedTables.AddRange(model.Functions.Select(x => x.Name));
             //Remove EnumOnly type-tables from the project
             root.RemovedTables.AddRange(model.Entities.Where(x => x.TypedEntity == TypedEntityConstants.EnumOnly).Select(x => x.Name));
 

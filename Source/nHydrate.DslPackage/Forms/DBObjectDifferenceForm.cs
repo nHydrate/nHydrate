@@ -10,6 +10,7 @@ namespace nHydrate.DslPackage.Forms
     public partial class DBObjectDifferenceForm : Form
     {
         private int _leftPercentWidth = 50;
+        private bool _isLoading = false;
         private SQLObject _sourceItem;
         private SQLObject _targetItem;
         private bool _isScrolling = false;

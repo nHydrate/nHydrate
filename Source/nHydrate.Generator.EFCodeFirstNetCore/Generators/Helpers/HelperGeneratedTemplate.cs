@@ -15,15 +15,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
         }
 
         #region BaseClassTemplate overrides
-        public override string FileName
-        {
-            get { return "Globals.Generated.cs"; }
-        }
-
-        public string ParentItemName
-        {
-            get { return "Globals.cs"; }
-        }
+        public override string FileName => "Globals.Generated.cs";
+        public string ParentItemName => "Globals.cs";
 
         public override string FileContent
         {
@@ -31,7 +24,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             {
                 try
                 {
-                    GenerateContent();
+                    this.GenerateContent();
                     return sb.ToString();
                 }
                 catch (Exception ex)
@@ -54,14 +47,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 #region Using
                 sb.AppendLine("using System;");
                 sb.AppendLine("using System.Collections.Generic;");
-                sb.AppendLine("using System.Linq;");
-                sb.AppendLine("using System.Linq.Expressions;");
-                sb.AppendLine("using System.Runtime.Serialization;");
-                sb.AppendLine("using System.Collections.Concurrent;");
-                sb.AppendLine("using System.Reflection;");
-                sb.AppendLine("using Microsoft.EntityFrameworkCore;");
-                sb.AppendLine("using System.ComponentModel;");
-
                 sb.AppendLine();
                 #endregion
 

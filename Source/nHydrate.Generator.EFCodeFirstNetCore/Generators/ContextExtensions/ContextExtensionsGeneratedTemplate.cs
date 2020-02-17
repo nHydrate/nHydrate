@@ -16,21 +16,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
         }
 
         #region BaseClassTemplate overrides
-        public override string FileName
-        {
-            get { return _model.ProjectName + "EntitiesExtensions.Generated.cs"; }
-        }
-
-        public string ParentItemName
-        {
-            get { return _model.ProjectName + "EntitiesExtensions.cs"; }
-        }
+        public override string FileName => _model.ProjectName + "EntitiesExtensions.Generated.cs";
+        public string ParentItemName => _model.ProjectName + "EntitiesExtensions.cs";
 
         public override string FileContent
         {
             get
             {
-                GenerateContent();
+                this.GenerateContent();
                 return sb.ToString();
             }
         }
@@ -59,13 +52,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
         {
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
-            sb.AppendLine("using System.Collections.Generic;");
-            sb.AppendLine($"using {this.GetLocalNamespace()}.Entity;");
-            sb.AppendLine("using System.Linq.Expressions;");
             sb.AppendLine("using System.Reflection;");
-            sb.AppendLine("using Microsoft.EntityFrameworkCore;");
-            sb.AppendLine("using Microsoft.EntityFrameworkCore.Query;");
-            sb.AppendLine("using Microsoft.EntityFrameworkCore.Storage;");
             sb.AppendLine();
         }
 

@@ -19,15 +19,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
         }
 
         #region BaseClassTemplate overrides
-        public override string FileName
-        {
-            get { return string.Format("{0}.Generated.cs", _item.PascalName); }
-        }
-
-        public string ParentItemName
-        {
-            get { return string.Format("{0}.cs", _item.PascalName); }
-        }
+        public override string FileName => $"{_item.PascalName}.Generated.cs";
+        public string ParentItemName => $"{_item.PascalName}.cs";
 
         public override string FileContent
         {
@@ -74,17 +67,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
         private void AppendUsingStatements()
         {
             sb.AppendLine("using System;");
-            sb.AppendLine("using System.Linq;");
-            sb.AppendLine("using System.Runtime.Serialization;");
-            sb.AppendLine("using System.Xml.Serialization;");
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Collections.Generic;");
-            sb.AppendLine("using System.Text;");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ";");
-            sb.AppendLine("using " + this.GetLocalNamespace() + ".EventArguments;");
-            sb.AppendLine("using System.Text.RegularExpressions;");
-            sb.AppendLine("using System.Linq.Expressions;");
-            sb.AppendLine("using Microsoft.EntityFrameworkCore;");
+            sb.AppendLine($"using {this.GetLocalNamespace()}.EventArguments;");
             sb.AppendLine();
         }
 

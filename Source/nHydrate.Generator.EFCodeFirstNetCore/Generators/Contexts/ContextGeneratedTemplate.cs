@@ -5,6 +5,7 @@ using nHydrate.Generator.Models;
 using System.Text;
 using nHydrate.Generator.Common.Util;
 using System.Collections.Generic;
+using nHydrate.Generator.Common;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 {
@@ -54,6 +55,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 this.AppendUsingStatements();
                 sb.AppendLine("namespace " + this.GetLocalNamespace());
                 sb.AppendLine("{");
+                this.AppendTypeTableEnums();
                 this.AppendTableMapping();
                 this.AppendClass();
                 sb.AppendLine("}");
@@ -113,7 +115,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// The entity context for the defined model schema");
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : Microsoft.EntityFrameworkCore.DbContext, " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities, IContext");
+            sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : Microsoft.EntityFrameworkCore.DbContext, IContext");
             sb.AppendLine("	{");
 
             sb.AppendLine("		/// <summary />");
@@ -961,32 +963,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             #region Context Interface Members
-            sb.AppendLine($"		#region I{_model.ProjectName} Members");
-            sb.AppendLine();
-
-            #region Tables
-            foreach (var item in _model.Database.Tables.Where(x => (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + item.PascalName);
-                sb.AppendLine("		{");
-                sb.AppendLine("			get { return this." + item.PascalName + ".AsQueryable(); }");
-                sb.AppendLine("		}");
-                sb.AppendLine();
-            }
-            #endregion
-
-            #region View
-            foreach (var item in _model.Database.CustomViews.OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		IQueryable<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + this.GetLocalNamespace() + ".I" + _model.ProjectName + "Entities." + item.PascalName);
-                sb.AppendLine("		{");
-                sb.AppendLine("			get { return this." + item.PascalName + ".AsQueryable(); }");
-                sb.AppendLine("		}");
-                sb.AppendLine();
-            }
-            #endregion
 
             #region Stored Procedures
             foreach (var item in _model.Database.CustomStoredProcedures.Where(x => x.GeneratedColumns.Count > 0).OrderBy(x => x.PascalName))
@@ -1182,8 +1158,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             #endregion
 
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
             #endregion
 
             #region IContext Interface
@@ -1332,6 +1306,78 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("	}");
             sb.AppendLine("	#endregion");
             sb.AppendLine();
+        }
+
+        private void AppendTypeTableEnums()
+        {
+            try
+            {
+                foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.None).OrderBy(x => x.Name))
+                {
+                    if (table.PrimaryKeyColumns.Count == 1)
+                    {
+                        var pk = table.PrimaryKeyColumns.First();
+                        sb.AppendLine("	#region StaticDataConstants Enumeration for '" + table.PascalName + "' entity");
+                        sb.AppendLine("	/// <summary>");
+                        sb.AppendLine("	/// Enumeration to define static data items and their ids '" + table.PascalName + "' table.");
+                        sb.AppendLine("	/// </summary>");
+                        sb.Append("	public enum " + table.PascalName + "Constants");
+
+                        //Non-integer types must explicitly add the type
+                        if (pk.DataType != System.Data.SqlDbType.Int)
+                            sb.Append(" : " + pk.GetCodeType(false));
+
+                        sb.AppendLine();
+                        sb.AppendLine("	{");
+                        foreach (RowEntry rowEntry in table.StaticData)
+                        {
+                            var idValue = rowEntry.GetCodeIdValue(table);
+                            var identifier = rowEntry.GetCodeIdentifier(table);
+                            var description = rowEntry.GetCodeDescription(table);
+                            var raw = rowEntry.GetDataRaw(table);
+                            var sort = rowEntry.GetDataSort(table);
+                            if (!string.IsNullOrEmpty(description))
+                            {
+                                sb.AppendLine("		/// <summary>");
+                                StringHelper.LineBreakCode(sb, description, "		/// ");
+                                sb.AppendLine("		/// </summary>");
+                                sb.AppendLine("		[Description(\"" + description + "\")]");
+                            }
+                            else
+                            {
+                                sb.AppendLine("		/// <summary>");
+                                sb.AppendLine("		/// Enumeration for the '" + identifier + "' item");
+                                sb.AppendLine("		/// </summary>");
+                            }
+
+                            var key = ValidationHelper.MakeDatabaseIdentifier(identifier.Replace(" ", string.Empty));
+                            if ((key.Length > 0) && ("0123456789".Contains(key[0])))
+                                key = "_" + key;
+
+                            //If there is a sort value then format as attribute
+                            if (int.TryParse(sort, out var svalue))
+                            {
+                                sort = ", Order = " + svalue;
+                            }
+                            else
+                            {
+                                sort = string.Empty;
+                            }
+
+                            sb.AppendLine("		[System.ComponentModel.DataAnnotations.Display(Name = \"" + raw + "\"" + sort + ")]");
+                            sb.AppendLine("		" + key + " = " + idValue + ",");
+                        }
+                        sb.AppendLine("	}");
+                        sb.AppendLine("	#endregion");
+                        sb.AppendLine();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
 
         #endregion
