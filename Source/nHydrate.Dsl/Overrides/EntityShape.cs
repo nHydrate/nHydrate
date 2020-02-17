@@ -88,12 +88,6 @@ namespace nHydrate.Dsl
                 _images.Add("key",
                     new System.Drawing.Bitmap(
                         assembly.GetManifestResourceStream(assembly.GetName().Name + ".Resources.key.png")));
-                _images.Add("storedproc",
-                    new System.Drawing.Bitmap(
-                        assembly.GetManifestResourceStream(assembly.GetName().Name + ".Resources.storedproc.png")));
-                _images.Add("composite",
-                    new System.Drawing.Bitmap(
-                        assembly.GetManifestResourceStream(assembly.GetName().Name + ".Resources.composite.png")));
                 _images.Add("fieldcalculated",
                     new System.Drawing.Bitmap(
                         assembly.GetManifestResourceStream(

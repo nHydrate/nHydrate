@@ -17,13 +17,6 @@ namespace nHydrate.Generator
 		Field,
 		Views,
 		View,
-		StoredProcs,
-		StoredProc,
-		Parameters,
-		Parameter,
-		Components,
-		Component,
-		Function,
 	}
 
 	internal enum TreeIconConstants
@@ -53,10 +46,6 @@ namespace nHydrate.Generator
 		CustomViewColumn,
 		CustomRetrieveRule,
 		CustomRetrieveRules,
-		Parameter,
-		CustomStoredProcedure,
-		CustomStoredProcedures,
-		CustomStoredProcedureColumn,
 		TableNonGen,
 		ColumnInherit,
 		TableDerived,
@@ -102,31 +91,10 @@ namespace nHydrate.Generator
 				case ImageConstants.Field:
 					retval = GetImage("Field.png");
 					break;
-				case ImageConstants.Function:
-					retval = GetImage("Function.png");
-					break;
 				case ImageConstants.Views:
 					retval = GetImage("Default.png");
 					break;
 				case ImageConstants.View:
-					retval = GetImage("Default.png");
-					break;
-				case ImageConstants.StoredProcs:
-					retval = GetImage("Default.png");
-					break;
-				case ImageConstants.StoredProc:
-					retval = GetImage("Default.png");
-					break;
-				case ImageConstants.Parameters:
-					retval = GetImage("Default.png");
-					break;
-				case ImageConstants.Parameter:
-					retval = GetImage("Field.png");
-					break;
-				case ImageConstants.Components:
-					retval = GetImage("Default.png");
-					break;
-				case ImageConstants.Component:
 					retval = GetImage("Default.png");
 					break;
 			}
@@ -218,18 +186,6 @@ namespace nHydrate.Generator
 					break;
 				case TreeIconConstants.CustomRetrieveRules:
 					retval = GetIcon("CustomRetrieveRules.ico");
-					break;
-				case TreeIconConstants.Parameter:
-					retval = GetIcon("Parameter.ico");
-					break;
-				case TreeIconConstants.CustomStoredProcedure:
-					retval = GetIcon("CustomStoredProcedure.ico");
-					break;
-				case TreeIconConstants.CustomStoredProcedures:
-					retval = GetIcon("CustomStoredProcedures.ico");
-					break;
-				case TreeIconConstants.CustomStoredProcedureColumn:
-					retval = GetIcon("CustomStoredProcedureColumn.ico");
 					break;
 				case TreeIconConstants.TableNonGen:
 					retval = GetIcon("TableNonGen.ico");

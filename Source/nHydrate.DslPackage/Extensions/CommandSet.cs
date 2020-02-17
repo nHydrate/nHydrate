@@ -323,8 +323,6 @@ namespace nHydrate.DslPackage
                 {
                     if ((item as EntityShape) != null) command.Visible = true;
                     else if ((item as ViewShape) != null) command.Visible = true;
-                    else if ((item as StoredProcedureShape) != null) command.Visible = true;
-                    else if ((item as FunctionShape) != null) command.Visible = true;
                 }
             }
             catch (Exception ex)
@@ -419,14 +417,6 @@ namespace nHydrate.DslPackage
                 else if (item is ViewShape)
                 {
                     list.Add(((item as ViewShape).ModelElement as nHydrate.Dsl.View).Name);
-                }
-                else if (item is StoredProcedureShape)
-                {
-                    list.Add(((item as StoredProcedureShape).ModelElement as nHydrate.Dsl.StoredProcedure).Name);
-                }
-                else if (item is FunctionShape)
-                {
-                    list.Add(((item as FunctionShape).ModelElement as nHydrate.Dsl.Function).Name);
                 }
                 else
                 {
@@ -709,7 +699,6 @@ namespace nHydrate.DslPackage
                 {
                     if (item is EntityShape) ((EntityShape)item).IsExpanded = false;
                     else if (item is ViewShape) ((ViewShape)item).IsExpanded = false;
-                    else if (item is StoredProcedureShape) ((StoredProcedureShape)item).IsExpanded = false;
                 }
                 transaction.Commit();
             }
@@ -736,7 +725,6 @@ namespace nHydrate.DslPackage
                 {
                     if (item is EntityShape) ((EntityShape)item).IsExpanded = true;
                     else if (item is ViewShape) ((ViewShape)item).IsExpanded = true;
-                    else if (item is StoredProcedureShape) ((StoredProcedureShape)item).IsExpanded = true;
                 }
 
                 transaction.Commit();

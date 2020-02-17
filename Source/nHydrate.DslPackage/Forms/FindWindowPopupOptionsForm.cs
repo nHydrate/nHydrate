@@ -26,25 +26,19 @@ namespace nHydrate.DslPackage.Forms
 			this.Deactivate += FindWindowPopupOptionsForm_Deactivate;
 			chkEntity.CheckedChanged += CheckedChanged;
 			chkField.CheckedChanged += CheckedChanged;
-			chkParameter.CheckedChanged += CheckedChanged;
-			chkStoredProc.CheckedChanged += CheckedChanged;
 			chkView.CheckedChanged += CheckedChanged;
-			chkFunction.CheckedChanged += CheckedChanged;
 		}
 
 		private void SetupForm()
 		{
 			chkEntity.Checked = _settings.AllowEntity;
 			chkField.Checked = _settings.AllowField;
-			chkFunction.Checked = _settings.AllowFunction;
-			chkParameter.Checked = _settings.AllowParameter;
-			chkStoredProc.Checked = _settings.AllowStoredProc;
 			chkView.Checked = _settings.AllowView;
 		}
 
 		private void CheckedChanged(object sender, EventArgs e)
 		{
-			if (!(chkEntity.Checked || chkView.Checked || chkFunction.Checked || chkStoredProc.Checked))
+			if (!(chkEntity.Checked || chkView.Checked))
 			{
 				_canUnload = false;
 				MessageBox.Show("At least one object type must be selected.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -55,10 +49,7 @@ namespace nHydrate.DslPackage.Forms
 
 			_settings.AllowEntity = chkEntity.Checked;
 			_settings.AllowView = chkView.Checked;
-			_settings.AllowFunction = chkFunction.Checked;
-			_settings.AllowStoredProc = chkStoredProc.Checked;
 			_settings.AllowField = chkField.Checked;
-			_settings.AllowParameter = chkParameter.Checked;
 			_myMethod();
 		}
 

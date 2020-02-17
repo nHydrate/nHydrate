@@ -55,7 +55,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.GenerationD
                 sb.AppendLine($"Table Count: {_model.Database.Tables.Count(x => x.TypedTable != TypedTableConstants.EnumOnly)}");
                 sb.AppendLine($"Tenant Table Count: {_model.Database.Tables.Count(x => x.IsTenant)}");
                 sb.AppendLine($"View Count: {_model.Database.CustomViews.Count()}");
-                sb.AppendLine($"StoredProc Count: {_model.Database.CustomStoredProcedures.Count()}");
                 sb.AppendLine();
                 sb.AppendLine($"TABLE LIST");
                 foreach (var item in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.DatabaseName))

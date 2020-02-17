@@ -326,18 +326,6 @@ namespace nHydrate.Dsl
 				if(newShape != null) newShape.Size = newShape.DefaultSize; // set default shape size
 				return newShape;
 			}
-			if(element is global::nHydrate.Dsl.StoredProcedure)
-			{
-				global::nHydrate.Dsl.StoredProcedureShape newShape = new global::nHydrate.Dsl.StoredProcedureShape(this.Partition);
-				if(newShape != null) newShape.Size = newShape.DefaultSize; // set default shape size
-				return newShape;
-			}
-			if(element is global::nHydrate.Dsl.Function)
-			{
-				global::nHydrate.Dsl.FunctionShape newShape = new global::nHydrate.Dsl.FunctionShape(this.Partition);
-				if(newShape != null) newShape.Size = newShape.DefaultSize; // set default shape size
-				return newShape;
-			}
 			if(element is global::nHydrate.Dsl.EntityHasEntities)
 			{
 				global::nHydrate.Dsl.EntityAssociationConnector newShape = new global::nHydrate.Dsl.EntityAssociationConnector(this.Partition);
@@ -356,8 +344,6 @@ namespace nHydrate.Dsl
 			base.InitializeShapeFields(shapeFields);
 			global::nHydrate.Dsl.EntityShape.DecoratorsInitialized += EntityShapeDecoratorMap.OnDecoratorsInitialized;
 			global::nHydrate.Dsl.ViewShape.DecoratorsInitialized += ViewShapeDecoratorMap.OnDecoratorsInitialized;
-			global::nHydrate.Dsl.StoredProcedureShape.DecoratorsInitialized += StoredProcedureShapeDecoratorMap.OnDecoratorsInitialized;
-			global::nHydrate.Dsl.FunctionShape.DecoratorsInitialized += FunctionShapeDecoratorMap.OnDecoratorsInitialized;
 			global::nHydrate.Dsl.EntityAssociationConnector.DecoratorsInitialized += EntityAssociationConnectorDecoratorMap.OnDecoratorsInitialized;
 		}
 		
@@ -394,42 +380,6 @@ namespace nHydrate.Dsl
 				
 				propertyInfo = new DslDiagrams::AssociatedPropertyInfo(global::nHydrate.Dsl.View.NameDomainPropertyId);
 				DslDiagrams::ShapeElement.FindDecorator(shape.Decorators, "ViewTextDecorator").AssociateValueWith(shape.Store, propertyInfo);
-			}
-		}
-		
-		/// <summary>
-		/// Class containing decorator path traversal methods for StoredProcedureShape.
-		/// </summary>
-		internal static partial class StoredProcedureShapeDecoratorMap
-		{
-			/// <summary>
-			/// Event handler called when decorator initialization is complete for StoredProcedureShape.  Adds decorator mappings for this shape or connector.
-			/// </summary>
-			public static void OnDecoratorsInitialized(object sender, global::System.EventArgs e)
-			{
-				DslDiagrams::ShapeElement shape = (DslDiagrams::ShapeElement)sender;
-				DslDiagrams::AssociatedPropertyInfo propertyInfo;
-				
-				propertyInfo = new DslDiagrams::AssociatedPropertyInfo(global::nHydrate.Dsl.StoredProcedure.NameDomainPropertyId);
-				DslDiagrams::ShapeElement.FindDecorator(shape.Decorators, "StoredProcedureTextDecorator").AssociateValueWith(shape.Store, propertyInfo);
-			}
-		}
-		
-		/// <summary>
-		/// Class containing decorator path traversal methods for FunctionShape.
-		/// </summary>
-		internal static partial class FunctionShapeDecoratorMap
-		{
-			/// <summary>
-			/// Event handler called when decorator initialization is complete for FunctionShape.  Adds decorator mappings for this shape or connector.
-			/// </summary>
-			public static void OnDecoratorsInitialized(object sender, global::System.EventArgs e)
-			{
-				DslDiagrams::ShapeElement shape = (DslDiagrams::ShapeElement)sender;
-				DslDiagrams::AssociatedPropertyInfo propertyInfo;
-				
-				propertyInfo = new DslDiagrams::AssociatedPropertyInfo(global::nHydrate.Dsl.Function.NameDomainPropertyId);
-				DslDiagrams::ShapeElement.FindDecorator(shape.Decorators, "FunctionTextDecorator").AssociateValueWith(shape.Store, propertyInfo);
 			}
 		}
 		
@@ -806,8 +756,6 @@ namespace nHydrate.Dsl
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.Entity), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.View), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedure), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.Function), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasEntities), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		internal sealed partial class FixUpDiagram : FixUpDiagramBase
 		{
@@ -832,14 +780,6 @@ namespace nHydrate.Dsl
 				{
 					parentElement = GetParentForView((global::nHydrate.Dsl.View)childElement);
 				} else
-				if(childElement is global::nHydrate.Dsl.StoredProcedure)
-				{
-					parentElement = GetParentForStoredProcedure((global::nHydrate.Dsl.StoredProcedure)childElement);
-				} else
-				if(childElement is global::nHydrate.Dsl.Function)
-				{
-					parentElement = GetParentForFunction((global::nHydrate.Dsl.Function)childElement);
-				} else
 				{
 					parentElement = null;
 				}
@@ -857,20 +797,6 @@ namespace nHydrate.Dsl
 				return result;
 			}
 			public static global::nHydrate.Dsl.nHydrateModel GetParentForView( global::nHydrate.Dsl.View root )
-			{
-				// Segments 0 and 1
-				global::nHydrate.Dsl.nHydrateModel result = root.nHydrateModel;
-				if ( result == null ) return null;
-				return result;
-			}
-			public static global::nHydrate.Dsl.nHydrateModel GetParentForStoredProcedure( global::nHydrate.Dsl.StoredProcedure root )
-			{
-				// Segments 0 and 1
-				global::nHydrate.Dsl.nHydrateModel result = root.nHydrateModel;
-				if ( result == null ) return null;
-				return result;
-			}
-			public static global::nHydrate.Dsl.nHydrateModel GetParentForFunction( global::nHydrate.Dsl.Function root )
 			{
 				// Segments 0 and 1
 				global::nHydrate.Dsl.nHydrateModel result = root.nHydrateModel;
@@ -967,10 +893,6 @@ namespace nHydrate.Dsl
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.ViewHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedureHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedureHasParameters), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.FunctionHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.FunctionHasParameters), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemAddRule : DslModeling::AddRule
 		{
 			/// <summary>
@@ -996,26 +918,6 @@ namespace nHydrate.Dsl
 				{
 					global::System.Collections.IEnumerable elements = GetViewForViewShapeViewFieldCompartmentFromLastLink((global::nHydrate.Dsl.ViewHasFields)e.ModelElement);
 					UpdateCompartments(elements, typeof(global::nHydrate.Dsl.ViewShape), "ViewFieldCompartment", repaintOnly);
-				}
-				if(e.ModelElement is global::nHydrate.Dsl.StoredProcedureHasFields)
-				{
-					global::System.Collections.IEnumerable elements = GetStoredProcedureForStoredProcedureShapeStoredProcedureFieldCompartmentFromLastLink((global::nHydrate.Dsl.StoredProcedureHasFields)e.ModelElement);
-					UpdateCompartments(elements, typeof(global::nHydrate.Dsl.StoredProcedureShape), "StoredProcedureFieldCompartment", repaintOnly);
-				}
-				if(e.ModelElement is global::nHydrate.Dsl.StoredProcedureHasParameters)
-				{
-					global::System.Collections.IEnumerable elements = GetStoredProcedureForStoredProcedureShapeStoredProcedureParameterCompartmentFromLastLink((global::nHydrate.Dsl.StoredProcedureHasParameters)e.ModelElement);
-					UpdateCompartments(elements, typeof(global::nHydrate.Dsl.StoredProcedureShape), "StoredProcedureParameterCompartment", repaintOnly);
-				}
-				if(e.ModelElement is global::nHydrate.Dsl.FunctionHasFields)
-				{
-					global::System.Collections.IEnumerable elements = GetFunctionForFunctionShapeFieldCompartmentFromLastLink((global::nHydrate.Dsl.FunctionHasFields)e.ModelElement);
-					UpdateCompartments(elements, typeof(global::nHydrate.Dsl.FunctionShape), "FieldCompartment", repaintOnly);
-				}
-				if(e.ModelElement is global::nHydrate.Dsl.FunctionHasParameters)
-				{
-					global::System.Collections.IEnumerable elements = GetFunctionForFunctionShapeParameterCompartmentFromLastLink((global::nHydrate.Dsl.FunctionHasParameters)e.ModelElement);
-					UpdateCompartments(elements, typeof(global::nHydrate.Dsl.FunctionShape), "ParameterCompartment", repaintOnly);
 				}
 			}
 			
@@ -1045,62 +947,6 @@ namespace nHydrate.Dsl
 			{
 				// Segments 1 and 0
 				global::nHydrate.Dsl.View result = root.View;
-				if ( result == null ) return new DslModeling::ModelElement[0];
-				return new DslModeling::ModelElement[] {result};
-			}
-			internal static global::System.Collections.ICollection GetStoredProcedureForStoredProcedureShapeStoredProcedureFieldCompartmentFromLastLink(global::nHydrate.Dsl.StoredProcedureHasFields root)
-			{
-				// Segment 0
-				global::nHydrate.Dsl.StoredProcedure result = root.StoredProcedure;
-				if ( result == null ) return new DslModeling::ModelElement[0];
-				return new DslModeling::ModelElement[] {result};
-			}
-			internal static global::System.Collections.ICollection GetStoredProcedureForStoredProcedureShapeStoredProcedureFieldCompartment(global::nHydrate.Dsl.StoredProcedureField root)
-			{
-				// Segments 1 and 0
-				global::nHydrate.Dsl.StoredProcedure result = root.StoredProcedure;
-				if ( result == null ) return new DslModeling::ModelElement[0];
-				return new DslModeling::ModelElement[] {result};
-			}
-			internal static global::System.Collections.ICollection GetStoredProcedureForStoredProcedureShapeStoredProcedureParameterCompartmentFromLastLink(global::nHydrate.Dsl.StoredProcedureHasParameters root)
-			{
-				// Segment 0
-				global::nHydrate.Dsl.StoredProcedure result = root.StoredProcedure;
-				if ( result == null ) return new DslModeling::ModelElement[0];
-				return new DslModeling::ModelElement[] {result};
-			}
-			internal static global::System.Collections.ICollection GetStoredProcedureForStoredProcedureShapeStoredProcedureParameterCompartment(global::nHydrate.Dsl.StoredProcedureParameter root)
-			{
-				// Segments 1 and 0
-				global::nHydrate.Dsl.StoredProcedure result = root.StoredProcedure;
-				if ( result == null ) return new DslModeling::ModelElement[0];
-				return new DslModeling::ModelElement[] {result};
-			}
-			internal static global::System.Collections.ICollection GetFunctionForFunctionShapeFieldCompartmentFromLastLink(global::nHydrate.Dsl.FunctionHasFields root)
-			{
-				// Segment 0
-				global::nHydrate.Dsl.Function result = root.Function;
-				if ( result == null ) return new DslModeling::ModelElement[0];
-				return new DslModeling::ModelElement[] {result};
-			}
-			internal static global::System.Collections.ICollection GetFunctionForFunctionShapeFieldCompartment(global::nHydrate.Dsl.FunctionField root)
-			{
-				// Segments 1 and 0
-				global::nHydrate.Dsl.Function result = root.Function;
-				if ( result == null ) return new DslModeling::ModelElement[0];
-				return new DslModeling::ModelElement[] {result};
-			}
-			internal static global::System.Collections.ICollection GetFunctionForFunctionShapeParameterCompartmentFromLastLink(global::nHydrate.Dsl.FunctionHasParameters root)
-			{
-				// Segment 0
-				global::nHydrate.Dsl.Function result = root.Function;
-				if ( result == null ) return new DslModeling::ModelElement[0];
-				return new DslModeling::ModelElement[] {result};
-			}
-			internal static global::System.Collections.ICollection GetFunctionForFunctionShapeParameterCompartment(global::nHydrate.Dsl.FunctionParameter root)
-			{
-				// Segments 1 and 0
-				global::nHydrate.Dsl.Function result = root.Function;
 				if ( result == null ) return new DslModeling::ModelElement[0];
 				return new DslModeling::ModelElement[] {result};
 			}
@@ -1151,10 +997,6 @@ namespace nHydrate.Dsl
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.ViewHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedureHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedureHasParameters), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.FunctionHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.FunctionHasParameters), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemDeleteRule : DslModeling::DeleteRule
 		{
 			/// <summary>
@@ -1179,26 +1021,6 @@ namespace nHydrate.Dsl
 					global::System.Collections.ICollection elements = CompartmentItemAddRule.GetViewForViewShapeViewFieldCompartmentFromLastLink((global::nHydrate.Dsl.ViewHasFields)e.ModelElement);
 					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.ViewShape), "ViewFieldCompartment", repaintOnly);
 				}
-				if(e.ModelElement is global::nHydrate.Dsl.StoredProcedureHasFields)
-				{
-					global::System.Collections.ICollection elements = CompartmentItemAddRule.GetStoredProcedureForStoredProcedureShapeStoredProcedureFieldCompartmentFromLastLink((global::nHydrate.Dsl.StoredProcedureHasFields)e.ModelElement);
-					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.StoredProcedureShape), "StoredProcedureFieldCompartment", repaintOnly);
-				}
-				if(e.ModelElement is global::nHydrate.Dsl.StoredProcedureHasParameters)
-				{
-					global::System.Collections.ICollection elements = CompartmentItemAddRule.GetStoredProcedureForStoredProcedureShapeStoredProcedureParameterCompartmentFromLastLink((global::nHydrate.Dsl.StoredProcedureHasParameters)e.ModelElement);
-					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.StoredProcedureShape), "StoredProcedureParameterCompartment", repaintOnly);
-				}
-				if(e.ModelElement is global::nHydrate.Dsl.FunctionHasFields)
-				{
-					global::System.Collections.ICollection elements = CompartmentItemAddRule.GetFunctionForFunctionShapeFieldCompartmentFromLastLink((global::nHydrate.Dsl.FunctionHasFields)e.ModelElement);
-					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.FunctionShape), "FieldCompartment", repaintOnly);
-				}
-				if(e.ModelElement is global::nHydrate.Dsl.FunctionHasParameters)
-				{
-					global::System.Collections.ICollection elements = CompartmentItemAddRule.GetFunctionForFunctionShapeParameterCompartmentFromLastLink((global::nHydrate.Dsl.FunctionHasParameters)e.ModelElement);
-					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.FunctionShape), "ParameterCompartment", repaintOnly);
-				}
 			}
 		}
 		
@@ -1207,10 +1029,6 @@ namespace nHydrate.Dsl
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.Field), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.ViewField), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedureField), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedureParameter), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.FunctionField), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.FunctionParameter), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemChangeRule : DslModeling::ChangeRule 
 		{
 			/// <summary>
@@ -1235,26 +1053,6 @@ namespace nHydrate.Dsl
 					global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetViewForViewShapeViewFieldCompartment((global::nHydrate.Dsl.ViewField)e.ModelElement);
 					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.ViewShape), "ViewFieldCompartment", repaintOnly);
 				}
-				if(e.ModelElement is global::nHydrate.Dsl.StoredProcedureField && e.DomainProperty.Id == global::nHydrate.Dsl.StoredProcedureField.NameDomainPropertyId)
-				{
-					global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetStoredProcedureForStoredProcedureShapeStoredProcedureFieldCompartment((global::nHydrate.Dsl.StoredProcedureField)e.ModelElement);
-					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.StoredProcedureShape), "StoredProcedureFieldCompartment", repaintOnly);
-				}
-				if(e.ModelElement is global::nHydrate.Dsl.StoredProcedureParameter && e.DomainProperty.Id == global::nHydrate.Dsl.StoredProcedureParameter.NameDomainPropertyId)
-				{
-					global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetStoredProcedureForStoredProcedureShapeStoredProcedureParameterCompartment((global::nHydrate.Dsl.StoredProcedureParameter)e.ModelElement);
-					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.StoredProcedureShape), "StoredProcedureParameterCompartment", repaintOnly);
-				}
-				if(e.ModelElement is global::nHydrate.Dsl.FunctionField && e.DomainProperty.Id == global::nHydrate.Dsl.FunctionField.NameDomainPropertyId)
-				{
-					global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetFunctionForFunctionShapeFieldCompartment((global::nHydrate.Dsl.FunctionField)e.ModelElement);
-					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.FunctionShape), "FieldCompartment", repaintOnly);
-				}
-				if(e.ModelElement is global::nHydrate.Dsl.FunctionParameter && e.DomainProperty.Id == global::nHydrate.Dsl.FunctionParameter.NameDomainPropertyId)
-				{
-					global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetFunctionForFunctionShapeParameterCompartment((global::nHydrate.Dsl.FunctionParameter)e.ModelElement);
-					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.FunctionShape), "ParameterCompartment", repaintOnly);
-				}
 			}
 		}
 		
@@ -1263,10 +1061,6 @@ namespace nHydrate.Dsl
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.ViewHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedureHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedureHasParameters), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.FunctionHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.FunctionHasParameters), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemRolePlayerChangeRule : DslModeling::RolePlayerChangeRule 
 		{
 			/// <summary>
@@ -1335,114 +1129,6 @@ namespace nHydrate.Dsl
 						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.ViewShape), "ViewFieldCompartment", repaintOnly);
 					}
 				}
-				if(typeof(global::nHydrate.Dsl.StoredProcedureHasFields).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
-				{
-					if(e.DomainRole.IsSource)
-					{
-						//global::System.Collections.IEnumerable oldElements = CompartmentItemAddRule.GetStoredProcedureForStoredProcedureShapeStoredProcedureFieldCompartmentFromLastLink((global::nHydrate.Dsl.StoredProcedureField)e.OldRolePlayer);
-						//foreach(DslModeling::ModelElement element in oldElements)
-						//{
-						//	DslModeling::LinkedElementCollection<DslDiagrams::PresentationElement> pels = DslDiagrams::PresentationViewsSubject.GetPresentation(element);
-						//	foreach(DslDiagrams::PresentationElement pel in pels)
-						//	{
-						//		global::nHydrate.Dsl.StoredProcedureShape compartmentShape = pel as global::nHydrate.Dsl.StoredProcedureShape;
-						//		if(compartmentShape != null)
-						//		{
-						//			compartmentShape.GetCompartmentMappings()[0].InitializeCompartmentShape(compartmentShape);
-						//		}
-						//	}
-						//}
-						
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetStoredProcedureForStoredProcedureShapeStoredProcedureFieldCompartmentFromLastLink((global::nHydrate.Dsl.StoredProcedureHasFields)e.ElementLink);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.StoredProcedureShape), "StoredProcedureFieldCompartment", repaintOnly);
-					}
-					else 
-					{
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetStoredProcedureForStoredProcedureShapeStoredProcedureFieldCompartment((global::nHydrate.Dsl.StoredProcedureField)e.NewRolePlayer);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.StoredProcedureShape), "StoredProcedureFieldCompartment", repaintOnly);
-					}
-				}
-				if(typeof(global::nHydrate.Dsl.StoredProcedureHasParameters).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
-				{
-					if(e.DomainRole.IsSource)
-					{
-						//global::System.Collections.IEnumerable oldElements = CompartmentItemAddRule.GetStoredProcedureForStoredProcedureShapeStoredProcedureParameterCompartmentFromLastLink((global::nHydrate.Dsl.StoredProcedureParameter)e.OldRolePlayer);
-						//foreach(DslModeling::ModelElement element in oldElements)
-						//{
-						//	DslModeling::LinkedElementCollection<DslDiagrams::PresentationElement> pels = DslDiagrams::PresentationViewsSubject.GetPresentation(element);
-						//	foreach(DslDiagrams::PresentationElement pel in pels)
-						//	{
-						//		global::nHydrate.Dsl.StoredProcedureShape compartmentShape = pel as global::nHydrate.Dsl.StoredProcedureShape;
-						//		if(compartmentShape != null)
-						//		{
-						//			compartmentShape.GetCompartmentMappings()[1].InitializeCompartmentShape(compartmentShape);
-						//		}
-						//	}
-						//}
-						
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetStoredProcedureForStoredProcedureShapeStoredProcedureParameterCompartmentFromLastLink((global::nHydrate.Dsl.StoredProcedureHasParameters)e.ElementLink);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.StoredProcedureShape), "StoredProcedureParameterCompartment", repaintOnly);
-					}
-					else 
-					{
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetStoredProcedureForStoredProcedureShapeStoredProcedureParameterCompartment((global::nHydrate.Dsl.StoredProcedureParameter)e.NewRolePlayer);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.StoredProcedureShape), "StoredProcedureParameterCompartment", repaintOnly);
-					}
-				}
-				if(typeof(global::nHydrate.Dsl.FunctionHasFields).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
-				{
-					if(e.DomainRole.IsSource)
-					{
-						//global::System.Collections.IEnumerable oldElements = CompartmentItemAddRule.GetFunctionForFunctionShapeFieldCompartmentFromLastLink((global::nHydrate.Dsl.FunctionField)e.OldRolePlayer);
-						//foreach(DslModeling::ModelElement element in oldElements)
-						//{
-						//	DslModeling::LinkedElementCollection<DslDiagrams::PresentationElement> pels = DslDiagrams::PresentationViewsSubject.GetPresentation(element);
-						//	foreach(DslDiagrams::PresentationElement pel in pels)
-						//	{
-						//		global::nHydrate.Dsl.FunctionShape compartmentShape = pel as global::nHydrate.Dsl.FunctionShape;
-						//		if(compartmentShape != null)
-						//		{
-						//			compartmentShape.GetCompartmentMappings()[0].InitializeCompartmentShape(compartmentShape);
-						//		}
-						//	}
-						//}
-						
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetFunctionForFunctionShapeFieldCompartmentFromLastLink((global::nHydrate.Dsl.FunctionHasFields)e.ElementLink);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.FunctionShape), "FieldCompartment", repaintOnly);
-					}
-					else 
-					{
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetFunctionForFunctionShapeFieldCompartment((global::nHydrate.Dsl.FunctionField)e.NewRolePlayer);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.FunctionShape), "FieldCompartment", repaintOnly);
-					}
-				}
-				if(typeof(global::nHydrate.Dsl.FunctionHasParameters).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
-				{
-					if(e.DomainRole.IsSource)
-					{
-						//global::System.Collections.IEnumerable oldElements = CompartmentItemAddRule.GetFunctionForFunctionShapeParameterCompartmentFromLastLink((global::nHydrate.Dsl.FunctionParameter)e.OldRolePlayer);
-						//foreach(DslModeling::ModelElement element in oldElements)
-						//{
-						//	DslModeling::LinkedElementCollection<DslDiagrams::PresentationElement> pels = DslDiagrams::PresentationViewsSubject.GetPresentation(element);
-						//	foreach(DslDiagrams::PresentationElement pel in pels)
-						//	{
-						//		global::nHydrate.Dsl.FunctionShape compartmentShape = pel as global::nHydrate.Dsl.FunctionShape;
-						//		if(compartmentShape != null)
-						//		{
-						//			compartmentShape.GetCompartmentMappings()[1].InitializeCompartmentShape(compartmentShape);
-						//		}
-						//	}
-						//}
-						
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetFunctionForFunctionShapeParameterCompartmentFromLastLink((global::nHydrate.Dsl.FunctionHasParameters)e.ElementLink);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.FunctionShape), "ParameterCompartment", repaintOnly);
-					}
-					else 
-					{
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetFunctionForFunctionShapeParameterCompartment((global::nHydrate.Dsl.FunctionParameter)e.NewRolePlayer);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.FunctionShape), "ParameterCompartment", repaintOnly);
-					}
-				}
 			}
 		}
 	
@@ -1451,10 +1137,6 @@ namespace nHydrate.Dsl
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.EntityHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.ViewHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedureHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.StoredProcedureHasParameters), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.FunctionHasFields), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::nHydrate.Dsl.FunctionHasParameters), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemRolePlayerPositionChangeRule : DslModeling::RolePlayerPositionChangeRule 
 		{
 			/// <summary>
@@ -1483,38 +1165,6 @@ namespace nHydrate.Dsl
 					{
 						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetViewForViewShapeViewFieldCompartment((global::nHydrate.Dsl.ViewField)e.CounterpartRolePlayer);
 						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.ViewShape), "ViewFieldCompartment", repaintOnly);
-					}
-				}
-				if(typeof(global::nHydrate.Dsl.StoredProcedureHasFields).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
-				{
-					if(!e.CounterpartDomainRole.IsSource)
-					{
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetStoredProcedureForStoredProcedureShapeStoredProcedureFieldCompartment((global::nHydrate.Dsl.StoredProcedureField)e.CounterpartRolePlayer);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.StoredProcedureShape), "StoredProcedureFieldCompartment", repaintOnly);
-					}
-				}
-				if(typeof(global::nHydrate.Dsl.StoredProcedureHasParameters).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
-				{
-					if(!e.CounterpartDomainRole.IsSource)
-					{
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetStoredProcedureForStoredProcedureShapeStoredProcedureParameterCompartment((global::nHydrate.Dsl.StoredProcedureParameter)e.CounterpartRolePlayer);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.StoredProcedureShape), "StoredProcedureParameterCompartment", repaintOnly);
-					}
-				}
-				if(typeof(global::nHydrate.Dsl.FunctionHasFields).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
-				{
-					if(!e.CounterpartDomainRole.IsSource)
-					{
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetFunctionForFunctionShapeFieldCompartment((global::nHydrate.Dsl.FunctionField)e.CounterpartRolePlayer);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.FunctionShape), "FieldCompartment", repaintOnly);
-					}
-				}
-				if(typeof(global::nHydrate.Dsl.FunctionHasParameters).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
-				{
-					if(!e.CounterpartDomainRole.IsSource)
-					{
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetFunctionForFunctionShapeParameterCompartment((global::nHydrate.Dsl.FunctionParameter)e.CounterpartRolePlayer);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::nHydrate.Dsl.FunctionShape), "ParameterCompartment", repaintOnly);
 					}
 				}
 			}

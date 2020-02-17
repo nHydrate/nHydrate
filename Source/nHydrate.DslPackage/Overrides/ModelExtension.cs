@@ -69,18 +69,6 @@ namespace nHydrate.DslPackage
                     modelRoot.RemovedViews.Add(node.InnerText);
                 }
 
-                //Stored Procedures
-                foreach (XmlNode node in document.DocumentElement.SelectNodes("storedprocedures/storedprocedure"))
-                {
-                    modelRoot.RemovedStoredProcedures.Add(node.InnerText);
-                }
-
-                //Functions
-                foreach (XmlNode node in document.DocumentElement.SelectNodes("functions/function"))
-                {
-                    modelRoot.RemovedFunctions.Add(node.InnerText);
-                }
-
             }
             #endregion
 
@@ -106,16 +94,12 @@ namespace nHydrate.DslPackage
             var cacheFile = Path.Combine(fi.DirectoryName, fi.Name + ".deletetracking");
             if (File.Exists(cacheFile)) File.Delete(cacheFile);
             if ((modelRoot.RemovedTables.Count +
-                modelRoot.RemovedViews.Count +
-                modelRoot.RemovedStoredProcedures.Count +
-                modelRoot.RemovedFunctions.Count) > 0)
+                modelRoot.RemovedViews.Count) > 0)
             {
                 var document = new XmlDocument();
                 document.LoadXml("<root></root>");
                 var tableRoot = XmlHelper.AddElement(document.DocumentElement, "tables") as XmlElement;
                 var viewRoot = XmlHelper.AddElement(document.DocumentElement, "views") as XmlElement;
-                var storedProcedureRoot = XmlHelper.AddElement(document.DocumentElement, "storedprocedures") as XmlElement;
-                var functionRoot = XmlHelper.AddElement(document.DocumentElement, "functions") as XmlElement;
 
                 //Tables
                 foreach (var item in modelRoot.RemovedTables)
@@ -127,18 +111,6 @@ namespace nHydrate.DslPackage
                 foreach (var item in modelRoot.RemovedViews)
                 {
                     XmlHelper.AddElement(viewRoot, "view", item);
-                }
-
-                //Stored Procedures
-                foreach (var item in modelRoot.RemovedStoredProcedures)
-                {
-                    XmlHelper.AddElement(storedProcedureRoot, "storedprocedure", item);
-                }
-
-                //Functions
-                foreach (var item in modelRoot.RemovedFunctions)
-                {
-                    XmlHelper.AddElement(functionRoot, "function", item);
                 }
 
                 document.Save(cacheFile);

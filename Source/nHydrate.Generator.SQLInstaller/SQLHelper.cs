@@ -556,43 +556,8 @@ namespace nHydrate.Generator.SQLInstaller
 
                 #region Add/Remove deleted SP, Views, and Funcs
 
-                //Stored procedures
-                var removedItems = 0;
-                foreach (var oldT in modelOld.Database.CustomStoredProcedures.OrderBy(x => x.Name))
-                {
-                    var newT = modelNew.Database.CustomStoredProcedures.FirstOrDefault(x => x.Key == oldT.Key);
-                    if (newT == null)
-                    {
-                        sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('P'))");
-                        sb.AppendLine("drop procedure [" + oldT.DatabaseName + "]");
-                        removedItems++;
-                    }
-                    else if (newT.DatabaseName != oldT.DatabaseName)
-                    {
-                        //Name changed so remove old
-                        sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('P'))");
-                        sb.AppendLine("drop procedure [" + oldT.DatabaseName + "]");
-                        removedItems++;
-                    }
-                }
-
-                if (removedItems > 0)
-                {
-                    sb.AppendLine("GO");
-                    sb.AppendLine();
-                }
-
-                foreach (var newT in modelNew.Database.CustomStoredProcedures.OrderBy(x => x.Name))
-                {
-                    var oldT = modelOld.Database.CustomStoredProcedures.FirstOrDefault(x => x.Key == newT.Key);
-                    if (oldT == null || (oldT.CorePropertiesHash != newT.CorePropertiesHash))
-                    {
-                        sb.Append(SQLEmit.GetSQLCreateStoredProc(newT, false));
-                    }
-                }
-
                 //Views
-                removedItems = 0;
+                var removedItems = 0;
                 foreach (var oldT in modelOld.Database.CustomViews.OrderBy(x => x.Name))
                 {
                     var newT = modelNew.Database.CustomViews.FirstOrDefault(x => x.Key == oldT.Key);
@@ -626,39 +591,10 @@ namespace nHydrate.Generator.SQLInstaller
                     }
                 }
 
-                //Functions
-                removedItems = 0;
-                foreach (var oldT in modelOld.Database.Functions.OrderBy(x => x.Name))
-                {
-                    var newT = modelNew.Database.Functions.FirstOrDefault(x => x.Key == oldT.Key);
-                    if (newT == null)
-                    {
-                        sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('FN','IF','TF','FS','FT'))");
-                        sb.AppendLine("drop function [" + oldT.DatabaseName + "]");
-                        removedItems++;
-                    }
-                    else if (newT.DatabaseName != oldT.DatabaseName)
-                    {
-                        //Name changed so remove old
-                        sb.AppendLine("if exists (select * from sys.objects where name = '" + oldT.DatabaseName + "' and [type] in ('FN','IF','TF','FS','FT'))");
-                        sb.AppendLine("drop function [" + oldT.DatabaseName + "]");
-                        removedItems++;
-                    }
-                }
-
                 if (removedItems > 0)
                 {
                     sb.AppendLine("GO");
                     sb.AppendLine();
-                }
-
-                foreach (var newT in modelNew.Database.Functions.OrderBy(x => x.Name))
-                {
-                    var oldT = modelOld.Database.Functions.FirstOrDefault(x => x.Key == newT.Key);
-                    if (oldT == null || (oldT.CorePropertiesHash != newT.CorePropertiesHash))
-                    {
-                        sb.Append(SQLEmit.GetSQLCreateFunction(newT, false));
-                    }
                 }
 
                 #endregion

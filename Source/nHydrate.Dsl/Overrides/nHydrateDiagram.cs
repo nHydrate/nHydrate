@@ -248,50 +248,6 @@ namespace nHydrate.Dsl
                             item.Fields.Add(field);
                         }
                     }
-                    else if (child.ModelElement is StoredProcedure)
-                    {
-                        var item = child.ModelElement as StoredProcedure;
-                        if (item.Fields.Count == 0)
-                        {
-                            var field = new StoredProcedureField(item.Partition)
-                                            {
-                                                DataType = DataTypeConstants.Int,
-                                                Name = "Field1",
-                                            };
-                            item.Fields.Add(field);
-                        }
-                        if (item.Parameters.Count == 0)
-                        {
-                            var field = new StoredProcedureParameter(item.Partition)
-                                            {
-                                                DataType = DataTypeConstants.Int,
-                                                Name = "Parameter1",
-                                            };
-                            item.Parameters.Add(field);
-                        }
-                    }
-                    else if (child.ModelElement is Function)
-                    {
-                        var item = child.ModelElement as Function;
-                        if (item.Fields.Count == 0)
-                        {
-                            var field = new FunctionField(item.Partition)
-                                            {
-                                                DataType = DataTypeConstants.Int,
-                                                Name = "Field1",
-                                            };
-                            item.Fields.Add(field);
-                        }
-                        if (item.Parameters.Count == 0)
-                        {
-                            var field = new FunctionParameter(item.Partition)
-                                            {
-                                                DataType = DataTypeConstants.Int,
-                                                Name = "Parameter1",
-                                            };
-                            item.Parameters.Add(field);
-                        }
-                    }
 
                     this.OnShapeConfiguring(new ModelElementEventArgs() { Shape = child });
                 }

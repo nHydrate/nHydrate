@@ -18,10 +18,7 @@ namespace nHydrate.DslPackage.Forms
         {
             public bool AllowEntity { get; set; } = true;
             public bool AllowView { get; set; } = true;
-            public bool AllowStoredProc { get; set; } = true;
-            public bool AllowFunction { get; set; } = true;
             public bool AllowField { get; set; }
-            public bool AllowParameter { get; set; }
         }
         #endregion
 
@@ -202,18 +199,6 @@ namespace nHydrate.DslPackage.Forms
                 _modelElements.Add(item);
             }
 
-            //Add StoredProcedures
-            foreach (var item in _model.StoredProcedures.OrderBy(x => x.Name))
-            {
-                _modelElements.Add(item);
-            }
-
-            //Add Functions
-            foreach (var item in _model.Functions.OrderBy(x => x.Name))
-            {
-                _modelElements.Add(item);
-            }
-
             this.DisplayObjects();
         }
 
@@ -238,8 +223,6 @@ namespace nHydrate.DslPackage.Forms
                             {
                                 if (si is nHydrate.Dsl.Entity) _model.Entities.Remove((nHydrate.Dsl.Entity)si);
                                 else if (si is nHydrate.Dsl.View) _model.Views.Remove((nHydrate.Dsl.View)si);
-                                else if (si is nHydrate.Dsl.StoredProcedure) _model.StoredProcedures.Remove((nHydrate.Dsl.StoredProcedure)si);
-                                else if (si is nHydrate.Dsl.Function) _model.Functions.Remove((nHydrate.Dsl.Function)si);
 
                                 _modelElements.Remove(si);
                             }
@@ -287,27 +270,6 @@ namespace nHydrate.DslPackage.Forms
                                     var subItem = si as nHydrate.Dsl.ViewField;
                                     subItem.View.Fields.Remove(subItem);
                                 }
-                                else if (si is nHydrate.Dsl.StoredProcedureField)
-                                {
-                                    var subItem = si as nHydrate.Dsl.StoredProcedureField;
-                                    subItem.StoredProcedure.Fields.Remove(subItem);
-                                }
-                                else if (si is nHydrate.Dsl.FunctionField)
-                                {
-                                    var subItem = si as nHydrate.Dsl.FunctionField;
-                                    subItem.Function.Fields.Remove(subItem);
-                                }
-                                else if (si is nHydrate.Dsl.StoredProcedureParameter)
-                                {
-                                    var subItem = si as nHydrate.Dsl.StoredProcedureParameter;
-                                    subItem.StoredProcedure.Parameters.Remove(subItem);
-                                }
-                                else if (si is nHydrate.Dsl.FunctionParameter)
-                                {
-                                    var subItem = si as nHydrate.Dsl.FunctionParameter;
-                                    subItem.Function.Parameters.Remove(subItem);
-                                }
-
                             }
                         }
                         transaction.Commit();
@@ -473,58 +435,6 @@ namespace nHydrate.DslPackage.Forms
                     }
                 }
 
-                //Add Stored Procedures
-                if (modelObject is nHydrate.Dsl.StoredProcedure && _settings.AllowStoredProc)
-                {
-                    var item = modelObject as nHydrate.Dsl.StoredProcedure;
-                    var marked = false;
-                    if (IsSearchMatch(item.Name))
-                        marked = true;
-                    else if (_settings.AllowField && item.Fields.Any(x => IsSearchMatch(x.Name)))
-                        marked = true;
-                    else if (_settings.AllowParameter && item.Parameters.Any(x => IsSearchMatch(x.Name)))
-                        marked = true;
-
-                    if (marked)
-                    {
-                        var li = new ListViewItem();
-                        _mainColumns.Where(x => x.Visible).ToList().ForEach(x => li.SubItems.Add(string.Empty));
-                        lvwMain.Items.Add(li);
-                        SetListItemValue(li, _mainColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.DataType), "Stored Procedure");
-                        SetListItemValue(li, _mainColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.CodeFacade), item.CodeFacade);
-                        SetListItemValue(li, _mainColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Schema), item.Schema);
-                        li.ImageIndex = 2;
-                        li.Text = item.Name;
-                        li.Tag = item;
-                    }
-                }
-
-                //Add Functions
-                if (modelObject is nHydrate.Dsl.Function && _settings.AllowFunction)
-                {
-                    var item = modelObject as nHydrate.Dsl.Function;
-                    var marked = false;
-                    if (IsSearchMatch(item.Name))
-                        marked = true;
-                    else if (_settings.AllowField && item.Fields.Any(x => IsSearchMatch(x.Name)))
-                        marked = true;
-                    else if (_settings.AllowParameter && item.Parameters.Any(x => IsSearchMatch(x.Name)))
-                        marked = true;
-
-                    if (marked)
-                    {
-                        var li = new ListViewItem();
-                        _mainColumns.Where(x => x.Visible).ToList().ForEach(x => li.SubItems.Add(string.Empty));
-                        lvwMain.Items.Add(li);
-                        SetListItemValue(li, _mainColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.DataType), "Function");
-                        SetListItemValue(li, _mainColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.CodeFacade), item.CodeFacade);
-                        SetListItemValue(li, _mainColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Schema), item.Schema);
-                        li.ImageIndex = 3;
-                        li.Text = item.Name;
-                        li.Tag = item;
-                    }
-                }
-
             }
 
             //Re-select
@@ -562,8 +472,6 @@ namespace nHydrate.DslPackage.Forms
             {
                 if (si is nHydrate.Dsl.Entity) LoadSubItems((nHydrate.Dsl.Entity)si);
                 else if (si is nHydrate.Dsl.View) LoadSubItems((nHydrate.Dsl.View)si);
-                else if (si is nHydrate.Dsl.StoredProcedure) LoadSubItems((nHydrate.Dsl.StoredProcedure)si);
-                else if (si is nHydrate.Dsl.Function) LoadSubItems((nHydrate.Dsl.Function)si);
             }
 
             //Re-select
@@ -621,61 +529,6 @@ namespace nHydrate.DslPackage.Forms
                 SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Default), field.Default);
                 SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Length), field.Length.ToString());
                 SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Nullable), field.Nullable.ToString().ToLower());
-            }
-        }
-
-        private void LoadSubItems(nHydrate.Dsl.StoredProcedure item)
-        {
-            foreach (var field in item.Fields.OrderBy(x => x.Name))
-            {
-                var newItem = new ListViewItem() { Text = field.Name, ImageIndex = 4, Tag = field };
-                _subColumns.Where(x => x.Visible).ToList().ForEach(x => newItem.SubItems.Add(string.Empty));
-                lvwSubItem.Items.Add(newItem);
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.CodeFacade), field.CodeFacade);
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.DataType), field.DataType.ToString());
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Default), field.Default);
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Length), field.Length.ToString());
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Nullable), field.Nullable.ToString().ToLower());
-            }
-
-            foreach (var parameter in item.Parameters.OrderBy(x => x.Name))
-            {
-                var newItem = new ListViewItem() { Text = parameter.Name, ImageIndex = 5, Tag = parameter };
-                _subColumns.Where(x => x.Visible).ToList().ForEach(x => newItem.SubItems.Add(string.Empty));
-                lvwSubItem.Items.Add(newItem);
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.CodeFacade), parameter.CodeFacade);
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.DataType), parameter.DataType.ToString());
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Default), parameter.Default);
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Length), parameter.Length.ToString());
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Nullable), parameter.Nullable.ToString().ToLower());
-            }
-
-        }
-
-        private void LoadSubItems(nHydrate.Dsl.Function item)
-        {
-            foreach (var field in item.Fields.OrderBy(x => x.Name))
-            {
-                var newItem = new ListViewItem() { Text = field.Name, ImageIndex = 4, Tag = field };
-                _subColumns.Where(x => x.Visible).ToList().ForEach(x => newItem.SubItems.Add(string.Empty));
-                lvwSubItem.Items.Add(newItem);
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.CodeFacade), field.CodeFacade);
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.DataType), field.DataType.ToString());
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Default), field.Default);
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Length), field.Length.ToString());
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Nullable), field.Nullable.ToString().ToLower());
-            }
-
-            foreach (var parameter in item.Parameters.OrderBy(x => x.Name))
-            {
-                var newItem = new ListViewItem() { Text = parameter.Name, ImageIndex = 5, Tag = parameter };
-                _subColumns.Where(x => x.Visible).ToList().ForEach(x => newItem.SubItems.Add(string.Empty));
-                lvwSubItem.Items.Add(newItem);
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.CodeFacade), parameter.CodeFacade);
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.DataType), parameter.DataType.ToString());
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Default), parameter.Default);
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Length), parameter.Length.ToString());
-                SetListItemValue(newItem, _subColumns.FirstOrDefault(x => x.Type == FindWindowColumnTypeConstants.Nullable), parameter.Nullable.ToString().ToLower());
             }
         }
 

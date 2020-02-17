@@ -95,16 +95,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                 }
             }
 
-            //Stored Procedures
-            foreach (var item in (from x in _model.Database.CustomStoredProcedures orderby x.Name select x))
-            {
-                var s = item.GetPostgresSchema().ToLower();
-                if (!list.Contains(s) && s != "public")
-                {
-                    list.Add(s);
-                }
-            }
-
             if (list.Count > 0)
             {
                 sb.AppendLine("--CREATE DATABASE SCHEMAS");

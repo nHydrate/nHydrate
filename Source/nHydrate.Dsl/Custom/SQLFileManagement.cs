@@ -14,10 +14,8 @@ namespace nHydrate.Dsl.Custom
     public static class SQLFileManagement
     {
         private const string FOLDER_ET = "_Entities";
-        private const string FOLDER_SP = "_StoredProcedures";
         private const string FOLDER_VW = "_Views";
-        private const string FOLDER_FC = "_Functions";
-
+        
         public static string GetModelFolder(string rootFolder, string modelName)
         {
             return Path.Combine(rootFolder, "_" + modelName);
@@ -34,8 +32,6 @@ namespace nHydrate.Dsl.Custom
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.ModelMetadata, modelFolder, diagram, generatedFileList);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Views, modelFolder, diagram, generatedFileList); //must come before entities
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Entities, modelFolder, diagram, generatedFileList);
-                nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.StoredProcedures, modelFolder, diagram, generatedFileList);
-                nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Functions, modelFolder, diagram, generatedFileList);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveDiagramFiles(modelFolder, diagram, generatedFileList);
                 RemoveOrphans(modelFolder, generatedFileList);
 
@@ -353,108 +349,8 @@ namespace nHydrate.Dsl.Custom
                     node.AddAttribute("id", shape.ModelElement.Id);
                     node.AddAttribute("bounds", shape.AbsoluteBoundingBox.ToXmlValue());
                 }
-                else if (shape is StoredProcedureShape)
-                {
-                    var item = ((shape as StoredProcedureShape).ModelElement as StoredProcedure);
-                    var node = XmlHelper.AddElement(document.DocumentElement, "element");
-                    node.AddAttribute("id", shape.ModelElement.Id);
-                    node.AddAttribute("bounds", shape.AbsoluteBoundingBox.ToXmlValue());
-                }
-                else if (shape is FunctionShape)
-                {
-                    var item = ((shape as FunctionShape).ModelElement as Function);
-                    var node = XmlHelper.AddElement(document.DocumentElement, "element");
-                    node.AddAttribute("id", shape.ModelElement.Id);
-                    node.AddAttribute("bounds", shape.AbsoluteBoundingBox.ToXmlValue());
-                }
             }
             WriteFileIfNeedBe(fileName, document.ToIndentedString(), generatedFileList);
-        }
-
-        /// <summary>
-        /// Saves Stored Procedures to disk
-        /// </summary>
-        private static void SaveToDisk(nHydrateModel modelRoot, IEnumerable<StoredProcedure> list, string rootFolder, nHydrateDiagram diagram, List<string> generatedFileList)
-        {
-            var folder = Path.Combine(rootFolder, FOLDER_SP);
-            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-            foreach (var item in list)
-            {
-                var f = Path.Combine(folder, item.Name + ".sql");
-                WriteFileIfNeedBe(f, item.SQL, generatedFileList);
-            }
-
-            #region Save other parameter/field information
-            foreach (var item in list)
-            {
-                var document = new XmlDocument();
-                document.LoadXml(@"<configuration type=""storedprocedure"" name=""" + item.Name + @"""></configuration>");
-
-                XmlHelper.AddLineBreak(document.DocumentElement);
-                XmlHelper.AddCData(document.DocumentElement, "summary", item.Summary);
-                XmlHelper.AddLineBreak(document.DocumentElement);
-
-                XmlHelper.AddAttribute(document.DocumentElement, "id", item.Id);
-                XmlHelper.AddAttribute(document.DocumentElement, "codefacade", item.CodeFacade);
-                XmlHelper.AddAttribute(document.DocumentElement, "databaseobjectname", item.DatabaseObjectName);
-                XmlHelper.AddAttribute(document.DocumentElement, "isexisting", item.IsExisting);
-                XmlHelper.AddAttribute(document.DocumentElement, "schema", item.Schema);
-                XmlHelper.AddAttribute(document.DocumentElement, "generatesdoublederived", item.GeneratesDoubleDerived);
-
-                var fieldsNodes = XmlHelper.AddElement(document.DocumentElement, "fieldset") as XmlElement;
-                XmlHelper.AddLineBreak((XmlElement)fieldsNodes);
-
-                foreach (var field in item.Fields.OrderBy(x => x.Name))
-                {
-                    var fieldNode = XmlHelper.AddElement(fieldsNodes, "field");
-
-                    XmlHelper.AddLineBreak((XmlElement)fieldNode);
-                    XmlHelper.AddCData((XmlElement)fieldNode, "summary", field.Summary);
-                    XmlHelper.AddLineBreak((XmlElement)fieldNode);
-
-                    XmlHelper.AddAttribute(fieldNode, "id", field.Id);
-                    XmlHelper.AddAttribute(fieldNode, "name", field.Name);
-                    XmlHelper.AddAttribute(fieldNode, "nullable", field.Nullable);
-                    XmlHelper.AddAttribute(fieldNode, "datatype", field.DataType.ToString());
-                    XmlHelper.AddAttribute(fieldNode, "codefacade", field.CodeFacade);
-                    XmlHelper.AddAttribute(fieldNode, "default", field.Default);
-                    XmlHelper.AddAttribute(fieldNode, "length", field.Length);
-                    XmlHelper.AddAttribute(fieldNode, "scale", field.Scale);
-
-                    XmlHelper.AddLineBreak((XmlElement)fieldsNodes);
-                }
-
-                var parametersNodes = XmlHelper.AddElement(document.DocumentElement, "parameterset") as XmlElement;
-                XmlHelper.AddLineBreak((XmlElement)parametersNodes);
-
-                foreach (var parameter in item.Parameters.OrderBy(x => x.Name))
-                {
-                    var parameterNode = XmlHelper.AddElement(parametersNodes, "parameter");
-
-                    XmlHelper.AddLineBreak((XmlElement)parameterNode);
-                    XmlHelper.AddCData((XmlElement)parameterNode, "summary", parameter.Summary);
-                    XmlHelper.AddLineBreak((XmlElement)parameterNode);
-
-                    XmlHelper.AddAttribute(parameterNode, "id", parameter.Id);
-                    XmlHelper.AddAttribute(parameterNode, "name", parameter.Name);
-                    XmlHelper.AddAttribute(parameterNode, "nullable", parameter.Nullable);
-                    XmlHelper.AddAttribute(parameterNode, "datatype", parameter.DataType.ToString());
-                    XmlHelper.AddAttribute(parameterNode, "codefacade", parameter.CodeFacade);
-                    XmlHelper.AddAttribute(parameterNode, "default", parameter.Default);
-                    XmlHelper.AddAttribute(parameterNode, "isoutput", parameter.IsOutputParameter);
-                    XmlHelper.AddAttribute(parameterNode, "length", parameter.Length);
-                    XmlHelper.AddAttribute(parameterNode, "scale", parameter.Scale);
-
-                    XmlHelper.AddLineBreak((XmlElement)parametersNodes);
-                }
-
-                XmlHelper.AddLineBreak(document.DocumentElement);
-                var f = Path.Combine(folder, item.Name + ".configuration.xml");
-                WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
-            }
-            #endregion
-
-            WriteReadMeFile(folder, generatedFileList);
         }
 
         /// <summary>
@@ -518,90 +414,6 @@ namespace nHydrate.Dsl.Custom
             WriteReadMeFile(folder, generatedFileList);
         }
 
-        /// <summary>
-        /// Saves Functions to disk
-        /// </summary>
-        private static void SaveToDisk(nHydrateModel modelRoot, IEnumerable<Function> list, string rootFolder, nHydrateDiagram diagram, List<string> generatedFileList)
-        {
-            var folder = Path.Combine(rootFolder, FOLDER_FC);
-            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-            foreach (var item in list)
-            {
-                var f = Path.Combine(folder, item.Name + ".sql");
-                WriteFileIfNeedBe(f, item.SQL, generatedFileList);
-            }
-
-            #region Save other parameter/field information
-            foreach (var item in list)
-            {
-                var document = new XmlDocument();
-                document.LoadXml(@"<configuration type=""function"" name=""" + item.Name + @"""></configuration>");
-
-                XmlHelper.AddLineBreak(document.DocumentElement);
-                XmlHelper.AddCData(document.DocumentElement, "summary", item.Summary);
-                XmlHelper.AddLineBreak(document.DocumentElement);
-
-                XmlHelper.AddAttribute(document.DocumentElement, "id", item.Id);
-                XmlHelper.AddAttribute(document.DocumentElement, "codefacade", item.CodeFacade);
-                XmlHelper.AddAttribute(document.DocumentElement, "schema", item.Schema);
-                XmlHelper.AddAttribute(document.DocumentElement, "istable", item.IsTable);
-                XmlHelper.AddAttribute(document.DocumentElement, "returnvariable", item.ReturnVariable);
-
-                var fieldsNodes = XmlHelper.AddElement(document.DocumentElement, "fieldset") as XmlElement;
-                XmlHelper.AddLineBreak((XmlElement)fieldsNodes);
-
-                foreach (var field in item.Fields.OrderBy(x => x.Name))
-                {
-                    var fieldNode = XmlHelper.AddElement(fieldsNodes, "field");
-
-                    XmlHelper.AddLineBreak((XmlElement)fieldNode);
-                    XmlHelper.AddCData((XmlElement)fieldNode, "summary", field.Summary);
-                    XmlHelper.AddLineBreak((XmlElement)fieldNode);
-
-                    XmlHelper.AddAttribute(fieldNode, "id", field.Id);
-                    XmlHelper.AddAttribute(fieldNode, "name", field.Name);
-                    XmlHelper.AddAttribute(fieldNode, "nullable", field.Nullable);
-                    XmlHelper.AddAttribute(fieldNode, "datatype", field.DataType.ToString());
-                    XmlHelper.AddAttribute(fieldNode, "codefacade", field.CodeFacade);
-                    XmlHelper.AddAttribute(fieldNode, "default", field.Default);
-                    XmlHelper.AddAttribute(fieldNode, "length", field.Length);
-                    XmlHelper.AddAttribute(fieldNode, "scale", field.Scale);
-
-                    XmlHelper.AddLineBreak((XmlElement)fieldsNodes);
-                }
-
-                var parametersNodes = XmlHelper.AddElement(document.DocumentElement, "parameterset") as XmlElement;
-                XmlHelper.AddLineBreak((XmlElement)parametersNodes);
-
-                foreach (var parameter in item.Parameters.OrderBy(x => x.Name))
-                {
-                    var parameterNode = XmlHelper.AddElement(parametersNodes, "parameter");
-
-                    XmlHelper.AddLineBreak((XmlElement)parameterNode);
-                    XmlHelper.AddCData((XmlElement)parameterNode, "summary", parameter.Summary);
-                    XmlHelper.AddLineBreak((XmlElement)parameterNode);
-
-                    XmlHelper.AddAttribute(parameterNode, "id", parameter.Id);
-                    XmlHelper.AddAttribute(parameterNode, "name", parameter.Name);
-                    XmlHelper.AddAttribute(parameterNode, "nullable", parameter.Nullable);
-                    XmlHelper.AddAttribute(parameterNode, "datatype", parameter.DataType.ToString());
-                    XmlHelper.AddAttribute(parameterNode, "codefacade", parameter.CodeFacade);
-                    XmlHelper.AddAttribute(parameterNode, "default", parameter.Default);
-                    XmlHelper.AddAttribute(parameterNode, "length", parameter.Length);
-                    XmlHelper.AddAttribute(parameterNode, "scale", parameter.Scale);
-
-                    XmlHelper.AddLineBreak((XmlElement)parametersNodes);
-                }
-
-                XmlHelper.AddLineBreak(document.DocumentElement);
-                var f = Path.Combine(folder, item.Name + ".configuration.xml");
-                WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
-            }
-            #endregion
-
-            WriteReadMeFile(folder, generatedFileList);
-        }
-
         public static void LoadFromDisk(nHydrateModel model, string rootFolder, Microsoft.VisualStudio.Modeling.Store store, string modelName)
         {
             model.IsSaving = true;
@@ -633,8 +445,6 @@ namespace nHydrate.Dsl.Custom
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.ModelMetadata, model, modelFolder, store);
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Views, model, modelFolder, store); //must come before entities
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Entities, model, modelFolder, store);
-                nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.StoredProcedures, model, modelFolder, store);
-                nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Functions, model, modelFolder, store);
             }
             catch (Exception ex)
             {
@@ -952,133 +762,6 @@ namespace nHydrate.Dsl.Custom
 
         }
 
-        private static void LoadFromDisk(IEnumerable<StoredProcedure> list, nHydrateModel model, string rootFolder, Microsoft.VisualStudio.Modeling.Store store)
-        {
-            var folder = Path.Combine(rootFolder, FOLDER_SP);
-            if (!Directory.Exists(folder)) return;
-
-            #region Load other parameter/field information
-            var fList = Directory.GetFiles(folder, "*.configuration.xml");
-            foreach (var f in fList)
-            {
-                var document = new XmlDocument();
-                try
-                {
-                    document.Load(f);
-                }
-                catch (Exception ex)
-                {
-                    //Do Nothing
-                    MessageBox.Show("The file '" + f + "' is not valid and could not be loaded!", "Load Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                var fi = new FileInfo(f);
-                var name = fi.Name.Substring(0, fi.Name.Length - ".configuration.xml".Length).ToLower();
-                var itemID = XmlHelper.GetAttributeValue(document.DocumentElement, "id", Guid.Empty);
-                var item = list.FirstOrDefault(x => x.Id == itemID);
-                if (item == null)
-                {
-                    item = new StoredProcedure(model.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, XmlHelper.GetAttributeValue(document.DocumentElement, "id", Guid.NewGuid())) });
-                    model.StoredProcedures.Add(item);
-                }
-
-                System.Windows.Forms.Application.DoEvents();
-
-                item.Name = XmlHelper.GetAttributeValue(document.DocumentElement, "name", item.Name);
-                item.CodeFacade = XmlHelper.GetAttributeValue(document.DocumentElement, "codefacade", item.CodeFacade);
-                item.Schema = XmlHelper.GetAttributeValue(document.DocumentElement, "schema", item.Schema);
-                item.DatabaseObjectName = XmlHelper.GetAttributeValue(document.DocumentElement, "databaseobjectname", item.DatabaseObjectName);
-                item.IsExisting = XmlHelper.GetAttributeValue(document.DocumentElement, "isexisting", item.IsExisting);
-                item.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(document.DocumentElement, "generatesdoublederived", item.GeneratesDoubleDerived);
-                item.Summary = XmlHelper.GetNodeValue(document.DocumentElement, "summary", item.Summary);
-
-                //Fields
-                var fieldsNodes = document.DocumentElement.SelectSingleNode("//fieldset");
-                if (fieldsNodes != null)
-                {
-                    var nameList = new List<string>();
-                    foreach (XmlNode n in fieldsNodes.ChildNodes)
-                    {
-                        var subItemID = XmlHelper.GetAttributeValue(n, "id", Guid.Empty);
-                        var field = item.Fields.FirstOrDefault(x => x.Id == subItemID);
-                        if (field == null)
-                        {
-                            field = new StoredProcedureField(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, XmlHelper.GetAttributeValue(n, "id", Guid.NewGuid())) });
-                            item.Fields.Add(field);
-                        }
-
-                        field.Name = XmlHelper.GetAttributeValue(n, "name", field.Name);
-                        field.CodeFacade = XmlHelper.GetAttributeValue(n, "codefacade", field.CodeFacade);
-                        nameList.Add(field.Name.ToLower());
-                        field.Nullable = XmlHelper.GetAttributeValue(n, "nullable", field.Nullable);
-                        var dtv = XmlHelper.GetAttributeValue(n, "datatype", field.DataType.ToString());
-                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
-                            field.DataType = dt;
-                        field.Default = XmlHelper.GetAttributeValue(n, "default", field.Default);
-                        field.Length = XmlHelper.GetAttributeValue(n, "length", field.Length);
-                        field.Scale = XmlHelper.GetAttributeValue(n, "scale", field.Scale);
-                        field.Summary = XmlHelper.GetNodeValue(n, "summary", field.Summary);
-                    }
-                    if (item.Fields.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
-                        item.nHydrateModel.IsDirty = true;
-                }
-
-                //Parameters
-                var parametersNodes = document.DocumentElement.SelectSingleNode("//parameterset");
-                if (parametersNodes != null)
-                {
-                    var nameList = new List<string>();
-                    foreach (XmlNode n in parametersNodes.ChildNodes)
-                    {
-                        var subItemID = XmlHelper.GetAttributeValue(n, "id", Guid.Empty);
-                        var parameter = item.Parameters.FirstOrDefault(x => x.Id == subItemID);
-                        if (parameter == null)
-                        {
-                            parameter = new StoredProcedureParameter(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, XmlHelper.GetAttributeValue(n, "id", Guid.NewGuid())) });
-                            item.Parameters.Add(parameter);
-                        }
-
-                        parameter.Name = XmlHelper.GetAttributeValue(n, "name", parameter.Name);
-                        parameter.CodeFacade = XmlHelper.GetAttributeValue(n, "codefacade", parameter.CodeFacade);
-                        parameter.IsOutputParameter = XmlHelper.GetAttributeValue(n, "isoutput", parameter.IsOutputParameter);
-                        nameList.Add(parameter.Name.ToLower());
-                        parameter.Nullable = XmlHelper.GetAttributeValue(n, "nullable", parameter.Nullable);
-                        var dtv = XmlHelper.GetAttributeValue(n, "datatype", parameter.DataType.ToString());
-                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
-                            parameter.DataType = dt;
-                        parameter.Default = XmlHelper.GetAttributeValue(n, "default", parameter.Default);
-                        parameter.Length = XmlHelper.GetAttributeValue(n, "length", parameter.Length);
-                        parameter.Scale = XmlHelper.GetAttributeValue(n, "scale", parameter.Scale);
-                        parameter.Summary = XmlHelper.GetNodeValue(n, "summary", parameter.Summary);
-                    }
-                    if (item.Parameters.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
-                        item.nHydrateModel.IsDirty = true;
-                }
-
-            }
-            #endregion
-
-            #region Load SQL
-            fList = Directory.GetFiles(folder, "*.sql");
-            foreach (var f in fList)
-            {
-                var fi = new FileInfo(f);
-                if (fi.Name.ToLower().EndsWith(".sql"))
-                {
-                    var name = fi.Name.Substring(0, fi.Name.Length - ".sql".Length).ToLower();
-                    var item = list.FirstOrDefault(x => x.Name.ToLower() == name);
-                    if (item != null)
-                    {
-                        item.SQL = File.ReadAllText(f);
-                        System.Windows.Forms.Application.DoEvents();
-                    }
-                }
-            }
-            #endregion
-
-        }
-
         private static void LoadFromDisk(IEnumerable<View> list, nHydrateModel model, string rootFolder, Microsoft.VisualStudio.Modeling.Store store)
         {
             var folder = Path.Combine(rootFolder, FOLDER_VW);
@@ -1147,131 +830,6 @@ namespace nHydrate.Dsl.Custom
                         field.IsPrimaryKey = XmlHelper.GetAttributeValue(n, "isprimarykey", field.IsPrimaryKey);
                     }
                     if (item.Fields.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
-                        item.nHydrateModel.IsDirty = true;
-                }
-
-            }
-            #endregion
-
-            #region Load SQL
-            fList = Directory.GetFiles(folder, "*.sql");
-            foreach (var f in fList)
-            {
-                var fi = new FileInfo(f);
-                if (fi.Name.ToLower().EndsWith(".sql"))
-                {
-                    var name = fi.Name.Substring(0, fi.Name.Length - 4).ToLower();
-                    var item = list.FirstOrDefault(x => x.Name.ToLower() == name);
-                    if (item != null)
-                    {
-                        item.SQL = File.ReadAllText(f);
-                        System.Windows.Forms.Application.DoEvents();
-                    }
-                }
-            }
-            #endregion
-
-        }
-
-        private static void LoadFromDisk(IEnumerable<Function> list, nHydrateModel model, string rootFolder, Microsoft.VisualStudio.Modeling.Store store)
-        {
-            var folder = Path.Combine(rootFolder, FOLDER_FC);
-            if (!Directory.Exists(folder)) return;
-
-            #region Load other parameter/field information
-            var fList = Directory.GetFiles(folder, "*.configuration.xml");
-            foreach (var f in fList)
-            {
-                var document = new XmlDocument();
-                try
-                {
-                    document.Load(f);
-                }
-                catch (Exception ex)
-                {
-                    //Do Nothing
-                    MessageBox.Show("The file '" + f + "' is not valid and could not be loaded!", "Load Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                var fi = new FileInfo(f);
-                var name = fi.Name.Substring(0, fi.Name.Length - ".configuration.xml".Length).ToLower();
-                var itemID = XmlHelper.GetAttributeValue(document.DocumentElement, "id", Guid.Empty);
-                var item = list.FirstOrDefault(x => x.Id == itemID);
-                if (item == null)
-                {
-                    item = new Function(model.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, XmlHelper.GetAttributeValue(document.DocumentElement, "id", Guid.NewGuid())) });
-                    model.Functions.Add(item);
-                }
-
-                System.Windows.Forms.Application.DoEvents();
-
-                item.Name = XmlHelper.GetAttributeValue(document.DocumentElement, "name", item.Name);
-                item.CodeFacade = XmlHelper.GetAttributeValue(document.DocumentElement, "codefacade", item.CodeFacade);
-                item.Schema = XmlHelper.GetAttributeValue(document.DocumentElement, "schema", item.Schema);
-                item.IsTable = XmlHelper.GetAttributeValue(document.DocumentElement, "istable", item.IsTable);
-                item.ReturnVariable = XmlHelper.GetAttributeValue(document.DocumentElement, "returnvariable", item.ReturnVariable);
-                item.Summary = XmlHelper.GetNodeValue(document.DocumentElement, "summary", item.Summary);
-
-                //Fields
-                var fieldsNodes = document.DocumentElement.SelectSingleNode("//fieldset");
-                if (fieldsNodes != null)
-                {
-                    var nameList = new List<string>();
-                    foreach (XmlNode n in fieldsNodes.ChildNodes)
-                    {
-                        var subItemID = XmlHelper.GetAttributeValue(n, "id", Guid.Empty);
-                        var field = item.Fields.FirstOrDefault(x => x.Id == subItemID);
-                        if (field == null)
-                        {
-                            field = new FunctionField(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, XmlHelper.GetAttributeValue(n, "id", Guid.NewGuid())) });
-                            item.Fields.Add(field);
-                        }
-
-                        field.Name = XmlHelper.GetAttributeValue(n, "name", field.Name);
-                        field.CodeFacade = XmlHelper.GetAttributeValue(n, "codefacade", field.CodeFacade);
-                        nameList.Add(field.Name.ToLower());
-                        field.Nullable = XmlHelper.GetAttributeValue(n, "nullable", field.Nullable);
-                        var dtv = XmlHelper.GetAttributeValue(n, "datatype", field.DataType.ToString());
-                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
-                            field.DataType = dt;
-                        field.Default = XmlHelper.GetAttributeValue(n, "default", field.Default);
-                        field.Length = XmlHelper.GetAttributeValue(n, "length", field.Length);
-                        field.Scale = XmlHelper.GetAttributeValue(n, "scale", field.Scale);
-                        field.Summary = XmlHelper.GetNodeValue(n, "summary", field.Summary);
-                    }
-                    if (item.Fields.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
-                        item.nHydrateModel.IsDirty = true;
-                }
-
-                //Parameters
-                var parametersNodes = document.DocumentElement.SelectSingleNode("//parameterset");
-                if (parametersNodes != null)
-                {
-                    var nameList = new List<string>();
-                    foreach (XmlNode n in parametersNodes.ChildNodes)
-                    {
-                        var subItemID = XmlHelper.GetAttributeValue(n, "id", Guid.Empty);
-                        var parameter = item.Parameters.FirstOrDefault(x => x.Id == subItemID);
-                        if (parameter == null)
-                        {
-                            parameter = new FunctionParameter(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, XmlHelper.GetAttributeValue(n, "id", Guid.NewGuid())) });
-                            item.Parameters.Add(parameter);
-                        }
-
-                        parameter.CodeFacade = XmlHelper.GetAttributeValue(n, "codefacade", parameter.CodeFacade);
-                        parameter.Name = XmlHelper.GetAttributeValue(n, "name", parameter.Name);
-                        nameList.Add(parameter.Name.ToLower());
-                        parameter.Nullable = XmlHelper.GetAttributeValue(n, "nullable", parameter.Nullable);
-                        var dtv = XmlHelper.GetAttributeValue(n, "datatype", parameter.DataType.ToString());
-                        if (Enum.TryParse<DataTypeConstants>(dtv, true, out var dt))
-                            parameter.DataType = dt;
-                        parameter.Default = XmlHelper.GetAttributeValue(n, "default", parameter.Default);
-                        parameter.Length = XmlHelper.GetAttributeValue(n, "length", parameter.Length);
-                        parameter.Scale = XmlHelper.GetAttributeValue(n, "scale", parameter.Scale);
-                        parameter.Summary = XmlHelper.GetNodeValue(n, "summary", parameter.Summary);
-                    }
-                    if (item.Parameters.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
                         item.nHydrateModel.IsDirty = true;
                 }
 

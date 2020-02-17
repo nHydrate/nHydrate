@@ -60,26 +60,6 @@ namespace nHydrate.DslPackage
             }
         }
 
-        public static bool Contains(this IEnumerable<nHydrate.DataImport.StoredProc> list, string name)
-        {
-            return list.Count(x => x.Name.ToLower() == name.ToLower()) > 0;
-        }
-
-        public static bool Contains(this IEnumerable<nHydrate.DataImport.Function> list, string name)
-        {
-            return list.Count(x => x.Name.ToLower() == name.ToLower()) > 0;
-        }
-
-        public static nHydrate.DataImport.StoredProc GetItem(this IEnumerable<nHydrate.DataImport.StoredProc> list, string name)
-        {
-            return list.FirstOrDefault(x => x.Name.ToLower() == name.ToLower());
-        }
-
-        public static nHydrate.DataImport.Function GetItem(this IEnumerable<nHydrate.DataImport.Function> list, string name)
-        {
-            return list.FirstOrDefault(x => x.Name.ToLower() == name.ToLower());
-        }
-
         public static List<T> ToList<T>(this System.Collections.IList l)
         {
             var retval = new List<T>();
@@ -140,13 +120,6 @@ namespace nHydrate.DslPackage
                 }
             }
 
-            //Stored Procs
-            foreach (var item in database.StoredProcList)
-            {
-                var o = master.StoredProcList.FirstOrDefault(x => x.Name == item.Name);
-                if (o != null) item.ID = o.ID;
-            }
-
             //Views
             foreach (var item in database.ViewList)
             {
@@ -154,12 +127,6 @@ namespace nHydrate.DslPackage
                 if (o != null) item.ID = o.ID;
             }
 
-            //Functions
-            foreach (var item in database.FunctionList)
-            {
-                var o = master.FunctionList.FirstOrDefault(x => x.Name == item.Name);
-                if (o != null) item.ID = o.ID;
-            }
         }
 
         #region GetChangedText
@@ -192,90 +159,9 @@ namespace nHydrate.DslPackage
             return retval;
         }
 
-        public static string GetChangedText(this nHydrate.DataImport.Parameter item, nHydrate.DataImport.Parameter target)
-        {
-            var retval = string.Empty;
-            if (item.DataType != target.DataType)
-                retval += "DataType: " + item.DataType + "->" + target.DataType + "\r\n";
-            if (item.DefaultValue != target.DefaultValue)
-                retval += "DefaultValue: " + item.DefaultValue + "->" + target.DefaultValue + "\r\n";
-            if (item.IsOutputParameter != target.IsOutputParameter)
-                retval += "IsOutputParameter: " + item.IsOutputParameter + "->" + target.IsOutputParameter + "\r\n";
-            if (item.Length != target.Length)
-                retval += "Length: " + item.Length + "->" + target.Length + "\r\n";
-            if (item.Nullable != target.Nullable)
-                retval += "Nullable: " + item.Nullable + "->" + target.Nullable + "\r\n";
-            if (item.PrimaryKey != target.PrimaryKey)
-                retval += "PrimaryKey: " + item.PrimaryKey + "->" + target.PrimaryKey + "\r\n";
-            if (item.Scale != target.Scale)
-                retval += "Scale: " + item.Scale + "->" + target.Scale + "\r\n";
-            if (item.Name != target.Name)
-                retval += "Name: " + item.Name + "->" + target.Name + "\r\n";
-            return retval;
-        }
-
         public static string GetChangedText(this nHydrate.DataImport.Entity item, nHydrate.DataImport.Entity target)
         {
             var retval = string.Empty;
-
-            #region Fields
-            var addedFields = target.FieldList.Where(x => !item.FieldList.Select(z => z.Name).Contains(x.Name)).ToList();
-            var deletedFields = item.FieldList.Where(x => !target.FieldList.Select(z => z.Name).Contains(x.Name)).ToList();
-            var commonFields = item.FieldList.Where(x => target.FieldList.Select(z => z.Name).Contains(x.Name)).ToList();
-
-            if (addedFields.Count > 0)
-            {
-                retval += "\r\nAdded fields: " + string.Join(", ", addedFields.Select(x => x.Name).OrderBy(x => x).ToList()) + "\r\n";
-            }
-
-            if (deletedFields.Count > 0)
-            {
-                retval += "\r\nDeleted fields: " + string.Join(", ", deletedFields.Select(x => x.Name).OrderBy(x => x).ToList()) + "\r\n";
-            }
-
-            foreach (var field in commonFields)
-            {
-                var t = field.GetChangedText(target.FieldList.FirstOrDefault(x => x.Name == field.Name));
-                if (!string.IsNullOrEmpty(t))
-                    retval += "Changed field (" + field.Name + ")\r\n" + t + "\r\n";
-            }
-            #endregion
-
-            return retval;
-        }
-
-        public static string GetChangedText(this nHydrate.DataImport.StoredProc item, nHydrate.DataImport.StoredProc target)
-        {
-            var retval = string.Empty;
-            if (item.Name != target.Name)
-                retval += "Name: " + item.Name + "->" + target.Name + "\r\n";
-            if (item.Schema != target.Schema)
-                retval += "Schema: " + item.Schema + "->" + target.Schema + "\r\n";
-            if (item.SQL != target.SQL)
-                retval += "Original SQL\r\n" + item.SQL + "\r\n\r\nNew SQL\r\n" + target.SQL + "\r\n";
-
-            #region Parameters
-            var addedParameters = target.ParameterList.Where(x => !item.ParameterList.Select(z => z.Name).Contains(x.Name)).ToList();
-            var deletedParameters = item.ParameterList.Where(x => !target.ParameterList.Select(z => z.Name).Contains(x.Name)).ToList();
-            var commonParameters = item.ParameterList.Where(x => target.ParameterList.Select(z => z.Name).Contains(x.Name)).ToList();
-
-            if (addedParameters.Count > 0)
-            {
-                retval += "Added Parameters: " + string.Join(", ", addedParameters.Select(x => x.Name).OrderBy(x => x).ToList()) + "\r\n";
-            }
-
-            if (deletedParameters.Count > 0)
-            {
-                retval += "Deleted Parameters: " + string.Join(", ", deletedParameters.Select(x => x.Name).OrderBy(x => x).ToList()) + "\r\n";
-            }
-
-            foreach (var parameter in commonParameters)
-            {
-                var t = parameter.GetChangedText(target.ParameterList.FirstOrDefault(x => x.Name == parameter.Name));
-                if (!string.IsNullOrEmpty(t))
-                    retval += "Changed Parameter (" + parameter.Name + ")\r\n" + t + "\r\n";
-            }
-            #endregion
 
             #region Fields
             var addedFields = target.FieldList.Where(x => !item.FieldList.Select(z => z.Name).Contains(x.Name)).ToList();
@@ -339,75 +225,11 @@ namespace nHydrate.DslPackage
             return retval;
         }
 
-        public static string GetChangedText(this nHydrate.DataImport.Function item, nHydrate.DataImport.Function target)
-        {
-            var retval = string.Empty;
-            if (item.IsTable != target.IsTable)
-                retval += "IsTable: " + item.IsTable + "->" + target.IsTable + "\r\n";
-            if (item.Name != target.Name)
-                retval += "Name: " + item.Name + "->" + target.Name + "\r\n";
-            if (item.Schema != target.Schema)
-                retval += "Schema: " + item.Schema + "->" + target.Schema + "\r\n";
-            if (item.SQL != target.SQL)
-                retval += "Original SQL\r\n" + item.SQL + "\r\n\r\nNew SQL\r\n" + target.SQL + "\r\n";
-
-            #region Parameters
-            var addedParameters = target.ParameterList.Where(x => !item.ParameterList.Select(z => z.Name).Contains(x.Name)).ToList();
-            var deletedParameters = item.ParameterList.Where(x => !target.ParameterList.Select(z => z.Name).Contains(x.Name)).ToList();
-            var commonParameters = item.ParameterList.Where(x => target.ParameterList.Select(z => z.Name).Contains(x.Name)).ToList();
-
-            if (addedParameters.Count > 0)
-            {
-                retval += "Added Parameters: " + string.Join(", ", addedParameters.Select(x => x.Name).OrderBy(x => x).ToList()) + "\r\n";
-            }
-
-            if (deletedParameters.Count > 0)
-            {
-                retval += "Deleted Parameters: " + string.Join(", ", deletedParameters.Select(x => x.Name).OrderBy(x => x).ToList()) + "\r\n";
-            }
-
-            foreach (var parameter in commonParameters)
-            {
-                var t = parameter.GetChangedText(target.ParameterList.FirstOrDefault(x => x.Name == parameter.Name));
-                if (!string.IsNullOrEmpty(t))
-                    retval += "Changed Parameter (" + parameter.Name + ")\r\n" + t + "\r\n";
-            }
-            #endregion
-
-            #region Fields
-            var addedFields = target.FieldList.Where(x => !item.FieldList.Select(z => z.Name).Contains(x.Name)).ToList();
-            var deletedFields = item.FieldList.Where(x => !target.FieldList.Select(z => z.Name).Contains(x.Name)).ToList();
-            var commonFields = item.FieldList.Where(x => target.FieldList.Select(z => z.Name).Contains(x.Name)).ToList();
-
-            if (addedFields.Count > 0)
-            {
-                retval += "\r\nAdded fields: " + string.Join(", ", addedFields.Select(x => x.Name).OrderBy(x => x).ToList()) + "\r\n";
-            }
-
-            if (deletedFields.Count > 0)
-            {
-                retval += "\r\nDeleted fields: " + string.Join(", ", deletedFields.Select(x => x.Name).OrderBy(x => x).ToList()) + "\r\n";
-            }
-
-            foreach (var field in commonFields)
-            {
-                var t = field.GetChangedText(target.FieldList.FirstOrDefault(x => x.Name == field.Name));
-                if (!string.IsNullOrEmpty(t))
-                    retval += "Changed field (" + field.Name + ")\r\n" + t + "\r\n";
-            }
-            #endregion
-
-            return retval;
-        }
-
         public static string GetChangedText(this nHydrate.DataImport.DatabaseBaseObject item, nHydrate.DataImport.DatabaseBaseObject target)
         {
             if (item is nHydrate.DataImport.Entity) return ((nHydrate.DataImport.Entity)item).GetChangedText((nHydrate.DataImport.Entity)target);
-            if (item is nHydrate.DataImport.StoredProc) return ((nHydrate.DataImport.StoredProc)item).GetChangedText((nHydrate.DataImport.StoredProc)target);
             if (item is nHydrate.DataImport.View) return ((nHydrate.DataImport.View)item).GetChangedText((nHydrate.DataImport.View)target);
-            if (item is nHydrate.DataImport.Function) return ((nHydrate.DataImport.Function)item).GetChangedText((nHydrate.DataImport.Function)target);
             if (item is nHydrate.DataImport.Field) return ((nHydrate.DataImport.Field)item).GetChangedText((nHydrate.DataImport.Field)target);
-            if (item is nHydrate.DataImport.Parameter) return ((nHydrate.DataImport.Parameter)item).GetChangedText((nHydrate.DataImport.Parameter)target);
             return string.Empty;
         }
 
@@ -543,85 +365,6 @@ namespace nHydrate.DslPackage
             }
             return retval;
 
-        }
-
-        public static nHydrate.DataImport.SQLObject ToDatabaseObject(this StoredProcedure item)
-        {
-            var retval = new DataImport.StoredProc();
-
-            retval.Name = item.Name;
-            retval.Schema = item.Schema;
-            retval.SQL = item.SQL;
-
-            //Fields
-            foreach (var f in item.Fields)
-            {
-                retval.FieldList.Add(new nHydrate.DataImport.Field()
-                {
-                    DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), f.DataType.ToString(), true),
-                    DefaultValue = f.Default,
-                    Length = f.Length,
-                    Name = f.Name,
-                    Nullable = f.Nullable,
-                    Scale = f.Scale,
-                });
-            }
-
-            //Parameters
-            foreach (var p in item.Parameters)
-            {
-                retval.ParameterList.Add(new nHydrate.DataImport.Parameter()
-                {
-                    DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), p.DataType.ToString(), true),
-                    DefaultValue = p.Default,
-                    Length = p.Length,
-                    Name = p.Name,
-                    Nullable = p.Nullable,
-                    Scale = p.Scale,
-                    IsOutputParameter = p.IsOutputParameter,
-                });
-            }
-
-            return retval;
-        }
-
-        public static nHydrate.DataImport.SQLObject ToDatabaseObject(this Function item)
-        {
-            var retval = new DataImport.Function();
-
-            retval.Name = item.Name;
-            retval.Schema = item.Schema;
-            retval.SQL = item.SQL;
-
-            //Fields
-            foreach (var f in item.Fields)
-            {
-                retval.FieldList.Add(new nHydrate.DataImport.Field()
-                {
-                    DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), f.DataType.ToString(), true),
-                    DefaultValue = f.Default,
-                    Length = f.Length,
-                    Name = f.Name,
-                    Nullable = f.Nullable,
-                    Scale = f.Scale,
-                });
-            }
-
-            //Parameters
-            foreach (var p in item.Parameters)
-            {
-                retval.ParameterList.Add(new nHydrate.DataImport.Parameter()
-                {
-                    DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), p.DataType.ToString(), true),
-                    DefaultValue = p.Default,
-                    Length = p.Length,
-                    Name = p.Name,
-                    Nullable = p.Nullable,
-                    Scale = p.Scale,
-                });
-            }
-
-            return retval;
         }
 
         public static List<T> ToList<T>(this System.Collections.ICollection list)

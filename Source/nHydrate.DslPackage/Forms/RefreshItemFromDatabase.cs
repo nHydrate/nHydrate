@@ -88,25 +88,6 @@ namespace nHydrate.DslPackage.Forms
                     foreach (var item in list)
                         cboItem.Items.Add(item);
                 }
-                else if (_modelElement is StoredProcedure)
-                {
-                    objectName = (_modelElement as nHydrate.Dsl.StoredProcedure).Name;
-                    var list = _importDomain.GetStoredProcedureList(DatabaseConnectionControl1.ImportOptions.GetConnectionString());
-                    cboItem.Items.Clear();
-                    cboItem.Items.Add("(Choose One)");
-                    foreach (var item in list)
-                        cboItem.Items.Add(item);
-                }
-                else if (_modelElement is nHydrate.Dsl.Function)
-                {
-                    objectName = (_modelElement as nHydrate.Dsl.Function).Name;
-                    var list = _importDomain.GetFunctionList(DatabaseConnectionControl1.ImportOptions.GetConnectionString());
-                    cboItem.Items.Clear();
-                    cboItem.Items.Add("(Choose One)");
-                    foreach (var item in list)
-                        cboItem.Items.Add(item);
-                }
-
 
                 cboItem.SelectedItem = objectName;
                 if (cboItem.Items.Count > 0 && cboItem.SelectedIndex == -1)
@@ -123,15 +104,6 @@ namespace nHydrate.DslPackage.Forms
             lblError.Text = string.Empty;
             if (wizard1.WizardPages[e.NewIndex] == pageLast)
             {
-                if (_modelElement is StoredProcedure)
-                {
-                    var targetItem = _modelElement as nHydrate.Dsl.StoredProcedure;
-                    var importItem = _importDomain.GetStoredProcedure(DatabaseConnectionControl1.ImportOptions.GetConnectionString(), (string)cboItem.SelectedItem, _auditFields);
-                    if (importItem.ColumnFailure)
-                    {
-                        lblError.Text = "The output fields for this stored procedure could not be determined. Its fields collection will not be modified.";
-                    }
-                }
             }
         }
 
@@ -215,30 +187,6 @@ namespace nHydrate.DslPackage.Forms
                 }
                 #endregion
 
-                #region Stored Procedure
-                else if (_modelElement is StoredProcedure)
-                {
-                    var targetItem = _modelElement as nHydrate.Dsl.StoredProcedure;
-                    var importItem = _importDomain.GetStoredProcedure(DatabaseConnectionControl1.ImportOptions.GetConnectionString(), (string)cboItem.SelectedItem, _auditFields);
-                    targetItem.SQL = importItem.SQL;
-                    DatabaseImportDomain.PopulateFields(_model, importItem, targetItem);
-                    DatabaseImportDomain.PopulateParameters(_model, importItem, targetItem);
-                    this.Text += " [Stored Procedure: " + targetItem.Name + "]";
-                }
-                #endregion
-
-                #region Function
-                else if (_modelElement is nHydrate.Dsl.Function)
-                {
-                    var targetItem = _modelElement as nHydrate.Dsl.Function;
-                    var importItem = _importDomain.GetFunction(DatabaseConnectionControl1.ImportOptions.GetConnectionString(), (string)cboItem.SelectedItem, _auditFields);
-                    targetItem.SQL = importItem.SQL;
-                    DatabaseImportDomain.PopulateFields(_model, importItem, targetItem);
-                    DatabaseImportDomain.PopulateParameters(_model, importItem, targetItem);
-                    this.Text += " [Function: " + targetItem.Name + "]";
-                }
-                #endregion
-
                 transaction.Commit();
             }
 
@@ -268,22 +216,6 @@ namespace nHydrate.DslPackage.Forms
             {
                 oldItem = (_modelElement as nHydrate.Dsl.View).ToDatabaseObject();
                 newItem = _importDomain.GetView(DatabaseConnectionControl1.ImportOptions.GetConnectionString(), (string)cboItem.SelectedItem, _auditFields);
-            }
-            #endregion
-
-            #region Stored Procedure
-            else if (_modelElement is StoredProcedure)
-            {
-                oldItem = (_modelElement as nHydrate.Dsl.StoredProcedure).ToDatabaseObject();
-                newItem = _importDomain.GetStoredProcedure(DatabaseConnectionControl1.ImportOptions.GetConnectionString(), (string)cboItem.SelectedItem, _auditFields);
-            }
-            #endregion
-
-            #region Function
-            else if (_modelElement is nHydrate.Dsl.Function)
-            {
-                oldItem = (_modelElement as nHydrate.Dsl.Function).ToDatabaseObject();
-                newItem = _importDomain.GetFunction(DatabaseConnectionControl1.ImportOptions.GetConnectionString(), (string)cboItem.SelectedItem, _auditFields);
             }
             #endregion
 

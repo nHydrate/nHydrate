@@ -79,8 +79,6 @@
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\Program.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptGenerator.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptTemplate.cs" />
-    <Compile Include="ProjectItemGenerators\Functions\FunctionsGenerator.cs" />
-    <Compile Include="ProjectItemGenerators\Functions\FunctionsTemplate.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseCreateData\CreateDataGenerator.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseCreateData\CreateDataTemplate.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\XmlHelper.cs" />
@@ -95,8 +93,6 @@
     <Compile Include="ProjectItemGenerators\DatabaseUpgrade\UpgradeVersionedScriptGenerator.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseUpgrade\UpgradeVersionedScriptTemplate.cs" />
     <Compile Include="ProjectItemGenerators\Globals.cs" />
-    <Compile Include="ProjectItemGenerators\SQLSelectStoredProcedure\SQLSelectStoredProcedureGenerator.cs" />
-    <Compile Include="ProjectItemGenerators\SQLSelectStoredProcedure\SQLSelectStoredProcedureTemplate.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseSchema\SQLSelectTenantViewTemplate.cs" />
     <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLSelectAuditBusinessObjectTemplate.cs" />
     <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\ISQLGenerate.cs" />

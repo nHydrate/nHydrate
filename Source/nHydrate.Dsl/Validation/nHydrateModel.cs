@@ -19,17 +19,13 @@ namespace nHydrate.Dsl
             {
                 return _isDirty ||
                     this.Entities.IsDirty() ||
-                    this.Views.IsDirty() ||
-                    this.StoredProcedures.IsDirty() ||
-                    this.Functions.IsDirty();
+                    this.Views.IsDirty();
             }
             set
             {
                 _isDirty = value;
                 this.Entities.ResetDirty(value);
                 this.Views.ResetDirty(value);
-                this.StoredProcedures.ResetDirty(value);
-                this.Functions.ResetDirty(value);
             }
         }
         private bool _isDirty = false;
@@ -121,15 +117,6 @@ namespace nHydrate.Dsl
                         nameList.Add(check);
                 }
 
-                //Check Stored Procedures
-                foreach (var sp in this.StoredProcedures)
-                {
-                    var check = sp.PascalName.ToLower();
-                    if (nameList.Contains(check))
-                        context.LogError(string.Format(ValidationHelper.ErrorTextDuplicateName, sp.PascalName), string.Empty, sp);
-                    else
-                        nameList.Add(check);
-                }
                 #endregion
 
                 #region Validate OutputTarget
@@ -365,62 +352,6 @@ namespace nHydrate.Dsl
             finally
             {
                 nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer, "Model Validate - Views");
-            }
-
-        }
-
-        [ValidationMethod(ValidationCategories.Open | ValidationCategories.Save | ValidationCategories.Menu | ValidationCategories.Custom | ValidationCategories.Load)]
-        public void ValidateStoredProcedures(ValidationContext context)
-        {
-            var timer = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
-            try
-            {
-                #region Verify that the name is valid
-                foreach (var item in this.StoredProcedures)
-                {
-                    if (!ValidationHelper.ValidCodeIdentifier(item.PascalName))
-                    {
-                        context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifierSP, item.Name), string.Empty, this);
-                    }
-
-                    foreach (var field in item.Fields)
-                    {
-                        if (!ValidationHelper.ValidCodeIdentifier(field.PascalName))
-                        {
-                            context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifierSPField, field.Name, item.Name), string.Empty, this);
-                        }
-                    }
-
-                    foreach (var parameter in item.Parameters)
-                    {
-                        if (!ValidationHelper.ValidCodeIdentifier(parameter.PascalName))
-                        {
-                            context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifierSPParam, parameter.Name, item.Name), string.Empty, this);
-                        }
-                    }
-                }
-                #endregion
-
-                #region Check for duplicate names
-                var nameList = new Hashtable();
-                foreach (var customStoredProcedure in this.StoredProcedures)
-                {
-                    var name = customStoredProcedure.Name.ToLower();
-                    if (nameList.ContainsKey(name))
-                        context.LogError(string.Format(ValidationHelper.ErrorTextDuplicateName, name), string.Empty, this);
-                    else
-                        nameList.Add(name, string.Empty);
-                }
-                #endregion
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-            finally
-            {
-                nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer, "Model Validate - Stored Procedures");
             }
 
         }

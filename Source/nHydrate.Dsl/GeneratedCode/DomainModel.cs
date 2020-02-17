@@ -70,45 +70,31 @@ namespace nHydrate.Dsl
 				typeof(nHydrateModel),
 				typeof(Entity),
 				typeof(Field),
-				typeof(StoredProcedure),
-				typeof(StoredProcedureField),
-				typeof(StoredProcedureParameter),
 				typeof(View),
 				typeof(ViewField),
 				typeof(RelationField),
 				typeof(StaticData),
 				typeof(EntityMetadata),
 				typeof(FieldMetadata),
-				typeof(Function),
-				typeof(FunctionParameter),
-				typeof(FunctionField),
 				typeof(Index),
 				typeof(IndexColumn),
 				typeof(ModelMetadata),
 				typeof(nHydrateModelHasEntities),
 				typeof(EntityHasEntities),
 				typeof(EntityHasFields),
-				typeof(nHydrateModelHasStoredProcedures),
-				typeof(StoredProcedureHasFields),
-				typeof(StoredProcedureHasParameters),
 				typeof(nHydrateModelHasViews),
 				typeof(ViewHasFields),
 				typeof(nHydrateModelHasRelationFields),
 				typeof(EntityHasStaticDatum),
 				typeof(EntityHasMetadata),
 				typeof(FieldHasMetadata),
-				typeof(nHydrateModelHasFunctions),
-				typeof(FunctionHasParameters),
-				typeof(FunctionHasFields),
 				typeof(EntityHasIndexes),
 				typeof(IndexHasIndexColumns),
 				typeof(nHydrateModelHasModelMetadata),
 				typeof(nHydrateDiagram),
 				typeof(EntityAssociationConnector),
 				typeof(EntityShape),
-				typeof(StoredProcedureShape),
 				typeof(ViewShape),
-				typeof(FunctionShape),
 				typeof(global::nHydrate.Dsl.FixUpDiagram),
 				typeof(global::nHydrate.Dsl.DecoratorPropertyChanged),
 				typeof(global::nHydrate.Dsl.ConnectorRolePlayerChanged),
@@ -181,32 +167,6 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(Field), "DefaultIsFunc", Field.DefaultIsFuncDomainPropertyId, typeof(Field.DefaultIsFuncPropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "ImportedDefaultName", Field.ImportedDefaultNameDomainPropertyId, typeof(Field.ImportedDefaultNamePropertyHandler)),
 				new DomainMemberInfo(typeof(Field), "Obsolete", Field.ObsoleteDomainPropertyId, typeof(Field.ObsoletePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedure), "SQL", StoredProcedure.SQLDomainPropertyId, typeof(StoredProcedure.SQLPropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedure), "Name", StoredProcedure.NameDomainPropertyId, typeof(StoredProcedure.NamePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedure), "CodeFacade", StoredProcedure.CodeFacadeDomainPropertyId, typeof(StoredProcedure.CodeFacadePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedure), "Summary", StoredProcedure.SummaryDomainPropertyId, typeof(StoredProcedure.SummaryPropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedure), "Schema", StoredProcedure.SchemaDomainPropertyId, typeof(StoredProcedure.SchemaPropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedure), "IsExisting", StoredProcedure.IsExistingDomainPropertyId, typeof(StoredProcedure.IsExistingPropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedure), "DatabaseObjectName", StoredProcedure.DatabaseObjectNameDomainPropertyId, typeof(StoredProcedure.DatabaseObjectNamePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedure), "GeneratesDoubleDerived", StoredProcedure.GeneratesDoubleDerivedDomainPropertyId, typeof(StoredProcedure.GeneratesDoubleDerivedPropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureField), "Name", StoredProcedureField.NameDomainPropertyId, typeof(StoredProcedureField.NamePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureField), "CodeFacade", StoredProcedureField.CodeFacadeDomainPropertyId, typeof(StoredProcedureField.CodeFacadePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureField), "Nullable", StoredProcedureField.NullableDomainPropertyId, typeof(StoredProcedureField.NullablePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureField), "DataType", StoredProcedureField.DataTypeDomainPropertyId, typeof(StoredProcedureField.DataTypePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureField), "Summary", StoredProcedureField.SummaryDomainPropertyId, typeof(StoredProcedureField.SummaryPropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureField), "Default", StoredProcedureField.DefaultDomainPropertyId, typeof(StoredProcedureField.DefaultPropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureField), "Length", StoredProcedureField.LengthDomainPropertyId, typeof(StoredProcedureField.LengthPropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureField), "Scale", StoredProcedureField.ScaleDomainPropertyId, typeof(StoredProcedureField.ScalePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureParameter), "Name", StoredProcedureParameter.NameDomainPropertyId, typeof(StoredProcedureParameter.NamePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureParameter), "CodeFacade", StoredProcedureParameter.CodeFacadeDomainPropertyId, typeof(StoredProcedureParameter.CodeFacadePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureParameter), "Nullable", StoredProcedureParameter.NullableDomainPropertyId, typeof(StoredProcedureParameter.NullablePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureParameter), "DataType", StoredProcedureParameter.DataTypeDomainPropertyId, typeof(StoredProcedureParameter.DataTypePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureParameter), "Summary", StoredProcedureParameter.SummaryDomainPropertyId, typeof(StoredProcedureParameter.SummaryPropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureParameter), "Default", StoredProcedureParameter.DefaultDomainPropertyId, typeof(StoredProcedureParameter.DefaultPropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureParameter), "Length", StoredProcedureParameter.LengthDomainPropertyId, typeof(StoredProcedureParameter.LengthPropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureParameter), "IsOutputParameter", StoredProcedureParameter.IsOutputParameterDomainPropertyId, typeof(StoredProcedureParameter.IsOutputParameterPropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureParameter), "Scale", StoredProcedureParameter.ScaleDomainPropertyId, typeof(StoredProcedureParameter.ScalePropertyHandler)),
-				new DomainMemberInfo(typeof(StoredProcedureParameter), "SortOrder", StoredProcedureParameter.SortOrderDomainPropertyId, typeof(StoredProcedureParameter.SortOrderPropertyHandler)),
 				new DomainMemberInfo(typeof(View), "SQL", View.SQLDomainPropertyId, typeof(View.SQLPropertyHandler)),
 				new DomainMemberInfo(typeof(View), "Name", View.NameDomainPropertyId, typeof(View.NamePropertyHandler)),
 				new DomainMemberInfo(typeof(View), "CodeFacade", View.CodeFacadeDomainPropertyId, typeof(View.CodeFacadePropertyHandler)),
@@ -234,30 +194,6 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(FieldMetadata), "Key", FieldMetadata.KeyDomainPropertyId, typeof(FieldMetadata.KeyPropertyHandler)),
 				new DomainMemberInfo(typeof(FieldMetadata), "Value", FieldMetadata.ValueDomainPropertyId, typeof(FieldMetadata.ValuePropertyHandler)),
 				new DomainMemberInfo(typeof(FieldMetadata), "Summary", FieldMetadata.SummaryDomainPropertyId, typeof(FieldMetadata.SummaryPropertyHandler)),
-				new DomainMemberInfo(typeof(Function), "SQL", Function.SQLDomainPropertyId, typeof(Function.SQLPropertyHandler)),
-				new DomainMemberInfo(typeof(Function), "Name", Function.NameDomainPropertyId, typeof(Function.NamePropertyHandler)),
-				new DomainMemberInfo(typeof(Function), "CodeFacade", Function.CodeFacadeDomainPropertyId, typeof(Function.CodeFacadePropertyHandler)),
-				new DomainMemberInfo(typeof(Function), "Summary", Function.SummaryDomainPropertyId, typeof(Function.SummaryPropertyHandler)),
-				new DomainMemberInfo(typeof(Function), "Schema", Function.SchemaDomainPropertyId, typeof(Function.SchemaPropertyHandler)),
-				new DomainMemberInfo(typeof(Function), "IsTable", Function.IsTableDomainPropertyId, typeof(Function.IsTablePropertyHandler)),
-				new DomainMemberInfo(typeof(Function), "ReturnVariable", Function.ReturnVariableDomainPropertyId, typeof(Function.ReturnVariablePropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionParameter), "Name", FunctionParameter.NameDomainPropertyId, typeof(FunctionParameter.NamePropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionParameter), "CodeFacade", FunctionParameter.CodeFacadeDomainPropertyId, typeof(FunctionParameter.CodeFacadePropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionParameter), "Nullable", FunctionParameter.NullableDomainPropertyId, typeof(FunctionParameter.NullablePropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionParameter), "DataType", FunctionParameter.DataTypeDomainPropertyId, typeof(FunctionParameter.DataTypePropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionParameter), "Summary", FunctionParameter.SummaryDomainPropertyId, typeof(FunctionParameter.SummaryPropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionParameter), "Default", FunctionParameter.DefaultDomainPropertyId, typeof(FunctionParameter.DefaultPropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionParameter), "Length", FunctionParameter.LengthDomainPropertyId, typeof(FunctionParameter.LengthPropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionParameter), "Scale", FunctionParameter.ScaleDomainPropertyId, typeof(FunctionParameter.ScalePropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionParameter), "SortOrder", FunctionParameter.SortOrderDomainPropertyId, typeof(FunctionParameter.SortOrderPropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionField), "Name", FunctionField.NameDomainPropertyId, typeof(FunctionField.NamePropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionField), "CodeFacade", FunctionField.CodeFacadeDomainPropertyId, typeof(FunctionField.CodeFacadePropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionField), "Nullable", FunctionField.NullableDomainPropertyId, typeof(FunctionField.NullablePropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionField), "DataType", FunctionField.DataTypeDomainPropertyId, typeof(FunctionField.DataTypePropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionField), "Summary", FunctionField.SummaryDomainPropertyId, typeof(FunctionField.SummaryPropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionField), "Default", FunctionField.DefaultDomainPropertyId, typeof(FunctionField.DefaultPropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionField), "Length", FunctionField.LengthDomainPropertyId, typeof(FunctionField.LengthPropertyHandler)),
-				new DomainMemberInfo(typeof(FunctionField), "Scale", FunctionField.ScaleDomainPropertyId, typeof(FunctionField.ScalePropertyHandler)),
 				new DomainMemberInfo(typeof(Index), "ParentEntityID", Index.ParentEntityIDDomainPropertyId, typeof(Index.ParentEntityIDPropertyHandler)),
 				new DomainMemberInfo(typeof(Index), "IsUnique", Index.IsUniqueDomainPropertyId, typeof(Index.IsUniquePropertyHandler)),
 				new DomainMemberInfo(typeof(Index), "Summary", Index.SummaryDomainPropertyId, typeof(Index.SummaryPropertyHandler)),
@@ -299,12 +235,6 @@ namespace nHydrate.Dsl
 				new DomainRolePlayerInfo(typeof(EntityHasEntities), "ChildEntity", EntityHasEntities.ChildEntityDomainRoleId),
 				new DomainRolePlayerInfo(typeof(EntityHasFields), "Entity", EntityHasFields.EntityDomainRoleId),
 				new DomainRolePlayerInfo(typeof(EntityHasFields), "Field", EntityHasFields.FieldDomainRoleId),
-				new DomainRolePlayerInfo(typeof(nHydrateModelHasStoredProcedures), "nHydrateModel", nHydrateModelHasStoredProcedures.nHydrateModelDomainRoleId),
-				new DomainRolePlayerInfo(typeof(nHydrateModelHasStoredProcedures), "StoredProcedure", nHydrateModelHasStoredProcedures.StoredProcedureDomainRoleId),
-				new DomainRolePlayerInfo(typeof(StoredProcedureHasFields), "StoredProcedure", StoredProcedureHasFields.StoredProcedureDomainRoleId),
-				new DomainRolePlayerInfo(typeof(StoredProcedureHasFields), "StoredProcedureField", StoredProcedureHasFields.StoredProcedureFieldDomainRoleId),
-				new DomainRolePlayerInfo(typeof(StoredProcedureHasParameters), "StoredProcedure", StoredProcedureHasParameters.StoredProcedureDomainRoleId),
-				new DomainRolePlayerInfo(typeof(StoredProcedureHasParameters), "StoredProcedureParameter", StoredProcedureHasParameters.StoredProcedureParameterDomainRoleId),
 				new DomainRolePlayerInfo(typeof(nHydrateModelHasViews), "nHydrateModel", nHydrateModelHasViews.nHydrateModelDomainRoleId),
 				new DomainRolePlayerInfo(typeof(nHydrateModelHasViews), "View", nHydrateModelHasViews.ViewDomainRoleId),
 				new DomainRolePlayerInfo(typeof(ViewHasFields), "View", ViewHasFields.ViewDomainRoleId),
@@ -317,12 +247,6 @@ namespace nHydrate.Dsl
 				new DomainRolePlayerInfo(typeof(EntityHasMetadata), "EntityMetadata", EntityHasMetadata.EntityMetadataDomainRoleId),
 				new DomainRolePlayerInfo(typeof(FieldHasMetadata), "Field", FieldHasMetadata.FieldDomainRoleId),
 				new DomainRolePlayerInfo(typeof(FieldHasMetadata), "FieldMetadata", FieldHasMetadata.FieldMetadataDomainRoleId),
-				new DomainRolePlayerInfo(typeof(nHydrateModelHasFunctions), "nHydrateModel", nHydrateModelHasFunctions.nHydrateModelDomainRoleId),
-				new DomainRolePlayerInfo(typeof(nHydrateModelHasFunctions), "Function", nHydrateModelHasFunctions.FunctionDomainRoleId),
-				new DomainRolePlayerInfo(typeof(FunctionHasParameters), "Function", FunctionHasParameters.FunctionDomainRoleId),
-				new DomainRolePlayerInfo(typeof(FunctionHasParameters), "FunctionParameter", FunctionHasParameters.FunctionParameterDomainRoleId),
-				new DomainRolePlayerInfo(typeof(FunctionHasFields), "Function", FunctionHasFields.FunctionDomainRoleId),
-				new DomainRolePlayerInfo(typeof(FunctionHasFields), "FunctionField", FunctionHasFields.FunctionFieldDomainRoleId),
 				new DomainRolePlayerInfo(typeof(EntityHasIndexes), "Entity", EntityHasIndexes.EntityDomainRoleId),
 				new DomainRolePlayerInfo(typeof(EntityHasIndexes), "Index", EntityHasIndexes.IndexDomainRoleId),
 				new DomainRolePlayerInfo(typeof(IndexHasIndexColumns), "Index", IndexHasIndexColumns.IndexDomainRoleId),
@@ -350,31 +274,23 @@ namespace nHydrate.Dsl
 	
 			if (createElementMap == null)
 			{
-				createElementMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(24);
+				createElementMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(16);
 				createElementMap.Add(typeof(nHydrateModel), 0);
 				createElementMap.Add(typeof(Entity), 1);
 				createElementMap.Add(typeof(Field), 2);
-				createElementMap.Add(typeof(StoredProcedure), 3);
-				createElementMap.Add(typeof(StoredProcedureField), 4);
-				createElementMap.Add(typeof(StoredProcedureParameter), 5);
-				createElementMap.Add(typeof(View), 6);
-				createElementMap.Add(typeof(ViewField), 7);
-				createElementMap.Add(typeof(RelationField), 8);
-				createElementMap.Add(typeof(StaticData), 9);
-				createElementMap.Add(typeof(EntityMetadata), 10);
-				createElementMap.Add(typeof(FieldMetadata), 11);
-				createElementMap.Add(typeof(Function), 12);
-				createElementMap.Add(typeof(FunctionParameter), 13);
-				createElementMap.Add(typeof(FunctionField), 14);
-				createElementMap.Add(typeof(Index), 15);
-				createElementMap.Add(typeof(IndexColumn), 16);
-				createElementMap.Add(typeof(ModelMetadata), 17);
-				createElementMap.Add(typeof(nHydrateDiagram), 18);
-				createElementMap.Add(typeof(EntityAssociationConnector), 19);
-				createElementMap.Add(typeof(EntityShape), 20);
-				createElementMap.Add(typeof(StoredProcedureShape), 21);
-				createElementMap.Add(typeof(ViewShape), 22);
-				createElementMap.Add(typeof(FunctionShape), 23);
+				createElementMap.Add(typeof(View), 3);
+				createElementMap.Add(typeof(ViewField), 4);
+				createElementMap.Add(typeof(RelationField), 5);
+				createElementMap.Add(typeof(StaticData), 6);
+				createElementMap.Add(typeof(EntityMetadata), 7);
+				createElementMap.Add(typeof(FieldMetadata), 8);
+				createElementMap.Add(typeof(Index), 9);
+				createElementMap.Add(typeof(IndexColumn), 10);
+				createElementMap.Add(typeof(ModelMetadata), 11);
+				createElementMap.Add(typeof(nHydrateDiagram), 12);
+				createElementMap.Add(typeof(EntityAssociationConnector), 13);
+				createElementMap.Add(typeof(EntityShape), 14);
+				createElementMap.Add(typeof(ViewShape), 15);
 			}
 			int index;
 			if (!createElementMap.TryGetValue(elementType, out index))
@@ -395,51 +311,31 @@ namespace nHydrate.Dsl
 				// A constructor was not generated for Field because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
 				case 2: return new Field(partition, propertyAssignments);
-				case 3: return new StoredProcedure(partition, propertyAssignments);
-				// A constructor was not generated for StoredProcedureField because it had HasCustomConstructor
-				// set to true. Please provide the constructor below.
-				case 4: return new StoredProcedureField(partition, propertyAssignments);
-				// A constructor was not generated for StoredProcedureParameter because it had HasCustomConstructor
-				// set to true. Please provide the constructor below.
-				case 5: return new StoredProcedureParameter(partition, propertyAssignments);
-				case 6: return new View(partition, propertyAssignments);
+				case 3: return new View(partition, propertyAssignments);
 				// A constructor was not generated for ViewField because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 7: return new ViewField(partition, propertyAssignments);
-				case 8: return new RelationField(partition, propertyAssignments);
-				case 9: return new StaticData(partition, propertyAssignments);
-				case 10: return new EntityMetadata(partition, propertyAssignments);
-				case 11: return new FieldMetadata(partition, propertyAssignments);
-				case 12: return new Function(partition, propertyAssignments);
-				// A constructor was not generated for FunctionParameter because it had HasCustomConstructor
-				// set to true. Please provide the constructor below.
-				case 13: return new FunctionParameter(partition, propertyAssignments);
-				// A constructor was not generated for FunctionField because it had HasCustomConstructor
-				// set to true. Please provide the constructor below.
-				case 14: return new FunctionField(partition, propertyAssignments);
+				case 4: return new ViewField(partition, propertyAssignments);
+				case 5: return new RelationField(partition, propertyAssignments);
+				case 6: return new StaticData(partition, propertyAssignments);
+				case 7: return new EntityMetadata(partition, propertyAssignments);
+				case 8: return new FieldMetadata(partition, propertyAssignments);
 				// A constructor was not generated for Index because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 15: return new Index(partition, propertyAssignments);
+				case 9: return new Index(partition, propertyAssignments);
 				// A constructor was not generated for IndexColumn because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 16: return new IndexColumn(partition, propertyAssignments);
-				case 17: return new ModelMetadata(partition, propertyAssignments);
+				case 10: return new IndexColumn(partition, propertyAssignments);
+				case 11: return new ModelMetadata(partition, propertyAssignments);
 				// A constructor was not generated for nHydrateDiagram because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 18: return new nHydrateDiagram(partition, propertyAssignments);
+				case 12: return new nHydrateDiagram(partition, propertyAssignments);
 				// A constructor was not generated for EntityAssociationConnector because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 19: return new EntityAssociationConnector(partition, propertyAssignments);
+				case 13: return new EntityAssociationConnector(partition, propertyAssignments);
 				// A constructor was not generated for EntityShape because it had HasCustomConstructor
 				// set to true. Please provide the constructor below.
-				case 20: return new EntityShape(partition, propertyAssignments);
-				// A constructor was not generated for StoredProcedureShape because it had HasCustomConstructor
-				// set to true. Please provide the constructor below.
-				case 21: return new StoredProcedureShape(partition, propertyAssignments);
-				case 22: return new ViewShape(partition, propertyAssignments);
-				// A constructor was not generated for FunctionShape because it had HasCustomConstructor
-				// set to true. Please provide the constructor below.
-				case 23: return new FunctionShape(partition, propertyAssignments);
+				case 14: return new EntityShape(partition, propertyAssignments);
+				case 15: return new ViewShape(partition, propertyAssignments);
 				default: return null;
 			}
 		}
@@ -462,25 +358,19 @@ namespace nHydrate.Dsl
 	
 			if (createElementLinkMap == null)
 			{
-				createElementLinkMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(18);
+				createElementLinkMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(12);
 				createElementLinkMap.Add(typeof(nHydrateModelHasEntities), 0);
 				createElementLinkMap.Add(typeof(EntityHasEntities), 1);
 				createElementLinkMap.Add(typeof(EntityHasFields), 2);
-				createElementLinkMap.Add(typeof(nHydrateModelHasStoredProcedures), 3);
-				createElementLinkMap.Add(typeof(StoredProcedureHasFields), 4);
-				createElementLinkMap.Add(typeof(StoredProcedureHasParameters), 5);
-				createElementLinkMap.Add(typeof(nHydrateModelHasViews), 6);
-				createElementLinkMap.Add(typeof(ViewHasFields), 7);
-				createElementLinkMap.Add(typeof(nHydrateModelHasRelationFields), 8);
-				createElementLinkMap.Add(typeof(EntityHasStaticDatum), 9);
-				createElementLinkMap.Add(typeof(EntityHasMetadata), 10);
-				createElementLinkMap.Add(typeof(FieldHasMetadata), 11);
-				createElementLinkMap.Add(typeof(nHydrateModelHasFunctions), 12);
-				createElementLinkMap.Add(typeof(FunctionHasParameters), 13);
-				createElementLinkMap.Add(typeof(FunctionHasFields), 14);
-				createElementLinkMap.Add(typeof(EntityHasIndexes), 15);
-				createElementLinkMap.Add(typeof(IndexHasIndexColumns), 16);
-				createElementLinkMap.Add(typeof(nHydrateModelHasModelMetadata), 17);
+				createElementLinkMap.Add(typeof(nHydrateModelHasViews), 3);
+				createElementLinkMap.Add(typeof(ViewHasFields), 4);
+				createElementLinkMap.Add(typeof(nHydrateModelHasRelationFields), 5);
+				createElementLinkMap.Add(typeof(EntityHasStaticDatum), 6);
+				createElementLinkMap.Add(typeof(EntityHasMetadata), 7);
+				createElementLinkMap.Add(typeof(FieldHasMetadata), 8);
+				createElementLinkMap.Add(typeof(EntityHasIndexes), 9);
+				createElementLinkMap.Add(typeof(IndexHasIndexColumns), 10);
+				createElementLinkMap.Add(typeof(nHydrateModelHasModelMetadata), 11);
 			}
 			int index;
 			if (!createElementLinkMap.TryGetValue(elementLinkType, out index))
@@ -500,21 +390,15 @@ namespace nHydrate.Dsl
 				// set to true. Please provide the constructor below.
 				case 1: return new EntityHasEntities(partition, roleAssignments, propertyAssignments);
 				case 2: return new EntityHasFields(partition, roleAssignments, propertyAssignments);
-				case 3: return new nHydrateModelHasStoredProcedures(partition, roleAssignments, propertyAssignments);
-				case 4: return new StoredProcedureHasFields(partition, roleAssignments, propertyAssignments);
-				case 5: return new StoredProcedureHasParameters(partition, roleAssignments, propertyAssignments);
-				case 6: return new nHydrateModelHasViews(partition, roleAssignments, propertyAssignments);
-				case 7: return new ViewHasFields(partition, roleAssignments, propertyAssignments);
-				case 8: return new nHydrateModelHasRelationFields(partition, roleAssignments, propertyAssignments);
-				case 9: return new EntityHasStaticDatum(partition, roleAssignments, propertyAssignments);
-				case 10: return new EntityHasMetadata(partition, roleAssignments, propertyAssignments);
-				case 11: return new FieldHasMetadata(partition, roleAssignments, propertyAssignments);
-				case 12: return new nHydrateModelHasFunctions(partition, roleAssignments, propertyAssignments);
-				case 13: return new FunctionHasParameters(partition, roleAssignments, propertyAssignments);
-				case 14: return new FunctionHasFields(partition, roleAssignments, propertyAssignments);
-				case 15: return new EntityHasIndexes(partition, roleAssignments, propertyAssignments);
-				case 16: return new IndexHasIndexColumns(partition, roleAssignments, propertyAssignments);
-				case 17: return new nHydrateModelHasModelMetadata(partition, roleAssignments, propertyAssignments);
+				case 3: return new nHydrateModelHasViews(partition, roleAssignments, propertyAssignments);
+				case 4: return new ViewHasFields(partition, roleAssignments, propertyAssignments);
+				case 5: return new nHydrateModelHasRelationFields(partition, roleAssignments, propertyAssignments);
+				case 6: return new EntityHasStaticDatum(partition, roleAssignments, propertyAssignments);
+				case 7: return new EntityHasMetadata(partition, roleAssignments, propertyAssignments);
+				case 8: return new FieldHasMetadata(partition, roleAssignments, propertyAssignments);
+				case 9: return new EntityHasIndexes(partition, roleAssignments, propertyAssignments);
+				case 10: return new IndexHasIndexColumns(partition, roleAssignments, propertyAssignments);
+				case 11: return new nHydrateModelHasModelMetadata(partition, roleAssignments, propertyAssignments);
 				default: return null;
 			}
 		}
@@ -697,18 +581,12 @@ namespace nHydrate.Dsl
 			#region Initialize DomainData Table
 			DomainRoles.Add(global::nHydrate.Dsl.nHydrateModelHasEntities.EntityDomainRoleId, true);
 			DomainRoles.Add(global::nHydrate.Dsl.EntityHasFields.FieldDomainRoleId, true);
-			DomainRoles.Add(global::nHydrate.Dsl.nHydrateModelHasStoredProcedures.StoredProcedureDomainRoleId, true);
-			DomainRoles.Add(global::nHydrate.Dsl.StoredProcedureHasFields.StoredProcedureFieldDomainRoleId, true);
-			DomainRoles.Add(global::nHydrate.Dsl.StoredProcedureHasParameters.StoredProcedureParameterDomainRoleId, true);
 			DomainRoles.Add(global::nHydrate.Dsl.nHydrateModelHasViews.ViewDomainRoleId, true);
 			DomainRoles.Add(global::nHydrate.Dsl.ViewHasFields.ViewFieldDomainRoleId, true);
 			DomainRoles.Add(global::nHydrate.Dsl.nHydrateModelHasRelationFields.RelationFieldDomainRoleId, true);
 			DomainRoles.Add(global::nHydrate.Dsl.EntityHasStaticDatum.StaticDataDomainRoleId, true);
 			DomainRoles.Add(global::nHydrate.Dsl.EntityHasMetadata.EntityMetadataDomainRoleId, true);
 			DomainRoles.Add(global::nHydrate.Dsl.FieldHasMetadata.FieldMetadataDomainRoleId, true);
-			DomainRoles.Add(global::nHydrate.Dsl.nHydrateModelHasFunctions.FunctionDomainRoleId, true);
-			DomainRoles.Add(global::nHydrate.Dsl.FunctionHasParameters.FunctionParameterDomainRoleId, true);
-			DomainRoles.Add(global::nHydrate.Dsl.FunctionHasFields.FunctionFieldDomainRoleId, true);
 			DomainRoles.Add(global::nHydrate.Dsl.EntityHasIndexes.IndexDomainRoleId, true);
 			DomainRoles.Add(global::nHydrate.Dsl.IndexHasIndexColumns.IndexColumnDomainRoleId, true);
 			DomainRoles.Add(global::nHydrate.Dsl.nHydrateModelHasModelMetadata.ModelMetadataDomainRoleId, true);

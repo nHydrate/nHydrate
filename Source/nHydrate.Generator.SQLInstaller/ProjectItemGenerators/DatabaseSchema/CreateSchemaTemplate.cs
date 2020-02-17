@@ -94,16 +94,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 }
             }
 
-            //Stored Procedures
-            foreach (var item in (from x in _model.Database.CustomStoredProcedures orderby x.Name select x))
-            {
-                var s = item.GetSQLSchema().ToLower();
-                if (!list.Contains(s) && s != "dbo")
-                {
-                    list.Add(s);
-                }
-            }
-
             if (list.Count > 0)
             {
                 sb.AppendLine("--CREATE DATABASE SCHEMAS");

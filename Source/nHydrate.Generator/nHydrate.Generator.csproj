@@ -198,10 +198,6 @@
     <Compile Include="Models\ColumnBase.cs" />
     <Compile Include="Models\TableIndexColumn.cs" />
     <Compile Include="Models\TableIndex.cs" />
-    <Compile Include="Models\FunctionCollection.cs" />
-    <Compile Include="Models\FunctionColumn.cs" />
-    <Compile Include="Models\FunctionColumnCollection.cs" />
-    <Compile Include="Models\Function.cs" />
     <Compile Include="Models\MetadataItemCollection.cs" />
     <Compile Include="Models\Extensions.cs" />
     <Compile Include="Models\MetadataItem.cs" />
@@ -210,16 +206,10 @@
     </Compile>
     <Compile Include="Models\VersionHistoryCollection.cs" />
     <Compile Include="Models\VersionHistory.cs" />
-    <Compile Include="Models\CustomStoredProcedure.cs" />
-    <Compile Include="Models\CustomStoredProcedureCollection.cs" />
-    <Compile Include="Models\CustomStoredProcedureColumn.cs" />
-    <Compile Include="Models\CustomStoredProcedureColumnCollection.cs" />
     <Compile Include="Models\CustomView.cs" />
     <Compile Include="Models\CustomViewCollection.cs" />
     <Compile Include="Models\CustomViewColumn.cs" />
     <Compile Include="Models\CustomViewColumnCollection.cs" />
-    <Compile Include="Models\Parameter.cs" />
-    <Compile Include="Models\ParameterCollection.cs" />
     <Compile Include="ModelUI\GenerateSettings.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -40,9 +40,6 @@ namespace nHydrate.Generator.Models
 
             this.RemovedTables = new List<string>();
             this.RemovedViews = new List<string>();
-            this.RemovedStoredProcedures = new List<string>();
-            this.RemovedFunctions = new List<string>();
-
             this.MetaData = new MetadataItemCollection();
         }
 
@@ -133,10 +130,6 @@ namespace nHydrate.Generator.Models
         public List<string> RemovedTables { get; }
 
         public List<string> RemovedViews { get; }
-
-        public List<string> RemovedStoredProcedures { get; }
-
-        public List<string> RemovedFunctions { get; }
 
         #endregion
 

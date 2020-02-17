@@ -58,10 +58,6 @@
     <Compile Include="Generators\AuditEntity\AuditEntityExtenderTemplate.cs" />
     <Compile Include="Generators\AuditEntity\AuditEntityGeneratedGenerator.cs" />
     <Compile Include="Generators\AuditEntity\AuditEntityGeneratedTemplate.cs" />
-    <Compile Include="Generators\ComplexTypes\ComplexTypesExtenderGenerator.cs" />
-    <Compile Include="Generators\ComplexTypes\ComplexTypesGeneratedGenerator.cs" />
-    <Compile Include="Generators\ComplexTypes\ComplexTypesSPExtenderTemplate.cs" />
-    <Compile Include="Generators\ComplexTypes\ComplexTypesSPGeneratedTemplate.cs" />
     <Compile Include="Generators\ContextExtensions\ContextExtensionsExtenderGenerator.cs" />
     <Compile Include="Generators\ContextExtensions\ContextExtensionsExtenderTemplate.cs" />
     <Compile Include="Generators\ContextExtensions\ContextExtensionsGeneratedGenerator.cs" />

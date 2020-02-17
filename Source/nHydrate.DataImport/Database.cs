@@ -9,17 +9,13 @@ namespace nHydrate.DataImport
 		{
 			this.EntityList = new List<Entity>();
 			this.ViewList = new List<View>();
-			this.StoredProcList = new List<StoredProc>();
-			this.FunctionList = new List<Function>();
 			this.IndexList = new List<Index>();
 			this.UserDefinedTypes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 			this.IgnoreRelations = false;
 		}
 
 		public List<Entity> EntityList { get; }
-		public List<StoredProc> StoredProcList { get; }
 		public List<View> ViewList { get; }
-		public List<Function> FunctionList { get; }
 		public List<Index> IndexList { get; }
 		public bool IgnoreRelations { get; set; }
 		public Dictionary<string, string> UserDefinedTypes { get; }

@@ -14,7 +14,6 @@ namespace nHydrate.DataImport
 
 		public string Schema { get; set; }
 		public override List<Field> FieldList { get; internal set; }
-		public override List<Parameter> ParameterList { get; internal set; }
 		public List<Relationship> RelationshipList { get; }
 		public bool AllowCreateAudit { get; set; }
 		public bool AllowModifyAudit { get; set; }

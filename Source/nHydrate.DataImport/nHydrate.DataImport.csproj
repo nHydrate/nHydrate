@@ -74,11 +74,9 @@
     <Compile Include="IDatabaseHelper.cs" />
     <Compile Include="IImportDomain.cs" />
     <Compile Include="IndexField.cs" />
-    <Compile Include="Function.cs" />
     <Compile Include="DatabaseBaseObject.cs" />
     <Compile Include="ImportModelSettings.cs" />
     <Compile Include="Index.cs" />
-    <Compile Include="Parameter.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Field.cs" />
@@ -87,7 +85,6 @@
     <Compile Include="RelationshipDetail.cs" />
     <Compile Include="SpecialField.cs" />
     <Compile Include="SQLObject.cs" />
-    <Compile Include="StoredProc.cs" />
     <Compile Include="View.cs" />
   </ItemGroup>
   <ItemGroup>

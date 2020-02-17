@@ -68,15 +68,6 @@ namespace nHydrate.DslPackage
 			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.View.DomainClassId, 
 							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("ViewExplorerImage")), 
 							false); 
-			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.StoredProcedureField.DomainClassId, 
-							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("StoredProcedureFieldExplorerImage")), 
-							false); 
-			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.StoredProcedure.DomainClassId, 
-							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("StoredProcedureExplorerImage")), 
-							false); 
-			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.StoredProcedureParameter.DomainClassId, 
-							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("StoredProcedureParameterExplorerImage")), 
-							false); 
 			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.ViewField.DomainClassId, 
 							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("ViewFieldExplorerImage")), 
 							false); 
@@ -88,15 +79,6 @@ namespace nHydrate.DslPackage
 							false); 
 			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.nHydrateModel.DomainClassId, 
 							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("nHydrateModelExplorerImage")), 
-							false); 
-			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.Function.DomainClassId, 
-							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("FunctionExplorerImage")), 
-							false); 
-			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.FunctionParameter.DomainClassId, 
-							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("FunctionParameterExplorerImage")), 
-							false); 
-			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.FunctionField.DomainClassId, 
-							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("FunctionFieldExplorerImage")), 
 							false); 
 			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.Index.DomainClassId, 
 							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("IndexExplorerImage")), 

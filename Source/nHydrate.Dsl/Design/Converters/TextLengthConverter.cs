@@ -40,40 +40,6 @@ namespace nHydrate.Dsl.Design.Converters
                             retval = column.Length.ToString();
                         }
                     }
-                    else if (context.Instance is nHydrate.Dsl.StoredProcedureField)
-                    {
-                        var column = context.Instance as nHydrate.Dsl.StoredProcedureField;
-                        if (column.DataType.SupportsMax())
-                        {
-                            if (column.Length == 0) retval = "max";
-                            else retval = column.Length.ToString();
-                        }
-                        else if (column.DataType.GetPredefinedSize() != -1)
-                        {
-                            retval = "predefined";
-                        }
-                        else
-                        {
-                            retval = column.Length.ToString();
-                        }
-                    }
-                    else if (context.Instance is nHydrate.Dsl.StoredProcedureParameter)
-                    {
-                        var column = context.Instance as nHydrate.Dsl.StoredProcedureParameter;
-                        if (column.DataType.SupportsMax())
-                        {
-                            if (column.Length == 0) retval = "max";
-                            else retval = column.Length.ToString();
-                        }
-                        else if (column.DataType.GetPredefinedSize() != -1)
-                        {
-                            retval = "predefined";
-                        }
-                        else
-                        {
-                            retval = column.Length.ToString();
-                        }
-                    }
                     else if (context.Instance is nHydrate.Dsl.ViewField)
                     {
                         var column = context.Instance as nHydrate.Dsl.ViewField;
@@ -104,26 +70,6 @@ namespace nHydrate.Dsl.Design.Converters
             if (context.Instance is nHydrate.Dsl.Field)
             {
                 var column = context.Instance as nHydrate.Dsl.Field;
-                if (sourceType == typeof(string))
-                    return true;
-                else if (sourceType == typeof(int))
-                    return true;
-                else
-                    return false;
-            }
-            else if (context.Instance is nHydrate.Dsl.StoredProcedureField)
-            {
-                var column = context.Instance as nHydrate.Dsl.StoredProcedureField;
-                if (sourceType == typeof(string))
-                    return true;
-                else if (sourceType == typeof(int))
-                    return true;
-                else
-                    return false;
-            }
-            else if (context.Instance is nHydrate.Dsl.StoredProcedureParameter)
-            {
-                var column = context.Instance as nHydrate.Dsl.StoredProcedureParameter;
                 if (sourceType == typeof(string))
                     return true;
                 else if (sourceType == typeof(int))

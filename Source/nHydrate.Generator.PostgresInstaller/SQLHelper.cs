@@ -513,12 +513,6 @@ namespace nHydrate.Generator.PostgresInstaller
             return item.DBSchema;
         }
 
-        public static string GetPostgresSchema(this CustomStoredProcedure item)
-        {
-            if (string.IsNullOrEmpty(item.DBSchema)) return "public";
-            return item.DBSchema;
-        }
-
         public static string GetPostgresSchema(this CustomView item)
         {
             if (string.IsNullOrEmpty(item.DBSchema)) return "public";
@@ -2139,32 +2133,6 @@ namespace nHydrate.Generator.PostgresInstaller
             sb.AppendLine("--GO");
             sb.AppendLine();
             return sb.ToString();
-        }
-
-        private static string BuildStoredProcParameterList(CustomStoredProcedure storedProcedure)
-        {
-            var output = new StringBuilder();
-            var parameterList = storedProcedure.GetParameters().Where(x => x.SortOrder > 0).OrderBy(x => x.SortOrder).ToList();
-            parameterList.AddRange(storedProcedure.GetParameters().Where(x => x.SortOrder == 0).OrderBy(x => x.Name).ToList());
-
-            var ii = 0;
-            foreach (var parameter in parameterList)
-            {
-                //Get the default value and make it null if none exists
-                var defaultValue = parameter.GetSQLDefault();
-                if (string.IsNullOrEmpty(defaultValue))
-                    defaultValue = "null";
-
-                ii++;
-                output.Append("\t@" + ValidationHelper.MakeDatabaseScriptIdentifier(parameter.DatabaseName) + " " +
-                    parameter.DatabaseType.ToLower() +
-                    (parameter.GetPredefinedSize() == -1 ? "(" + parameter.GetLengthString() + ") " : string.Empty) + (parameter.IsOutputParameter ? " out " : " = " + defaultValue));
-
-                if (ii != parameterList.Count)
-                    output.Append(",");
-                output.AppendLine();
-            }
-            return output.ToString();
         }
 
         public static string GetSQLCreateAuditTable(ModelRoot model, Table table)

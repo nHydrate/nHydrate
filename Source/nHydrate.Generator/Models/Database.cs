@@ -33,20 +33,8 @@ namespace nHydrate.Generator.Models
             this.Relations.ResetKey(Guid.Empty.ToString());
             this.CustomViews = new CustomViewCollection(root);
             this.CustomViews.ResetKey(Guid.Empty.ToString());
-            this.CustomStoredProcedures = new CustomStoredProcedureCollection(root);
-            this.CustomStoredProcedures.ResetKey(Guid.Empty.ToString());
             this.CustomViewColumns = new CustomViewColumnCollection(root);
             this.CustomViewColumns.ResetKey(Guid.Empty.ToString());
-            this.CustomStoredProcedureColumns = new CustomStoredProcedureColumnCollection(root);
-            this.CustomStoredProcedureColumns.ResetKey(Guid.Empty.ToString());
-            this.CustomRetrieveRuleParameters = new ParameterCollection(root);
-            this.CustomRetrieveRuleParameters.ResetKey(Guid.Empty.ToString());
-            this.FunctionParameters = new ParameterCollection(root);
-            this.FunctionParameters.ResetKey(Guid.Empty.ToString());
-            this.Functions = new FunctionCollection(root);
-            this.Functions.ResetKey(Guid.Empty.ToString());
-            this.FunctionColumns = new FunctionColumnCollection(root);
-            this.FunctionColumns.ResetKey(Guid.Empty.ToString());
         }
 
         #endregion
@@ -93,21 +81,9 @@ namespace nHydrate.Generator.Models
 
         public TableCollection Tables { get; }
 
-        public FunctionCollection Functions { get; }
-
         public CustomViewCollection CustomViews { get; }
 
-        public CustomStoredProcedureCollection CustomStoredProcedures { get; }
-
         public CustomViewColumnCollection CustomViewColumns { get; }
-
-        public CustomStoredProcedureColumnCollection CustomStoredProcedureColumns { get; }
-
-        public FunctionColumnCollection FunctionColumns { get; }
-
-        public ParameterCollection CustomRetrieveRuleParameters { get; }
-
-        public ParameterCollection FunctionParameters { get; }
 
         public string GrantExecUser { get; set; } = string.Empty;
 
@@ -175,22 +151,6 @@ namespace nHydrate.Generator.Models
                 this.CustomViewColumns.XmlAppend(customViewColumnsNode);
                 node.AppendChild(customViewColumnsNode);
 
-                var customStoredProcedureColumnsNode = oDoc.CreateElement("customstoredprocedurecolumns");
-                this.CustomStoredProcedureColumns.XmlAppend(customStoredProcedureColumnsNode);
-                node.AppendChild(customStoredProcedureColumnsNode);
-
-                var functionColumnsNode = oDoc.CreateElement("functioncolumns");
-                this.FunctionColumns.XmlAppend(functionColumnsNode);
-                node.AppendChild(functionColumnsNode);
-
-                var customRetrieveRuleParameterNode = oDoc.CreateElement("customretrieveruleparameters");
-                this.CustomRetrieveRuleParameters.XmlAppend(customRetrieveRuleParameterNode);
-                node.AppendChild(customRetrieveRuleParameterNode);
-
-                var functionParameterNode = oDoc.CreateElement("functionparameters");
-                this.FunctionParameters.XmlAppend(functionParameterNode);
-                node.AppendChild(functionParameterNode);
-
                 var relationsNode = oDoc.CreateElement("relations");
                 this.Relations.XmlAppend(relationsNode);
                 node.AppendChild(relationsNode);
@@ -201,18 +161,9 @@ namespace nHydrate.Generator.Models
                 this.Tables.XmlAppend(tablesNode);
                 node.AppendChild(tablesNode);
 
-                var functionsNode = oDoc.CreateElement("functions");
-                this.Functions.XmlAppend(functionsNode);
-                node.AppendChild(functionsNode);
-
                 var customViewsNode = oDoc.CreateElement("customviews");
                 this.CustomViews.XmlAppend(customViewsNode);
                 node.AppendChild(customViewsNode);
-
-                var customStoredProceduresNode = oDoc.CreateElement("customstoredprocedures");
-                this.CustomStoredProcedures.XmlAppend(customStoredProceduresNode);
-                node.AppendChild(customStoredProceduresNode);
-
             }
             catch (Exception ex)
             {
@@ -242,25 +193,9 @@ namespace nHydrate.Generator.Models
                 if (tablesNode != null)
                     this.Tables.XmlLoad(tablesNode);
 
-                var functionsNode = node.SelectSingleNode("functions");
-                if (functionsNode != null)
-                    this.Functions.XmlLoad(functionsNode);
-
                 var customViewsNode = node.SelectSingleNode("customviews");
                 if (customViewsNode != null)
                     this.CustomViews.XmlLoad(customViewsNode);
-
-                var customStoredProceduresNode = node.SelectSingleNode("customstoredprocedures");
-                if (customStoredProceduresNode != null)
-                    this.CustomStoredProcedures.XmlLoad(customStoredProceduresNode);
-
-                var customRetrieveRulesParameterNode = node.SelectSingleNode("customretrieveruleparameters");
-                if (customRetrieveRulesParameterNode != null)
-                    this.CustomRetrieveRuleParameters.XmlLoad(customRetrieveRulesParameterNode);
-
-                var functionParameterNode = node.SelectSingleNode("functionparameters");
-                if (functionParameterNode != null)
-                    this.FunctionParameters.XmlLoad(functionParameterNode);
 
                 var columnsNode = node.SelectSingleNode("columns");
                 if (columnsNode != null)
@@ -269,14 +204,6 @@ namespace nHydrate.Generator.Models
                 var customviewcolumnsNode = node.SelectSingleNode("customviewcolumns");
                 if (customviewcolumnsNode != null)
                     this.CustomViewColumns.XmlLoad(customviewcolumnsNode);
-
-                var customstoredprocedurecolumnsNode = node.SelectSingleNode("customstoredprocedurecolumns");
-                if (customstoredprocedurecolumnsNode != null)
-                    this.CustomStoredProcedureColumns.XmlLoad(customstoredprocedurecolumnsNode);
-
-                var functioncolumnsNode = node.SelectSingleNode("functioncolumns");
-                if (functioncolumnsNode != null)
-                    this.FunctionColumns.XmlLoad(functioncolumnsNode);
 
                 //Clean all tables that are dead
                 foreach (Table t in this.Tables)

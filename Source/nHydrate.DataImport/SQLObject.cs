@@ -14,7 +14,6 @@ namespace nHydrate.DataImport
 
 		public string SQL { get; set; }
 		public abstract List<Field> FieldList { get; internal set; }
-		public abstract List<Parameter> ParameterList { get; internal set; }
 
 		/// <summary>
 		/// Determines if error so cannot import

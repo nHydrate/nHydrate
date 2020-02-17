@@ -98,7 +98,7 @@ namespace nHydrate.Dsl
 		{
 			get
 			{
-				return 5;
+				return 3;
 			}
 		}
 		
@@ -193,38 +193,6 @@ namespace nHydrate.Dsl
 						"View", // F1 help keyword for the toolbox item.
 						resourceManager.GetString("ViewToolboxTooltip", resourceCulture), // Localized tooltip text for the toolbox item.
 						CreateElementToolPrototype(store, global::nHydrate.Dsl.View.DomainClassId), // ElementGroupPrototype (data object) representing model element on the toolbox.
-						new global::System.ComponentModel.ToolboxItemFilterAttribute[] { // Collection of ToolboxItemFilterAttribute objects that determine visibility of the toolbox item.
-						new global::System.ComponentModel.ToolboxItemFilterAttribute(ToolboxFilterString, global::System.ComponentModel.ToolboxItemFilterType.Require) 
-						});
-					break;
-				case "nHydrate.DslPackage.FunctionToolboxItem":
-					// Add Function shape tool.
-					result = new DslDesign::ModelingToolboxItem(
-						"nHydrate.DslPackage.FunctionToolboxItem", // Unique identifier (non-localized) for the toolbox item.
-						4, // Position relative to other items in the same toolbox tab.
-						resourceManager.GetString("FunctionToolboxItem", resourceCulture), // Localized display name for the item.
-						(global::System.Drawing.Bitmap)DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("FunctionToolboxBitmap", resourceCulture)), // Image displayed next to the toolbox item.
-						"nHydrate.DslPackage.nHydrateToolboxTab", // Unique identifier (non-localized) for the toolbox item tab.
-						resourceManager.GetString("nHydrateToolboxTab", resourceCulture), // Localized display name for the toolbox tab.
-						"Function", // F1 help keyword for the toolbox item.
-						resourceManager.GetString("FunctionToolboxTooltip", resourceCulture), // Localized tooltip text for the toolbox item.
-						CreateElementToolPrototype(store, global::nHydrate.Dsl.Function.DomainClassId), // ElementGroupPrototype (data object) representing model element on the toolbox.
-						new global::System.ComponentModel.ToolboxItemFilterAttribute[] { // Collection of ToolboxItemFilterAttribute objects that determine visibility of the toolbox item.
-						new global::System.ComponentModel.ToolboxItemFilterAttribute(ToolboxFilterString, global::System.ComponentModel.ToolboxItemFilterType.Require) 
-						});
-					break;
-				case "nHydrate.DslPackage.StoredProcedureToolboxItem":
-					// Add StoredProcedure shape tool.
-					result = new DslDesign::ModelingToolboxItem(
-						"nHydrate.DslPackage.StoredProcedureToolboxItem", // Unique identifier (non-localized) for the toolbox item.
-						5, // Position relative to other items in the same toolbox tab.
-						resourceManager.GetString("StoredProcedureToolboxItem", resourceCulture), // Localized display name for the item.
-						(global::System.Drawing.Bitmap)DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("StoredProcedureToolboxBitmap", resourceCulture)), // Image displayed next to the toolbox item.
-						"nHydrate.DslPackage.nHydrateToolboxTab", // Unique identifier (non-localized) for the toolbox item tab.
-						resourceManager.GetString("nHydrateToolboxTab", resourceCulture), // Localized display name for the toolbox tab.
-						"StoredProcedure", // F1 help keyword for the toolbox item.
-						resourceManager.GetString("StoredProcedureToolboxTooltip", resourceCulture), // Localized tooltip text for the toolbox item.
-						CreateElementToolPrototype(store, global::nHydrate.Dsl.StoredProcedure.DomainClassId), // ElementGroupPrototype (data object) representing model element on the toolbox.
 						new global::System.ComponentModel.ToolboxItemFilterAttribute[] { // Collection of ToolboxItemFilterAttribute objects that determine visibility of the toolbox item.
 						new global::System.ComponentModel.ToolboxItemFilterAttribute(ToolboxFilterString, global::System.ComponentModel.ToolboxItemFilterType.Require) 
 						});

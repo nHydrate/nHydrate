@@ -114,14 +114,6 @@
         </ElementMergeDirective>
         <ElementMergeDirective>
           <Index>
-            <DomainClassMoniker Name="StoredProcedure" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>nHydrateModelHasStoredProcedures.StoredProcedures</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-        <ElementMergeDirective>
-          <Index>
             <DomainClassMoniker Name="View" />
           </Index>
           <LinkCreationPaths>
@@ -134,14 +126,6 @@
           </Index>
           <LinkCreationPaths>
             <DomainPath>nHydrateModelHasRelationFields.RelationFields</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-        <ElementMergeDirective>
-          <Index>
-            <DomainClassMoniker Name="Function" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>nHydrateModelHasFunctions.Functions</DomainPath>
           </LinkCreationPaths>
         </ElementMergeDirective>
         <ElementMergeDirective>
@@ -416,236 +400,6 @@
         </ElementMergeDirective>
       </ElementMergeDirectives>
     </DomainClass>
-    <DomainClass Id="e32474f5-b350-4120-9e62-0790cd4b3f90" Description="This is a custom database stored procedure" Name="StoredProcedure" DisplayName="Stored Procedure" Namespace="nHydrate.Dsl" GeneratesDoubleDerived="true">
-      <Properties>
-        <DomainProperty Id="3a65566b-2e97-446b-abee-da73d0309a06" Description="Determines SQL statement used to create the database stored procedure object" Name="SQL" DisplayName="SQL" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Editors.SQLEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="045175eb-9128-4491-864d-00e8d1fdb107" Description="Determines the name of this object" Name="Name" DisplayName="Name" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="9252ed3a-0e26-4bef-b114-0ee1dd2b70ba" Description="Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier." Name="CodeFacade" DisplayName="Code Facade" Category="Code">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="61da569b-9110-46e4-99b9-1c0a7faee79e" Description="Determines the summary of this object" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="1c8ece9a-182f-4210-a36a-344d7d0771b2" Description="Determines the parent schema for this object" Name="Schema" DisplayName="Schema" Category="Database">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="2083b2fd-c2b3-4fd5-8266-3572b57124a0" Description="Determines the this stored procedure is a pre-existing one and should not be overwritten." Name="IsExisting" DisplayName="Is Existing" DefaultValue="false" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="293cecfe-cfe0-462e-9903-538c43162eef" Description="Determines the name of this stored procedure in the database. Leave empty to auto-generate." Name="DatabaseObjectName" DisplayName="Database Object Name" Category="Code">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="e12501b1-2015-49e6-a3ae-e6ac387f9cb3" Description="If True, will generate both a base class with all functionality and a partial class to support customization through overrides" Name="GeneratesDoubleDerived" DisplayName="Generates Double Derived" DefaultValue="false" Category="Code" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-      <ElementMergeDirectives>
-        <ElementMergeDirective>
-          <Index>
-            <DomainClassMoniker Name="StoredProcedureField" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>StoredProcedureHasFields.Fields</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-        <ElementMergeDirective>
-          <Index>
-            <DomainClassMoniker Name="StoredProcedureParameter" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>StoredProcedureHasParameters.Parameters</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-      </ElementMergeDirectives>
-    </DomainClass>
-    <DomainClass Id="09f86d91-8e2f-4a68-a738-8ab1855656d7" Description="" Name="StoredProcedureField" DisplayName="Field" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
-      <Properties>
-        <DomainProperty Id="27eac854-6501-4f02-8c85-113409246394" Description="Determines the name of this object" Name="Name" DisplayName="Name" DefaultValue="" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="fe26f5f8-58d8-48fd-b644-9d77704ff855" Description="Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier." Name="CodeFacade" DisplayName="Code Facade" Category="Code">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="06f88333-b7c4-43cf-89e5-effd8bf94985" Description="Determines if this item allows null values" Name="Nullable" DisplayName="Nullable" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="49c40309-92a6-4d7d-87bc-0cec2e05d7a5" Description="Determines the data type of this field" Name="DataType" DisplayName="Datatype" DefaultValue="VarChar" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.DatatypeConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <DomainEnumerationMoniker Name="DataTypeConstants" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="bf7c1328-c7bf-480b-807e-c7fc6edd39fb" Description="Determines the summary of this object" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="3601215e-78bc-4e3e-b298-b1805f5152a9" Description="Determines the default value of this object" Name="Default" DisplayName="Default" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="4aba4368-723c-47c8-80ba-dc03f2bfcc10" Description="Determines the size of this field in bytes" Name="Length" DisplayName="Length" DefaultValue="50" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.TextLengthConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="85262f34-778c-441b-b6d2-e41ae84e9e97" Description="Determines the scale of some data types" Name="Scale" DisplayName="Scale" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.TextDecimalScaleConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-    </DomainClass>
-    <DomainClass Id="66aa7115-e9ae-425a-86fe-31630cf78b3a" Description="" Name="StoredProcedureParameter" DisplayName="Parameter" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
-      <Properties>
-        <DomainProperty Id="ec1e37ad-4fe1-47eb-a8cb-6df702660ba4" Description="Determines the name of this object" Name="Name" DisplayName="Name" DefaultValue="" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="08f89366-ba85-4629-bc3b-3112150015cf" Description="Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier." Name="CodeFacade" DisplayName="Code Facade" Category="Code">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="76c1a180-9b5a-4415-acbe-b19bcdd7f491" Description="Determines if this item allows null values" Name="Nullable" DisplayName="Nullable" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="f1c3aea3-a10c-4a29-a383-5013fafdf730" Description="Determines the data type of this field" Name="DataType" DisplayName="Datatype" DefaultValue="VarChar" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.DatatypeConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <DomainEnumerationMoniker Name="DataTypeConstants" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="768fd231-e0eb-418f-a9b3-08ed27dd8baf" Description="Determines the summary of this object" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="22beb39b-2b29-4dd1-94c1-bfef531ba545" Description="Determines the default value of this object" Name="Default" DisplayName="Default" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="b106a032-1d57-4532-8fd6-8f370e281fe5" Description="Determines the size of this field in bytes" Name="Length" DisplayName="Length" DefaultValue="50" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.TextLengthConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="53998728-8e93-4dc5-a4cc-32ae814f5dd5" Description="Determines if this is an output parameter for the mapped stored proc" Name="IsOutputParameter" DisplayName="Is Output Parameter" DefaultValue="false" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="a9a2eda9-591f-4f17-b19f-0f0ba495dda1" Description="Determines the scale of some data types" Name="Scale" DisplayName="Scale" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.TextDecimalScaleConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="19673ffc-7726-4fbb-bde6-3ff406d4b3d8" Description="" Name="SortOrder" DisplayName="Sort Order" DefaultValue="0" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-    </DomainClass>
     <DomainClass Id="fcb76b2a-6488-4578-a99b-451bd16ff1b8" Description="This is a custom database view" Name="View" DisplayName="View" Namespace="nHydrate.Dsl" GeneratesDoubleDerived="true">
       <Properties>
         <DomainProperty Id="1b837a3a-d7a9-4fe4-897b-f0b69b89f64e" Description="Determines SQL statement used to create the database view object" Name="SQL" DisplayName="SQL" Category="Definition">
@@ -878,226 +632,6 @@
         </DomainProperty>
       </Properties>
     </DomainClass>
-    <DomainClass Id="4940addd-d841-4fc6-8440-05351b351779" Description="This is a custom database function" Name="Function" DisplayName="Function" Namespace="nHydrate.Dsl" GeneratesDoubleDerived="true">
-      <Properties>
-        <DomainProperty Id="b6378f56-7e38-422b-a3ce-c777b6247d4c" Description="Determines SQL statement used to create the database function object" Name="SQL" DisplayName="SQL" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Editors.SQLEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="a40a2125-7278-4985-bb0b-ba43d43c2ce5" Description="Determines the name of this object" Name="Name" DisplayName="Name" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="5cb47a54-d2a1-4876-8a4e-76a37b08ba3c" Description="Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier." Name="CodeFacade" DisplayName="Code Facade" Category="Code">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="ce6796d2-b4b0-4a7d-a23b-63bb6bd2123e" Description="Determines the summary of this object" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="bc5e57ab-995f-4c57-bb1d-7d6b981a817b" Description="Determines the parent schema for this object" Name="Schema" DisplayName="Schema" Category="Database">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="8863f742-c360-44f6-9031-e4d924cfbcb7" Description="Determines if this is a table function" Name="IsTable" DisplayName="Is Table" DefaultValue="false" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="31dfa463-ae1c-4f18-8150-865486249cae" Description="Optional variable name used in function declaration return type" Name="ReturnVariable" DisplayName="Return Variable" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-      <ElementMergeDirectives>
-        <ElementMergeDirective>
-          <Index>
-            <DomainClassMoniker Name="FunctionParameter" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>FunctionHasParameters.Parameters</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-        <ElementMergeDirective>
-          <Index>
-            <DomainClassMoniker Name="FunctionField" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>FunctionHasFields.Fields</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-      </ElementMergeDirectives>
-    </DomainClass>
-    <DomainClass Id="9a7fee83-c2d8-40e7-888d-e6c3ab881cac" Description="" Name="FunctionParameter" DisplayName="Parameter" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
-      <Properties>
-        <DomainProperty Id="838abb7a-9ad6-4495-922a-3b3607935fca" Description="Determines the name of this object" Name="Name" DisplayName="Name" DefaultValue="" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="97fe9195-571f-4696-b57f-aadd4e3e6ec1" Description="Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier." Name="CodeFacade" DisplayName="Code Facade" Category="Code">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="58bdfc74-b1d2-4198-8506-52f89fbd0bf5" Description="Determines if this item allows null values" Name="Nullable" DisplayName="Nullable" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="e782b645-1554-4dfa-b017-53a9c5b8e779" Description="Determines the data type of this field" Name="DataType" DisplayName="Datatype" DefaultValue="VarChar" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.DatatypeConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <DomainEnumerationMoniker Name="DataTypeConstants" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="b9f6c911-acf1-4fa6-9465-0626f66e34ce" Description="Determines the summary of this object" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="c665e236-d7bd-455c-95bd-1e962ffa86e0" Description="Determines the default value of this object" Name="Default" DisplayName="Default" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="0c316064-28a7-440f-a88a-3c6a94045dec" Description="Determines the size of this field in bytes" Name="Length" DisplayName="Length" DefaultValue="50" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.TextLengthConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="e0c55ca8-d557-4f05-b668-5e6e96748934" Description="Determines the scale of some data types" Name="Scale" DisplayName="Scale" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.TextDecimalScaleConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="22e6cd02-4cf1-4f1a-9316-994f96a0a0e6" Description="" Name="SortOrder" DisplayName="Sort Order" DefaultValue="0" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-    </DomainClass>
-    <DomainClass Id="e203d7e8-2878-48e6-99e9-7c8a1daf0a53" Description="" Name="FunctionField" DisplayName="Field" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
-      <Properties>
-        <DomainProperty Id="159b2e68-0fad-402b-a809-9db545932201" Description="Determines the name of this object" Name="Name" DisplayName="Name" DefaultValue="" Category="Definition" IsElementName="true">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="68ff06a6-34a5-4176-ae43-a97987c27e85" Description="Determines the object name used in the API. If this property is blank the 'Name' property is used in the API. This property can be used to mask the database identifier." Name="CodeFacade" DisplayName="Code Facade" Category="Code">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="6ee17bf0-1da2-47da-9b5f-d724da4518e1" Description="Determines if this item allows null values" Name="Nullable" DisplayName="Nullable" DefaultValue="true" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="b51f07bd-34b2-4d6d-a12a-09f51a0d00e8" Description="Determines the data type of this field" Name="DataType" DisplayName="Datatype" DefaultValue="VarChar" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.DatatypeConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <DomainEnumerationMoniker Name="DataTypeConstants" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="be737e4a-ec07-4834-93d3-d8a6e00c381f" Description="Determines the summary of this object" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="4fe9787e-6a50-4060-8327-93dce4459689" Description="Determines the default value of this object" Name="Default" DisplayName="Default" Category="Definition">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="9b154c3b-1f7a-4d59-8912-e171efb9a6e7" Description="Determines the size of this field in bytes" Name="Length" DisplayName="Length" DefaultValue="50" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.TextLengthConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="b06117d3-7bab-4b1a-bedc-c7620fb043ef" Description="Determines the scale of some data types" Name="Scale" DisplayName="Scale" Category="Definition">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.TypeConverter">
-              <Parameters>
-                <AttributeParameter Value="typeof(nHydrate.Dsl.Design.Converters.TextDecimalScaleConverter)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-    </DomainClass>
     <DomainClass Id="ced4ceba-e07d-4396-b2fe-a981c60933d0" Description="A defined index for an entity" Name="Index" DisplayName="Index" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
       <Properties>
         <DomainProperty Id="a8689c72-62db-4c31-8f4e-a65b2ed97cea" Description="" Name="ParentEntityID" DisplayName="Parent Entity" Category="Definition" IsBrowsable="false">
@@ -1298,54 +832,6 @@
         </DomainRole>
       </Target>
     </DomainRelationship>
-    <DomainRelationship Id="e17b4278-be93-4c91-a2ea-be5c39700492" Description="" Name="nHydrateModelHasStoredProcedures" DisplayName="NHydrate Model Has Stored Procedures" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="a751f422-3d3f-4480-8f7b-be4454df83d3" Description="" Name="nHydrateModel" DisplayName="NHydrate Model" PropertyName="StoredProcedures" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Stored Procedures">
-          <RolePlayer>
-            <DomainClassMoniker Name="nHydrateModel" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="bc83dec7-cfbe-4bb9-9e42-128efd1e2e5e" Description="" Name="StoredProcedure" DisplayName="Stored Procedure" PropertyName="nHydrateModel" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="nHydrate Model">
-          <RolePlayer>
-            <DomainClassMoniker Name="StoredProcedure" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="4870cc73-c360-4c7c-9b2d-976e53f54dd7" Description="" Name="StoredProcedureHasFields" DisplayName="Stored Procedure Has Fields" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="bdc7cdb9-a588-4e38-8498-35f33c6225a8" Description="" Name="StoredProcedure" DisplayName="Stored Procedure" PropertyName="Fields" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Fields">
-          <RolePlayer>
-            <DomainClassMoniker Name="StoredProcedure" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="4e93d360-be4b-4996-bff4-1493c41c94d0" Description="" Name="StoredProcedureField" DisplayName="Stored Procedure Field" PropertyName="StoredProcedure" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="Stored Procedure">
-          <RolePlayer>
-            <DomainClassMoniker Name="StoredProcedureField" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="4fdc3e26-1253-4cea-89c5-cc6078cbfb7e" Description="" Name="StoredProcedureHasParameters" DisplayName="Stored Procedure Has Parameters" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="021e0136-6b0e-4617-8308-fa63d66c8ff7" Description="" Name="StoredProcedure" DisplayName="Stored Procedure" PropertyName="Parameters" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Parameters">
-          <RolePlayer>
-            <DomainClassMoniker Name="StoredProcedure" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="d63e25f5-ce95-4369-bcd9-954362b9283f" Description="" Name="StoredProcedureParameter" DisplayName="Stored Procedure Parameter" PropertyName="StoredProcedure" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="Stored Procedure">
-          <RolePlayer>
-            <DomainClassMoniker Name="StoredProcedureParameter" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
     <DomainRelationship Id="4d1b0533-9248-40f1-aadc-09d8af388a29" Description="" Name="nHydrateModelHasViews" DisplayName="NHydrate Model Has Views" Namespace="nHydrate.Dsl" IsEmbedding="true">
       <Source>
         <DomainRole Id="e99ffbdf-da6c-46a3-ab93-f02ac9018d5c" Description="" Name="nHydrateModel" DisplayName="nHydrate Model" PropertyName="Views" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Views">
@@ -1438,54 +924,6 @@
         <DomainRole Id="ce82ad42-2d12-445f-a7f0-45ce8629d304" Description="" Name="FieldMetadata" DisplayName="Metadata" PropertyName="Field" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="Field">
           <RolePlayer>
             <DomainClassMoniker Name="FieldMetadata" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="49d512a7-4209-42e8-b803-65a006e4e87c" Description="" Name="nHydrateModelHasFunctions" DisplayName="NHydrate Model Has Functions" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="842bef0d-faae-40f9-bfc0-ab1e3f20e4a4" Description="" Name="nHydrateModel" DisplayName="nHydrate Model" PropertyName="Functions" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Functions">
-          <RolePlayer>
-            <DomainClassMoniker Name="nHydrateModel" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="5b22120e-1b7a-41ed-a0ce-d955098d7ea8" Description="" Name="Function" DisplayName="Function" PropertyName="nHydrateModel" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="nHydrate Model">
-          <RolePlayer>
-            <DomainClassMoniker Name="Function" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="9a1cb63f-3055-4763-b2bf-0929d7853416" Description="" Name="FunctionHasParameters" DisplayName="Function Has Parameters" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="88d7fe70-c77a-49af-b9de-512e58adeb79" Description="" Name="Function" DisplayName="Function" PropertyName="Parameters" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Parameters">
-          <RolePlayer>
-            <DomainClassMoniker Name="Function" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="01353901-6ff3-4a4a-b8cf-887b52e4c7c2" Description="" Name="FunctionParameter" DisplayName="Function Parameter" PropertyName="Function" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="Function">
-          <RolePlayer>
-            <DomainClassMoniker Name="FunctionParameter" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="14ca3dd8-4973-439b-a145-0ec6525bb4e4" Description="" Name="FunctionHasFields" DisplayName="Function Has Fields" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="451ee2f4-7d2a-4a33-aed9-4ed1dfd43396" Description="" Name="Function" DisplayName="Function" PropertyName="Fields" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Fields">
-          <RolePlayer>
-            <DomainClassMoniker Name="Function" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="a36eb8f4-c611-4a64-ad22-2db3c798cda4" Description="" Name="FunctionField" DisplayName="Function Field" PropertyName="Function" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="Function">
-          <RolePlayer>
-            <DomainClassMoniker Name="FunctionField" />
           </RolePlayer>
         </DomainRole>
       </Target>
@@ -1664,19 +1102,6 @@
       </ShapeHasDecorators>
       <Compartment FillColor="WhiteSmoke" TitleFillColor="Gainsboro" Name="EntityFieldCompartment" Title="Fields" />
     </CompartmentShape>
-    <CompartmentShape Id="07b75a7a-ef2b-4128-a9e3-7157cd97f6ed" Description="" Name="StoredProcedureShape" DisplayName="Stored Procedure Shape" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true" TooltipType="Variable" FixedTooltipText="Stored Procedure Shape" FillColor="255, 224, 192" OutlineColor="192, 255, 192" InitialWidth="2" InitialHeight="0.3" OutlineThickness="0.01" FillGradientMode="None" HasDefaultConnectionPoints="true" Geometry="Rectangle">
-      <ShapeHasDecorators Position="InnerTopLeft" HorizontalOffset="0.25" VerticalOffset="0">
-        <TextDecorator Name="StoredProcedureTextDecorator" DisplayName="" DefaultText="" FontStyle="Bold" />
-      </ShapeHasDecorators>
-      <ShapeHasDecorators Position="InnerTopRight" HorizontalOffset="0" VerticalOffset="0">
-        <ExpandCollapseDecorator Name="StoredProcedureExpandDecorator" DisplayName="" />
-      </ShapeHasDecorators>
-      <ShapeHasDecorators Position="InnerTopLeft" HorizontalOffset="0.05" VerticalOffset="0">
-        <IconDecorator Name="StoredProcedureIconDecorator" DisplayName="Stored Procedure Icon Decorator" DefaultIcon="Resources\storedproc.png" />
-      </ShapeHasDecorators>
-      <Compartment FillColor="WhiteSmoke" TitleFillColor="Gainsboro" Name="StoredProcedureFieldCompartment" Title="Fields" />
-      <Compartment FillColor="WhiteSmoke" TitleFillColor="Gainsboro" Name="StoredProcedureParameterCompartment" Title="Parameters" />
-    </CompartmentShape>
     <CompartmentShape Id="9cd4f727-289f-4f8c-be4b-6caf68e48408" Description="" Name="ViewShape" DisplayName="View Shape" Namespace="nHydrate.Dsl" GeneratesDoubleDerived="true" TooltipType="Variable" FixedTooltipText="View Shape" FillColor="255, 255, 192" OutlineColor="255, 128, 255" InitialWidth="2" InitialHeight="0.3" OutlineThickness="0.01" FillGradientMode="None" Geometry="Rectangle">
       <ShapeHasDecorators Position="InnerTopLeft" HorizontalOffset="0.25" VerticalOffset="0">
         <TextDecorator Name="ViewTextDecorator" DisplayName="" DefaultText="" FontStyle="Bold" />
@@ -1688,19 +1113,6 @@
         <IconDecorator Name="ViewIconDecorator" DisplayName="View Icon Decorator" DefaultIcon="Resources\view.png" />
       </ShapeHasDecorators>
       <Compartment FillColor="WhiteSmoke" TitleFillColor="Gainsboro" Name="ViewFieldCompartment" Title="Fields" />
-    </CompartmentShape>
-    <CompartmentShape Id="66621fb1-7d1f-4aef-a5f2-d1c5b92dbf17" Description="" Name="FunctionShape" DisplayName="Function Shape" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true" FixedTooltipText="Function Shape" FillColor="SandyBrown" OutlineColor="255, 128, 255" InitialWidth="2" InitialHeight="0.3" OutlineThickness="0.01" FillGradientMode="None" HasDefaultConnectionPoints="true" Geometry="Rectangle">
-      <ShapeHasDecorators Position="InnerTopLeft" HorizontalOffset="0.25" VerticalOffset="0">
-        <TextDecorator Name="FunctionTextDecorator" DisplayName="Function Text Decorator" DefaultText="FunctionTextDecorator" FontStyle="Bold" />
-      </ShapeHasDecorators>
-      <ShapeHasDecorators Position="InnerTopLeft" HorizontalOffset="0.05" VerticalOffset="0">
-        <IconDecorator Name="FunctionIconDecorator" DisplayName="Function Icon Decorator" DefaultIcon="Resources\function.png" />
-      </ShapeHasDecorators>
-      <ShapeHasDecorators Position="InnerTopRight" HorizontalOffset="0" VerticalOffset="0">
-        <ExpandCollapseDecorator Name="FunctionExpandCollapseDecorator" DisplayName="Function Expand Collapse Decorator" />
-      </ShapeHasDecorators>
-      <Compartment FillColor="WhiteSmoke" TitleFillColor="Gainsboro" Name="ParameterCompartment" Title="Parameters" />
-      <Compartment FillColor="WhiteSmoke" TitleFillColor="Gainsboro" Name="FieldCompartment" Title="Fields" />
     </CompartmentShape>
   </Shapes>
   <Connectors>
@@ -1720,9 +1132,6 @@
         <ElementData>
           <XmlRelationshipData RoleElementName="entities">
             <DomainRelationshipMoniker Name="nHydrateModelHasEntities" />
-          </XmlRelationshipData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="storedProcedures">
-            <DomainRelationshipMoniker Name="nHydrateModelHasStoredProcedures" />
           </XmlRelationshipData>
           <XmlRelationshipData UseFullForm="true" RoleElementName="views">
             <DomainRelationshipMoniker Name="nHydrateModelHasViews" />
@@ -1762,9 +1171,6 @@
           </XmlPropertyData>
           <XmlRelationshipData UseFullForm="true" RoleElementName="relationFields">
             <DomainRelationshipMoniker Name="nHydrateModelHasRelationFields" />
-          </XmlRelationshipData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="functions">
-            <DomainRelationshipMoniker Name="nHydrateModelHasFunctions" />
           </XmlRelationshipData>
           <XmlPropertyData XmlName="modelToDisk">
             <DomainPropertyMoniker Name="nHydrateModel/ModelToDisk" />
@@ -1985,117 +1391,6 @@
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>
-      <XmlClassData TypeName="NHydrateModelHasStoredProcedures" MonikerAttributeName="" SerializeId="true" MonikerElementName="nHydrateModelHasStoredProceduresMoniker" ElementName="nHydrateModelHasStoredProcedures" MonikerTypeName="NHydrateModelHasStoredProceduresMoniker">
-        <DomainRelationshipMoniker Name="nHydrateModelHasStoredProcedures" />
-      </XmlClassData>
-      <XmlClassData TypeName="StoredProcedure" MonikerAttributeName="" SerializeId="true" MonikerElementName="storedProcedureMoniker" ElementName="storedProcedure" MonikerTypeName="StoredProcedureMoniker">
-        <DomainClassMoniker Name="StoredProcedure" />
-        <ElementData>
-          <XmlPropertyData XmlName="sQL">
-            <DomainPropertyMoniker Name="StoredProcedure/SQL" />
-          </XmlPropertyData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="fields">
-            <DomainRelationshipMoniker Name="StoredProcedureHasFields" />
-          </XmlRelationshipData>
-          <XmlPropertyData XmlName="name">
-            <DomainPropertyMoniker Name="StoredProcedure/Name" />
-          </XmlPropertyData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="parameters">
-            <DomainRelationshipMoniker Name="StoredProcedureHasParameters" />
-          </XmlRelationshipData>
-          <XmlPropertyData XmlName="codeFacade">
-            <DomainPropertyMoniker Name="StoredProcedure/CodeFacade" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="StoredProcedure/Summary" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="schema">
-            <DomainPropertyMoniker Name="StoredProcedure/Schema" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="isExisting">
-            <DomainPropertyMoniker Name="StoredProcedure/IsExisting" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="databaseObjectName">
-            <DomainPropertyMoniker Name="StoredProcedure/DatabaseObjectName" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="generatesDoubleDerived">
-            <DomainPropertyMoniker Name="StoredProcedure/GeneratesDoubleDerived" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="StoredProcedureHasFields" MonikerAttributeName="" SerializeId="true" MonikerElementName="storedProcedureHasFieldsMoniker" ElementName="storedProcedureHasFields" MonikerTypeName="StoredProcedureHasFieldsMoniker">
-        <DomainRelationshipMoniker Name="StoredProcedureHasFields" />
-      </XmlClassData>
-      <XmlClassData TypeName="StoredProcedureField" MonikerAttributeName="" SerializeId="true" MonikerElementName="storedProcedureFieldMoniker" ElementName="storedProcedureField" MonikerTypeName="StoredProcedureFieldMoniker">
-        <DomainClassMoniker Name="StoredProcedureField" />
-        <ElementData>
-          <XmlPropertyData XmlName="name">
-            <DomainPropertyMoniker Name="StoredProcedureField/Name" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="codeFacade">
-            <DomainPropertyMoniker Name="StoredProcedureField/CodeFacade" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="nullable">
-            <DomainPropertyMoniker Name="StoredProcedureField/Nullable" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="dataType">
-            <DomainPropertyMoniker Name="StoredProcedureField/DataType" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="StoredProcedureField/Summary" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="default">
-            <DomainPropertyMoniker Name="StoredProcedureField/Default" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="length">
-            <DomainPropertyMoniker Name="StoredProcedureField/Length" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="scale">
-            <DomainPropertyMoniker Name="StoredProcedureField/Scale" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="StoredProcedureShape" MonikerAttributeName="" SerializeId="true" MonikerElementName="storedProcedureShapeMoniker" ElementName="storedProcedureShape" MonikerTypeName="StoredProcedureShapeMoniker">
-        <CompartmentShapeMoniker Name="StoredProcedureShape" />
-      </XmlClassData>
-      <XmlClassData TypeName="StoredProcedureHasParameters" MonikerAttributeName="" SerializeId="true" MonikerElementName="storedProcedureHasParametersMoniker" ElementName="storedProcedureHasParameters" MonikerTypeName="StoredProcedureHasParametersMoniker">
-        <DomainRelationshipMoniker Name="StoredProcedureHasParameters" />
-      </XmlClassData>
-      <XmlClassData TypeName="StoredProcedureParameter" MonikerAttributeName="" SerializeId="true" MonikerElementName="storedProcedureParameterMoniker" ElementName="storedProcedureParameter" MonikerTypeName="StoredProcedureParameterMoniker">
-        <DomainClassMoniker Name="StoredProcedureParameter" />
-        <ElementData>
-          <XmlPropertyData XmlName="name">
-            <DomainPropertyMoniker Name="StoredProcedureParameter/Name" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="codeFacade">
-            <DomainPropertyMoniker Name="StoredProcedureParameter/CodeFacade" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="nullable">
-            <DomainPropertyMoniker Name="StoredProcedureParameter/Nullable" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="dataType">
-            <DomainPropertyMoniker Name="StoredProcedureParameter/DataType" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="StoredProcedureParameter/Summary" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="default">
-            <DomainPropertyMoniker Name="StoredProcedureParameter/Default" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="length">
-            <DomainPropertyMoniker Name="StoredProcedureParameter/Length" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="isOutputParameter">
-            <DomainPropertyMoniker Name="StoredProcedureParameter/IsOutputParameter" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="scale">
-            <DomainPropertyMoniker Name="StoredProcedureParameter/Scale" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="sortOrder">
-            <DomainPropertyMoniker Name="StoredProcedureParameter/SortOrder" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
       <XmlClassData TypeName="NHydrateModelHasViews" MonikerAttributeName="" SerializeId="true" MonikerElementName="nHydrateModelHasViewsMoniker" ElementName="nHydrateModelHasViews" MonikerTypeName="NHydrateModelHasViewsMoniker">
         <DomainRelationshipMoniker Name="nHydrateModelHasViews" />
       </XmlClassData>
@@ -2231,111 +1526,6 @@
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>
-      <XmlClassData TypeName="NHydrateModelHasFunctions" MonikerAttributeName="" SerializeId="true" MonikerElementName="nHydrateModelHasFunctionsMoniker" ElementName="nHydrateModelHasFunctions" MonikerTypeName="NHydrateModelHasFunctionsMoniker">
-        <DomainRelationshipMoniker Name="nHydrateModelHasFunctions" />
-      </XmlClassData>
-      <XmlClassData TypeName="Function" MonikerAttributeName="" SerializeId="true" MonikerElementName="functionMoniker" ElementName="function" MonikerTypeName="FunctionMoniker">
-        <DomainClassMoniker Name="Function" />
-        <ElementData>
-          <XmlPropertyData XmlName="sQL">
-            <DomainPropertyMoniker Name="Function/SQL" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="name">
-            <DomainPropertyMoniker Name="Function/Name" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="codeFacade">
-            <DomainPropertyMoniker Name="Function/CodeFacade" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="Function/Summary" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="schema">
-            <DomainPropertyMoniker Name="Function/Schema" />
-          </XmlPropertyData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="parameters">
-            <DomainRelationshipMoniker Name="FunctionHasParameters" />
-          </XmlRelationshipData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="fields">
-            <DomainRelationshipMoniker Name="FunctionHasFields" />
-          </XmlRelationshipData>
-          <XmlPropertyData XmlName="isTable">
-            <DomainPropertyMoniker Name="Function/IsTable" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="returnVariable">
-            <DomainPropertyMoniker Name="Function/ReturnVariable" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="FunctionHasParameters" MonikerAttributeName="" SerializeId="true" MonikerElementName="functionHasParametersMoniker" ElementName="functionHasParameters" MonikerTypeName="FunctionHasParametersMoniker">
-        <DomainRelationshipMoniker Name="FunctionHasParameters" />
-      </XmlClassData>
-      <XmlClassData TypeName="FunctionParameter" MonikerAttributeName="" SerializeId="true" MonikerElementName="functionParameterMoniker" ElementName="functionParameter" MonikerTypeName="FunctionParameterMoniker">
-        <DomainClassMoniker Name="FunctionParameter" />
-        <ElementData>
-          <XmlPropertyData XmlName="name">
-            <DomainPropertyMoniker Name="FunctionParameter/Name" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="codeFacade">
-            <DomainPropertyMoniker Name="FunctionParameter/CodeFacade" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="nullable">
-            <DomainPropertyMoniker Name="FunctionParameter/Nullable" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="dataType">
-            <DomainPropertyMoniker Name="FunctionParameter/DataType" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="FunctionParameter/Summary" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="default">
-            <DomainPropertyMoniker Name="FunctionParameter/Default" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="length">
-            <DomainPropertyMoniker Name="FunctionParameter/Length" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="scale">
-            <DomainPropertyMoniker Name="FunctionParameter/Scale" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="sortOrder">
-            <DomainPropertyMoniker Name="FunctionParameter/SortOrder" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="FunctionHasFields" MonikerAttributeName="" SerializeId="true" MonikerElementName="functionHasFieldsMoniker" ElementName="functionHasFields" MonikerTypeName="FunctionHasFieldsMoniker">
-        <DomainRelationshipMoniker Name="FunctionHasFields" />
-      </XmlClassData>
-      <XmlClassData TypeName="FunctionField" MonikerAttributeName="" SerializeId="true" MonikerElementName="functionFieldMoniker" ElementName="functionField" MonikerTypeName="FunctionFieldMoniker">
-        <DomainClassMoniker Name="FunctionField" />
-        <ElementData>
-          <XmlPropertyData XmlName="name">
-            <DomainPropertyMoniker Name="FunctionField/Name" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="codeFacade">
-            <DomainPropertyMoniker Name="FunctionField/CodeFacade" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="nullable">
-            <DomainPropertyMoniker Name="FunctionField/Nullable" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="dataType">
-            <DomainPropertyMoniker Name="FunctionField/DataType" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="FunctionField/Summary" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="default">
-            <DomainPropertyMoniker Name="FunctionField/Default" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="length">
-            <DomainPropertyMoniker Name="FunctionField/Length" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="scale">
-            <DomainPropertyMoniker Name="FunctionField/Scale" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="FunctionShape" MonikerAttributeName="" SerializeId="true" MonikerElementName="functionShapeMoniker" ElementName="functionShape" MonikerTypeName="FunctionShapeMoniker">
-        <CompartmentShapeMoniker Name="FunctionShape" />
-      </XmlClassData>
       <XmlClassData TypeName="EntityHasIndexes" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityHasIndexesMoniker" ElementName="entityHasIndexes" MonikerTypeName="EntityHasIndexesMoniker">
         <DomainRelationshipMoniker Name="EntityHasIndexes" />
       </XmlClassData>
@@ -2423,21 +1613,6 @@
       </ExplorerNodeSettings>
       <ExplorerNodeSettings IconToDisplay="Resources\field.png">
         <Class>
-          <DomainClassMoniker Name="StoredProcedureField" />
-        </Class>
-      </ExplorerNodeSettings>
-      <ExplorerNodeSettings IconToDisplay="Resources\storedproc.png">
-        <Class>
-          <DomainClassMoniker Name="StoredProcedure" />
-        </Class>
-      </ExplorerNodeSettings>
-      <ExplorerNodeSettings IconToDisplay="Resources\parameter.png">
-        <Class>
-          <DomainClassMoniker Name="StoredProcedureParameter" />
-        </Class>
-      </ExplorerNodeSettings>
-      <ExplorerNodeSettings IconToDisplay="Resources\field.png">
-        <Class>
           <DomainClassMoniker Name="ViewField" />
         </Class>
       </ExplorerNodeSettings>
@@ -2466,21 +1641,6 @@
       <ExplorerNodeSettings IconToDisplay="Resources\nhydrate.png">
         <Class>
           <DomainClassMoniker Name="nHydrateModel" />
-        </Class>
-      </ExplorerNodeSettings>
-      <ExplorerNodeSettings IconToDisplay="Resources\function.png">
-        <Class>
-          <DomainClassMoniker Name="Function" />
-        </Class>
-      </ExplorerNodeSettings>
-      <ExplorerNodeSettings IconToDisplay="Resources\parameter.png">
-        <Class>
-          <DomainClassMoniker Name="FunctionParameter" />
-        </Class>
-      </ExplorerNodeSettings>
-      <ExplorerNodeSettings IconToDisplay="Resources\field.png">
-        <Class>
-          <DomainClassMoniker Name="FunctionField" />
         </Class>
       </ExplorerNodeSettings>
       <ExplorerNodeSettings IconToDisplay="Resources\index.png">
@@ -2600,80 +1760,6 @@
           </PropertyDisplayed>
         </CompartmentMap>
       </CompartmentShapeMap>
-      <CompartmentShapeMap>
-        <DomainClassMoniker Name="StoredProcedure" />
-        <ParentElementPath>
-          <DomainPath>nHydrateModelHasStoredProcedures.nHydrateModel/!nHydrateModel</DomainPath>
-        </ParentElementPath>
-        <DecoratorMap>
-          <TextDecoratorMoniker Name="StoredProcedureShape/StoredProcedureTextDecorator" />
-          <PropertyDisplayed>
-            <PropertyPath>
-              <DomainPropertyMoniker Name="StoredProcedure/Name" />
-            </PropertyPath>
-          </PropertyDisplayed>
-        </DecoratorMap>
-        <CompartmentShapeMoniker Name="StoredProcedureShape" />
-        <CompartmentMap>
-          <CompartmentMoniker Name="StoredProcedureShape/StoredProcedureFieldCompartment" />
-          <ElementsDisplayed>
-            <DomainPath>StoredProcedureHasFields.Fields/!StoredProcedureField</DomainPath>
-          </ElementsDisplayed>
-          <PropertyDisplayed>
-            <PropertyPath>
-              <DomainPropertyMoniker Name="StoredProcedureField/Name" />
-            </PropertyPath>
-          </PropertyDisplayed>
-        </CompartmentMap>
-        <CompartmentMap>
-          <CompartmentMoniker Name="StoredProcedureShape/StoredProcedureParameterCompartment" />
-          <ElementsDisplayed>
-            <DomainPath>StoredProcedureHasParameters.Parameters/!StoredProcedureParameter</DomainPath>
-          </ElementsDisplayed>
-          <PropertyDisplayed>
-            <PropertyPath>
-              <DomainPropertyMoniker Name="StoredProcedureParameter/Name" />
-            </PropertyPath>
-          </PropertyDisplayed>
-        </CompartmentMap>
-      </CompartmentShapeMap>
-      <CompartmentShapeMap>
-        <DomainClassMoniker Name="Function" />
-        <ParentElementPath>
-          <DomainPath>nHydrateModelHasFunctions.nHydrateModel/!nHydrateModel</DomainPath>
-        </ParentElementPath>
-        <DecoratorMap>
-          <TextDecoratorMoniker Name="FunctionShape/FunctionTextDecorator" />
-          <PropertyDisplayed>
-            <PropertyPath>
-              <DomainPropertyMoniker Name="Function/Name" />
-            </PropertyPath>
-          </PropertyDisplayed>
-        </DecoratorMap>
-        <CompartmentShapeMoniker Name="FunctionShape" />
-        <CompartmentMap>
-          <CompartmentMoniker Name="FunctionShape/FieldCompartment" />
-          <ElementsDisplayed>
-            <DomainPath>FunctionHasFields.Fields/!FunctionField</DomainPath>
-          </ElementsDisplayed>
-          <PropertyDisplayed>
-            <PropertyPath>
-              <DomainPropertyMoniker Name="FunctionField/Name" />
-            </PropertyPath>
-          </PropertyDisplayed>
-        </CompartmentMap>
-        <CompartmentMap>
-          <CompartmentMoniker Name="FunctionShape/ParameterCompartment" />
-          <ElementsDisplayed>
-            <DomainPath>FunctionHasParameters.Parameters/!FunctionParameter</DomainPath>
-          </ElementsDisplayed>
-          <PropertyDisplayed>
-            <PropertyPath>
-              <DomainPropertyMoniker Name="FunctionParameter/Name" />
-            </PropertyPath>
-          </PropertyDisplayed>
-        </CompartmentMap>
-      </CompartmentShapeMap>
     </ShapeMaps>
     <ConnectorMaps>
       <ConnectorMap>
@@ -2716,12 +1802,6 @@
       </ConnectionTool>
       <ElementTool Name="View" ToolboxIcon="Resources\view.bmp" Caption="View" Tooltip="Create a View" HelpKeyword="View">
         <DomainClassMoniker Name="View" />
-      </ElementTool>
-      <ElementTool Name="Function" ToolboxIcon="Resources\function.bmp" Caption="Function" Tooltip="Create a Function" HelpKeyword="Function">
-        <DomainClassMoniker Name="Function" />
-      </ElementTool>
-      <ElementTool Name="StoredProcedure" ToolboxIcon="Resources\storedproc.bmp" Caption="StoredProcedure" Tooltip="Create a Stored Procedure" HelpKeyword="StoredProcedure">
-        <DomainClassMoniker Name="StoredProcedure" />
       </ElementTool>
     </ToolboxTab>
     <Validation UsesMenu="false" UsesOpen="false" UsesSave="false" UsesCustom="true" UsesLoad="false" />

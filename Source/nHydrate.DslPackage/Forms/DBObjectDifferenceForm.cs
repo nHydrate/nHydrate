@@ -50,17 +50,6 @@ namespace nHydrate.DslPackage.Forms
             lstFields.Columns.Add(new ColumnHeader() { Text = "Length", Width = 150 });
             lstFields.Columns.Add(new ColumnHeader() { Text = "Nullable", Width = 150 });
 
-            lstParameters.Columns.Clear();
-            lstParameters.Columns.Add(new ColumnHeader() { Text = string.Empty, Width = 24 });
-            lstParameters.Columns.Add(new ColumnHeader() { Text = "Parameter", Width = 150 });
-            lstParameters.Columns.Add(new ColumnHeader() { Text = "Datatype", Width = 150 });
-            lstParameters.Columns.Add(new ColumnHeader() { Text = "Length", Width = 150 });
-            lstParameters.Columns.Add(new ColumnHeader() { Text = "Nullable", Width = 150 });
-            lstParameters.Columns.Add(new ColumnHeader() { Text = "Parameter", Width = 150 });
-            lstParameters.Columns.Add(new ColumnHeader() { Text = "Datatype", Width = 150 });
-            lstParameters.Columns.Add(new ColumnHeader() { Text = "Length", Width = 150 });
-            lstParameters.Columns.Add(new ColumnHeader() { Text = "Nullable", Width = 150 });
-
             this.FormClosing += new FormClosingEventHandler(DBObjectDifferenceForm_FormClosing);
         }
 
@@ -69,9 +58,6 @@ namespace nHydrate.DslPackage.Forms
         {
             _sourceItem = sourceItem;
             _targetItem = targetItem;
-
-            pnlParameters.Visible = (sourceItem.ParameterList != null);
-            splitterParameter.Visible = (sourceItem.ParameterList != null);
 
             _isLoading = true;
             var showSQL = true;
@@ -156,66 +142,6 @@ namespace nHydrate.DslPackage.Forms
                     this.Controls.Remove(splitterField);
                 }
 
-                if (sourceItem.ParameterList != null)
-                {
-                    //Load all source parameters
-                    foreach (var item in sourceItem.ParameterList)
-                    {
-                        var li = new ListViewItem();
-                        li.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.Name });
-                        li.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.DataType.ToString() });
-                        li.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.Length.ToString() });
-                        li.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.Nullable.ToString() });
-
-                        var targetField = targetItem.ParameterList.FirstOrDefault(x => x.Name == item.Name);
-                        if (targetField != null)
-                        {
-                            li.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = targetField.Name });
-                            li.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = targetField.DataType.ToString() });
-                            li.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = targetField.Length.ToString() });
-                            li.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = targetField.Nullable.ToString() });
-                            if (!targetField.Equals(item))
-                            {
-                                li.BackColor = nHydrate.DslPackage.Objects.Utils.ColorModified;
-                                li.ImageIndex = 2;
-                            }
-                        }
-                        else
-                        {
-                            li.BackColor = nHydrate.DslPackage.Objects.Utils.ColorDeleted;
-                            li.ImageIndex = 1;
-                        }
-
-                        lstParameters.Items.Add(li);
-                    }
-
-                    //Load all target fields NOT in source
-                    var targetParameterList = targetItem.ParameterList.Where(x => !sourceItem.ParameterList.Select(z => z.Name).ToList().Contains(x.Name));
-                    foreach (var item in targetParameterList)
-                    {
-                        var li = new ListViewItem();
-                        li.BackColor = nHydrate.DslPackage.Objects.Utils.ColorInserted;
-                        li.ImageIndex = 0;
-                        li.SubItems[0].Text = string.Empty;
-                        li.SubItems.Add(new ListViewItem.ListViewSubItem());
-                        li.SubItems.Add(new ListViewItem.ListViewSubItem());
-                        li.SubItems.Add(new ListViewItem.ListViewSubItem());
-
-                        li.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.Name });
-                        li.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.DataType.ToString() });
-                        li.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.Length.ToString() });
-                        li.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.Nullable.ToString() });
-                        lstParameters.Items.Add(li);
-                    }
-
-                }
-                else
-                {
-                    showParameters = false;
-                    this.Controls.Remove(pnlParameters);
-                    this.Controls.Remove(splitterParameter);
-                }
-
                 if (!showSQL)
                 {
                     //Entity
@@ -283,11 +209,9 @@ namespace nHydrate.DslPackage.Forms
         {
             var colwidth = (this.Width - 70) / 8;
             lstFields.Columns[0].Width = 24;
-            lstParameters.Columns[0].Width = 24;
             for (var ii = 1; ii < 9; ii++)
             {
                 lstFields.Columns[ii].Width = colwidth;
-                lstParameters.Columns[ii].Width = colwidth;
             }
         }
 

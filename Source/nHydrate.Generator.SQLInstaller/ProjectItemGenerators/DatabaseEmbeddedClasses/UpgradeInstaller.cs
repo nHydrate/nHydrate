@@ -1020,30 +1020,30 @@ namespace PROJECTNAMESPACE
             {
                 //Only do this in debug
 #if (DEBUG)
-				if (System.Diagnostics.Debugger.IsAttached)
-				{
-					var nOrderFile = System.IO.Path.Combine(new System.IO.FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).DirectoryName, "installer.norder");
-					//If there are no failures then ensure that there is no "norder" file
-					if (System.IO.File.Exists(nOrderFile))
-						System.IO.File.Delete(nOrderFile);
+                if (System.Diagnostics.Debugger.IsAttached)
+                {
+                    var nOrderFile = System.IO.Path.Combine(new System.IO.FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).DirectoryName, "installer.norder");
+                    //If there are no failures then ensure that there is no "norder" file
+                    if (System.IO.File.Exists(nOrderFile))
+                        System.IO.File.Delete(nOrderFile);
 
-					//On success, write the XML file with the proper order
-					try
-					{
-						var document = new System.Xml.XmlDocument();
-						document.LoadXml("<root type=\"installer\"></root>");
-						document.DocumentElement.AppendChild(document.CreateWhitespace("\r\n"));
-						foreach (var k in successOrderScripts)
-						{
-							document.DocumentElement.AddElement("key", k.ToString());
-							document.DocumentElement.AppendChild(document.CreateWhitespace("\r\n"));
-						}
-						document.Save(nOrderFile);
-					}
-					catch (Exception ex)
-					{
-					}
-				}
+                    //On success, write the XML file with the proper order
+                    try
+                    {
+                        var document = new System.Xml.XmlDocument();
+                        document.LoadXml("<root type=\"installer\"></root>");
+                        document.DocumentElement.AppendChild(document.CreateWhitespace("\r\n"));
+                        foreach (var k in successOrderScripts)
+                        {
+                            document.DocumentElement.AddElement("key", k.ToString());
+                            document.DocumentElement.AppendChild(document.CreateWhitespace("\r\n"));
+                        }
+                        document.Save(nOrderFile);
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
 #endif
             }
         }
@@ -2081,11 +2081,11 @@ namespace PROJECTNAMESPACE
 
         // Performs a single block transform of MD5 for a given set of ABCD inputs
         /* If implementing your own hashing framework, be sure to set the initial ABCD correctly according to RFC 1321:
-		//    A = 0x67452301;
-		//    B = 0xefcdab89;
-		//    C = 0x98badcfe;
-		//    D = 0x10325476;
-		*/
+        //    A = 0x67452301;
+        //    B = 0xefcdab89;
+        //    C = 0x98badcfe;
+        //    D = 0x10325476;
+        */
         /// <summary />
         internal static void ComputeHashBlock(byte[] input, ref ABCDStruct ABCDValue, int ibStart)
         {

@@ -23,8 +23,6 @@ namespace nHydrate.Dsl
             this.IsLoading = true;
             this.RemovedTables = new List<string>();
             this.RemovedViews = new List<string>();
-            this.RemovedStoredProcedures = new List<string>();
-            this.RemovedFunctions = new List<string>();
         }
 
         public override bool ModelToDisk { get => true; }
@@ -69,8 +67,6 @@ namespace nHydrate.Dsl
 
         public List<string> RemovedTables { get; }
         public List<string> RemovedViews { get; }
-        public List<string> RemovedStoredProcedures { get; }
-        public List<string> RemovedFunctions { get; }
 
         public Guid SyncServerToken { get; set; }
         public string ModelFileName { get; set; }

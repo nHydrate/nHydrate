@@ -181,11 +181,8 @@
     <Compile Include="Overrides\IField.cs" />
     <Compile Include="Overrides\IDatabaseEntity.cs" />
     <Compile Include="Overrides\IContainerParent.cs" />
-    <Compile Include="Overrides\FunctionShape.cs" />
     <Compile Include="Overrides\IndexColumn.cs" />
     <Compile Include="Overrides\Index.cs" />
-    <Compile Include="Overrides\FunctionField.cs" />
-    <Compile Include="Overrides\FunctionParameter.cs" />
     <Compile Include="Overrides\Entity.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -204,7 +201,6 @@
     <Compile Include="Overrides\Field.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Overrides\Function.cs" />
     <Compile Include="Overrides\nHydrateDiagram.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -213,18 +209,6 @@
     </Compile>
     <Compile Include="Overrides\nHydrateSerializationHelper.cs" />
     <Compile Include="Overrides\StaticData.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Overrides\StoredProcedure.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Overrides\StoredProcedureField.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Overrides\StoredProcedureParameter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Overrides\StoredProcedureShape.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Overrides\View.cs">
@@ -244,17 +228,11 @@
     </Compile>
     <Compile Include="Validation\IndexColumnValidation.cs" />
     <Compile Include="Validation\IndexValidation.cs" />
-    <Compile Include="Validation\FunctionFieldValidation.cs" />
     <Compile Include="Validation\ViewFieldValidation.cs" />
-    <Compile Include="Validation\FunctionParameterValidation.cs" />
-    <Compile Include="Validation\StoredProcedureFieldValidation.cs" />
-    <Compile Include="Validation\FunctionValidation.cs" />
-    <Compile Include="Validation\StoredProcedureParameterValidation.cs" />
     <Compile Include="Validation\ViewValidation.cs" />
     <Compile Include="Validation\EntityValidation.cs" />
     <Compile Include="Validation\FieldValidation.cs" />
     <Compile Include="Validation\nHydrateModel.cs" />
-    <Compile Include="Validation\StoredProcedureValidation.cs" />
     <Compile Include="Validation\ValidationHelper.cs" />
     <None Include="GeneratedCode\nHydrateSchema.xsd">
       <AutoGen>True</AutoGen>
@@ -347,6 +325,7 @@
     <EmbeddedResource Include="Resources\fkey.png" />
     <EmbeddedResource Include="Design\Forms\SQLForm.resx">
       <DependentUpon>SQLForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\nhydrate-background.png" />
     <EmbeddedResource Include="Resources\parameter.png" />

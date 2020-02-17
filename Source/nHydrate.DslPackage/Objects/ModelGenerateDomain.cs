@@ -36,8 +36,6 @@ namespace nHydrate.DslPackage.Objects
                 //Clean up delete tracking
                 model.RemovedTables.Remove(x => model.Entities.Select(y => y.PascalName).Contains(x));
                 model.RemovedViews.Remove(x => model.Views.Select(y => y.PascalName).Contains(x));
-                model.RemovedStoredProcedures.Remove(x => model.StoredProcedures.Select(y => y.PascalName).Contains(x));
-                model.RemovedFunctions.Remove(x => model.Functions.Select(y => y.PascalName).Contains(x));
 
                 var g = new nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper();
                 g.ProjectItemGenerated += new nHydrate.Generator.Common.GeneratorFramework.ProjectItemGeneratedEventHandler(g_ProjectItemGenerated);
@@ -59,8 +57,6 @@ namespace nHydrate.DslPackage.Objects
 
                     model.RemovedTables.Clear();
                     model.RemovedViews.Clear();
-                    model.RemovedStoredProcedures.Clear();
-                    model.RemovedFunctions.Clear();
                 }
 
                 #endregion
@@ -265,8 +261,6 @@ namespace nHydrate.DslPackage.Objects
             //root.RemovedTables.AddRange(model.Entities.Where(x => x.IsAssociative && x.IsGenerated).Select(x => x.Name));
 
             root.RemovedViews.AddRange(model.RemovedViews);
-            root.RemovedStoredProcedures.AddRange(model.RemovedStoredProcedures);
-            root.RemovedFunctions.AddRange(model.RemovedFunctions);
             //Remove EnumOnly type-tables from the project
             root.RemovedTables.AddRange(model.Entities.Where(x => x.TypedEntity == TypedEntityConstants.EnumOnly).Select(x => x.Name));
 
@@ -297,20 +291,6 @@ namespace nHydrate.DslPackage.Objects
                     var renamedItem = oldRoot.Database.CustomViews.FirstOrDefault(x => x.Key == t.Key && x.PascalName.ToLower() != t.PascalName.ToLower());
                     if (renamedItem != null)
                         root.RemovedViews.Add(renamedItem.Name);
-                }
-
-                //Find renamed stored procedures
-                {
-                    var renamedItem = oldRoot.Database.CustomStoredProcedures.FirstOrDefault(x => x.Key == t.Key && x.PascalName.ToLower() != t.PascalName.ToLower());
-                    if (renamedItem != null)
-                        root.RemovedStoredProcedures.Add(renamedItem.Name);
-                }
-
-                //Find renamed functions
-                {
-                    var renamedItem = oldRoot.Database.Functions.FirstOrDefault(x => x.Key == t.Key && x.PascalName.ToLower() != t.PascalName.ToLower());
-                    if (renamedItem != null)
-                        root.RemovedFunctions.Add(renamedItem.Name);
                 }
 
                 //Find tables that WERE generated last time but NOT generated this time, remove the tables
@@ -619,121 +599,6 @@ namespace nHydrate.DslPackage.Objects
                         newField.Scale = field.Scale;
                         newView.Columns.Add(newField.CreateRef(newField.Key));
                         newField.ParentViewRef = newView.CreateRef(newView.Key);
-                    }
-
-                }
-                #endregion
-
-                #region Stored Procedures
-                foreach (var storedProc in model.StoredProcedures)
-                {
-                    var newStoredProc = root.Database.CustomStoredProcedures.Add();
-                    newStoredProc.ResetKey(storedProc.Id.ToString());
-                    newStoredProc.ResetId(HashString(newStoredProc.Key));
-                    newStoredProc.CodeFacade = storedProc.CodeFacade;
-                    newStoredProc.DatabaseObjectName = storedProc.DatabaseObjectName;
-                    newStoredProc.DBSchema = storedProc.Schema;
-                    newStoredProc.Description = storedProc.Summary;
-                    newStoredProc.Name = storedProc.Name;
-                    newStoredProc.SQL = storedProc.SQL;
-                    newStoredProc.GeneratesDoubleDerived = storedProc.GeneratesDoubleDerived;
-                    newStoredProc.IsExisting = storedProc.IsExisting;
-
-                    foreach (var field in storedProc.Fields)
-                    {
-                        var newField = root.Database.CustomStoredProcedureColumns.Add();
-                        newField.ResetKey(field.Id.ToString());
-                        newField.ResetId(HashString(newField.Key));
-                        newField.AllowNull = field.Nullable;
-                        newField.CodeFacade = field.CodeFacade;
-                        newField.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), field.DataType.ToString());
-                        newField.Default = field.Default;
-                        newField.Description = field.Summary;
-                        newField.Length = field.Length;
-                        newField.Name = field.Name;
-                        newField.Scale = field.Scale;
-                        newStoredProc.Columns.Add(newField.CreateRef(newField.Key));
-                        newField.ParentRef = newStoredProc.CreateRef(newStoredProc.Key);
-                    }
-
-                    //Just in case these are ordered get all sort-ordered parameters first then take on all unordred alphabetized parmameters
-                    var orderedParameters = storedProc.Parameters.Where(x => x.SortOrder > 0).OrderBy(x => x.SortOrder).ToList();
-                    orderedParameters.AddRange(storedProc.Parameters.Where(x => x.SortOrder == 0).OrderBy(x => x.Name).ToList());
-                    foreach (var parameter in orderedParameters)
-                    {
-                        var newParameter = root.Database.CustomRetrieveRuleParameters.Add();
-                        newParameter.ResetKey(parameter.Id.ToString());
-                        newParameter.ResetId(HashString(newParameter.Key));
-                        newParameter.AllowNull = parameter.Nullable;
-                        newParameter.CodeFacade = parameter.CodeFacade;
-                        newParameter.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), parameter.DataType.ToString());
-                        newParameter.Default = parameter.Default;
-                        newParameter.Description = parameter.Summary;
-                        newParameter.IsOutputParameter = parameter.IsOutputParameter;
-                        newParameter.Length = parameter.Length;
-                        newParameter.Name = parameter.Name;
-                        newParameter.Scale = parameter.Scale;
-                        newParameter.SortOrder = parameter.SortOrder;
-                        newStoredProc.Parameters.Add(newParameter.CreateRef(newParameter.Key));
-                        newParameter.ParentTableRef = newStoredProc.CreateRef(newStoredProc.Key);
-                    }
-
-                }
-                #endregion
-
-                #region Functions
-                foreach (var function in model.Functions)
-                {
-                    var newFunction = root.Database.Functions.Add();
-                    newFunction.ResetKey(function.Id.ToString());
-                    newFunction.ResetId(HashString(newFunction.Key));
-                    newFunction.CodeFacade = function.CodeFacade;
-                    newFunction.DBSchema = function.Schema;
-                    newFunction.Description = function.Summary;
-                    newFunction.Name = function.Name;
-                    newFunction.SQL = function.SQL;
-                    newFunction.IsTable = function.IsTable;
-                    newFunction.ReturnVariable = function.ReturnVariable;
-
-                    foreach (var field in function.Fields)
-                    {
-                        var newField = root.Database.FunctionColumns.Add();
-                        newField.ResetKey(field.Id.ToString());
-                        newField.ResetId(HashString(newField.Key));
-                        newField.AllowNull = field.Nullable;
-                        newField.CodeFacade = field.CodeFacade;
-                        newField.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), field.DataType.ToString());
-                        newField.Default = field.Default;
-                        newField.Description = field.Summary;
-                        newField.Length = field.Length;
-                        newField.Name = field.Name;
-                        newField.Scale = field.Scale;
-                        newFunction.Columns.Add(newField.CreateRef(newField.Key));
-                        newField.ParentRef = newFunction.CreateRef(newFunction.Key);
-                    }
-
-                    //Just in case these are ordered get all sort-ordered parameters first then take on all unordered alphabetized parameters
-                    var orderedParameters = function.Parameters.Where(x => x.SortOrder > 0).OrderBy(x => x.SortOrder).ToList();
-                    orderedParameters.AddRange(function.Parameters.Where(x => x.SortOrder == 0).OrderBy(x => x.Name).ToList());
-                    foreach (var parameter in orderedParameters)
-                    {
-                        var newParameter = root.Database.FunctionParameters.Add();
-                        newParameter.ResetKey(parameter.Id.ToString());
-                        newParameter.ResetId(HashString(newParameter.Key));
-                        newParameter.AllowNull = parameter.Nullable;
-                        newParameter.CodeFacade = parameter.CodeFacade;
-                        newParameter.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), parameter.DataType.ToString());
-                        newParameter.Default = parameter.Default;
-                        newParameter.Description = parameter.Summary;
-                        newParameter.Length = parameter.Length;
-                        newParameter.Name = parameter.Name;
-                        newParameter.Scale = parameter.Scale;
-                        newParameter.SortOrder = parameter.SortOrder;
-
-                        var r = newParameter.CreateRef(newParameter.Key);
-                        r.RefType = nHydrate.Generator.Models.ReferenceType.FunctionParameter;
-                        newFunction.Parameters.Add(r);
-                        newParameter.ParentTableRef = newFunction.CreateRef(newFunction.Key);
                     }
 
                 }

@@ -12,12 +12,7 @@ namespace nHydrate.Generator.Models
         Table = 1,
         Relation = 2,
         CustomViewColumn = 3,
-        Parameter = 5,
-        CustomStoredProcedureColumn = 6,
-        CustomAggregateColumn = 7,
         CustomView = 8,
-        FunctionColumn = 9,
-        FunctionParameter = 10,
     }
 
     public class Reference : BaseModelObject
@@ -70,18 +65,6 @@ namespace nHydrate.Generator.Models
                             break;
                         case ReferenceType.CustomViewColumn:
                             retVal = modelRoot.Database.CustomViewColumns.GetById(Ref).FirstOrDefault();
-                            break;
-                        case ReferenceType.Parameter:
-                            retVal = modelRoot.Database.CustomRetrieveRuleParameters.GetById(Ref).FirstOrDefault();
-                            break;
-                        case ReferenceType.CustomStoredProcedureColumn:
-                            retVal = modelRoot.Database.CustomStoredProcedureColumns.GetById(Ref).FirstOrDefault();
-                            break;
-                        case ReferenceType.FunctionColumn:
-                            retVal = modelRoot.Database.FunctionColumns.GetById(Ref).FirstOrDefault();
-                            break;
-                        case ReferenceType.FunctionParameter:
-                            retVal = modelRoot.Database.FunctionParameters.GetById(Ref).FirstOrDefault();
                             break;
                         default:
                             throw new Exception("Cannot Handle Reference Type");
@@ -156,15 +139,6 @@ namespace nHydrate.Generator.Models
                     break;
                 case ReferenceType.CustomViewColumn:
                     retval = modelRoot.Database.CustomViewColumns[Ref].ToString();
-                    break;
-                case ReferenceType.Parameter:
-                    retval = modelRoot.Database.CustomRetrieveRuleParameters[Ref].ToString();
-                    break;
-                case ReferenceType.FunctionColumn:
-                    retval = modelRoot.Database.FunctionColumns[Ref].ToString();
-                    break;
-                case ReferenceType.FunctionParameter:
-                    retval = modelRoot.Database.FunctionParameters[Ref].ToString();
                     break;
             }
             return retval;

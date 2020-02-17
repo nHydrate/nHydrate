@@ -49,20 +49,6 @@ namespace nHydrate.DslPackage
 					"View", 
 					"@ViewToolboxBitmap;nHydrate.Dsl.dll", 
 					0xff00ff)]
-	[VSShell::ProvideStaticToolboxItem("nHydrate.DslPackage.nHydrateToolboxTab",
-					"@FunctionToolboxItem;nHydrate.Dsl.dll", 
-					"nHydrate.DslPackage.FunctionToolboxItem", 
-					"CF_TOOLBOXITEMCONTAINER,CF_TOOLBOXITEMCONTAINER_HASH,CF_TOOLBOXITEMCONTAINER_CONTENTS", 
-					"Function", 
-					"@FunctionToolboxBitmap;nHydrate.Dsl.dll", 
-					0xff00ff)]
-	[VSShell::ProvideStaticToolboxItem("nHydrate.DslPackage.nHydrateToolboxTab",
-					"@StoredProcedureToolboxItem;nHydrate.Dsl.dll", 
-					"nHydrate.DslPackage.StoredProcedureToolboxItem", 
-					"CF_TOOLBOXITEMCONTAINER,CF_TOOLBOXITEMCONTAINER_HASH,CF_TOOLBOXITEMCONTAINER_CONTENTS", 
-					"StoredProcedure", 
-					"@StoredProcedureToolboxBitmap;nHydrate.Dsl.dll", 
-					0xff00ff)]
 	[VSShell::ProvideEditorFactory(typeof(nHydrateEditorFactory), 103, TrustLevel = VSShellInterop::__VSEDITORTRUSTLEVEL.ETL_AlwaysTrusted)]
 	[VSShell::ProvideEditorExtension(typeof(nHydrateEditorFactory), "." + Constants.DesignerFileExtension, 50)]
 	[VSShell::ProvideEditorLogicalView(typeof(nHydrateEditorFactory), "{7651A702-06E5-11D1-8EBD-00A0C90F26EA}")] // Designer logical view GUID i.e. VSConstants.LOGVIEWID_Designer

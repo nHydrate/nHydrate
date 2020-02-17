@@ -143,16 +143,6 @@ namespace nHydrate.DslPackage.Forms
                     txtSummary.AppendText("\tView: " + item.TargetItem.Name);
                     txtSummary.AppendText("\r\n");
                 }
-                foreach (var item in tvwAdd.Nodes[2].Nodes.AsEnumerable<TreeNode>().Where(x => x.Checked).ToList().Select(x => x.Tag).Cast<DataTreeItem>().ToList())
-                {
-                    txtSummary.AppendText("\tStored Procedure: " + item.TargetItem.Name);
-                    txtSummary.AppendText("\r\n");
-                }
-                foreach (var item in tvwAdd.Nodes[3].Nodes.AsEnumerable<TreeNode>().Where(x => x.Checked).ToList().Select(x => x.Tag).Cast<DataTreeItem>().ToList())
-                {
-                    txtSummary.AppendText("\tFunction: " + item.TargetItem.Name);
-                    txtSummary.AppendText("\r\n");
-                }
                 txtSummary.AppendText(string.Empty + "\r\n");
 
                 #endregion
@@ -170,16 +160,6 @@ namespace nHydrate.DslPackage.Forms
                     txtSummary.AppendText("\tView: " + item.SourceItem.Name);
                     txtSummary.AppendText("\r\n");
                 }
-                foreach (var item in tvwRefresh.Nodes[2].Nodes.AsEnumerable<TreeNode>().Where(x => x.Checked).ToList().Select(x => x.Tag).Cast<DataTreeItem>().ToList())
-                {
-                    txtSummary.AppendText("\tStored Procedure: " + item.SourceItem.Name);
-                    txtSummary.AppendText("\r\n");
-                }
-                foreach (var item in tvwRefresh.Nodes[3].Nodes.AsEnumerable<TreeNode>().Where(x => x.Checked).ToList().Select(x => x.Tag).Cast<DataTreeItem>().ToList())
-                {
-                    txtSummary.AppendText("\tFunction: " + item.SourceItem.Name);
-                    txtSummary.AppendText("\r\n");
-                }
                 txtSummary.AppendText(string.Empty + "\r\n");
 
                 #endregion
@@ -195,16 +175,6 @@ namespace nHydrate.DslPackage.Forms
                 foreach (var item in tvwDelete.Nodes[1].Nodes.AsEnumerable<TreeNode>().Where(x => x.Checked).ToList().Select(x => x.Tag).Cast<DataTreeItem>().ToList())
                 {
                     txtSummary.AppendText("\tView: " + item.SourceItem.Name);
-                    txtSummary.AppendText("\r\n");
-                }
-                foreach (var item in tvwDelete.Nodes[2].Nodes.AsEnumerable<TreeNode>().Where(x => x.Checked).ToList().Select(x => x.Tag).Cast<DataTreeItem>().ToList())
-                {
-                    txtSummary.AppendText("\tStored Procedure: " + item.SourceItem.Name);
-                    txtSummary.AppendText("\r\n");
-                }
-                foreach (var item in tvwDelete.Nodes[3].Nodes.AsEnumerable<TreeNode>().Where(x => x.Checked).ToList().Select(x => x.Tag).Cast<DataTreeItem>().ToList())
-                {
-                    txtSummary.AppendText("\tFunction: " + item.SourceItem.Name);
                     txtSummary.AppendText("\r\n");
                 }
                 txtSummary.AppendText(string.Empty + "\r\n");
@@ -259,19 +229,8 @@ namespace nHydrate.DslPackage.Forms
                 viewParentNode.Checked = false;
                 viewParentNode.ImageIndex = 1;
 
-                var storedProcedureParentNode = this.tvwAdd.Nodes[this.tvwAdd.Nodes.Add(new TreeNode("Stored Procedures"))];
-                storedProcedureParentNode.Checked = false;
-                storedProcedureParentNode.ImageIndex = 1;
-
-                var functionParentNode = this.tvwAdd.Nodes[this.tvwAdd.Nodes.Add(new TreeNode("Functions"))];
-                functionParentNode.Checked = false;
-                functionParentNode.ImageIndex = 1;
-
                 this.PopulateDataSchema(tableParentNode);
                 this.PopulateViews(viewParentNode);
-                this.PopulateStoredProcedures(storedProcedureParentNode);
-                this.PopulateFunctions(functionParentNode);
-
 
                 foreach (TreeNode node in this.tvwAdd.Nodes)
                     this.RemoveAllNodes(node.Nodes, nHydrate.DataImport.ImportStateConstants.Added);
@@ -296,18 +255,8 @@ namespace nHydrate.DslPackage.Forms
                 viewParentNode.Checked = false;
                 viewParentNode.ImageIndex = 1;
 
-                var storedProcedureParentNode = this.tvwRefresh.Nodes[this.tvwRefresh.Nodes.Add(new TreeNode("Stored Procedures"))];
-                storedProcedureParentNode.Checked = false;
-                storedProcedureParentNode.ImageIndex = 1;
-
-                var functionParentNode = this.tvwRefresh.Nodes[this.tvwRefresh.Nodes.Add(new TreeNode("Functions"))];
-                functionParentNode.Checked = false;
-                functionParentNode.ImageIndex = 1;
-
                 this.PopulateDataSchema(tableParentNode);
                 this.PopulateViews(viewParentNode);
-                this.PopulateStoredProcedures(storedProcedureParentNode);
-                this.PopulateFunctions(functionParentNode);
 
                 foreach (TreeNode node in this.tvwRefresh.Nodes)
                     this.RemoveAllNodes(node.Nodes, nHydrate.DataImport.ImportStateConstants.Modified);
@@ -333,18 +282,8 @@ namespace nHydrate.DslPackage.Forms
                 viewParentNode.Checked = false;
                 viewParentNode.ImageIndex = 1;
 
-                var storedProcedureParentNode = this.tvwDelete.Nodes[this.tvwDelete.Nodes.Add(new TreeNode("Stored Procedures"))];
-                storedProcedureParentNode.Checked = false;
-                storedProcedureParentNode.ImageIndex = 1;
-
-                var functionParentNode = this.tvwDelete.Nodes[this.tvwDelete.Nodes.Add(new TreeNode("Functions"))];
-                functionParentNode.Checked = false;
-                functionParentNode.ImageIndex = 1;
-
                 this.PopulateDataSchema(tableParentNode);
                 this.PopulateViews(viewParentNode);
-                this.PopulateStoredProcedures(storedProcedureParentNode);
-                this.PopulateFunctions(functionParentNode);
 
                 foreach (TreeNode node in this.tvwDelete.Nodes)
                     this.RemoveAllNodes(node.Nodes, nHydrate.DataImport.ImportStateConstants.Deleted);
@@ -484,90 +423,6 @@ namespace nHydrate.DslPackage.Forms
 
         #endregion
 
-        #region PopulateStoredProcedures
-
-        private void PopulateStoredProcedures(TreeNode parentNode)
-        {
-            try
-            {
-                var itemCache = new SortedList<string, DataTreeItem>();
-
-                //Current Items
-                foreach (var storedProcedure in this.CurrentDatabase.StoredProcList)
-                {
-                    var dti = new DataTreeItem(storedProcedure.Name, storedProcedure) { SourceItem = storedProcedure };
-                    if (this.NewDatabase.StoredProcList.Contains(storedProcedure.Name))
-                        dti.Name = this.NewDatabase.StoredProcList.GetItem(storedProcedure.Name).Name;
-
-                    //Check for deleted status
-                    if (!this.NewDatabase.StoredProcList.Contains(storedProcedure.Name))
-                        dti.State = nHydrate.DataImport.ImportStateConstants.Deleted;
-                    else if (this.NewDatabase.StoredProcList.GetItem(storedProcedure.Name).CorePropertiesHash != storedProcedure.CorePropertiesHash)
-                    {
-                        dti.State = nHydrate.DataImport.ImportStateConstants.Modified;
-                        dti.TargetItem = this.NewDatabase.StoredProcList.GetItem(storedProcedure.Name);
-                    }
-                    else if (this.NewDatabase.StoredProcList.GetItem(storedProcedure.Name).FieldList.GetCorePropertiesHash() != storedProcedure.FieldList.GetCorePropertiesHash())
-                    {
-                        dti.State = nHydrate.DataImport.ImportStateConstants.Modified;
-                        dti.TargetItem = this.NewDatabase.StoredProcList.GetItem(storedProcedure.Name);
-                    }
-
-                    if (!itemCache.ContainsKey(storedProcedure.Name.ToLower()))
-                        itemCache.Add(storedProcedure.Name.ToLower(), dti);
-                }
-
-                //Added Items
-                foreach (var t in this.NewDatabase.StoredProcList)
-                {
-                    if (!this.CurrentDatabase.StoredProcList.Contains(t.Name))
-                        itemCache.Add(t.Name.ToLower(), new DataTreeItem(t.Name, nHydrate.DataImport.ImportStateConstants.Added) { TargetItem = t });
-                }
-
-                //Now add to tree
-                foreach (var storedProcedureKey in itemCache.Keys)
-                {
-                    var newNode = new TreeNode(itemCache[storedProcedureKey].Name);
-                    newNode.Checked = false;
-                    newNode.Tag = itemCache[storedProcedureKey];
-                    parentNode.Nodes.Add(newNode);
-
-                    var oldStoredProcedure = this.CurrentDatabase.StoredProcList.GetItem(storedProcedureKey);
-                    var newStoredProcedure = this.NewDatabase.StoredProcList.GetItem(storedProcedureKey);
-                    if (oldStoredProcedure == null) oldStoredProcedure = new nHydrate.DataImport.StoredProc();
-                    if (newStoredProcedure == null) newStoredProcedure = new nHydrate.DataImport.StoredProc();
-
-                    //Create list of all columns (new and old)
-                    var columns = new SortedList<string, DataTreeItem>();
-                    foreach (var column in oldStoredProcedure.FieldList)
-                    {
-                        var dti = new DataTreeItem(column.Name);
-
-                        //Check for deleted status
-                        if (this.NewDatabase.StoredProcList.Contains(itemCache[oldStoredProcedure.Name.ToLower()].Name))
-                        {
-                            var statusColumn = this.NewDatabase.StoredProcList.GetItem(itemCache[oldStoredProcedure.Name.ToLower()].Name).FieldList.FirstOrDefault(x => x.Name == column.Name);
-                            if (statusColumn == null)
-                                dti.State = nHydrate.DataImport.ImportStateConstants.Deleted;
-                            else if (column.CorePropertiesHash != statusColumn.CorePropertiesHash)
-                                dti.State = nHydrate.DataImport.ImportStateConstants.Modified;
-                        }
-
-                        columns.Add(column.Name.ToLower(), dti);
-
-                    }
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        #endregion
-
         #region PopulateViews
 
         private void PopulateViews(TreeNode parentNode)
@@ -633,90 +488,6 @@ namespace nHydrate.DslPackage.Forms
                         if (this.NewDatabase.ViewList.Count(x => x.Name == itemCache[oldView.Name.ToLower()].Name) > 0)
                         {
                             var statusColumn = this.NewDatabase.ViewList.First(x => x.Name == itemCache[oldView.Name.ToLower()].Name).FieldList.FirstOrDefault(x => x.Name == column.Name);
-                            if (statusColumn == null)
-                                dti.State = nHydrate.DataImport.ImportStateConstants.Deleted;
-                            else if (column.CorePropertiesHash != statusColumn.CorePropertiesHash)
-                                dti.State = nHydrate.DataImport.ImportStateConstants.Modified;
-                        }
-
-                        columns.Add(column.Name.ToLower(), dti);
-
-                    }
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        #endregion
-
-        #region PopulateFunctions
-
-        private void PopulateFunctions(TreeNode parentNode)
-        {
-            try
-            {
-                var itemCache = new SortedList<string, DataTreeItem>();
-
-                //Current Items
-                foreach (var function in this.CurrentDatabase.FunctionList)
-                {
-                    var dti = new DataTreeItem(function.Name, function) { SourceItem = function };
-                    if (this.NewDatabase.FunctionList.Contains(function.Name))
-                        dti.Name = this.NewDatabase.FunctionList.GetItem(function.Name).Name;
-
-                    //Check for deleted status
-                    if (!this.NewDatabase.FunctionList.Contains(function.Name))
-                        dti.State = nHydrate.DataImport.ImportStateConstants.Deleted;
-                    else if (this.NewDatabase.FunctionList.GetItem(function.Name).CorePropertiesHash != function.CorePropertiesHash)
-                    {
-                        dti.State = nHydrate.DataImport.ImportStateConstants.Modified;
-                        dti.TargetItem = this.NewDatabase.FunctionList.GetItem(function.Name);
-                    }
-                    else if (this.NewDatabase.FunctionList.GetItem(function.Name).FieldList.GetCorePropertiesHash() != function.FieldList.GetCorePropertiesHash())
-                    {
-                        dti.State = nHydrate.DataImport.ImportStateConstants.Modified;
-                        dti.TargetItem = this.NewDatabase.FunctionList.GetItem(function.Name);
-                    }
-
-                    if (!itemCache.ContainsKey(function.Name.ToLower()))
-                        itemCache.Add(function.Name.ToLower(), dti);
-                }
-
-                //Added Items
-                foreach (var t in this.NewDatabase.FunctionList)
-                {
-                    if (!this.CurrentDatabase.FunctionList.Contains(t.Name))
-                        itemCache.Add(t.Name.ToLower(), new DataTreeItem(t.Name, nHydrate.DataImport.ImportStateConstants.Added) { TargetItem = t });
-                }
-
-                //Now add to tree
-                foreach (var functionKey in itemCache.Keys)
-                {
-                    var newNode = new TreeNode(itemCache[functionKey].Name);
-                    newNode.Checked = false;
-                    newNode.Tag = itemCache[functionKey];
-                    parentNode.Nodes.Add(newNode);
-
-                    var oldFunction = this.CurrentDatabase.FunctionList.GetItem(functionKey);
-                    var newFunction = this.NewDatabase.FunctionList.GetItem(functionKey);
-                    if (oldFunction == null) oldFunction = new nHydrate.DataImport.Function();
-                    if (newFunction == null) newFunction = new nHydrate.DataImport.Function();
-
-                    //Create list of all columns (new and old)
-                    var columns = new SortedList<string, DataTreeItem>();
-                    foreach (var column in oldFunction.FieldList)
-                    {
-                        var dti = new DataTreeItem(column.Name);
-
-                        //Check for deleted status
-                        if (this.NewDatabase.FunctionList.Contains(itemCache[oldFunction.Name.ToLower()].Name))
-                        {
-                            var statusColumn = this.NewDatabase.FunctionList.GetItem(itemCache[oldFunction.Name.ToLower()].Name).FieldList.FirstOrDefault(x => x.Name == column.Name);
                             if (statusColumn == null)
                                 dti.State = nHydrate.DataImport.ImportStateConstants.Deleted;
                             else if (column.CorePropertiesHash != statusColumn.CorePropertiesHash)
@@ -829,10 +600,8 @@ namespace nHydrate.DslPackage.Forms
                                 return;
                             }
 
-                            var errorCount = LoadSqlServer(connectionString, auditFields);
+                            LoadSqlServer(connectionString, auditFields);
                             ProgressHelper.ProgressingComplete(pkey);
-                            if (errorCount > 0)
-                                MessageBox.Show("There were " + errorCount + " stored procedure(s) that could not be imported.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                         else if (optDatabaseTypePostgres.Checked)
                         {
@@ -925,13 +694,10 @@ namespace nHydrate.DslPackage.Forms
             //Remove tenant views
             NewDatabase.ViewList.Remove(x => x.Name.ToLower().StartsWith(_model.TenantPrefix.ToLower() + "_"));
 
-            var errorCount = NewDatabase.StoredProcList.Count(x => x.InError);
-            NewDatabase.StoredProcList.Remove(x => x.InError);
-
             //Load the tree
             this.Populate();
 
-            return errorCount;
+            return 0;
         }
 
         private int LoadPostgres(string connectionString, List<SpecialField> auditFields)
@@ -1030,7 +796,6 @@ namespace nHydrate.DslPackage.Forms
 
                 //Remove tenant views
                 NewDatabase.ViewList.Remove(x => x.Name.ToLower().StartsWith(_model.TenantPrefix.ToLower() + "_"));
-                NewDatabase.StoredProcList.Remove(x => x.InError);
 
                 //Load the tree
                 this.Populate();
@@ -1117,78 +882,6 @@ namespace nHydrate.DslPackage.Forms
 
             //Remove all other items from the NewDatbase
             //this.NewDatabase.ViewList.RemoveAll(x => !usedItems.Contains(x.Name.ToLower()));
-
-            #endregion
-
-            #region Stored Procedures
-
-            usedItems = new List<string>();
-            foreach (var node in tvwAdd.Nodes[2].Nodes.AsEnumerable<TreeNode>())
-            {
-                if (node.Checked)
-                {
-                    usedItems.Add(((DataTreeItem)node.Tag).Name.ToLower());
-                    this.NewDatabase.StoredProcList.FirstOrDefault(x => x.Name.ToLower() == ((DataTreeItem)node.Tag).Name.ToLower()).ImportState = ImportStateConstants.Added;
-                }
-            }
-
-            foreach (var node in tvwRefresh.Nodes[2].Nodes.AsEnumerable<TreeNode>())
-            {
-                if (node.Checked)
-                {
-                    usedItems.Add(((DataTreeItem)node.Tag).Name.ToLower());
-                    this.NewDatabase.StoredProcList.FirstOrDefault(x => x.Name.ToLower() == ((DataTreeItem)node.Tag).Name.ToLower()).ImportState = modifiedState;
-                }
-            }
-
-            foreach (var node in tvwDelete.Nodes[2].Nodes.AsEnumerable<TreeNode>())
-            {
-                if (node.Checked)
-                {
-                    usedItems.Add(((DataTreeItem)node.Tag).Name.ToLower());
-                    //this.NewDatabase.StoredProcList.FirstOrDefault(x => x.Name.ToLower() == ((DataTreeItem)node.Tag).Name.ToLower()).ImportState = ImportStateConstants.Deleted;
-                    this.NewDatabase.StoredProcList.Add(new nHydrate.DataImport.StoredProc() { Name = ((DataTreeItem)node.Tag).Name, ImportState = ImportStateConstants.Deleted });
-                }
-            }
-
-            //Remove all other items from the NewDatbase
-            //this.NewDatabase.StoredProcList.RemoveAll(x => !usedItems.Contains(x.Name.ToLower()));
-
-            #endregion
-
-            #region Functions
-
-            usedItems = new List<string>();
-            foreach (var node in tvwAdd.Nodes[3].Nodes.AsEnumerable<TreeNode>())
-            {
-                if (node.Checked)
-                {
-                    usedItems.Add(((DataTreeItem)node.Tag).Name.ToLower());
-                    this.NewDatabase.FunctionList.FirstOrDefault(x => x.Name.ToLower() == ((DataTreeItem)node.Tag).Name.ToLower()).ImportState = ImportStateConstants.Added;
-                }
-            }
-
-            foreach (var node in tvwRefresh.Nodes[3].Nodes.AsEnumerable<TreeNode>())
-            {
-                if (node.Checked)
-                {
-                    usedItems.Add(((DataTreeItem)node.Tag).Name.ToLower());
-                    this.NewDatabase.FunctionList.FirstOrDefault(x => x.Name.ToLower() == ((DataTreeItem)node.Tag).Name.ToLower()).ImportState = modifiedState;
-                }
-            }
-
-            foreach (var node in tvwDelete.Nodes[3].Nodes.AsEnumerable<TreeNode>())
-            {
-                if (node.Checked)
-                {
-                    usedItems.Add(((DataTreeItem)node.Tag).Name.ToLower());
-                    //this.NewDatabase.FunctionList.FirstOrDefault(x => x.Name.ToLower() == ((DataTreeItem)node.Tag).Name.ToLower()).ImportState = ImportStateConstants.Deleted;
-                    this.NewDatabase.FunctionList.Add(new nHydrate.DataImport.Function() { Name = ((DataTreeItem)node.Tag).Name, ImportState = ImportStateConstants.Deleted });
-                }
-            }
-
-            //Remove all other items from the NewDatbase
-            //this.NewDatabase.FunctionList.RemoveAll(x => !usedItems.Contains(x.Name.ToLower()));
 
             #endregion
 

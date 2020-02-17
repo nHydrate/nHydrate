@@ -45,12 +45,8 @@ namespace nHydrate.DataImport
 		Database Import(string connectionString, IEnumerable<SpecialField> auditFields);
 		IEnumerable<string> GetEntityList(string connectionString);
 		IEnumerable<string> GetViewList(string connectionString);
-		IEnumerable<string> GetStoredProcedureList(string connectionString);
-		IEnumerable<string> GetFunctionList(string connectionString);
 		Entity GetEntity(string connectionString, string name, IEnumerable<SpecialField> auditFields);
 		View GetView(string connectionString, string name, IEnumerable<SpecialField> auditFields);
-		StoredProc GetStoredProcedure(string connectionString, string name, IEnumerable<SpecialField> auditFields);
-		Function GetFunction(string connectionString, string name, IEnumerable<SpecialField> auditFields);
 		IDatabaseHelper DatabaseDomain { get; }
 	}
 }
