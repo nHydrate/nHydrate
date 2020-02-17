@@ -8,217 +8,97 @@ using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
-    public class TableCollection : BaseModelCollection, IEnumerable<Table>
+    public class TableCollection : BaseModelCollection<Table>
     {
-        #region Member Variables
-
-        protected List<Table> _internalList = null;
-
-        #endregion
-
-        #region Constructor
-
         public TableCollection(INHydrateModelObject root)
             : base(root)
         {
-            _internalList = new List<Table>();
         }
 
-        #endregion
+
+        protected override string NodeOldName => "table";
+        protected override string NodeName => "t";
 
         #region IXMLable Members
-        public override void XmlAppend(XmlNode node)
-        {
-            try
-            {
-                var oDoc = node.OwnerDocument;
-
-                node.AddAttribute("key", this.Key);
-
-                foreach (var item in _internalList.OrderBy(x => x.Name))
-                {
-                    var tableNode = oDoc.CreateElement("t");
-                    item.XmlAppend(tableNode);
-                    node.AppendChild(tableNode);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
-        }
 
         public override void XmlLoad(XmlNode node)
         {
-            try
+            base.XmlLoad(node);
+
+            //Remove relationships in error
+            foreach (Table t in this)
             {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                var tableNodes = node.SelectNodes("table"); //deprecated, use "t"
-                if (tableNodes.Count == 0) tableNodes = node.SelectNodes("t");
-                foreach (XmlNode tableNode in tableNodes)
+                var delRefList = new List<Reference>();
+                foreach (Reference r in t.Relationships)
                 {
-                    var newTable = new Table(this.Root);
-                    newTable.XmlLoad(tableNode);
-                    _internalList.Add(newTable);
+                    if (r.Object == null) delRefList.Add(r);
+                    else if (((Relation) r.Object).ParentTableRef.Object != t)
+                        delRefList.Add(r);
+                    else System.Diagnostics.Debug.Write("");
                 }
 
-                //Remove relationships in error
-                foreach (Table t in this)
+                //Perform actual remove
+                foreach (var r in delRefList)
                 {
-                    var delRefList = new List<Reference>();
-                    foreach (Reference r in t.Relationships)
-                    {
-                        if (r.Object == null) delRefList.Add(r);
-                        else if (((Relation)r.Object).ParentTableRef.Object != t)
-                            delRefList.Add(r);
-                        else System.Diagnostics.Debug.Write("");
-                    }
-
-                    //Perform actual remove
-                    foreach (var r in delRefList)
-                    {
-                        ((ModelRoot)this.Root).Database.Relations.Remove((Relation)r.Object);
-                    }
-
+                    ((ModelRoot) this.Root).Database.Relations.Remove((Relation) r.Object);
                 }
 
-                //Remove relationships from tables that do not belong there
-                foreach (Table t in this)
+            }
+
+            //Remove relationships from tables that do not belong there
+            foreach (Table t in this)
+            {
+                var delRefList = new List<Reference>();
+                foreach (Reference r in t.Relationships)
                 {
-                    var delRefList = new List<Reference>();
-                    foreach (Reference r in t.Relationships)
+                    if (r.Object == null)
                     {
-                        if (r.Object == null)
-                        {
-                            delRefList.Add(r);
-                        }
-                        else if (((Relation)r.Object).ParentTableRef.Object == t)
-                        {
-                            System.Diagnostics.Debug.Write("");
-                        }
-                        else if (((Relation)r.Object).ChildTableRef.Object == t)
-                        {
-                            System.Diagnostics.Debug.Write("");
-                        }
-                        else
-                        {
-                            delRefList.Add(r);
-                        }
+                        delRefList.Add(r);
                     }
-
-                    //Perform actual remove
-                    foreach (var r in delRefList)
+                    else if (((Relation) r.Object).ParentTableRef.Object == t)
                     {
-                        ((ModelRoot)this.Root).Database.Relations.Remove((Relation)r.Object);
+                        System.Diagnostics.Debug.Write("");
                     }
-
-                }
-
-                var checkList = new List<string>();
-                foreach (Table t in this)
-                {
-                    if (checkList.Contains(t.Id.ToString()))
-                        System.Diagnostics.Debug.Write(string.Empty);
+                    else if (((Relation) r.Object).ChildTableRef.Object == t)
+                    {
+                        System.Diagnostics.Debug.Write("");
+                    }
                     else
-                        checkList.Add(t.Id.ToString());
+                    {
+                        delRefList.Add(r);
+                    }
                 }
 
-                checkList = new List<string>();
-                foreach (Table t in this)
+                //Perform actual remove
+                foreach (var r in delRefList)
                 {
-                    if (checkList.Contains(t.Key))
-                        System.Diagnostics.Debug.Write(string.Empty);
-                    else
-                        checkList.Add(t.Key);
+                    ((ModelRoot) this.Root).Database.Relations.Remove((Relation) r.Object);
                 }
+
             }
-            catch (Exception ex)
+
+            var checkList = new List<string>();
+            foreach (Table t in this)
             {
-                throw;
+                if (checkList.Contains(t.Id.ToString()))
+                    System.Diagnostics.Debug.Write(string.Empty);
+                else
+                    checkList.Add(t.Id.ToString());
             }
 
-        }
-        #endregion
-
-        #region Property Implementations
-
-        public ICollection Tables
-        {
-            get { return _internalList; }
-        }
-
-        public ICollection TableIds
-        {
-            get { return _internalList.Select(x => x.Id).ToList(); }
-        }
-
-        #endregion
-
-        #region Methods
-
-        public Table[] GetById(int id)
-        {
-            var retval = new ArrayList();
-            foreach (Table element in this)
+            checkList = new List<string>();
+            foreach (Table t in this)
             {
-                if (element.Id == id)
-                    retval.Add(element);
+                if (checkList.Contains(t.Key))
+                    System.Diagnostics.Debug.Write(string.Empty);
+                else
+                    checkList.Add(t.Key);
             }
-            return (Table[])retval.ToArray(typeof(Table));
         }
 
-        private Random _rnd = new Random();
-        internal int NextIndex()
-        {
-            var retval = _rnd.Next(1, int.MaxValue);
-            while (_internalList.Select(x => x.Id).Count(x => x == retval) != 0)
-            {
-                retval = _rnd.Next(1, int.MaxValue);
-            }
-            return retval;
-        }
-
-        public Table[] GetByKey(string key)
-        {
-            var retval = new ArrayList();
-            foreach (Table element in this)
-            {
-                if (element.Key == key)
-                    retval.Add(element);
-            }
-            return (Table[])retval.ToArray(typeof(Table));
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-        public override IEnumerator GetEnumerator()
-        {
-            return _internalList.GetEnumerator();
-        }
         #endregion
 
         #region IDictionary Members
-
-        public Table this[int tableId]
-        {
-            get { return _internalList.FirstOrDefault(x => x.Id == tableId); }
-        }
-
-        public Table this[string name]
-        {
-            get
-            {
-                foreach (Table element in this)
-                {
-                    if (string.Compare(name, element.Name, true) == 0)
-                        return element;
-                }
-                return null;
-            }
-        }
 
         public void Remove(int tableId)
         {
@@ -243,7 +123,6 @@ namespace nHydrate.Generator.Models
                 //Remove actual columns
                 for (var ii = table.Columns.Count - 1; ii >= 0; ii--)
                 {
-                    //((ModelRoot)this.Root).Database.Columns.Remove(((Column)table.Columns[0].Object).Id);
                     var id = ((Column) table.Columns[0].Object).Id;
                     var c = ((ModelRoot) this.Root).Database.Columns.FirstOrDefault(x => x.Id == id);
                     if (c != null)
@@ -261,66 +140,6 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public void RemoveRange(IEnumerable<Table> removeList)
-        {
-            foreach (var t in removeList)
-                this.Remove(t);
-        }
-
-        public void Remove(Table table)
-        {
-            this.Remove(table.Id);
-        }
-
-        public override void Clear()
-        {
-            _internalList.Clear();
-        }
-
-        internal Table Add(Table value)
-        {
-            value.ResetId(NextIndex());
-            _internalList.Add(value);
-            return value;
-        }
-
-        public Table Add(string name)
-        {
-            var newItem = new Table(this.Root);
-            newItem.Name = name;
-            newItem.ResetId(NextIndex());
-            this.Add(newItem);
-            return newItem;
-        }
-
-        public override void AddRange(ICollection list)
-        {
-            foreach (Table element in list)
-            {
-                element.ResetId(NextIndex());
-                _internalList.Add(element);
-            }
-        }
-
-        public Table Add()
-        {
-            return this.Add(this.GetUniqueName());
-        }
-
-        public bool Contains(string name)
-        {
-            foreach (Table table in this)
-            {
-                if (string.Compare(table.Name, name, true) == 0)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        protected internal string GetUniqueName() => "[New Table]";
-
         public IEnumerable<Column> GetAllColumns()
         {
             var retval = new List<Column>();
@@ -336,49 +155,5 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        #region ICollection Members
-
-        public override bool IsSynchronized
-        {
-            get { return false; }
-        }
-
-        public override int Count
-        {
-            get
-            {
-                return _internalList.Count;
-            }
-        }
-
-        public override void CopyTo(Array array, int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override object SyncRoot
-        {
-            get { return _internalList; }
-        }
-
-        #endregion
-
-        #region IEnumerable<Table> Members
-
-        IEnumerator<Table> IEnumerable<Table>.GetEnumerator()
-        {
-            return _internalList.GetEnumerator();
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-
-        #endregion
     }
 }

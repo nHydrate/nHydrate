@@ -1,14 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using DslShell = Microsoft.VisualStudio.Modeling.Shell;
-using VSShell = global::Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Modeling.Shell;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.Modeling.Shell;
-using Microsoft.VisualStudio.Modeling;
 
 namespace nHydrate.DslPackage.Forms
 {
@@ -31,18 +24,12 @@ namespace nHydrate.DslPackage.Forms
 		/// <summary>
 		/// Specifies a resource string that appears on the tool window title bar.
 		/// </summary>
-		public override string WindowTitle
-		{
-			get { return "nHydrate Object View"; }
-		}
+		public override string WindowTitle => "nHydrate Object View";
 
-		//puts a label on the tool window
-		public override System.Windows.Forms.IWin32Window Window
-		{
-			get { return this._findControl; }
-		}
+        //puts a label on the tool window
+		public override System.Windows.Forms.IWin32Window Window => this._findControl;
 
-		protected override void OnDocumentWindowChanged(ModelingDocView oldView, ModelingDocView newView)
+        protected override void OnDocumentWindowChanged(ModelingDocView oldView, ModelingDocView newView)
 		{
 			if (newView == null && oldView != null)
 			{

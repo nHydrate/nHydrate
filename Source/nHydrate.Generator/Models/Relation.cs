@@ -399,7 +399,6 @@ namespace nHydrate.Generator.Models
                 var prehash =
                     this.RoleName + "|" +
                     sb.ToString();
-                //return HashHelper.Hash(prehash);
                 return prehash;
             }
         }

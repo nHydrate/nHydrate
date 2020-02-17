@@ -1,7 +1,5 @@
-#pragma warning disable 0168
 using System;
 using System.Linq;
-using System.ComponentModel;
 using System.Xml;
 using nHydrate.Generator.Common.Util;
 
@@ -32,7 +30,6 @@ namespace nHydrate.Generator.Models
 
         #region CorePropertiesHash
 
-        [Browsable(false)]
         public virtual string CorePropertiesHash
         {
             get
@@ -44,12 +41,10 @@ namespace nHydrate.Generator.Models
                 var prehash =
                     this.Ascending + "|" +
                     fieldName;
-                //return HashHelper.Hash(prehash);
                 return prehash;
             }
         }
 
-        [Browsable(false)]
         public virtual string CorePropertiesHashNoNames
         {
             get
@@ -61,7 +56,6 @@ namespace nHydrate.Generator.Models
                 var prehash =
                     this.Ascending + "|" +
                     key;
-                //return HashHelper.Hash(prehash);
                 return prehash;
             }
         }
@@ -72,34 +66,18 @@ namespace nHydrate.Generator.Models
 
         public override void XmlAppend(XmlNode node)
         {
-            try
-            {
-                var oDoc = node.OwnerDocument;
-
-                node.AddAttribute("ascending", this.Ascending);
-                node.AddAttribute("fieldID", this.FieldID);
-                node.AddAttribute("id", this.Id);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
+            var oDoc = node.OwnerDocument;
+            node.AddAttribute("ascending", this.Ascending);
+            node.AddAttribute("fieldID", this.FieldID);
+            node.AddAttribute("id", this.Id);
         }
 
         public override void XmlLoad(XmlNode node)
         {
-            try
-            {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                this.FieldID = XmlHelper.GetAttributeValue(node, "fieldID", this.FieldID);
-                this.Ascending = XmlHelper.GetAttributeValue(node, "ascending", this.Ascending);
-                this.Id = XmlHelper.GetAttributeValue(node, "id", this.Id);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+            this.FieldID = XmlHelper.GetAttributeValue(node, "fieldID", this.FieldID);
+            this.Ascending = XmlHelper.GetAttributeValue(node, "ascending", this.Ascending);
+            this.Id = XmlHelper.GetAttributeValue(node, "id", this.Id);
         }
 
         #endregion

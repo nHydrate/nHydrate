@@ -1,6 +1,5 @@
 #pragma warning disable 0168
 using System;
-using System.ComponentModel;
 using System.Xml;
 using nHydrate.Generator.Common.Util;
 using System.Collections.Generic;
@@ -10,38 +9,18 @@ namespace nHydrate.Generator.Models
 {
     public class TableIndex : BaseModelObject
     {
-        #region Member Variables
-
-        #endregion
-
-        #region Constructor
-
         public TableIndex(INHydrateModelObject root)
             : base(root)
         {
         }
 
-        #endregion
-
-        #region Property Implementations
-
         public List<TableIndexColumn> IndexColumnList => new List<TableIndexColumn>();
-
         public string ImportedName { get; set; } = string.Empty;
-
         public string Description { get; set; } = string.Empty;
-
         public bool Clustered { get; set; } = false;
-
         public bool IsUnique { get; set; } = false;
-
         public bool PrimaryKey { get; set; } = false;
 
-        #endregion
-
-        #region CorePropertiesHash
-
-        [Browsable(false)]
         public virtual string CorePropertiesHash
         {
             get
@@ -53,12 +32,10 @@ namespace nHydrate.Generator.Models
                     this.Clustered + "|" +
                     this.IsUnique + "|" +
                     sb.ToString();
-                //return HashHelper.Hash(prehash);
                 return prehash;
             }
         }
 
-        [Browsable(false)]
         public virtual string CorePropertiesHashNoNames
         {
             get
@@ -70,14 +47,9 @@ namespace nHydrate.Generator.Models
                     this.Clustered + "|" +
                     this.IsUnique + "|" +
                     sb.ToString();
-                //return HashHelper.Hash(prehash);
                 return prehash;
             }
         }
-
-        #endregion
-
-        #region IXMLable Members
 
         public override void XmlAppend(XmlNode node)
         {
@@ -125,8 +97,6 @@ namespace nHydrate.Generator.Models
                 throw;
             }
         }
-
-        #endregion
 
     }
 }

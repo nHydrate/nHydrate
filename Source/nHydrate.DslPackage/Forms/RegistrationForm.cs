@@ -27,7 +27,6 @@ namespace nHydrate.DslPackage.Forms
                 }
             }
             cboCountry.SelectedIndex = 0;
-
         }
 
         private void cmdOK_Click(object sender, System.EventArgs e)
@@ -113,7 +112,7 @@ namespace nHydrate.DslPackage.Forms
             //    else
             //    {
             //        //Display the reason for the error
-            //        MessageBox.Show("An error has occurred while verifing your premium key. The failure reason is listed below.\n\n'" + result + "'", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        MessageBox.Show("An error has occurred while verifying your premium key. The failure reason is listed below.\n\n'" + result + "'", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             //    }
             //}
 
@@ -155,7 +154,7 @@ namespace nHydrate.DslPackage.Forms
                     //    else
                     //    {
                     //        //Display the reason for the error
-                    //        MessageBox.Show("An error has occurred while verifing your premium key. The failure reason is listed below.\n\n'" + result + "'", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //        MessageBox.Show("An error has occurred while verifying your premium key. The failure reason is listed below.\n\n'" + result + "'", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     //        return;
                     //    }
                     //}

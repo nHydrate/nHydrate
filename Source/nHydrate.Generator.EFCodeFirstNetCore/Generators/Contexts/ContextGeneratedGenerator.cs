@@ -1,11 +1,4 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
-using nHydrate.Generator.EFCodeFirstNetCore;
-using nHydrate.Generator.ProjectItemGenerators;
 using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
@@ -25,8 +18,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
         public override void Generate()
         {
-            ContextGeneratedTemplate template = new ContextGeneratedTemplate(_model);
-            string fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;
+            var template = new ContextGeneratedTemplate(_model);
+            var fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;
             var eventArgs = new ProjectItemGeneratedEventArgs(template.FileName, template.FileContent, ProjectName, fullParentName, this, true);
             OnProjectItemGenerated(this, eventArgs);
             var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);

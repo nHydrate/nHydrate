@@ -206,10 +206,8 @@ namespace nHydrate.Generator.Models
         {
             get
             {
-                if (!string.IsNullOrEmpty(this.CodeFacade))
-                    return StringHelper.DatabaseNameToPascalCase(this.CodeFacade);
-                else
-                    return StringHelper.DatabaseNameToPascalCase(this.Name);
+                if (!string.IsNullOrEmpty(this.CodeFacade)) return this.CodeFacade;
+                else return this.Name;
             }
         }
 
@@ -244,7 +242,6 @@ namespace nHydrate.Generator.Models
                     this.DBSchema + "|" +
                     this.SQL.GetHashCode() + "|" +
                     sb.ToString();
-                //return HashHelper.Hash(prehash);
                 return prehash;
             }
         }

@@ -34,15 +34,12 @@ namespace nHydrate.Generator.Models
         protected const string _def_dbSchema = "dbo";
         protected const string _def_description = "";
         protected const string _def_codeFacade = "";
-        protected const bool _def_isAbstract = false;
         protected const bool _def_generatesDoubleDerived = false;
         protected const bool _def_isTenant = false;
 
         protected RowEntryCollection _staticData = null;
-        private string _parentTableKey = null;
         private bool _allowAuditTracking = _def_allowAuditTracking;
         private bool _immutable = _def_immutable;
-        private bool _isAbstract = _def_isAbstract;
 
         #endregion
 
@@ -51,10 +48,22 @@ namespace nHydrate.Generator.Models
         public Table(INHydrateModelObject root)
             : base(root)
         {
+            this.Initialize();
+        }
+
+        public Table()
+        {
+            //Only needed for BaseModelCollection<T>
+        }
+
+        #endregion
+
+        private void Initialize()
+        {
             this.MetaData = new MetadataItemCollection();
 
             _staticData = new RowEntryCollection(this.Root);
-            Columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
+            this.Columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
             Columns.ResetKey(Guid.Empty.ToString());
             Relationships = new ReferenceCollection(this.Root, this, ReferenceType.Relation);
             Relationships.ResetKey(Guid.Empty.ToString());
@@ -68,28 +77,24 @@ namespace nHydrate.Generator.Models
             Relationships.ObjectSingular = "Relationship";
             Relationships.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
             Relationships.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
-
         }
 
-        #endregion
+        protected override void OnRootReset(System.EventArgs e)
+        {
+            this.Initialize();
+        }
 
         #region Property Implementations
 
         public bool IsTenant { get; set; } = _def_isTenant;
 
-        public MetadataItemCollection MetaData { get; }
+        public MetadataItemCollection MetaData { get; private set; }
 
         public List<TableIndex> TableIndexList { get; } = new List<TableIndex>();
 
         public TypedTableConstants TypedTable { get; set; } = _def_isTypeTable;
 
         public string DBSchema { get; set; } = _def_dbSchema;
-
-        public bool IsAbstract
-        {
-            get { return false; }
-            set { _isAbstract = value; }
-        }
 
         public bool GeneratesDoubleDerived { get; set; } = _def_generatesDoubleDerived;
 
@@ -101,7 +106,7 @@ namespace nHydrate.Generator.Models
             set { _immutable = value; }
         }
 
-        public ReferenceCollection Relationships { get; } = null;
+        public ReferenceCollection Relationships { get; private set; } = null;
 
         public RelationCollection AllRelationships
         {
@@ -123,7 +128,7 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public ReferenceCollection Columns { get; } = null;
+        public ReferenceCollection Columns { get; private set; } = null;
 
         public bool AllowModifiedAudit { get; set; } = _def_modifiedAudit;
 
@@ -380,7 +385,6 @@ namespace nHydrate.Generator.Models
             node.AddAttribute("typedTable", this.TypedTable.ToString("d"), _def_isTypeTable.ToString("d"));
             node.AddAttribute("createAudit", this.AllowCreateAudit, _def_createAudit);
             node.AddAttribute("timestamp", this.AllowTimestamp, _def_timestamp);
-            node.AddAttribute("isAbstract", this.IsAbstract, _def_isAbstract);
             node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived, _def_generatesDoubleDerived);
             node.AddAttribute("id", this.Id);
 
@@ -446,9 +450,7 @@ namespace nHydrate.Generator.Models
             this.TypedTable = (TypedTableConstants) XmlHelper.GetAttributeValue(node, "typedTable", int.Parse(TypedTable.ToString("d")));
             this.AllowTimestamp = XmlHelper.GetAttributeValue(node, "timestamp", AllowTimestamp);
             this.AllowAuditTracking = XmlHelper.GetAttributeValue(node, "allowAuditTracking", _def_allowAuditTracking);
-            this.IsAbstract = XmlHelper.GetAttributeValue(node, "isAbstract", _def_isAbstract);
             this.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(node, "generatesDoubleDerived", _def_generatesDoubleDerived);
-            _parentTableKey = XmlHelper.GetAttributeValue(node, "parentTableKey", string.Empty);
 
             var metadataNode = node.SelectSingleNode("metadata");
             if (metadataNode != null)
@@ -479,10 +481,8 @@ namespace nHydrate.Generator.Models
         {
             get
             {
-                if (!string.IsNullOrEmpty(this.CodeFacade))
-                    return StringHelper.DatabaseNameToPascalCase(this.CodeFacade);
-                else
-                    return StringHelper.DatabaseNameToPascalCase(this.Name);
+                if (!string.IsNullOrEmpty(this.CodeFacade)) return this.CodeFacade;
+                else return this.Name;
             }
         }
 

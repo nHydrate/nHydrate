@@ -24,9 +24,6 @@ namespace nHydrate.Generator.Models
     {
         #region Member Variables
 
-        protected int _ref = 1;
-        protected ReferenceType _refType = ReferenceType.Table;
-
         #endregion
 
         #region Constructor
@@ -36,21 +33,18 @@ namespace nHydrate.Generator.Models
         {
         }
 
+        public Reference()
+        {
+            //Only needed for BaseModelCollection<T>
+        }
+
         #endregion
 
         #region Property Implementations
 
-        public int Ref
-        {
-            get { return _ref; }
-            set { _ref = value; }
-        }
+        public int Ref { get; set; } = 1;
 
-        public ReferenceType RefType
-        {
-            get { return _refType; }
-            set { _refType = value; }
-        }
+        public ReferenceType RefType { get; set; } = ReferenceType.Table;
 
         public INHydrateModelObject Object
         {
@@ -126,11 +120,11 @@ namespace nHydrate.Generator.Models
             try
             {
                 this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                _ref = XmlHelper.GetAttributeValue(node, "ref", _ref);
+                Ref = XmlHelper.GetAttributeValue(node, "ref", Ref);
 
                 var refTypeNode = XmlHelper.GetAttributeValue(node, "refType", -1);
                 if (refTypeNode != -1)
-                    _refType = (ReferenceType)refTypeNode;
+                    RefType = (ReferenceType)refTypeNode;
             }
             catch (Exception ex)
             {

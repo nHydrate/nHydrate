@@ -74,7 +74,6 @@ namespace nHydrate.DataImport
                     this.PrimaryKey + "|" +
                     this.IsBrowsable + "|" +
                     this.DataType.ToString();
-                //return HashHelper.Hash(prehash);
                 return prehash;
             }
         }

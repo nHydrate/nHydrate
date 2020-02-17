@@ -1,34 +1,17 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Drawing;
 
 namespace nHydrate.DslPackage.Objects
 {
 	internal class Utils
 	{
-		public static Color ColorInserted
-		{
-			get { return Color.Yellow; }
-		}
+		public static Color ColorInserted => Color.Yellow;
+        public static Color ColorDeleted => Color.FromArgb(255, 200, 100);
+        public static Color ColorImaginary => Color.FromArgb(200, 200, 200);
+        public static Color ColorModified => Color.FromArgb(220, 220, 255);
 
-		public static Color ColorDeleted
-		{
-			get { return Color.FromArgb(255, 200, 100); }
-		}
-
-		public static Color ColorImaginary
-		{
-			get { return Color.FromArgb(200, 200, 200); }
-		}
-
-		public static Color ColorModified
-		{
-			get { return Color.FromArgb(220, 220, 255); }
-		}
-
-		public static void CompareText(
+        public static void CompareText(
 			FastColoredTextBoxNS.FastColoredTextBox textBox1,
 			FastColoredTextBoxNS.FastColoredTextBox textBox2,
 			string text1,
@@ -70,40 +53,6 @@ namespace nHydrate.DslPackage.Objects
 					textBox2.TextSource[index].BackgroundBrush = brushModified;
 			}
 
-		}
-
-		/// --------------------------------------------------------------------
-		/// <summary>
-		/// Determine if a property exists in an object
-		/// </summary>
-		/// <param name="propertyName">Name of the property </param>
-		/// <param name="srcObject">the object to inspect</param>
-		/// <returns>true if the property exists, false otherwise</returns>
-		/// <exception cref="ArgumentNullException">if srcObject is null</exception>
-		/// <exception cref="ArgumentException">if propertName is empty or null </exception>
-		/// --------------------------------------------------------------------
-		public static bool PropertyExists(object srcObject, string propertyName)
-		{
-			if (srcObject == null)
-				throw new System.ArgumentNullException("srcObject");
-
-			if ((propertyName == null) || (propertyName == String.Empty) || (propertyName.Length == 0))
-				throw new System.ArgumentException("Property name cannot be empty or null.");
-
-			var propInfoSrcObj = srcObject.GetType().GetProperty(propertyName);
-
-			return (propInfoSrcObj != null);
-		}
-
-		public static T GetPropertyValue<T>(object srcObject, string propertyName)
-		{
-			if (srcObject == null)
-				throw new System.ArgumentNullException("srcObject");
-
-			if ((propertyName == null) || (propertyName == String.Empty) || (propertyName.Length == 0))
-				throw new System.ArgumentException("Property name cannot be empty or null.");
-
-			return (T)srcObject.GetType().GetProperty(propertyName).GetValue(srcObject, null);
 		}
 
 		public static void SetPropertyValue<T>(object srcObject, string propertyName, T value)

@@ -1,13 +1,9 @@
 #pragma warning disable 0168
 using System;
 using System.Linq;
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Models;
 using System.Text;
 using nHydrate.Generator.Common.Util;
-using System.Collections.Generic;
-using nHydrate.Generator.EFCodeFirstNetCore;
-using nHydrate.Generator.Common;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 {
@@ -75,18 +71,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
         {
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
-            //sb.AppendLine("using System.Runtime.Serialization;");
-            //sb.AppendLine("using System.Xml.Serialization;");
-            //sb.AppendLine("using System.ComponentModel;");
-            //sb.AppendLine("using System.Collections.Generic;");
-            //sb.AppendLine("using System.Text;");
             sb.AppendLine("using " + this.GetLocalNamespace() + ";");
-            //sb.AppendLine("using System.Text.RegularExpressions;");
-            //sb.AppendLine("using System.Linq.Expressions;");
-            //sb.AppendLine("using System.Data.Entity;");
-            //sb.AppendLine("using System.Data.Entity.ModelConfiguration;");
-            //sb.AppendLine("using System.ComponentModel.DataAnnotations;");
-            //sb.AppendLine("using System.Data.Entity.Core.Objects.DataClasses;");
             sb.AppendLine();
         }
 
@@ -161,9 +146,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             if (!string.IsNullOrEmpty(_item.Description))
                 sb.AppendLine("	/// " + _item.Description);
             sb.AppendLine("	/// </summary>");
-            //sb.AppendLine("	[System.Data.Linq.Mapping.Table(Name = \"" + _item.PascalName + "\")]");
             sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
-            //sb.AppendLine("	[System.Data.Objects.DataClasses.EdmEntityType(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity" + "\", Name = \"" + _item.PascalName + "\")]");
             sb.AppendLine("	[FieldNameConstants(typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))]");
             if (!string.IsNullOrEmpty(_item.Description))
                 sb.AppendLine("	[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\")]");
@@ -433,20 +416,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             sb.AppendLine("			return this.GetValue((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field, defaultValue);");
             sb.AppendLine("		}");
             sb.AppendLine();
-            //sb.AppendLine("		void " + this.GetLocalNamespace() + ".IBusinessObject.SetValue(System.Enum field, object newValue)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
-            //sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
-            //sb.AppendLine("			this.SetValue((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field, newValue);");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-            //sb.AppendLine("		void " + this.GetLocalNamespace() + ".IBusinessObject.SetValue(System.Enum field, object newValue, bool fixLength)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
-            //sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
-            //sb.AppendLine("			this.SetValue((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field, newValue, fixLength);");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
 

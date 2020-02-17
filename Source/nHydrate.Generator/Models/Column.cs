@@ -180,7 +180,6 @@ namespace nHydrate.Generator.Models
                     this.Scale + "|" +
                     this.PrimaryKey + "|" +
                     this.DataType.ToString();
-                //return HashHelper.Hash(prehash);
                 return prehash;
             }
         }
@@ -198,7 +197,6 @@ namespace nHydrate.Generator.Models
                     this.Scale + "|" +
                     //this.PrimaryKey + "|" +
                     this.DataType.ToString();
-                //return HashHelper.Hash(prehash);
                 return prehash;
             }
         }
@@ -502,17 +500,6 @@ namespace nHydrate.Generator.Models
             returnVal.Ref = this.Id;
             returnVal.RefType = ReferenceType.Column;
             return returnVal;
-        }
-
-        public override string PascalName
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(this.CodeFacade))
-                    return StringHelper.DatabaseNameToPascalCase(this.CodeFacade);
-                else
-                    return StringHelper.DatabaseNameToPascalCase(this.Name);
-            }
         }
 
         public string EnumType { get; set; } = string.Empty;

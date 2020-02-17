@@ -122,17 +122,6 @@ namespace nHydrate.Generator.Models
             return returnVal;
         }
 
-        public override string PascalName
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(this.CodeFacade))
-                    return StringHelper.DatabaseNameToPascalCase(this.CodeFacade);
-                else
-                    return StringHelper.DatabaseNameToPascalCase(this.Name);
-            }
-        }
-
         #endregion
 
     }

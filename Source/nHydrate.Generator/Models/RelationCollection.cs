@@ -77,7 +77,7 @@ namespace nHydrate.Generator.Models
 
         public override Relation Add(Relation value)
         {
-            if (this.ContainsId(value.Id))
+            if (this.Contains(value.Id))
             {
                 value.ResetId(NextIndex());
             }

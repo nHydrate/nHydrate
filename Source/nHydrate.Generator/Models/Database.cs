@@ -279,26 +279,12 @@ namespace nHydrate.Generator.Models
                     this.FunctionColumns.XmlLoad(functioncolumnsNode);
 
                 //Clean all tables that are dead
-                foreach (Column column in this.Columns)
-                {
-                }
-
-                //Clean all tables that are dead
                 foreach (Table t in this.Tables)
                 {
-                    foreach (var c in t.Columns.ToList())
+                    foreach (var c in t.Columns.Where(x => x.Object == null).ToList())
                     {
-                        if (c.Object == null)
-                            t.Columns.Remove(c);
+                        t.Columns.Remove(c);
                     }
-                }
-
-                foreach (var column in this.CustomStoredProcedureColumns.AsEnumerable())
-                {
-                }
-
-                foreach (var column in this.CustomViewColumns.AsEnumerable())
-                {
                 }
 
                 this.DatabaseName = XmlHelper.GetAttributeValue(node, "databaseName", string.Empty);

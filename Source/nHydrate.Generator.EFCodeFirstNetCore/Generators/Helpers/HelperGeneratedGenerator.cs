@@ -1,6 +1,5 @@
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.EFCodeFirstNetCore;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
 {

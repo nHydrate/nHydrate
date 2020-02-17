@@ -5,17 +5,16 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
+using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator
 {
-    public abstract class BaseModelCollection : BaseModelObject, ICollection, IEnumerable
+    public abstract class BaseModelCollection : BaseModelObject, ICollection
     {
         protected BaseModelCollection(INHydrateModelObject root)
             : base(root)
         {
         }
-
-        #region Methods
 
         public virtual Array Find(string key)
         {
@@ -38,22 +37,12 @@ namespace nHydrate.Generator
         public abstract void Clear();
         public abstract void AddRange(ICollection list);
 
-        #endregion
-
-        #region IEnumerable Members
-
         public abstract IEnumerator GetEnumerator();
-
-        #endregion
-
-        #region ICollection Members
 
         public abstract int Count { get; }
         public abstract void CopyTo(Array array, int index);
         public abstract object SyncRoot { get; }
         public abstract bool IsSynchronized { get; }
-
-        #endregion
     }
 
     public abstract class BaseModelCollection<T> : BaseModelCollection, IEnumerable<T>
@@ -119,6 +108,11 @@ namespace nHydrate.Generator
             set { _internalList[index] = value; }
         }
 
+        public virtual T this[string name]
+        {
+            get { return (T) _internalList.FirstOrDefault(x => x.Name == name); }
+        }
+
         public virtual void Insert(int index, T value)
         {
             _internalList.Insert(index, value);
@@ -134,14 +128,9 @@ namespace nHydrate.Generator
             return _internalList.Contains(value);
         }
 
-        protected bool ContainsId(int id)
+        public virtual bool Contains(int id)
         {
-            foreach (T element in this)
-            {
-                if (id == element.Id)
-                    return true;
-            }
-            return false;
+            return this.Any(x=>x.Id == id);
         }
 
         public override void Clear()
@@ -149,17 +138,9 @@ namespace nHydrate.Generator
             _internalList.Clear();
         }
 
-        public virtual int IndexOf(T value)
-        {
-            return _internalList.IndexOf(value);
-        }
-
         public override void AddRange(ICollection list)
         {
-            foreach (T item in list)
-            {
-                _internalList.Add(item);
-            }
+            _internalList.AddRange(list.AsEnumerable<T>());
         }
 
         public virtual T Add(T value)
@@ -172,61 +153,43 @@ namespace nHydrate.Generator
 
         public virtual T Add()
         {
-            var newItem = new T();
+            var newItem = this.Add(new T());
             newItem.Root = this.Root;
             newItem.ResetId(NextIndex());
-            this.Add(newItem);
             return newItem;
         }
 
         public virtual bool Contains(string name)
         {
-            foreach (T item in this)
-            {
-                if (string.Compare(item.Name, name, true) == 0)
-                    return true;
-            }
-            return false;
+            return this.Any(x => string.Compare(x.Name, name, true) == 0);
         }
 
         #region ICollection Members
 
-        public override bool IsSynchronized
-        {
-            get { return false; }
-        }
+        public override bool IsSynchronized => false;
 
-        public override int Count
-        {
-            get { return _internalList.Count; }
-        }
+        public override int Count => _internalList.Count;
 
         public override void CopyTo(Array array, int index)
         {
             _internalList.CopyTo((T[])array, index);
         }
 
-        public override object SyncRoot
-        {
-            get { return _internalList; }
-        }
+        public override object SyncRoot => _internalList;
 
         #endregion
 
-        #region Methods
+        public virtual T[] GetByKey(string key)
+        {
+            return this.Where(x => x.Key == key).ToArray();
+        }
 
         public virtual T[] GetById(int id)
         {
-            var retval = new ArrayList();
-            foreach (T element in this)
-            {
-                if (element.Id == id)
-                    retval.Add(element);
-            }
-            return (T[])retval.ToArray(typeof(T));
+            return this.Where(x => x.Id == id).ToArray();
         }
 
-        private Random _rnd = new Random();
+        private readonly Random _rnd = new Random();
         internal virtual int NextIndex()
         {
             var retval = _rnd.Next(1, int.MaxValue);
@@ -237,27 +200,8 @@ namespace nHydrate.Generator
             return retval;
         }
 
-        #endregion
-
-        #region IEnumerable Members
-
-        public override IEnumerator GetEnumerator()
-        {
-            return _internalList.GetEnumerator();
-        }
-
-        #endregion
-
-        #region IEnumerable<T> Members
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            return _internalList.GetEnumerator();
-        }
-
-        #endregion
-
+        public override IEnumerator GetEnumerator() => _internalList.GetEnumerator();
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => _internalList.GetEnumerator();
     }
-
 
 }

@@ -1,11 +1,7 @@
-using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Models;
-using nHydrate.Generator.EFCodeFirstNetCore;
-using nHydrate.Generator.ProjectItemGenerators;
 using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity

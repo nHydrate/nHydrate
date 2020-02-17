@@ -1,13 +1,7 @@
 #pragma warning disable 0168
 using System;
-using System.Linq;
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Models;
 using System.Text;
-using nHydrate.Generator.Common.Util;
-using System.Collections.Generic;
-using nHydrate.Generator.EFCodeFirstNetCore;
-using nHydrate.Generator.Common;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 {

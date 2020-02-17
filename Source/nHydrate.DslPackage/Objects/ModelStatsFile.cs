@@ -1,11 +1,8 @@
 ﻿#pragma warning disable 0168
 using nHydrate.Generator.Common.Util;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace nHydrate.DslPackage.Objects

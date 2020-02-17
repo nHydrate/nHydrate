@@ -153,17 +153,6 @@ namespace nHydrate.Generator.Models
             return returnVal;
         }
 
-        public override string PascalName
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(this.CodeFacade))
-                    return StringHelper.DatabaseNameToPascalCase(this.CodeFacade);
-                else
-                    return StringHelper.DatabaseNameToPascalCase(this.Name);
-            }
-        }
-
         public override string GetCodeType(bool allowNullable, bool forceNull)
         {
             var retval = string.Empty;
@@ -194,7 +183,6 @@ namespace nHydrate.Generator.Models
                     this.Length + "|" +
                     this.Scale + "|" +
                     this.DataType.ToString();
-                //return HashHelper.Hash(prehash);
                 return prehash;
             }
         }

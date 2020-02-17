@@ -1,12 +1,10 @@
 #pragma warning disable 0168
 using System;
 using System.Linq;
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Models;
 using System.Text;
 using nHydrate.Generator.Common.Util;
 using System.Collections.Generic;
-using nHydrate.Generator.Common;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 {
@@ -101,12 +99,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
         {
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
-            sb.AppendLine("using System.ComponentModel;");
-            sb.AppendLine("using System.Runtime.Serialization;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
-            sb.AppendLine($"using {this.GetLocalNamespace()}.Entity;");
-            sb.AppendLine("using System.Data.SqlClient;");
             sb.AppendLine("using System.Configuration;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore.ChangeTracking;");
             sb.AppendLine();
@@ -688,7 +682,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction customTrans = null;");
             sb.AppendLine("			try");
             sb.AppendLine("			{");
-            sb.AppendLine("				_paramList.Clear();");
             sb.AppendLine("				if (base.Database.CurrentTransaction == null)");
             sb.AppendLine("					customTrans = base.Database.BeginTransaction();");
             sb.AppendLine("				retval += base.SaveChanges();");

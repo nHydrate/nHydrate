@@ -41,7 +41,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                 if (hasMetaData)
                 {
                     #region Create the PROPERTY_ITEM_DATA_TYPE table
-                    projectItemDataType = _model.Database.Tables.Add("PROPERTY_ITEM_DATA_TYPE");
+                    projectItemDataType = _model.Database.Tables.Add(new Table { Name = "PROPERTY_ITEM_DATA_TYPE" });
 
                     Column column = null;
                     column = _model.Database.Columns.Add(new Column { Name = "property_item_data_type_id"});
@@ -68,7 +68,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         Column column = null;
 
                         #region Create the PROPERTY_ITEM_DEFINE table
-                        var projectItemDefineTable = _model.Database.Tables.Add(table.DatabaseName + "_PROPERTY_ITEM_DEFINE");
+                        var projectItemDefineTable = _model.Database.Tables.Add(new Table { Name = table.DatabaseName + "_PROPERTY_ITEM_DEFINE"});
 
                         column = _model.Database.Columns.Add(new Column { Name = "property_item_define_id"});
                         column.ParentTableRef = projectItemDefineTable.CreateRef();
@@ -152,7 +152,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
                         #endregion
 
                         #region Create the PROPERTY_ITEM table
-                        var projectItemValueTable = _model.Database.Tables.Add(table.DatabaseName + "_PROPERTY_ITEM");
+                        var projectItemValueTable = _model.Database.Tables.Add(new Table { Name = table.DatabaseName + "_PROPERTY_ITEM"});
 
                         column = _model.Database.Columns.Add(new Column { Name = "property_item_id"});
                         column.ParentTableRef = projectItemValueTable.CreateRef();

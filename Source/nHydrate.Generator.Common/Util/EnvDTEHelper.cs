@@ -902,66 +902,6 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        public ProjectItem GetProjectFolder(Project project, string folderString)
-        {
-            ProjectItem currentProjectItem = null;
-            folderString = folderString.TrimStart(new char[] { '\\' });
-            var folders = folderString.Split(new char[] { '\\' });
-            if (folders.Length > 0)
-            {
-                var folder = folders[0];
-                foreach (ProjectItem pi in project.ProjectItems)
-                {
-                    if (pi.Kind == Constants.vsProjectItemKindPhysicalFolder || pi.Kind == Constants.vsProjectItemKindVirtualFolder)
-                    {
-                        if (pi.Name == folder)
-                        {
-                            currentProjectItem = pi;
-                        }
-                    }
-                }
-                if (currentProjectItem == null)
-                {
-                    currentProjectItem = AddFolder(project, folder);
-                }
-            }
-
-            for (var ii = 1; ii < folders.Length; ii++)
-            {
-                if (currentProjectItem != null)
-                    currentProjectItem = GetProjectFolder(currentProjectItem, folders[ii]);
-            }
-            return currentProjectItem;
-
-        }
-
-        private ProjectItem GetProjectFolder(ProjectItem parentItem, string folder)
-        {
-            if (folder != string.Empty)
-            {
-                ProjectItem currentProjectItem = null;
-                foreach (ProjectItem pi in parentItem.ProjectItems)
-                {
-                    if (pi.Kind == Constants.vsProjectItemKindPhysicalFolder || pi.Kind == Constants.vsProjectItemKindVirtualFolder)
-                    {
-                        if (pi.Name == folder)
-                        {
-                            currentProjectItem = pi;
-                        }
-                    }
-                }
-                if (currentProjectItem == null)
-                {
-                    currentProjectItem = AddFolder(parentItem, folder);
-                }
-                return currentProjectItem;
-            }
-            else
-            {
-                return parentItem;
-            }
-        }
-
         public bool GetProjectItemExists(string projectName, string parentRelativeName, ProjectItemType parentItemType)
         {
             var relativeFolder = string.Empty;

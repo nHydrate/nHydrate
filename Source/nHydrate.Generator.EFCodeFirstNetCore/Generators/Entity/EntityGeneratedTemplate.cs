@@ -1,7 +1,6 @@
 #pragma warning disable 0168
 using System;
 using System.Linq;
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Models;
 using System.Text;
 using nHydrate.Generator.Common.Util;
@@ -102,10 +101,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     StringHelper.LineBreakCode(sb, _item.Description, "	/// ");
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
-                if (_item.IsAbstract)
-                    sb.Append("	public abstract partial class " + _item.PascalName + " : " + doubleDerivedClassName);
-                else
-                    sb.Append("	public partial class " + _item.PascalName + " : " + doubleDerivedClassName + ", System.ICloneable");
+                sb.Append("	public partial class " + _item.PascalName + " : " + doubleDerivedClassName + ", System.ICloneable");
 
                 //If we can add this item then implement the ICreatable interface
                 if (!_item.AssociativeTable && !_item.Immutable)
@@ -173,16 +169,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 boInterface += ", System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging";
             }
 
-            if (_item.IsAbstract)
-            {
-                sb.Append($"	public abstract partial class {doubleDerivedClassName} : BaseEntity, {boInterface}");
-            }
-            else //NON-Abstract
-            {
-                sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : BaseEntity, " + boInterface);
-                if (!_item.GeneratesDoubleDerived)
-                    sb.Append(", System.ICloneable");
-            }
+            sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : BaseEntity, " + boInterface);
+            if (!_item.GeneratesDoubleDerived)
+                sb.Append(", System.ICloneable");
 
             if (_item.AllowCreateAudit || _item.AllowModifiedAudit || _item.AllowTimestamp)
             {
@@ -367,9 +356,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         private void AppendClone()
         {
-            if (_item.IsAbstract)
-                return;
-
             var modifieraux = "virtual";
 
             sb.AppendLine("		#region Clone");

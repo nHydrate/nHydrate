@@ -67,7 +67,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ComplexTypes
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// An object based on a database stored procedure");
                 sb.AppendLine("	/// </summary>");
-                //sb.AppendLine("	[System.Data.Objects.DataClasses.EdmComplexType(NamespaceName = \"" + this.GetLocalNamespace() + ".Entity\", Name = \"" + _item.PascalName + "\")]");
                 sb.AppendLine("	[DataContract(IsReference = true)]");
                 sb.AppendLine("	[Serializable]");
                 sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");

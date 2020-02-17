@@ -106,7 +106,6 @@ namespace nHydrate.Generator.Models
                     this.Length + "|" +
                     this.Scale + "|" +
                     this.DataType.ToString();
-                //return HashHelper.Hash(prehash);
                 return prehash;
             }
         }
@@ -121,7 +120,6 @@ namespace nHydrate.Generator.Models
                     this.Length + "|" +
                     this.Scale + "|" +
                     this.DataType.ToString();
-                //return HashHelper.Hash(prehash);
                 return prehash;
             }
         }
@@ -214,12 +212,8 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        #region IXMLable Members
-
         public abstract override void XmlAppend(XmlNode node);
         public abstract override void XmlLoad(XmlNode node);
-
-        #endregion
 
         #region Helpers
 
@@ -228,7 +222,14 @@ namespace nHydrate.Generator.Models
 
         public virtual string CamelName => StringHelper.FirstCharToLower(this.PascalName);
 
-        public abstract string PascalName { get; }
+        public virtual string PascalName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(this.CodeFacade)) return this.CodeFacade;
+                else return this.Name;
+            }
+        }
 
         public virtual string DatabaseName
         {

@@ -659,23 +659,26 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                         projectCache.Add(e.ProjectName, project);
                     }
 
-                    parent = EnvDTEHelper.Instance.GetProjectItem(e.ProjectName, e.ParentItemName, e.ParentItemType);
-
-                    //This should not happen. If do dump the cache project and requery
-                    if (parent == null && fromCache)
+                    if (!string.IsNullOrEmpty(e.ParentItemName))
                     {
-                        if (projectCache.ContainsKey(e.ProjectName))
-                            projectCache.Remove(e.ProjectName);
-                        project = EnvDTEHelper.Instance.GetProject(e.ProjectName);
-                        projectCache.Add(e.ProjectName, project);
                         parent = EnvDTEHelper.Instance.GetProjectItem(e.ProjectName, e.ParentItemName, e.ParentItemType);
+
+                        //This should not happen. If do dump the cache project and requery
+                        if (parent == null && fromCache)
+                        {
+                            if (projectCache.ContainsKey(e.ProjectName))
+                                projectCache.Remove(e.ProjectName);
+                            project = EnvDTEHelper.Instance.GetProject(e.ProjectName);
+                            projectCache.Add(e.ProjectName, project);
+                            parent = EnvDTEHelper.Instance.GetProjectItem(e.ProjectName, e.ParentItemName, e.ParentItemType);
+                        }
                     }
 
                 }
 
                 var fileStateInfo = new FileStateInfo();
                 ProjectItem projectItem = null;
-                if (e.ParentItemName != string.Empty)
+                if (!string.IsNullOrEmpty(e.ParentItemName))
                 {
                     if (e.ContentType == ProjectItemContentType.String)
                         projectItem = EnvDTEHelper.Instance.AddProjectItem(project, parent, e.ProjectItemName, e.ProjectItemContent, e.Overwrite, out fileStateInfo);

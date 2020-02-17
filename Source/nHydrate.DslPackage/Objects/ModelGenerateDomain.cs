@@ -109,7 +109,7 @@ namespace nHydrate.DslPackage.Objects
                     return false;
             }
 
-            //Initalize all the model configuration objects
+            //Initialize all the model configuration objects
             var modelRoot = genList.First().Model as ModelRoot;
             modelRoot.ModelConfigurations = new Dictionary<string, IModelConfiguration>();
             foreach (var genType in generatorTypeList)
@@ -193,7 +193,7 @@ namespace nHydrate.DslPackage.Objects
                 catch (nHydrate.Generator.Common.Exceptions.LicenseException ex)
                 {
                     ProgressHelper.ProgressingComplete(pkey);
-                    MessageBox.Show("This product is not properly licensed", "License Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("This product is not properly licensed.", "License Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     isLicenseError = true;
                 }
                 catch (Exception ex)
@@ -319,7 +319,7 @@ namespace nHydrate.DslPackage.Objects
                 //Find tables that WERE generated last time but NOT generated this time, remove the tables
                 {
                     var item1 = oldRoot.Database.Tables.FirstOrDefault(x => x.Key == t.Key && x.PascalName.ToLower() == t.PascalName.ToLower());
-                    var item2 = root.Database.Tables.FirstOrDefault(x => x.Key == t.Key && x.PascalName.ToLower() == t.PascalName.ToLower());
+                    var item2 = root.Database.Tables.FirstOrDefault(x => x.Key == t.Key && x.PascalName.ToLower() != t.PascalName.ToLower());
                     if (item1 != null && item2 != null)
                         root.RemovedTables.Add(item2.Name);
                 }
@@ -470,8 +470,6 @@ namespace nHydrate.DslPackage.Objects
                     #endregion
 
                     #region Static Data
-                    //if (entity.TypedEntity != TypedEntityConstants.None)
-                    //{
                     //Determine how many rows there are
                     var orderKeyList = entity.StaticDatum.Select(x => x.OrderKey).Distinct().ToList();
                     var rowCount = orderKeyList.Count();
@@ -499,17 +497,14 @@ namespace nHydrate.DslPackage.Objects
                                 {
                                     cellEntry.Value = dataum.Value;
                                     cellEntry.ResetKey(dataum.Id.ToString());
-                                    //cellEntry.ResetId(HashString(cellEntry.Key));
                                 }
 
                                 //Add the cell to the row
                                 rowEntry.CellEntries.Add(cellEntry);
                             }
-
                         }
                         newTable.StaticData.Add(rowEntry);
                     }
-                    //}
                     #endregion
                 }
 
@@ -720,7 +715,7 @@ namespace nHydrate.DslPackage.Objects
                         newField.ParentRef = newFunction.CreateRef(newFunction.Key);
                     }
 
-                    //Just in case these are ordered get all sort-ordered parameters first then take on all unordred alphabetized parmameters
+                    //Just in case these are ordered get all sort-ordered parameters first then take on all unordered alphabetized parameters
                     var orderedParameters = function.Parameters.Where(x => x.SortOrder > 0).OrderBy(x => x.SortOrder).ToList();
                     orderedParameters.AddRange(function.Parameters.Where(x => x.SortOrder == 0).OrderBy(x => x.Name).ToList());
                     foreach (var parameter in orderedParameters)
