@@ -94,13 +94,9 @@
     <Compile Include="ProjectItemGenerators\DatabaseUpgrade\UpgradeVersionedScriptTemplate.cs" />
     <Compile Include="ProjectItemGenerators\Globals.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseSchema\SQLSelectTenantViewTemplate.cs" />
-    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLSelectAuditBusinessObjectTemplate.cs" />
     <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\ISQLGenerate.cs" />
-    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLSelectViewTemplate.cs" />
-    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLStoredProcedureAllTableGenerator.cs" />
-    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLStoredProcedureAllViewGenerator.cs" />
-    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLStoredProcedureTableAllTemplate.cs" />
-    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLStoredProcedureViewAllTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\Views\ViewsGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\Views\ViewsTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQLHelper.cs" />
   </ItemGroup>

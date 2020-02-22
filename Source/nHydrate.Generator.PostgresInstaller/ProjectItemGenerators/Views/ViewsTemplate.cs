@@ -1,17 +1,18 @@
 #pragma warning disable 0168
 using System;
+using System.Linq;
 using System.Text;
 using nHydrate.Generator.Models;
 
-namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredProcedureAll
+namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Views
 {
-    class SQLStoredProcedureViewAllTemplate : BaseDbScriptTemplate
+    class ViewsTemplate : BaseDbScriptTemplate
     {
         private StringBuilder sb = new StringBuilder();
         private CustomView _view;
 
         #region Constructors
-        public SQLStoredProcedureViewAllTemplate(ModelRoot model, CustomView view)
+        public ViewsTemplate(ModelRoot model, CustomView view)
             : base(model)
         {
             _view = view;
@@ -29,7 +30,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredPr
             }
         }
 
-        public override string FileName => $"{_view.PascalName}.sql";
+        public override string FileName => "Views.sql";
 
         #endregion
 
@@ -38,12 +39,12 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredPr
         {
             try
             {
-                ISQLGenerate generator = null;
-                sb.AppendLine($"--This SQL is generated for the model defined view [{_view.DatabaseName}]");
-                sb.AppendLine();
-                generator = new SQLSelectViewTemplate(_model, _view);
-                generator.GenerateContent(sb);
-
+                foreach (var view in _model.Database.CustomViews.OrderBy(x => x.Name))
+                {
+                    sb.AppendLine($"--This SQL is generated for the model defined view [{_view.DatabaseName}]");
+                    sb.AppendLine();
+                    sb.Append(SQLEmit.GetSqlCreateView(_view, true));
+                }
             }
             catch (Exception ex)
             {

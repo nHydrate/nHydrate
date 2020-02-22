@@ -1,14 +1,13 @@
 #pragma warning disable 0168
 using System;
-using System.Linq;
 using System.Text;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.EventArgs;
 
-namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredProcedureAll
+namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Views
 {
-    [GeneratorItem("SQLStoredProcedureAllViewGenerator", typeof(PostgresDatabaseProjectGenerator))]
-    public class SQLStoredProcedureAllViewGenerator : BaseDbScriptGenerator
+    [GeneratorItem("SQLStoredProcedureAllViewGenerator", typeof(DatabaseProjectGenerator))]
+    public class ViewsGenerator : BaseDbScriptGenerator
     {
         #region Properties
 
@@ -30,14 +29,10 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.SQLStoredPr
                 sb.AppendLine();
 
                 //Defined views
-                foreach (var view in _model.Database.CustomViews.OrderBy(x => x.Name))
-                {
-                    var template = new SQLStoredProcedureViewAllTemplate(_model, view);
-                    sb.Append(template.FileContent);
-                }
+                var template = new ViewsTemplate(_model);
+                sb.Append(template.FileContent);
 
-                var eventArgs = new ProjectItemGeneratedEventArgs("Views.sql", sb.ToString(), ProjectName,
-                    this.ParentItemPath, ProjectItemType.Folder, this, true);
+                var eventArgs = new ProjectItemGeneratedEventArgs("Views.sql", sb.ToString(), ProjectName, this.ParentItemPath, ProjectItemType.Folder, this, true);
                 eventArgs.Properties.Add("BuildAction", 3);
                 OnProjectItemGenerated(this, eventArgs);
 

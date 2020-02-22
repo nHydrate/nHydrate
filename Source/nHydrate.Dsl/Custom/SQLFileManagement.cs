@@ -988,7 +988,6 @@ namespace nHydrate.Dsl.Custom
             var files = new List<string>();
             files.AddRange(Directory.GetFiles(rootFolder, "*.*", SearchOption.TopDirectoryOnly));
             files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_Entities"), "*.*", SearchOption.TopDirectoryOnly));
-            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_Functions"), "*.*", SearchOption.TopDirectoryOnly));
             files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_StoredProcedures"), "*.*", SearchOption.TopDirectoryOnly));
             files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_Views"), "*.*", SearchOption.TopDirectoryOnly));
             files.ToList().ForEach(x => x = x.ToLower());

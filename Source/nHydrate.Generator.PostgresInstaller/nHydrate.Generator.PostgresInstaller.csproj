@@ -79,10 +79,8 @@
     <Compile Include="ProjectItemGenerators\BaseDbScriptGenerator.cs" />
     <Compile Include="ProjectItemGenerators\BaseDbScriptTemplate.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\Program.cs" />
-    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\ISQLGenerate.cs" />
-    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLSelectViewTemplate.cs" />
-    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLStoredProcedureAllViewGenerator.cs" />
-    <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\SQLStoredProcedureViewAllTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\Views\ViewsGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\Views\ViewsTemplate.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptGenerator.cs" />
     <Compile Include="ProjectItemGenerators\UnversionedUpgrade\UpgradeUnversionedScriptTemplate.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\XmlHelper.cs" />

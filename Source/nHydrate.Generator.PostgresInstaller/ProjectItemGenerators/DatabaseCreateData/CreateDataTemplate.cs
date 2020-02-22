@@ -18,32 +18,19 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
         #endregion
 
         #region BaseClassTemplate overrides
+
         public override string FileContent
         {
             get
             {
-                try
-                {
-                    GenerateContent();
-                    return sb.ToString();
-
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+                GenerateContent();
+                return sb.ToString();
             }
         }
 
-        public override string FileName
-        {
-            get { return "2_CreateData.sql"; }
-        }
+        public override string FileName => "2_CreateData.sql";
 
-        internal string OldFileName
-        {
-            get { return "CreateData.sql"; }
-        }
+        internal string OldFileName => "CreateData.sql";
 
         #endregion
 

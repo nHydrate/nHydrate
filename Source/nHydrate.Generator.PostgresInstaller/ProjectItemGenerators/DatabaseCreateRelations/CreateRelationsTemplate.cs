@@ -27,10 +27,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
             }
         }
 
-        public override string FileName
-        {
-            get { return "3_CreateRelations.sql"; }
-        }
+        public override string FileName => "3_CreateRelations.sql";
 
         #endregion
 
