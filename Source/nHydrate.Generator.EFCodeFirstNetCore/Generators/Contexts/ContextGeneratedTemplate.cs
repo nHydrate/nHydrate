@@ -213,7 +213,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine($"	/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
+            sb.AppendLine($"		/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine($"		public {_model.ProjectName}Entities(ContextStartup contextStartup) :");
             sb.AppendLine("				base()");
@@ -241,7 +241,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine($"	/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
+            sb.AppendLine($"		/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine($"		public {_model.ProjectName}Entities(string connectionString) :");
             sb.AppendLine("				base()");

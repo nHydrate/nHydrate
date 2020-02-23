@@ -52,6 +52,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
         {
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
+            sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Reflection;");
             sb.AppendLine();
         }

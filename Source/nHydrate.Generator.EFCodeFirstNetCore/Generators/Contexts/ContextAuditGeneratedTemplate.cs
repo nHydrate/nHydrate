@@ -16,15 +16,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
         }
 
         #region BaseClassTemplate overrides
-        public override string FileName
-        {
-            get { return _model.ProjectName + "AuditEntities.Generated.cs"; }
-        }
+        public override string FileName => $"{_model.ProjectName}AuditEntities.Generated.cs";
 
-        public string ParentItemName
-        {
-            get { return _model.ProjectName + "AuditEntities.cs"; }
-        }
+        public string ParentItemName => $"{_model.ProjectName}AuditEntities.cs";
 
         public override string FileContent
         {

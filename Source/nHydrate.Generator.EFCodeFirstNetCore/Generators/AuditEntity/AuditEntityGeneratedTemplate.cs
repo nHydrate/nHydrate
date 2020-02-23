@@ -1,15 +1,11 @@
 #pragma warning disable 0168
 using System;
 using System.Linq;
-using nHydrate.Generator.Common.GeneratorFramework;
 using System.Text;
-using nHydrate.Generator.Common.Util;
 using System.Collections.Generic;
-using nHydrate.Generator.EFCodeFirstNetCore;
 using nHydrate.Generator.Models;
-using nHydrate.Generator.Common;
 
-namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
+namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
 {
     public class AuditEntityGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
@@ -24,15 +20,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
         }
 
         #region BaseClassTemplate overrides
-        public override string FileName
-        {
-            get { return string.Format("{0}Audit.Generated.cs", _item.PascalName); }
-        }
-
-        public string ParentItemName
-        {
-            get { return string.Format("{0}Audit.cs", _item.PascalName); }
-        }
+        public override string FileName => $"{_item.PascalName}Audit.Generated.cs";
+        public string ParentItemName => $"{_item.PascalName}Audit.cs";
 
         public override string FileContent
         {
@@ -101,9 +90,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
             sb.AppendLine();
 
             #region Add the AuditResultFieldCompare class
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// ");
-            sb.AppendLine("	/// </summary>");
+            sb.AppendLine("	/// <summary />");
             sb.AppendLine("	public interface I" + _item.PascalName + "AuditResultFieldCompare : " + this.GetLocalNamespace() + ".IAuditResultFieldCompare");
             sb.AppendLine("	{");
             sb.AppendLine("		/// <summary>");
@@ -115,7 +102,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// A comparison class for audit comparison results");
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	/// <typeparam name=\"T\"></typeparam>");
             sb.AppendLine("	public class " + _item.PascalName + "AuditResultFieldCompare<T> : " + this.GetLocalNamespace() + ".AuditResultFieldCompare<T, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants>, I" + _item.PascalName + "AuditResultFieldCompare");
             sb.AppendLine("	{");
             sb.AppendLine("		internal " + _item.PascalName + "AuditResultFieldCompare(T value1, T value2, " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, System.Type dataType)");
@@ -168,7 +154,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
                 if (!string.IsNullOrEmpty(column.Description))
                     sb.AppendLine("		/// " + column.Description + "");
                 else
-                    sb.AppendLine("		/// The property that maps back to the database '" + (column.ParentTableRef.Object as Table).DatabaseName + "." + column.DatabaseName + "' field");
+                    sb.AppendLine("		/// The property that maps back to the database '" + column.ParentTable.DatabaseName + "." + column.DatabaseName + "' field");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine("		public " + column.GetCodeType() + " " + column.PascalName + " { get; protected internal set; }");
                 sb.AppendLine();

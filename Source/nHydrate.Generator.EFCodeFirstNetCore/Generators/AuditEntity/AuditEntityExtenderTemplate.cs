@@ -1,15 +1,9 @@
 #pragma warning disable 0168
 using System;
-using System.Linq;
-using nHydrate.Generator.Common.GeneratorFramework;
 using System.Text;
-using nHydrate.Generator.Common.Util;
-using System.Collections.Generic;
-using nHydrate.Generator.EFCodeFirstNetCore;
 using nHydrate.Generator.Models;
-using nHydrate.Generator.Common;
 
-namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
+namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
 {
     public class AuditEntityExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
@@ -25,11 +19,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
 
         #region BaseClassTemplate overrides
 
-        public override string FileName
-        {
-            get { return string.Format("{0}Audit.cs", _currentTable.PascalName); }
-        }
-
+        public override string FileName => $"{_currentTable.PascalName}Audit.cs";
 
         public override string FileContent
         {

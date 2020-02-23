@@ -1,13 +1,9 @@
-using System;
 using System.Linq;
-using System.Collections.Generic;
-using System.Text;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.EventArgs;
-using nHydrate.Generator.EFCodeFirstNetCore;
 using nHydrate.Generator.Models;
 
-namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.EFCSDL
+namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
 {
     [GeneratorItem("AuditEntityExtenderGenerator", typeof(EFCodeFirstNetCoreProjectGenerator))]
     public class AuditEntityExtenderGenerator : EFCodeFirstNetCoreProjectItemGenerator

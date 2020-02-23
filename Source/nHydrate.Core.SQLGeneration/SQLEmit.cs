@@ -1,10 +1,9 @@
 #pragma warning disable 0168
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using System.Text;
 using nHydrate.Generator.Models;
-using nHydrate.Generator.Common.GeneratorFramework;
 using System.Data;
 using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.Common;
@@ -46,7 +45,7 @@ namespace nHydrate.Core.SQLGeneration
 
                 //Emit PK
                 var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
-                if (tableIndex != null && emitPK)
+                if (tableIndex != null && tableIndex.IndexColumnList.Any() && emitPK)
                 {
                     var indexName = "PK_" + table.DatabaseName.ToUpper();
                     sb.AppendLine(",");

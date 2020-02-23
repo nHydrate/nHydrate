@@ -16,10 +16,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
 
         #region BaseClassTemplate overrides
 
-        public override string FileName
-        {
-            get { return "Globals.cs"; }
-        }
+        public override string FileName => "Globals.cs";
 
         public override string FileContent
         {

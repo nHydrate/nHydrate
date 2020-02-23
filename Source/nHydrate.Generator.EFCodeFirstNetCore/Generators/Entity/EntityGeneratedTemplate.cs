@@ -67,6 +67,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
         private void AppendUsingStatements()
         {
             sb.AppendLine("using System;");
+            sb.AppendLine("using System.Linq;");
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine($"using {this.GetLocalNamespace()}.EventArguments;");
@@ -439,7 +440,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 if (!string.IsNullOrEmpty(column.Description))
                     StringHelper.LineBreakCode(sb, column.Description, "		/// ");
                 else
-                    sb.AppendLine("		/// The property that maps back to the database '" + (column.ParentTableRef.Object as Table).DatabaseName + "." + column.DatabaseName + "' field.");
+                    sb.AppendLine("		/// The property that maps back to the database '" + column.ParentTable.DatabaseName + "." + column.DatabaseName + "' field.");
 
 
                 //If this field has a related convenience property then explain it
@@ -638,7 +639,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         else targetRelation = relation1;
                         if (targetRelation == relation2) otherRelation = relation1;
                         else otherRelation = relation2;
-                        var targetTable = targetRelation.ParentTableRef.Object as Table;
+                        var targetTable = targetRelation.ParentTable;
 
                         if ((targetTable.TypedTable != TypedTableConstants.EnumOnly))
                         {
@@ -1135,9 +1136,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("				if (newValue == null)");
                         sb.AppendLine("				{");
                         if (column.AllowNull)
-                            sb.AppendLine("					this." + column.PascalName + " = null;");
+                            sb.AppendLine($"					this.{column.PascalName} = null;");
                         else
-                            sb.AppendLine("					throw new Exception(\"Field '" + column.PascalName + "' does not allow null values!\");");
+                            sb.AppendLine($"					throw new Exception(\"Field '{column.PascalName}' does not allow null values!\");");
                         sb.AppendLine("				}");
                         sb.AppendLine("				else");
                         sb.AppendLine("				{");
@@ -1145,19 +1146,19 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         var list = relationParentTable.AllRelationships.FindByChildColumn(column).ToList();
                         if (list.Count > 0)
                         {
-                            var relation = list.First() as Relation;
-                            var pTable = relation.ParentTableRef.Object as Table;
+                            var relation = list.First();
+                            var pTable = relation.ParentTable;
                             if (pTable.TypedTable != TypedTableConstants.EnumOnly)
                             {
                                 var cTable = relation.ChildTableRef.Object as Table;
                                 var s = pTable.PascalName;
-                                sb.AppendLine("					if (newValue is " + this.GetLocalNamespace() + ".Entity." + pTable.PascalName + ")");
+                                sb.AppendLine($"					if (newValue is {this.GetLocalNamespace()}.Entity.{pTable.PascalName})");
                                 sb.AppendLine("					{");
                                 if (column.EnumType == string.Empty)
                                 {
                                     var columnRelationship = relation.ColumnRelationships.GetByParentField(column);
                                     var parentColumn = (Column) columnRelationship.ParentColumnRef.Object;
-                                    sb.AppendLine("						this." + column.PascalName + " = ((" + this.GetLocalNamespace() + ".Entity." + pTable.PascalName + ")newValue)." + parentColumn.PascalName + ";");
+                                    sb.AppendLine($"						this.{column.PascalName} = (({this.GetLocalNamespace()}.Entity.{pTable.PascalName})newValue).{parentColumn.PascalName};");
 
                                     //REMOVE PK FOR NOW
                                     //sb.AppendLine("					}");
@@ -1166,7 +1167,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                                     //sb.AppendLine("						this." + column.PascalName + " = ((" + this.GetLocalNamespace() + ".Entity." + pTable.PascalName + "PrimaryKey)newValue)." + parentColumn.PascalName + ";");
                                 }
                                 else //This is an Enumeration type
-                                    sb.AppendLine("						throw new Exception(\"Field '" + column.PascalName + "' does not allow values of this type!\");");
+                                    sb.AppendLine($"						throw new Exception(\"Field '{column.PascalName}' does not allow values of this type!\");");
 
                                 sb.AppendLine("					} else");
                             }
