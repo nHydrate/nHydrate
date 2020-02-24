@@ -249,29 +249,6 @@ namespace nHydrate.DslPackage
             return retval;
         }
 
-        public static Field CloneFake(this Field original)
-        {
-            var newField = new Field(original.Partition)
-            {
-                Name = original.Name,
-                CodeFacade = original.CodeFacade,
-                DataType = original.DataType,
-                Default = original.Default,
-                Formula = original.Formula,
-                IsCalculated = original.IsCalculated,
-                Identity = original.Identity,
-                IsIndexed = original.IsIndexed,
-                IsPrimaryKey = original.IsPrimaryKey,
-                IsReadOnly = original.IsReadOnly,
-                IsUnique = original.IsUnique,
-                Length = original.Length,
-                Nullable = original.Nullable,
-                Scale = original.Scale,
-                Summary = original.Summary,
-            };
-            return newField;
-        }
-
         public static List<System.Windows.Forms.ListViewItem> ToList(this System.Windows.Forms.ListView.SelectedListViewItemCollection list)
         {
             var retval = new List<System.Windows.Forms.ListViewItem>();

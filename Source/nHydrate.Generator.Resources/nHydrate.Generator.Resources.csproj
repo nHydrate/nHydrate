@@ -70,7 +70,6 @@
   <ItemGroup>
     <Content Include="..\..\bin\nHydrate.Generator.PostgresInstaller.dll">
       <Link>nHydrate.Generator.PostgresInstaller.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll">
       <Link>Newtonsoft.Json.dll</Link>

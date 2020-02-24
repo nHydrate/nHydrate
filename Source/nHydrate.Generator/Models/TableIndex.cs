@@ -14,7 +14,7 @@ namespace nHydrate.Generator.Models
         {
         }
 
-        public List<TableIndexColumn> IndexColumnList => new List<TableIndexColumn>();
+        public List<TableIndexColumn> IndexColumnList { get; } = new List<TableIndexColumn>();
         public string ImportedName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public bool Clustered { get; set; } = false;

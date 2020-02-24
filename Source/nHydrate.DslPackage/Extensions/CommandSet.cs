@@ -28,8 +28,6 @@ namespace nHydrate.DslPackage
         private Guid guidVSStd97 = new Guid("5efc7975-14bc-11cf-9b2b-00aa00573819");
         private Guid guidMenuImportDatabase = new Guid("2F64AA34-817C-44FC-8227-EC4C4C56BE3C");
         private Guid guidMenuNHydrateMenu = new Guid("ABCDEF11-817C-44FC-8227-EC4C4C561300");
-        private Guid guidMenuZoom = new Guid("10000000-817C-44FC-8227-EC4C4C561100");
-        private Guid guidZoomMenuCmdSet = new Guid("65457976-07EF-4CF1-AE6C-FA5E2D926EA9");
         private Guid guidDiagramMenuCmdSet = new Guid("55457976-07EF-4CF1-AE6C-FA5E2D926EA9");
         private Guid guidModelMenuCmdSet = new Guid("66457976-07EF-4CF1-AE6C-FA5E2D926EA9");
 
@@ -43,7 +41,6 @@ namespace nHydrate.DslPackage
         private const int cmdidMenuShowRelatedEntities = 8;
         private const int cmdidMenuStaticData = 9;
         private const int cmdidMenuShowIndexes = 10;
-        private const int cmdidMenuComponentFields = 12;
         //private const int cmdidMenuFilterDiagram = 13;
         private const int cmdidMenuSaveImage = 14;
         private const int cmdidMenuDiagramCollapseAll = 15;
@@ -53,28 +50,12 @@ namespace nHydrate.DslPackage
         private const int cmdidMenuRelationShowTarget = 19;
         private const int cmdidMenuShowOnDiagram = 20;
         private const int cmdidMenuAbout = 21;
-        private const int cmdidMenuZoom = 0x00101;
 
         private const int cmdidMenuCut = 0x1240;
         private const int cmdidMenuCopy = 0x1241;
         private const int cmdidMenuPaste = 0x1242;
 
         private const int grpidNHydrateMenu = 1000;
-        private const int grpidMenuZoom = 0x02004;
-
-        private const int cmdidMenuZoom10 = 0x0300;
-        private const int cmdidMenuZoom20 = 0x0301;
-        private const int cmdidMenuZoom30 = 0x0302;
-        private const int cmdidMenuZoom40 = 0x0303;
-        private const int cmdidMenuZoom50 = 0x0304;
-        private const int cmdidMenuZoom60 = 0x0305;
-        private const int cmdidMenuZoom70 = 0x0306;
-        private const int cmdidMenuZoom80 = 0x0307;
-        private const int cmdidMenuZoom90 = 0x0308;
-        private const int cmdidMenuZoom100 = 0x0309;
-        private const int cmdidMenuZoomIn = 0x0320;
-        private const int cmdidMenuZoomOut = 0x0321;
-        private const int cmdidMenuZoomToFit = 0x0322;
 
         private const int cmdidObjectViewWindow = 0x0101;
 
@@ -85,34 +66,7 @@ namespace nHydrate.DslPackage
         private const int grpidGroupDiagram = 0x01002;
         private Guid guidMenuDiagramMenu = new Guid("CBCDAA34-817C-44FC-8227-EC4C4C56BE3C");
         private const int grpidDiagramMenu = 0x01003;
-        private Guid guidMenuGroupZoom = new Guid("BBCDAA34-817C-44FC-8227-EC4C4AABBCCD");
-        private const int grpidGroupZoom = 0x01004;
 
-        #endregion
-
-        #region Template
-        //private void OnStatusMenuImportDatabase(object sender, EventArgs e)
-        //{
-        //  var command = sender as MenuCommand;
-        //  //command.Visible = command.Enabled = false;
-        //  foreach (object selectedObject in this.CurrentSelection)
-        //  {
-        //    EntityShape shape = selectedObject as EntityShape;
-        //    if (shape != null)
-        //    {
-        //      // Visibility depends on what is selected.
-        //      command.Visible = true;
-        //      nHydrateModel element = shape.ModelElement as nHydrateModel;
-        //      // Enabled depends on state of selection.
-        //      //if (element != null && element.Comments.Count == 0)
-        //      if (true)
-        //      {
-        //        command.Enabled = true;
-        //        return; // seen enough
-        //      }
-        //    }
-        //  }
-        //}
         #endregion
 
         #region ImportDatabase
@@ -586,34 +540,6 @@ namespace nHydrate.DslPackage
         }
         #endregion
 
-        #region FilterDiagram
-        //private void OnStatusMenuImportFilterDiagram(object sender, EventArgs e)
-        //{
-        //  var command = sender as MenuCommand;
-        //  command.Visible = this.IsDiagramSelected();
-        //}
-
-        //private void OnMenuCommandImportFilterDiagram(object sender, EventArgs e)
-        //{
-        //  var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
-        //  var store = this.CurrentDocData.Store;
-        //  var F = new DiagramFilterForm();
-        //  if (F.ShowDialog() == DialogResult.OK)
-        //  {
-        //    using (var transaction = store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
-        //    {
-        //      foreach (var shape in this.CurrentDocView.CurrentDiagram.NestedChildShapes)
-        //      {
-        //        if (shape is EntityShape)
-        //          (shape as EntityShape).IsGhosted = true;
-        //      }
-        //      this.CurrentDocView.CurrentDiagram.Invalidate();
-        //      transaction.Commit();
-        //    }
-        //  }
-        //}
-        #endregion
-
         #region Arrange
         private void OnStatusMenuArrange(object sender, EventArgs e)
         {
@@ -675,8 +601,8 @@ namespace nHydrate.DslPackage
                     case 4: imageType = System.Drawing.Imaging.ImageFormat.Bmp; break;
                 }
                 bitmap.Save(dialog.FileName, imageType);
+                MessageBox.Show("The image has been saved.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            MessageBox.Show("The image has been saved.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         #endregion
 
@@ -877,153 +803,9 @@ namespace nHydrate.DslPackage
         }
         #endregion
 
-        #region Zoom
-        private void OnStatusMenuZoom(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            command.Visible = this.IsDiagramSelected();
-        }
-        private void OnStatusMenuZoom10(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            command.Checked = (diagram.ActiveDiagramView.ZoomFactor == 0.1f);
-            command.Visible = this.IsDiagramSelected();
-        }
-        private void OnStatusMenuZoom20(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            command.Checked = (diagram.ActiveDiagramView.ZoomFactor == 0.2f);
-            command.Visible = this.IsDiagramSelected();
-        }
-        private void OnStatusMenuZoom30(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            command.Checked = (diagram.ActiveDiagramView.ZoomFactor == 0.3f);
-            command.Visible = this.IsDiagramSelected();
-        }
-        private void OnStatusMenuZoom40(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            command.Checked = (diagram.ActiveDiagramView.ZoomFactor == 0.4f);
-            command.Visible = this.IsDiagramSelected();
-        }
-        private void OnStatusMenuZoom50(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            command.Checked = (diagram.ActiveDiagramView.ZoomFactor == 0.5f);
-            command.Visible = this.IsDiagramSelected();
-        }
-        private void OnStatusMenuZoom60(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            command.Checked = (diagram.ActiveDiagramView.ZoomFactor == 0.6f);
-            command.Visible = this.IsDiagramSelected();
-        }
-        private void OnStatusMenuZoom70(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            command.Checked = (diagram.ActiveDiagramView.ZoomFactor == 0.7f);
-            command.Visible = this.IsDiagramSelected();
-        }
-        private void OnStatusMenuZoom80(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            command.Checked = (diagram.ActiveDiagramView.ZoomFactor == 0.8f);
-            command.Visible = this.IsDiagramSelected();
-        }
-        private void OnStatusMenuZoom90(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            command.Checked = (diagram.ActiveDiagramView.ZoomFactor == 0.9f);
-            command.Visible = this.IsDiagramSelected();
-        }
-        private void OnStatusMenuZoom100(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            command.Checked = (diagram.ActiveDiagramView.ZoomFactor == 1f);
-            command.Visible = this.IsDiagramSelected();
-        }
-
-        private void OnMenuCommandZoom10(object sender, EventArgs e)
-        {
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            diagram.ActiveDiagramView.ZoomAtViewCenter(0.1f);
-        }
-        private void OnMenuCommandZoom20(object sender, EventArgs e)
-        {
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            diagram.ActiveDiagramView.ZoomAtViewCenter(0.2f);
-        }
-        private void OnMenuCommandZoom30(object sender, EventArgs e)
-        {
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            diagram.ActiveDiagramView.ZoomAtViewCenter(0.3f);
-        }
-        private void OnMenuCommandZoom40(object sender, EventArgs e)
-        {
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            diagram.ActiveDiagramView.ZoomAtViewCenter(0.4f);
-        }
-        private void OnMenuCommandZoom50(object sender, EventArgs e)
-        {
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            diagram.ActiveDiagramView.ZoomAtViewCenter(0.5f);
-        }
-        private void OnMenuCommandZoom60(object sender, EventArgs e)
-        {
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            diagram.ActiveDiagramView.ZoomAtViewCenter(0.6f);
-        }
-        private void OnMenuCommandZoom70(object sender, EventArgs e)
-        {
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            diagram.ActiveDiagramView.ZoomAtViewCenter(0.7f);
-        }
-        private void OnMenuCommandZoom80(object sender, EventArgs e)
-        {
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            diagram.ActiveDiagramView.ZoomAtViewCenter(0.8f);
-        }
-        private void OnMenuCommandZoom90(object sender, EventArgs e)
-        {
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            diagram.ActiveDiagramView.ZoomAtViewCenter(0.9f);
-        }
-        private void OnMenuCommandZoom100(object sender, EventArgs e)
-        {
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            diagram.ActiveDiagramView.ZoomAtViewCenter(1f);
-        }
-        private void OnMenuCommandZoomIn(object sender, EventArgs e)
-        {
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            diagram.ActiveDiagramView.ZoomIn();
-        }
-        private void OnMenuCommandZoomOut(object sender, EventArgs e)
-        {
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            diagram.ActiveDiagramView.ZoomOut();
-        }
-        private void OnMenuCommandZoomToFit(object sender, EventArgs e)
-        {
-            var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            diagram.ActiveDiagramView.ZoomToFit();
-        }
-        #endregion
-
         #region Cut/Copy/Paste
 
-        private void OnStatusMenuCut(object sender, EventArgs e)
+        private void OnStatusMenuCutCopyPaste(object sender, EventArgs e)
         {
             var command = sender as MenuCommand;
             command.Visible = true;
@@ -1033,20 +815,8 @@ namespace nHydrate.DslPackage
         {
         }
 
-        private void OnStatusMenuCopy(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            command.Visible = true;
-        }
-
         private void OnMenuCopy(object sender, EventArgs e)
         {
-        }
-
-        private void OnStatusMenuPaste(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            command.Visible = true;
         }
 
         private void OnMenuPaste(object sender, EventArgs e)
@@ -1081,25 +851,9 @@ namespace nHydrate.DslPackage
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuAbout), new EventHandler(OnMenuCommandAbout), new CommandID(guidDiagramMenuCmdSet, cmdidMenuAbout)));
 
             //Cut/Copy/Paste
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuCut), new EventHandler(OnMenuCut), new CommandID(guidVSStd97, cmdidMenuCut)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuCopy), new EventHandler(OnMenuCopy), new CommandID(guidVSStd97, cmdidMenuCopy)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuPaste), new EventHandler(OnMenuPaste), new CommandID(guidVSStd97, cmdidMenuPaste)));
-
-            #region Zoom
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom), new EventHandler(OnMenuCommandZoomIn), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoomIn)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom), new EventHandler(OnMenuCommandZoomOut), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoomOut)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom), new EventHandler(OnMenuCommandZoomToFit), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoomToFit)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom10), new EventHandler(OnMenuCommandZoom10), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoom10)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom20), new EventHandler(OnMenuCommandZoom20), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoom20)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom30), new EventHandler(OnMenuCommandZoom30), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoom30)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom40), new EventHandler(OnMenuCommandZoom40), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoom40)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom50), new EventHandler(OnMenuCommandZoom50), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoom50)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom60), new EventHandler(OnMenuCommandZoom60), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoom60)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom70), new EventHandler(OnMenuCommandZoom70), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoom70)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom80), new EventHandler(OnMenuCommandZoom80), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoom80)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom90), new EventHandler(OnMenuCommandZoom90), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoom90)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuZoom100), new EventHandler(OnMenuCommandZoom100), new CommandID(guidZoomMenuCmdSet, cmdidMenuZoom100)));
-            #endregion
+            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuCutCopyPaste), new EventHandler(OnMenuCut), new CommandID(guidVSStd97, cmdidMenuCut)));
+            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuCutCopyPaste), new EventHandler(OnMenuCopy), new CommandID(guidVSStd97, cmdidMenuCopy)));
+            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuCutCopyPaste), new EventHandler(OnMenuPaste), new CommandID(guidVSStd97, cmdidMenuPaste)));
 
             // Add more commands here.
             return commands;
@@ -1129,14 +883,6 @@ namespace nHydrate.DslPackage
                 var windowFrame = (IVsWindowFrame)myToolWindow.Frame;
                 Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
             }
-
-            //// Show "Documentation Window"
-            //var myDocumentationWindow = this.MyToolWindowDocumentation;
-            //if (myDocumentationWindow != null)
-            //{
-            //    var windowFrame = (IVsWindowFrame)myDocumentationWindow.Frame;
-            //    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
-            //}
         }
 
         protected override void ProcessOnMenuEditCompartmentItemCommand()
@@ -1161,21 +907,6 @@ namespace nHydrate.DslPackage
                 return myToolWindow;
             }
         }
-
-        //protected ToolWindow MyToolWindowDocumentation
-        //{
-        //    get
-        //    {
-        //        ToolWindow myToolWindow = null;
-        //        var package = this.ServiceProvider.GetService(typeof(nHydratePackage)) as ModelingPackage;
-
-        //        if (package != null)
-        //        {
-        //            myToolWindow = package.GetToolWindow(typeof(DocumentationWindow), true);
-        //        }
-        //        return myToolWindow;
-        //    }
-        //}
 
         #endregion
 

@@ -9,13 +9,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Views
     [GeneratorItem("SQLStoredProcedureAllViewGenerator", typeof(DatabaseProjectGenerator))]
     public class ViewsGenerator : BaseDbScriptGenerator
     {
-        #region Properties
-
         private string ParentItemPath => @"5_Programmability\Views\Model";
-
-        #endregion
-
-        #region Overrides
 
         public override int FileCount => 1;
 
@@ -44,8 +38,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Views
                 throw;
             }
         }
-
-        #endregion
 
     }
 }
