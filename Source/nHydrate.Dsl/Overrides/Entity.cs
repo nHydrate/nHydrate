@@ -25,19 +25,9 @@ namespace nHydrate.Dsl
         /// Get the full hierarchy of tables starting with this table 
         /// and working back to the most base table
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<Entity> GetTableHierarchy()
         {
-            var retval = new List<Entity>();
-            var t = this;
-            while (t != null)
-            {
-                retval.Add(t);
-                //t = t.ParentInheritedEntity;
-                t = null;
-            }
-            retval.Reverse();
-            return retval;
+            return new[] {this};
         }
 
         /// <summary>

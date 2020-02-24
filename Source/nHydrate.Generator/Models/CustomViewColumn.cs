@@ -172,7 +172,7 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        public override string CorePropertiesHash
+        public string CorePropertiesHash
         {
             get
             {

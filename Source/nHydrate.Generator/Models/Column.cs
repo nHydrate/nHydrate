@@ -167,7 +167,7 @@ namespace nHydrate.Generator.Models
 
         public bool Obsolete { get; set; } = _def_obsolete;
 
-        public override string CorePropertiesHash
+        public string CorePropertiesHash
         {
             get
             {
@@ -184,7 +184,7 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public override string CorePropertiesHashNoPK
+        public string CorePropertiesHashNoPK
         {
             get
             {

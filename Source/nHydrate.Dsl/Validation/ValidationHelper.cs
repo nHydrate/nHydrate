@@ -35,7 +35,6 @@ namespace nHydrate.Dsl
         public static readonly string ErrorTextTypeTablePrimaryKey = "The type entity '{0}' must have a single primary key of an integer type.";
         public static readonly string ErrorTextTypeTableTextField = "The type entity '{0}' must have a 'Name' or 'Description' parameter to build the enumeration type.";
         public static readonly string ErrorTextTypeTableStaticDataEmpty = "The type entity '{0}' must have static data set for the primary key and the Name/Description parameter.";
-        public static readonly string ErrorTextAuditFieldMatchBase = "The audit settings for entity '{0}' must match those of all base entities.";
         public static readonly string ErrorTextSelfRefChildColumnPK = "The self-referential relationship cannot map to the entity primary key.";
         public static readonly string ErrorTextSelfRefMustHaveRole = "The self-referential relationship must have a role name.";
         public static readonly string ErrorTextAssociativeTableMustHave2Relations = "The associative entity '{0}' must be the child of exactly two relations. It currently has {1}.";

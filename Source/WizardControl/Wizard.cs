@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using System.ComponentModel.Design;
@@ -149,13 +147,9 @@ namespace nHydrate.Wizard
             get
             {
                 if (this.headerFont == null)
-                {
                     return this.Font;
-                }
                 else
-                {
                     return this.headerFont;
-                }
             }
             set
             {
@@ -463,7 +457,7 @@ namespace nHydrate.Wizard
 
         private void FocusFirstTabIndex(Control container)
         {
-            // init search result varialble
+            // init search result variable
             Control searchResult = null;
 
             // find the control with the lowest tab index
@@ -490,10 +484,7 @@ namespace nHydrate.Wizard
 
         protected virtual void OnBeforeSwitchPages(BeforeSwitchPagesEventArgs e)
         {
-            if (this.BeforeSwitchPages != null)
-            {
-                this.BeforeSwitchPages(this, e);
-            }
+            BeforeSwitchPages?.Invoke(this, e);
 
             // check if user canceled
             if (e.Cancel)
@@ -511,18 +502,12 @@ namespace nHydrate.Wizard
 
         protected virtual void OnAfterSwitchPages(AfterSwitchPagesEventArgs e)
         {
-            if (this.AfterSwitchPages != null)
-            {
-                this.AfterSwitchPages(this, e);
-            }
+            AfterSwitchPages?.Invoke(this, e);
         }
 
         protected virtual void OnCancel(CancelEventArgs e)
         {
-            if (this.Cancel != null)
-            {
-                this.Cancel(this, e);
-            }
+            Cancel?.Invoke(this, e);
 
             // check if user canceled
             if (e.Cancel)
@@ -540,10 +525,7 @@ namespace nHydrate.Wizard
 
         protected virtual void OnFinish(System.EventArgs e)
         {
-            if (this.Finish != null)
-            {
-                this.Finish(this, e);
-            }
+            Finish?.Invoke(this, e);
             // ensure parent form is closed (even when ShowDialog is not used)
             if (this.AllowAutoClose)
                 this.ParentForm.Close();
@@ -551,10 +533,7 @@ namespace nHydrate.Wizard
 
         protected virtual void OnHelp(System.EventArgs e)
         {
-            if (this.Help != null)
-            {
-                this.Help(this, e);
-            }
+            Help?.Invoke(this, e);
         }
 
         protected override void OnLoad(System.EventArgs e)
@@ -724,10 +703,8 @@ namespace nHydrate.Wizard
                 base.WndProc(ref msg);
             }
 
-            protected override bool DrawGrid
-            {
-                get { return false; }
-            }
+            protected override bool DrawGrid => false;
+
             #endregion
 
         }
@@ -735,54 +712,23 @@ namespace nHydrate.Wizard
         public class AfterSwitchPagesEventArgs : System.EventArgs
         {
 
-            #region Fields
-
-            #endregion
-
-            #region Constructor
             internal AfterSwitchPagesEventArgs(int oldIndex, int newIndex)
             {
                 this.OldIndex = oldIndex;
                 this.NewIndex = newIndex;
             }
-
-            #endregion
-
-            #region Properties
             public int OldIndex { get; }
-
             public int NewIndex { get; protected set; }
-
-            #endregion
-
         }
 
         public class BeforeSwitchPagesEventArgs : AfterSwitchPagesEventArgs
         {
-
-            #region Fields
-
-            #endregion
-
-            #region Constructor
             internal BeforeSwitchPagesEventArgs(int oldIndex, int newIndex)
                 : base(oldIndex, newIndex)
             {
                 // nothing
             }
-
-            #endregion
-
-            #region Properties
             public bool Cancel { get; set; } = false;
-
-            private new int NewIndex
-            {
-                get { return base.NewIndex; }
-                set { base.NewIndex = value; }
-            }
-            #endregion
-
 
         }
         #endregion

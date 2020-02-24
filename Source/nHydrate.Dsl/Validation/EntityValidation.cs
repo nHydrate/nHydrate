@@ -34,7 +34,6 @@ namespace nHydrate.Dsl
         [ValidationMethod(ValidationCategories.Open | ValidationCategories.Save | ValidationCategories.Menu | ValidationCategories.Custom | ValidationCategories.Load)]
         public void Validate(ValidationContext context)
         {
-            var timer = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
             try
             {
                 //if (!this.IsDirty) return;
@@ -60,8 +59,6 @@ namespace nHydrate.Dsl
                 }
 
                 #endregion
-
-                var timer2 = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
 
                 #region Check that non-key relationships have a unique index on fields
 
@@ -135,9 +132,6 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer2, "Entity Validate [" + this.Name + "] - A");
-                var timer3 = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
-
                 #region Check that table does not have same name as project
 
                 if (this.PascalName == this.nHydrateModel.ProjectName)
@@ -147,43 +141,21 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer3, "Entity Validate [" + this.Name + "] - B");
-                var timer4 = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
-
                 #region Check for classes that will confict with generated classes
 
-                var classExtensions = new List<string>();
-                classExtensions.Add("collection");
-                classExtensions.Add("enumerator");
-                classExtensions.Add("query");
-                //classExtensions.Add("search");
-                classExtensions.Add("pagingfielditem");
-                classExtensions.Add("paging");
-                classExtensions.Add("primarykey");
-                classExtensions.Add("selectall");
-                classExtensions.Add("pagedselect");
-                classExtensions.Add("selectbypks");
-                classExtensions.Add("selectbycreateddaterange");
-                classExtensions.Add("selectbymodifieddaterange");
-                classExtensions.Add("selectbysearch");
-                classExtensions.Add("beforechangeeventargs");
-                classExtensions.Add("afterchangeeventargs");
+                var classExtensions = new[]
+                {
+                    "collection", "enumerator", "query", "pagingfielditem", "paging", "primarykey", "selectall", "pagedselect", "selectbypks",
+                    "selectbycreateddaterange", "selectbymodifieddaterange", "selectbysearch", "beforechangeeventargs", "afterchangeeventargs"
+                };
 
                 foreach (var ending in classExtensions)
                 {
                     if (this.PascalName.ToLower().EndsWith(ending))
-                    {
                         context.LogError(string.Format(ValidationHelper.ErrorTextNameConfictsWithGeneratedCode, this.Name), string.Empty, this);
-                    }
                 }
 
                 #endregion
-
-                nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer4, "Entity Validate [" + this.Name + "] - C");
-                var timer5 = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
-
-                nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer5, "Entity Validate [" + this.Name + "] - D");
-                var timer6 = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
 
                 #region Check for inherit hierarchy that all tables are modifiable or not modifiable
 
@@ -279,31 +251,6 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                #region Audit Fields must go down to base table
-
-                //Ensure that audit fields are down in 1st base class
-                foreach (var t in heirList)
-                {
-                    if (t.AllowCreateAudit != this.AllowCreateAudit) context.LogError(string.Format(ValidationHelper.ErrorTextAuditFieldMatchBase, this.Name), string.Empty, this);
-                }
-                foreach (var t in heirList)
-                {
-                    if (t.AllowModifyAudit != this.AllowModifyAudit) context.LogError(string.Format(ValidationHelper.ErrorTextAuditFieldMatchBase, this.Name), string.Empty, this);
-                }
-                foreach (var t in heirList)
-                {
-                    if (t.AllowTimestamp != this.AllowTimestamp) context.LogError(string.Format(ValidationHelper.ErrorTextAuditFieldMatchBase, this.Name), string.Empty, this);
-                }
-
-                #endregion
-
-                #region Self-ref table MUST have role name
-
-                #endregion
-
-                nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer6, "Entity Validate [" + this.Name + "] - E");
-                var timer7 = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
-
                 #region Self-ref table cannot map child column to PK field
 
                 foreach (var relation in relationshipList)
@@ -331,9 +278,6 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer7, "Entity Validate [" + this.Name + "] - F");
-                var timer8 = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
-
                 #region There can be only 1 self reference per table
 
                 if (this.AllRelationships.Count(x => x.TargetEntity == x.SourceEntity) > 1)
@@ -343,19 +287,7 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer8, "Entity Validate [" + this.Name + "] - G");
-                var timer9 = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
-
                 #region Verify Relations
-
-                ////Relations must have fields
-                //foreach (var relation in relationshipList)
-                //{
-                //  if (relationFieldMap[relation].Count == 0)
-                //  {
-                //    context.LogError(string.Format(ValidationHelper.ErrorTextRelationNoFields, relation.SourceEntity.Name + "" + relation.TargetEntity.Name), string.Empty, this);
-                //  }
-                //}
 
                 var relationKeyList = new List<string>();
                 foreach (var relation in relationshipList)
@@ -537,8 +469,6 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer9, "Entity Validate [" + this.Name + "] - H");
-
                 #region Associative Tables
 
                 if (this.IsAssociative)
@@ -600,15 +530,6 @@ namespace nHydrate.Dsl
                         context.LogError(string.Format(ValidationHelper.ErrorTextTableNotHave1IdentityOnly, this.Name), string.Empty, this);
                     }
                 }
-
-                #endregion
-
-                #region AllowAuditTracking
-
-                //if (this.AllowAuditTracking && this.IsAssociative)
-                //{
-                //  context.LogError( string.Format(ValidationHelper.ErrorTextTableAssociativeNoAuditTracking, this.Name), string.Empty, this);
-                //}
 
                 #endregion
 
@@ -778,7 +699,7 @@ namespace nHydrate.Dsl
                 {
                     context.LogWarning(string.Format(ValidationHelper.ErrorTextNullableFieldHasDefault, field.Name, this.Name), string.Empty, this);
 
-                    //If default on nullbale that is FK then ERROR
+                    //If default on nullable that is FK then ERROR
                     foreach (var r in this.GetRelationsWhereChild())
                     {
                         foreach (var q in r.FieldMapList().Where(z => z.TargetFieldId == field.Id))
@@ -805,17 +726,11 @@ namespace nHydrate.Dsl
             {
                 throw;
             }
-            finally
-            {
-                nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer, "Entity Validate [" + this.Name + "] - Entities");
-            }
         }
 
         [ValidationMethod(ValidationCategories.Open | ValidationCategories.Save | ValidationCategories.Menu | ValidationCategories.Custom | ValidationCategories.Load)]
         public void ValidateFields(ValidationContext context)
         {
-            var timer = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
-
             try
             {
                 var columnList = this.Fields.ToList();
@@ -871,26 +786,17 @@ namespace nHydrate.Dsl
                 {
                     var name = column.Name.ToLower().Replace("_", string.Empty);
                     var t = this;
-                    //if (t.AllowCreateAudit)
-                    {
-                        //If there is a CreateAudit then no fields can be named the predined values
-                        if (string.Compare(name, this.nHydrateModel.CreatedByColumnName.Replace("_", string.Empty), true) == 0)
-                            context.LogError(string.Format(ValidationHelper.ErrorTextPreDefinedNameField, column.Name), string.Empty, this);
-                        else if (string.Compare(name, this.nHydrateModel.CreatedDateColumnName.Replace("_", string.Empty), true) == 0)
-                            context.LogError(string.Format(ValidationHelper.ErrorTextPreDefinedNameField, column.Name), string.Empty, this);
-                    }
-                    //if (t.AllowModifyAudit)
-                    {
-                        if (string.Compare(name, this.nHydrateModel.ModifiedByColumnName.Replace("_", string.Empty), true) == 0)
-                            context.LogError(string.Format(ValidationHelper.ErrorTextPreDefinedNameField, column.Name), string.Empty, this);
-                        else if (string.Compare(name, this.nHydrateModel.ModifiedDateColumnName.Replace("_", string.Empty), true) == 0)
-                            context.LogError(string.Format(ValidationHelper.ErrorTextPreDefinedNameField, column.Name), string.Empty, this);
-                    }
-                    //if (t.AllowTimestamp)
-                    {
-                        if (string.Compare(name, this.nHydrateModel.TimestampColumnName.Replace("_", string.Empty), true) == 0)
-                            context.LogError(string.Format(ValidationHelper.ErrorTextPreDefinedNameField, column.Name), string.Empty, this);
-                    }
+                    //If there is a CreateAudit then no fields can be named the predefined values
+                    if (string.Compare(name, this.nHydrateModel.CreatedByColumnName.Replace("_", string.Empty), true) == 0)
+                        context.LogError(string.Format(ValidationHelper.ErrorTextPreDefinedNameField, column.Name), string.Empty, this);
+                    else if (string.Compare(name, this.nHydrateModel.CreatedDateColumnName.Replace("_", string.Empty), true) == 0)
+                        context.LogError(string.Format(ValidationHelper.ErrorTextPreDefinedNameField, column.Name), string.Empty, this);
+                    if (string.Compare(name, this.nHydrateModel.ModifiedByColumnName.Replace("_", string.Empty), true) == 0)
+                        context.LogError(string.Format(ValidationHelper.ErrorTextPreDefinedNameField, column.Name), string.Empty, this);
+                    else if (string.Compare(name, this.nHydrateModel.ModifiedDateColumnName.Replace("_", string.Empty), true) == 0)
+                        context.LogError(string.Format(ValidationHelper.ErrorTextPreDefinedNameField, column.Name), string.Empty, this);
+                    if (string.Compare(name, this.nHydrateModel.TimestampColumnName.Replace("_", string.Empty), true) == 0)
+                        context.LogError(string.Format(ValidationHelper.ErrorTextPreDefinedNameField, column.Name), string.Empty, this);
                 }
 
                 #endregion
@@ -925,10 +831,6 @@ namespace nHydrate.Dsl
             catch (Exception ex)
             {
                 throw;
-            }
-            finally
-            {
-                nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer, "Entity Validate [" + this.Name + "] - Fields");
             }
 
         }

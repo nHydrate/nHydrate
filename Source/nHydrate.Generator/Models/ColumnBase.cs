@@ -96,34 +96,6 @@ namespace nHydrate.Generator.Models
             get { return this.GetSQLDefaultType(); }
         }
 
-        public virtual string CorePropertiesHash
-        {
-            get
-            {
-                var prehash =
-                    this.Name + "|" +
-                    this.AllowNull + "|" +
-                    this.Length + "|" +
-                    this.Scale + "|" +
-                    this.DataType.ToString();
-                return prehash;
-            }
-        }
-
-        public virtual string CorePropertiesHashNoPK
-        {
-            get
-            {
-                var prehash =
-                    this.Name + "|" +
-                    this.AllowNull + "|" +
-                    this.Length + "|" +
-                    this.Scale + "|" +
-                    this.DataType.ToString();
-                return prehash;
-            }
-        }
-
         #region ICodeFacadeObject Members
 
         public string CodeFacade { get; set; } = _def_codefacade;
@@ -322,135 +294,72 @@ namespace nHydrate.Generator.Models
         {
             var retval = string.Empty;
             if (StringHelper.Match(this.DataType.ToString(), "bigint", true))
-            {
                 retval = "long";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "binary", true))
-            {
                 return "System.Byte[]";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "bit", true))
-            {
                 retval = "bool";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "char", true))
-            {
                 return "string";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "datetime", true))
-            {
                 retval = "DateTime";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "datetime2", true))
-            {
                 retval = "DateTime";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "date", true))
-            {
                 retval = "DateTime";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "time", true))
-            {
                 retval = "TimeSpan";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "datetimeoffset", true))
-            {
                 retval = "DateTimeOffset";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "decimal", true))
-            {
                 retval = "decimal";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "float", true))
-            {
                 retval = "double";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "image", true))
-            {
                 return "System.Byte[]";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "int", true))
-            {
                 retval = "int";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "money", true))
-            {
                 retval = "decimal";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "nchar", true))
-            {
                 return "string";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "ntext", true))
-            {
                 return "string";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "numeric", true))
-            {
                 retval = "decimal";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "nvarchar", true))
-            {
                 return "string";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "real", true))
-            {
                 retval = "System.Single";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "smalldatetime", true))
-            {
                 retval = "DateTime";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "smallint", true))
-            {
                 retval = "short";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "smallmoney", true))
-            {
                 retval = "decimal";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "variant", true))
-            {
                 retval = "object";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "text", true))
-            {
                 return "string";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "tinyint", true))
-            {
                 retval = "byte";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "uniqueidentifier", true))
-            {
                 retval = "System.Guid";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "varbinary", true))
-            {
                 return "System.Byte[]";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "varchar", true))
-            {
                 return "string";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "timestamp", true))
-            {
                 return "System.Byte[]";
-            }
             else if (StringHelper.Match(this.DataType.ToString(), "xml", true))
-            {
                 return "string";
-            }
             else
-            {
                 throw new Exception("Cannot Map Sql Value '" + this.DataType.ToString() + "' To C# Value");
-            }
 
             if (allowNullable && (this.AllowNull || forceNull))
                 retval += "?";
 
             return retval;
-
         }
 
         /// <summary>
@@ -461,125 +370,65 @@ namespace nHydrate.Generator.Models
             get
             {
                 if (StringHelper.Match(this.DataType.ToString(), "bigint", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "binary", true))
-                {
                     return false;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "bit", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "char", true))
-                {
                     return false;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "datetime", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "datetime2", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "datetimeoffset", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "date", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "time", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "decimal", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "float", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "image", true))
-                {
                     return false;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "int", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "money", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "nchar", true))
-                {
                     return false;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "ntext", true))
-                {
                     return false;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "numeric", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "nvarchar", true))
-                {
                     return false;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "real", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "smalldatetime", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "smallint", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "smallmoney", true))
-                {
                     return true;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "variant", true))
-                {
                     return false;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "text", true))
-                {
                     return false;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "tinyint", true))
-                {
                     return false;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "uniqueidentifier", true))
-                {
                     return false;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "varbinary", true))
-                {
                     return false;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "varchar", true))
-                {
                     return false;
-                }
                 else if (StringHelper.Match(this.DataType.ToString(), "timestamp", true))
-                {
                     return false;
-                }
                 else
-                {
                     return false;
-                }
             }
         }
 
@@ -637,10 +486,7 @@ namespace nHydrate.Generator.Models
         /// </summary>
         /// <returns></returns>
         /// <remarks>Returns -1 for variable types and 1 for blob fields</remarks>
-        public virtual int PredefinedSize
-        {
-            get { return GetPredefinedSize(this.DataType); }
-        }
+        public virtual int PredefinedSize => GetPredefinedSize(this.DataType);
 
         public static int GetPredefinedScale(System.Data.SqlDbType dataType)
         {
@@ -654,10 +500,7 @@ namespace nHydrate.Generator.Models
             }
         }
 
-        public virtual int PredefinedScale
-        {
-            get { return GetPredefinedScale(this.DataType); }
-        }
+        public virtual int PredefinedScale => GetPredefinedScale(this.DataType);
 
         private int GetDefaultSize(System.Data.SqlDbType dataType)
         {

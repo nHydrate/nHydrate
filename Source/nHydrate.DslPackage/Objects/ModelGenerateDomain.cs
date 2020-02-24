@@ -552,17 +552,7 @@ namespace nHydrate.DslPackage.Objects
                                     if (newRelation.ColumnRelationships.Count > 0)
                                         parentTable.Relationships.Add(newRelation.CreateRef(newRelation.Key));
                                 }
-                                else
-                                {
-                                    System.Diagnostics.Debug.Write(string.Empty);
-                                }
-
                             }
-                            else
-                            {
-                                System.Diagnostics.Debug.Write(string.Empty);
-                            }
-
                         }
                     }
 
