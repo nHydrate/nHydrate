@@ -26,7 +26,6 @@ namespace nHydrate.Generator.Models
         protected const bool _def_createAudit = true;
         protected const bool _def_timestamp = true;
         protected const TypedTableConstants _def_isTypeTable = TypedTableConstants.None;
-        protected const bool _def_createMetaData = false;
         protected const bool _def_fullIndexSearch = false;
         protected const bool _def_allowAuditTracking = false;
         protected const bool _def_immutable = false;
@@ -60,8 +59,6 @@ namespace nHydrate.Generator.Models
 
         private void Initialize()
         {
-            this.MetaData = new MetadataItemCollection();
-
             _staticData = new RowEntryCollection(this.Root);
             this.Columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
             Columns.ResetKey(Guid.Empty.ToString());
@@ -87,8 +84,6 @@ namespace nHydrate.Generator.Models
         #region Property Implementations
 
         public bool IsTenant { get; set; } = _def_isTenant;
-
-        public MetadataItemCollection MetaData { get; private set; }
 
         public List<TableIndex> TableIndexList { get; } = new List<TableIndex>();
 
@@ -157,8 +152,6 @@ namespace nHydrate.Generator.Models
         }
 
         public bool HasHistory { get; set; } = _def_hasHistory;
-
-        public bool CreateMetaData { get; set; } = _def_createMetaData;
 
         #endregion
 
@@ -397,16 +390,8 @@ namespace nHydrate.Generator.Models
 
             node.AddAttribute("associativeTable", this.AssociativeTable, _def_associativeTable);
             node.AddAttribute("hasHistory", this.HasHistory, _def_hasHistory);
-            node.AddAttribute("createMetaData", this.CreateMetaData, _def_createMetaData);
             node.AddAttribute("fullIndexSearch", this.FullIndexSearch, _def_fullIndexSearch);
             node.AddAttribute("allowAuditTracking", this.AllowAuditTracking, _def_allowAuditTracking);
-
-            if (this.MetaData.Count > 0)
-            {
-                var metadataNode = oDoc.CreateElement("metadata");
-                this.MetaData.XmlAppend(metadataNode);
-                node.AppendChild(metadataNode);
-            }
         }
 
         public override void XmlLoad(XmlNode node)
@@ -437,7 +422,6 @@ namespace nHydrate.Generator.Models
 
             this.AssociativeTable = XmlHelper.GetAttributeValue(node, "associativeTable", AssociativeTable);
             this.HasHistory = XmlHelper.GetAttributeValue(node, "hasHistory", HasHistory);
-            this.CreateMetaData = XmlHelper.GetAttributeValue(node, "createMetaData", _def_createMetaData);
             this.FullIndexSearch = XmlHelper.GetAttributeValue(node, "fullIndexSearch", _def_fullIndexSearch);
 
             this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
@@ -451,10 +435,6 @@ namespace nHydrate.Generator.Models
             this.AllowTimestamp = XmlHelper.GetAttributeValue(node, "timestamp", AllowTimestamp);
             this.AllowAuditTracking = XmlHelper.GetAttributeValue(node, "allowAuditTracking", _def_allowAuditTracking);
             this.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(node, "generatesDoubleDerived", _def_generatesDoubleDerived);
-
-            var metadataNode = node.SelectSingleNode("metadata");
-            if (metadataNode != null)
-                this.MetaData.XmlLoad(metadataNode);
         }
 
         #endregion

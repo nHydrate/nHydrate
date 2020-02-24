@@ -54,7 +54,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 this.AppendEntityClass();
                 sb.AppendLine("}");
                 sb.AppendLine();
-                this.AppendMetaData();
                 sb.AppendLine("#pragma warning restore 612");
                 sb.AppendLine();
             }
@@ -114,9 +113,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             sb.AppendLine("	[FieldNameConstants(typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))]");
 
-            //NETCORE Removed
-            //sb.AppendLine("	[System.ComponentModel.DataAnnotations.MetadataType(typeof(" + this.GetLocalNamespace() + ".Entity.Metadata." + _item.PascalName + "Metadata))]");
-
             //Add known types for all descendants
             foreach (var table in _item.GetTablesInheritedFromHierarchy().OrderBy(x => x.PascalName))
             {
@@ -126,26 +122,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             if (_item.Immutable) // && _item.TypedTable == TypedTableConstants.None
                 sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
 
-            //NO AUDIT TRACKING FOR NOW
-            //sb.AppendLine("	[EntityMetadata(\"" + _item.PascalName + "\", " + _item.AllowAuditTracking.ToString().ToLower() + ", " + _item.AllowCreateAudit.ToString().ToLower() + ", " + _item.AllowModifiedAudit.ToString().ToLower() + ", " + _item.AllowTimestamp.ToString().ToLower() + ", \"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\", " + _item.EnforcePrimaryKey.ToString().ToLower() + ", " + _item.Immutable.ToString().ToLower() + ", " + (_item.TypedTable != TypedTableConstants.None).ToString().ToLower() + ", \"" + _item.GetSQLSchema() + "\")]");
-            sb.AppendLine("	[EntityMetadata(\"" + _item.PascalName + "\", false," + _item.AllowCreateAudit.ToString().ToLower() + ", " + _item.AllowModifiedAudit.ToString().ToLower() + ", " + _item.AllowTimestamp.ToString().ToLower() + ", \"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\", " + _item.EnforcePrimaryKey.ToString().ToLower() + ", " + _item.Immutable.ToString().ToLower() + ", " + (_item.TypedTable != TypedTableConstants.None).ToString().ToLower() + ", \"" + _item.GetSQLSchema() + "\")]");
-            sb.AppendLine("	[MetadataTypeAttribute(typeof(" + this.GetLocalNamespace() + ".Entity.Metadata." + _item.PascalName + "Metadata))]");
-
-            //NO AUDIT TRACKING FOR NOW
-            //Auditing
-            //if (_item.AllowAuditTracking)
-            //    sb.AppendLine("	[EntityHistory(typeof(" + this.GetLocalNamespace() + ".Audit." + _item.PascalName + "Audit))]");
-
             if (!_item.PrimaryKeyColumns.Any())
                 sb.AppendLine("	[HasNoKey]");
 
             if (_item.IsTenant)
                 sb.AppendLine("	[TenantEntity]");
-
-            foreach (var meta in _item.MetaData.ToList())
-            {
-                sb.AppendLine("	[CustomMetadata(Key = \"" + StringHelper.ConvertTextToSingleLineCodeString(meta.Key) + "\", Value = \"" + meta.Value.Replace("\"", "\\\"") + "\")]");
-            }
 
             var boInterface = this.GetLocalNamespace() + ".IBusinessObject";
             if (_item.Immutable) boInterface = "" + this.GetLocalNamespace() + ".IReadOnlyBusinessObject";
@@ -464,11 +445,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 //NETCORE Removed
                 //if (!string.IsNullOrEmpty(column.Description))
                 //    sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
-
-                foreach (var meta in column.MetaData.ToList())
-                {
-                    sb.AppendLine("	[CustomMetadata(Key = \"" + StringHelper.ConvertTextToSingleLineCodeString(meta.Key) + "\", Value = \"" + meta.Value.Replace("\"", "\\\"") + "\")]");
-                }
 
                 if (column.DataType.IsTextType() && column.IsMaxLength())
                     sb.AppendLine("		[StringLengthUnbounded]");
@@ -1530,194 +1506,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
-            sb.AppendLine();
-        }
-
-        private void AppendMetaData()
-        {
-            sb.AppendLine("#region Metadata Class");
-            sb.AppendLine();
-            sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity.Metadata");
-            sb.AppendLine("{");
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// Metadata class for the '" + _item.PascalName + "' entity");
-            sb.AppendLine("	/// </summary>");
-            sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
-            sb.Append("	public partial class " + _item.PascalName + "Metadata : ");
-
-            sb.AppendLine(this.GetLocalNamespace() + ".IMetadata");
-            sb.AppendLine("	{");
-            this.AppendMetaDataProperties();
-            this.AppendMetaDataMethods();
-            sb.AppendLine("	}");
-            sb.AppendLine();
-            sb.AppendLine("}");
-            sb.AppendLine();
-            sb.AppendLine("#endregion");
-            sb.AppendLine();
-        }
-
-        private void AppendMetaDataProperties()
-        {
-            sb.AppendLine("		#region Properties");
-            sb.AppendLine();
-
-            foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
-            {
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Metadata information for the '" + column.PascalName + "' parameter");
-                sb.AppendLine("		/// </summary>");
-
-                ////If not nullable then it is required
-                if (!column.AllowNull)
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = \"'" + column.Name + "' is required.\", AllowEmptyStrings = true)]");
-
-                if (column.PrimaryKey)
-                {
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Key()]");
-                }
-
-                //If PK or calculated then there is no setter (readonly)
-                if (column.PrimaryKey || column.ComputedColumn)
-                    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
-
-                //If text then validate the length
-                if (column.DataType.IsTextType() && column.DataType != System.Data.SqlDbType.Xml)
-                {
-                    var l = column.GetAnnotationStringLength();
-                    if (l > 0)
-                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.StringLength(" + l + ", ErrorMessage = \"The property '" + column.Name + "' has a maximum length of " + l + "\")]");
-                }
-
-                //Additional display properties
-                sb.Append("		[System.ComponentModel.DataAnnotations.Display(Description = \"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\", Name = \"" + column.Name + "\", AutoGenerateField = true");
-                if (!string.IsNullOrEmpty(column.Prompt))
-                    sb.Append(", Prompt = \"" + StringHelper.ConvertTextToSingleLineCodeString(column.Prompt) + "\"");
-                sb.AppendLine(")]");
-
-                sb.AppendLine("		public object " + column.PascalName + ";");
-                sb.AppendLine();
-            }
-
-            //Audit Fields
-            if (_item.AllowCreateAudit) AppendMetaDataAuditFieldString(_model.Database.CreatedByPascalName);
-            if (_item.AllowCreateAudit) AppendMetaDataAuditFieldDate(_model.Database.CreatedDatePascalName);
-            if (_item.AllowModifiedAudit) AppendMetaDataAuditFieldString(_model.Database.ModifiedByPascalName);
-            if (_item.AllowModifiedAudit) AppendMetaDataAuditFieldDate(_model.Database.ModifiedDatePascalName);
-            if (_item.AllowTimestamp) AppendMetaDataAuditFieldTimeStamp(_model.Database.TimestampPascalName);
-
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-        }
-
-        private void AppendMetaDataMethods()
-        {
-            var type = "virtual";
-
-            sb.AppendLine("		#region Methods");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public " + type + " string GetTableName()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return \"" + _item.DatabaseName + "\";");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Gets a list of all object fields with alias/code facade applied excluding inheritance.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + type + " List<string> GetFields()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			var retval = new List<string>();");
-            foreach (var field in _item.GetColumns())
-            {
-                sb.AppendLine("			retval.Add(\"" + field.PascalName + "\");");
-            }
-            sb.AppendLine("			return retval;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Returns the type of the parent object if one exists.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + type + " System.Type InheritsFrom()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return null;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Returns the database schema name.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + type + " string Schema()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return \"" + _item.GetSQLSchema() + "\";");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Returns the actual database name of the specified field.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + type + " string GetDatabaseFieldName(string field)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			switch (field)");
-            sb.AppendLine("			{");
-            foreach (var column in _item.GetColumns())
-            {
-                sb.AppendLine("				case \"" + column.PascalName + "\": return \"" + column.Name + "\";");
-            }
-            if (_item.AllowCreateAudit)
-            {
-                sb.AppendLine("				case \"" + _model.Database.CreatedByPascalName + "\": return \"" + _model.Database.CreatedByColumnName + "\";");
-                sb.AppendLine("				case \"" + _model.Database.CreatedDatePascalName + "\": return \"" + _model.Database.CreatedDateColumnName + "\";");
-            }
-            if (_item.AllowModifiedAudit)
-            {
-                sb.AppendLine("				case \"" + _model.Database.ModifiedByPascalName + "\": return \"" + _model.Database.ModifiedByColumnName + "\";");
-                sb.AppendLine("				case \"" + _model.Database.ModifiedDatePascalName + "\": return \"" + _model.Database.ModifiedDateColumnName + "\";");
-            }
-            if (_item.AllowTimestamp)
-            {
-                sb.AppendLine("				case \"" + _model.Database.TimestampPascalName + "\": return \"" + _model.Database.TimestampColumnName + "\";");
-            }
-            sb.AppendLine("			}");
-            sb.AppendLine("			return string.Empty;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-        }
-
-        private void AppendMetaDataAuditFieldString(string fieldName)
-        {
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Metadata information for the '" + fieldName + "' parameter");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		[System.ComponentModel.DataAnnotations.StringLength(100, ErrorMessage = \"The property '" + fieldName + "' has a maximum length of 100\")]");
-            sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
-            sb.AppendLine("		public object " + fieldName + ";");
-            sb.AppendLine();
-        }
-
-        private void AppendMetaDataAuditFieldDate(string fieldName)
-        {
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Metadata information for the '" + fieldName + "' parameter");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
-            sb.AppendLine("		public object " + fieldName + ";");
-            sb.AppendLine();
-        }
-
-        private void AppendMetaDataAuditFieldTimeStamp(string fieldName)
-        {
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Metadata information for the '" + fieldName + "' parameter");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		[System.ComponentModel.DataAnnotations.Timestamp()]");
-            sb.AppendLine("		[System.ComponentModel.DataAnnotations.ConcurrencyCheck()]");
-            sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
-            sb.AppendLine("		public object " + fieldName + ";");
             sb.AppendLine();
         }
 

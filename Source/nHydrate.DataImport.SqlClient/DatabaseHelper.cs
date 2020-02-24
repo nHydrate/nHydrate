@@ -322,39 +322,5 @@ namespace nHydrate.DataImport.SqlClient
         }
 
         #endregion
-
-        #region SetConnections
-
-        internal static void SetConnections(IDbDataAdapter da, IDbConnection conn)
-        {
-            if (da.InsertCommand != null)
-            {
-                da.InsertCommand.Connection = conn;
-            }
-            if (da.SelectCommand != null)
-            {
-                da.SelectCommand.Connection = conn;
-            }
-            if (da.UpdateCommand != null)
-            {
-                da.UpdateCommand.Connection = conn;
-            }
-            if (da.DeleteCommand != null)
-            {
-                da.DeleteCommand.Connection = conn;
-            }
-        }
-
-        #endregion
-
-        #region GetDatabaseName
-
-        internal static string GetDatabaseName(string connectionString)
-        {
-            return (new System.Data.SqlClient.SqlConnection(connectionString)).Database;
-        }
-
-        #endregion
-
     }
 }

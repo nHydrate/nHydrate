@@ -40,7 +40,6 @@ namespace nHydrate.Generator.Models
 
             this.RemovedTables = new List<string>();
             this.RemovedViews = new List<string>();
-            this.MetaData = new MetadataItemCollection();
         }
 
         #endregion
@@ -68,8 +67,6 @@ namespace nHydrate.Generator.Models
         public int GeneratedVersion { get; set; }
 
         public string OutputTarget { get; set; }
-
-        public MetadataItemCollection MetaData { get; }
 
         public string ModelToolVersion
         {
@@ -178,14 +175,6 @@ namespace nHydrate.Generator.Models
                 var versionHistoryListNode = oDoc.CreateElement("versionHistoryList");
                 node.AppendChild(versionHistoryListNode);
                 _versionHistoryList.XmlAppend(versionHistoryListNode);
-
-                if (this.MetaData.Count > 0)
-                {
-                    var metadataNode = oDoc.CreateElement("metadata");
-                    this.MetaData.XmlAppend(metadataNode);
-                    node.AppendChild(metadataNode);
-                }
-
             }
             catch (Exception ex)
             {
@@ -219,10 +208,6 @@ namespace nHydrate.Generator.Models
                 var versionHistoryListNode = node.SelectSingleNode("versionHistoryList");
                 if (versionHistoryListNode != null)
                     _versionHistoryList.XmlLoad(versionHistoryListNode);
-
-                var metadataNode = node.SelectSingleNode("metadata");
-                if (metadataNode != null)
-                    this.MetaData.XmlLoad(metadataNode);
             }
             catch (Exception ex)
             {

@@ -72,7 +72,6 @@
     <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
       <Link>Properties\AssemblyInfoGeneratorCommon.cs</Link>
     </Compile>
-    <Compile Include="Extensions.cs" />
     <Compile Include="DatabaseHelper.cs" />
     <Compile Include="ImportDomain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

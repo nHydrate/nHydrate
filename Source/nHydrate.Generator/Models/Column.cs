@@ -57,7 +57,6 @@ namespace nHydrate.Generator.Models
 
         private void Initialize()
         {
-            this.MetaData = new MetadataItemCollection();
         }
 
         protected override void OnRootReset(System.EventArgs e)
@@ -66,8 +65,6 @@ namespace nHydrate.Generator.Models
         }
 
         #region Property Implementations
-
-        public MetadataItemCollection MetaData { get; private set; }
 
         public bool IsReadOnly { get; set; } = _def_isReadOnly;
 
@@ -408,14 +405,6 @@ namespace nHydrate.Generator.Models
                 var parentTableRefNode = oDoc.CreateElement("pt");
                 ParentTableRef.XmlAppend(parentTableRefNode);
                 node.AppendChild(parentTableRefNode);
-
-                if (this.MetaData.Count > 0)
-                {
-                    var metadataNode = oDoc.CreateElement("metadata");
-                    this.MetaData.XmlAppend(metadataNode);
-                    node.AppendChild(metadataNode);
-                }
-
             }
             catch (Exception ex)
             {
@@ -472,10 +461,6 @@ namespace nHydrate.Generator.Models
                 }
 
                 this.AllowNull = XmlHelper.GetAttributeValue(node, "allowNull", _def_allowNull);
-
-                var metadataNode = node.SelectSingleNode("metadata");
-                if (metadataNode != null)
-                    this.MetaData.XmlLoad(metadataNode);
             }
             catch (Exception ex)
             {

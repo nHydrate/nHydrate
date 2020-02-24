@@ -563,23 +563,6 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                #region Verify Metadata
-
-                var metaKeyList = new List<string>();
-                foreach (var item in this.EntityMetadata)
-                {
-                    if (string.IsNullOrEmpty(item.Key) || metaKeyList.Contains(item.Key.ToLower()))
-                    {
-                        context.LogError(ValidationHelper.ErrorTextMetadataInvalid, string.Empty, this);
-                    }
-                    else
-                    {
-                        metaKeyList.Add(item.Key.ToString());
-                    }
-                }
-
-                #endregion
-
                 #region Verify Indexes
 
                 //Check for missing mapped index columns

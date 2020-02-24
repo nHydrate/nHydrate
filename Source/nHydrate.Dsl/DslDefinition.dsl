@@ -128,14 +128,6 @@
             <DomainPath>nHydrateModelHasRelationFields.RelationFields</DomainPath>
           </LinkCreationPaths>
         </ElementMergeDirective>
-        <ElementMergeDirective>
-          <Index>
-            <DomainClassMoniker Name="ModelMetadata" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>nHydrateModelHasModelMetadata.ModelMetadata</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
       </ElementMergeDirectives>
     </DomainClass>
     <DomainClass Id="99e3c3f3-d9f6-4226-b914-b50a93434e4f" Description="This object represents a database table" Name="Entity" DisplayName="Entity" Namespace="nHydrate.Dsl" GeneratesDoubleDerived="true">
@@ -238,14 +230,6 @@
           </Index>
           <LinkCreationPaths>
             <DomainPath>EntityHasStaticDatum.StaticDatum</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-        <ElementMergeDirective>
-          <Index>
-            <DomainClassMoniker Name="EntityMetadata" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>EntityHasMetadata.EntityMetadata</DomainPath>
           </LinkCreationPaths>
         </ElementMergeDirective>
         <ElementMergeDirective>
@@ -389,16 +373,6 @@
           </Type>
         </DomainProperty>
       </Properties>
-      <ElementMergeDirectives>
-        <ElementMergeDirective>
-          <Index>
-            <DomainClassMoniker Name="FieldMetadata" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>FieldHasMetadata.FieldMetadata</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-      </ElementMergeDirectives>
     </DomainClass>
     <DomainClass Id="fcb76b2a-6488-4578-a99b-451bd16ff1b8" Description="This is a custom database view" Name="View" DisplayName="View" Namespace="nHydrate.Dsl" GeneratesDoubleDerived="true">
       <Properties>
@@ -573,65 +547,6 @@
         </DomainProperty>
       </Properties>
     </DomainClass>
-    <DomainClass Id="8022b63d-c856-4a0e-9881-c24888e718c5" Description="" Name="EntityMetadata" DisplayName="Metadata" Namespace="nHydrate.Dsl">
-      <Properties>
-        <DomainProperty Id="0202eeb2-cce2-4f28-9b61-d473348734db" Description="The unqiue key of this metadata" Name="Key" DisplayName="Key" Category="Data">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="8d770048-28f0-472d-8cff-e8d10ea7191b" Description="The value of this metadata" Name="Value" DisplayName="Value" Category="Data">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="ee86ada7-4a6b-498b-bd67-a9c3445b8a8b" Description="A summary of thsi object" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-      <ElementMergeDirectives>
-        <ElementMergeDirective>
-          <Index>
-            <DomainClassMoniker Name="EntityMetadata" />
-          </Index>
-        </ElementMergeDirective>
-      </ElementMergeDirectives>
-    </DomainClass>
-    <DomainClass Id="e4d98918-02cc-4cb0-94fc-2da89080f5be" Description="" Name="FieldMetadata" DisplayName="Metadata" Namespace="nHydrate.Dsl">
-      <Properties>
-        <DomainProperty Id="8a009da7-79ba-4f0b-9d2a-bbbd4c372231" Description="The unique key of this metadata" Name="Key" DisplayName="Key" Category="Data">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="f7fed8a2-943c-4c5f-90c2-f56bda23dfbc" Description="The value of this metadata" Name="Value" DisplayName="Value" Category="Data">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="4f1ef578-6f8a-422f-8542-3107675fa0e2" Description="A summary of thsi object" Name="Summary" DisplayName="Summary" Category="Documentation">
-          <Attributes>
-            <ClrAttribute Name="System.ComponentModel.Editor">
-              <Parameters>
-                <AttributeParameter Value="typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor)" />
-              </Parameters>
-            </ClrAttribute>
-          </Attributes>
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-    </DomainClass>
     <DomainClass Id="ced4ceba-e07d-4396-b2fe-a981c60933d0" Description="A defined index for an entity" Name="Index" DisplayName="Index" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
       <Properties>
         <DomainProperty Id="a8689c72-62db-4c31-8f4e-a65b2ed97cea" Description="" Name="ParentEntityID" DisplayName="Parent Entity" Category="Definition" IsBrowsable="false">
@@ -720,20 +635,6 @@
         <DomainProperty Id="87394d79-86a1-4e18-935c-29793df45f39" Description="" Name="SortOrder" DisplayName="Sort Order" DefaultValue="0" IsBrowsable="false">
           <Type>
             <ExternalTypeMoniker Name="/System/Int32" />
-          </Type>
-        </DomainProperty>
-      </Properties>
-    </DomainClass>
-    <DomainClass Id="08609292-2eb3-4f13-a9a4-9455e9551a9e" Description="Description for nHydrate.Dsl.ModelMetadata" Name="ModelMetadata" DisplayName="Model Metadata" Namespace="nHydrate.Dsl">
-      <Properties>
-        <DomainProperty Id="2afda66a-2834-4ab9-944b-88dc25d84536" Description="The unqiue key of this metadata" Name="Key" DisplayName="Key" Category="Data">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="621eaec6-e972-4324-9236-6199be7b1612" Description="The value of this metadata" Name="Value" DisplayName="Value" Category="Data">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
       </Properties>
@@ -896,38 +797,6 @@
         </DomainRole>
       </Target>
     </DomainRelationship>
-    <DomainRelationship Id="d8f52b3f-4006-4795-b93f-d47721cc13d3" Description="" Name="EntityHasMetadata" DisplayName="Entity Has Metadata" Namespace="nHydrate.Dsl" GeneratesDoubleDerived="true" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="c3d56be9-0465-4928-992d-fbd0efdae2c4" Description="" Name="Entity" DisplayName="Entity" PropertyName="EntityMetadata" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Entity Metadata">
-          <RolePlayer>
-            <DomainClassMoniker Name="Entity" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="1e3785e5-2c22-4ede-b596-24c8ff7f1d2e" Description="" Name="EntityMetadata" DisplayName="Metadata" PropertyName="Entity" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="Entity">
-          <RolePlayer>
-            <DomainClassMoniker Name="EntityMetadata" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="c28d2f9b-cdfc-4855-b347-2282af8306ec" Description="" Name="FieldHasMetadata" DisplayName="Field Has Metadata" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="b9da33f0-6f75-4c5e-b9c9-2b047ac164d4" Description="" Name="Field" DisplayName="Field" PropertyName="FieldMetadata" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Field Metadata">
-          <RolePlayer>
-            <DomainClassMoniker Name="Field" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="ce82ad42-2d12-445f-a7f0-45ce8629d304" Description="" Name="FieldMetadata" DisplayName="Metadata" PropertyName="Field" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="Field">
-          <RolePlayer>
-            <DomainClassMoniker Name="FieldMetadata" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
     <DomainRelationship Id="1caea208-6608-47d1-a106-efb54a86e7c4" Description="" Name="EntityHasIndexes" DisplayName="Entity Has Indexes" Namespace="nHydrate.Dsl" IsEmbedding="true">
       <Source>
         <DomainRole Id="7c69ce01-ab6b-4507-bedd-fa784b25a493" Description="" Name="Entity" DisplayName="Entity" PropertyName="Indexes" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Indexes">
@@ -956,22 +825,6 @@
         <DomainRole Id="2312ab11-6be2-4b81-8c39-7e788ee1fdcb" Description="Description for nHydrate.Dsl.IndexHasIndexColumns.IndexColumn" Name="IndexColumn" DisplayName="Index Column" PropertyName="Index" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="Index">
           <RolePlayer>
             <DomainClassMoniker Name="IndexColumn" />
-          </RolePlayer>
-        </DomainRole>
-      </Target>
-    </DomainRelationship>
-    <DomainRelationship Id="8b52efcf-2a19-449a-b104-9dd450281764" Description="Description for nHydrate.Dsl.nHydrateModelHasModelMetadata" Name="nHydrateModelHasModelMetadata" DisplayName="NHydrate Model Has Model Metadata" Namespace="nHydrate.Dsl" IsEmbedding="true">
-      <Source>
-        <DomainRole Id="fe8660eb-c0c9-4bab-ad2a-535afb8d2d9d" Description="Description for nHydrate.Dsl.nHydrateModelHasModelMetadata.nHydrateModel" Name="nHydrateModel" DisplayName="NHydrate Model" PropertyName="ModelMetadata" PropagatesCopy="PropagatesCopyToLinkAndOppositeRolePlayer" PropertyDisplayName="Model Metadata">
-          <RolePlayer>
-            <DomainClassMoniker Name="nHydrateModel" />
-          </RolePlayer>
-        </DomainRole>
-      </Source>
-      <Target>
-        <DomainRole Id="edcb86d4-6b8a-470f-9ec0-2a98017c5c12" Description="Description for nHydrate.Dsl.nHydrateModelHasModelMetadata.ModelMetadata" Name="ModelMetadata" DisplayName="Model Metadata" PropertyName="nHydrateModel" Multiplicity="One" PropagatesDelete="true" PropertyDisplayName="NHydrate Model">
-          <RolePlayer>
-            <DomainClassMoniker Name="ModelMetadata" />
           </RolePlayer>
         </DomainRole>
       </Target>
@@ -1178,9 +1031,6 @@
           <XmlPropertyData XmlName="modelVersion">
             <DomainPropertyMoniker Name="nHydrateModel/ModelVersion" />
           </XmlPropertyData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="modelMetadata">
-            <DomainRelationshipMoniker Name="nHydrateModelHasModelMetadata" />
-          </XmlRelationshipData>
           <XmlPropertyData XmlName="outputTarget">
             <DomainPropertyMoniker Name="nHydrateModel/OutputTarget" />
           </XmlPropertyData>
@@ -1242,9 +1092,6 @@
           </XmlPropertyData>
           <XmlRelationshipData UseFullForm="true" RoleElementName="staticDatum">
             <DomainRelationshipMoniker Name="EntityHasStaticDatum" />
-          </XmlRelationshipData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="entityMetadata">
-            <DomainRelationshipMoniker Name="EntityHasMetadata" />
           </XmlRelationshipData>
           <XmlPropertyData XmlName="generatesDoubleDerived">
             <DomainPropertyMoniker Name="Entity/GeneratesDoubleDerived" />
@@ -1351,9 +1198,6 @@
           <XmlPropertyData XmlName="codeFacade">
             <DomainPropertyMoniker Name="Field/CodeFacade" />
           </XmlPropertyData>
-          <XmlRelationshipData UseFullForm="true" RoleElementName="fieldMetadata">
-            <DomainRelationshipMoniker Name="FieldHasMetadata" />
-          </XmlRelationshipData>
           <XmlPropertyData XmlName="isReadOnly">
             <DomainPropertyMoniker Name="Field/IsReadOnly" />
           </XmlPropertyData>
@@ -1492,40 +1336,6 @@
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>
-      <XmlClassData TypeName="EntityHasMetadata" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityHasMetadataMoniker" ElementName="entityHasMetadata" MonikerTypeName="EntityHasMetadataMoniker">
-        <DomainRelationshipMoniker Name="EntityHasMetadata" />
-      </XmlClassData>
-      <XmlClassData TypeName="EntityMetadata" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityMetadataMoniker" ElementName="entityMetadata" MonikerTypeName="EntityMetadataMoniker">
-        <DomainClassMoniker Name="EntityMetadata" />
-        <ElementData>
-          <XmlPropertyData XmlName="key">
-            <DomainPropertyMoniker Name="EntityMetadata/Key" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="value">
-            <DomainPropertyMoniker Name="EntityMetadata/Value" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="EntityMetadata/Summary" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
-      <XmlClassData TypeName="FieldHasMetadata" MonikerAttributeName="" SerializeId="true" MonikerElementName="fieldHasMetadataMoniker" ElementName="fieldHasMetadata" MonikerTypeName="FieldHasMetadataMoniker">
-        <DomainRelationshipMoniker Name="FieldHasMetadata" />
-      </XmlClassData>
-      <XmlClassData TypeName="FieldMetadata" MonikerAttributeName="" SerializeId="true" MonikerElementName="fieldMetadataMoniker" ElementName="fieldMetadata" MonikerTypeName="FieldMetadataMoniker">
-        <DomainClassMoniker Name="FieldMetadata" />
-        <ElementData>
-          <XmlPropertyData XmlName="key">
-            <DomainPropertyMoniker Name="FieldMetadata/Key" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="value">
-            <DomainPropertyMoniker Name="FieldMetadata/Value" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="summary">
-            <DomainPropertyMoniker Name="FieldMetadata/Summary" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
       <XmlClassData TypeName="EntityHasIndexes" MonikerAttributeName="" SerializeId="true" MonikerElementName="entityHasIndexesMoniker" ElementName="entityHasIndexes" MonikerTypeName="EntityHasIndexesMoniker">
         <DomainRelationshipMoniker Name="EntityHasIndexes" />
       </XmlClassData>
@@ -1578,20 +1388,6 @@
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>
-      <XmlClassData TypeName="NHydrateModelHasModelMetadata" MonikerAttributeName="" SerializeId="true" MonikerElementName="nHydrateModelHasModelMetadataMoniker" ElementName="nHydrateModelHasModelMetadata" MonikerTypeName="NHydrateModelHasModelMetadataMoniker">
-        <DomainRelationshipMoniker Name="nHydrateModelHasModelMetadata" />
-      </XmlClassData>
-      <XmlClassData TypeName="ModelMetadata" MonikerAttributeName="" SerializeId="true" MonikerElementName="modelMetadataMoniker" ElementName="modelMetadata" MonikerTypeName="ModelMetadataMoniker">
-        <DomainClassMoniker Name="ModelMetadata" />
-        <ElementData>
-          <XmlPropertyData XmlName="key">
-            <DomainPropertyMoniker Name="ModelMetadata/Key" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="value">
-            <DomainPropertyMoniker Name="ModelMetadata/Value" />
-          </XmlPropertyData>
-        </ElementData>
-      </XmlClassData>
     </ClassData>
   </XmlSerializationBehavior>
   <ExplorerBehavior Name="nHydrateExplorer">
@@ -1615,28 +1411,6 @@
         <Class>
           <DomainClassMoniker Name="ViewField" />
         </Class>
-      </ExplorerNodeSettings>
-      <ExplorerNodeSettings IconToDisplay="Resources\data.png">
-        <Class>
-          <DomainClassMoniker Name="EntityMetadata" />
-        </Class>
-        <PropertyDisplayed>
-          <PropertyPath>
-            <DomainPropertyMoniker Name="EntityMetadata/Key" />
-            <DomainPath />
-          </PropertyPath>
-        </PropertyDisplayed>
-      </ExplorerNodeSettings>
-      <ExplorerNodeSettings IconToDisplay="Resources\data.png">
-        <Class>
-          <DomainClassMoniker Name="FieldMetadata" />
-        </Class>
-        <PropertyDisplayed>
-          <PropertyPath>
-            <DomainPropertyMoniker Name="FieldMetadata/Key" />
-            <DomainPath />
-          </PropertyPath>
-        </PropertyDisplayed>
       </ExplorerNodeSettings>
       <ExplorerNodeSettings IconToDisplay="Resources\nhydrate.png">
         <Class>

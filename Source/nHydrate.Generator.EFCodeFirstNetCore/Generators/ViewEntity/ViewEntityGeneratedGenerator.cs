@@ -7,13 +7,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
     [GeneratorItem("ViewEntityGeneratedGenerator", typeof(ViewEntityExtenderGenerator))]
     public class ViewEntityGeneratedGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
-        #region Class Members
-
         private const string RELATIVE_OUTPUT_LOCATION = @"\Entity\";
-
-        #endregion
-
-        #region Overrides
 
         public override int FileCount => 1;
 
@@ -29,8 +23,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
             OnGenerationComplete(this, gcEventArgs);
         }
-
-        #endregion
 
     }
 }

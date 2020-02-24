@@ -8,13 +8,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
     [GeneratorItem("AuditEntityGeneratedGenerator", typeof(EFCodeFirstNetCoreProjectGenerator))]
     public class AuditEntityGeneratedGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
-        #region Class Members
-
         private const string RELATIVE_OUTPUT_LOCATION = @"\Audit\";
-
-        #endregion
-
-        #region Overrides
 
         public override int FileCount => 1;
 
@@ -30,8 +24,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
             var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
             OnGenerationComplete(this, gcEventArgs);
         }
-
-        #endregion
 
     }
 }

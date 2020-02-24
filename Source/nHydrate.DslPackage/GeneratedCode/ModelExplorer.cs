@@ -71,12 +71,6 @@ namespace nHydrate.DslPackage
 			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.ViewField.DomainClassId, 
 							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("ViewFieldExplorerImage")), 
 							false); 
-			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.EntityMetadata.DomainClassId, 
-							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("EntityMetadataExplorerImage")), 
-							false); 
-			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.FieldMetadata.DomainClassId, 
-							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("FieldMetadataExplorerImage")), 
-							false); 
 			this.AddExplorerNodeCustomSetting(global::nHydrate.Dsl.nHydrateModel.DomainClassId, 
 							DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("nHydrateModelExplorerImage")), 
 							false); 
@@ -143,20 +137,6 @@ namespace nHydrate.DslPackage
 			
 			switch ( modelElement.GetDomainClass().Id.ToString( "D", System.Globalization.CultureInfo.InvariantCulture) )
 			{
-				case "8022b63d-c856-4a0e-9881-c24888e718c5":	// EntityMetadata.DomainClassId
-				{
-					domainPropertyInfo = directory.FindDomainProperty( global::nHydrate.Dsl.EntityMetadata.KeyDomainPropertyId);
-					redirectedElement = modelElement;
-				}			
-				break;
-				
-				case "e4d98918-02cc-4cb0-94fc-2da89080f5be":	// FieldMetadata.DomainClassId
-				{
-					domainPropertyInfo = directory.FindDomainProperty( global::nHydrate.Dsl.FieldMetadata.KeyDomainPropertyId);
-					redirectedElement = modelElement;
-				}			
-				break;
-				
 				case "ced4ceba-e07d-4396-b2fe-a981c60933d0":	// Index.DomainClassId
 				{
 					domainPropertyInfo = directory.FindDomainProperty( global::nHydrate.Dsl.Index.DefinitionDomainPropertyId);

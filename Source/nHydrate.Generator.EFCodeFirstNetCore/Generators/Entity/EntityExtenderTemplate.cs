@@ -16,13 +16,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             _currentTable = table;
         }
 
-        #region BaseClassTemplate overrides
-
-        public override string FileName
-        {
-            get { return string.Format("{0}.cs", _currentTable.PascalName); }
-        }
-
+        public override string FileName => $"{_currentTable.PascalName}.cs";
 
         public override string FileContent
         {
@@ -40,29 +34,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             }
         }
 
-        #endregion
-
-        #region GenerateContent
-
         public void GenerateContent()
         {
-            try
-            {
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
-                sb.AppendLine("{");
-                sb.AppendLine("	partial class " + _currentTable.PascalName);
-                sb.AppendLine("	{");
-                sb.AppendLine("	}");
-                sb.AppendLine("}");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
+            sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+            sb.AppendLine("{");
+            sb.AppendLine("	partial class " + _currentTable.PascalName);
+            sb.AppendLine("	{");
+            sb.AppendLine("	}");
+            sb.AppendLine("}");
         }
-
-        #endregion
 
     }
 }

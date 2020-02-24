@@ -17,8 +17,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
             _currentTable = table;
         }
 
-        #region BaseClassTemplate overrides
-
         public override string FileName => $"{_currentTable.PascalName}Audit.cs";
 
         public override string FileContent
@@ -37,10 +35,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
             }
         }
 
-        #endregion
-
-        #region GenerateContent
-
         public void GenerateContent()
         {
             try
@@ -58,8 +52,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
             }
 
         }
-
-        #endregion
 
     }
 }

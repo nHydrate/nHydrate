@@ -1033,94 +1033,6 @@
     <value>Order Key</value>
     <comment>DisplayName for DomainProperty &apos;OrderKey&apos; on DomainClass &apos;StaticData&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.EntityMetadata.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainClass &apos;EntityMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityMetadata.DisplayName" xml:space="preserve">
-    <value>Metadata</value>
-    <comment>DisplayName for DomainClass &apos;EntityMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityMetadata/Key.Description" xml:space="preserve">
-    <value>The unqiue key of this metadata</value>
-    <comment>Description for DomainProperty &apos;Key&apos; on DomainClass &apos;EntityMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityMetadata/Key.DisplayName" xml:space="preserve">
-    <value>Key</value>
-    <comment>DisplayName for DomainProperty &apos;Key&apos; on DomainClass &apos;EntityMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityMetadata/Key.Category" xml:space="preserve">
-    <value>Data</value>
-    <comment>Category for DomainProperty &apos;Key&apos; on DomainClass &apos;EntityMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityMetadata/Value.Description" xml:space="preserve">
-    <value>The value of this metadata</value>
-    <comment>Description for DomainProperty &apos;Value&apos; on DomainClass &apos;EntityMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityMetadata/Value.DisplayName" xml:space="preserve">
-    <value>Value</value>
-    <comment>DisplayName for DomainProperty &apos;Value&apos; on DomainClass &apos;EntityMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityMetadata/Value.Category" xml:space="preserve">
-    <value>Data</value>
-    <comment>Category for DomainProperty &apos;Value&apos; on DomainClass &apos;EntityMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityMetadata/Summary.Description" xml:space="preserve">
-    <value>A summary of thsi object</value>
-    <comment>Description for DomainProperty &apos;Summary&apos; on DomainClass &apos;EntityMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityMetadata/Summary.DisplayName" xml:space="preserve">
-    <value>Summary</value>
-    <comment>DisplayName for DomainProperty &apos;Summary&apos; on DomainClass &apos;EntityMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityMetadata/Summary.Category" xml:space="preserve">
-    <value>Documentation</value>
-    <comment>Category for DomainProperty &apos;Summary&apos; on DomainClass &apos;EntityMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldMetadata.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainClass &apos;FieldMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldMetadata.DisplayName" xml:space="preserve">
-    <value>Metadata</value>
-    <comment>DisplayName for DomainClass &apos;FieldMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldMetadata/Key.Description" xml:space="preserve">
-    <value>The unique key of this metadata</value>
-    <comment>Description for DomainProperty &apos;Key&apos; on DomainClass &apos;FieldMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldMetadata/Key.DisplayName" xml:space="preserve">
-    <value>Key</value>
-    <comment>DisplayName for DomainProperty &apos;Key&apos; on DomainClass &apos;FieldMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldMetadata/Key.Category" xml:space="preserve">
-    <value>Data</value>
-    <comment>Category for DomainProperty &apos;Key&apos; on DomainClass &apos;FieldMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldMetadata/Value.Description" xml:space="preserve">
-    <value>The value of this metadata</value>
-    <comment>Description for DomainProperty &apos;Value&apos; on DomainClass &apos;FieldMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldMetadata/Value.DisplayName" xml:space="preserve">
-    <value>Value</value>
-    <comment>DisplayName for DomainProperty &apos;Value&apos; on DomainClass &apos;FieldMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldMetadata/Value.Category" xml:space="preserve">
-    <value>Data</value>
-    <comment>Category for DomainProperty &apos;Value&apos; on DomainClass &apos;FieldMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldMetadata/Summary.Description" xml:space="preserve">
-    <value>A summary of thsi object</value>
-    <comment>Description for DomainProperty &apos;Summary&apos; on DomainClass &apos;FieldMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldMetadata/Summary.DisplayName" xml:space="preserve">
-    <value>Summary</value>
-    <comment>DisplayName for DomainProperty &apos;Summary&apos; on DomainClass &apos;FieldMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldMetadata/Summary.Category" xml:space="preserve">
-    <value>Documentation</value>
-    <comment>Category for DomainProperty &apos;Summary&apos; on DomainClass &apos;FieldMetadata&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.Index.Description" xml:space="preserve">
     <value>A defined index for an entity</value>
     <comment>Description for DomainClass &apos;Index&apos;</comment>
@@ -1252,38 +1164,6 @@
   <data name="nHydrate.Dsl.IndexColumn/SortOrder.DisplayName" xml:space="preserve">
     <value>Sort Order</value>
     <comment>DisplayName for DomainProperty &apos;SortOrder&apos; on DomainClass &apos;IndexColumn&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ModelMetadata.Description" xml:space="preserve">
-    <value>Description for nHydrate.Dsl.ModelMetadata</value>
-    <comment>Description for DomainClass &apos;ModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ModelMetadata.DisplayName" xml:space="preserve">
-    <value>Model Metadata</value>
-    <comment>DisplayName for DomainClass &apos;ModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ModelMetadata/Key.Description" xml:space="preserve">
-    <value>The unqiue key of this metadata</value>
-    <comment>Description for DomainProperty &apos;Key&apos; on DomainClass &apos;ModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ModelMetadata/Key.DisplayName" xml:space="preserve">
-    <value>Key</value>
-    <comment>DisplayName for DomainProperty &apos;Key&apos; on DomainClass &apos;ModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ModelMetadata/Key.Category" xml:space="preserve">
-    <value>Data</value>
-    <comment>Category for DomainProperty &apos;Key&apos; on DomainClass &apos;ModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ModelMetadata/Value.Description" xml:space="preserve">
-    <value>The value of this metadata</value>
-    <comment>Description for DomainProperty &apos;Value&apos; on DomainClass &apos;ModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ModelMetadata/Value.DisplayName" xml:space="preserve">
-    <value>Value</value>
-    <comment>DisplayName for DomainProperty &apos;Value&apos; on DomainClass &apos;ModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.ModelMetadata/Value.Category" xml:space="preserve">
-    <value>Data</value>
-    <comment>Category for DomainProperty &apos;Value&apos; on DomainClass &apos;ModelMetadata&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.nHydrateModelHasEntities.Description" xml:space="preserve">
     <value></value>
@@ -1581,70 +1461,6 @@
     <value>Entity</value>
     <comment>PropertyDisplayName for DomainRole &apos;StaticData&apos; on DomainRelationship &apos;EntityHasStaticDatum&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.EntityHasMetadata.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainClass &apos;EntityHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasMetadata.DisplayName" xml:space="preserve">
-    <value>Entity Has Metadata</value>
-    <comment>DisplayName for DomainClass &apos;EntityHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasMetadata/Entity.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasMetadata/Entity.DisplayName" xml:space="preserve">
-    <value>Entity</value>
-    <comment>DisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasMetadata/Entity.PropertyDisplayName" xml:space="preserve">
-    <value>Entity Metadata</value>
-    <comment>PropertyDisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasMetadata/EntityMetadata.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainRole &apos;EntityMetadata&apos; on DomainRelationship &apos;EntityHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasMetadata/EntityMetadata.DisplayName" xml:space="preserve">
-    <value>Metadata</value>
-    <comment>DisplayName for DomainRole &apos;EntityMetadata&apos; on DomainRelationship &apos;EntityHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.EntityHasMetadata/EntityMetadata.PropertyDisplayName" xml:space="preserve">
-    <value>Entity</value>
-    <comment>PropertyDisplayName for DomainRole &apos;EntityMetadata&apos; on DomainRelationship &apos;EntityHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldHasMetadata.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainClass &apos;FieldHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldHasMetadata.DisplayName" xml:space="preserve">
-    <value>Field Has Metadata</value>
-    <comment>DisplayName for DomainClass &apos;FieldHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldHasMetadata/Field.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainRole &apos;Field&apos; on DomainRelationship &apos;FieldHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldHasMetadata/Field.DisplayName" xml:space="preserve">
-    <value>Field</value>
-    <comment>DisplayName for DomainRole &apos;Field&apos; on DomainRelationship &apos;FieldHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldHasMetadata/Field.PropertyDisplayName" xml:space="preserve">
-    <value>Field Metadata</value>
-    <comment>PropertyDisplayName for DomainRole &apos;Field&apos; on DomainRelationship &apos;FieldHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldHasMetadata/FieldMetadata.Description" xml:space="preserve">
-    <value></value>
-    <comment>Description for DomainRole &apos;FieldMetadata&apos; on DomainRelationship &apos;FieldHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldHasMetadata/FieldMetadata.DisplayName" xml:space="preserve">
-    <value>Metadata</value>
-    <comment>DisplayName for DomainRole &apos;FieldMetadata&apos; on DomainRelationship &apos;FieldHasMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.FieldHasMetadata/FieldMetadata.PropertyDisplayName" xml:space="preserve">
-    <value>Field</value>
-    <comment>PropertyDisplayName for DomainRole &apos;FieldMetadata&apos; on DomainRelationship &apos;FieldHasMetadata&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.EntityHasIndexes.Description" xml:space="preserve">
     <value></value>
     <comment>Description for DomainClass &apos;EntityHasIndexes&apos;</comment>
@@ -1708,38 +1524,6 @@
   <data name="nHydrate.Dsl.IndexHasIndexColumns/IndexColumn.PropertyDisplayName" xml:space="preserve">
     <value>Index</value>
     <comment>PropertyDisplayName for DomainRole &apos;IndexColumn&apos; on DomainRelationship &apos;IndexHasIndexColumns&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModelHasModelMetadata.Description" xml:space="preserve">
-    <value>Description for nHydrate.Dsl.nHydrateModelHasModelMetadata</value>
-    <comment>Description for DomainClass &apos;nHydrateModelHasModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModelHasModelMetadata.DisplayName" xml:space="preserve">
-    <value>NHydrate Model Has Model Metadata</value>
-    <comment>DisplayName for DomainClass &apos;nHydrateModelHasModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModelHasModelMetadata/nHydrateModel.Description" xml:space="preserve">
-    <value>Description for nHydrate.Dsl.nHydrateModelHasModelMetadata.nHydrateModel</value>
-    <comment>Description for DomainRole &apos;nHydrateModel&apos; on DomainRelationship &apos;nHydrateModelHasModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModelHasModelMetadata/nHydrateModel.DisplayName" xml:space="preserve">
-    <value>NHydrate Model</value>
-    <comment>DisplayName for DomainRole &apos;nHydrateModel&apos; on DomainRelationship &apos;nHydrateModelHasModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModelHasModelMetadata/nHydrateModel.PropertyDisplayName" xml:space="preserve">
-    <value>Model Metadata</value>
-    <comment>PropertyDisplayName for DomainRole &apos;nHydrateModel&apos; on DomainRelationship &apos;nHydrateModelHasModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModelHasModelMetadata/ModelMetadata.Description" xml:space="preserve">
-    <value>Description for nHydrate.Dsl.nHydrateModelHasModelMetadata.ModelMetadata</value>
-    <comment>Description for DomainRole &apos;ModelMetadata&apos; on DomainRelationship &apos;nHydrateModelHasModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModelHasModelMetadata/ModelMetadata.DisplayName" xml:space="preserve">
-    <value>Model Metadata</value>
-    <comment>DisplayName for DomainRole &apos;ModelMetadata&apos; on DomainRelationship &apos;nHydrateModelHasModelMetadata&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModelHasModelMetadata/ModelMetadata.PropertyDisplayName" xml:space="preserve">
-    <value>NHydrate Model</value>
-    <comment>PropertyDisplayName for DomainRole &apos;ModelMetadata&apos; on DomainRelationship &apos;nHydrateModelHasModelMetadata&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.DataTypeConstants/BigInt.DisplayName" xml:space="preserve">
     <value>BigInt</value>
@@ -2372,14 +2156,6 @@ A DomainClass can be serialized as a moniker only if
   </data>
   <data name="ViewFieldExplorerImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
     <value>..\Resources\field.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-    <comment>Toolbox item image</comment>
-  </data>
-  <data name="EntityMetadataExplorerImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
-    <value>..\Resources\data.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-    <comment>Toolbox item image</comment>
-  </data>
-  <data name="FieldMetadataExplorerImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
-    <value>..\Resources\data.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Toolbox item image</comment>
   </data>
   <data name="nHydrateModelExplorerImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">

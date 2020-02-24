@@ -29,7 +29,6 @@ namespace nHydrate.Dsl.Custom
                 var folderName = modelName.Replace(".nhydrate", ".model");
                 var modelFolder = GetModelFolder(rootFolder, folderName);
                 var generatedFileList = new List<string>();
-                nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.ModelMetadata, modelFolder, diagram, generatedFileList);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Views, modelFolder, diagram, generatedFileList); //must come before entities
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, modelRoot.Entities, modelFolder, diagram, generatedFileList);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveDiagramFiles(modelFolder, diagram, generatedFileList);
@@ -154,7 +153,6 @@ namespace nHydrate.Dsl.Custom
                 SaveEntityIndexes(folder, item, generatedFileList);
                 SaveRelations(folder, item, generatedFileList);
                 SaveEntityStaticData(folder, item, generatedFileList);
-                SaveEntityMetaData(folder, item, generatedFileList);
 
             }
             #endregion
@@ -202,66 +200,6 @@ namespace nHydrate.Dsl.Custom
             var f = Path.Combine(folder, item.Name + ".indexes.xml");
             WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
 
-        }
-
-        private static void SaveToDisk(nHydrateModel modelRoot, IEnumerable<ModelMetadata> list, string rootFolder, nHydrateDiagram diagram, List<string> generatedFileList)
-        {
-            if (!list.Any())
-                return;
-
-            var document = new XmlDocument();
-            document.LoadXml(@"<configuration type=""model.metadata""></configuration>");
-
-            XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-            foreach (var metadata in list)
-            {
-                var metaDataNode = XmlHelper.AddElement(document.DocumentElement, "metadata");
-                XmlHelper.AddAttribute(metaDataNode, "key", metadata.Key);
-                XmlHelper.AddAttribute(metaDataNode, "value", metadata.Value);
-                XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-            }
-
-            var f = Path.Combine(rootFolder, "metadata.configuration.xml");
-            WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
-        }
-
-        private static void SaveEntityMetaData(string folder, Entity item, List<string> generatedFileList)
-        {
-            var f = Path.Combine(folder, item.Name + ".metadata.xml");
-            if (item.StaticDatum.Count == 0)
-                return;
-
-            var fieldMetaData = item.Fields.SelectMany(x => x.FieldMetadata).ToList();
-            if (item.EntityMetadata.Count == 0 && fieldMetaData.Count == 0)
-                return;
-
-            var document = new XmlDocument();
-            document.LoadXml(@"<configuration type=""entity.metadata"" id=""" + item.Id + @"""></configuration>");
-
-            XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-            foreach (var metadata in item.EntityMetadata)
-            {
-                var metaDataNode = XmlHelper.AddElement(document.DocumentElement, "metadata");
-                XmlHelper.AddAttribute(metaDataNode, "key", metadata.Key);
-                XmlHelper.AddAttribute(metaDataNode, "value", metadata.Value);
-                XmlHelper.AddLineBreak((XmlElement)document.DocumentElement);
-
-                //Metadata for fields
-                var metadataColumnsNodes = XmlHelper.AddElement((XmlElement)document.DocumentElement, "fieldset") as XmlElement;
-                XmlHelper.AddLineBreak((XmlElement)metadataColumnsNodes);
-                foreach (var fmd in fieldMetaData)
-                {
-                    var fmdNode = XmlHelper.AddElement(metadataColumnsNodes, "metadata");
-                    XmlHelper.AddAttribute(fmdNode, "columnid", fmd.Field.Id);
-                    XmlHelper.AddAttribute(fmdNode, "key", fmd.Key);
-                    XmlHelper.AddAttribute(fmdNode, "value", fmd.Value);
-
-                    XmlHelper.AddLineBreak((XmlElement)metadataColumnsNodes);
-                }
-
-            }
-
-            WriteFileIfNeedBe(f, document.ToIndentedString(), generatedFileList);
         }
 
         private static void SaveEntityStaticData(string folder, Entity item, List<string> generatedFileList)
@@ -442,7 +380,6 @@ namespace nHydrate.Dsl.Custom
                     ExtractToDirectory(compressedFile, rootFolder, false);
                 }
 
-                nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.ModelMetadata, model, modelFolder, store);
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Views, model, modelFolder, store); //must come before entities
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Entities, model, modelFolder, store);
             }
@@ -574,7 +511,6 @@ namespace nHydrate.Dsl.Custom
             {
                 LoadEntityRelations(folder, item);
                 LoadEntityStaticData(folder, item);
-                LoadEntityMetaData(folder, item);
             }
 
             #endregion
@@ -632,50 +568,6 @@ namespace nHydrate.Dsl.Custom
                 }
             }
 
-        }
-
-        private static void LoadEntityMetaData(string folder, Entity entity)
-        {
-            XmlDocument document = null;
-            var fileName = Path.Combine(folder, entity.Name + ".metadata.xml");
-            if (!File.Exists(fileName)) return;
-            try
-            {
-                document = new XmlDocument();
-                document.Load(fileName);
-            }
-            catch (Exception ex)
-            {
-                //Do Nothing
-                MessageBox.Show("The file '" + fileName + "' is not valid and could not be loaded!", "Load Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            foreach (XmlNode n in document.DocumentElement)
-            {
-                if (n.Name == "fieldset")
-                {
-                    foreach (XmlElement n2 in n.ChildNodes)
-                    {
-                        var columnid = XmlHelper.GetAttributeValue(n2, "columnid", Guid.Empty);
-                        var field = entity.Fields.FirstOrDefault(x => x.Id == columnid);
-                        if (field != null)
-                        {
-                            var fieldMD = new FieldMetadata(entity.Partition);
-                            fieldMD.Key = XmlHelper.GetAttributeValue(n2, "key", fieldMD.Key);
-                            fieldMD.Value = XmlHelper.GetAttributeValue(n2, "value", fieldMD.Value);
-                            field.FieldMetadata.Add(fieldMD);
-                        }
-                    }
-                }
-                else
-                {
-                    var newMD = new EntityMetadata(entity.Partition);
-                    newMD.Key = XmlHelper.GetAttributeValue(n, "key", newMD.Key);
-                    newMD.Value = XmlHelper.GetAttributeValue(n, "value", newMD.Value);
-                    entity.EntityMetadata.Add(newMD);
-                }
-            }
         }
 
         private static void LoadEntityRelations(string folder, Entity entity)
@@ -851,38 +743,6 @@ namespace nHydrate.Dsl.Custom
                         System.Windows.Forms.Application.DoEvents();
                     }
                 }
-            }
-            #endregion
-
-        }
-
-        private static void LoadFromDisk(IEnumerable<ModelMetadata> list, nHydrateModel model, string rootFolder, Microsoft.VisualStudio.Modeling.Store store)
-        {
-            var folder = rootFolder;
-            if (!Directory.Exists(folder)) return;
-
-            #region Load other parameter/field information
-            var fileName = Path.Combine(folder, "metadata.configuration.xml");
-            if (!File.Exists(fileName)) return;
-            XmlDocument document = null;
-            try
-            {
-                document = new XmlDocument();
-                document.Load(fileName);
-            }
-            catch (Exception ex)
-            {
-                //Do Nothing
-                MessageBox.Show("The file '" + fileName + "' is not valid and could not be loaded!", "Load Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            foreach (XmlNode n in document.DocumentElement.ChildNodes)
-            {
-                var item = new ModelMetadata(model.Partition);
-                model.ModelMetadata.Add(item);
-                item.Key = XmlHelper.GetAttributeValue(n, "key", item.Key);
-                item.Value = XmlHelper.GetAttributeValue(n, "value", item.Value);
             }
             #endregion
 

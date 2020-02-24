@@ -297,27 +297,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine();
             #endregion
 
-            #region Metadata Extension Methods
-            sb.AppendLine("		#region Metadata Extension Methods");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Creates and returns a metadata object for an entity type");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"entity\">The source class</param>");
-            sb.AppendLine("		/// <returns>A metadata object for the entity types in this assembly</returns>");
-            sb.AppendLine("		public static " + this.GetLocalNamespace() + ".IMetadata GetMetaData(this " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject entity)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			var a = entity.GetType().GetTypeInfo().GetCustomAttributes(typeof(MetadataTypeAttribute), true).FirstOrDefault();");
-            sb.AppendLine("			if (a == null) return null;");
-            sb.AppendLine("			var t = ((MetadataTypeAttribute)a).MetadataClassType;");
-            sb.AppendLine("			if (t == null) return null;");
-            sb.AppendLine("			return Activator.CreateInstance(t) as " + this.GetLocalNamespace() + ".IMetadata;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-            #endregion
-
             #region Many-to-Many Convenience extensions
 
             sb.AppendLine("        #region Many-to-Many Convenience Extensions");

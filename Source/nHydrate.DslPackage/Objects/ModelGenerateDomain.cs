@@ -326,16 +326,6 @@ namespace nHydrate.DslPackage.Objects
                 //These have the same mapping values flags so we need convert to int and then convert to the other enumeration
                 root.TenantColumnName = model.TenantColumnName;
                 root.TenantPrefix = model.TenantPrefix;
-
-                foreach (var md in model.ModelMetadata)
-                {
-                    var newmd = new Generator.Models.MetadataItem();
-                    newmd.ResetKey(md.Key);
-                    newmd.Value = md.Value;
-                    root.MetaData.Add(newmd);
-                }
-               
-
                 root.Database.CreatedByColumnName = model.CreatedByColumnName;
                 root.Database.CreatedDateColumnName = model.CreatedDateColumnName;
                 root.Database.ModifiedByColumnName = model.ModifiedByColumnName;
@@ -364,15 +354,6 @@ namespace nHydrate.DslPackage.Objects
                     newTable.Name = entity.Name;
                     newTable.GeneratesDoubleDerived = entity.GeneratesDoubleDerived;
                     newTable.IsTenant = entity.IsTenant;
-
-                    //Add metadata
-                    foreach (var md in entity.EntityMetadata)
-                    {
-                        var newItem = new nHydrate.Generator.Models.MetadataItem() { Value = md.Value };
-                        newItem.ResetKey(md.Key);
-                        newTable.MetaData.Add(newItem);
-                    }
-
                     #endregion
 
                     #region Load the fields for this entity
@@ -402,15 +383,6 @@ namespace nHydrate.DslPackage.Objects
                         newColumn.SortOrder = field.SortOrder;
                         newColumn.Obsolete = field.Obsolete;
                         newTable.Columns.Add(newColumn.CreateRef(newColumn.Key));
-
-                        //Add metadata
-                        foreach (var md in field.FieldMetadata)
-                        {
-                            var newItem = new nHydrate.Generator.Models.MetadataItem() { Value = md.Value};
-                            newItem.ResetKey(md.Key);
-                            newColumn.MetaData.Add(newItem);
-                        }
-
                     }
                     #endregion
 

@@ -44,20 +44,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 
         private void GenerateContent()
         {
-            try
-            {
-                nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
-                this.AppendUsingStatements();
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
-                sb.AppendLine("{");
-                this.AppendEntityClass();
-                sb.AppendLine("}");
-                sb.AppendLine();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
+            this.AppendUsingStatements();
+            sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+            sb.AppendLine("{");
+            this.AppendEntityClass();
+            sb.AppendLine("}");
+            sb.AppendLine();
         }
 
         private void AppendUsingStatements()
@@ -153,24 +146,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             this.AppendRegionGetValue();
             this.AppendRegionBusinessObject();
             sb.AppendLine("	}");
-            sb.AppendLine();
-        }
-
-        private void AppendConstructors()
-        {
-            sb.AppendLine("		#region Constructors");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Initializes a new instance of the " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " class");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + _item.PascalName + "()");
-            sb.AppendLine("		{");
-            if (_item.PrimaryKeyColumns.Count == 1 && _item.PrimaryKeyColumns[0].DataType == System.Data.SqlDbType.UniqueIdentifier)
-                sb.AppendLine("			this." + _item.PrimaryKeyColumns[0].PascalName + " = Guid.NewGuid();");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		#endregion");
             sb.AppendLine();
         }
 

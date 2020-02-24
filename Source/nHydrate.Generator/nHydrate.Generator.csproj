@@ -198,9 +198,7 @@
     <Compile Include="Models\ColumnBase.cs" />
     <Compile Include="Models\TableIndexColumn.cs" />
     <Compile Include="Models\TableIndex.cs" />
-    <Compile Include="Models\MetadataItemCollection.cs" />
     <Compile Include="Models\Extensions.cs" />
-    <Compile Include="Models\MetadataItem.cs" />
     <Compile Include="Models\ModelRootController.cs">
       <SubType>Code</SubType>
     </Compile>

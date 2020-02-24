@@ -59,21 +59,6 @@
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
-          <!-- Relationship: nHydrateModelHasModelMetadata -->
-          <xsd:element name="modelMetadata" minOccurs="0" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>Instances of nHydrateModelHasModelMetadata</xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element ref="nHydrateModelHasModelMetadata" minOccurs="0" maxOccurs="unbounded">
-                  <xsd:annotation>
-                    <xsd:documentation>[Instance of nHydrateModelHasModelMetadata needs to be serialized in full-form]</xsd:documentation>
-                  </xsd:annotation>
-                </xsd:element>
-              </xsd:sequence>
-            </xsd:complexType>
-          </xsd:element>
         </xsd:sequence>
         <!-- Id -->
         <xsd:attribute name="Id" type="xsd:string">
@@ -270,21 +255,6 @@
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
-          <!-- Relationship: EntityHasMetadata -->
-          <xsd:element name="entityMetadata" minOccurs="0" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>Instances of EntityHasMetadata</xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element ref="entityHasMetadata" minOccurs="0" maxOccurs="unbounded">
-                  <xsd:annotation>
-                    <xsd:documentation>[Instance of EntityHasMetadata needs to be serialized in full-form]</xsd:documentation>
-                  </xsd:annotation>
-                </xsd:element>
-              </xsd:sequence>
-            </xsd:complexType>
-          </xsd:element>
           <!-- Relationship: EntityHasIndexes -->
           <xsd:element name="indexes" minOccurs="0" maxOccurs="1">
             <xsd:annotation>
@@ -422,23 +392,6 @@
     </xsd:annotation>
     <xsd:complexContent>
       <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Relationship: FieldHasMetadata -->
-          <xsd:element name="fieldMetadata" minOccurs="0" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>Instances of FieldHasMetadata</xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element ref="fieldHasMetadata" minOccurs="0" maxOccurs="unbounded">
-                  <xsd:annotation>
-                    <xsd:documentation>[Instance of FieldHasMetadata needs to be serialized in full-form]</xsd:documentation>
-                  </xsd:annotation>
-                </xsd:element>
-              </xsd:sequence>
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:sequence>
         <!-- Id -->
         <xsd:attribute name="Id" type="xsd:string">
           <xsd:annotation>
@@ -848,106 +801,6 @@
     </xsd:complexContent>
   </xsd:complexType>
   
-  <!-- EntityMetadata -->
-  <xsd:element name="entityMetadata" type="EntityMetadata" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="EntityMetadata">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Key -->
-        <xsd:attribute name="key" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>The unqiue key of this metadata</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Value -->
-        <xsd:attribute name="value" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>The value of this metadata</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Summary -->
-        <xsd:attribute name="summary" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>A summary of thsi object</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- EntityMetadata Moniker -->
-  <xsd:element name="entityMetadataMoniker" type="EntityMetadataMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="EntityMetadataMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for EntityMetadata instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- FieldMetadata -->
-  <xsd:element name="fieldMetadata" type="FieldMetadata" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="FieldMetadata">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Key -->
-        <xsd:attribute name="key" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>The unique key of this metadata</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Value -->
-        <xsd:attribute name="value" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>The value of this metadata</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Summary -->
-        <xsd:attribute name="summary" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>A summary of thsi object</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- FieldMetadata Moniker -->
-  <xsd:element name="fieldMetadataMoniker" type="FieldMetadataMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="FieldMetadataMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for FieldMetadata instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
   <!-- Index -->
   <xsd:element name="index" type="Index" substitutionGroup="core:modelElement" />
   <xsd:complexType name="Index">
@@ -1062,50 +915,6 @@
   <xsd:complexType name="IndexColumnMoniker">
     <xsd:annotation>
       <xsd:documentation>Moniker for IndexColumn instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- ModelMetadata -->
-  <xsd:element name="modelMetadata" type="ModelMetadata" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="ModelMetadata">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Key -->
-        <xsd:attribute name="key" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>The unqiue key of this metadata</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: Value -->
-        <xsd:attribute name="value" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>The value of this metadata</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- ModelMetadata Moniker -->
-  <xsd:element name="modelMetadataMoniker" type="ModelMetadataMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="ModelMetadataMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for ModelMetadata instance.</xsd:documentation>
     </xsd:annotation>
     <xsd:complexContent>
       <xsd:extension base="core:ModelElementMoniker">
@@ -1443,86 +1252,6 @@
     </xsd:complexContent>
   </xsd:complexType>
   
-  <!-- EntityHasMetadata -->
-  <xsd:element name="entityHasMetadata" type="EntityHasMetadata" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="EntityHasMetadata">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Target end EntityMetadata -->
-          <xsd:element ref="entityMetadata" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>[Target role-player]</xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- EntityHasMetadata Moniker -->
-  <xsd:element name="entityHasMetadataMoniker" type="EntityHasMetadataMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="EntityHasMetadataMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for EntityHasMetadata instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- FieldHasMetadata -->
-  <xsd:element name="fieldHasMetadata" type="FieldHasMetadata" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="FieldHasMetadata">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Target end FieldMetadata -->
-          <xsd:element ref="fieldMetadata" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>[Target role-player]</xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- FieldHasMetadata Moniker -->
-  <xsd:element name="fieldHasMetadataMoniker" type="FieldHasMetadataMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="FieldHasMetadataMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for FieldHasMetadata instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
   <!-- EntityHasIndexes -->
   <xsd:element name="entityHasIndexes" type="EntityHasIndexes" substitutionGroup="core:modelElement" />
   <xsd:complexType name="EntityHasIndexes">
@@ -1591,46 +1320,6 @@
   <xsd:complexType name="IndexHasIndexColumnsMoniker">
     <xsd:annotation>
       <xsd:documentation>Moniker for IndexHasIndexColumns instance.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElementMoniker">
-        <xsd:attribute name="Id" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Attribute to store the moniker string.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- nHydrateModelHasModelMetadata -->
-  <xsd:element name="nHydrateModelHasModelMetadata" type="NHydrateModelHasModelMetadata" substitutionGroup="core:modelElement" />
-  <xsd:complexType name="NHydrateModelHasModelMetadata">
-    <xsd:complexContent>
-      <xsd:extension base="core:ModelElement">
-        <xsd:sequence minOccurs="0" maxOccurs="1">
-          <!-- Target end ModelMetadata -->
-          <xsd:element ref="modelMetadata" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-              <xsd:documentation>[Target role-player]</xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
-        </xsd:sequence>
-        <!-- Id -->
-        <xsd:attribute name="Id" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>Instance Guid of this element, needed because SerializeId is set to true.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  
-  <!-- nHydrateModelHasModelMetadata Moniker -->
-  <xsd:element name="nHydrateModelHasModelMetadataMoniker" type="NHydrateModelHasModelMetadataMoniker" substitutionGroup="core:modelElementMoniker" />
-  <xsd:complexType name="NHydrateModelHasModelMetadataMoniker">
-    <xsd:annotation>
-      <xsd:documentation>Moniker for nHydrateModelHasModelMetadata instance.</xsd:documentation>
     </xsd:annotation>
     <xsd:complexContent>
       <xsd:extension base="core:ModelElementMoniker">

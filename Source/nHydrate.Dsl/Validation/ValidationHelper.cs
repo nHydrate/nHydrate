@@ -67,7 +67,6 @@ namespace nHydrate.Dsl
         public static readonly string ErrorTextRelationCausesNameConflict = "A M:N relation for entity '{0}' causes a naming conflict in another relation with entity '{1}'";
         public static readonly string ErrorTextRelationDuplicate = "There are 2 or more relations on the entity '{0}' to the same target entity on the same fields.";
         public static readonly string ErrorTextRelationNeedUniqueFields = "The relation {0}->{1} is invalid. All source and target fields within a relation must be unqiue.";
-        public static readonly string ErrorTextMetadataInvalid = "Metadata must have a unique, non-null key";
         public static readonly string ErrorTextTableAssociativeNeedsNonOverlappingColumns = "The associative table '{0}' must contain the primary keys of the parent entities with no overlapping columns.";
         public static readonly string ErrorTextTableAssociativeNeedsOnlyPK = "The associative table '{0}' can only contain primary key fields.";
         public static readonly string ErrorTextRelationFieldDuplicated = "The relation {0}->{1} cannot have duplicate columns between the parent and child entities.";

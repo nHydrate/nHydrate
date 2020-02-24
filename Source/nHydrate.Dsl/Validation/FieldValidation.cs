@@ -138,23 +138,6 @@ namespace nHydrate.Dsl
 
                 #endregion
 
-                #region Verify Metadata
-
-                var metaKeyList = new List<string>();
-                foreach (var item in this.FieldMetadata)
-                {
-                    if (string.IsNullOrEmpty(item.Key) || metaKeyList.Contains(item.Key.ToLower()))
-                    {
-                        context.LogError(ValidationHelper.ErrorTextMetadataInvalid, string.Empty, this);
-                    }
-                    else
-                    {
-                        metaKeyList.Add(item.Key.ToString());
-                    }
-                }
-
-                #endregion
-
                 #region Identity Columns cannot have defaults
 
                 if (this.Identity != IdentityTypeConstants.None && !string.IsNullOrEmpty(this.Default))

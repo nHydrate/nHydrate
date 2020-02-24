@@ -947,11 +947,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			return GetEntityFromField(field);");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		object IContext.GetMetaData(Enum entity)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return GetMetaData((EntityMappingConstants)entity);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
             sb.AppendLine("		System.Type IContext.GetFieldType(Enum field)");
             sb.AppendLine("		{");
             sb.AppendLine("			return this.GetFieldType(field);");
@@ -976,39 +971,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			throw new Exception(\"Unknown field type!\");");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-            #endregion
-
-            #region GetMetaData
-            sb.AppendLine("		#region GetMetaData");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Gets the meta data object for an entity");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static " + this.GetLocalNamespace() + ".IMetadata GetMetaData(" + this.GetLocalNamespace() + ".EntityMappingConstants table)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			switch (table)");
-            sb.AppendLine("			{");
-            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
-            {
-                sb.Append("				case " + this.GetLocalNamespace() + ".EntityMappingConstants." + table.PascalName + ": ");
-                //sb.AppendLine("return Activator.CreateInstance(((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ").GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true).FirstOrDefault()).MetadataClassType) as " + this.GetLocalNamespace() + ".Entity.Metadata." + table.PascalName + "Metadata;");
-                sb.AppendLine("return new " + GetLocalNamespace() + ".Entity.Metadata." + table.PascalName + "Metadata();");
-            }
-            sb.AppendLine("			}");
-            sb.AppendLine("			throw new Exception(\"Entity not found!\");");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static string GetTableName(" + this.GetLocalNamespace() + ".EntityMappingConstants entity)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			var item = GetMetaData(entity);");
-            sb.AppendLine("			if (item == null) return null;");
-            sb.AppendLine("			return item.GetTableName();");
-            sb.AppendLine("		}");
-
             sb.AppendLine("		#endregion");
             sb.AppendLine();
             #endregion

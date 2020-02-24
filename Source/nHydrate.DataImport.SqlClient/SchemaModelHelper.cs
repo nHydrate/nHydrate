@@ -31,7 +31,6 @@ namespace nHydrate.DataImport.SqlClient
             return valid;
         }
 
-
         #endregion
 
         internal static string GetSqlDatabaseTables()
@@ -254,24 +253,6 @@ namespace nHydrate.DataImport.SqlClient
         {
             var sb = new StringBuilder();
             sb.AppendLine("select v.name as viewname, c.name as columnname, c.system_type_id, c.max_length, c.precision, c.scale, c.is_nullable from sys.views v inner join sys.columns c on v.object_id = c.object_id order by v.name, c.name");
-            return sb.ToString();
-        }
-
-        internal static string GetSqlForStoredProcedures(string name = "")
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine("SELECT OBJECT_SCHEMA_NAME(object_id) as schemaname, sys.objects.object_id, sys.objects.type, sys.objects.name as object_name");
-            sb.AppendLine("FROM	sys.objects");
-            sb.AppendLine("WHERE (sys.objects.type = 'P') AND");
-            sb.AppendLine("		NOT (sys.objects.name LIKE 'gen_%') AND");
-            sb.AppendLine("		NOT (sys.objects.name LIKE 'dt_%') AND");
-            sb.AppendLine("		NOT (sys.objects.name LIKE 'sp[_]%diagram%')");
-
-            if (!string.IsNullOrEmpty(name))
-                sb.AppendLine("		AND (sys.objects.name = '" + name + "')");
-
-            //sb.AppendLine("		AND (sys.objects.uid in (select uid from dbo.sysusers))");
-            sb.AppendLine("ORDER BY sys.objects.name");
             return sb.ToString();
         }
 
