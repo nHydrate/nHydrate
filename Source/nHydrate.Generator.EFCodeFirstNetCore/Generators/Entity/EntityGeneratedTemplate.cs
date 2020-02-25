@@ -90,9 +90,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                 //If we can add this item then implement the ICreatable interface
                 if (!_item.AssociativeTable && !_item.Immutable)
-                {
                     sb.Append(", " + this.GetLocalNamespace() + ".ICreatable");
-                }
 
                 sb.AppendLine();
                 sb.AppendLine("	{");
@@ -106,8 +104,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("	/// The base for the double derived '" + _item.PascalName + "' entity");
             else
                 sb.AppendLine("	/// The '" + _item.PascalName + "' entity");
+
             if (!string.IsNullOrEmpty(_item.Description))
                 sb.AppendLine("	/// " + _item.Description);
+
             sb.AppendLine("	/// </summary>");
             sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
 
@@ -115,9 +115,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             //Add known types for all descendants
             foreach (var table in _item.GetTablesInheritedFromHierarchy().OrderBy(x => x.PascalName))
-            {
                 sb.AppendLine("	[KnownType(typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "))]");
-            }
 
             if (_item.Immutable) // && _item.TypedTable == TypedTableConstants.None
                 sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
@@ -132,24 +130,18 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             if (_item.Immutable) boInterface = "" + this.GetLocalNamespace() + ".IReadOnlyBusinessObject";
 
             if (_model.EnableCustomChangeEvents)
-            {
                 boInterface += ", System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging";
-            }
 
             sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : BaseEntity, " + boInterface);
             if (!_item.GeneratesDoubleDerived)
                 sb.Append(", System.ICloneable");
 
             if (_item.AllowCreateAudit || _item.AllowModifiedAudit || _item.AllowTimestamp)
-            {
                 sb.Append(", " + this.GetLocalNamespace() + ".IAuditable, " + this.GetLocalNamespace() + ".IAuditableSet");
-            }
 
             //If we can add this item then implement the ICreatable interface
             if (!_item.AssociativeTable && !_item.Immutable && !_item.GeneratesDoubleDerived)
-            {
                 sb.Append(", " + this.GetLocalNamespace() + ".ICreatable");
-            }
 
             sb.AppendLine();
 

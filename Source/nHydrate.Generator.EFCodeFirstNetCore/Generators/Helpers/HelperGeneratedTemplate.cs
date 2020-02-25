@@ -50,6 +50,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine();
                 #endregion
 
+                sb.AppendLine($"namespace {this.GetLocalNamespace()}");
+                sb.AppendLine("{");
+
                 #region GlobalValues
 
                 sb.AppendLine("	#region GlobalValues");
