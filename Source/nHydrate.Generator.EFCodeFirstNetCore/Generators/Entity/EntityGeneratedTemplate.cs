@@ -81,8 +81,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 doubleDerivedClassName = _item.PascalName + "Base";
 
                 sb.AppendLine("	/// <summary>");
-                sb.AppendLine("	/// The '" + _item.PascalName + "' entity");
-                if (!string.IsNullOrEmpty(_item.Description))
+
+                if (string.IsNullOrEmpty(_item.Description))
+                    sb.AppendLine("	/// The '" + _item.PascalName + "' entity");
+                else
                     StringHelper.LineBreakCode(sb, _item.Description, "	/// ");
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
@@ -109,6 +111,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("	/// " + _item.Description);
 
             sb.AppendLine("	/// </summary>");
+
+            if (!string.IsNullOrEmpty(_item.Description))
+                sb.AppendLine($"	[System.ComponentModel.Description(\"{_item.Description}\")]");
+
             sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
 
             sb.AppendLine("	[FieldNameConstants(typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))]");
@@ -144,7 +150,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.Append(", " + this.GetLocalNamespace() + ".ICreatable");
 
             sb.AppendLine();
-
             sb.AppendLine("	{");
             this.AppendedFieldEnum();
             this.AppendConstructors();
@@ -179,8 +184,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     sb.AppendLine("		/// <summary>");
                     sb.AppendLine("		/// Field mapping for the image parameter '" + column.PascalName + "' property" + (column.PascalName != column.DatabaseName ? " (Database column: " + column.DatabaseName + ")" : string.Empty));
                     sb.AppendLine("		/// </summary>");
-                    //NETCORE Removed
-                    //sb.AppendLine("		[System.ComponentModel.Description(\"Field mapping for the image parameter '" + column.PascalName + "' property\")]");
+                    sb.AppendLine("		[System.ComponentModel.Description(\"Field mapping for the image parameter '" + column.PascalName + "' property\")]");
                     sb.AppendLine("		" + column.PascalName + ",");
                 }
                 sb.AppendLine("	}");
@@ -211,8 +215,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 {
                     sb.AppendLine("			[System.ComponentModel.DataAnnotations.Editable(false)]");
                 }
-                //NETCORE Removed
-                //sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + column.PascalName + "' property\")]");
+                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + column.PascalName + "' property\")]");
                 sb.AppendLine("			" + column.PascalName + ",");
             }
 
@@ -221,14 +224,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("			/// <summary>");
                 sb.AppendLine("			/// Field mapping for the '" + _model.Database.CreatedByPascalName + "' property");
                 sb.AppendLine("			/// </summary>");
-                //NETCORE Removed
-                //sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedByPascalName + "' property\")]");
+                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedByPascalName + "' property\")]");
                 sb.AppendLine("			" + _model.Database.CreatedByPascalName + ",");
                 sb.AppendLine("			/// <summary>");
                 sb.AppendLine("			/// Field mapping for the '" + _model.Database.CreatedDatePascalName + "' property");
                 sb.AppendLine("			/// </summary>");
-                //NETCORE Removed
-                //sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedDatePascalName + "' property\")]");
+                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.CreatedDatePascalName + "' property\")]");
                 sb.AppendLine("			" + _model.Database.CreatedDatePascalName + ",");
             }
 
@@ -237,14 +238,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("			/// <summary>");
                 sb.AppendLine("			/// Field mapping for the '" + _model.Database.ModifiedByPascalName + "' property");
                 sb.AppendLine("			/// </summary>");
-                //NETCORE Removed
-                //sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedByPascalName + "' property\")]");
+                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedByPascalName + "' property\")]");
                 sb.AppendLine("			" + _model.Database.ModifiedByPascalName + ",");
                 sb.AppendLine("			/// <summary>");
                 sb.AppendLine("			/// Field mapping for the '" + _model.Database.ModifiedDatePascalName + "' property");
                 sb.AppendLine("			/// </summary>");
-                //NETCORE Removed
-                //sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedDatePascalName + "' property\")]");
+                sb.AppendLine("			[System.ComponentModel.Description(\"Field mapping for the '" + _model.Database.ModifiedDatePascalName + "' property\")]");
                 sb.AppendLine("			" + _model.Database.ModifiedDatePascalName + ",");
             }
 
@@ -434,9 +433,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 if (column.ComputedColumn || column.IsReadOnly)
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
 
-                //NETCORE Removed
-                //if (!string.IsNullOrEmpty(column.Description))
-                //    sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
+                if (!string.IsNullOrEmpty(column.Description))
+                    sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
 
                 if (column.DataType.IsTextType() && column.IsMaxLength())
                     sb.AppendLine("		[StringLengthUnbounded]");
