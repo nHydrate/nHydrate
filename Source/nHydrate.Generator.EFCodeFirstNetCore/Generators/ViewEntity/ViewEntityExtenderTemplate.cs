@@ -1,4 +1,3 @@
-#pragma warning disable 0168
 using System;
 using nHydrate.Generator.Models;
 using System.Text;
@@ -22,15 +21,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
         {
             get
             {
-                try
-                {
-                    GenerateContent();
-                    return sb.ToString();
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+                GenerateContent();
+                return sb.ToString();
             }
         }
 

@@ -8,13 +8,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
     [GeneratorItem("ContextAuditExtenderGenerator", typeof(EFCodeFirstNetCoreProjectGenerator))]
     public class ContextAuditExtenderGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
-        #region Class Members
-
         private const string RELATIVE_OUTPUT_LOCATION = @"\Audit\";
-
-        #endregion
-
-        #region Overrides
 
         public override int FileCount
         {
@@ -44,8 +38,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 OnGenerationComplete(this, gcEventArgs);
             }
         }
-
-        #endregion
 
     }
 }

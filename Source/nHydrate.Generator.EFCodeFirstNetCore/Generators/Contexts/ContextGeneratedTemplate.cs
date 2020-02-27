@@ -24,15 +24,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
         }
 
         #region BaseClassTemplate overrides
-        public override string FileName
-        {
-            get { return _model.ProjectName + "Entities.Generated.cs"; }
-        }
 
-        public string ParentItemName
-        {
-            get { return _model.ProjectName + "Entities.cs"; }
-        }
+        public override string FileName => _model.ProjectName + "Entities.Generated.cs";
+        public string ParentItemName => _model.ProjectName + "Entities.cs";
 
         public override string FileContent
         {
@@ -42,35 +36,28 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 return sb.ToString();
             }
         }
+
         #endregion
 
         #region GenerateContent
 
         private void GenerateContent()
         {
-            try
-            {
-                nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
-                sb.AppendLine("#pragma warning disable 612");
-                this.AppendUsingStatements();
-                sb.AppendLine("namespace " + this.GetLocalNamespace());
-                sb.AppendLine("{");
-                this.AppendTypeTableEnums();
-                this.AppendTableMapping();
-                this.AppendClass();
-                sb.AppendLine("}");
-                sb.AppendLine();
+            nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
+            sb.AppendLine("#pragma warning disable 612");
+            this.AppendUsingStatements();
+            sb.AppendLine("namespace " + this.GetLocalNamespace());
+            sb.AppendLine("{");
+            this.AppendTypeTableEnums();
+            this.AppendTableMapping();
+            this.AppendClass();
+            sb.AppendLine("}");
+            sb.AppendLine();
 
-                sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
-                sb.AppendLine("{");
-                sb.AppendLine("}");
-                sb.AppendLine("#pragma warning restore 612");
-                sb.AppendLine();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
+            sb.AppendLine("{");
+            sb.AppendLine("}");
+            sb.AppendLine("#pragma warning restore 612");
         }
 
         private void AppendTableMapping()
@@ -144,7 +131,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		protected string _connectionString = null;");
             sb.AppendLine();
 
-            //NETCORE REMOVED
             //Events
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
@@ -195,6 +181,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             #region Constructors
+
             sb.AppendLine("		#region Constructors");
             sb.AppendLine();
 
@@ -256,6 +243,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
+
             #endregion
 
             sb.AppendLine("		partial void OnContextCreated();");
@@ -275,6 +263,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             #region Map Tables
+
             sb.AppendLine("			#region Map Tables");
 
             //Tables
@@ -307,9 +296,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             sb.AppendLine("			#endregion");
             sb.AppendLine();
+
             #endregion
 
             #region Create annotations for properties
+
             sb.AppendLine("			#region Setup Fields");
             sb.AppendLine();
 
@@ -320,6 +311,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 foreach (var column in table.GetColumns().OrderBy(x => x.Name))
                 {
                     #region Determine if this is a type table Value field and if so ignore
+
                     {
                         Table typeTable = null;
                         if (table.IsColumnRelatedToTypeTable(column, out string pascalRoleName) || (column.PrimaryKey && table.TypedTable != TypedTableConstants.None))
@@ -330,6 +322,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                                 sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Ignore(d => d." + pascalRoleName + typeTable.PascalName + "Value);");
                         }
                     }
+
                     #endregion
 
                     //If the column is not a PK then process it
@@ -381,6 +374,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         sb.Append(".HasColumnName(\"" + _model.Database.TimestampDatabaseName + "\")");
                         sb.AppendLine(";");
                     }
+
                     sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").HasMaxLength(8).IsRowVersion();");
                 }
 
@@ -402,14 +396,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     if (column.DatabaseName != column.PascalName) sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
                     sb.AppendLine(";");
                 }
+
                 sb.AppendLine();
             }
 
             sb.AppendLine("			#endregion");
             sb.AppendLine();
+
             #endregion
 
             #region Setup ignores for Enum properties
+
             sb.AppendLine("			#region Ignore Enum Properties");
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
@@ -427,12 +424,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     }
                 }
             }
+
             sb.AppendLine();
             sb.AppendLine("			#endregion");
             sb.AppendLine();
+
             #endregion
 
             #region Primary Keys
+
             sb.AppendLine("			#region Primary Keys");
             sb.AppendLine();
             foreach (var table in _model.Database.Tables
@@ -447,6 +447,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     if (columnList.IndexOf(c) < columnList.Count - 1)
                         sb.Append(", ");
                 }
+
                 sb.AppendLine(" });");
             }
 
@@ -460,15 +461,18 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     if (columnList.IndexOf(c) < columnList.Count - 1)
                         sb.Append(", ");
                 }
+
                 sb.AppendLine(" });");
             }
 
             sb.AppendLine();
             sb.AppendLine("			#endregion");
             sb.AppendLine();
+
             #endregion
 
             #region Create annotations for relationships
+
             sb.AppendLine("			#region Relations");
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
@@ -484,8 +488,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>()");
                             sb.AppendLine($"							.HasOne(a => a.{relation.PascalRoleName}{childTable.PascalName})");
                             sb.AppendLine($"							.WithOne(x => x.{relation.PascalRoleName}{table.PascalName})");
-                            sb.AppendLine("							.HasForeignKey<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(q => new { " + string.Join(",", relation.ColumnRelationships.Select(x => x.ChildColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
-                            sb.AppendLine("							.HasPrincipalKey<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">(q => new { " + string.Join(",", relation.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                            sb.AppendLine("							.HasForeignKey<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(q => new { " +
+                                          string.Join(",", relation.ColumnRelationships.Select(x => x.ChildColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                            sb.AppendLine("							.HasPrincipalKey<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">(q => new { " +
+                                          string.Join(",", relation.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
                             if (relation.IsRequired)
                                 sb.AppendLine("							.IsRequired(true)");
                             else
@@ -521,7 +527,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
                             var index = 0;
                             foreach (var columnPacket in relation.ColumnRelationships
-                                .Select(x => new { Child = x.ChildColumnRef.Object as Column, Parent = x.ParentColumnRef.Object as Column })
+                                .Select(x => new {Child = x.ChildColumnRef.Object as Column, Parent = x.ParentColumnRef.Object as Column})
                                 .Where(x => x.Child != null && x.Parent != null)
                                 .OrderBy(x => x.Parent.Name)
                                 .ToList())
@@ -599,22 +605,23 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             #region Auditing
+
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Persists all updates to the data source and resets change tracking in the object context.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <returns>The number of objects in an System.Data.Entity.EntityState.Added, System.Data.Entity.EntityState.Modified, or System.Data.Entity.EntityState.Deleted state when System.Data.Objects.ObjectContext.SaveChanges() was called.</returns>");
+            sb.AppendLine(
+                "		/// <returns>The number of objects in an System.Data.Entity.EntityState.Added, System.Data.Entity.EntityState.Modified, or System.Data.Entity.EntityState.Deleted state when System.Data.Objects.ObjectContext.SaveChanges() was called.</returns>");
             sb.AppendLine("		public override int SaveChanges()");
             sb.AppendLine("		{");
 
             sb.AppendLine("			var cancel = false;");
             sb.AppendLine("			OnBeforeSaveChanges(ref cancel);");
             sb.AppendLine("			if (cancel) return 0;");
-            sb.AppendLine();
-
             sb.AppendLine("			var markedTime = " + (_model.UseUTCTime ? "System.DateTime.UtcNow" : "System.DateTime.Now") + ";");
             sb.AppendLine();
 
             #region Added Items
+
             sb.AppendLine("			//Get the added list");
             sb.AppendLine("			var addedList = this.ChangeTracker.Entries().Where(x => x.State == EntityState.Added);");
             sb.AppendLine("			//Process added list");
@@ -635,9 +642,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			}");
             sb.AppendLine("			this.OnBeforeSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
             sb.AppendLine();
+
             #endregion
 
             #region Modified Items
+
             sb.AppendLine("			//Process modified list");
             sb.AppendLine("			var modifiedList = this.ChangeTracker.Entries().Where(x => x.State == EntityState.Modified);");
             sb.AppendLine("			foreach (var item in modifiedList)");
@@ -655,6 +664,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			}");
             sb.AppendLine("			this.OnBeforeSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
             sb.AppendLine();
+
             #endregion
 
             sb.AppendLine("			var retval = 0;");
@@ -683,9 +693,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			return retval;");
             sb.AppendLine("		}");
             sb.AppendLine();
+
             #endregion
 
             #region Entity Sets
+
             sb.AppendLine("		#region Entity Sets");
             sb.AppendLine();
 
@@ -714,72 +726,32 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
+
             #endregion
 
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// The global settings of this context");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public virtual ContextStartup ContextStartup");
-            sb.AppendLine("		{");
-            sb.AppendLine("			get { return _contextStartup; }");
-            sb.AppendLine("		}");
+            sb.AppendLine("		public virtual ContextStartup ContextStartup => _contextStartup;");
             sb.AppendLine();
-            
+
             #region Configuration API/Database verification
+
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Determines the version of the model that created this library.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public virtual string Version");
-            sb.AppendLine("		{");
-            sb.AppendLine("			get { return _version; }");
-            sb.AppendLine("		}");
+            sb.AppendLine("		public virtual string Version => _version;");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Determines the key of the model that created this library.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public virtual string ModelKey");
-            sb.AppendLine("		{");
-            sb.AppendLine("			get { return _modelKey; }");
-            sb.AppendLine("		}");
+            sb.AppendLine("		public virtual string ModelKey => _modelKey;");
             sb.AppendLine();
 
-            //TODO: Make for all databases
-            //Removed for EF core because it is SQL Server specific
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Retrieves the latest database version for the current model");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		public string GetDBVersion(string connectionString)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			var conn = new System.Data.SqlClient.SqlConnection();");
-            //sb.AppendLine("			try");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				conn.ConnectionString = connectionString;");
-            //sb.AppendLine("				conn.Open();");
-            //sb.AppendLine();
-            //sb.AppendLine("				var command = new SqlCommand(\"SELECT dbVersion FROM [__nhydrateschema] where [ModelKey] = '\" + this.ModelKey + \"'\", conn);");
-            //sb.AppendLine("				using (var reader = command.ExecuteReader())");
-            //sb.AppendLine("				{");
-            //sb.AppendLine("					while (reader.Read())");
-            //sb.AppendLine("					{");
-            //sb.AppendLine("						return (string)reader[0];");
-            //sb.AppendLine("					}");
-            //sb.AppendLine("				}");
-            //sb.AppendLine("				return string.Empty;");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			catch (Exception)");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				return string.Empty;");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			finally");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				if (conn != null)");
-            //sb.AppendLine("					conn.Close();");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
             #endregion
 
             #region Add Functionality
+
             //Add an strongly-typed extension for "AddItem" method
             sb.AppendLine("		#region AddItem Methods");
             sb.AppendLine();
@@ -821,6 +793,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             #region Tables
+
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Adds an entity of to the object context");
             sb.AppendLine("		/// </summary>");
@@ -855,13 +828,16 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			return entity;");
             sb.AppendLine("		}");
             sb.AppendLine();
+
             #endregion
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
+
             #endregion
 
             #region Delete Functionality
+
             //Add an strongly-typed extension for "RemoveItem" method
             sb.AppendLine("		#region RemoveItem Methods");
             sb.AppendLine();
@@ -914,9 +890,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
+
             #endregion
 
             #region Connection String
+
             sb.AppendLine("		#region Connection String");
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Returns the connection string used for this context object");
@@ -928,7 +906,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("				try");
             sb.AppendLine("				{");
             sb.AppendLine("					if (this.Database.GetDbConnection() != null && !string.IsNullOrEmpty(this.Database.GetDbConnection().ConnectionString))");
-            sb.AppendLine("						return Util.StripEFCS2Normal(this.Database.GetDbConnection().ConnectionString);");
+            sb.AppendLine("						return this.Database.GetDbConnection().ConnectionString;");
             sb.AppendLine("					else return null;");
             sb.AppendLine("				}");
             sb.AppendLine("				catch (Exception) { return null; }");
@@ -940,23 +918,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             #region IContext Interface
+
             sb.AppendLine("		#region IContext Interface");
-            sb.AppendLine();
-            sb.AppendLine("		Enum IContext.GetEntityFromField(Enum field)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return GetEntityFromField(field);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		System.Type IContext.GetFieldType(Enum field)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return this.GetFieldType(field);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            sb.AppendLine("		Enum IContext.GetEntityFromField(Enum field) => GetEntityFromField(field);");
+            sb.AppendLine("		System.Type IContext.GetFieldType(Enum field) => this.GetFieldType(field);");
             sb.AppendLine("		#endregion");
             sb.AppendLine();
+
             #endregion
 
             #region GetEntityFromField
+
             sb.AppendLine("		#region GetEntityFromField");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
@@ -968,14 +940,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             {
                 sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants) return " + this.GetLocalNamespace() + ".EntityMappingConstants." + table.PascalName + ";");
             }
+
             sb.AppendLine("			throw new Exception(\"Unknown field type!\");");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
+
             #endregion
 
             #region Extra
+
             sb.AppendLine("		#region Interface Extras");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
@@ -986,51 +961,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			this.Entry(entity).Reload();");
             sb.AppendLine("		}");
             sb.AppendLine();
-
-            //NETCORE REMOVED
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Detaches the the object from context");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		public void DetachItem(BaseEntity entity)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			this.ObjectContext.Detach(entity);");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-
             sb.AppendLine("		#endregion");
             sb.AppendLine();
+
             #endregion
 
             #region ObjectContext
+
             sb.AppendLine("		#region ObjectContext");
-            sb.AppendLine();
-            
-            //NETCORE REMOVED
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Gets the object context");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		public System.Data.Entity.Core.Objects.ObjectContext ObjectContext");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			get");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				if (_objectContext == null)");
-            //sb.AppendLine("					_objectContext = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext;");
-            //sb.AppendLine("				return _objectContext;");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("		}");
-            //sb.AppendLine("		private System.Data.Entity.Core.Objects.ObjectContext _objectContext = null;");
-            //sb.AppendLine();
-
-            //NETCORE REMOVED
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Accepts all changes made to objects in the object context");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		public void AcceptAllChanges()");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			this.ObjectContext.AcceptAllChanges();");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Determines the timeout of the database connection");
             sb.AppendLine("		/// </summary>");
@@ -1039,9 +977,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			get { return this.Database.GetCommandTimeout(); }");
             sb.AppendLine("			set { this.Database.SetCommandTimeout(value); }");
             sb.AppendLine("		}");
-            sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
+
             #endregion
 
             sb.AppendLine("	}");
@@ -1051,74 +989,67 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
         private void AppendTypeTableEnums()
         {
-            try
+            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.None).OrderBy(x => x.Name))
             {
-                foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.None).OrderBy(x => x.Name))
+                if (table.PrimaryKeyColumns.Count == 1)
                 {
-                    if (table.PrimaryKeyColumns.Count == 1)
+                    var pk = table.PrimaryKeyColumns.First();
+                    sb.AppendLine("	#region StaticDataConstants Enumeration for '" + table.PascalName + "' entity");
+                    sb.AppendLine("	/// <summary>");
+                    sb.AppendLine("	/// Enumeration to define static data items and their ids '" + table.PascalName + "' table.");
+                    sb.AppendLine("	/// </summary>");
+                    sb.Append("	public enum " + table.PascalName + "Constants");
+
+                    //Non-integer types must explicitly add the type
+                    if (pk.DataType != System.Data.SqlDbType.Int)
+                        sb.Append(" : " + pk.GetCodeType(false));
+
+                    sb.AppendLine();
+                    sb.AppendLine("	{");
+                    foreach (RowEntry rowEntry in table.StaticData)
                     {
-                        var pk = table.PrimaryKeyColumns.First();
-                        sb.AppendLine("	#region StaticDataConstants Enumeration for '" + table.PascalName + "' entity");
-                        sb.AppendLine("	/// <summary>");
-                        sb.AppendLine("	/// Enumeration to define static data items and their ids '" + table.PascalName + "' table.");
-                        sb.AppendLine("	/// </summary>");
-                        sb.Append("	public enum " + table.PascalName + "Constants");
-
-                        //Non-integer types must explicitly add the type
-                        if (pk.DataType != System.Data.SqlDbType.Int)
-                            sb.Append(" : " + pk.GetCodeType(false));
-
-                        sb.AppendLine();
-                        sb.AppendLine("	{");
-                        foreach (RowEntry rowEntry in table.StaticData)
+                        var idValue = rowEntry.GetCodeIdValue(table);
+                        var identifier = rowEntry.GetCodeIdentifier(table);
+                        var description = rowEntry.GetCodeDescription(table);
+                        var raw = rowEntry.GetDataRaw(table);
+                        var sort = rowEntry.GetDataSort(table);
+                        if (!string.IsNullOrEmpty(description))
                         {
-                            var idValue = rowEntry.GetCodeIdValue(table);
-                            var identifier = rowEntry.GetCodeIdentifier(table);
-                            var description = rowEntry.GetCodeDescription(table);
-                            var raw = rowEntry.GetDataRaw(table);
-                            var sort = rowEntry.GetDataSort(table);
-                            if (!string.IsNullOrEmpty(description))
-                            {
-                                sb.AppendLine("		/// <summary>");
-                                StringHelper.LineBreakCode(sb, description, "		/// ");
-                                sb.AppendLine("		/// </summary>");
-                                sb.AppendLine("		[Description(\"" + description + "\")]");
-                            }
-                            else
-                            {
-                                sb.AppendLine("		/// <summary>");
-                                sb.AppendLine("		/// Enumeration for the '" + identifier + "' item");
-                                sb.AppendLine("		/// </summary>");
-                            }
-
-                            var key = ValidationHelper.MakeDatabaseIdentifier(identifier.Replace(" ", string.Empty));
-                            if ((key.Length > 0) && ("0123456789".Contains(key[0])))
-                                key = "_" + key;
-
-                            //If there is a sort value then format as attribute
-                            if (int.TryParse(sort, out var svalue))
-                            {
-                                sort = ", Order = " + svalue;
-                            }
-                            else
-                            {
-                                sort = string.Empty;
-                            }
-
-                            sb.AppendLine("		[System.ComponentModel.DataAnnotations.Display(Name = \"" + raw + "\"" + sort + ")]");
-                            sb.AppendLine("		" + key + " = " + idValue + ",");
+                            sb.AppendLine("		/// <summary>");
+                            StringHelper.LineBreakCode(sb, description, "		/// ");
+                            sb.AppendLine("		/// </summary>");
+                            sb.AppendLine("		[Description(\"" + description + "\")]");
                         }
-                        sb.AppendLine("	}");
-                        sb.AppendLine("	#endregion");
-                        sb.AppendLine();
+                        else
+                        {
+                            sb.AppendLine("		/// <summary>");
+                            sb.AppendLine("		/// Enumeration for the '" + identifier + "' item");
+                            sb.AppendLine("		/// </summary>");
+                        }
+
+                        var key = ValidationHelper.MakeDatabaseIdentifier(identifier.Replace(" ", string.Empty));
+                        if ((key.Length > 0) && ("0123456789".Contains(key[0])))
+                            key = "_" + key;
+
+                        //If there is a sort value then format as attribute
+                        if (int.TryParse(sort, out var svalue))
+                        {
+                            sort = ", Order = " + svalue;
+                        }
+                        else
+                        {
+                            sort = string.Empty;
+                        }
+
+                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Display(Name = \"" + raw + "\"" + sort + ")]");
+                        sb.AppendLine("		" + key + " = " + idValue + ",");
                     }
+
+                    sb.AppendLine("	}");
+                    sb.AppendLine("	#endregion");
+                    sb.AppendLine();
                 }
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
         }
 
         #endregion

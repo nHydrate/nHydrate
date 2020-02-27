@@ -1,10 +1,4 @@
 ﻿using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore
 {

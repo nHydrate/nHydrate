@@ -1,4 +1,3 @@
-#pragma warning disable 0168
 using System;
 using System.Linq;
 using nHydrate.Generator.Models;
@@ -26,16 +25,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
         {
             get
             {
-                try
-                {
-                    sb = new StringBuilder();
-                    this.GenerateContent();
-                    return sb.ToString();
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+                sb = new StringBuilder();
+                this.GenerateContent();
+                return sb.ToString();
             }
         }
         #endregion
@@ -44,23 +36,16 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         private void GenerateContent()
         {
-            try
-            {
-                nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
-                sb.AppendLine("#pragma warning disable 612");
-                this.AppendUsingStatements();
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
-                sb.AppendLine("{");
-                this.AppendEntityClass();
-                sb.AppendLine("}");
-                sb.AppendLine();
-                sb.AppendLine("#pragma warning restore 612");
-                sb.AppendLine();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
+            sb.AppendLine("#pragma warning disable 612");
+            this.AppendUsingStatements();
+            sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+            sb.AppendLine("{");
+            this.AppendEntityClass();
+            sb.AppendLine("}");
+            sb.AppendLine();
+            sb.AppendLine("#pragma warning restore 612");
+            sb.AppendLine();
         }
 
         private void AppendUsingStatements()
@@ -259,7 +244,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 scope = "protected internal";
 
             //For now only create constructor for Immutable
-            //Let user create default constructor if neeed
+            //Let user create default constructor if needed
             //if (!_item.Immutable && !_item.AssociativeTable)
             //    return;
 
@@ -279,34 +264,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.Append(this.SetInitialValues("this"));
             sb.AppendLine("		}");
             sb.AppendLine();
-
-            #region Overload with key
-            //if (_item.PrimaryKeyColumns.Count == _item.PrimaryKeyColumns.Count(x => x.Identity == IdentityTypeConstants.None))
-            //{
-            //    sb.AppendLine("		/// <summary>");
-            //    sb.AppendLine("		/// Initializes a new instance of the " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " class with a defined primary key");
-            //    sb.AppendLine("		/// </summary>");
-            //    sb.Append("		" + scope + " " + doubleDerivedClassName + "(");
-            //    int index = 0;
-            //    foreach (Column pkColumn in _item.PrimaryKeyColumns.OrderBy(x => x.PascalName))
-            //    {
-            //        sb.Append(pkColumn.GetCodeType() + " " + pkColumn.CamelName);
-            //        if (index < _item.PrimaryKeyColumns.Count - 1)
-            //            sb.Append(", ");
-            //        index++;
-            //    }
-            //    sb.AppendLine(")");
-
-            //    sb.AppendLine("			: this()");
-            //    sb.AppendLine("		{");
-            //    foreach (Column pkColumn in _item.PrimaryKeyColumns.OrderBy(x => x.PascalName))
-            //    {
-            //        sb.AppendLine("			this." + pkColumn.PascalName + " = " + pkColumn.CamelName + ";");
-            //    }
-            //    sb.AppendLine("		}");
-            //    sb.AppendLine();
-            //}
-            #endregion
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
@@ -669,14 +626,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		public virtual " + parentTable.PascalName + " " + relation.PascalRoleName + parentTable.PascalName + " { get; set; }");
                         sb.AppendLine();
-
-                        ////Add interface map
-                        //sb.AppendLine("		" + this.InterfaceAssemblyNamespace + ".Entity.I" + parentTable.PascalName + " " + this.InterfaceAssemblyNamespace + ".Entity.I" + _item.PascalName + "." + relation.PascalRoleName + parentTable.PascalName + "");
-                        //sb.AppendLine("		{");
-                        //sb.AppendLine("			get { return this." + relation.PascalRoleName + parentTable.PascalName + "; }");
-                        //sb.AppendLine("			set { this." + relation.PascalRoleName + parentTable.PascalName + " = (" + this.GetLocalNamespace() + ".Entity." + parentTable.PascalName + ")value; }");
-                        //sb.AppendLine("		}");
-                        //sb.AppendLine();
                     }
                 }
             }
@@ -713,15 +662,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         private void AppendPropertyEventDeclarations(Column column, string codeType)
         {
-            //Table typetable = _item.GetRelatedTypeTableByColumn(column);
-            //if (typetable != null)
-            //{
-            //  this.AppendPropertyEventDeclarations(typetable.PascalName, codeType);
-            //}
-            //else
-            {
-                this.AppendPropertyEventDeclarations(column.PascalName, codeType);
-            }
+            this.AppendPropertyEventDeclarations(column.PascalName, codeType);
         }
 
         private void AppendPropertyEventDeclarations(string columnName, string codeType)
@@ -1225,29 +1166,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		public static bool operator ==(" + _item.PascalName + " a, " + _item.PascalName + " b)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			if (System.Object.ReferenceEquals(a, b))");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				return true;");
-            //sb.AppendLine("			}");
-            //sb.AppendLine("			// If one is null, but not both, return false.");
-            //sb.AppendLine("			if (object.ReferenceEquals(a, null) || object.ReferenceEquals(b, null))");
-            //sb.AppendLine("			{");
-            //sb.AppendLine("				return false;");
-            //sb.AppendLine("			}");
-            //sb.AppendLine();
-            //sb.AppendLine("			return a.Equals(b);");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		public static bool operator !=(" + _item.PascalName + " a, " + _item.PascalName + " b)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			return !(a == b);");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-
             sb.AppendLine("		#endregion");
             sb.AppendLine();
         }
@@ -1342,26 +1260,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("			get { return new byte[0]; }");
             sb.AppendLine("		}");
             sb.AppendLine();
-
-            //sb.AppendLine("		void IAuditableSet.ResetModifiedBy(string modifier)");
-            //sb.AppendLine("		{");
-            //if (_item.AllowModifiedAudit)
-            //{
-            //    sb.AppendLine("			if (this." + _model.Database.ModifiedByPascalName + " != modifier)");
-            //    sb.AppendLine("				this." + _model.Database.ModifiedByPascalName + " = modifier;");
-            //}
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-            //sb.AppendLine("		void IAuditableSet.ResetCreatedBy(string modifier)");
-            //sb.AppendLine("		{");
-            //if (_item.AllowCreateAudit)
-            //{
-            //    sb.AppendLine("			if (this." + _model.Database.CreatedByPascalName + " != modifier)");
-            //    sb.AppendLine("				this." + _model.Database.CreatedByPascalName + " = modifier;");
-            //}
-            //sb.AppendLine("			((IAuditableSet)this).ResetModifiedBy(modifier);");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
 
             sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditableSet.CreatedDate");
             sb.AppendLine("		{");

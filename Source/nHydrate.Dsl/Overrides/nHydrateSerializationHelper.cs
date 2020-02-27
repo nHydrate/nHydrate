@@ -12,28 +12,12 @@ namespace nHydrate.Dsl
     {
         private const string LAST_MODEL_MODEL_COMPATIBLE = "5.1.2.115";
 
-        public override void SaveModelAndDiagram(Microsoft.VisualStudio.Modeling.SerializationResult serializationResult, nHydrateModel modelRoot, string modelFileName, nHydrateDiagram diagram, string diagramFileName, Encoding encoding, bool writeOptionalPropertiesWithDefaultValue)
+        public override void SaveModelAndDiagram(Microsoft.VisualStudio.Modeling.SerializationResult serializationResult, nHydrateModel modelRoot, string modelFileName, nHydrateDiagram diagram, string diagramFileName, Encoding encoding,
+            bool writeOptionalPropertiesWithDefaultValue)
         {
             var mainInfo = new FileInfo(modelFileName);
             modelRoot.ModelFileName = modelFileName;
-            //var modelName = mainInfo.Name.Replace(".nhydrate", ".model");
-
-            //if (modelRoot.ModelToDisk)
-            //{
-                nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, mainInfo.DirectoryName, mainInfo.Name, diagram);
-            //}
-            //else
-            //{
-            //    try
-            //    {
-            //        var f = nHydrate.Dsl.Custom.SQLFileManagement.GetModelFolder(mainInfo.DirectoryName, modelName);
-            //        if (Directory.Exists(f)) Directory.Delete(f, true);
-            //    }
-            //    catch
-            //    {
-            //    }
-            //}
-
+            nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(modelRoot, mainInfo.DirectoryName, mainInfo.Name, diagram);
             base.SaveModelAndDiagram(serializationResult, modelRoot, modelFileName, diagram, diagramFileName, encoding, writeOptionalPropertiesWithDefaultValue);
 
             //Model File
@@ -88,6 +72,7 @@ namespace nHydrate.Dsl
                         n.Attributes.RemoveNamedItem("titleTextColor");
                         n.Attributes.RemoveNamedItem("itemTextColor");
                     }
+
                     document.Save(diagramFile);
                 }
             }
@@ -95,7 +80,9 @@ namespace nHydrate.Dsl
         }
 
         private nHydrateModel _model = null;
-        public override nHydrateModel LoadModelAndDiagram(DslModeling::SerializationResult serializationResult, DslModeling::Partition modelPartition, string modelFileName, DslModeling::Partition diagramPartition, string diagramFileName, DslModeling::ISchemaResolver schemaResolver, DslValidation::ValidationController validationController, DslModeling::ISerializerLocator serializerLocator)
+
+        public override nHydrateModel LoadModelAndDiagram(DslModeling::SerializationResult serializationResult, DslModeling::Partition modelPartition, string modelFileName, DslModeling::Partition diagramPartition, string diagramFileName,
+            DslModeling::ISchemaResolver schemaResolver, DslValidation::ValidationController validationController, DslModeling::ISerializerLocator serializerLocator)
         {
             var modelRoot = base.LoadModelAndDiagram(serializationResult, modelPartition, modelFileName, diagramPartition, diagramFileName, schemaResolver, validationController, serializerLocator);
             _model = modelRoot;
@@ -123,7 +110,9 @@ namespace nHydrate.Dsl
                     dslVersion = new Version(attr.Value);
                 }
             }
-            catch { }
+            catch
+            {
+            }
 
             //When saved the new version will be this tool version
             modelRoot.ModelVersion = LAST_MODEL_MODEL_COMPATIBLE;
@@ -132,62 +121,8 @@ namespace nHydrate.Dsl
             modelRoot.IsDirty = false;
 
             var mainInfo = new FileInfo(modelFileName);
-            //var modelName = mainInfo.Name.Replace(".nhydrate", ".model");
-
-            //if (modelRoot.ModelToDisk)
-            //{
-                //Load from disk store
-                nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(modelRoot, mainInfo.DirectoryName, modelRoot.Partition.Store, mainInfo.Name);
-
-                #region Watch Folder
-                //var modelFolder = nHydrate.Dsl.Custom.SQLFileManagement.GetModelFolder(mainInfo.DirectoryName, modelName);
-                //_watchFolder.Path = modelFolder;
-                //_watchFolder.IncludeSubdirectories = true;
-                //_watchFolder.NotifyFilter = System.IO.NotifyFilters.FileName | 
-                //	NotifyFilters.LastWrite | 
-                //	NotifyFilters.Size |
-                //	NotifyFilters.CreationTime |
-                //	NotifyFilters.DirectoryName;
-
-                //_watchFolder.Changed += new FileSystemEventHandler(FolderChangedEvent);
-                //_watchFolder.Created += new FileSystemEventHandler(FolderChangedEvent);
-                //_watchFolder.Deleted += new FileSystemEventHandler(FolderChangedEvent);
-                //_watchFolder.Renamed += new System.IO.RenamedEventHandler(FolderFileRenamedEvent);
-
-                //try
-                //{
-                //	_watchFolder.EnableRaisingEvents = true;
-                //}
-                //catch (ArgumentException)
-                //{
-                //	//Do Nothing
-                //}
-                #endregion
-
-            //}
-            //else
-            //{
-            //    try
-            //    {
-            //        var f = nHydrate.Dsl.Custom.SQLFileManagement.GetModelFolder(mainInfo.DirectoryName, modelName);
-            //        if (Directory.Exists(f)) Directory.Delete(f, true);
-            //    }
-            //    catch
-            //    {
-            //    }
-            //}
-
+            nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(modelRoot, mainInfo.DirectoryName, modelRoot.Partition.Store, mainInfo.Name);
             modelRoot.IsDirty = false;
-
-            //SyncServer
-            //var syncServerFile = modelFileName + ".syncserver";
-            //modelRoot.SyncServerURL = nHydrate.SyncServer.Client.SyncDomain.LoadSyncServerConfig(syncServerFile);
-
-            //Alphabetized columns if need be
-            //foreach (var entity in modelRoot.Entities)
-            //{
-            //  entity.Fields.Sort((x, y) => x.Name.CompareTo(y.Name));
-            //}
 
             #region Load Indexes
 
@@ -202,23 +137,6 @@ namespace nHydrate.Dsl
             #endregion
 
             return modelRoot;
-        }
-
-        private void FolderChangedEvent(object sender, FileSystemEventArgs e)
-        {
-            RefreshModelCacheChanged();
-        }
-
-        private void FolderFileRenamedEvent(object sender, RenamedEventArgs e)
-        {
-            RefreshModelCacheChanged();
-        }
-
-
-        private void RefreshModelCacheChanged()
-        {
-            if (_model.IsSaving) return;
-            System.Windows.Forms.MessageBox.Show("The folder containing the model files has changed unexpectedly. Please close the model and re-load it to reflect the changes.", "Close and Re-open Model", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
         }
 
         public static void LoadInitialIndexes(nHydrateModel modelRoot)
@@ -249,9 +167,9 @@ namespace nHydrate.Dsl
             foreach (var field in allIndexedField)
             {
                 var index = allIndexes.FirstOrDefault(x =>
-                                                      x.IndexColumns.Count == 1 &&
-                                                      x.IndexColumns.First().FieldID == field.Id &&
-                                                      x.IndexColumns.First().Ascending);
+                    x.IndexColumns.Count == 1 &&
+                    x.IndexColumns.First().FieldID == field.Id &&
+                    x.IndexColumns.First().Ascending);
 
                 if (index == null)
                 {
@@ -268,13 +186,6 @@ namespace nHydrate.Dsl
             }
         }
 
-    }
-
-    /// <summary>
-    /// This is how you overload the serialization process of the Model
-    /// </summary>
-    partial class nHydrateModelSerializer
-    {
     }
 
     partial class nHydrateSerializationHelperBase

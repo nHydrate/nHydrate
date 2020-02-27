@@ -26,12 +26,8 @@ namespace nHydrate.Generator.Models
         protected string _version = _def_version;
         private readonly VersionHistoryCollection _versionHistoryList = new VersionHistoryCollection(null);
         private string _modeToolVersion = string.Empty;
-        protected string _tenantColumnName = _def_tenantColumnName;
-        protected string _tenantPrefix = _def_tenantPrefix;
 
         #endregion
-
-        #region Constructor
 
         public ModelRoot(INHydrateModelObject root)
             : base(root)
@@ -42,27 +38,11 @@ namespace nHydrate.Generator.Models
             this.RemovedViews = new List<string>();
         }
 
-        #endregion
-
         #region Property Implementations
 
-        public string TenantColumnName
-        {
-            get { return _tenantColumnName; }
-            set
-            {
-                _tenantColumnName = value;
-            }
-        }
+        public string TenantColumnName { get; set; } = _def_tenantColumnName;
 
-        public string TenantPrefix
-        {
-            get { return _tenantPrefix; }
-            set
-            {
-                _tenantPrefix = value;
-            }
-        }
+        public string TenantPrefix { get; set; } = _def_tenantPrefix;
 
         public int GeneratedVersion { get; set; }
 
@@ -130,22 +110,6 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        #region Methods
-
-        public string GetStoredProcedurePrefix()
-        {
-            var s = (this.StoredProcedurePrefix + string.Empty).Trim();
-            if (string.IsNullOrEmpty(s))
-                s = ValidationHelper.MakeDatabaseIdentifier(s);
-
-            if (string.IsNullOrEmpty(s))
-                s = _def_storedProcedurePrefix;
-
-            return s;
-        }
-
-        #endregion
-
         #region IXMLable
 
         public override void XmlAppend(XmlNode node)
@@ -198,7 +162,7 @@ namespace nHydrate.Generator.Models
                 this.CompanyName = XmlHelper.GetAttributeValue(node, "companyName", this.CompanyName);
                 this.EmitSafetyScripts = XmlHelper.GetAttributeValue(node, "emitSafetyScripts", this.EmitSafetyScripts);
 
-                //There is a messagebox in the property set to DO NOT use the property, use the member variable
+                //There is a message box in the property set to DO NOT use the property, use the member variable
                 DefaultNamespace = XmlHelper.GetAttributeValue(node, "defaultNamespace", _def_defaultNamespace);
 
                 var databaseNode = node.SelectSingleNode("database");
@@ -270,14 +234,7 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        #region INHydrateModelObject Members
-
-        public override INHydrateModelObject Root
-        {
-            get { return this; }
-        }
-
-        #endregion
+        public override INHydrateModelObject Root => this;
 
     }
 

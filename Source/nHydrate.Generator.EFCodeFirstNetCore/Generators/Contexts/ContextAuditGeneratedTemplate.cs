@@ -15,9 +15,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
         {
         }
 
-        #region BaseClassTemplate overrides
         public override string FileName => $"{_model.ProjectName}AuditEntities.Generated.cs";
-
         public string ParentItemName => $"{_model.ProjectName}AuditEntities.cs";
 
         public override string FileContent
@@ -28,9 +26,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 return sb.ToString();
             }
         }
-        #endregion
-
-        #region GenerateContent
 
         private void GenerateContent()
         {
@@ -201,22 +196,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
             #endregion
 
-            //sb.AppendLine("		/// <summary>");
-            //sb.AppendLine("		/// Determines the timeout of the database connection");
-            //sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		public int? CommandTimeout");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			get { return this.Database.GetCommandTimeout(); }");
-            //sb.AppendLine("			set { this.Database.SetCommandTimeout(value); }");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-
             sb.AppendLine("	}");
             sb.AppendLine("	#endregion");
             sb.AppendLine();
         }
-
-        #endregion
 
     }
 }

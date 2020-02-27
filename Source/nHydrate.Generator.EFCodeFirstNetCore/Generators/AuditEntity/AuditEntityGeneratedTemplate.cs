@@ -27,16 +27,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
         {
             get
             {
-                try
-                {
-                    sb = new StringBuilder();
-                    this.GenerateContent();
-                    return sb.ToString();
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+                sb = new StringBuilder();
+                this.GenerateContent();
+                return sb.ToString();
             }
         }
         #endregion
@@ -45,19 +38,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
 
         private void GenerateContent()
         {
-            try
-            {
-                nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
-                this.AppendUsingStatements();
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Audit");
-                sb.AppendLine("{");
-                this.AppendEntityClass();
-                sb.AppendLine("}");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
+            this.AppendUsingStatements();
+            sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Audit");
+            sb.AppendLine("{");
+            this.AppendEntityClass();
+            sb.AppendLine("}");
         }
 
         private void AppendUsingStatements()

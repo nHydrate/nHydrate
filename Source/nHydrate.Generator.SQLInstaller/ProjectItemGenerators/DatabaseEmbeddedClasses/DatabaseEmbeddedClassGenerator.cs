@@ -40,7 +40,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
             try
             {
                 GenerateDatabaseInstallerCs();
-                GenerateInstallSettings();
                 GenerateDatabaseInstallerDesignerCs();
                 GenerateSqlServersCs();
                 //GenerateArchiveReaderCs();
@@ -366,14 +365,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
         }
 
         #endregion
-
-        private void GenerateInstallSettings()
-        {
-            var fileName = "InstallSettings.cs";
-            var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
-            var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
-            OnProjectItemGenerated(this, eventArgs);
-        }
 
         private string GetResource(EmbeddedResourceName ern)
         {

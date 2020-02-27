@@ -643,7 +643,7 @@ namespace nHydrate.DslPackage.Forms
                 _lastSort = SortOrder.Ascending;
             }
 
-            lvwMain.ListViewItemSorter = new nHydrate.Generator.Common.Forms.CommonLibrary.ListViewItemComparer(e.Column, _lastSort);
+            lvwMain.ListViewItemSorter = new nHydrate.Generator.Common.ListViewItemComparer(e.Column, _lastSort);
             _lastColumnClick = e.Column;
 
             lvwMain.Sort();

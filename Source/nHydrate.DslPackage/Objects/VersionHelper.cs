@@ -1,7 +1,6 @@
 #pragma warning disable 0168
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using nHydrate.Generator.Common.GeneratorFramework;
 using System.Net.Http;

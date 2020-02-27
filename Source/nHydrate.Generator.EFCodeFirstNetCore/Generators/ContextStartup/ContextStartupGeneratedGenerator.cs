@@ -12,9 +12,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
 
         public override void Generate()
         {
-            ContextStartupGeneratedTemplate template = new ContextStartupGeneratedTemplate(_model);
-            string fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;
-            ProjectItemGeneratedEventArgs eventArgs = new ProjectItemGeneratedEventArgs(template.FileName, template.FileContent, ProjectName, fullParentName, this, true);
+            var template = new ContextStartupGeneratedTemplate(_model);
+            var fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;
+            var eventArgs = new ProjectItemGeneratedEventArgs(template.FileName, template.FileContent, ProjectName, fullParentName, this, true);
             OnProjectItemGenerated(this, eventArgs);
             var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
             OnGenerationComplete(this, gcEventArgs);

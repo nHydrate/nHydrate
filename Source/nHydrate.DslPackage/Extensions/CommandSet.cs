@@ -26,8 +26,6 @@ namespace nHydrate.DslPackage
         #region Class Members
 
         private Guid guidVSStd97 = new Guid("5efc7975-14bc-11cf-9b2b-00aa00573819");
-        private Guid guidMenuImportDatabase = new Guid("2F64AA34-817C-44FC-8227-EC4C4C56BE3C");
-        private Guid guidMenuNHydrateMenu = new Guid("ABCDEF11-817C-44FC-8227-EC4C4C561300");
         private Guid guidDiagramMenuCmdSet = new Guid("55457976-07EF-4CF1-AE6C-FA5E2D926EA9");
         private Guid guidModelMenuCmdSet = new Guid("66457976-07EF-4CF1-AE6C-FA5E2D926EA9");
 
@@ -48,24 +46,11 @@ namespace nHydrate.DslPackage
         private const int cmdidMenuDiagramShowTypes = 17;
         private const int cmdidMenuRelationShowSource = 18;
         private const int cmdidMenuRelationShowTarget = 19;
-        private const int cmdidMenuShowOnDiagram = 20;
         private const int cmdidMenuAbout = 21;
 
         private const int cmdidMenuCut = 0x1240;
         private const int cmdidMenuCopy = 0x1241;
         private const int cmdidMenuPaste = 0x1242;
-
-        private const int grpidNHydrateMenu = 1000;
-
-        private const int cmdidObjectViewWindow = 0x0101;
-
-        //Menu Groups
-        private Guid guidMenuGroupMain = new Guid("ABCDAA34-817C-44FC-8227-EC4C4C56BE3C");
-        private const int grpidGroupMain = 0x01001;
-        private Guid guidMenuGroupDiagram = new Guid("BBCDAA34-817C-44FC-8227-EC4C4C56BE3C");
-        private const int grpidGroupDiagram = 0x01002;
-        private Guid guidMenuDiagramMenu = new Guid("CBCDAA34-817C-44FC-8227-EC4C4C56BE3C");
-        private const int grpidDiagramMenu = 0x01003;
 
         #endregion
 
@@ -79,30 +64,23 @@ namespace nHydrate.DslPackage
 
         private void OnMenuCommandImportDatabase(object sender, EventArgs e)
         {
-            try
-            {
-                var command = sender as MenuCommand;
-                var store = this.CurrentDocData.Store;
-                var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
-                var postArrange = (this.CurrentDocView.CurrentDiagram.NestedChildShapes.Count == 0);
+            var store = this.CurrentDocData.Store;
+            var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
+            var postArrange = (this.CurrentDocView.CurrentDiagram.NestedChildShapes.Count == 0);
 
-                var database = nHydrate.DslPackage.Objects.DatabaseImportDomain.Convert(model, this.CurrentDocView.CurrentDiagram);
-                var importDatabaseForm = new ImportDatabaseForm(model, database, this.CurrentDocData);
-                if (importDatabaseForm.ShowDialog() == DialogResult.OK)
-                {
-                    ((nHydrateDocData)this.CurrentDocData).IsImporting = true;
-                    nHydrate.DslPackage.Objects.DatabaseImportDomain.ImportDatabase(model, store, this.CurrentDocView.CurrentDiagram, importDatabaseForm.NewDatabase);
-                    if (postArrange) this.ArrangeDiagram();
-                    this.CurrentDocView.CurrentDiagram.Reroute();
-                    ((nHydrateDocData)this.CurrentDocData).IsImporting = false;
-                    MessageBox.Show("The database has finished importing.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
+            var database = nHydrate.DslPackage.Objects.DatabaseImportDomain.Convert(model, this.CurrentDocView.CurrentDiagram);
+            var importDatabaseForm = new ImportDatabaseForm(model, database, this.CurrentDocData);
+            if (importDatabaseForm.ShowDialog() == DialogResult.OK)
             {
-                throw;
+                ((nHydrateDocData) this.CurrentDocData).IsImporting = true;
+                nHydrate.DslPackage.Objects.DatabaseImportDomain.ImportDatabase(model, store, this.CurrentDocView.CurrentDiagram, importDatabaseForm.NewDatabase);
+                if (postArrange) this.ArrangeDiagram();
+                this.CurrentDocView.CurrentDiagram.Reroute();
+                ((nHydrateDocData) this.CurrentDocData).IsImporting = false;
+                MessageBox.Show("The database has finished importing.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
         #endregion
 
         #region Generate
@@ -217,71 +195,51 @@ namespace nHydrate.DslPackage
         #endregion
 
         #region RelationDialog
+
         private void OnStatusMenuRelationDialog(object sender, EventArgs e)
         {
-            try
+            var command = sender as MenuCommand;
+            command.Visible = false;
+            if (this.CurrentSelection.Count != 1) return;
+            foreach (var selectedObject in this.CurrentSelection)
             {
-                var command = sender as MenuCommand;
-                command.Visible = false;
-                if (this.CurrentSelection.Count != 1) return;
-                foreach (var selectedObject in this.CurrentSelection)
+                if (selectedObject is EntityAssociationConnector)
                 {
-                    if (selectedObject is EntityAssociationConnector)
-                    {
-                        command.Visible = true;
-                        return;
-                    }
+                    command.Visible = true;
+                    return;
                 }
-            }
-            catch (Exception ex)
-            {
-                throw;
             }
         }
 
         private void OnMenuCommandRelationDialog(object sender, EventArgs e)
         {
-            try
+            if (this.CurrentSelection.Count != 1) return;
+            var store = this.CurrentDocData.Store;
+            foreach (var selectedObject in this.CurrentSelection)
             {
-                if (this.CurrentSelection.Count != 1) return;
-                var store = this.CurrentDocData.Store;
-                foreach (var selectedObject in this.CurrentSelection)
+                if (selectedObject is EntityAssociationConnector)
                 {
-                    if (selectedObject is EntityAssociationConnector)
-                    {
-                        var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
-                        var F = new nHydrate.DslPackage.Forms.RelationshipDialog(model, store, ((EntityAssociationConnector)selectedObject).ModelElement as EntityHasEntities);
-                        F.ShowDialog();
-                    }
+                    var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
+                    var F = new nHydrate.DslPackage.Forms.RelationshipDialog(model, store, ((EntityAssociationConnector) selectedObject).ModelElement as EntityHasEntities);
+                    F.ShowDialog();
                 }
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
         }
+
         #endregion
 
         #region EntityRefreshFromDatabase
+
         private void OnStatusMenuEntityRefreshFromDatabase(object sender, EventArgs e)
         {
-            try
+            var command = sender as MenuCommand;
+            command.Visible = false;
+            if (this.IsDiagramSelected()) return;
+            if (this.CurrentSelection.Count != 1) return;
+            foreach (var item in this.CurrentSelection)
             {
-                var command = sender as MenuCommand;
-                command.Visible = false;
-                if (this.IsDiagramSelected()) return;
-
-                if (this.CurrentSelection.Count != 1) return;
-
-                foreach (var item in this.CurrentSelection)
-                {
-                    if ((item as EntityShape) != null) command.Visible = true;
-                    else if ((item as ViewShape) != null) command.Visible = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
+                if ((item as EntityShape) != null) command.Visible = true;
+                else if ((item as ViewShape) != null) command.Visible = true;
             }
         }
 
@@ -292,41 +250,27 @@ namespace nHydrate.DslPackage
 
             foreach (var item in this.CurrentSelection)
             {
-                var F = new nHydrate.DslPackage.Forms.RefreshItemFromDatabase(
-                    model,
-                    (item as ShapeElement).ModelElement as nHydrate.Dsl.IDatabaseEntity,
-                    store,
-                    this.CurrentDocData);
+                var F = new nHydrate.DslPackage.Forms.RefreshItemFromDatabase(model, (item as ShapeElement).ModelElement as nHydrate.Dsl.IDatabaseEntity, store, this.CurrentDocData);
                 if (F.ShowDialog() == DialogResult.OK)
                 {
                 }
             }
         }
+
         #endregion
 
         #region EntityRelations
+
         private void OnStatusMenuEntityRelations(object sender, EventArgs e)
         {
-            try
+            var command = sender as MenuCommand;
+            command.Visible = false;
+            if (this.IsDiagramSelected()) return;
+            if (this.CurrentSelection.Count != 1) return;
+            foreach (var item in this.CurrentSelection)
             {
-                var command = sender as MenuCommand;
-                command.Visible = false;
-                if (this.IsDiagramSelected()) return;
-
-                if (this.CurrentSelection.Count != 1) return;
-
-                foreach (var item in this.CurrentSelection)
-                {
-                    var selectedObject = item as EntityShape;
-                    if (selectedObject != null)
-                    {
-                        command.Visible = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
+                if (item is EntityShape)
+                    command.Visible = true;
             }
         }
 
@@ -412,28 +356,19 @@ namespace nHydrate.DslPackage
         #endregion
 
         #region ShowRelatedEntities
+
         private void OnStatusMenuShowRelatedEntities(object sender, EventArgs e)
         {
-            try
-            {
-                var command = sender as MenuCommand;
-                command.Visible = false;
-                if (this.IsDiagramSelected()) return;
+            var command = sender as MenuCommand;
+            command.Visible = false;
+            if (this.IsDiagramSelected()) return;
 
-                if (this.CurrentSelection.Count != 1) return;
+            if (this.CurrentSelection.Count != 1) return;
 
-                foreach (var item in this.CurrentSelection)
-                {
-                    var selectedObject = item as EntityShape;
-                    if (selectedObject != null)
-                    {
-                        command.Visible = true;
-                    }
-                }
-            }
-            catch (Exception ex)
+            foreach (var item in this.CurrentSelection)
             {
-                throw;
+                if (item is EntityShape)
+                    command.Visible = true;
             }
         }
 
@@ -441,8 +376,7 @@ namespace nHydrate.DslPackage
         {
             foreach (var item in this.CurrentSelection)
             {
-                var selectedObject = item as EntityShape;
-                if (selectedObject != null)
+                if (item is EntityShape selectedObject)
                 {
                     var F = new nHydrate.DslPackage.Forms.TableExtendedPropertiesForm(selectedObject.ModelElement as Entity, this.CurrentDocView.CurrentDiagram);
                     F.ShowDialog();
@@ -452,28 +386,19 @@ namespace nHydrate.DslPackage
         #endregion
 
         #region ImportStaticData
+
         private void OnStatusMenuImportStaticData(object sender, EventArgs e)
         {
-            try
-            {
-                var command = sender as MenuCommand;
-                command.Visible = false;
-                if (this.IsDiagramSelected()) return;
+            var command = sender as MenuCommand;
+            command.Visible = false;
+            if (this.IsDiagramSelected()) return;
 
-                if (this.CurrentSelection.Count != 1) return;
+            if (this.CurrentSelection.Count != 1) return;
 
-                foreach (var item in this.CurrentSelection)
-                {
-                    var selectedObject = item as EntityShape;
-                    if (selectedObject != null)
-                    {
-                        command.Visible = true;
-                    }
-                }
-            }
-            catch (Exception ex)
+            foreach (var item in this.CurrentSelection)
             {
-                throw;
+                if (item is EntityShape)
+                    command.Visible = true;
             }
         }
 
@@ -482,8 +407,7 @@ namespace nHydrate.DslPackage
             foreach (var item in this.CurrentSelection)
             {
                 var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
-                var selectedObject = item as EntityShape;
-                if (selectedObject != null)
+                if (item is EntityShape selectedObject)
                 {
                     var F = new nHydrate.DslPackage.Forms.StaticDataForm(selectedObject.ModelElement as Entity, this.CurrentDocData.Store);
                     F.ShowDialog();
@@ -493,27 +417,20 @@ namespace nHydrate.DslPackage
         #endregion
 
         #region Show Indexes
+
         private void OnStatusMenuShowIndexes(object sender, EventArgs e)
         {
-            try
-            {
-                var command = sender as MenuCommand;
-                command.Visible = true;
-                if (this.IsDiagramSelected()) return;
+            var command = sender as MenuCommand;
+            command.Visible = true;
+            if (this.IsDiagramSelected()) return;
 
-                foreach (var item in this.CurrentSelection)
-                {
-                    var selectedObject = item as EntityShape;
-                    if (selectedObject == null)
-                    {
-                        command.Visible = false;
-                        return;
-                    }
-                }
-            }
-            catch (Exception ex)
+            foreach (var item in this.CurrentSelection)
             {
-                throw;
+                if (item is EntityShape)
+                {
+                    command.Visible = false;
+                    return;
+                }
             }
         }
 
@@ -616,10 +533,7 @@ namespace nHydrate.DslPackage
 
         private void OnMenuCommandDiagramCollapseAll(object sender, EventArgs e)
         {
-            var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
-            var store = this.CurrentDocData.Store;
-
-            using (var transaction = store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
+            using (var transaction = this.CurrentDocData.Store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
             {
                 foreach (var item in this.CurrentDocView.CurrentDiagram.NestedChildShapes)
                 {
@@ -635,17 +549,16 @@ namespace nHydrate.DslPackage
         #region Expand All
         private void OnStatusMenuDiagramExpandAll(object sender, EventArgs e)
         {
-            var command = sender as MenuCommand;
-            command.Visible = this.IsDiagramSelected();
-            command.Enabled = (this.CurrentDocView.CurrentDiagram.NestedChildShapes.Count > 0);
+            if (sender is MenuCommand command)
+            {
+                command.Visible = this.IsDiagramSelected();
+                command.Enabled = (this.CurrentDocView.CurrentDiagram.NestedChildShapes.Count > 0);
+            }
         }
 
         private void OnMenuCommandDiagramExpandAll(object sender, EventArgs e)
         {
-            var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
-            var store = this.CurrentDocData.Store;
-
-            using (var transaction = store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
+            using (var transaction = this.CurrentDocData.Store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
             {
                 foreach (var item in this.CurrentDocView.CurrentDiagram.NestedChildShapes)
                 {
@@ -662,19 +575,18 @@ namespace nHydrate.DslPackage
         #region Show Types
         private void OnStatusMenuDiagramShowTypes(object sender, EventArgs e)
         {
-            var command = sender as MenuCommand;
             var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
-            command.Visible = this.IsDiagramSelected();
-            command.Checked = diagram.DisplayType;
+            if (sender is MenuCommand command)
+            {
+                command.Visible = this.IsDiagramSelected();
+                command.Checked = diagram.DisplayType;
+            }
         }
 
         private void OnMenuCommandDiagramShowTypes(object sender, EventArgs e)
         {
             var command = sender as MenuCommand;
-            var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
-            var store = this.CurrentDocData.Store;
-
-            using (var transaction = store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
+            using (var transaction = this.CurrentDocData.Store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
             {
                 var diagram = this.CurrentDocView.CurrentDiagram as nHydrateDiagram;
                 diagram.DisplayType = !diagram.DisplayType;
@@ -686,107 +598,69 @@ namespace nHydrate.DslPackage
         #endregion
 
         #region Relation ShowSource
+
         private void OnStatusMenuRelationShowSource(object sender, EventArgs e)
         {
-            try
+            var command = sender as MenuCommand;
+            command.Visible = false;
+            if (this.CurrentSelection.Count != 1) return;
+            foreach (var selectedObject in this.CurrentSelection)
             {
-                var command = sender as MenuCommand;
-                command.Visible = false;
-                if (this.CurrentSelection.Count != 1) return;
-                foreach (var selectedObject in this.CurrentSelection)
+                if (selectedObject is EntityAssociationConnector)
                 {
-                    if (selectedObject is EntityAssociationConnector)
-                    {
-                        command.Visible = true;
-                        return;
-                    }
+                    command.Visible = true;
+                    return;
                 }
-            }
-            catch (Exception ex)
-            {
-                throw;
             }
         }
 
         private void OnMenuCommandRelationShowSource(object sender, EventArgs e)
         {
-            try
+            if (this.CurrentSelection.Count != 1) return;
+            foreach (var selectedObject in this.CurrentSelection)
             {
-                if (this.CurrentSelection.Count != 1) return;
-                var store = this.CurrentDocData.Store;
-                foreach (var selectedObject in this.CurrentSelection)
+                if (selectedObject is EntityAssociationConnector)
                 {
-                    if (selectedObject is EntityAssociationConnector)
-                    {
-                        var shape = selectedObject as EntityAssociationConnector;
-                        this.CurrentDocView.SelectObjects(1, new object[] { shape.FromShape }, 0);
-                        return;
-                    }
+                    var shape = selectedObject as EntityAssociationConnector;
+                    this.CurrentDocView.SelectObjects(1, new object[] {shape.FromShape}, 0);
+                    return;
                 }
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
         }
+
         #endregion
 
         #region Relation ShowTarget
+
         private void OnStatusMenuRelationShowTarget(object sender, EventArgs e)
         {
-            try
+            var command = sender as MenuCommand;
+            command.Visible = false;
+            if (this.CurrentSelection.Count != 1) return;
+            foreach (var selectedObject in this.CurrentSelection)
             {
-                var command = sender as MenuCommand;
-                command.Visible = false;
-                if (this.CurrentSelection.Count != 1) return;
-                foreach (var selectedObject in this.CurrentSelection)
+                if (selectedObject is EntityAssociationConnector)
                 {
-                    if (selectedObject is EntityAssociationConnector)
-                    {
-                        command.Visible = true;
-                        return;
-                    }
+                    command.Visible = true;
+                    return;
                 }
-            }
-            catch (Exception ex)
-            {
-                throw;
             }
         }
 
         private void OnMenuCommandRelationShowTarget(object sender, EventArgs e)
         {
-            try
+            if (this.CurrentSelection.Count != 1) return;
+            foreach (var selectedObject in this.CurrentSelection)
             {
-                if (this.CurrentSelection.Count != 1) return;
-                var store = this.CurrentDocData.Store;
-                foreach (var selectedObject in this.CurrentSelection)
+                if (selectedObject is EntityAssociationConnector)
                 {
-                    if (selectedObject is EntityAssociationConnector)
-                    {
-                        var shape = selectedObject as EntityAssociationConnector;
-                        var r = this.CurrentDocView.SelectObjects(1, new object[] { shape.ToShape }, Microsoft.VisualStudio.VSConstants.SELECTED);
-                        return;
-                    }
+                    var shape = selectedObject as EntityAssociationConnector;
+                    var r = this.CurrentDocView.SelectObjects(1, new object[] {shape.ToShape}, Microsoft.VisualStudio.VSConstants.SELECTED);
+                    return;
                 }
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-        #endregion
-
-        #region ShowOnDiagram
-        private void OnStatusMenuShowOnDiagram(object sender, EventArgs e)
-        {
-            var command = sender as MenuCommand;
-            command.Visible = false; //MIGHT USE THIS LATER
         }
 
-        private void OnMenuCommandShowOnDiagram(object sender, EventArgs e)
-        {
-        }
         #endregion
 
         #region About
@@ -847,7 +721,6 @@ namespace nHydrate.DslPackage
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuDiagramShowTypes), new EventHandler(OnMenuCommandDiagramShowTypes), new CommandID(guidDiagramMenuCmdSet, cmdidMenuDiagramShowTypes)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuRelationShowSource), new EventHandler(OnMenuCommandRelationShowSource), new CommandID(guidModelMenuCmdSet, cmdidMenuRelationShowSource)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuRelationShowTarget), new EventHandler(OnMenuCommandRelationShowTarget), new CommandID(guidModelMenuCmdSet, cmdidMenuRelationShowTarget)));
-            commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuShowOnDiagram), new EventHandler(OnMenuCommandShowOnDiagram), new CommandID(guidModelMenuCmdSet, cmdidMenuShowOnDiagram)));
             commands.Add(new DynamicStatusMenuCommand(new EventHandler(OnStatusMenuAbout), new EventHandler(OnMenuCommandAbout), new CommandID(guidDiagramMenuCmdSet, cmdidMenuAbout)));
 
             //Cut/Copy/Paste
@@ -897,14 +770,9 @@ namespace nHydrate.DslPackage
         {
             get
             {
-                ToolWindow myToolWindow = null;
-                var package = this.ServiceProvider.GetService(typeof(nHydratePackage)) as ModelingPackage;
-
-                if (package != null)
-                {
-                    myToolWindow = package.GetToolWindow(typeof(FindWindow), true);
-                }
-                return myToolWindow;
+                if (this.ServiceProvider.GetService(typeof(nHydratePackage)) is ModelingPackage package)
+                    return package.GetToolWindow(typeof(FindWindow), true);
+                return null;
             }
         }
 

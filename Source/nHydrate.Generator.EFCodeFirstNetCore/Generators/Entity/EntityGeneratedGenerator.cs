@@ -9,18 +9,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
     [GeneratorItem("EntityGeneratedGenerator", typeof(EntityExtenderGenerator))]
     public class EntityGeneratedGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
-        #region Class Members
-
         private const string RELATIVE_OUTPUT_LOCATION = @"\Entity\";
 
-        #endregion
-
-        #region Overrides
-
-        public override int FileCount
-        {
-            get { return GetList().Count; }
-        }
+        public override int FileCount => GetList().Count;
 
         private List<Table> GetList()
         {
@@ -51,8 +42,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
             OnGenerationComplete(this, gcEventArgs);
         }
-
-        #endregion
 
     }
 }

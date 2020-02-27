@@ -573,8 +573,6 @@ namespace PROJECTNAMESPACE
 
         #endregion
 
-        internal InstallSettings Settings { get; private set; }
-
         /// <summary>
         /// The action to take
         /// </summary>

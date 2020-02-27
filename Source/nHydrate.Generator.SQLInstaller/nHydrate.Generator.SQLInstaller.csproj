@@ -82,7 +82,6 @@
     <Compile Include="ProjectItemGenerators\DatabaseCreateData\CreateDataGenerator.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseCreateData\CreateDataTemplate.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\XmlHelper.cs" />
-    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\InstallSettings.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseEmbeddedClassGenerator.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\SqlServers.cs" />

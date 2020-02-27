@@ -26,7 +26,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 var template = new EntityExtenderTemplate(_model, table);
-                string fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
+                var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
                 var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false);
                 OnProjectItemGenerated(this, eventArgs);
             }

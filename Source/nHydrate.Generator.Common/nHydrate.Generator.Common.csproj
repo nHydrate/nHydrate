@@ -203,7 +203,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Exceptions\LicenseException.cs" />
-    <Compile Include="Forms\CommonLibrary.cs" />
+    <Compile Include="ListViewItemComparer.cs" />
     <Compile Include="Forms\CueBox.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -44,7 +44,7 @@ namespace nHydrate.DslPackage.Forms
 			lvwMembers.Columns.Add(new ColumnHeader() { Text = "Child", Width = 200 });
 			lvwMembers.Columns.Add(new ColumnHeader() { Text = "Role", Width = 200 });
 
-			lvwMembers.ListViewItemSorter = new nHydrate.Generator.Common.Forms.CommonLibrary.ListViewItemComparer(0, lvwMembers.Sorting);
+			lvwMembers.ListViewItemSorter = new nHydrate.Generator.Common.ListViewItemComparer(0, lvwMembers.Sorting);
 			lvwMembers.Sort();
 
 			this.LoadList();
@@ -191,7 +191,6 @@ namespace nHydrate.DslPackage.Forms
 				var connector = li.Tag as EntityAssociationConnector;
 				using (var transaction = _store.TransactionManager.BeginTransaction(Guid.NewGuid().ToString()))
 				{
-					//var l = _diagram.NestedChildShapes.Where(x => x is EntityAssociationConnector).AsEnumerable<EntityAssociationConnector>();
 					connector.ModelElement.Delete();
 					_diagram.NestedChildShapes.Remove(connector);
 					transaction.Commit();
@@ -249,7 +248,7 @@ namespace nHydrate.DslPackage.Forms
 
 			// Call the sort method to manually sort.
 			lvwMembers.Sort();
-			this.lvwMembers.ListViewItemSorter = new nHydrate.Generator.Common.Forms.CommonLibrary.ListViewItemComparer(e.Column, lvwMembers.Sorting);
+			this.lvwMembers.ListViewItemSorter = new nHydrate.Generator.Common.ListViewItemComparer(e.Column, lvwMembers.Sorting);
 		}
 
 	}

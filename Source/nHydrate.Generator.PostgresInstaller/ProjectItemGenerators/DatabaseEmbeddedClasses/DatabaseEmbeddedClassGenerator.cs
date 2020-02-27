@@ -40,7 +40,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseEmb
             try
             {
                 GenerateDatabaseInstallerCs();
-                GenerateInstallSettings();
                 GenerateDatabaseInstallerDesignerCs();
                 GenerateDatabaseServerCs();
                 GenerateXmlHelperCs();
@@ -391,14 +390,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseEmb
         }
 
         #endregion
-
-        private void GenerateInstallSettings()
-        {
-            var fileName = "InstallSettings.cs";
-            var fileContent = GetFileContent(new EmbeddedResourceName(this.GetEmbeddedPath() + "." + fileName));
-            var eventArgs = new ProjectItemGeneratedEventArgs(fileName, fileContent, ProjectName, this, true);
-            OnProjectItemGenerated(this, eventArgs);
-        }
 
         private string GetResource(EmbeddedResourceName ern)
         {

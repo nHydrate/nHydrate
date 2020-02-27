@@ -74,10 +74,7 @@ namespace nHydrate.Dsl
             }
         }
 
-        public string PascalRoleName
-        {
-            get { return StringHelper.FirstCharToUpper(this.RoleName); }
-        }
+        public string PascalRoleName => StringHelper.FirstCharToUpper(this.RoleName);
 
         public string LinkHash
         {
@@ -192,10 +189,7 @@ namespace nHydrate.Dsl
             }
         }
 
-        public override string ToString()
-        {
-            return this.DisplayName;
-        }
+        public override string ToString() => this.DisplayName;
 
         public string DisplayName
         {
@@ -242,7 +236,7 @@ namespace nHydrate.Dsl
         /// Constructor.
         /// </summary>
         /// <param name="partition">The Partition instance containing this ElementLink</param>
-        /// <param name="roleAssignments">A set of role assignments for roleplayer initialization</param>
+        /// <param name="roleAssignments">A set of role assignments for role player initialization</param>
         /// <param name="propertyAssignments">A set of attribute assignments for attribute initialization</param>
         protected EntityHasEntitiesBase(DslModeling::Partition partition, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
             : base(partition, roleAssignments, propertyAssignments)

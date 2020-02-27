@@ -26,16 +26,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
         {
             get
             {
-                try
-                {
-                    sb = new StringBuilder();
-                    this.GenerateContent();
-                    return sb.ToString();
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+                sb = new StringBuilder();
+                this.GenerateContent();
+                return sb.ToString();
             }
         }
         #endregion

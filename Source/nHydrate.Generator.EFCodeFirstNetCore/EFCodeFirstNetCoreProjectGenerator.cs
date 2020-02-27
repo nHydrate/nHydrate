@@ -44,14 +44,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore
         {
             try
             {
-                string defaultProjectTemplate = StringHelper.EnsureDirectorySeperatorAtEnd(AddinAppData.Instance.ExtensionDirectory) + fileName;
-                string fileData = string.Empty;
+                var defaultProjectTemplate = StringHelper.EnsureDirectorySeperatorAtEnd(AddinAppData.Instance.ExtensionDirectory) + fileName;
+                var fileData = string.Empty;
                 using (StreamReader sr = File.OpenText(defaultProjectTemplate))
                 {
                     fileData = sr.ReadToEnd();
                 }
 
-                string newFileText = fileData.Replace("Acme", _model.CompanyName);
+                var newFileText = fileData.Replace("Acme", _model.CompanyName);
                 newFileText = newFileText.Replace("$generatedproject$", this.DefaultNamespace);
 
                 string newFileName = ((ModelRoot)_model).CompanyName + fileName;

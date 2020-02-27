@@ -1,5 +1,3 @@
-#pragma warning disable 0168
-using System;
 using System.Text;
 using nHydrate.Generator.Models;
 
@@ -23,34 +21,19 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
         {
             get
             {
-                try
-                {
-                    GenerateContent();
-                    return sb.ToString();
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+                GenerateContent();
+                return sb.ToString();
             }
         }
 
         public void GenerateContent()
         {
-            try
-            {
-                sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Audit");
-                sb.AppendLine("{");
-                sb.AppendLine("	partial class " + _currentTable.PascalName + "Audit");
-                sb.AppendLine("	{");
-                sb.AppendLine("	}");
-                sb.AppendLine("}");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
+            sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Audit");
+            sb.AppendLine("{");
+            sb.AppendLine("	partial class " + _currentTable.PascalName + "Audit");
+            sb.AppendLine("	{");
+            sb.AppendLine("	}");
+            sb.AppendLine("}");
         }
 
     }

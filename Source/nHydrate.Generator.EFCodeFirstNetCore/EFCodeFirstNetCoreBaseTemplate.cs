@@ -1,5 +1,3 @@
-using System;
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Models;
 using nHydrate.Generator.ProjectItemGenerators;
 

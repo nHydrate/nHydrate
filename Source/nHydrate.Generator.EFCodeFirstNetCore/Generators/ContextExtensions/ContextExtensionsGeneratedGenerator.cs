@@ -6,13 +6,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
     [GeneratorItem("ContextExtensionsGeneratedGenerator", typeof(ContextExtensionsExtenderGenerator))]
     public class ContextExtensionsGeneratedGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
-        #region Class Members
-
         private const string RELATIVE_OUTPUT_LOCATION = @"\";
-
-        #endregion
-
-        #region Overrides
 
         public override int FileCount => 1;
 
@@ -25,8 +19,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
             OnGenerationComplete(this, gcEventArgs);
         }
-
-        #endregion
 
     }
 }
