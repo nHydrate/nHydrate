@@ -58,7 +58,7 @@ namespace nHydrate.DslPackage.Objects
 		public static void SetPropertyValue<T>(object srcObject, string propertyName, T value)
 		{
 			if (srcObject == null)
-				throw new System.ArgumentNullException("srcObject");
+				throw new System.ArgumentNullException(nameof(srcObject));
 
 			if ((propertyName == null) || (propertyName == String.Empty) || (propertyName.Length == 0))
 				throw new System.ArgumentException("Property name cannot be empty or null.");

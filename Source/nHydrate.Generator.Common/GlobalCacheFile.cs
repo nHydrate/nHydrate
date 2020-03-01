@@ -12,8 +12,6 @@ namespace nHydrate.Generator.Common
     {
         #region Class Members
 
-        private readonly List<string> _excludeList = new List<string>();
-
         #endregion
 
         #region Constructor
@@ -27,10 +25,7 @@ namespace nHydrate.Generator.Common
 
         #region Properties
 
-        public List<string> ExcludeList
-        {
-            get { return _excludeList; }
-        }
+        public List<string> ExcludeList { get; } = new List<string>();
 
         public string FileName
         {

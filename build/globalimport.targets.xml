@@ -9,8 +9,8 @@ Purpose:
 	The imports were pulled from the existing build setups.
 	Import the msbuild extensions for additional build tasks.
 	Import Domain specific property overrides
-	Import User specific properyt overrides
-	Import Default properites
+	Import User specific property overrides
+	Import Default properties
 	Import Additional properties file if it exists
 	-->
 	<Import Project="default.properties.xml" />

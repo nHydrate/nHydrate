@@ -29,7 +29,6 @@ namespace nHydrate.Generator.Models
 
         protected Reference _parentTableRef = null;
         protected Reference _childTableRef = null;
-        protected ColumnRelationshipCollection _columnRelationships = null;
         private bool _enforce = _def_enforce;
         private string _description = _def_description;
         private DeleteActionConstants _deleteAction = _def_deleteAction;
@@ -53,7 +52,7 @@ namespace nHydrate.Generator.Models
 
         private void Initialize()
         {
-            _columnRelationships = new ColumnRelationshipCollection(this.Root);
+            ColumnRelationships = new ColumnRelationshipCollection(this.Root);
         }
 
         protected override void OnRootReset(System.EventArgs e)
@@ -105,10 +104,7 @@ namespace nHydrate.Generator.Models
             get { return this.ColumnRelationships.AsEnumerable().All(cr => cr.ParentColumn.PrimaryKey); }
         }
 
-        public ColumnRelationshipCollection ColumnRelationships
-        {
-            get { return _columnRelationships; }
-        }
+        public ColumnRelationshipCollection ColumnRelationships { get; protected set; } = null;
 
         public Reference ParentTableRef
         {

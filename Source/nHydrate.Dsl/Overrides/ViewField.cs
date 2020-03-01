@@ -21,10 +21,7 @@ namespace nHydrate.Dsl
         #endregion
 
         #region Names
-        public string DatabaseName
-        {
-            get { return this.Name; }
-        }
+        public string DatabaseName => this.Name;
 
         public string PascalName
         {
@@ -40,10 +37,7 @@ namespace nHydrate.Dsl
 
         #region IContainerParent Members
 
-        DslModeling.ModelElement IContainerParent.ContainerParent
-        {
-            get { return this.View; }
-        }
+        DslModeling.ModelElement IContainerParent.ContainerParent => this.View;
 
         #endregion
 

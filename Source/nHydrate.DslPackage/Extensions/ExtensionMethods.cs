@@ -238,9 +238,9 @@ namespace nHydrate.DslPackage
         public static string ToElapsedTimeString(double seconds)
         {
             var h = (int)(seconds / 3600);
-            seconds = seconds % 3600;
+            seconds %= 3600;
             var m = (int)(seconds / 60);
-            seconds = seconds % 60;
+            seconds %= 60;
 
             var retval = string.Empty;
             if (h > 0) retval += h.ToString("00") + ":";

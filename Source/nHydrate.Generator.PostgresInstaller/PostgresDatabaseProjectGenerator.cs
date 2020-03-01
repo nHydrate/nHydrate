@@ -1,11 +1,6 @@
 #pragma warning disable 0168
 using System;
-using System.Collections.Generic;
-using System.Text;
-
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
-using EnvDTE;
 using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.ProjectItemGenerators;
 
@@ -13,7 +8,7 @@ namespace nHydrate.Generator.PostgresInstaller
 {
     [GeneratorProjectAttribute(
         "Postgres Database Installer (beta)",
-        "Creates a project to maintain a Postgres database, used in conjuction with the generated Entity Framework data access layer.",
+        "Creates a project to maintain a Postgres database, used in conjunction with the generated Entity Framework data access layer.",
         "c7153425-b9f2-4291-82e8-88e1295eef09",
         typeof(nHydrateGeneratorProject),
         typeof(PostgresDatabaseProjectGenerator),
@@ -22,10 +17,7 @@ namespace nHydrate.Generator.PostgresInstaller
         )]
     public class PostgresDatabaseProjectGenerator : BaseProjectGenerator
     {
-        protected override string ProjectTemplate
-        {
-            get { return "efcorepostgresinstaller.vstemplate"; }
-        }
+        protected override string ProjectTemplate => "efcorepostgresinstaller.vstemplate";
 
         public override string LocalNamespaceExtension => PostgresDatabaseProjectGenerator.NamespaceExtension;
 

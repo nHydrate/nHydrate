@@ -1,11 +1,6 @@
 #pragma warning disable 0168
 using System;
-using System.Collections.Generic;
-using System.Text;
-
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
-using EnvDTE;
 using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.ProjectItemGenerators;
 
@@ -13,7 +8,7 @@ namespace nHydrate.Generator.SQLInstaller
 {
     [GeneratorProjectAttribute(
         "SQL Database Installer",
-        "Creates a project to maintain a SQL Server database, used in conjuction with the generated Entity Framework data access layer.",
+        "Creates a project to maintain a SQL Server database, used in conjunction with the generated Entity Framework data access layer.",
         "b8bd6b27-b9f2-4291-82e8-88e1295eef09",
         typeof(nHydrateGeneratorProject),
         typeof(DatabaseProjectGenerator),
@@ -22,20 +17,11 @@ namespace nHydrate.Generator.SQLInstaller
         )]
     public class DatabaseProjectGenerator : BaseProjectGenerator
     {
-        protected override string ProjectTemplate
-        {
-            get { return "database.vstemplate"; }
-        }
+        protected override string ProjectTemplate => "database.vstemplate";
 
-        public override string LocalNamespaceExtension
-        {
-            get { return DatabaseProjectGenerator.NamespaceExtension; }
-        }
+        public override string LocalNamespaceExtension => DatabaseProjectGenerator.NamespaceExtension;
 
-        public static string NamespaceExtension
-        {
-            get { return "Install"; }
-        }
+        public static string NamespaceExtension => "Install";
 
         protected override void OnAfterGenerate()
         {

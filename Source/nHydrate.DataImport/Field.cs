@@ -49,10 +49,7 @@ namespace nHydrate.DataImport
             }
         }
 
-        public override string ObjectType
-        {
-            get { return "Field"; }
-        }
+        public override string ObjectType => "Field";
 
         public override string ToString()
         {

@@ -4,26 +4,21 @@ namespace nHydrate.Generator.Common.EventArgs
 	{
 		#region Class Members
 
-		protected Message _message = null;
-
-		#endregion
+        #endregion
 
 		#region Contructors
 
 		public MessageEventArgs(Message message)
 		{
-			_message = message;
+			Message = message;
 		}
 
 		#endregion
 
 		#region Property Implementations
 
-		public Message Message
-		{
-			get { return _message; }
-		}
+		public Message Message { get; } = null;
 
-		#endregion
+        #endregion
 	}
 }

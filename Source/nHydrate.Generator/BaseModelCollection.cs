@@ -159,10 +159,7 @@ namespace nHydrate.Generator
             return newItem;
         }
 
-        public virtual bool Contains(string name)
-        {
-            return this.Any(x => string.Compare(x.Name, name, true) == 0);
-        }
+        public virtual bool Contains(string name) => this.Any(x => x.Name.Match(name));
 
         #region ICollection Members
 

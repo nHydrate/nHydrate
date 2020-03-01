@@ -9,19 +9,15 @@ namespace nHydrate.Generator
 	{
 
 		public abstract void Refresh();
-		protected INHydrateModelObjectController _controller = null;
 
-		public INHydrateModelObjectController Controller
-		{
-			get { return _controller; }
-		}
+        public INHydrateModelObjectController Controller { get; } = null;
 
-		#region Constructor
+        #region Constructor
 
 		public ModelObjectTreeNode(INHydrateModelObjectController controller)
 		{      
-			_controller = controller;
-			_object = _controller.Object;
+			Controller = controller;
+			Object = Controller.Object;
 			this.Refresh();
 		}
 
@@ -29,13 +25,9 @@ namespace nHydrate.Generator
 
 		#region Object
 
-		protected INHydrateModelObject _object = null;
-		public virtual INHydrateModelObject Object
-		{
-			get { return _object; }
-		}
+        public virtual INHydrateModelObject Object { get; } = null;
 
-		#endregion
+        #endregion
 
 		#region RefreshDeep
 

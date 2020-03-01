@@ -461,10 +461,7 @@ namespace nHydrate.Dsl
                 if (retval == -1) retval = base.Scale;
                 return retval;
             }
-            set
-            {
-                base.Scale = value;
-            }
+            set { base.Scale = value; }
         }
 
         public override DataTypeConstants DataType

@@ -29,9 +29,6 @@
             <Group guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" priority="0x0100">
                 <Parent guid="guidModelMenuCmdSet" id="ModelSubMenuGroup" />
             </Group>
-            <Group guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" priority="0x0000">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenu" />
-            </Group>
             <Group guid="guidMenuNHydrateCmdSet" id="grpidNHydrateMenuGroup" priority="0x0000">
                 <Parent guid="guidMenuNHydrateCmdSet" id="grpidNHydrateMenu" />
             </Group>
@@ -64,14 +61,6 @@
                     <CommandName>nHydrate</CommandName>
                 </Strings>
             </Menu>
-            <Menu guid="guidZoomMenuCmdSet" id="ZoomSubMenu" priority="0x0900" type="Menu">
-                <Parent guid="guidMenuGroupMain" id="grpidGroupMain" />
-                <Strings>
-                    <ButtonText>Zoom</ButtonText>
-                    <CommandName>Zoom</CommandName>
-                </Strings>
-            </Menu>
-
         </Menus>
 
         <!-- Define a button - a menu item - inside the Group -->
@@ -238,100 +227,6 @@
                 </Strings>
             </Button>
 
-            <!-- ZOOM BUTTONS -->
-            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoomIn" priority="0x0000" type="Button">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
-                <Strings>
-                    <CommandName>cmdidMenuZoomIn</CommandName>
-                    <ButtonText>Zoom In</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoomOut" priority="0x0000" type="Button">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
-                <Strings>
-                    <CommandName>cmdidMenuZoomOut</CommandName>
-                    <ButtonText>Zoom Out</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoomToFit" priority="0x0000" type="Button">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
-                <Strings>
-                    <CommandName>cmdidMenuZoomToFit</CommandName>
-                    <ButtonText>Zoom To Fit</ButtonText>
-                </Strings>
-            </Button>
-
-            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom10" priority="0x0001" type="Button">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
-                <Strings>
-                    <CommandName>cmdidMenuZoom10</CommandName>
-                    <ButtonText>10%</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom20" priority="0x0001" type="Button">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
-                <Strings>
-                    <CommandName>cmdidMenuZoom20</CommandName>
-                    <ButtonText>20%</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom30" priority="0x0001" type="Button">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
-                <Strings>
-                    <CommandName>cmdidMenuZoom30</CommandName>
-                    <ButtonText>30%</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom40" priority="0x0001" type="Button">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
-                <Strings>
-                    <CommandName>cmdidMenuZoom40</CommandName>
-                    <ButtonText>40%</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom50" priority="0x0001" type="Button">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
-                <Strings>
-                    <CommandName>cmdidMenuZoom50</CommandName>
-                    <ButtonText>50%</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom60" priority="0x0001" type="Button">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
-                <Strings>
-                    <CommandName>cmdidMenuZoom60</CommandName>
-                    <ButtonText>60%</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom70" priority="0x0001" type="Button">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
-                <Strings>
-                    <CommandName>cmdidMenuZoom70</CommandName>
-                    <ButtonText>70%</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom80" priority="0x0001" type="Button">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
-                <Strings>
-                    <CommandName>cmdidMenuZoom80</CommandName>
-                    <ButtonText>80%</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom90" priority="0x0001" type="Button">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
-                <Strings>
-                    <CommandName>cmdidMenuZoom90</CommandName>
-                    <ButtonText>90%</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="guidZoomMenuCmdSet" id="cmdidMenuZoom100" priority="0x0001" type="Button">
-                <Parent guid="guidZoomMenuCmdSet" id="ZoomSubMenuGroup" />
-                <Strings>
-                    <CommandName>cmdidMenuZoom100</CommandName>
-                    <ButtonText>100%</ButtonText>
-                </Strings>
-            </Button>
-
         </Buttons>
 
     </Commands>
@@ -397,24 +292,6 @@
             <IDSymbol name="cmdidMenuAbout" value="0x00015" />
         </GuidSymbol>
 
-        <GuidSymbol name="guidZoomMenuCmdSet" value="{65457976-07EF-4CF1-AE6C-FA5E2D926EA9}">
-            <IDSymbol name="ZoomSubMenu" value="0x1100" />
-            <IDSymbol name="ZoomSubMenuGroup" value="0x1150" />
-            <IDSymbol name="cmdidMenuZoomIn" value="0x0320" />
-            <IDSymbol name="cmdidMenuZoomOut" value="0x0321" />
-            <IDSymbol name="cmdidMenuZoomToFit" value="0x0322" />
-            <IDSymbol name="cmdidMenuZoom10" value="0x0300" />
-            <IDSymbol name="cmdidMenuZoom20" value="0x0301" />
-            <IDSymbol name="cmdidMenuZoom30" value="0x0302" />
-            <IDSymbol name="cmdidMenuZoom40" value="0x0303" />
-            <IDSymbol name="cmdidMenuZoom50" value="0x0304" />
-            <IDSymbol name="cmdidMenuZoom60" value="0x0305" />
-            <IDSymbol name="cmdidMenuZoom70" value="0x0306" />
-            <IDSymbol name="cmdidMenuZoom80" value="0x0307" />
-            <IDSymbol name="cmdidMenuZoom90" value="0x0308" />
-            <IDSymbol name="cmdidMenuZoom100" value="0x0309" />
-        </GuidSymbol>
-        
         <GuidSymbol name="guidWidgetImages" value="{2e19ef27-4e4c-44cb-82b5-a0c78c37046b}">
             <IDSymbol name="bmpPic1" value="1" />
             <IDSymbol name="bmpPic2" value="2" />

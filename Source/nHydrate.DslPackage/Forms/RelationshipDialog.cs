@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using nHydrate.Dsl;
+using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.DslPackage.Forms
 {
@@ -191,7 +192,7 @@ namespace nHydrate.DslPackage.Forms
 			{
 				foreach (string s in cboChildField.Items)
 				{
-					if (s.ToLower() == cboParentField.SelectedItem.ToString().ToLower())
+					if (s.Match(cboParentField.SelectedItem.ToString()))
 						cboChildField.SelectedItem = s;
 				}
 			}

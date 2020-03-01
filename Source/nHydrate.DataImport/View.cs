@@ -14,15 +14,9 @@ namespace nHydrate.DataImport
         public string Schema { get; set; }
         public override List<Field> FieldList { get; internal set; }
 
-        public override string ObjectType
-        {
-            get { return "View"; }
-        }
+        public override string ObjectType => "View";
 
-        public override string ToString()
-        {
-            return this.Name;
-        }
+        public override string ToString() => this.Name;
 
         public string CorePropertiesHash
         {

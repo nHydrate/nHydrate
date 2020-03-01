@@ -40,10 +40,7 @@ namespace nHydrate.Generator.Common.Util
             _projectItemFileNameCache.Clear();
         }
 
-        public _DTE ApplicationObject
-        {
-            get { return _applicationObject; }
-        }
+        public _DTE ApplicationObject => _applicationObject;
 
         public void SetDTE(_DTE applicationObject)
         {
@@ -797,10 +794,7 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        private EnvDTE80.Solution2 CurrentSolution
-        {
-            get { return _applicationObject.Solution as EnvDTE80.Solution2; }
-        }
+        private EnvDTE80.Solution2 CurrentSolution => _applicationObject.Solution as EnvDTE80.Solution2;
 
         public static bool ProjectExists(string projectName)
         {
@@ -815,20 +809,19 @@ namespace nHydrate.Generator.Common.Util
 
         public Project GetProject(string projectName)
         {
-            foreach (Project proj in CurrentSolution.GetProjects())
+            foreach (var proj in CurrentSolution.GetProjects())
             {
                 try
                 {
-                    if (StringHelper.Match(proj.Name, projectName, true))
-                    {
+                    if (proj.Name.Match(projectName))
                         return proj;
-                    }
                 }
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine(ex.ToString());
                 }
             }
+
             return null;
         }
 
@@ -949,10 +942,6 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        public string Version
-        {
-            get { return _applicationObject.Version; }
-        }
-
+        public string Version => _applicationObject.Version;
     }
 }

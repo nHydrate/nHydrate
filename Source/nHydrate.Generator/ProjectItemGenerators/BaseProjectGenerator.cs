@@ -14,15 +14,9 @@ namespace nHydrate.Generator.ProjectItemGenerators
         protected abstract string ProjectTemplate { get; }
         public abstract string LocalNamespaceExtension { get; }
 
-        public virtual string ProjectName
-        {
-            get { return this.GetLocalNamespace(); }
-        }
+        public virtual string ProjectName => this.GetLocalNamespace();
 
-        public virtual string DefaultNamespace
-        {
-            get { return nHydrateGeneratorProject.DomainProjectName(_model); }
-        }
+        public virtual string DefaultNamespace => nHydrateGeneratorProject.DomainProjectName(_model);
 
         public virtual string GetLocalNamespace()
         {

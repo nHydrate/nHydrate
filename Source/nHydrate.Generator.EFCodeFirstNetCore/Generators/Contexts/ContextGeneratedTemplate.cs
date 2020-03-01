@@ -137,10 +137,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if(this.BeforeSaveModifiedEntity != null)");
-            sb.AppendLine("			{");
+            sb.AppendLine("			if (this.BeforeSaveModifiedEntity != null)");
             sb.AppendLine("				this.BeforeSaveModifiedEntity(this, e);");
-            sb.AppendLine("			}");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -149,10 +147,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if(this.BeforeSaveAddedEntity != null)");
-            sb.AppendLine("			{");
+            sb.AppendLine("			if (this.BeforeSaveAddedEntity != null)");
             sb.AppendLine("				this.BeforeSaveAddedEntity(this, e);");
-            sb.AppendLine("			}");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -161,10 +157,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnAfterSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if(this.AfterSaveModifiedEntity != null)");
-            sb.AppendLine("			{");
+            sb.AppendLine("			if (this.AfterSaveModifiedEntity != null)");
             sb.AppendLine("				this.AfterSaveModifiedEntity(this, e);");
-            sb.AppendLine("			}");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -173,10 +167,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected virtual void OnAfterSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if(this.AfterSaveAddedEntity != null)");
-            sb.AppendLine("			{");
+            sb.AppendLine("			if (this.AfterSaveAddedEntity != null)");
             sb.AppendLine("				this.AfterSaveAddedEntity(this, e);");
-            sb.AppendLine("			}");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -479,7 +471,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             {
                 foreach (Relation relation in table.GetRelations())
                 {
-                    Table childTable = relation.ChildTableRef.Object as Table;
+                    var childTable = relation.ChildTableRef.Object as Table;
                     if (!childTable.IsInheritedFrom(table) && !childTable.AssociativeTable)
                     {
                         if (relation.IsOneToOne)

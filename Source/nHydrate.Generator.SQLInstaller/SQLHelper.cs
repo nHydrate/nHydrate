@@ -494,7 +494,7 @@ namespace nHydrate.Generator.SQLInstaller
                 #region Move tables between schemas
 
                 var reschema = 0;
-                foreach (Table newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly))
+                foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly))
                 {
                     var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
                     if (oldT != null)

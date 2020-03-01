@@ -32,7 +32,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             }
             else
             {
-                ProjectItemGeneratedEventArgs eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false);
+                var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false);
                 OnProjectItemGenerated(this, eventArgs);
                 var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
                 OnGenerationComplete(this, gcEventArgs);

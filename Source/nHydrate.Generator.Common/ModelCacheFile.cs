@@ -12,7 +12,6 @@ namespace nHydrate.Generator.Common
     {
         #region Class Members
 
-        private readonly List<string> _excludeList = new List<string>();
         private int _generatedVersion = 0;
         private string _modelFileName = string.Empty;
 
@@ -49,10 +48,7 @@ namespace nHydrate.Generator.Common
 
         public bool IncludeGenVersion { get; set; }
 
-        public List<string> ExcludeList
-        {
-            get { return _excludeList; }
-        }
+        public List<string> ExcludeList { get; } = new List<string>();
 
         public int GeneratedVersion
         {
@@ -104,23 +100,23 @@ namespace nHydrate.Generator.Common
             if (this.IncludeGenVersion)
             {
                 //Save GeneratedVersion
-                XmlHelper.AddAttribute(document.DocumentElement, "GeneratedVersion", this.GeneratedVersion.ToString());
+                document.DocumentElement.AddAttribute("GeneratedVersion", this.GeneratedVersion.ToString());
             }
 
-            XmlHelper.AddAttribute(document.DocumentElement, "ModelerVersion", this.ModelerVersion.ToString());
+            document.DocumentElement.AddAttribute("ModelerVersion", this.ModelerVersion.ToString());
 
             //Save ExcludeList
-            var exludeListNode = XmlHelper.AddElement(document.DocumentElement, "excludeList");
+            var exludeListNode = document.DocumentElement.AddElement("excludeList");
             foreach (var key in this.ExcludeList)
             {
                 XmlHelper.AddElement((XmlElement)exludeListNode, "item", key);
             }
 
             //Table facacde
-            var tFacadeNode = XmlHelper.AddElement(document.DocumentElement, "tableFacadeSettings", this.TableFacadeSettings);
+            var tFacadeNode = document.DocumentElement.AddElement("tableFacadeSettings", this.TableFacadeSettings);
 
             //Column facacde
-            var cFacadeNode = XmlHelper.AddElement(document.DocumentElement, "columnFacadeSettings", this.CodeFacadeSettings);
+            var cFacadeNode = document.DocumentElement.AddElement("columnFacadeSettings", this.CodeFacadeSettings);
 
             document.Save(this.FileName);
         }

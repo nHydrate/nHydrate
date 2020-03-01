@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace nHydrate.DataImport
+﻿namespace nHydrate.DataImport
 {
 	public enum SpecialFieldTypeConstants
 	{
 		CreatedBy,
 		CreatedDate,
 		ModifiedBy,
-		ModifedDate,
+		ModifiedDate,
 		Timestamp,
 		Tenant,
 	}

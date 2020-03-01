@@ -6,10 +6,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
 {
 	public abstract class BaseDbScriptGenerator : BaseProjectItemGenerator
 	{
-		public override string LocalNamespaceExtension
-		{
-			get { return PostgresDatabaseProjectGenerator.NamespaceExtension; }
-		}
-	}
+		public override string LocalNamespaceExtension => PostgresDatabaseProjectGenerator.NamespaceExtension;
+    }
 }
 

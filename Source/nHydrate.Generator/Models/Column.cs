@@ -1,6 +1,5 @@
 #pragma warning disable 0168
 using System;
-using System.ComponentModel;
 using System.Xml;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
@@ -90,10 +89,7 @@ namespace nHydrate.Generator.Models
                 if (this.ComputedColumn) return false;
                 else return _primaryKey;
             }
-            set
-            {
-                _primaryKey = value;
-            }
+            set { _primaryKey = value; }
         }
 
         public IdentityTypeConstants Identity
@@ -104,10 +100,7 @@ namespace nHydrate.Generator.Models
                 else if (this.ComputedColumn) return IdentityTypeConstants.None;
                 else return _identity;
             }
-            set
-            {
-                _identity = value;
-            }
+            set { _identity = value; }
         }
 
         public Reference RelationshipRef { get; set; } = null;
@@ -119,10 +112,7 @@ namespace nHydrate.Generator.Models
                 if (this.ComputedColumn) return string.Empty;
                 else return _default;
             }
-            set
-            {
-                _default = value;
-            }
+            set { _default = value; }
         }
 
         public bool DefaultIsFunc
@@ -132,28 +122,19 @@ namespace nHydrate.Generator.Models
                 if (this.ComputedColumn) return false;
                 else return _defaultIsFunc;
             }
-            set
-            {
-                _defaultIsFunc = value;
-            }
+            set { _defaultIsFunc = value; }
         }
 
         public bool IsIndexed
         {
             get { return (_isIndexed || _primaryKey) && !ComputedColumn; }
-            set
-            {
-                _isIndexed = value;
-            }
+            set { _isIndexed = value; }
         }
 
         public bool IsUnique
         {
             get { return (_isUnique || _primaryKey) && !ComputedColumn; }
-            set
-            {
-                _isUnique = value;
-            }
+            set { _isUnique = value; }
         }
 
         public Reference ParentTableRef { get; set; } = null;

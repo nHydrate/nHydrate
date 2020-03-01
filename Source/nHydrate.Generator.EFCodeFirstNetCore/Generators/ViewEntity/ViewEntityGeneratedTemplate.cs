@@ -19,8 +19,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
         }
 
         #region BaseClassTemplate overrides
-        public override string FileName => string.Format("{0}.Generated.cs", _item.PascalName);
-        public string ParentItemName => string.Format("{0}.cs", _item.PascalName);
+        public override string FileName => $"{_item.PascalName}.Generated.cs";
+        public string ParentItemName => $"{_item.PascalName}.cs";
 
         public override string FileContent
         {

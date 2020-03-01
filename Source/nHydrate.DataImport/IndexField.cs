@@ -9,9 +9,6 @@ namespace nHydrate.DataImport
         public bool IsDescending { get; set; }
         public int OrderIndex { get; set; }
 
-        public override string ObjectType
-        {
-            get { return "Field"; }
-        }
+        public override string ObjectType => "Field";
     }
 }

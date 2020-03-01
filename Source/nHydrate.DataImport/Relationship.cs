@@ -29,12 +29,9 @@ namespace nHydrate.DataImport
 			set { this.Name = value; }
 		}
 
-		public override string ObjectType
-		{
-			get { return "Relation"; }
-		}
+		public override string ObjectType => "Relation";
 
-		public string CorePropertiesHash
+        public string CorePropertiesHash
 		{
 			get
 			{

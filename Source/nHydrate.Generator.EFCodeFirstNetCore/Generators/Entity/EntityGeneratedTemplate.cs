@@ -239,7 +239,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         private void AppendConstructors()
         {
-            string scope = "public";
+            var scope = "public";
             if (_item.Immutable || _item.AssociativeTable)
                 scope = "protected internal";
 
@@ -534,7 +534,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             #region Parent Relations
             {
                 var relationList = _item.GetRelations().Where(x => x.IsValidEFRelation);
-                foreach (Relation relation in relationList)
+                foreach (var relation in relationList)
                 {
                     var parentTable = (Table)relation.ParentTableRef.Object;
                     var childTable = (Table)relation.ChildTableRef.Object;
@@ -606,7 +606,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             #region Child Relations
             {
                 var relationList = _item.GetRelationsWhereChild().Where(x => x.IsValidEFRelation).AsEnumerable();
-                foreach (Relation relation in relationList)
+                foreach (var relation in relationList)
                 {
                     var parentTable = (Table)relation.ParentTableRef.Object;
                     var childTable = (Table)relation.ChildTableRef.Object;

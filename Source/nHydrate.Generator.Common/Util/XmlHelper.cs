@@ -247,7 +247,7 @@ namespace nHydrate.Generator.Common.Util
 
         #endregion
 
-        public static XmlNode AddElement(XmlElement element, string name, string value)
+        public static XmlNode AddElement(this XmlElement element, string name, string value)
         {
             var elemNew = element.OwnerDocument.CreateElement(name);
             if (!string.IsNullOrEmpty(value))
@@ -255,19 +255,19 @@ namespace nHydrate.Generator.Common.Util
             return element.AppendChild(elemNew);
         }
 
-        public static XmlNode AddElement(XmlElement element, string name)
+        public static XmlNode AddElement(this XmlElement element, string name)
         {
             var elemNew = element.OwnerDocument.CreateElement(name);
             return element.AppendChild(elemNew);
         }
 
-        public static XmlNode AddElement(XmlDocument document, string name)
+        public static XmlNode AddElement(this XmlDocument document, string name)
         {
             var elemNew = document.CreateElement(name);
             return document.AppendChild(elemNew);
         }
 
-        public static XmlNode AddElement(XmlDocument document, string name, string value)
+        public static XmlNode AddElement(this XmlDocument document, string name, string value)
         {
             var elemNew = document.CreateElement(name);
             elemNew.InnerText = value;

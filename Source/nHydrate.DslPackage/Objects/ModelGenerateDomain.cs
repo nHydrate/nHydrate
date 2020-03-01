@@ -175,7 +175,7 @@ namespace nHydrate.DslPackage.Objects
                     var modelKey = (genList.FirstOrDefault()?.Model as nHydrate.Generator.Models.ModelRoot)?.Key;
 
                     //Save model statistics
-                    var eCount = model.Entities.Count();
+                    var eCount = model.Entities.Count;
                     var fCount = model.Entities.SelectMany(x => x.FieldList).Count();
                     ModelStatsFile.Log(modelKey, eCount, fCount);
 
@@ -421,7 +421,7 @@ namespace nHydrate.DslPackage.Objects
                     #region Static Data
                     //Determine how many rows there are
                     var orderKeyList = entity.StaticDatum.Select(x => x.OrderKey).Distinct().ToList();
-                    var rowCount = orderKeyList.Count();
+                    var rowCount = orderKeyList.Count;
 
                     //Create a OLD static data row for each one
                     for (var ii = 0; ii < rowCount; ii++)

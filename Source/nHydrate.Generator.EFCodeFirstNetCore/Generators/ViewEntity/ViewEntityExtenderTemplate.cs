@@ -15,7 +15,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             _currentView = table;
         }
 
-        public override string FileName => string.Format("{0}.cs", _currentView.PascalName);
+        public override string FileName => $"{_currentView.PascalName}.cs";
 
         public override string FileContent
         {

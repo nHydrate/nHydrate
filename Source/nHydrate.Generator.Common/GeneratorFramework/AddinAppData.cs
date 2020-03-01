@@ -79,20 +79,9 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                         retval = (new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location)).DirectoryName;
                     return retval;
                 }
-                //else if (EnvDTEHelper.Instance.Version == "11.0")
-                //{
-                //    //VS 2012
-                //    //Get current path if need be
-                //    var retval = RegistryHelper.GetLocalMachineRegistryValue(REG_LOCATION, REG_INSTALLDIR_PROPERTY);
-                //    if (string.IsNullOrEmpty(retval))
-                //        retval = (new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location)).DirectoryName;
-                //    return retval;
-                //}
-                else
-                {
-                    //VS 2012+
-                    return (new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location)).DirectoryName;
-                }
+
+                //VS 2012+
+                return (new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location)).DirectoryName;
             }
         }
 

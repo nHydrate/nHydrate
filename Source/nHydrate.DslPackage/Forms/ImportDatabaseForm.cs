@@ -10,6 +10,7 @@ using nHydrate.DataImport;
 using nHydrate.Dsl;
 using System.IO;
 using nHydrate.DslPackage.Objects;
+using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.DslPackage.Forms
 {
@@ -345,21 +346,21 @@ namespace nHydrate.DslPackage.Forms
                 foreach (var t in this.CurrentDatabase.EntityList)
                 {
                     var dti = new DataTreeItem(t.Name, t) { SourceItem = t };
-                    if (this.NewDatabase.EntityList.Count(x => x.Name.ToLower() == t.Name.ToLower()) > 0)
-                        dti.Name = this.NewDatabase.EntityList.First(x => x.Name.ToLower() == t.Name.ToLower()).Name;
+                    if (this.NewDatabase.EntityList.Count(x => x.Name.Match(t.Name)) > 0)
+                        dti.Name = this.NewDatabase.EntityList.First(x => x.Name.Match(t.Name)).Name;
 
                     //Check for deleted status
-                    if (this.NewDatabase.EntityList.Count(x => x.Name.ToLower() == t.Name.ToLower()) == 0)
+                    if (this.NewDatabase.EntityList.Count(x => x.Name.Match(t.Name)) == 0)
                         dti.State = nHydrate.DataImport.ImportStateConstants.Deleted;
-                    else if (this.NewDatabase.EntityList.First(x => x.Name.ToLower() == t.Name.ToLower()).CorePropertiesHash != t.CorePropertiesHash)
+                    else if (this.NewDatabase.EntityList.First(x => x.Name.Match(t.Name)).CorePropertiesHash != t.CorePropertiesHash)
                     {
                         dti.State = nHydrate.DataImport.ImportStateConstants.Modified;
-                        dti.TargetItem = this.NewDatabase.EntityList.First(x => x.Name.ToLower() == t.Name.ToLower());
+                        dti.TargetItem = this.NewDatabase.EntityList.First(x => x.Name.Match(t.Name));
                     }
-                    else if (this.NewDatabase.EntityList.First(x => x.Name.ToLower() == t.Name.ToLower()).FieldList.GetCorePropertiesHash() != t.FieldList.GetCorePropertiesHash())
+                    else if (this.NewDatabase.EntityList.First(x => x.Name.Match(t.Name)).FieldList.GetCorePropertiesHash() != t.FieldList.GetCorePropertiesHash())
                     {
                         dti.State = nHydrate.DataImport.ImportStateConstants.Modified;
-                        dti.TargetItem = this.NewDatabase.EntityList.First(x => x.Name.ToLower() == t.Name.ToLower());
+                        dti.TargetItem = this.NewDatabase.EntityList.First(x => x.Name.Match(t.Name));
                     }
 
                     if (!itemCache.ContainsKey(t.Name.ToLower()))
@@ -369,7 +370,7 @@ namespace nHydrate.DslPackage.Forms
                 //Added Tables
                 foreach (var t in this.NewDatabase.EntityList)
                 {
-                    if (this.CurrentDatabase.EntityList.Count(x => x.Name.ToLower() == t.Name.ToLower()) == 0)
+                    if (this.CurrentDatabase.EntityList.Count(x => x.Name.Match(t.Name)) == 0)
                         itemCache.Add(t.Name.ToLower(), new DataTreeItem(t.Name, nHydrate.DataImport.ImportStateConstants.Added) { TargetItem = t });
                 }
 
@@ -383,8 +384,8 @@ namespace nHydrate.DslPackage.Forms
 
                     parentNode.Nodes.Add(tableNode);
 
-                    var oldTable = this.CurrentDatabase.EntityList.FirstOrDefault(x => x.Name.ToLower() == tableKey.ToLower());
-                    var newTable = this.NewDatabase.EntityList.FirstOrDefault(x => x.Name.ToLower() == tableKey.ToLower());
+                    var oldTable = this.CurrentDatabase.EntityList.FirstOrDefault(x => x.Name.Match(tableKey));
+                    var newTable = this.NewDatabase.EntityList.FirstOrDefault(x => x.Name.Match(tableKey));
                     if (oldTable == null) oldTable = new nHydrate.DataImport.Entity();
                     if (newTable == null) newTable = new nHydrate.DataImport.Entity();
 
@@ -576,7 +577,7 @@ namespace nHydrate.DslPackage.Forms
                     auditFields.Add(new SpecialField { Name = _model.CreatedByColumnName, Type = SpecialFieldTypeConstants.CreatedBy });
                     auditFields.Add(new SpecialField { Name = _model.CreatedDateColumnName, Type = SpecialFieldTypeConstants.CreatedDate });
                     auditFields.Add(new SpecialField { Name = _model.ModifiedByColumnName, Type = SpecialFieldTypeConstants.ModifiedBy });
-                    auditFields.Add(new SpecialField { Name = _model.ModifiedDateColumnName, Type = SpecialFieldTypeConstants.ModifedDate });
+                    auditFields.Add(new SpecialField { Name = _model.ModifiedDateColumnName, Type = SpecialFieldTypeConstants.ModifiedDate });
                     auditFields.Add(new SpecialField { Name = _model.TimestampColumnName, Type = SpecialFieldTypeConstants.Timestamp });
                     auditFields.Add(new SpecialField { Name = _model.TenantColumnName, Type = SpecialFieldTypeConstants.Tenant });
 
@@ -992,7 +993,7 @@ namespace nHydrate.DslPackage.Forms
             _auditFields.Add(new SpecialField { Name = _model.CreatedByColumnName, Type = SpecialFieldTypeConstants.CreatedBy });
             _auditFields.Add(new SpecialField { Name = _model.CreatedDateColumnName, Type = SpecialFieldTypeConstants.CreatedDate });
             _auditFields.Add(new SpecialField { Name = _model.ModifiedByColumnName, Type = SpecialFieldTypeConstants.ModifiedBy });
-            _auditFields.Add(new SpecialField { Name = _model.ModifiedDateColumnName, Type = SpecialFieldTypeConstants.ModifedDate });
+            _auditFields.Add(new SpecialField { Name = _model.ModifiedDateColumnName, Type = SpecialFieldTypeConstants.ModifiedDate });
             _auditFields.Add(new SpecialField { Name = _model.TimestampColumnName, Type = SpecialFieldTypeConstants.Timestamp });
             _auditFields.Add(new SpecialField { Name = _model.TenantColumnName, Type = SpecialFieldTypeConstants.Tenant });
 

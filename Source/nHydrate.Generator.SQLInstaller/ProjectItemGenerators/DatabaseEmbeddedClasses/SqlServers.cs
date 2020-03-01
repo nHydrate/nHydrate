@@ -20,8 +20,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Compression;
 using System.Diagnostics;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.Data.SqlClient;
 
 namespace PROJECTNAMESPACE

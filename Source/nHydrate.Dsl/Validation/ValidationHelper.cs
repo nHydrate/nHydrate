@@ -100,7 +100,7 @@ namespace nHydrate.Dsl
         private const string reservedFields = "clone,isparented,container,delete,equals,getdatetime,getdefault,getdouble,getfieldlength,GetHashCode,GetInteger,GetString,GetValue,IsEquivalent,ItemState,OnValidate,ParentCollection,Persist,RejectChanges,PrimaryKey,ReleaseNonIdentifyingRelationships,Remove,SelectUsingPK,SetCreatedDate,SetModifiedDate,SetValue,Validate,wrappedClass,DeleteData,GetDatabaseFieldName,GetFieldAliasFromFieldNameSqlMapping,GetMaxLength,GetPagedSQL,GetRemappedLinqSql,GetTableFromFieldAliasSqlMapping,GetTableFromFieldNameSqlMapping,UpdateData,isvalid";
         private const string reservedEntityNames = "version";
 
-        public static bool ValidDatabaseIdenitifer(string name)
+        public static bool ValidDatabaseIdentifier(string name)
         {
             if (name.Length == 0)
                 return false;
@@ -114,7 +114,7 @@ namespace nHydrate.Dsl
             if (q != null)
                 return false;
 
-            //The database does actualy allow spaces
+            //The database does actually allow spaces
             var validchars2 = ValidCodeChars + " /#@$_.";
 
             foreach (var c in name)
@@ -228,7 +228,7 @@ namespace nHydrate.Dsl
             return true;
         }
 
-        public static string MakeCodeIdentifer(string name, string invalidReplacement)
+        public static string MakeCodeIdentifier(string name, string invalidReplacement)
         {
             if (string.IsNullOrEmpty(name))
                 return string.Empty;

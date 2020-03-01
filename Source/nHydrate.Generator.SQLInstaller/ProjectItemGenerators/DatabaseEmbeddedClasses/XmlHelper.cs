@@ -6,12 +6,7 @@
 //    Manual changes to this file will be overwritten if the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-using System;
-using System.Linq;
-using System.Text;
-using System.Xml.XPath;
 using System.Xml;
-using System.IO;
 
 namespace PROJECTNAMESPACE
 {

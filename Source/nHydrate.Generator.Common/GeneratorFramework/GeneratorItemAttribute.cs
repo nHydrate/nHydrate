@@ -5,24 +5,14 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public class GeneratorItemAttribute : System.Attribute
 	{
-		protected string _name;
-		protected Type _parentType;
-
-		public GeneratorItemAttribute(string name, Type parentType)
+        public GeneratorItemAttribute(string name, Type parentType)
 		{
-			_name = name;
-			_parentType = parentType;
+			Name = name;
+			ParentType = parentType;
 		}
 
-		public Type ParentType
-		{
-			get { return _parentType; }
-		}
+		public Type ParentType { get; }
 
-		public string Name
-		{
-			get { return _name; }
-		}
-
-	}
+        public string Name { get; }
+    }
 }

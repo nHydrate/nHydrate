@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.Modeling;
 using nHydrate.Dsl;
 using System.Windows.Forms;
+using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.DslPackage.Objects
 {
@@ -93,7 +94,7 @@ namespace nHydrate.DslPackage.Objects
                             //if (!nHydrate.Dsl.ValidationHelper.ValidCodeIdentifier(newEntity.Name) && !nHydrate.Dsl.ValidationHelper.IsReservedWord(newEntity.Name))
                             if (!nHydrate.Dsl.ValidationHelper.ValidCodeIdentifier(newEntity.Name))
                             {
-                                newEntity.CodeFacade = nHydrate.Dsl.ValidationHelper.MakeCodeIdentifer(newEntity.Name, string.Empty);
+                                newEntity.CodeFacade = nHydrate.Dsl.ValidationHelper.MakeCodeIdentifier(newEntity.Name, string.Empty);
                             }
                         }
                         newEntity.AllowCreateAudit = entity.AllowCreateAudit;
@@ -150,8 +151,7 @@ namespace nHydrate.DslPackage.Objects
                                 if (connection != null)
                                 {
                                     //If the table names no longer match then create a new relation
-                                    if (string.Compare(connection.ChildEntity.Name, relation.TargetEntity.Name, true) != 0 ||
-                                        string.Compare(connection.ParentEntity.Name, relation.SourceEntity.Name, true) != 0)
+                                    if (!connection.ChildEntity.Name.Match(relation.TargetEntity.Name) || !connection.ParentEntity.Name.Match(relation.SourceEntity.Name))
                                     {
                                         connection.ImportData = string.Empty;
                                         connection = null;
@@ -350,7 +350,7 @@ namespace nHydrate.DslPackage.Objects
                             //if (!nHydrate.Dsl.ValidationHelper.ValidCodeIdentifier(newView.Name) && !nHydrate.Dsl.ValidationHelper.IsReservedWord(newView.Name))
                             if (!nHydrate.Dsl.ValidationHelper.ValidCodeIdentifier(newView.Name))
                             {
-                                newView.CodeFacade = nHydrate.Dsl.ValidationHelper.MakeCodeIdentifer(newView.Name, string.Empty);
+                                newView.CodeFacade = nHydrate.Dsl.ValidationHelper.MakeCodeIdentifier(newView.Name, string.Empty);
                             }
                         }
                         newView.Name = view.Name;
@@ -399,7 +399,7 @@ namespace nHydrate.DslPackage.Objects
                     //Correct for invalid identifiers
                     if (!nHydrate.Dsl.ValidationHelper.ValidCodeIdentifier(newField.Name))
                     {
-                        newField.CodeFacade = nHydrate.Dsl.ValidationHelper.MakeCodeIdentifer(newField.Name, string.Empty);
+                        newField.CodeFacade = nHydrate.Dsl.ValidationHelper.MakeCodeIdentifier(newField.Name, string.Empty);
                     }
                 }
 
@@ -444,7 +444,7 @@ namespace nHydrate.DslPackage.Objects
                 //if (!nHydrate.Dsl.ValidationHelper.ValidCodeIdentifier(newField.Name) && !nHydrate.Dsl.ValidationHelper.IsReservedWord(newField.Name))
                 if (!nHydrate.Dsl.ValidationHelper.ValidCodeIdentifier(newField.Name))
                 {
-                    newField.CodeFacade = nHydrate.Dsl.ValidationHelper.MakeCodeIdentifer(newField.Name, string.Empty);
+                    newField.CodeFacade = nHydrate.Dsl.ValidationHelper.MakeCodeIdentifier(newField.Name, string.Empty);
                 }
             }
             var removedFields = targetItem.Fields.Remove(x => !importItem.FieldList.Select(y => y.Name.ToLower()).Contains(x.Name.ToLower()));

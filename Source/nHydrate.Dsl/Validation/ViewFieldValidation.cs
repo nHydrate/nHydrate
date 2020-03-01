@@ -1,8 +1,3 @@
-#pragma warning disable 0168
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.Modeling.Validation;
 
 namespace nHydrate.Dsl
@@ -20,36 +15,22 @@ namespace nHydrate.Dsl
         public void Validate(ValidationContext context)
         {
             //if (!this.IsDirty) return;
-            var timer = nHydrate.Dsl.Custom.DebugHelper.StartTimer();
-            try
+            #region Check valid name
+            if (!ValidationHelper.ValidDatabaseIdentifier(this.DatabaseName))
+                context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifierViewField, this.Name, this.View.Name), string.Empty, this);
+            else if (!ValidationHelper.ValidCodeIdentifier(this.PascalName))
+                context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifierViewField, this.Name, this.View.Name), string.Empty, this);
+            #endregion
+
+            #region Validate max lengths
+
+            var validatedLength = this.DataType.ValidateDataTypeMax(this.Length);
+            if (validatedLength != this.Length)
             {
-                #region Check valid name
-                if (!ValidationHelper.ValidDatabaseIdenitifer(this.DatabaseName))
-                    context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifierViewField, this.Name, this.View.Name), string.Empty, this);
-                else if (!ValidationHelper.ValidCodeIdentifier(this.PascalName))
-                    context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifierViewField, this.Name, this.View.Name), string.Empty, this);
-                #endregion
-
-                #region Validate max lengths
-
-                var validatedLength = this.DataType.ValidateDataTypeMax(this.Length);
-                if (validatedLength != this.Length)
-                {
-                    context.LogError(string.Format(ValidationHelper.ErrorTextColumnMaxLengthViolation, this.View.Name + "." + this.Name, validatedLength, this.DataType.ToString()), string.Empty, this);
-                }
-
-                #endregion
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-            finally
-            {
-                nHydrate.Dsl.Custom.DebugHelper.StopTimer(timer, "Stored Procedure Parameter Validate - Main");
+                context.LogError(string.Format(ValidationHelper.ErrorTextColumnMaxLengthViolation, this.View.Name + "." + this.Name, validatedLength, this.DataType.ToString()), string.Empty, this);
             }
 
+            #endregion
         }
     }
 }

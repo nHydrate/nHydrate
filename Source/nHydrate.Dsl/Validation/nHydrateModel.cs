@@ -45,9 +45,9 @@ namespace nHydrate.Dsl
             try
             {
                 #region Validate some global settings
-                if (!ValidationHelper.ValidDatabaseIdenitifer(this.CompanyName) || !ValidationHelper.ValidCodeIdentifier(this.CompanyName))
+                if (!ValidationHelper.ValidDatabaseIdentifier(this.CompanyName) || !ValidationHelper.ValidCodeIdentifier(this.CompanyName))
                     context.LogError(ValidationHelper.ErrorTextInvalidCompany, string.Empty, this);
-                if (!ValidationHelper.ValidDatabaseIdenitifer(this.ProjectName) || !ValidationHelper.ValidCodeIdentifier(this.ProjectName))
+                if (!ValidationHelper.ValidDatabaseIdentifier(this.ProjectName) || !ValidationHelper.ValidCodeIdentifier(this.ProjectName))
                     context.LogError(ValidationHelper.ErrorTextInvalidProject, string.Empty, this);
 
                 if (!string.IsNullOrEmpty(this.DefaultNamespace))
@@ -173,7 +173,7 @@ namespace nHydrate.Dsl
             try
             {
                 #region Check for zero tables
-                if (this.Entities.Count() == 0)
+                if (this.Entities.Count == 0)
                 {
                     context.LogError(ValidationHelper.ErrorTextNoTables, string.Empty, this);
                     return;
@@ -224,7 +224,7 @@ namespace nHydrate.Dsl
                     if (childTable != null && entity != null)
                     {
                         var key = string.Empty;
-                        if (StringHelper.Match(entity.Name, childTable.Name, true))
+                        if (entity.Name.Match(childTable.Name))
                         {
                             if (string.Compare(entity.Name, childTable.Name, false) < 0)
                                 key = childTable.Name + "|" + relation.RoleName + "|" + entity.Name;
@@ -241,7 +241,7 @@ namespace nHydrate.Dsl
 
                         if (duplicateList.ContainsKey(key))
                         {
-                            if (StringHelper.Match(entity.Name, childTable.Name, true))
+                            if (entity.Name.Match(childTable.Name))
                                 duplicateList[key].TableList.Add(entity);
                             else duplicateList[key].TableList.Add(childTable);
                         }

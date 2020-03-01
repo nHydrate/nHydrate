@@ -175,10 +175,10 @@ namespace nHydrate.Dsl
             text += Environment.NewLine;
 
             text += "Fields: " + o.Fields.Count + Environment.NewLine;
-            var genFieldCount = o.Fields.Count();
+            var genFieldCount = o.Fields.Count;
             if (genFieldCount > 0)
                 text += "Generated Fields: " + genFieldCount + Environment.NewLine;
-            text += "Outbound Relations: " + o.RelationshipList.Count() + Environment.NewLine;
+            text += "Outbound Relations: " + o.RelationshipList.Count + Environment.NewLine;
             text += "Inbound Relations: " + o.GetRelationsWhereChild().Count() + Environment.NewLine;
             return text;
         }

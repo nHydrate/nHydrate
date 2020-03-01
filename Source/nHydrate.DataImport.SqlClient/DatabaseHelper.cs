@@ -59,7 +59,7 @@ namespace nHydrate.DataImport.SqlClient
             sb.Append("SELECT ");
             foreach (var field in fieldList)
             {
-                if (columnList.Count(x => x.Name.ToLower() == field.Name.ToLower()) == 1)
+                if (columnList.Count(x => x.Name.Match(field.Name)) == 1)
                 {
                     sb.Append("[" + field.Name + "]");
                 }
@@ -67,7 +67,7 @@ namespace nHydrate.DataImport.SqlClient
                 {
                     sb.Append("'' AS [" + field.Name + "]");
                 }
-                if (fieldList.ToList().IndexOf(field) < fieldList.Count() - 1) sb.Append(",");
+                if (fieldList.ToList().IndexOf(field) < fieldList.Count - 1) sb.Append(",");
             }
             sb.AppendLine(" FROM [" + entity.Name + "]");
             var ds = DatabaseHelper.ExecuteDataset(connectionString, sb.ToString());

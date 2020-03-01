@@ -32,16 +32,10 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.AuditTrigge
             }
         }
 
-        public override string FileName
-        {
-            get { return "4_CreateSchemaAuditTriggers.sql"; }
-        }
+        public override string FileName => "4_CreateSchemaAuditTriggers.sql";
 
-        internal string OldFileName
-        {
-            get { return "CreateSchemaAuditTriggers.sql"; }
-        }
-        
+        internal string OldFileName => "CreateSchemaAuditTriggers.sql";
+
         #endregion
 
         #region GenerateContent

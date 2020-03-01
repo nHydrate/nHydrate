@@ -4,7 +4,7 @@ using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCreateRelations
 {
-    [GeneratorItem("CreateReleations", typeof(PostgresDatabaseProjectGenerator))]
+    [GeneratorItem("CreateRelations", typeof(PostgresDatabaseProjectGenerator))]
     public class CreateRelationsGenerator : BaseDbScriptGenerator
     {
         #region Class Members

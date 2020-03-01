@@ -122,9 +122,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
 
             //This is for inheritance which is NOT supported right now
             //List<Table> tableList = new List<Table>(_currentTable.GetTableHierarchy().Where(x => x.AllowAuditTracking).Reverse());
-            foreach (Table table in tableList)
+            foreach (var table in tableList)
             {
-                foreach (Column column in table.GetColumns().OrderBy(x => x.Name))
+                foreach (var column in table.GetColumns().OrderBy(x => x.Name))
                 {
                     if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
                     {
@@ -134,7 +134,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
                 }
             }
 
-            foreach (Column column in columnList.Values)
+            foreach (var column in columnList.Values)
             {
                 sb.AppendLine("		/// <summary>");
                 if (!string.IsNullOrEmpty(column.Description))
@@ -189,7 +189,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.AuditEntity
             sb.AppendLine("			var differences = new List<I" + _item.PascalName + "AuditResultFieldCompare>();");
             sb.AppendLine();
 
-            foreach (Column column in _item.GetColumns().OrderBy(x => x.Name))
+            foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
             {
                 if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
                 {

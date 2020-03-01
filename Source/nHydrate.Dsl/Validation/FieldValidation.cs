@@ -1,6 +1,5 @@
 #pragma warning disable 0168
 using System;
-using System.Collections.Generic;
 using Microsoft.VisualStudio.Modeling.Validation;
 
 namespace nHydrate.Dsl
@@ -28,7 +27,7 @@ namespace nHydrate.Dsl
                 //if (!this.IsDirty) return;
 
                 #region Check valid name
-                if (!ValidationHelper.ValidDatabaseIdenitifer(this.DatabaseName))
+                if (!ValidationHelper.ValidDatabaseIdentifier(this.DatabaseName))
                     context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifier, this.Entity.Name + "." + this.Name), string.Empty, this);
                 else if (!ValidationHelper.ValidCodeIdentifier(this.PascalName))
                     context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifier, this.Entity.Name + "." + this.Name), string.Empty, this);
@@ -38,7 +37,7 @@ namespace nHydrate.Dsl
                 #endregion
 
                 #region Check valid name based on codefacade
-                if ((!string.IsNullOrEmpty(this.CodeFacade)) && !ValidationHelper.ValidDatabaseIdenitifer(this.CodeFacade))
+                if ((!string.IsNullOrEmpty(this.CodeFacade)) && !ValidationHelper.ValidDatabaseIdentifier(this.CodeFacade))
                     context.LogError(ValidationHelper.ErrorTextInvalidCodeFacade, string.Empty, this);
                 #endregion
 

@@ -34,7 +34,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             //Process deleted items
             foreach (var name in _model.RemovedTables)
             {
-                var fullFileName = RELATIVE_OUTPUT_LOCATION + string.Format("{0}.Generated.cs", name);
+                var fullFileName = RELATIVE_OUTPUT_LOCATION + $"{name}.Generated.cs";
                 var eventArgs = new ProjectItemDeletedEventArgs(fullFileName, ProjectName, this);
                 OnProjectItemDeleted(this, eventArgs);
             }

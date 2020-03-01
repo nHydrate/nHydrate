@@ -5,13 +5,8 @@ using System.Text.RegularExpressions;
 
 namespace nHydrate.Generator.Common.Util
 {
-	public class StringHelper
+	public static class StringHelper
 	{
-
-		private StringHelper()
-		{
-		}
-
 		public static bool GuidTryParse(string s, out Guid result)
 		{
 			if (s == null)
@@ -32,6 +27,7 @@ namespace nHydrate.Generator.Common.Util
 				return false;
 			}
 		}
+
 		public static string FirstCharToUpper(string inputString)
 		{
 			var sb = new StringBuilder();
@@ -96,21 +92,7 @@ namespace nHydrate.Generator.Common.Util
 				.ForEach(x => sb.AppendLine(prepend + x));
 		}
 
-		#region String Match
-		public static bool Match(object s1, string s2, bool ignoreCase)
-		{
-			if (s1 == null)
-				if (s2 == null) return true;
-				else return false;
-			else
-				if (s2 == null) return false;
-				else if (s1.ToString().Length != s2.Length) return false;
-				else if (s1.ToString().Length == 0) return true;
-
-			return (String.Compare(s1.ToString(), s2, ignoreCase) == 0);
-		}
-
-		public static bool Match(string s1, string s2, bool ignoreCase)
+		public static bool Match(this string s1, string s2, bool ignoreCase = true)
 		{
 			if (s1 == null)
 				if (s2 == null) return true;
@@ -123,14 +105,7 @@ namespace nHydrate.Generator.Common.Util
 			return (String.Compare(s1, s2, ignoreCase) == 0);
 		}
 
-		public static bool Match(string s1, string s2)
-		{
-			return Match(s1, s2, true);
-		}
-		#endregion
-
 		#region Variable Case Conversion
-
 
 		public static string DatabaseNameToCamelCase(string databaseName)
 		{

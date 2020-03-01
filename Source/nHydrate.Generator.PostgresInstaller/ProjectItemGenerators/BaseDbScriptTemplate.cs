@@ -10,9 +10,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
 		{
 		}
 
-		public override string LocalNamespaceExtension
-		{
-			get { return "Install"; }
-		}
-	}
+		public override string LocalNamespaceExtension => "Install";
+    }
 }

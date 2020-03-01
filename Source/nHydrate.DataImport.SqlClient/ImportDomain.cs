@@ -60,7 +60,7 @@ namespace nHydrate.DataImport.SqlClient
 
                         var entity = database.EntityList.FirstOrDefault(x => x.Name == tableName);
                         //Ensure the field name is not an Audit field
-                        if (entity != null && !auditFields.Any(x => x.Name.ToLower() == columnName.ToLower()))
+                        if (entity != null && !auditFields.Any(x => x.Name.Match(columnName)))
                         {
                             var maxSortOrder = 0;
                             if (entity.FieldList.Count > 0) maxSortOrder = entity.FieldList.Max(x => x.SortOrder);
@@ -102,7 +102,7 @@ namespace nHydrate.DataImport.SqlClient
                                 entity.AllowCreateAudit = true;
                             }
 
-                            if (auditFields.Any(x => (x.Type == SpecialFieldTypeConstants.ModifedDate ||
+                            if (auditFields.Any(x => (x.Type == SpecialFieldTypeConstants.ModifiedDate ||
                                 x.Type == SpecialFieldTypeConstants.ModifiedBy) &&
                                 x.Name.ToLower() == columnName.ToLower()))
                             {
@@ -339,7 +339,7 @@ namespace nHydrate.DataImport.SqlClient
                     //The length is half the bytes for these types
                     if ((dataType == SqlDbType.NChar) || (dataType == SqlDbType.NVarChar))
                     {
-                        length = length / 2;
+                        length /= 2;
                     }
                     else if (dataType == SqlDbType.DateTime2)
                     {
@@ -503,7 +503,7 @@ namespace nHydrate.DataImport.SqlClient
                 {
                     var newEntity = new Entity();
                     newEntity.Name = tableReader["name"].ToString();
-                    if (string.Compare(newEntity.Name, name, true) == 0) //Only the specified item
+                    if (newEntity.Name.Match(name)) //Only the specified item
                         database.EntityList.Add(newEntity);
                     newEntity.Schema = tableReader["schema"].ToString();
                 }
@@ -562,7 +562,7 @@ namespace nHydrate.DataImport.SqlClient
                             entity.AllowCreateAudit = true;
                         }
 
-                        if (auditFields.Any(x => (x.Type == SpecialFieldTypeConstants.ModifedDate ||
+                        if (auditFields.Any(x => (x.Type == SpecialFieldTypeConstants.ModifiedDate ||
                             x.Type == SpecialFieldTypeConstants.ModifiedBy) &&
                             x.Name.ToLower() == columnName.ToLower()))
                         {

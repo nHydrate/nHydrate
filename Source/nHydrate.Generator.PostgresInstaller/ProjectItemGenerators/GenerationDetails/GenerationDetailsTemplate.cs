@@ -35,10 +35,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.GenerationD
             }
         }
 
-        public override string FileName
-        {
-            get { return "GenerationDetails.txt"; }
-        }
+        public override string FileName => "GenerationDetails.txt";
 
         #endregion
 

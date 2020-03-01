@@ -10,10 +10,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore
         {
         }
 
-        public override string LocalNamespaceExtension
-        {
-            get { return "EFDAL"; }
-        }
-
+        public override string LocalNamespaceExtension => "EFDAL";
     }
 }

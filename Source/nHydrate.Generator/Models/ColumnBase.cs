@@ -85,16 +85,10 @@ namespace nHydrate.Generator.Models
         public virtual bool AllowNull
         {
             get { return this.DataType != System.Data.SqlDbType.Variant && _allowNull; }
-            set
-            {
-                _allowNull = value;
-            }
+            set { _allowNull = value; }
         }
 
-        public virtual string DatabaseType
-        {
-            get { return this.GetSQLDefaultType(); }
-        }
+        public virtual string DatabaseType => this.GetSQLDefaultType();
 
         #region ICodeFacadeObject Members
 
@@ -102,7 +96,7 @@ namespace nHydrate.Generator.Models
 
         public string GetCodeFacade()
         {
-            if (this.CodeFacade == "")
+            if (this.CodeFacade == string.Empty)
                 return this.Name;
             else
                 return this.CodeFacade;

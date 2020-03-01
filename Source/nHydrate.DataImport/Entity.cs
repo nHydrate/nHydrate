@@ -20,17 +20,11 @@ namespace nHydrate.DataImport
 		public bool AllowTimestamp { get; set; }
 		public bool IsTenant { get; set; }
 
-		public override string ObjectType
-		{
-			get { return "Entity"; }
-		}
+		public override string ObjectType => "Entity";
 
-		public override string ToString()
-		{
-			return this.Name;
-		}
+        public override string ToString() => this.Name;
 
-		public string CorePropertiesHash
+        public string CorePropertiesHash
 		{
 			get
 			{
