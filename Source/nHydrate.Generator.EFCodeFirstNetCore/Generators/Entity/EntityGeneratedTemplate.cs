@@ -595,7 +595,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine($"		public virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {relation.PascalRoleName}{childTable.PascalName}List");
                         sb.AppendLine("		{");
-                        sb.AppendLine("			get; protected internal set;");
+                        sb.AppendLine("			get; set;");
                         sb.AppendLine("		}");
                         sb.AppendLine();
                     }

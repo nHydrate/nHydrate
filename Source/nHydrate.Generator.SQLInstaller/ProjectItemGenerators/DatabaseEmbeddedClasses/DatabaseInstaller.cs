@@ -42,7 +42,7 @@ namespace PROJECTNAMESPACE
     {
         #region Members
         private string[] PARAMKEYS_DROP = new string[] { "drop" };
-        private string[] PARAMKEYS_UPGRADE = new string[] { "upgrade" };
+        private string[] PARAMKEYS_UPGRADE = new string[] { "upgrade", "update" };
         private string[] PARAMKEYS_CREATE = new string[] { "create" };
         private string[] PARAMKEYS_MASTERDB = new string[] { "master", "masterdb" };
         private string[] PARAMKEYS_APPDB = new string[] { "applicationdb", "connectionstring" };
