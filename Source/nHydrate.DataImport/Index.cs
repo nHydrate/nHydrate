@@ -6,7 +6,6 @@ namespace nHydrate.DataImport
     {
         public Index()
         {
-            this.FieldList = new List<IndexField>();
         }
 
         public string IndexName { get; set; }
@@ -14,6 +13,6 @@ namespace nHydrate.DataImport
         public bool IsPrimaryKey { get; set; }
         public bool Clustered { get; set; }
         public bool IsUnique { get; set; }
-        public List<IndexField> FieldList { get; }
+        public List<IndexField> FieldList { get; } = new List<IndexField>();
     }
 }

@@ -55,7 +55,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
 
             foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
-                var tableName = Globals.GetTableDatabaseName(_model, table);
                 var childRoleRelations = table.ChildRoleRelations;
                 if (childRoleRelations.Count > 0)
                 {

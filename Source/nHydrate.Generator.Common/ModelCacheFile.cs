@@ -106,17 +106,17 @@ namespace nHydrate.Generator.Common
             document.DocumentElement.AddAttribute("ModelerVersion", this.ModelerVersion.ToString());
 
             //Save ExcludeList
-            var exludeListNode = document.DocumentElement.AddElement("excludeList");
+            var excludeListNode = document.DocumentElement.AddElement("excludeList");
             foreach (var key in this.ExcludeList)
             {
-                XmlHelper.AddElement((XmlElement)exludeListNode, "item", key);
+                ((XmlElement)excludeListNode).AddElement("item", key);
             }
 
-            //Table facacde
-            var tFacadeNode = document.DocumentElement.AddElement("tableFacadeSettings", this.TableFacadeSettings);
+            //Table facade
+            document.DocumentElement.AddElement("tableFacadeSettings", this.TableFacadeSettings);
 
-            //Column facacde
-            var cFacadeNode = document.DocumentElement.AddElement("columnFacadeSettings", this.CodeFacadeSettings);
+            //Column facade
+            document.DocumentElement.AddElement("columnFacadeSettings", this.CodeFacadeSettings);
 
             document.Save(this.FileName);
         }

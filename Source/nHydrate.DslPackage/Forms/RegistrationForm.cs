@@ -15,8 +15,6 @@ namespace nHydrate.DslPackage.Forms
             InitializeComponent();
             this.SetupScreen();
 
-            var model = new UserAccount();
-
             var countryList = VersionHelper.GetCountries();
             cboCountry.Items.Add("(Choose One)");
             if (countryList != null)

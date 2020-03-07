@@ -31,7 +31,7 @@ namespace nHydrate.Dsl
         public static readonly string ErrorTextTypeTableIsMutable = "The type entity '{0}' must be marked as immutable.";
         public static readonly string ErrorTextConflictingRelationships = "The following entities have conflicting relationships: {0}. Delete one or more relationships or assign role names to them.";
         public static readonly string ErrorTextChildTableRelationIdentity = "The relationship is based on an identity parameter in the entity '{0}' mapping to another identity parameter in entity '{1}'. This is not valid.";
-        public static readonly string ErrorTextNameConfictsWithGeneratedCode = "The object '{0}' will conflict with generated code. Please change the name.";
+        public static readonly string ErrorTextNameConflictsWithGeneratedCode = "The object '{0}' will conflict with generated code. Please change the name.";
         public static readonly string ErrorTextTypeTablePrimaryKey = "The type entity '{0}' must have a single primary key of an integer type.";
         public static readonly string ErrorTextTypeTableTextField = "The type entity '{0}' must have a 'Name' or 'Description' parameter to build the enumeration type.";
         public static readonly string ErrorTextTypeTableStaticDataEmpty = "The type entity '{0}' must have static data set for the primary key and the Name/Description parameter.";

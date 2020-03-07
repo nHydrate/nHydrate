@@ -43,8 +43,6 @@ namespace nHydrate.DslPackage.Forms
                 dt.Columns.Add(f.Name, typeof(string));
             }
 
-            var columnCount = dt.Columns.Count;
-
             //Add Data
             var orderKey = -1;
             System.Data.DataRow dr = null;

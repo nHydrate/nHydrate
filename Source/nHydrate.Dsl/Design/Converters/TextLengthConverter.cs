@@ -69,24 +69,17 @@ namespace nHydrate.Dsl.Design.Converters
         {
             if (context.Instance is nHydrate.Dsl.Field)
             {
-                var column = context.Instance as nHydrate.Dsl.Field;
-                if (sourceType == typeof(string))
-                    return true;
-                else if (sourceType == typeof(int))
-                    return true;
-                else
-                    return false;
+                if (sourceType == typeof(string)) return true;
+                else if (sourceType == typeof(int)) return true;
+                else return false;
             }
             else if (context.Instance is nHydrate.Dsl.ViewField)
             {
-                var column = context.Instance as nHydrate.Dsl.ViewField;
-                if (sourceType == typeof(string))
-                    return true;
-                else if (sourceType == typeof(int))
-                    return true;
-                else
-                    return false;
+                if (sourceType == typeof(string)) return true;
+                else if (sourceType == typeof(int)) return true;
+                else return false;
             }
+
             return false;
         }
 
@@ -95,13 +88,9 @@ namespace nHydrate.Dsl.Design.Converters
             if (value is string)
             {
                 if (int.TryParse(value.ToString(), out var v))
-                {
                     return v;
-                }
                 else if (value.ToString().ToLower() == "max")
-                {
                     return 0;
-                }
             }
             return 0;
         }

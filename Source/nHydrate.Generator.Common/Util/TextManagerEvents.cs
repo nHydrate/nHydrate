@@ -84,7 +84,7 @@ namespace nHydrate.Generator.Common.Util
 
             #region Debug
 
-            int q = 1;
+            var q = 1;
             if (q == 0)
             {
                 for (var ii = 1; ii < fcList.Count; ii++)

@@ -148,7 +148,7 @@ namespace nHydrate.Generator.Common.Util
                 else
                 {
                     var currentProjectFile = new FileInfo(project.FileName);
-                    var fullName = StringHelper.EnsureDirectorySeperatorAtEnd(currentProjectFile.Directory.FullName) + relativePathAndName;
+                    var fullName = StringHelper.EnsureDirectorySeparatorAtEnd(currentProjectFile.Directory.FullName) + relativePathAndName;
                     fullName = fullName.Replace(@"\\", @"\");
                     fileStateInfo.FileName = fullName;
                     newFile = new FileInfo(fullName);
@@ -391,7 +391,7 @@ namespace nHydrate.Generator.Common.Util
                 else
                 {
                     var currentProjectFile = new FileInfo(project.FileName);
-                    var fullName = StringHelper.EnsureDirectorySeperatorAtEnd(currentProjectFile.Directory.FullName) + relativePathAndName;
+                    var fullName = StringHelper.EnsureDirectorySeparatorAtEnd(currentProjectFile.Directory.FullName) + relativePathAndName;
                     fullName = fullName.Replace(@"\\", @"\");
                     fileStateInfo.FileName = fullName;
                     newFile = new FileInfo(fullName);
@@ -547,7 +547,7 @@ namespace nHydrate.Generator.Common.Util
                     {
                         if (subHierarchyItem.Name.EndsWith(".xml"))
                         {
-                            var fi = new FileInfo(StringHelper.EnsureDirectorySeperatorAtEnd(this.SolutionDirectory.FullName) + "doc/" + subHierarchyItem.Name);
+                            var fi = new FileInfo(StringHelper.EnsureDirectorySeparatorAtEnd(this.SolutionDirectory.FullName) + "doc/" + subHierarchyItem.Name);
                             if (fi.Extension == fileExtension)
                             {
                                 fileInfos.Add(fi);

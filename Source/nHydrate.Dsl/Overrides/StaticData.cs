@@ -81,104 +81,88 @@ namespace nHydrate.Dsl
                     switch (column.DataType)
                     {
                         case DataTypeConstants.BigInt:
-                            retval &= long.TryParse(data.Value, out vlong);
+                            retval = long.TryParse(data.Value, out vlong);
                             break;
                         case DataTypeConstants.Binary:
-                            retval &= true; //no validation
                             break;
                         case DataTypeConstants.Bit:
                             var v2 = data.Value + string.Empty;
                             if (v2 == "0") v2 = "false";
                             if (v2 == "1") v2 = "true";
-                            retval &= bool.TryParse(v2.ToLower(), out vbool);
+                            retval = bool.TryParse(v2.ToLower(), out vbool);
                             break;
                         case DataTypeConstants.Char:
-                            retval &= true;
                             break;
                         case DataTypeConstants.Date:
-                            retval &= DateTime.TryParse(data.Value, out vdate);
+                            retval = DateTime.TryParse(data.Value, out vdate);
                             break;
                         case DataTypeConstants.DateTime:
-                            retval &= DateTime.TryParse(data.Value, out vdate);
+                            retval = DateTime.TryParse(data.Value, out vdate);
                             break;
                         case DataTypeConstants.DateTime2:
-                            retval &= DateTime.TryParse(data.Value, out vdate);
+                            retval = DateTime.TryParse(data.Value, out vdate);
                             break;
                         case DataTypeConstants.DateTimeOffset:
-                            retval &= true; //no validation
                             break;
                         case DataTypeConstants.Decimal:
-                            retval &= decimal.TryParse(data.Value, out vdecimal);
+                            retval = decimal.TryParse(data.Value, out vdecimal);
                             break;
                         case DataTypeConstants.Float:
-                            retval &= decimal.TryParse(data.Value, out vdecimal);
+                            retval = decimal.TryParse(data.Value, out vdecimal);
                             break;
                         case DataTypeConstants.Image:
-                            retval &= true;
                             break;
                         case DataTypeConstants.Int:
-                            retval &= int.TryParse(data.Value, out vint);
+                            retval = int.TryParse(data.Value, out vint);
                             break;
                         case DataTypeConstants.Money:
-                            retval &= decimal.TryParse(data.Value, out vdecimal);
+                            retval = decimal.TryParse(data.Value, out vdecimal);
                             break;
                         case DataTypeConstants.NChar:
-                            retval &= true;
                             break;
                         case DataTypeConstants.NText:
-                            retval &= true;
                             break;
                         case DataTypeConstants.NVarChar:
-                            retval &= true;
                             break;
                         case DataTypeConstants.Real:
-                            retval &= decimal.TryParse(data.Value, out vdecimal);
+                            retval = decimal.TryParse(data.Value, out vdecimal);
                             break;
                         case DataTypeConstants.SmallDateTime:
-                            retval &= DateTime.TryParse(data.Value, out vdate);
+                            retval = DateTime.TryParse(data.Value, out vdate);
                             break;
                         case DataTypeConstants.SmallInt:
-                            retval &= short.TryParse(data.Value, out vshort);
+                            retval = short.TryParse(data.Value, out vshort);
                             break;
                         case DataTypeConstants.SmallMoney:
-                            retval &= decimal.TryParse(data.Value, out vdecimal);
+                            retval = decimal.TryParse(data.Value, out vdecimal);
                             break;
                         case DataTypeConstants.Structured:
-                            retval &= true;
                             break;
                         case DataTypeConstants.Text:
-                            retval &= true;
                             break;
                         case DataTypeConstants.Time:
-                            retval &= DateTime.TryParse(data.Value, out vdate);
+                            retval = DateTime.TryParse(data.Value, out vdate);
                             break;
                         case DataTypeConstants.Timestamp:
-                            retval &= true; //no validation
                             break;
                         case DataTypeConstants.TinyInt:
-                            retval &= byte.TryParse(data.Value, out vbyte);
+                            retval = byte.TryParse(data.Value, out vbyte);
                             break;
                         case DataTypeConstants.Udt:
-                            retval &= true; //no validation
                             break;
                         case DataTypeConstants.UniqueIdentifier:
-                            try { var g = new Guid(data.Value); retval &= true; }
-                            catch { retval &= false; }
+                            try { var g = new Guid(data.Value); }
+                            catch { retval = false; }
                             break;
                         case DataTypeConstants.VarBinary:
-                            retval &= true; //no validation
                             break;
                         case DataTypeConstants.VarChar:
-                            retval &= true;
                             break;
                         case DataTypeConstants.Variant:
-                            retval &= true; //no validation
                             break;
                         case DataTypeConstants.Xml:
-                            retval &= true;
                             break;
                         default:
-                            retval &= true;
                             break;
                     }
                 }

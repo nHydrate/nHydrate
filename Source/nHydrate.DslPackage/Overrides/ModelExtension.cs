@@ -245,7 +245,6 @@ namespace nHydrate.DslPackage
 
         protected override int LoadDocData(string fileName, bool isReload)
         {
-            var start = DateTime.Now;
             var key = ProgressHelper.ProgressingStarted("Loading Model...", true, 20);
             try
             {

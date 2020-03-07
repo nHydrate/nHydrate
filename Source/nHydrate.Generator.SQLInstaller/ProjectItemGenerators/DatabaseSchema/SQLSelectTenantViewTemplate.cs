@@ -36,7 +36,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 			}
 		}
 
-		public override string FileName => string.Format("{0}.sql", _model.TenantPrefix + "_" + _table.DatabaseName);
+		public override string FileName => $"{_model.TenantPrefix + "_" + _table.DatabaseName}.sql";
 
         #endregion
 

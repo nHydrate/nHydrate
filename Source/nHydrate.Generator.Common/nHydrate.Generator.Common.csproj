@@ -265,7 +265,6 @@
     <Compile Include="Util\EmbeddedResourceName.cs" />
     <Compile Include="Util\Extensions.cs" />
     <Compile Include="Util\FileStateInfo.cs" />
-    <Compile Include="Util\HashHelper.cs" />
     <Compile Include="Util\HashTable.cs" />
     <Compile Include="Util\ProjectItemCacheItem.cs" />
     <Compile Include="Util\SecurityHelper.cs" />

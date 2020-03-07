@@ -65,40 +65,6 @@ namespace nHydrate.Core.SQLGeneration
             }
         }
 
-        public static string GetSQLCreateAuditTable(ModelRoot model, Table table)
-        {
-            if (table.TypedTable == TypedTableConstants.EnumOnly)
-                return string.Empty;
-
-            var dateTimeString = "[DateTime2]";
-            var sb = new StringBuilder();
-            var tableName = "__AUDIT__" + Globals.GetTableDatabaseName(model, table);
-            sb.AppendLine("if not exists(select * from sys.objects where name = '" + tableName + "' and type = 'U')");
-            sb.AppendLine("CREATE TABLE [" + table.GetSQLSchema() + "].[" + tableName + "] (");
-            sb.AppendLine("\t[__rowid] [INT] NOT NULL IDENTITY,");
-            sb.AppendLine("\t[__action] [INT] NOT NULL,");
-            sb.AppendLine("\t[__insertdate] " + dateTimeString + " CONSTRAINT [DF__" + table.DatabaseName + "__AUDIT] DEFAULT " + model.GetSQLDefaultDate() + " NOT NULL,");
-            if (table.AllowCreateAudit || table.AllowModifiedAudit)
-                sb.AppendLine("\t[" + model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL,");
-
-            var columnList = table.GetColumns().ToList();
-            foreach (var column in columnList)
-            {
-                if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText ||
-                      column.DataType == System.Data.SqlDbType.Image))
-                {
-                    sb.Append("\t" + AppendColumnDefinition(column, allowDefault: false, allowIdentity: false,
-                        forceNull: true, allowFormula: false, allowComputed: false));
-                    if (columnList.IndexOf(column) < columnList.Count - 1) sb.Append(",");
-                    sb.AppendLine();
-                }
-            }
-
-            sb.Append(")");
-            sb.AppendLine();
-            return sb.ToString();
-        }
-
         public static string GetSqlRenameTable(Table oldTable, Table newTable)
         {
             //RENAME TABLE
@@ -109,9 +75,8 @@ namespace nHydrate.Core.SQLGeneration
             sb.AppendLine("GO");
             sb.AppendLine();
 
-            if (newTable.EnforcePrimaryKey)
+            //RENAME PRIMARY KEY (it will be re-added in create script)
             {
-                //RENAME PRIMARY KEY (it will be readded in create script)
                 var oldIndexName = "PK_" + oldTable.DatabaseName.ToUpper();
                 var newIndexName = "PK_" + newTable.DatabaseName.ToUpper();
                 sb.AppendLine("--RENAME PRIMARY KEY FOR TABLE '" + oldTable.DatabaseName + "'");
@@ -1403,36 +1368,6 @@ namespace nHydrate.Core.SQLGeneration
             sb.AppendLine($"--DROP PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
             sb.AppendLine($"if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
             sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] DROP CONSTRAINT [{pkName}]");
-            sb.AppendLine("GO");
-            sb.AppendLine();
-            return sb.ToString();
-        }
-
-        public static string GetSqlCreateAuditPK(Table table)
-        {
-            var tableName = "__AUDIT__" + table.DatabaseName.ToUpper();
-            var indexName = "PK_" + tableName.ToUpper();
-
-            var sb = new StringBuilder();
-            sb.AppendLine($"--PRIMARY KEY FOR TABLE [{tableName}]");
-            sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'PK')");
-            sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{tableName}] WITH NOCHECK ADD");
-            sb.Append($"CONSTRAINT [{indexName}] PRIMARY KEY CLUSTERED ([__rowid])");
-            sb.AppendLine();
-            sb.AppendLine("GO");
-            sb.AppendLine();
-            return sb.ToString();
-        }
-
-        public static string GetSqlDropAuditPK(Table table)
-        {
-            var tableName = "__AUDIT__" + table.DatabaseName.ToUpper();
-            var pkName = "PK_" + tableName.ToUpper();
-
-            var sb = new StringBuilder();
-            sb.AppendLine($"--DROP PRIMARY KEY FOR TABLE [{tableName}]");
-            sb.AppendLine($"if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
-            sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{tableName}] DROP CONSTRAINT [{pkName}]");
             sb.AppendLine("GO");
             sb.AppendLine();
             return sb.ToString();

@@ -149,11 +149,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="b01b66ac-5a6b-496b-92e9-a72d8bbe3b2d" Description="Determines if there is a full audit trail for this entity" Name="AllowAuditTracking" DisplayName="Allow Audit Tracking" DefaultValue="false" Category="Audit">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="e56a3e68-5513-499e-a933-5110057d2b1f" Description="Determines if the fields 'CreatedBy' and 'CreateDate' are created" Name="AllowCreateAudit" DisplayName="Allow Create Audit" DefaultValue="true" Category="Audit">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
@@ -170,11 +165,6 @@
           </Type>
         </DomainProperty>
         <DomainProperty Id="06d09cfc-31af-465a-aa16-f6eae978dc92" Description="Determines if this is an intermediary entity between two other entities" Name="IsAssociative" DisplayName="Is Associative" DefaultValue="false" Category="Database">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="5ad0492a-2a29-4b84-9de9-a0c19112d3f6" Description="Determines if this primary key is enforced in the database" Name="EnforcePrimaryKey" DisplayName="Enforce Primary Key" DefaultValue="true" Category="Database">
           <Type>
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
@@ -1063,9 +1053,6 @@
           <XmlPropertyData XmlName="summary">
             <DomainPropertyMoniker Name="Entity/Summary" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="allowAuditTracking">
-            <DomainPropertyMoniker Name="Entity/AllowAuditTracking" />
-          </XmlPropertyData>
           <XmlPropertyData XmlName="allowCreateAudit">
             <DomainPropertyMoniker Name="Entity/AllowCreateAudit" />
           </XmlPropertyData>
@@ -1077,9 +1064,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="isAssociative">
             <DomainPropertyMoniker Name="Entity/IsAssociative" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="enforcePrimaryKey">
-            <DomainPropertyMoniker Name="Entity/EnforcePrimaryKey" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="immutable">
             <DomainPropertyMoniker Name="Entity/Immutable" />

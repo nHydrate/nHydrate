@@ -54,10 +54,6 @@
     <Compile Include="EFCodeFirstNetCoreProjectItemGenerator.cs" />
     <Compile Include="EFCodeFirstNetCoreProjectGenerator.cs" />
     <Compile Include="EFCodeFirstNetCoreBaseTemplate.cs" />
-    <Compile Include="Generators\AuditEntity\AuditEntityExtenderGenerator.cs" />
-    <Compile Include="Generators\AuditEntity\AuditEntityExtenderTemplate.cs" />
-    <Compile Include="Generators\AuditEntity\AuditEntityGeneratedGenerator.cs" />
-    <Compile Include="Generators\AuditEntity\AuditEntityGeneratedTemplate.cs" />
     <Compile Include="Generators\ContextExtensions\ContextExtensionsExtenderGenerator.cs" />
     <Compile Include="Generators\ContextExtensions\ContextExtensionsExtenderTemplate.cs" />
     <Compile Include="Generators\ContextExtensions\ContextExtensionsGeneratedGenerator.cs" />
@@ -66,10 +62,6 @@
     <Compile Include="Generators\ContextStartup\ContextStartupExtenderTemplate.cs" />
     <Compile Include="Generators\ContextStartup\ContextStartupGeneratedGenerator.cs" />
     <Compile Include="Generators\ContextStartup\ContextStartupGeneratedTemplate.cs" />
-    <Compile Include="Generators\Contexts\ContextAuditExtenderGenerator.cs" />
-    <Compile Include="Generators\Contexts\ContextAuditExtenderTemplate.cs" />
-    <Compile Include="Generators\Contexts\ContextAuditGeneratedGenerator.cs" />
-    <Compile Include="Generators\Contexts\ContextAuditGeneratedTemplate.cs" />
     <Compile Include="Generators\Contexts\ContextExtenderGenerator.cs" />
     <Compile Include="Generators\Contexts\ContextExtenderTemplate.cs" />
     <Compile Include="Generators\Contexts\ContextGeneratedGenerator.cs" />

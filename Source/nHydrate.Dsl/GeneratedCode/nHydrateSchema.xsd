@@ -289,12 +289,6 @@
             <xsd:documentation>A summary of the entity</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: AllowAuditTracking -->
-        <xsd:attribute name="allowAuditTracking" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if there is a full audit trail for this entity</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: AllowCreateAudit -->
         <xsd:attribute name="allowCreateAudit" type="xsd:boolean" >
           <xsd:annotation>
@@ -317,12 +311,6 @@
         <xsd:attribute name="isAssociative" type="xsd:boolean" >
           <xsd:annotation>
             <xsd:documentation>Determines if this is an intermediary entity between two other entities</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
-        <!-- Property: EnforcePrimaryKey -->
-        <xsd:attribute name="enforcePrimaryKey" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if this primary key is enforced in the database</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: Immutable -->

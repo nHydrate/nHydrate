@@ -92,7 +92,6 @@ namespace nHydrate.DslPackage.Forms
 			relationId = _connector.Id;
 
 			//Verify that they did not link the same two columns more than once
-			var checkList = new List<string>();
 			var inError = false;
 			var colList1 = new List<Guid>();
 			var colList2 = new List<Guid>();

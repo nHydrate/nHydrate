@@ -94,13 +94,11 @@ namespace nHydrate.Dsl.Custom
                 XmlHelper.AddLineBreak(document.DocumentElement);
 
                 XmlHelper.AddAttribute(document.DocumentElement, "id", item.Id);
-                XmlHelper.AddAttribute(document.DocumentElement, "allowaudittracking", item.AllowAuditTracking);
                 XmlHelper.AddAttribute(document.DocumentElement, "allowcreateaudit", item.AllowCreateAudit);
                 XmlHelper.AddAttribute(document.DocumentElement, "allowmodifyaudit", item.AllowModifyAudit);
                 XmlHelper.AddAttribute(document.DocumentElement, "allowtimestamp", item.AllowTimestamp);
                 XmlHelper.AddAttribute(document.DocumentElement, "codefacade", item.CodeFacade);
                 XmlHelper.AddAttribute(document.DocumentElement, "immutable", item.Immutable);
-                XmlHelper.AddAttribute(document.DocumentElement, "enforceprimarykey", item.EnforcePrimaryKey);
                 XmlHelper.AddAttribute(document.DocumentElement, "isassociative", item.IsAssociative);
                 XmlHelper.AddAttribute(document.DocumentElement, "typedentity", item.TypedEntity.ToString());
                 XmlHelper.AddAttribute(document.DocumentElement, "schema", item.Schema);
@@ -429,13 +427,11 @@ namespace nHydrate.Dsl.Custom
                 #region Properties
 
                 item.Name = XmlHelper.GetAttributeValue(document.DocumentElement, "name", item.Name);
-                item.AllowAuditTracking = XmlHelper.GetAttributeValue(document.DocumentElement, "allowaudittracking", item.AllowAuditTracking);
                 item.AllowCreateAudit = XmlHelper.GetAttributeValue(document.DocumentElement, "allowcreateaudit", item.AllowCreateAudit);
                 item.AllowModifyAudit = XmlHelper.GetAttributeValue(document.DocumentElement, "allowmodifyaudit", item.AllowModifyAudit);
                 item.AllowTimestamp = XmlHelper.GetAttributeValue(document.DocumentElement, "allowtimestamp", item.AllowTimestamp);
                 item.CodeFacade = XmlHelper.GetAttributeValue(document.DocumentElement, "codefacade", item.CodeFacade);
                 item.Immutable = XmlHelper.GetAttributeValue(document.DocumentElement, "immutable", item.Immutable);
-                item.EnforcePrimaryKey = XmlHelper.GetAttributeValue(document.DocumentElement, "enforceprimarykey", item.EnforcePrimaryKey);
                 item.IsAssociative = XmlHelper.GetAttributeValue(document.DocumentElement, "isassociative", item.IsAssociative);
                 item.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(document.DocumentElement, "generatesdoublederived", item.GeneratesDoubleDerived);
                 item.IsTenant = XmlHelper.GetAttributeValue(document.DocumentElement, "isTenant", item.IsTenant);

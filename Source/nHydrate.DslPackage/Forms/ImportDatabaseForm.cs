@@ -36,11 +36,11 @@ namespace nHydrate.DslPackage.Forms
         {
             InitializeComponent();
 
-            var contetextMenu = new ContextMenu();
+            var contextMenu = new ContextMenu();
             var menu = new MenuItem() { Text = "Changes" };
             menu.Click += new EventHandler(ChangeTextMenuClick);
-            contetextMenu.MenuItems.Add(menu);
-            //txtChanged.ContextMenu = contetextMenu;
+            contextMenu.MenuItems.Add(menu);
+            //txtChanged.ContextMenu = contextMenu;
             tvwRefresh.AfterSelect += new TreeViewEventHandler(tvwRefresh_AfterSelect);
 
             grpConnectionStringPostgres.Location = DatabaseConnectionControl1.Location;
@@ -580,9 +580,6 @@ namespace nHydrate.DslPackage.Forms
                     auditFields.Add(new SpecialField { Name = _model.ModifiedDateColumnName, Type = SpecialFieldTypeConstants.ModifiedDate });
                     auditFields.Add(new SpecialField { Name = _model.TimestampColumnName, Type = SpecialFieldTypeConstants.Timestamp });
                     auditFields.Add(new SpecialField { Name = _model.TenantColumnName, Type = SpecialFieldTypeConstants.Tenant });
-
-                    //Setup new model
-                    var project = new nHydrate.DataImport.Database();
 
                     var pkey = ProgressHelper.ProgressingStarted("Importing...", true);
                     try

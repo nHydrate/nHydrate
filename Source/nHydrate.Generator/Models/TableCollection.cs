@@ -1,10 +1,7 @@
-#pragma warning disable 0168
-using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
@@ -52,21 +49,13 @@ namespace nHydrate.Generator.Models
                 foreach (Reference r in t.Relationships)
                 {
                     if (r.Object == null)
-                    {
                         delRefList.Add(r);
-                    }
                     else if (((Relation) r.Object).ParentTableRef.Object == t)
-                    {
                         System.Diagnostics.Debug.Write("");
-                    }
                     else if (((Relation) r.Object).ChildTableRef.Object == t)
-                    {
                         System.Diagnostics.Debug.Write("");
-                    }
                     else
-                    {
                         delRefList.Add(r);
-                    }
                 }
 
                 //Perform actual remove
@@ -102,42 +91,35 @@ namespace nHydrate.Generator.Models
 
         public void Remove(int tableId)
         {
-            try
+            var table = this.GetById(tableId)[0];
+
+            var deleteList = new ArrayList();
+            foreach (Relation relation in ((ModelRoot) this.Root).Database.Relations)
             {
-                var table = this.GetById(tableId)[0];
-
-                var deleteList = new ArrayList();
-                foreach (Relation relation in ((ModelRoot)this.Root).Database.Relations)
-                {
-                    if (relation.ParentTableRef.Object == null)
-                        deleteList.Add(relation);
-                    else if (relation.ChildTableRef.Object == null)
-                        deleteList.Add(relation);
-                    else if ((relation.ParentTableRef.Object.Key == table.Key) || (relation.ChildTableRef.Object.Key == table.Key))
-                        deleteList.Add(relation);
-                }
-
-                foreach (Relation relation in deleteList)
-                    ((ModelRoot)this.Root).Database.Relations.Remove(relation);
-
-                //Remove actual columns
-                for (var ii = table.Columns.Count - 1; ii >= 0; ii--)
-                {
-                    var id = ((Column) table.Columns[0].Object).Id;
-                    var c = ((ModelRoot) this.Root).Database.Columns.FirstOrDefault(x => x.Id == id);
-                    if (c != null)
-                        ((ModelRoot) this.Root).Database.Columns.Remove(c);
-                }
-
-                //Remove column references
-                table.Columns.Clear();
-
-                _internalList.RemoveAll(x => x.Id == tableId);
+                if (relation.ParentTableRef.Object == null)
+                    deleteList.Add(relation);
+                else if (relation.ChildTableRef.Object == null)
+                    deleteList.Add(relation);
+                else if ((relation.ParentTableRef.Object.Key == table.Key) || (relation.ChildTableRef.Object.Key == table.Key))
+                    deleteList.Add(relation);
             }
-            catch (Exception ex)
+
+            foreach (Relation relation in deleteList)
+                ((ModelRoot) this.Root).Database.Relations.Remove(relation);
+
+            //Remove actual columns
+            for (var ii = table.Columns.Count - 1; ii >= 0; ii--)
             {
-                throw;
+                var id = ((Column) table.Columns[0].Object).Id;
+                var c = ((ModelRoot) this.Root).Database.Columns.FirstOrDefault(x => x.Id == id);
+                if (c != null)
+                    ((ModelRoot) this.Root).Database.Columns.Remove(c);
             }
+
+            //Remove column references
+            table.Columns.Clear();
+
+            _internalList.RemoveAll(x => x.Id == tableId);
         }
 
         public IEnumerable<Column> GetAllColumns()

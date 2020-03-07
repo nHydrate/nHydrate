@@ -135,7 +135,7 @@ namespace nHydrate.Generator.Common.Util
 		#endregion
 
 		#region File Path Conversions
-		public static string EnsureDirectorySeperatorAtEnd(string directory)
+		public static string EnsureDirectorySeparatorAtEnd(string directory)
 		{
 			if (!(directory.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString())))
 			{

@@ -340,7 +340,6 @@ namespace nHydrate.DslPackage.Objects
                     var newTable = root.Database.Tables.Add();
                     newTable.ResetKey(entity.Id.ToString());
                     newTable.ResetId(HashString(newTable.Key));
-                    newTable.AllowAuditTracking = entity.AllowAuditTracking;
                     newTable.AllowCreateAudit = entity.AllowCreateAudit;
                     newTable.AllowModifiedAudit = entity.AllowModifyAudit;
                     newTable.AllowTimestamp = entity.AllowTimestamp;
@@ -348,7 +347,6 @@ namespace nHydrate.DslPackage.Objects
                     newTable.CodeFacade = entity.CodeFacade;
                     newTable.DBSchema = entity.Schema;
                     newTable.Description = entity.Summary;
-                    newTable.EnforcePrimaryKey = entity.EnforcePrimaryKey;
                     newTable.Immutable = entity.Immutable;
                     newTable.TypedTable = (nHydrate.Generator.Models.TypedTableConstants)Enum.Parse(typeof(nHydrate.Generator.Models.TypedTableConstants), entity.TypedEntity.ToString(), true);
                     newTable.Name = entity.Name;

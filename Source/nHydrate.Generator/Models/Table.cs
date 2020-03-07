@@ -27,9 +27,7 @@ namespace nHydrate.Generator.Models
         protected const bool _def_timestamp = true;
         protected const TypedTableConstants _def_isTypeTable = TypedTableConstants.None;
         protected const bool _def_fullIndexSearch = false;
-        protected const bool _def_allowAuditTracking = false;
         protected const bool _def_immutable = false;
-        protected const bool _def_enforePrimaryKey = true;
         protected const string _def_dbSchema = "dbo";
         protected const string _def_description = "";
         protected const string _def_codeFacade = "";
@@ -37,7 +35,6 @@ namespace nHydrate.Generator.Models
         protected const bool _def_isTenant = false;
 
         protected RowEntryCollection _staticData = null;
-        private bool _allowAuditTracking = _def_allowAuditTracking;
         private bool _immutable = _def_immutable;
 
         #endregion
@@ -131,25 +128,11 @@ namespace nHydrate.Generator.Models
 
         public bool AllowTimestamp { get; set; } = _def_timestamp;
 
-        public bool EnforcePrimaryKey { get; set; } = _def_enforePrimaryKey;
-
         public bool FullIndexSearch { get; set; } = _def_fullIndexSearch;
 
         public RowEntryCollection StaticData => _staticData;
 
         public bool AssociativeTable { get; set; } = _def_associativeTable;
-
-        public bool AllowAuditTracking
-        {
-            get
-            {
-                return _allowAuditTracking &&
-                    (this.TypedTable == TypedTableConstants.None || 
-                    this.TypedTable == TypedTableConstants.DatabaseTable) &&
-                    !this.AssociativeTable;
-            }
-            set { _allowAuditTracking = value; }
-        }
 
         public bool HasHistory { get; set; } = _def_hasHistory;
 
@@ -373,7 +356,6 @@ namespace nHydrate.Generator.Models
 
             node.AddAttribute("isTenant", this.IsTenant, _def_isTenant);
             node.AddAttribute("immutable", this.Immutable, _def_immutable);
-            node.AddAttribute("enforePrimaryKey", this.EnforcePrimaryKey, _def_enforePrimaryKey);
             node.AddAttribute("modifiedAudit", this.AllowModifiedAudit, _def_modifiedAudit);
             node.AddAttribute("typedTable", this.TypedTable.ToString("d"), _def_isTypeTable.ToString("d"));
             node.AddAttribute("createAudit", this.AllowCreateAudit, _def_createAudit);
@@ -391,7 +373,6 @@ namespace nHydrate.Generator.Models
             node.AddAttribute("associativeTable", this.AssociativeTable, _def_associativeTable);
             node.AddAttribute("hasHistory", this.HasHistory, _def_hasHistory);
             node.AddAttribute("fullIndexSearch", this.FullIndexSearch, _def_fullIndexSearch);
-            node.AddAttribute("allowAuditTracking", this.AllowAuditTracking, _def_allowAuditTracking);
         }
 
         public override void XmlLoad(XmlNode node)
@@ -412,7 +393,6 @@ namespace nHydrate.Generator.Models
 
             this.Immutable = XmlHelper.GetAttributeValue(node, "immutable", _def_immutable);
             this.IsTenant = XmlHelper.GetAttributeValue(node, "isTenant", _def_isTenant);
-            this.EnforcePrimaryKey = XmlHelper.GetAttributeValue(node, "enforePrimaryKey", _def_enforePrimaryKey);
 
             this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
@@ -433,7 +413,6 @@ namespace nHydrate.Generator.Models
             this.AllowCreateAudit = XmlHelper.GetAttributeValue(node, "createAudit", _def_createAudit);
             this.TypedTable = (TypedTableConstants) XmlHelper.GetAttributeValue(node, "typedTable", int.Parse(TypedTable.ToString("d")));
             this.AllowTimestamp = XmlHelper.GetAttributeValue(node, "timestamp", AllowTimestamp);
-            this.AllowAuditTracking = XmlHelper.GetAttributeValue(node, "allowAuditTracking", _def_allowAuditTracking);
             this.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(node, "generatesDoubleDerived", _def_generatesDoubleDerived);
         }
 

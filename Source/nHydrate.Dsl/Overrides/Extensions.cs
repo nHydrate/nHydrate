@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.IO;
-using System.Runtime.InteropServices;
 using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Dsl

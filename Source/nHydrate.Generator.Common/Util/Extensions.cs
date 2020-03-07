@@ -283,7 +283,7 @@ namespace nHydrate.Generator.Common.Util
             {
                 //Do Nothing - Cannot calculate
             }
-            //else if (daatType == System.Data.SqlDbType.DateTimeOffset)
+            //else if (dataType == System.Data.SqlDbType.DateTimeOffset)
             //{
             //  defaultValue = "DateTimeOffset.MinValue";
             //}
@@ -291,7 +291,7 @@ namespace nHydrate.Generator.Common.Util
             //{
             //  defaultValue = "System.DateTime.MinValue";
             //}
-            //else if (daatType == System.Data.SqlDbType.Time)
+            //else if (dataType == System.Data.SqlDbType.Time)
             //{
             //  defaultValue = "0";
             //}

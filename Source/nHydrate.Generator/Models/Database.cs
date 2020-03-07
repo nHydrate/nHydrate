@@ -1,4 +1,3 @@
-#pragma warning disable 0168
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace nHydrate.Generator.Models
         #region Member Variables
 
         protected const string _def_createdByColumnName = "CreatedBy";
-        protected const string _def_createdDateColumName = "CreatedDate";
+        protected const string _def_createdDateColumnName = "CreatedDate";
         protected const string _def_modifiedByColumnName = "ModifiedBy";
         protected const string _def_modifiedDateColumnName = "ModifiedDate";
         protected const string _def_timestampColumnName = "TimeStamp";
@@ -49,7 +48,7 @@ namespace nHydrate.Generator.Models
 
         public string CreatedByColumnName { get; set; } = _def_createdByColumnName;
 
-        public string CreatedDateColumnName { get; set; } = _def_createdDateColumName;
+        public string CreatedDateColumnName { get; set; } = _def_createdDateColumnName;
 
         public virtual string CreatedDatePascalName => this.CreatedDateColumnName;
 
@@ -129,223 +128,169 @@ namespace nHydrate.Generator.Models
 
         public override void XmlAppend(XmlNode node)
         {
-            try
-            {
-                var oDoc = node.OwnerDocument;
+            var oDoc = node.OwnerDocument;
 
-                node.AddAttribute("key", this.Key);
+            node.AddAttribute("key", this.Key);
 
-                XmlHelper.AddAttribute((XmlElement)node, "createdByColumnName", CreatedByColumnName);
-                XmlHelper.AddAttribute((XmlElement)node, "createdDateColumnName", CreatedDateColumnName);
-                XmlHelper.AddAttribute((XmlElement)node, "modifiedByColumnName", ModifiedByColumnName);
-                XmlHelper.AddAttribute((XmlElement)node, "modifiedDateColumnName", ModifiedDateColumnName);
-                XmlHelper.AddAttribute((XmlElement)node, "timestampColumnName", TimestampColumnName);
-                XmlHelper.AddAttribute((XmlElement)node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
-                XmlHelper.AddAttribute((XmlElement)node, "grantExecUser", GrantExecUser);
-                
-                var columnsNode = oDoc.CreateElement("columns");
-                Columns.XmlAppend(columnsNode);
-                node.AppendChild(columnsNode);
+            XmlHelper.AddAttribute((XmlElement) node, "createdByColumnName", CreatedByColumnName);
+            XmlHelper.AddAttribute((XmlElement) node, "createdDateColumnName", CreatedDateColumnName);
+            XmlHelper.AddAttribute((XmlElement) node, "modifiedByColumnName", ModifiedByColumnName);
+            XmlHelper.AddAttribute((XmlElement) node, "modifiedDateColumnName", ModifiedDateColumnName);
+            XmlHelper.AddAttribute((XmlElement) node, "timestampColumnName", TimestampColumnName);
+            XmlHelper.AddAttribute((XmlElement) node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
+            XmlHelper.AddAttribute((XmlElement) node, "grantExecUser", GrantExecUser);
 
-                var customViewColumnsNode = oDoc.CreateElement("customviewcolumns");
-                this.CustomViewColumns.XmlAppend(customViewColumnsNode);
-                node.AppendChild(customViewColumnsNode);
+            var columnsNode = oDoc.CreateElement("columns");
+            Columns.XmlAppend(columnsNode);
+            node.AppendChild(columnsNode);
 
-                var relationsNode = oDoc.CreateElement("relations");
-                this.Relations.XmlAppend(relationsNode);
-                node.AppendChild(relationsNode);
+            var customViewColumnsNode = oDoc.CreateElement("customviewcolumns");
+            this.CustomViewColumns.XmlAppend(customViewColumnsNode);
+            node.AppendChild(customViewColumnsNode);
 
-                node.AddAttribute("databaseName", this.DatabaseName);
+            var relationsNode = oDoc.CreateElement("relations");
+            this.Relations.XmlAppend(relationsNode);
+            node.AppendChild(relationsNode);
 
-                var tablesNode = oDoc.CreateElement("tables");
-                this.Tables.XmlAppend(tablesNode);
-                node.AppendChild(tablesNode);
+            node.AddAttribute("databaseName", this.DatabaseName);
 
-                var customViewsNode = oDoc.CreateElement("customviews");
-                this.CustomViews.XmlAppend(customViewsNode);
-                node.AppendChild(customViewsNode);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var tablesNode = oDoc.CreateElement("tables");
+            this.Tables.XmlAppend(tablesNode);
+            node.AppendChild(tablesNode);
 
+            var customViewsNode = oDoc.CreateElement("customviews");
+            this.CustomViews.XmlAppend(customViewsNode);
+            node.AppendChild(customViewsNode);
         }
 
         public override void XmlLoad(XmlNode node)
         {
-            try
+            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+            CreatedByColumnName = XmlHelper.GetAttributeValue(node, "createdByColumnName", CreatedByColumnName);
+            CreatedDateColumnName = XmlHelper.GetAttributeValue(node, "createdDateColumName", CreatedDateColumnName);
+            ModifiedByColumnName = XmlHelper.GetAttributeValue(node, "modifiedByColumnName", ModifiedByColumnName);
+            ModifiedDateColumnName = XmlHelper.GetAttributeValue(node, "modifiedDateColumnName", ModifiedDateColumnName);
+            TimestampColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", TimestampColumnName);
+            FullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
+            GrantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", GrantExecUser);
+
+            var relationsNode = node.SelectSingleNode("relations");
+            if (relationsNode != null)
+                this.Relations.XmlLoad(relationsNode);
+
+            var tablesNode = node.SelectSingleNode("tables");
+            if (tablesNode != null)
+                this.Tables.XmlLoad(tablesNode);
+
+            var customViewsNode = node.SelectSingleNode("customviews");
+            if (customViewsNode != null)
+                this.CustomViews.XmlLoad(customViewsNode);
+
+            var columnsNode = node.SelectSingleNode("columns");
+            if (columnsNode != null)
+                this.Columns.XmlLoad(columnsNode);
+
+            var customviewcolumnsNode = node.SelectSingleNode("customviewcolumns");
+            if (customviewcolumnsNode != null)
+                this.CustomViewColumns.XmlLoad(customviewcolumnsNode);
+
+            //Clean all tables that are dead
+            foreach (Table t in this.Tables)
             {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                CreatedByColumnName = XmlHelper.GetAttributeValue(node, "createdByColumnName", CreatedByColumnName);
-                CreatedDateColumnName = XmlHelper.GetAttributeValue(node, "createdDateColumName", CreatedDateColumnName);
-                ModifiedByColumnName = XmlHelper.GetAttributeValue(node, "modifiedByColumnName", ModifiedByColumnName);
-                ModifiedDateColumnName = XmlHelper.GetAttributeValue(node, "modifiedDateColumnName", ModifiedDateColumnName);
-                TimestampColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", TimestampColumnName);
-                FullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
-                GrantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", GrantExecUser);
-
-                var relationsNode = node.SelectSingleNode("relations");
-                if (relationsNode != null)
-                    this.Relations.XmlLoad(relationsNode);
-
-                var tablesNode = node.SelectSingleNode("tables");
-                if (tablesNode != null)
-                    this.Tables.XmlLoad(tablesNode);
-
-                var customViewsNode = node.SelectSingleNode("customviews");
-                if (customViewsNode != null)
-                    this.CustomViews.XmlLoad(customViewsNode);
-
-                var columnsNode = node.SelectSingleNode("columns");
-                if (columnsNode != null)
-                    this.Columns.XmlLoad(columnsNode);
-
-                var customviewcolumnsNode = node.SelectSingleNode("customviewcolumns");
-                if (customviewcolumnsNode != null)
-                    this.CustomViewColumns.XmlLoad(customviewcolumnsNode);
-
-                //Clean all tables that are dead
-                foreach (Table t in this.Tables)
+                foreach (var c in t.Columns.Where(x => x.Object == null).ToList())
                 {
-                    foreach (var c in t.Columns.Where(x => x.Object == null).ToList())
-                    {
-                        t.Columns.Remove(c);
-                    }
+                    t.Columns.Remove(c);
                 }
-
-                this.DatabaseName = XmlHelper.GetAttributeValue(node, "databaseName", string.Empty);
-
-                this.CreatedByColumnName = XmlHelper.GetAttributeValue(node, "createdByColumnName", _def_createdByColumnName);
-                this.CreatedDateColumnName = XmlHelper.GetAttributeValue(node, "createdDateColumnName", _def_createdDateColumName);
-                this.ModifiedByColumnName = XmlHelper.GetAttributeValue(node, "modifiedByColumnName", _def_modifiedByColumnName);
-                this.ModifiedDateColumnName = XmlHelper.GetAttributeValue(node, "modifiedDateColumnName", _def_modifiedDateColumnName);
-                this.TimestampColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", _def_timestampColumnName);
-                this.FullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", _def_fullIndexSearchColumnName);
-                this.GrantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", string.Empty);
-
-                #region Are any of these columns orphans
-                var deleteColumnList = new List<Column>();
-                var index = 0;
-                var allColumns = this.Tables.GetAllColumns();
-                foreach (Column column in this.Columns)
-                {
-                    if (!allColumns.Contains(column))
-                    {
-                        index++;
-                        deleteColumnList.Add(column);
-                        System.Diagnostics.Debug.Write("");
-                    }
-                }
-
-                foreach (var column in deleteColumnList)
-                    this.Columns.Remove(column);
-
-                #endregion
-
-                #region Error Check for columns with duplicate Keys (if someone manually edits XML file)
-
-                var usedList = new List<string>();
-                var removeList = new List<Column>();
-                foreach (Column column in this.Columns)
-                {
-                    if (usedList.Contains(column.Key.ToString()))
-                    {
-                        column.ResetKey(Guid.NewGuid().ToString());
-                    }
-                    usedList.Add(column.Key.ToString());
-                }
-
-                foreach (var column in removeList)
-                    this.Columns.Remove(column);
-
-                #endregion
-
-                #region Clean relations in case there are dead ones
-                var deleteRelationList = new List<Relation>();
-                foreach (var relation in this.Relations.AsEnumerable())
-                {
-                    if ((relation.ParentTableRef == null) || (relation.ChildTableRef == null))
-                    {
-                        if (!deleteRelationList.Contains(relation)) deleteRelationList.Add(relation);
-                    }
-                    else
-                    {
-                        var t = relation.ParentTable;
-                        if (t != null)
-                        {
-                            if (!t.Relationships.Contains(relation.Id))
-                            {
-                                if (!deleteRelationList.Contains(relation)) deleteRelationList.Add(relation);
-                            }
-                        }
-                    }
-                }
-
-                //Now do the actual deletes
-                foreach (var relation in deleteRelationList)
-                {
-                    this.Relations.Remove(relation);
-                }
-                #endregion
-
-                foreach (Table table in this.Tables)
-                {
-                    foreach (var column in table.GetColumns())
-                    {
-                        if (column.ParentTableRef.Object != table)
-                            column.ParentTableRef = table.CreateRef();
-                    }
-                }
-
-                #region DEBUG
-                foreach (var t in this.Tables.OrderBy(x => x.Name))
-                {
-                    #region Columns
-                    foreach (var c in t.GetColumns())
-                    {
-                        if (c.ParentTableRef == null)
-                        {
-                            System.Diagnostics.Debug.Write("");
-                        }
-                        else if (c.ParentTableRef.Object == null)
-                        {
-                            System.Diagnostics.Debug.Write("");
-                        }
-                    }
-                    #endregion
-
-                    #region Relations
-                    foreach (Relation r in t.GetRelations())
-                    {
-                        if (r.ChildTableRef == null)
-                        {
-                            System.Diagnostics.Debug.Write("");
-                        }
-                        else if (r.ChildTableRef.Object == null)
-                        {
-                            System.Diagnostics.Debug.Write("");
-                        }
-
-                        if (r.ParentTableRef == null)
-                        {
-                            System.Diagnostics.Debug.Write("");
-                        }
-                        else if (r.ParentTableRef.Object == null)
-                        {
-                            System.Diagnostics.Debug.Write("");
-                        }
-
-                    }
-                    #endregion
-                }
-                #endregion
-
             }
-            catch (Exception ex)
+
+            this.DatabaseName = XmlHelper.GetAttributeValue(node, "databaseName", string.Empty);
+
+            this.CreatedByColumnName = XmlHelper.GetAttributeValue(node, "createdByColumnName", _def_createdByColumnName);
+            this.CreatedDateColumnName = XmlHelper.GetAttributeValue(node, "createdDateColumnName", _def_createdDateColumnName);
+            this.ModifiedByColumnName = XmlHelper.GetAttributeValue(node, "modifiedByColumnName", _def_modifiedByColumnName);
+            this.ModifiedDateColumnName = XmlHelper.GetAttributeValue(node, "modifiedDateColumnName", _def_modifiedDateColumnName);
+            this.TimestampColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", _def_timestampColumnName);
+            this.FullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", _def_fullIndexSearchColumnName);
+            this.GrantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", string.Empty);
+
+            #region Are any of these columns orphans
+
+            var deleteColumnList = new List<Column>();
+            var index = 0;
+            var allColumns = this.Tables.GetAllColumns();
+            foreach (Column column in this.Columns)
             {
-                throw;
+                if (!allColumns.Contains(column))
+                {
+                    index++;
+                    deleteColumnList.Add(column);
+                    System.Diagnostics.Debug.Write("");
+                }
             }
+
+            foreach (var column in deleteColumnList)
+                this.Columns.Remove(column);
+
+            #endregion
+
+            #region Error Check for columns with duplicate Keys (if someone manually edits XML file)
+
+            var usedList = new List<string>();
+            var removeList = new List<Column>();
+            foreach (Column column in this.Columns)
+            {
+                if (usedList.Contains(column.Key.ToString()))
+                {
+                    column.ResetKey(Guid.NewGuid().ToString());
+                }
+
+                usedList.Add(column.Key.ToString());
+            }
+
+            foreach (var column in removeList)
+                this.Columns.Remove(column);
+
+            #endregion
+
+            #region Clean relations in case there are dead ones
+
+            var deleteRelationList = new List<Relation>();
+            foreach (var relation in this.Relations.AsEnumerable())
+            {
+                if ((relation.ParentTableRef == null) || (relation.ChildTableRef == null))
+                {
+                    if (!deleteRelationList.Contains(relation)) deleteRelationList.Add(relation);
+                }
+                else
+                {
+                    var t = relation.ParentTable;
+                    if (t != null)
+                    {
+                        if (!t.Relationships.Contains(relation.Id))
+                        {
+                            if (!deleteRelationList.Contains(relation)) deleteRelationList.Add(relation);
+                        }
+                    }
+                }
+            }
+
+            //Now do the actual deletes
+            foreach (var relation in deleteRelationList)
+            {
+                this.Relations.Remove(relation);
+            }
+
+            #endregion
+
+            foreach (Table table in this.Tables)
+            {
+                foreach (var column in table.GetColumns())
+                {
+                    if (column.ParentTableRef.Object != table)
+                        column.ParentTableRef = table.CreateRef();
+                }
+            }
+
         }
 
         #endregion

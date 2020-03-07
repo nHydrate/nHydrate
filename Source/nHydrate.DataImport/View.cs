@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.DataImport
 {
@@ -30,8 +29,7 @@ namespace nHydrate.DataImport
                     this.Name + "|" +
                     schema +
                     this.SQL + "|";
-                return HashHelper.Hash(prehash);
-                //return prehash;
+                return prehash;
             }
         }
 

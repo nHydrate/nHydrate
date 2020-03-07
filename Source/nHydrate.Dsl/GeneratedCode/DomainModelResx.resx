@@ -381,18 +381,6 @@
     <value>Documentation</value>
     <comment>Category for DomainProperty &apos;Summary&apos; on DomainClass &apos;Entity&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.Entity/AllowAuditTracking.Description" xml:space="preserve">
-    <value>Determines if there is a full audit trail for this entity</value>
-    <comment>Description for DomainProperty &apos;AllowAuditTracking&apos; on DomainClass &apos;Entity&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Entity/AllowAuditTracking.DisplayName" xml:space="preserve">
-    <value>Allow Audit Tracking</value>
-    <comment>DisplayName for DomainProperty &apos;AllowAuditTracking&apos; on DomainClass &apos;Entity&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Entity/AllowAuditTracking.Category" xml:space="preserve">
-    <value>Audit</value>
-    <comment>Category for DomainProperty &apos;AllowAuditTracking&apos; on DomainClass &apos;Entity&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.Entity/AllowCreateAudit.Description" xml:space="preserve">
     <value>Determines if the fields &apos;CreatedBy&apos; and &apos;CreateDate&apos; are created</value>
     <comment>Description for DomainProperty &apos;AllowCreateAudit&apos; on DomainClass &apos;Entity&apos;</comment>
@@ -440,18 +428,6 @@
   <data name="nHydrate.Dsl.Entity/IsAssociative.Category" xml:space="preserve">
     <value>Database</value>
     <comment>Category for DomainProperty &apos;IsAssociative&apos; on DomainClass &apos;Entity&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Entity/EnforcePrimaryKey.Description" xml:space="preserve">
-    <value>Determines if this primary key is enforced in the database</value>
-    <comment>Description for DomainProperty &apos;EnforcePrimaryKey&apos; on DomainClass &apos;Entity&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Entity/EnforcePrimaryKey.DisplayName" xml:space="preserve">
-    <value>Enforce Primary Key</value>
-    <comment>DisplayName for DomainProperty &apos;EnforcePrimaryKey&apos; on DomainClass &apos;Entity&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.Entity/EnforcePrimaryKey.Category" xml:space="preserve">
-    <value>Database</value>
-    <comment>Category for DomainProperty &apos;EnforcePrimaryKey&apos; on DomainClass &apos;Entity&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.Entity/Immutable.Description" xml:space="preserve">
     <value>Determines if this entity can be changed</value>

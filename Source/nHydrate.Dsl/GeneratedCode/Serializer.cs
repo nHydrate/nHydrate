@@ -1660,23 +1660,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// AllowAuditTracking
-			if (!serializationContext.Result.Failed)
-			{
-				string attribAllowAuditTracking = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "allowAuditTracking");
-				if (attribAllowAuditTracking != null)
-				{
-					global::System.Boolean valueOfAllowAuditTracking;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribAllowAuditTracking, out valueOfAllowAuditTracking))
-					{
-						instanceOfEntity.AllowAuditTracking = valueOfAllowAuditTracking;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "allowAuditTracking", typeof(global::System.Boolean), attribAllowAuditTracking);
-					}
-				}
-			}
 			// AllowCreateAudit
 			if (!serializationContext.Result.Failed)
 			{
@@ -1742,23 +1725,6 @@ namespace nHydrate.Dsl
 					else
 					{	// Invalid property value, ignored.
 						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "isAssociative", typeof(global::System.Boolean), attribIsAssociative);
-					}
-				}
-			}
-			// EnforcePrimaryKey
-			if (!serializationContext.Result.Failed)
-			{
-				string attribEnforcePrimaryKey = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "enforcePrimaryKey");
-				if (attribEnforcePrimaryKey != null)
-				{
-					global::System.Boolean valueOfEnforcePrimaryKey;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.Boolean>(serializationContext, attribEnforcePrimaryKey, out valueOfEnforcePrimaryKey))
-					{
-						instanceOfEntity.EnforcePrimaryKey = valueOfEnforcePrimaryKey;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "enforcePrimaryKey", typeof(global::System.Boolean), attribEnforcePrimaryKey);
 					}
 				}
 			}
@@ -2582,19 +2548,6 @@ namespace nHydrate.Dsl
 	
 				}
 			}
-			// AllowAuditTracking
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfEntity.AllowAuditTracking;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "allowAuditTracking", serializedPropValue);
-					}
-				}
-			}
 			// AllowCreateAudit
 			if (!serializationContext.Result.Failed)
 			{
@@ -2644,19 +2597,6 @@ namespace nHydrate.Dsl
 					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "false") != 0)
 					{	// No need to write the value out if it's the same as default value.
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "isAssociative", serializedPropValue);
-					}
-				}
-			}
-			// EnforcePrimaryKey
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.Boolean propValue = instanceOfEntity.EnforcePrimaryKey;
-				string serializedPropValue = DslModeling::SerializationUtilities.GetString<global::System.Boolean>(serializationContext, propValue);
-				if (!serializationContext.Result.Failed)
-				{
-					if (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(serializedPropValue, "true") != 0)
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "enforcePrimaryKey", serializedPropValue);
 					}
 				}
 			}

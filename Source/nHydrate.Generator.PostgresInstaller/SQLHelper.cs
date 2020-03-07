@@ -111,19 +111,6 @@ namespace nHydrate.Generator.PostgresInstaller
                         //TODO - Delete Tenant View
                         sb.AppendLine();
                     }
-                    else if (newT != null && oldT.AllowAuditTracking && !newT.AllowAuditTracking)
-                    {
-                        //If the old model had audit tracking and the new one does not, add a TODO in the script
-                        var tableName = "__AUDIT__" + Globals.GetTableDatabaseName(modelOld, oldT);
-                        sb.AppendLine("--TODO: REMOVE AUDIT TABLE '" + tableName + "'");
-                        sb.AppendLine("--The previous model had audit tracking turn on for table '" +
-                                      Globals.GetTableDatabaseName(modelOld, oldT) + "' and now it is turned off.");
-                        sb.AppendLine(
-                            "--The audit table will not be removed automatically. If you want to remove it, uncomment the following script.");
-                        sb.AppendLine("--DROP TABLE [" + tableName + "]");
-                        sb.AppendLine("--GO");
-                        sb.AppendLine();
-                    }
                     else if (newT.DatabaseName != oldT.DatabaseName)
                     {
                         //RENAME TABLE
@@ -452,7 +439,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
                         #endregion
 
-                        //TODO - Check hash porperties and if changed recompile tenant view
+                        //TODO - Check hash properties and if changed recompile tenant view
 
                     }
                 }
@@ -956,36 +943,6 @@ namespace nHydrate.Generator.PostgresInstaller
             }
         }
 
-        public static string GetSqlCreateAuditPK(Table table)
-        {
-            var tableName = $"__AUDIT__{table.DatabaseName.ToUpper()}";
-            var indexName = $"PK_{tableName.ToUpper()}";
-
-            var sb = new StringBuilder();
-            sb.AppendLine($"--PRIMARY KEY FOR TABLE [{tableName}]");
-            //sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'PK')");
-            sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" WITH NOCHECK ADD");
-            sb.Append($"CONSTRAINT [{indexName}] PRIMARY KEY CLUSTERED ([__rowid]);");
-            sb.AppendLine();
-            sb.AppendLine("--GO");
-            sb.AppendLine();
-            return sb.ToString();
-        }
-
-        public static string GetSqlDropAuditPK(Table table)
-        {
-            var tableName = $"__AUDIT__{table.DatabaseName.ToUpper()}";
-            var indexName = $"PK_{tableName.ToUpper()}";
-
-            var sb = new StringBuilder();
-            sb.AppendLine($"--DROP PRIMARY KEY FOR TABLE [{tableName}]");
-            //sb.AppendLine($"if exists(select * from sys.objects where name = '{indexName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
-            sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
-            sb.AppendLine("--GO");
-            sb.AppendLine();
-            return sb.ToString();
-        }
-
         public static string GetSqlTenantIndex(ModelRoot model, Table table)
         {
             var indexName = "IDX_" + table.DatabaseName.Replace("-", string.Empty) + "_" + model.TenantColumnName;
@@ -1413,9 +1370,8 @@ namespace nHydrate.Generator.PostgresInstaller
             sb.AppendLine("--GO");
             sb.AppendLine();
 
-            if (newTable.EnforcePrimaryKey)
+            //RENAME PRIMARY KEY (it will be re-added in create script)
             {
-                //RENAME PRIMARY KEY (it will be readded in create script)
                 var oldIndexName = "PK_" + oldTable.DatabaseName.ToUpper();
                 var newIndexName = "PK_" + newTable.DatabaseName.ToUpper();
                 sb.AppendLine($"--RENAME PRIMARY KEY FOR TABLE '{oldTable.DatabaseName}'");
@@ -2131,36 +2087,6 @@ namespace nHydrate.Generator.PostgresInstaller
             }
             sb.AppendLine(";");
             sb.AppendLine("--GO");
-            sb.AppendLine();
-            return sb.ToString();
-        }
-
-        public static string GetSQLCreateAuditTable(ModelRoot model, Table table)
-        {
-            if (table.TypedTable == TypedTableConstants.EnumOnly)
-                return string.Empty;
-
-            var sb = new StringBuilder();
-            var tableName = $"__AUDIT__{Globals.GetTableDatabaseName(model, table)}";
-
-            sb.AppendLine($"CREATE TABLE IF NOT EXISTS {table.GetPostgresSchema()}.\"{tableName}\" (");
-            sb.AppendLine("\t\"__rowid\" INTEGER GENERATED ALWAYS AS IDENTITY NOT NULL,");
-            sb.AppendLine("\t\"__action\" INTEGER NOT NULL,");
-            sb.AppendLine($"\t\"__insertdate\" timestamp CONSTRAINT DF__{table.DatabaseName}__AUDIT DEFAULT current_timestamp NOT NULL,");
-            if (table.AllowCreateAudit || table.AllowModifiedAudit)
-                sb.AppendLine("\t\"" + model.Database.ModifiedByDatabaseName + "\" Varchar (50) NULL,");
-
-            var columnList = table.GetColumns().ToList();
-            foreach (var column in columnList)
-            {
-                if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
-                {
-                    sb.Append("\t" + AppendColumnDefinition(column, allowDefault: false, allowIdentity: false, forceNull: true, allowFormula: false, allowComputed: false));
-                    if (columnList.IndexOf(column) < columnList.Count - 1) sb.Append(",");
-                    sb.AppendLine();
-                }
-            }
-            sb.Append(");");
             sb.AppendLine();
             return sb.ToString();
         }

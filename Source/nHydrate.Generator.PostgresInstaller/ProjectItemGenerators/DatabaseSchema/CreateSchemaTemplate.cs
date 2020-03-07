@@ -1,5 +1,3 @@
-#pragma warning disable 0168
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
@@ -35,34 +33,26 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
         #endregion
 
         #region GenerateContent
+
         private void GenerateContent()
         {
-            try
-            {
-                sb = new StringBuilder();
-                sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
-                sb.AppendLine("--Data Schema");
-                sb.AppendLine();
+            sb = new StringBuilder();
+            sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
+            sb.AppendLine("--Data Schema");
+            sb.AppendLine();
 
-                //this.AppendCreateSchema();
-                this.AppendCreateTable();
-                this.AppendCreateTenantViews();
-                this.AppendAuditTracking();
-                this.AppendCreateAudit();
-                //this.AppendCreatePrimaryKey(); //do not add this. user can handle this in upgrade
-                //this.AppendAuditTables();
-                //this.AppendCreateUniqueKey();
-                this.AppendCreateIndexes();
-                this.AppendRemoveDefaults();
-                this.AppendCreateDefaults();
-                //this.AppendClearSP();
-                this.AppendCreateTriggers();
-                this.AppendVersionTable();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            //this.AppendCreateSchema();
+            this.AppendCreateTable();
+            this.AppendCreateTenantViews();
+            this.AppendCreateAudit();
+            //this.AppendCreatePrimaryKey(); //do not add this. user can handle this in upgrade
+            //this.AppendCreateUniqueKey();
+            this.AppendCreateIndexes();
+            this.AppendRemoveDefaults();
+            this.AppendCreateDefaults();
+            //this.AppendClearSP();
+            this.AppendCreateTriggers();
+            this.AppendVersionTable();
         }
 
         #region Append CreateTable
@@ -133,69 +123,13 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
 
         #endregion
 
-        #region Append AuditTracking
-        private void AppendAuditTracking()
-        {
-            foreach (var table in _model.Database.Tables.Where(x => x.AllowAuditTracking && x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
-            {
-                sb.AppendLine("--CREATE AUDIT TABLE FOR [" + table.DatabaseName + "]");
-                sb.AppendLine(SQLEmit.GetSQLCreateAuditTable(_model, table));
-                sb.AppendLine("--GO");
-                sb.AppendLine();
-
-                sb.AppendLine("--ENSURE ALL COLUMNS ARE CORRECT TYPE");
-                var tableName = $"__AUDIT__{table.DatabaseName}";
-
-                foreach (var column in table.GetColumns().OrderBy(x => x.Name))
-                {
-                    if (!(column.DataType == System.Data.SqlDbType.Text || column.DataType == System.Data.SqlDbType.NText || column.DataType == System.Data.SqlDbType.Image))
-                    {
-                        //Now add columns if they do not exist
-                        //sb.AppendLine("if not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + column.DatabaseName + "' and o.name = '" + tableName + "')");
-                        sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" ADD COLUMN IF NOT EXISTS \"{column.DatabaseName}\" {column.GetSQLDefaultType(true)} NULL;");
-                        sb.AppendLine("--GO");
-                        //sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" ALTER COLUMN [" + column.DatabaseName + "] " + column.DatabaseType + " NULL");
-                        //sb.AppendLine("--GO");
-                        sb.AppendLine();
-                    }
-                }
-
-                if (table.AllowModifiedAudit)
-                {
-                    //sb.AppendLine("if not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + _model.Database.ModifiedByDatabaseName + "' and o.name = '" + tableName + "')");
-                    sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" ADD COLUMN IF NOT EXISTS \"{_model.Database.ModifiedByDatabaseName}\" Varchar (50) NULL;");
-                    //sb.AppendLine("--GO");
-                    //sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{tableName}\" ALTER COLUMN [" + _model.Database.ModifiedByDatabaseName + "] [NVarchar] (50) NULL");
-                    sb.AppendLine("--GO");
-                    sb.AppendLine();
-                }
-
-            }
-        }
-        #endregion
-
         #region Append Primary Key
 
         private void AppendCreatePrimaryKey()
         {
             if (_model.EmitSafetyScripts)
             {
-                sb.AppendLine("--##SECTION BEGIN [RENAME PK]");
-                sb.AppendLine();
-
                 //TODO: Rename existing PK if they exist
-
-                sb.AppendLine("--##SECTION BEGIN [DROP PK]");
-                sb.AppendLine();
-
-                //Drop PK
-                foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly && !x.EnforcePrimaryKey).OrderBy(x => x.Name))
-                {
-                    sb.Append(SQLEmit.GetSqlDropPK(table));
-                }
-
-                sb.AppendLine("--##SECTION END [DROP PK]");
-                sb.AppendLine();
 
                 sb.AppendLine("--##SECTION BEGIN [CREATE PK]");
                 sb.AppendLine();
@@ -203,11 +137,8 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                 //Create PK
                 foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
                 {
-                    if (table.EnforcePrimaryKey)
-                    {
-                        sb.Append(SQLEmit.GetSqlCreatePK(table));
-                        sb.AppendLine("--GO");
-                    }
+                    sb.Append(SQLEmit.GetSqlCreatePK(table));
+                    sb.AppendLine("--GO");
                 }
 
                 sb.AppendLine("--##SECTION END [CREATE PK]");
@@ -217,24 +148,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
         }
 
         #endregion
-
-        private void AppendAuditTables()
-        {
-            sb.AppendLine("--##SECTION BEGIN [AUDIT TABLES PK]");
-            sb.AppendLine();
-
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
-            {
-                //If there is an audit table then make its surrogate key PK clustered
-                if (table.AllowAuditTracking)
-                    sb.Append(SQLEmit.GetSqlCreateAuditPK(table));
-                else if (_model.EmitSafetyScripts)
-                    sb.Append(SQLEmit.GetSqlDropAuditPK(table));
-            }
-
-            sb.AppendLine("--##SECTION END [AUDIT TABLES PK]");
-            sb.AppendLine();
-        }
 
         #region AppendCreateIndexes
 

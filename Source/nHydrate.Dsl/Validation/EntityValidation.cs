@@ -148,7 +148,7 @@ namespace nHydrate.Dsl
             foreach (var ending in classExtensions)
             {
                 if (this.PascalName.ToLower().EndsWith(ending))
-                    context.LogError(string.Format(ValidationHelper.ErrorTextNameConfictsWithGeneratedCode, this.Name), string.Empty, this);
+                    context.LogError(string.Format(ValidationHelper.ErrorTextNameConflictsWithGeneratedCode, this.Name), string.Empty, this);
             }
 
             #endregion
@@ -444,7 +444,7 @@ namespace nHydrate.Dsl
                     context.LogError(string.Format(ValidationHelper.ErrorTextRelationDuplicate, this.Name), string.Empty, this);
             }
 
-            //Relation fields cannot be duolicated with a relation. All source fields must be unique and all target fields must be unique
+            //Relation fields cannot be duplicated with a relation. All source fields must be unique and all target fields must be unique
             foreach (var relation in relationshipList.Where(x => x != null))
             {
                 var inError = false;

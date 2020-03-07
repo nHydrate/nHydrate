@@ -50,8 +50,6 @@ namespace nHydrate.Generator.Models
         {
             try
             {
-                var name = string.Empty;
-                var description = string.Empty;
                 foreach (CellEntry cellEntry in this.CellEntries)
                 {
                     var column = cellEntry.ColumnRef.Object as Column;
@@ -107,7 +105,6 @@ namespace nHydrate.Generator.Models
                 foreach (CellEntry cellEntry in this.CellEntries)
                 {
                     var column = cellEntry.ColumnRef.Object as Column;
-                    var pk = table.PrimaryKeyColumns.FirstOrDefault();
                     if (column != null)
                     {
                         if (StringHelper.Match(column.Name, "name"))

@@ -113,18 +113,6 @@ namespace nHydrate.DslPackage.Objects
 
                     #endregion
 
-                    //Find all fields in the removed entities
-                    var removalFieldIdList = model.Entities
-                        .Where(x => database.EntityList
-                            .Where(z => z.ImportState == DataImport.ImportStateConstants.Deleted)
-                            .Select(a => a.Name)
-                            .ToList()
-                            .Contains(x.Name)).ToList()
-                            .SelectMany(x => x.Fields).Select(x => x.Id);
-
-                    ////Remove these fields from the relation field map collection
-                    //model.RelationFields.Remove(x => removalFieldIdList.Contains(x.SourceFieldId) || removalFieldIdList.Contains(x.TargetFieldId));
-
                     //Remove the ones that need to be remove
                     model.Entities.Remove(x => database.EntityList.Where(z => z.ImportState == DataImport.ImportStateConstants.Deleted).Select(a => a.Name).ToList().Contains(x.Name));
 
@@ -441,7 +429,6 @@ namespace nHydrate.DslPackage.Objects
                 //DO NOT IMPORT METADATA
 
                 //Correct for invalid identifiers
-                //if (!nHydrate.Dsl.ValidationHelper.ValidCodeIdentifier(newField.Name) && !nHydrate.Dsl.ValidationHelper.IsReservedWord(newField.Name))
                 if (!nHydrate.Dsl.ValidationHelper.ValidCodeIdentifier(newField.Name))
                 {
                     newField.CodeFacade = nHydrate.Dsl.ValidationHelper.MakeCodeIdentifier(newField.Name, string.Empty);

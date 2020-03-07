@@ -20,8 +20,6 @@ namespace nHydrate.Dsl.Design.Converters
 		{
 			if (destinationType == typeof(string))
 			{
-				var g = (Guid)value;
-
 				var indexColumn = context.Instance as IndexColumn;
 				var field = indexColumn.Index.Entity.Fields.FirstOrDefault(x => x.Id == indexColumn.FieldID);
 				if (field != null)
