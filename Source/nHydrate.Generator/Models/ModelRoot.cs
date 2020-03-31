@@ -24,7 +24,7 @@ namespace nHydrate.Generator.Models
         protected const string _def_tenantPrefix = "__vw_tenant";
 
         protected string _version = _def_version;
-        private readonly VersionHistoryCollection _versionHistoryList = new VersionHistoryCollection(null);
+        private readonly VersionHistoryCollection _versionHistoryList = null;
         private string _modeToolVersion = string.Empty;
 
         #endregion
@@ -32,6 +32,7 @@ namespace nHydrate.Generator.Models
         public ModelRoot(INHydrateModelObject root)
             : base(root)
         {
+            _versionHistoryList = new VersionHistoryCollection(this);
             Database = new Database(this);
 
             this.RemovedTables = new List<string>();
