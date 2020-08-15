@@ -119,7 +119,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// The audit modifier used to mark database edits");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		protected ContextStartup _contextStartup = new ContextStartup(null);");
+            sb.AppendLine("		protected IContextStartup _contextStartup = new ContextStartup(null);");
             sb.AppendLine();
 
             sb.AppendLine("		private static object _seqCacheLock = new object();");
@@ -194,7 +194,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine($"		/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public {_model.ProjectName}Entities(ContextStartup contextStartup) :");
+            sb.AppendLine($"		public {_model.ProjectName}Entities(IContextStartup contextStartup) :");
             sb.AppendLine("				base()");
             sb.AppendLine("		{");
             sb.AppendLine("			_connectionString = ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"]?.ConnectionString;");
@@ -208,7 +208,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine($"	/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public {_model.ProjectName}Entities(ContextStartup contextStartup, string connectionString) :");
+            sb.AppendLine($"		public {_model.ProjectName}Entities(IContextStartup contextStartup, string connectionString) :");
             sb.AppendLine("				base()");
             sb.AppendLine("		{");
             sb.AppendLine("			_connectionString = connectionString;");
@@ -724,7 +724,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// The global settings of this context");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public virtual ContextStartup ContextStartup => _contextStartup;");
+            sb.AppendLine("		public virtual IContextStartup ContextStartup => _contextStartup;");
             sb.AppendLine();
 
             #region Configuration API/Database verification

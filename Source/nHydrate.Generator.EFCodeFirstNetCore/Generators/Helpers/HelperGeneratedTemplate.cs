@@ -469,7 +469,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	public partial interface IContext");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		ContextStartup ContextStartup { get; }");
+                sb.AppendLine("		IContextStartup ContextStartup { get; }");
                 sb.AppendLine();
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// The database context");
@@ -730,6 +730,19 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 //sb.AppendLine("    {");
                 //sb.AppendLine("    }");
                 //sb.AppendLine();
+                #endregion
+
+                #region ITenantEntity
+                sb.AppendLine("    /// <summary>");
+                sb.AppendLine("    /// Entities implementing this interface will have tenant based row security functionality.");
+                sb.AppendLine("    /// When the entity has a string property named \"TenanId\", the functionality will be picked up by convention.");
+                sb.AppendLine("    /// The 'TenantIDFieldAttribute' can be used on a string property of the entity to mark the tenant discriminator if the name is not \"TenantId\".");
+                sb.AppendLine("    /// </summary>");
+                sb.AppendLine("    public interface ITenantEntity");
+                sb.AppendLine("    {");
+                sb.AppendLine("        string TenantId { get; }");
+                sb.AppendLine("    }");
+                sb.AppendLine();
                 #endregion
 
                 #region IReadOnlyBusinessObject
@@ -1036,6 +1049,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("		{");
                 sb.AppendLine("		}");
                 sb.AppendLine("	}");
+                sb.AppendLine("	#endregion");
+                sb.AppendLine();
+
+                sb.AppendLine("	#region ContextConfigurationException");
+                sb.AppendLine("    public class ContextConfigurationException : System.Exception");
+                sb.AppendLine("    {");
+                sb.AppendLine("        public ContextConfigurationException(string message)");
+                sb.AppendLine("            : base(message)");
+                sb.AppendLine("        {");
+                sb.AppendLine("        }");
+                sb.AppendLine("    }");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
 

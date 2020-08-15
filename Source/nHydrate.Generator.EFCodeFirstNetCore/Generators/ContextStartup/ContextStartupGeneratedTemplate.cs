@@ -30,13 +30,24 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
             this.AppendUsingStatements();
             sb.AppendLine("namespace " + this.GetLocalNamespace());
             sb.AppendLine("{");
+
+            sb.AppendLine("	#region IContextStartup");
+            sb.AppendLine("    public interface IContextStartup");
+            sb.AppendLine("    {");
+            sb.AppendLine("        string Modifier { get; }");
+            sb.AppendLine("        bool AllowLazyLoading { get; }");
+            sb.AppendLine("        int CommandTimeout { get; }");
+            sb.AppendLine("    }");
+            sb.AppendLine("	#endregion");
+            sb.AppendLine();
+
             sb.AppendLine("	#region ContextStartup");
             sb.AppendLine();
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// This object holds the modifier information for audits on an ObjectContext");
             sb.AppendLine("	/// </summary>");
             sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
-            sb.AppendLine("	public partial class ContextStartup : ICloneable");
+            sb.AppendLine("	public partial class ContextStartup : IContextStartup, ICloneable");
             sb.AppendLine("	{");
             sb.AppendLine("		protected internal string DebugInfo { get; set; }");
             sb.AppendLine("		protected internal bool DefaultTimeout { get; private set; }");
@@ -97,6 +108,36 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
             sb.AppendLine();
             sb.AppendLine("	#endregion");
             sb.AppendLine();
+
+            sb.AppendLine("	#region TenantContextStartup");
+            sb.AppendLine("    /// <summary>");
+            sb.AppendLine("    /// Initialization object used for tenant based data contexts");
+            sb.AppendLine("    /// </summary>");
+            sb.AppendLine("    public partial class TenantContextStartup : ContextStartup");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public TenantContextStartup(string modifier, string tenantId)");
+            sb.AppendLine("            : base(modifier)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            if (string.IsNullOrEmpty(tenantId))");
+            sb.AppendLine("                throw new Exceptions.ContextConfigurationException(\"The tenant ID must be set!\");");
+            sb.AppendLine();
+            sb.AppendLine("            this.TenantId = tenantId;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public TenantContextStartup(string modifier, string tenantId, bool allowLazyLoading, int commandTimeout)");
+            sb.AppendLine("            : base(modifier, allowLazyLoading, commandTimeout)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            if (string.IsNullOrEmpty(tenantId))");
+            sb.AppendLine("                throw new Exceptions.ContextConfigurationException(\"The tenant ID must be set!\");");
+            sb.AppendLine();
+            sb.AppendLine("            this.TenantId = tenantId;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public string TenantId { get; }");
+            sb.AppendLine("    }");
+            sb.AppendLine("	#endregion");
+            sb.AppendLine();
+
             sb.AppendLine("}");
             sb.AppendLine();
         }

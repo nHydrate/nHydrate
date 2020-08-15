@@ -1,6 +1,4 @@
-using System;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.SQLInstaller
@@ -21,26 +19,6 @@ namespace nHydrate.Generator.SQLInstaller
         public override string LocalNamespaceExtension => DatabaseProjectGenerator.NamespaceExtension;
 
         public static string NamespaceExtension => "Install";
-
-        protected override void OnAfterGenerate()
-        {
-            try
-            {
-                base.OnAfterGenerate();
-
-                var project = EnvDTEHelper.Instance.GetProject(ProjectName);
-
-                var preBuildProperty = project.Properties.Item("PreBuildEvent");
-                preBuildProperty.Value = "if not exist \"$(SolutionDir)bin\" mkdir \"$(SolutionDir)bin\"\r\nattrib -r \"$(SolutionDir)Bin\\*.*\"";
-
-                var postBuildProperty = project.Properties.Item("PostBuildEvent");
-                postBuildProperty.Value = "copy \"$(TargetDir)$(TargetName).*\" \"$(SolutionDir)Bin\\\"";
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
 
         protected override void OnInitialize(IModelObject model)
         {
