@@ -24,16 +24,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore
 
         public static string NamespaceExtension => "EFDAL";
 
-        protected override void OnAfterGenerate()
-        {
-            base.OnAfterGenerate();
-            var project = EnvDTEHelper.Instance.GetProject(ProjectName);
-        }
-
-        protected override void OnInitialize(IModelObject model)
-        {
-        }
-
         public override IModelConfiguration ModelConfiguration { get; set; } = new EFCodeFirstNetCore.ModelConfiguration();
     }
 
