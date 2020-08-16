@@ -43,7 +43,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
 
             //this.AppendCreateSchema();
             this.AppendCreateTable();
-            this.AppendCreateTenantViews();
             this.AppendCreateAudit();
             //this.AppendCreatePrimaryKey(); //do not add this. user can handle this in upgrade
             //this.AppendCreateUniqueKey();
@@ -104,21 +103,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                 sb.AppendLine("--GO");
                 sb.AppendLine();
             }
-        }
-
-        private void AppendCreateTenantViews()
-        {
-            //Tenant Views
-            var grantSB = new StringBuilder();
-            foreach (var table in _model.Database.Tables.Where(x => x.IsTenant).OrderBy(x => x.Name))
-            {
-                var template = new SQLSelectTenantViewTemplate(_model, table, grantSB);
-                sb.Append(template.FileContent);
-            }
-
-            //Add grants
-            sb.Append(grantSB.ToString());
-            sb.AppendLine();
         }
 
         #endregion
@@ -249,7 +233,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                     if (table.IsTenant)
                     {
                         sb.AppendLine($"--APPEND TENANT FIELD FOR TABLE [{table.DatabaseName}]");
-                        sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{_model.TenantColumnName}\" varchar (128) NOT NULL CONSTRAINT \"DF__" + table.PascalName.ToUpper() + "_" + _model.TenantColumnName.ToUpper() + "\" DEFAULT current_user;");
+                        sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{_model.TenantColumnName}\" varchar (128) NOT NULL CONSTRAINT \"DF__" + table.PascalName.ToUpper() + "_" + _model.TenantColumnName.ToUpper() + "\";");
                         sb.AppendLine();
                     }
 

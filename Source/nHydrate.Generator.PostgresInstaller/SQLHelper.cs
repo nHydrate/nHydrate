@@ -52,16 +52,6 @@ namespace nHydrate.Generator.PostgresInstaller
                             sb.AppendLine();
                         }
 
-                        //If this is a tenant table then add the view as well
-                        if (newT.IsTenant)
-                        {
-                            var grantSB = new StringBuilder();
-                            var q1 = SQLEmit.GetSqlTenantView(modelNew, newT, grantSB);
-                            sb.AppendLine(q1);
-                            if (grantSB.ToString() != string.Empty)
-                                sb.AppendLine(grantSB.ToString());
-                        }
-
                     }
                 }
 
@@ -272,12 +262,6 @@ namespace nHydrate.Generator.PostgresInstaller
                             sb.AppendLine($"DROP INDEX [{indexName}] ON [{newT.GetPostgresSchema()}].[{newT.DatabaseName}]");
                             sb.AppendLine();
 
-                            //Drop the associated view
-                            var viewName = $"{modelOld.TenantPrefix}_{oldT.DatabaseName}";
-                            sb.AppendLine($"if exists (select name from sys.objects where name = '{viewName}'  AND type = 'V')");
-                            sb.AppendLine($"DROP VIEW [{viewName}]");
-                            sb.AppendLine();
-
                             //Drop the tenant field
                             sb.AppendLine($"if exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id where c.name = '{modelNew.TenantColumnName}' and t.name = '{newT.DatabaseName}')");
                             sb.AppendLine($"ALTER TABLE [{newT.GetPostgresSchema()}].[{newT.DatabaseName}] DROP COLUMN [{modelNew.TenantColumnName}]");
@@ -287,30 +271,10 @@ namespace nHydrate.Generator.PostgresInstaller
                         {
                             //Add the tenant field
                             sb.AppendLine(SQLEmit.GetSqlCreateTenantColumn(modelNew, newT));
-
-                            //Add tenant view
-                            var grantSB = new StringBuilder();
-                            sb.AppendLine(SQLEmit.GetSqlTenantView(modelNew, newT, grantSB));
-                            if (grantSB.ToString() != string.Empty)
-                                sb.AppendLine(grantSB.ToString());
                         }
                         else if (oldT.IsTenant && newT.IsTenant && oldT.DatabaseName != newT.DatabaseName)
                         {
                             //If rename tenant table then delete old view and create new view
-
-                            //Drop the old view
-                            var viewName = modelOld.TenantPrefix + "_" + oldT.DatabaseName;
-                            sb.AppendLine($"--DROP OLD TENANT VIEW FOR TABLE [{oldT.DatabaseName}]");
-                            sb.AppendLine($"if exists (select name from sys.objects where name = '{viewName}'  AND type = 'V')");
-                            sb.AppendLine($"DROP VIEW [{viewName}]");
-                            sb.AppendLine("--GO");
-
-                            //Add tenant view
-                            var grantSB = new StringBuilder();
-                            sb.AppendLine(SQLEmit.GetSqlTenantView(modelNew, newT, grantSB));
-                            if (grantSB.ToString() != string.Empty)
-                                sb.AppendLine(grantSB.ToString());
-
                         }
                         #endregion
 
@@ -407,20 +371,6 @@ namespace nHydrate.Generator.PostgresInstaller
                             sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.TimestampColumnName, modelNew.Database.TimestampColumnName));
                             sb.AppendLine("--GO");
                         }
-                        #endregion
-
-                        #region Emit Tenant View if need be
-
-                        //If the table schema has changed then emit the Tenant view
-                        if (schemaChanged && newT.IsTenant)
-                        {
-                            var grantSB = new StringBuilder();
-                            var q1 = SQLEmit.GetSqlTenantView(modelNew, newT, grantSB);
-                            sb.AppendLine(q1);
-                            if (grantSB.ToString() != string.Empty)
-                                sb.AppendLine(grantSB.ToString());
-                        }
-
                         #endregion
 
                         #region Static Data
@@ -966,31 +916,6 @@ namespace nHydrate.Generator.PostgresInstaller
             return sb.ToString();
         }
 
-        public static string GetSqlTenantView(ModelRoot model, Table table, StringBuilder grantSB)
-        {
-            try
-            {
-                var itemName = model.TenantPrefix + "_" + table.DatabaseName;
-
-                var sb = new StringBuilder();
-                sb.AppendLine($"--DROP TENANT VIEW FOR TABLE [{table.DatabaseName}]");
-                sb.AppendLine($"DROP VIEW IF EXISTS \"{itemName}\";");
-                sb.AppendLine("--GO");
-                sb.AppendLine();
-
-                sb.AppendLine($"--CREATE TENANT VIEW FOR TABLE [{table.DatabaseName}]");
-                sb.AppendLine($"CREATE OR REPLACE VIEW \"{table.GetPostgresSchema()}\".\"{itemName}\" AS");
-                sb.AppendLine($"select * from {table.GetPostgresSchema()}.\"{table.DatabaseName}\"");
-                sb.AppendLine($"WHERE (\"{model.TenantColumnName}\" = current_user);");
-                sb.AppendLine("--GO");
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
         public static string AppendColumnDefaultCreateSQL(Column column, bool includeDrop = true)
         {
             if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
@@ -1330,15 +1255,6 @@ namespace nHydrate.Generator.PostgresInstaller
                 sb.AppendLine();
             }
 
-            #endregion
-
-            #region Drop tenant view
-            if (t.IsTenant)
-            {
-                var itemName = model.TenantPrefix + "_" + t.DatabaseName;
-                sb.AppendLine($"--DROP TENANT VIEW FOR TABLE [{t.DatabaseName}]");
-                sb.AppendLine($"DROP VIEW IF EXISTS \"{itemName}\";");
-            }
             #endregion
 
             #region Drop the actual table

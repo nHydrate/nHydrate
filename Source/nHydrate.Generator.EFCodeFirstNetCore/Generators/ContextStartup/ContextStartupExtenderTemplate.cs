@@ -31,6 +31,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
             sb.AppendLine("	partial class ContextStartup");
             sb.AppendLine("	{");
             sb.AppendLine("	}");
+            sb.AppendLine();
+
+            sb.AppendLine("	partial class TenantContextStartup");
+            sb.AppendLine("	{");
+            sb.AppendLine("	}");
+            sb.AppendLine();
+
             sb.AppendLine("}");
         }
 

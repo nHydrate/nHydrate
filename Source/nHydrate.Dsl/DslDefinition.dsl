@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Dsl xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="7a314716-48c9-4371-8978-062be635f9b4" Description="This is the nHydrate Visual Modeler" Name="nHydrate" DisplayName="nHydrate ORM Modeler" Namespace="nHydrate.Dsl" MajorVersion="7" Build="1" Revision="235" ProductName="nHydrate ORM Modeler" CompanyName="nHydrate.org" PackageGuid="36220dab-63c7-4daa-860c-fc548bf4d5d3" PackageNamespace="nHydrate.DslPackage" xmlns="http://schemas.microsoft.com/VisualStudio/2005/DslTools/DslDefinitionModel">
+<Dsl xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="7a314716-48c9-4371-8978-062be635f9b4" Description="This is the nHydrate Visual Modeler" Name="nHydrate" DisplayName="nHydrate ORM Modeler" Namespace="nHydrate.Dsl" MajorVersion="7" Build="1" Revision="236" ProductName="nHydrate ORM Modeler" CompanyName="nHydrate.org" PackageGuid="36220dab-63c7-4daa-860c-fc548bf4d5d3" PackageNamespace="nHydrate.DslPackage" xmlns="http://schemas.microsoft.com/VisualStudio/2005/DslTools/DslDefinitionModel">
   <Notes>This integrated VS.NET component creates strongly-typed, extendable classes inside of a framework based on Entity Framework.</Notes>
   <Classes>
     <DomainClass Id="77b5fe81-853a-4b74-8ce5-98612544852f" Description="" Name="nHydrateModel" DisplayName="nHydrate Model" Namespace="nHydrate.Dsl" HasCustomConstructor="true" GeneratesDoubleDerived="true">
@@ -77,11 +77,6 @@
           </Type>
         </DomainProperty>
         <DomainProperty Id="be71ee12-7759-4612-930e-e53430febfb8" Description="The target location for generated projects" Name="OutputTarget" DisplayName="Output Target" Category="Definition" IsBrowsable="false">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
-        <DomainProperty Id="8d907fa0-9318-41e3-8fcf-d9e154112597" Description="Determines the prefix for generated views that map to tenant tables" Name="TenantPrefix" DisplayName="Tenant Prefix" DefaultValue="__vw_tenant" Category="Database">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
@@ -1023,9 +1018,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="outputTarget">
             <DomainPropertyMoniker Name="nHydrateModel/OutputTarget" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="tenantPrefix">
-            <DomainPropertyMoniker Name="nHydrateModel/TenantPrefix" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="tenantColumnName">
             <DomainPropertyMoniker Name="nHydrateModel/TenantColumnName" />

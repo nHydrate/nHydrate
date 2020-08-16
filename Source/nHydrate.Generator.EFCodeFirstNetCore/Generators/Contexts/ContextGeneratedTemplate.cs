@@ -102,7 +102,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("	/// <summary>");
             sb.AppendLine("	/// The entity context for the defined model schema");
             sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	public partial class " + _model.ProjectName + "Entities : Microsoft.EntityFrameworkCore.DbContext, IContext");
+            sb.AppendLine($"	public partial class {_model.ProjectName}Entities : Microsoft.EntityFrameworkCore.DbContext, IContext");
             sb.AppendLine("	{");
 
             sb.AppendLine("		/// <summary />");
@@ -114,12 +114,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public Guid InstanceKey { get; private set; }");
             sb.AppendLine();
+            sb.AppendLine("		private string _tenantId = null;");
 
             //Create the modifier property
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// The audit modifier used to mark database edits");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		protected ContextStartup _contextStartup = new ContextStartup(null);");
+            sb.AppendLine("		protected IContextStartup _contextStartup = new ContextStartup(null);");
             sb.AppendLine();
 
             sb.AppendLine("		private static object _seqCacheLock = new object();");
@@ -194,12 +195,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine($"		/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public {_model.ProjectName}Entities(ContextStartup contextStartup) :");
+            sb.AppendLine($"		public {_model.ProjectName}Entities(IContextStartup contextStartup) :");
             sb.AppendLine("				base()");
             sb.AppendLine("		{");
+            sb.AppendLine("			_contextStartup = contextStartup;");
+            sb.AppendLine("			_tenantId = (this.ContextStartup as TenantContextStartup)?.TenantId;");
             sb.AppendLine("			_connectionString = ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"]?.ConnectionString;");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
-            sb.AppendLine("			_contextStartup = contextStartup;");
             sb.AppendLine("			this.CommandTimeout = _contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
             sb.AppendLine("		}");
@@ -208,12 +210,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine($"	/// Initialize a new {_model.ProjectName}Entities object with an audit modifier.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public {_model.ProjectName}Entities(ContextStartup contextStartup, string connectionString) :");
+            sb.AppendLine($"		public {_model.ProjectName}Entities(IContextStartup contextStartup, string connectionString) :");
             sb.AppendLine("				base()");
             sb.AppendLine("		{");
+            sb.AppendLine("			_contextStartup = contextStartup;");
+            sb.AppendLine("			_tenantId = (this.ContextStartup as TenantContextStartup)?.TenantId;");
             sb.AppendLine("			_connectionString = connectionString;");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
-            sb.AppendLine("			_contextStartup = contextStartup;");
             sb.AppendLine("			this.CommandTimeout = _contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
             sb.AppendLine("		}");
@@ -263,14 +266,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             {
                 string schema = null;
                 if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
-                var dbTableName = item.DatabaseName;
-                if (item.IsTenant)
-                    dbTableName = _model.TenantPrefix + "_" + item.DatabaseName;
-
                 if (string.IsNullOrEmpty(schema))
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + dbTableName + "\");");
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + item.DatabaseName + "\");");
                 else
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + dbTableName + "\", \"" + schema + "\");");
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + item.DatabaseName + "\", \"" + schema + "\");");
             }
 
             //Views
@@ -278,12 +277,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             {
                 string schema = null;
                 if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
-                var dbTableName = item.DatabaseName;
-
                 if (string.IsNullOrEmpty(schema))
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + dbTableName + "\");");
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + item.DatabaseName + "\");");
                 else
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + dbTableName + "\", \"" + schema + "\");");
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + item.DatabaseName + "\", \"" + schema + "\");");
             }
 
             sb.AppendLine("			#endregion");
@@ -350,6 +347,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             sb.Append($".HasColumnName(\"{column.DatabaseName}\")");
                         sb.AppendLine(";");
                     }
+                }
+
+                if (table.IsTenant)
+                {
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(\"" + _model.TenantColumnName + "\").IsRequired();");
                 }
 
                 if (table.AllowCreateAudit)
@@ -588,6 +590,26 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             #endregion
 
+            sb.AppendLine("            foreach (var eType in modelBuilder.Model.GetEntityTypes())");
+            sb.AppendLine("            {");
+            sb.AppendLine("                var tableType = eType.ClrType;");
+            sb.AppendLine("                var isTenant = tableType.GetInterfaces().Any(x => x == typeof(ITenantEntity));");
+            sb.AppendLine();
+            sb.AppendLine("                #region Handle the Tenant mappings");
+            sb.AppendLine("                if (isTenant)");
+            sb.AppendLine("                {");
+            sb.AppendLine("                    //Verify ");
+            sb.AppendLine("                    var startup = this.ContextStartup as TenantContextStartup;");
+            sb.AppendLine("                    if (startup == null)");
+            sb.AppendLine("                        throw new Exceptions.ContextConfigurationException(\"A tenant context must be created with a TenantContextStartup object.\");");
+            sb.AppendLine();
+            sb.AppendLine("                    //https://haacked.com/archive/2019/07/29/query-filter-by-interface/");
+            sb.AppendLine("                    modelBuilder.SetEntityQueryFilter<ITenantEntity>(tableType, p => EF.Property<string>(p, \"" + _model.TenantColumnName + "\") == _tenantId);");
+            sb.AppendLine("                }");
+            sb.AppendLine("                #endregion");
+            sb.AppendLine("            }");
+            sb.AppendLine();
+
             sb.AppendLine("			// Override this event in the partial class to add any custom model changes or validation");
             sb.AppendLine("			this.OnModelCreated(modelBuilder);");
             sb.AppendLine();
@@ -610,6 +632,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			OnBeforeSaveChanges(ref cancel);");
             sb.AppendLine("			if (cancel) return 0;");
             sb.AppendLine("			var markedTime = " + (_model.UseUTCTime ? "System.DateTime.UtcNow" : "System.DateTime.Now") + ";");
+            sb.AppendLine("			var tenantId = (this.ContextStartup as TenantContextStartup)?.TenantId;");
             sb.AppendLine();
 
             #region Added Items
@@ -631,6 +654,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("					audit.CreatedDate = markedTime;");
             sb.AppendLine("					audit.ModifiedDate = markedTime;");
             sb.AppendLine("				}");
+            sb.AppendLine();
+            sb.AppendLine("				//Only set the TenantID on create. It never changes.");
+            sb.AppendLine("				if (item.Entity is ITenantEntity)");
+            sb.AppendLine("				{");
+            sb.AppendLine("					Util.SetPropertyByName(item.Entity, \"" + _model.TenantColumnName + "\", tenantId);");
+            sb.AppendLine("				}");
+            sb.AppendLine();
             sb.AppendLine("			}");
             sb.AppendLine("			this.OnBeforeSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
             sb.AppendLine();
@@ -724,7 +754,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// The global settings of this context");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public virtual ContextStartup ContextStartup => _contextStartup;");
+            sb.AppendLine("		public virtual IContextStartup ContextStartup => _contextStartup;");
             sb.AppendLine();
 
             #region Configuration API/Database verification

@@ -92,7 +92,6 @@
     <Compile Include="ProjectItemGenerators\DatabaseUpgrade\UpgradeVersionedScriptGenerator.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseUpgrade\UpgradeVersionedScriptTemplate.cs" />
     <Compile Include="ProjectItemGenerators\Globals.cs" />
-    <Compile Include="ProjectItemGenerators\DatabaseSchema\SQLSelectTenantViewTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQLHelper.cs" />
   </ItemGroup>

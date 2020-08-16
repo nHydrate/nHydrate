@@ -21,7 +21,6 @@ namespace nHydrate.Generator.Models
         protected const string _def_defaultNamespace = "";
         protected const string _def_storedProcedurePrefix = "gen";
         protected const string _def_tenantColumnName = "__tenant_user";
-        protected const string _def_tenantPrefix = "__vw_tenant";
 
         protected string _version = _def_version;
         private readonly VersionHistoryCollection _versionHistoryList = null;
@@ -42,8 +41,6 @@ namespace nHydrate.Generator.Models
         #region Property Implementations
 
         public string TenantColumnName { get; set; } = _def_tenantColumnName;
-
-        public string TenantPrefix { get; set; } = _def_tenantPrefix;
 
         public int GeneratedVersion { get; set; }
 
@@ -128,7 +125,6 @@ namespace nHydrate.Generator.Models
                 node.AddAttribute("companyName", this.CompanyName);
                 node.AddAttribute("emitSafetyScripts", this.EmitSafetyScripts);
                 node.AddAttribute("tenantColumnName", this.TenantColumnName);
-                node.AddAttribute("tenantPrefix", this.TenantPrefix);
 
                 node.AddAttribute("defaultNamespace", this.DefaultNamespace);
                 node.AddAttribute("storedProcedurePrefix", this.StoredProcedurePrefix);
@@ -159,7 +155,6 @@ namespace nHydrate.Generator.Models
                 this.UseUTCTime = XmlHelper.GetAttributeValue(node, "useUTCTime", this.UseUTCTime);
                 this.StoredProcedurePrefix = XmlHelper.GetAttributeValue(node, "storedProcedurePrefix", _def_storedProcedurePrefix);
                 this.TenantColumnName = XmlHelper.GetAttributeValue(node, "tenantColumnName", _def_tenantColumnName);
-                this.TenantPrefix = XmlHelper.GetAttributeValue(node, "tenantPrefix", _def_tenantPrefix);
                 this.CompanyName = XmlHelper.GetAttributeValue(node, "companyName", this.CompanyName);
                 this.EmitSafetyScripts = XmlHelper.GetAttributeValue(node, "emitSafetyScripts", this.EmitSafetyScripts);
 

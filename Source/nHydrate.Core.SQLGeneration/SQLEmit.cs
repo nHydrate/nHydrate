@@ -839,18 +839,6 @@ namespace nHydrate.Core.SQLGeneration
 
             #endregion
 
-            #region Drop tenant view
-
-            if (t.IsTenant)
-            {
-                var itemName = model.TenantPrefix + "_" + t.DatabaseName;
-                sb.AppendLine($"--DROP TENANT VIEW FOR TABLE [{t.DatabaseName}]");
-                sb.AppendLine($"if exists (select name from sys.objects where name = '{itemName}'  AND type = 'V')");
-                sb.AppendLine($"DROP VIEW [{itemName}]");
-            }
-
-            #endregion
-
             #region Drop the actual table
 
             sb.AppendLine($"--DELETE TABLE [{t.DatabaseName}]");
@@ -1289,48 +1277,12 @@ namespace nHydrate.Core.SQLGeneration
             return sb.ToString();
         }
 
-        public static string GetSqlTenantView(ModelRoot model, Table table, StringBuilder grantSB)
-        {
-            try
-            {
-                var itemName = model.TenantPrefix + "_" + table.DatabaseName;
-
-                var sb = new StringBuilder();
-                sb.AppendLine($"--DROP TENANT VIEW FOR TABLE [{table.DatabaseName}]");
-                sb.AppendLine($"if exists (select * from sys.objects where name = '{itemName}' and [type] in ('V'))");
-                sb.AppendLine($"DROP VIEW [{itemName}]");
-                sb.AppendLine("GO");
-                sb.AppendLine();
-
-                sb.AppendLine($"--CREATE TENANT VIEW FOR TABLE [{table.DatabaseName}]");
-                sb.AppendLine($"CREATE VIEW [{table.GetSQLSchema()}].[{itemName}] ");
-                sb.AppendLine("AS");
-                sb.AppendLine($"select * from [{table.DatabaseName}]");
-                sb.AppendLine($"WHERE ([{model.TenantColumnName}] = SYSTEM_USER)");
-                sb.AppendLine("GO");
-
-                if (!string.IsNullOrEmpty(model.Database.GrantExecUser))
-                {
-                    grantSB.AppendLine($"GRANT ALL ON [{table.GetSQLSchema()}].[{itemName}] TO [{model.Database.GrantExecUser}]");
-                    grantSB.AppendLine($"--MODELID: " + table.Key);
-                    grantSB.AppendLine("GO");
-                    grantSB.AppendLine();
-                }
-
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
         public static string GetSqlCreateTenantColumn(ModelRoot model, Table table)
         {
             var sb = new StringBuilder();
             sb.AppendLine($"--ADD COLUMN [{table.DatabaseName}].[{model.TenantColumnName}]");
             sb.AppendLine($"if exists(select * from sys.objects where name = '{table.DatabaseName}' and type = 'U') AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '{model.TenantColumnName}' and o.name = '{table.DatabaseName}')");
-            sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [{model.TenantColumnName}] [nvarchar] (128) NOT NULL CONSTRAINT [DF__{table.DatabaseName.ToUpper()}_{model.TenantColumnName.ToUpper()}] DEFAULT (suser_sname())");
+            sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [{model.TenantColumnName}] [nvarchar] (50) NOT NULL");
             return sb.ToString();
         }
 
@@ -1666,9 +1618,7 @@ namespace nHydrate.Core.SQLGeneration
             if (table.IsTenant)
             {
                 sb.AppendLine(",");
-                sb.Append("\t[" + model.TenantColumnName + "] [nvarchar] (128) NOT NULL CONSTRAINT [DF__" +
-                          table.DatabaseName.ToUpper() + "_" + model.TenantColumnName.ToUpper() +
-                          "] DEFAULT (suser_sname())");
+                sb.Append("\t[" + model.TenantColumnName + "] [nvarchar] (50) NOT NULL");
             }
         }
 

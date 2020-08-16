@@ -54,6 +54,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("using System.Linq;");
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using System.ComponentModel.DataAnnotations;");
             sb.AppendLine($"using {this.GetLocalNamespace()}.EventArguments;");
             sb.AppendLine();
         }
@@ -114,21 +115,24 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             if (!_item.PrimaryKeyColumns.Any())
                 sb.AppendLine("	[HasNoKey]");
 
-            if (_item.IsTenant)
-                sb.AppendLine("	[TenantEntity]");
-
             var boInterface = this.GetLocalNamespace() + ".IBusinessObject";
             if (_item.Immutable) boInterface = "" + this.GetLocalNamespace() + ".IReadOnlyBusinessObject";
 
             if (_model.EnableCustomChangeEvents)
                 boInterface += ", System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging";
 
+            if (_item.IsTenant)
+            {
+                sb.AppendLine("	[TenantEntity]");
+                boInterface += ", ITenantEntity";
+            }
+
             sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : BaseEntity, " + boInterface);
             if (!_item.GeneratesDoubleDerived)
                 sb.Append(", System.ICloneable");
 
             if (_item.AllowCreateAudit || _item.AllowModifiedAudit || _item.AllowTimestamp)
-                sb.Append(", " + this.GetLocalNamespace() + ".IAuditable, " + this.GetLocalNamespace() + ".IAuditableSet");
+                sb.Append($", {this.GetLocalNamespace()}.IAuditable, {this.GetLocalNamespace()}.IAuditableSet");
 
             //If we can add this item then implement the ICreatable interface
             if (!_item.AssociativeTable && !_item.Immutable && !_item.GeneratesDoubleDerived)
@@ -337,7 +341,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
             {
-                string roleName;
                 Table typeTable = null;
                 if (_item.IsColumnRelatedToTypeTable(column, out var pascalRoleName) || (column.PrimaryKey && _item.TypedTable != TypedTableConstants.None))
                 {
@@ -513,6 +516,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("		}");
                 sb.AppendLine();
 
+            }
+
+            if (_item.IsTenant)
+            {
+                sb.AppendLine("        [Required]");
+                sb.AppendLine("        [MaxLength(50)]");
+                sb.AppendLine("        protected virtual string " + _model.TenantColumnName + " { get; set; }");
+                sb.AppendLine("        string ITenantEntity.TenantId { get => this." + _model.TenantColumnName + "; }");
+                sb.AppendLine();
             }
 
             //Audit Fields

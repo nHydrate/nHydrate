@@ -140,8 +140,6 @@ namespace nHydrate.Dsl
                 {
                     if (!ValidationHelper.ValidCodeIdentifier(this.TenantColumnName))
                         context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifier, this.TenantColumnName), string.Empty, this);
-                    if (!ValidationHelper.ValidCodeIdentifier(this.TenantPrefix))
-                        context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifier, this.TenantPrefix), string.Empty, this);
                 }
                 #endregion
 

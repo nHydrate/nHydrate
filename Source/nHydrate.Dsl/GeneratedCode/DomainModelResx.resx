@@ -301,18 +301,6 @@
     <value>Definition</value>
     <comment>Category for DomainProperty &apos;OutputTarget&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.nHydrateModel/TenantPrefix.Description" xml:space="preserve">
-    <value>Determines the prefix for generated views that map to tenant tables</value>
-    <comment>Description for DomainProperty &apos;TenantPrefix&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/TenantPrefix.DisplayName" xml:space="preserve">
-    <value>Tenant Prefix</value>
-    <comment>DisplayName for DomainProperty &apos;TenantPrefix&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/TenantPrefix.Category" xml:space="preserve">
-    <value>Database</value>
-    <comment>Category for DomainProperty &apos;TenantPrefix&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.nHydrateModel/TenantColumnName.Description" xml:space="preserve">
     <value>Determines the name of the column to hold tenant information for tenant tables</value>
     <comment>Description for DomainProperty &apos;TenantColumnName&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
