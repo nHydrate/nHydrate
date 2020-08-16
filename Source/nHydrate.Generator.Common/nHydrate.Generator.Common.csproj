@@ -136,7 +136,7 @@
       <Name>System.Data</Name>
     </Reference>
     <Reference Include="System.Xml" />
-	 <Reference Include="System.Management" />
+    <Reference Include="System.Management" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
@@ -197,6 +197,7 @@
     </Compile>
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\EmbeddedResourceName.cs" />
+    <Compile Include="Util\Extensions.cs" />
     <Compile Include="Util\FileStateInfo.cs" />
     <Compile Include="Util\HashTable.cs" />
     <Compile Include="Util\ProjectItemCacheItem.cs" />

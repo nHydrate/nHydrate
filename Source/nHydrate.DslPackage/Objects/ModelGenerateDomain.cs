@@ -245,7 +245,7 @@ namespace nHydrate.DslPackage.Objects
             var root = CreatePOCOModel(model, diagram);
             root.SetKey(model.Id.ToString());
             root.GeneratorProject = genProject;
-            genProject.RootController.Object = root;
+            genProject.Model = root;
             var fi = new System.IO.FileInfo(docData.FileName);
             genProject.FileName = docData.FileName + ".generating";
             var document = new System.Xml.XmlDocument();
@@ -277,7 +277,7 @@ namespace nHydrate.DslPackage.Objects
             xDoc.Load(lastGenFile);
             genProjectLast.XmlLoad(xDoc.DocumentElement);
 
-            var oldRoot = (genProjectLast.RootController.Object as nHydrate.Generator.Models.ModelRoot);
+            var oldRoot = (genProjectLast.Model as nHydrate.Generator.Models.ModelRoot);
             foreach (nHydrate.Generator.Models.Table t in root.Database.Tables)
             {
                 //Find renamed tables

@@ -11,22 +11,22 @@ namespace nHydrate.Generator
         {
             var root = new ModelRoot(null);
             root.GeneratorProject = this;
-            this.RootController = new ModelRootController(root);
+            this.Model = root;
         }
 
         public void XmlAppend(XmlNode node)
         {
             var oDoc = node.OwnerDocument;
             var ModelRootNode = oDoc.CreateElement("ModelRoot");
-            RootController.Object.XmlAppend(ModelRootNode);
+            this.Model.XmlAppend(ModelRootNode);
             node.AppendChild(ModelRootNode);
         }
 
         public void XmlLoad(XmlNode node)
         {
             var ModelRootNode = node.SelectSingleNode("ModelRoot");
-            RootController.Object.XmlLoad(ModelRootNode);
-            ((ModelRoot)RootController.Object).CleanUp();
+            this.Model.XmlLoad(ModelRootNode);
+            ((ModelRoot)this.Model).CleanUp();
         }
 
         public static string DomainProjectName(ModelRoot model)
@@ -39,12 +39,7 @@ namespace nHydrate.Generator
                 return model.DefaultNamespace;
         }
 
-        public IModelObject Model
-        {
-            get { return RootController.Object; }
-        }
-
-        public INHydrateModelObjectController RootController { get; set; }
+        public IModelObject Model { get; set; }
 
         public string FileName { get; set; } = string.Empty;
 

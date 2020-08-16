@@ -194,9 +194,6 @@
     </Compile>
     <Compile Include="BaseModelCollection.cs" />
     <Compile Include="BaseModelObject.cs" />
-    <Compile Include="BaseModelObjectController.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DatabaseConnectionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -240,9 +237,6 @@
     <Compile Include="Models\TableIndexColumn.cs" />
     <Compile Include="Models\TableIndex.cs" />
     <Compile Include="Models\Extensions.cs" />
-    <Compile Include="Models\ModelRootController.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Models\VersionHistoryCollection.cs" />
     <Compile Include="Models\VersionHistory.cs" />
     <Compile Include="Models\CustomView.cs" />

@@ -1,3 +1,4 @@
+#pragma warning disable 0168
 using nHydrate.Generator.Common.GeneratorFramework;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace nHydrate.Generator
 
         public virtual Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; }
 
-        public virtual INHydrateModelObjectController Controller { get; set; } = null;
+        //public virtual INHydrateModelObjectController Controller { get; set; } = null;
 
         protected event EventHandler RootReset;
         protected virtual void OnRootReset(System.EventArgs e)
