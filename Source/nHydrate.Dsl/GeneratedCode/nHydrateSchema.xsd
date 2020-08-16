@@ -156,12 +156,6 @@
             <xsd:documentation>The target location for generated projects</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: TenantPrefix -->
-        <xsd:attribute name="tenantPrefix" type="xsd:string" >
-          <xsd:annotation>
-            <xsd:documentation>Determines the prefix for generated views that map to tenant tables</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
         <!-- Property: TenantColumnName -->
         <xsd:attribute name="tenantColumnName" type="xsd:string" >
           <xsd:annotation>

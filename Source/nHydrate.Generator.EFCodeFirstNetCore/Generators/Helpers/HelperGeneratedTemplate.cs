@@ -740,15 +740,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("    {");
                 sb.AppendLine("    }");
                 sb.AppendLine();
-
-                //sb.AppendLine("    /// <summary>");
-                //sb.AppendLine("    /// Identifies the SQL user column for a tenant");
-                //sb.AppendLine("    /// </summary>");
-                //sb.AppendLine("    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]");
-                //sb.AppendLine("    public class SqlUserAttribute : System.Attribute");
-                //sb.AppendLine("    {");
-                //sb.AppendLine("    }");
-                //sb.AppendLine();
                 #endregion
 
                 #region ITenantEntity

@@ -1282,7 +1282,7 @@ namespace nHydrate.Core.SQLGeneration
             var sb = new StringBuilder();
             sb.AppendLine($"--ADD COLUMN [{table.DatabaseName}].[{model.TenantColumnName}]");
             sb.AppendLine($"if exists(select * from sys.objects where name = '{table.DatabaseName}' and type = 'U') AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '{model.TenantColumnName}' and o.name = '{table.DatabaseName}')");
-            sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [{model.TenantColumnName}] [nvarchar] (128) NOT NULL CONSTRAINT [DF__{table.DatabaseName.ToUpper()}_{model.TenantColumnName.ToUpper()}] DEFAULT (suser_sname())");
+            sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [{model.TenantColumnName}] [nvarchar] (128) NOT NULL CONSTRAINT [DF__{table.DatabaseName.ToUpper()}_{model.TenantColumnName.ToUpper()}]");
             return sb.ToString();
         }
 
@@ -1619,8 +1619,7 @@ namespace nHydrate.Core.SQLGeneration
             {
                 sb.AppendLine(",");
                 sb.Append("\t[" + model.TenantColumnName + "] [nvarchar] (128) NOT NULL CONSTRAINT [DF__" +
-                          table.DatabaseName.ToUpper() + "_" + model.TenantColumnName.ToUpper() +
-                          "] DEFAULT (suser_sname())");
+                          table.DatabaseName.ToUpper() + "_" + model.TenantColumnName.ToUpper() + "]");
             }
         }
 

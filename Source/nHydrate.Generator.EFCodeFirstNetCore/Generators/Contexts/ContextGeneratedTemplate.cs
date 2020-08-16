@@ -349,6 +349,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     }
                 }
 
+                if (table.IsTenant)
+                {
+                    sb.AppendLine("modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(\"" + _model.TenantColumnName + "\").IsRequired();");
+                }
+
                 if (table.AllowCreateAudit)
                     sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.CreatedDateColumnName + ").IsRequired();");
                 if (table.AllowModifiedAudit)

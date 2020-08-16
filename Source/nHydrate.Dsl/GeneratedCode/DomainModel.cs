@@ -122,7 +122,6 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(nHydrateModel), "ModelToDisk", nHydrateModel.ModelToDiskDomainPropertyId, typeof(nHydrateModel.ModelToDiskPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "ModelVersion", nHydrateModel.ModelVersionDomainPropertyId, typeof(nHydrateModel.ModelVersionPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "OutputTarget", nHydrateModel.OutputTargetDomainPropertyId, typeof(nHydrateModel.OutputTargetPropertyHandler)),
-				new DomainMemberInfo(typeof(nHydrateModel), "TenantPrefix", nHydrateModel.TenantPrefixDomainPropertyId, typeof(nHydrateModel.TenantPrefixPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "TenantColumnName", nHydrateModel.TenantColumnNameDomainPropertyId, typeof(nHydrateModel.TenantColumnNamePropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "EmitSafetyScripts", nHydrateModel.EmitSafetyScriptsDomainPropertyId, typeof(nHydrateModel.EmitSafetyScriptsPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "EmitChangeScripts", nHydrateModel.EmitChangeScriptsDomainPropertyId, typeof(nHydrateModel.EmitChangeScriptsPropertyHandler)),

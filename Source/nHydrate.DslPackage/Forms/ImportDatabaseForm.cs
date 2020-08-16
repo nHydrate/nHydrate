@@ -689,9 +689,6 @@ namespace nHydrate.DslPackage.Forms
             this.NewDatabase.SetupIdMap(this.CurrentDatabase);
             //nHydrate.DataImport.ImportDomain.ReMapIDs(this.CurrentDatabase, this.NewDatabase);
 
-            //Remove tenant views
-            NewDatabase.ViewList.Remove(x => x.Name.ToLower().StartsWith(_model.TenantPrefix.ToLower() + "_"));
-
             //Load the tree
             this.Populate();
 
@@ -791,9 +788,6 @@ namespace nHydrate.DslPackage.Forms
 
                 this.NewDatabase.CleanUp();
                 this.NewDatabase.SetupIdMap(this.CurrentDatabase);
-
-                //Remove tenant views
-                NewDatabase.ViewList.Remove(x => x.Name.ToLower().StartsWith(_model.TenantPrefix.ToLower() + "_"));
 
                 //Load the tree
                 this.Populate();

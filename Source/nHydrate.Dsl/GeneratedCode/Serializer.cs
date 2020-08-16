@@ -393,23 +393,6 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// TenantPrefix
-			if (!serializationContext.Result.Failed)
-			{
-				string attribTenantPrefix = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "tenantPrefix");
-				if (attribTenantPrefix != null)
-				{
-					global::System.String valueOfTenantPrefix;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribTenantPrefix, out valueOfTenantPrefix))
-					{
-						instanceOfnHydrateModel.TenantPrefix = valueOfTenantPrefix;
-					}
-					else
-					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "tenantPrefix", typeof(global::System.String), attribTenantPrefix);
-					}
-				}
-			}
 			// TenantColumnName
 			if (!serializationContext.Result.Failed)
 			{
@@ -1264,18 +1247,6 @@ namespace nHydrate.Dsl
 					if (!string.IsNullOrEmpty(propValue))
 						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "outputTarget", propValue);
 	
-				}
-			}
-			// TenantPrefix
-			if (!serializationContext.Result.Failed)
-			{
-				global::System.String propValue = instanceOfnHydrateModel.TenantPrefix;
-				if (!serializationContext.Result.Failed)
-				{
-					if (propValue != null && (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(propValue, "__vw_tenant") != 0))
-					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "tenantPrefix", propValue);
-					}
 				}
 			}
 			// TenantColumnName

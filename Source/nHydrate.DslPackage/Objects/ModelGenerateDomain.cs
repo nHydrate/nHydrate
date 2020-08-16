@@ -325,7 +325,6 @@ namespace nHydrate.DslPackage.Objects
                 root.OutputTarget = string.Empty; //model.OutputTarget;
                 //These have the same mapping values flags so we need convert to int and then convert to the other enumeration
                 root.TenantColumnName = model.TenantColumnName;
-                root.TenantPrefix = model.TenantPrefix;
                 root.Database.CreatedByColumnName = model.CreatedByColumnName;
                 root.Database.CreatedDateColumnName = model.CreatedDateColumnName;
                 root.Database.ModifiedByColumnName = model.ModifiedByColumnName;

@@ -81,11 +81,6 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="8d907fa0-9318-41e3-8fcf-d9e154112597" Description="Determines the prefix for generated views that map to tenant tables" Name="TenantPrefix" DisplayName="Tenant Prefix" DefaultValue="__vw_tenant" Category="Database">
-          <Type>
-            <ExternalTypeMoniker Name="/System/String" />
-          </Type>
-        </DomainProperty>
         <DomainProperty Id="fd3902ce-3044-47e2-a379-885c8e1a1a4d" Description="Determines the name of the column to hold tenant information for tenant tables" Name="TenantColumnName" DisplayName="Tenant Column Name" DefaultValue="__tenant_user" Category="Database">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
@@ -1023,9 +1018,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="outputTarget">
             <DomainPropertyMoniker Name="nHydrateModel/OutputTarget" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="tenantPrefix">
-            <DomainPropertyMoniker Name="nHydrateModel/TenantPrefix" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="tenantColumnName">
             <DomainPropertyMoniker Name="nHydrateModel/TenantColumnName" />
