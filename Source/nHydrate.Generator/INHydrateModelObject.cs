@@ -6,6 +6,5 @@ namespace nHydrate.Generator
     {
         INHydrateModelObject Root { get; }
         string Key { get; }
-        //INHydrateModelObjectController Controller { get; set; }
     }
 }

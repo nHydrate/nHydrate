@@ -31,8 +31,6 @@ namespace nHydrate.Generator
 
         public virtual Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; }
 
-        //public virtual INHydrateModelObjectController Controller { get; set; } = null;
-
         protected event EventHandler RootReset;
         protected virtual void OnRootReset(System.EventArgs e)
         {

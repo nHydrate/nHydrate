@@ -213,26 +213,10 @@
     <Compile Include="GenerationHelper.cs" />
     <Compile Include="GeneratorFramework\AddinAppData.cs" />
     <Compile Include="GeneratorFramework\GeneratorHelper.cs" />
-    <Compile Include="IModelObjectController.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="INHydrateModelObject.cs" />
     <Compile Include="MenuCommand.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Message.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MessageCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MessageCollectionEventArgs.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MessageEventArgs.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ModelObjectTreeNode.cs" />
     <Compile Include="Models\ColumnBase.cs" />
     <Compile Include="Models\TableIndexColumn.cs" />
     <Compile Include="Models\TableIndex.cs" />
