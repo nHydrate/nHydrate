@@ -489,6 +489,7 @@ namespace PROJECTNAMESPACE
                     nHydrateDbObject.Save(setup.ConnectionString, MODELKEY, _databaseItems, _transaction);
 
                 //Do not commit if external transaction
+                if (setup.tr)
                 if (_transaction != null && !setup.CheckOnly)
                     _transaction.Commit();
                 else if (_transaction != null && setup.CheckOnly)
@@ -521,7 +522,7 @@ namespace PROJECTNAMESPACE
                 }
 
                 timer.Stop();
-                LogInfo("Installation Complete, Model: " + MODELKEY + ", Elapsed time: " + timer.ElapsedMilliseconds);
+                LogInfo($"Installation Complete, Model: {MODELKEY}, Elapsed time: {timer.ElapsedMilliseconds}");
             }
             catch (HandledSQLException ex)
             {
