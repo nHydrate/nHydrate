@@ -1,7 +1,8 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
+using nHydrate.Generator.Common.Models;
 
 namespace nHydrate.Generator.ProjectItemGenerators
 {

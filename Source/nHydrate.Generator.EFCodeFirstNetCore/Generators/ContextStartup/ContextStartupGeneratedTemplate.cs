@@ -1,4 +1,5 @@
-using nHydrate.Generator.Models;
+using nHydrate.Generator.Common;
+using nHydrate.Generator.Common.Models;
 using System.Text;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
@@ -26,7 +27,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
 
         private void GenerateContent()
         {
-            nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
+            GenerationHelper.AppendFileGeneatedMessageInCode(sb);
             this.AppendUsingStatements();
             sb.AppendLine("namespace " + this.GetLocalNamespace());
             sb.AppendLine("{");

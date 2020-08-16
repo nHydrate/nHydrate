@@ -192,8 +192,6 @@
     <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
       <Link>Properties\AssemblyInfoGeneratorCommon.cs</Link>
     </Compile>
-    <Compile Include="BaseModelCollection.cs" />
-    <Compile Include="BaseModelObject.cs" />
     <Compile Include="DatabaseConnectionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -207,20 +205,8 @@
     <Compile Include="Forms\ErrorForm.Designer.cs">
       <DependentUpon>ErrorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GenerationHelper.cs" />
     <Compile Include="GeneratorFramework\AddinAppData.cs" />
     <Compile Include="GeneratorFramework\GeneratorHelper.cs" />
-    <Compile Include="INHydrateModelObject.cs" />
-    <Compile Include="Models\ColumnBase.cs" />
-    <Compile Include="Models\TableIndexColumn.cs" />
-    <Compile Include="Models\TableIndex.cs" />
-    <Compile Include="Models\Extensions.cs" />
-    <Compile Include="Models\VersionHistoryCollection.cs" />
-    <Compile Include="Models\VersionHistory.cs" />
-    <Compile Include="Models\CustomView.cs" />
-    <Compile Include="Models\CustomViewCollection.cs" />
-    <Compile Include="Models\CustomViewColumn.cs" />
-    <Compile Include="Models\CustomViewColumnCollection.cs" />
     <Compile Include="ModelUI\GenerateSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -244,57 +230,6 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-    <Compile Include="nHydrateGeneratorProject.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\CellEntry.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\CellEntryCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\Column.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\ColumnCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\ColumnRelationship.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\ColumnRelationshipCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\Database.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\ModelRoot.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\Reference.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\ReferenceCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\Relation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\RelationCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\RowEntry.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\RowEntryCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\Table.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\TableCollection.cs">
-      <SubType>Code</SubType>
     </Compile>
     <Compile Include="ProjectItemGenerators\BaseClassGenerator.cs">
       <SubType>Code</SubType>
@@ -392,6 +327,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

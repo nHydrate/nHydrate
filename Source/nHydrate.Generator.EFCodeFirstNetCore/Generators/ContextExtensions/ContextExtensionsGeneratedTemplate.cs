@@ -1,5 +1,6 @@
 #pragma warning disable 0168
-using nHydrate.Generator.Models;
+using nHydrate.Generator.Common;
+using nHydrate.Generator.Common.Models;
 using System;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
         {
             try
             {
-                nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
+                GenerationHelper.AppendFileGeneatedMessageInCode(sb);
                 this.AppendUsingStatements();
                 sb.AppendLine($"namespace {this.GetLocalNamespace()}");
                 sb.AppendLine("{");

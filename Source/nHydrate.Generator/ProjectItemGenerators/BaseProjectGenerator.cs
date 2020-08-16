@@ -1,10 +1,11 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.GeneratorFramework;
-using nHydrate.Generator.Models;
+using nHydrate.Generator.Common.Models;
 using nHydrate.Generator.Util;
 using System;
 using System.IO;
+using nHydrate.Generator.Common;
 
 namespace nHydrate.Generator.ProjectItemGenerators
 {
@@ -46,11 +47,6 @@ namespace nHydrate.Generator.ProjectItemGenerators
             _model = (ModelRoot)model;
             OnInitialize(model);
         }
-
-        //public virtual void LoadProject()
-        //{
-        //  EnvDTEHelper.Instance.CreateProjectFromTemplate(string.Empty, this.ProjectName, this._model.OutputTarget);
-        //}
 
         public virtual void CreateProject()
         {

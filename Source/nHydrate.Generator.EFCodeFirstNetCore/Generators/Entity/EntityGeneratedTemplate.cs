@@ -1,9 +1,10 @@
 using nHydrate.Generator.Common.Util;
-using nHydrate.Generator.Models;
+using nHydrate.Generator.Common.Models;
 using nHydrate.Generator.Util;
 using System;
 using System.Linq;
 using System.Text;
+using nHydrate.Generator.Common;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 {
@@ -37,7 +38,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         private void GenerateContent()
         {
-            nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
+            GenerationHelper.AppendFileGeneatedMessageInCode(sb);
             sb.AppendLine("#pragma warning disable 612");
             this.AppendUsingStatements();
             sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");

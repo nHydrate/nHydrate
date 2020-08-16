@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
+using nHydrate.Generator.Common.Models;
 using nHydrate.Generator.ProjectItemGenerators;
 using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.PostgresInstaller;

@@ -1,4 +1,4 @@
-using nHydrate.Generator.Models;
+using nHydrate.Generator.Common.Models;
 using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators

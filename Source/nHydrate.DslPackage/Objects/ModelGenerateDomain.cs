@@ -1,9 +1,9 @@
 #pragma warning disable 0168
 using nHydrate.Dsl;
-using nHydrate.Generator;
+using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
-using nHydrate.Generator.Models;
+using nHydrate.Generator.Common.Models;
 using nHydrate.Generator.ModelUI;
 using nHydrate.Generator.Util;
 using System;
@@ -155,7 +155,7 @@ namespace nHydrate.DslPackage.Objects
                     pkey = ProgressHelper.ProgressingStarted("Generating...", false, 240000); //Put a 4 minute timer on it
                     foreach (var generator in genList)
                     {
-                        var modelRoot = (generator.Model as nHydrate.Generator.Models.ModelRoot);
+                        var modelRoot = (generator.Model as nHydrate.Generator.Common.Models.ModelRoot);
                         modelRoot.GeneratedVersion = generatedVersion;
                         _totalFileCount += genHelper.GetFileCount(generator, excludeList);
                     }
@@ -173,7 +173,7 @@ namespace nHydrate.DslPackage.Objects
                         genHelper.GenerateAll(item, excludeList);
                     }
 
-                    var modelKey = (genList.FirstOrDefault()?.Model as nHydrate.Generator.Models.ModelRoot)?.Key;
+                    var modelKey = (genList.FirstOrDefault()?.Model as nHydrate.Generator.Common.Models.ModelRoot)?.Key;
 
                     //Save model statistics
                     var eCount = model.Entities.Count;
@@ -277,8 +277,8 @@ namespace nHydrate.DslPackage.Objects
             xDoc.Load(lastGenFile);
             genProjectLast.XmlLoad(xDoc.DocumentElement);
 
-            var oldRoot = (genProjectLast.Model as nHydrate.Generator.Models.ModelRoot);
-            foreach (nHydrate.Generator.Models.Table t in root.Database.Tables)
+            var oldRoot = (genProjectLast.Model as nHydrate.Generator.Common.Models.ModelRoot);
+            foreach (nHydrate.Generator.Common.Models.Table t in root.Database.Tables)
             {
                 //Find renamed tables
                 {
@@ -309,11 +309,11 @@ namespace nHydrate.DslPackage.Objects
         #endregion
 
         #region CreatePOCOModel
-        private nHydrate.Generator.Models.ModelRoot CreatePOCOModel(nHydrateModel model, Microsoft.VisualStudio.Modeling.Diagrams.Diagram diagram)
+        private nHydrate.Generator.Common.Models.ModelRoot CreatePOCOModel(nHydrateModel model, Microsoft.VisualStudio.Modeling.Diagrams.Diagram diagram)
         {
             try
             {
-                var root = new nHydrate.Generator.Models.ModelRoot(null);
+                var root = new nHydrate.Generator.Common.Models.ModelRoot(null);
                 root.EnableCustomChangeEvents = model.EmitChangeScripts;
                 root.CompanyName = model.CompanyName;
                 root.EmitSafetyScripts = model.EmitSafetyScripts;
@@ -348,7 +348,7 @@ namespace nHydrate.DslPackage.Objects
                     newTable.DBSchema = entity.Schema;
                     newTable.Description = entity.Summary;
                     newTable.Immutable = entity.Immutable;
-                    newTable.TypedTable = (nHydrate.Generator.Models.TypedTableConstants)Enum.Parse(typeof(nHydrate.Generator.Models.TypedTableConstants), entity.TypedEntity.ToString(), true);
+                    newTable.TypedTable = (nHydrate.Generator.Common.Models.TypedTableConstants)Enum.Parse(typeof(nHydrate.Generator.Common.Models.TypedTableConstants), entity.TypedEntity.ToString(), true);
                     newTable.Name = entity.Name;
                     newTable.GeneratesDoubleDerived = entity.GeneratesDoubleDerived;
                     newTable.IsTenant = entity.IsTenant;
@@ -369,7 +369,7 @@ namespace nHydrate.DslPackage.Objects
                         newColumn.DefaultIsFunc = field.DefaultIsFunc;
                         newColumn.Description = field.Summary;
                         newColumn.Formula = field.Formula;
-                        newColumn.Identity = (nHydrate.Generator.Models.IdentityTypeConstants)Enum.Parse(typeof(nHydrate.Generator.Models.IdentityTypeConstants), field.Identity.ToString());
+                        newColumn.Identity = (nHydrate.Generator.Common.Models.IdentityTypeConstants)Enum.Parse(typeof(nHydrate.Generator.Common.Models.IdentityTypeConstants), field.Identity.ToString());
                         newColumn.IsIndexed = field.IsIndexed;
                         newColumn.IsReadOnly = field.IsReadOnly;
                         newColumn.IsUnique = field.IsUnique;
@@ -392,7 +392,7 @@ namespace nHydrate.DslPackage.Objects
                         var indexColumns = index.IndexColumns.Where(x => x.GetField() != null).ToList();
                         if (indexColumns.Count > 0)
                         {
-                            var newIndex = new nHydrate.Generator.Models.TableIndex(newTable.Root)
+                            var newIndex = new nHydrate.Generator.Common.Models.TableIndex(newTable.Root)
                             {
                                 Description = index.Summary,
                                 IsUnique = index.IsUnique,
@@ -408,7 +408,7 @@ namespace nHydrate.DslPackage.Objects
                             foreach (var ic in indexColumns.OrderBy(x => x.SortOrder).ThenBy(x => x.GetField().Name))
                             {
                                 var field = ic.GetField();
-                                var newColumn = new nHydrate.Generator.Models.TableIndexColumn(newTable.Root) { Ascending = ic.Ascending, FieldID = field.Id };
+                                var newColumn = new nHydrate.Generator.Common.Models.TableIndexColumn(newTable.Root) { Ascending = ic.Ascending, FieldID = field.Id };
                                 newIndex.IndexColumnList.Add(newColumn);
                             }
                         }
@@ -425,11 +425,11 @@ namespace nHydrate.DslPackage.Objects
                     for (var ii = 0; ii < rowCount; ii++)
                     {
                         //For each row create N cells one for each column
-                        var rowEntry = new nHydrate.Generator.Models.RowEntry(newTable.Root);
+                        var rowEntry = new nHydrate.Generator.Common.Models.RowEntry(newTable.Root);
                         var staticDataFieldList = fieldList.Where(x => !x.DataType.IsBinaryType() && x.DataType != DataTypeConstants.Timestamp).ToList();
                         for (var jj = 0; jj < staticDataFieldList.Count; jj++)
                         {
-                            var cellEntry = new nHydrate.Generator.Models.CellEntry(newTable.Root);
+                            var cellEntry = new nHydrate.Generator.Common.Models.CellEntry(newTable.Root);
                             var column = newTable.GetColumns().ToList()[jj];
                             cellEntry.ColumnRef = column.CreateRef(column.Key);
 
@@ -510,7 +510,7 @@ namespace nHydrate.DslPackage.Objects
                                         var column1 = parentTable.GetColumnsFullHierarchy().FirstOrDefault(x => x.Name == field1.Name);
                                         var column2 = childTable.GetColumnsFullHierarchy().FirstOrDefault(x => x.Name == field2.Name);
 
-                                        newRelation.ColumnRelationships.Add(new nHydrate.Generator.Models.ColumnRelationship(root)
+                                        newRelation.ColumnRelationships.Add(new nHydrate.Generator.Common.Models.ColumnRelationship(root)
                                         {
                                             ParentColumnRef = column1.CreateRef(column1.Key),
                                             ChildColumnRef = column2.CreateRef(column2.Key),

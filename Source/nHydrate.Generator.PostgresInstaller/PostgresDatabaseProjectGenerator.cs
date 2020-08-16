@@ -1,4 +1,5 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.ProjectItemGenerators;
 
