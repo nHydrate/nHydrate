@@ -287,7 +287,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                     {
                         sb.AppendLine($"--APPEND TENANT FIELD FOR TABLE [{table.DatabaseName}]");
                         sb.AppendLine($"if exists(select * from sys.tables t inner join sys.schemas s on t.schema_id = s.schema_id where t.name = '{table.DatabaseName}' and s.name = '{table.GetSQLSchema()}') and not exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id where c.name = '{_model.TenantColumnName}' and t.name = '{table.DatabaseName}')");
-                        sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [{_model.TenantColumnName}] [nvarchar] (128) NOT NULL CONSTRAINT [DF__" + table.PascalName.ToUpper() + "_" + _model.TenantColumnName.ToUpper() + "]");
+                        sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [{_model.TenantColumnName}] [nvarchar] (50) NOT NULL");
                         sb.AppendLine();
                     }
 

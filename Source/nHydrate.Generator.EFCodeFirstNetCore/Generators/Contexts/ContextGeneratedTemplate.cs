@@ -198,10 +198,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine($"		public {_model.ProjectName}Entities(IContextStartup contextStartup) :");
             sb.AppendLine("				base()");
             sb.AppendLine("		{");
+            sb.AppendLine("			_contextStartup = contextStartup;");
             sb.AppendLine("			_tenantId = (this.ContextStartup as TenantContextStartup)?.TenantId;");
             sb.AppendLine("			_connectionString = ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"]?.ConnectionString;");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
-            sb.AppendLine("			_contextStartup = contextStartup;");
             sb.AppendLine("			this.CommandTimeout = _contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
             sb.AppendLine("		}");
@@ -213,10 +213,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine($"		public {_model.ProjectName}Entities(IContextStartup contextStartup, string connectionString) :");
             sb.AppendLine("				base()");
             sb.AppendLine("		{");
+            sb.AppendLine("			_contextStartup = contextStartup;");
             sb.AppendLine("			_tenantId = (this.ContextStartup as TenantContextStartup)?.TenantId;");
             sb.AppendLine("			_connectionString = connectionString;");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
-            sb.AppendLine("			_contextStartup = contextStartup;");
             sb.AppendLine("			this.CommandTimeout = _contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
             sb.AppendLine("		}");
@@ -351,7 +351,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
                 if (table.IsTenant)
                 {
-                    sb.AppendLine("modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(\"" + _model.TenantColumnName + "\").IsRequired();");
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(\"" + _model.TenantColumnName + "\").IsRequired();");
                 }
 
                 if (table.AllowCreateAudit)
@@ -589,6 +589,26 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             #endregion
+
+            sb.AppendLine("            foreach (var eType in modelBuilder.Model.GetEntityTypes())");
+            sb.AppendLine("            {");
+            sb.AppendLine("                var tableType = eType.ClrType;");
+            sb.AppendLine("                var isTenant = tableType.GetInterfaces().Any(x => x == typeof(ITenantEntity));");
+            sb.AppendLine();
+            sb.AppendLine("                #region Handle the Tenant mappings");
+            sb.AppendLine("                if (isTenant)");
+            sb.AppendLine("                {");
+            sb.AppendLine("                    //Verify ");
+            sb.AppendLine("                    var startup = this.ContextStartup as TenantContextStartup;");
+            sb.AppendLine("                    if (startup == null)");
+            sb.AppendLine("                        throw new Exceptions.ContextConfigurationException(\"A tenant context must be created with a TenantContextStartup object.\");");
+            sb.AppendLine();
+            sb.AppendLine("                    //https://haacked.com/archive/2019/07/29/query-filter-by-interface/");
+            sb.AppendLine("                    modelBuilder.SetEntityQueryFilter<ITenantEntity>(tableType, p => EF.Property<string>(p, \"" + _model.TenantColumnName + "\") == _tenantId);");
+            sb.AppendLine("                }");
+            sb.AppendLine("                #endregion");
+            sb.AppendLine("            }");
+            sb.AppendLine();
 
             sb.AppendLine("			// Override this event in the partial class to add any custom model changes or validation");
             sb.AppendLine("			this.OnModelCreated(modelBuilder);");

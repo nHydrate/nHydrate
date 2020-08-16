@@ -1072,7 +1072,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("    }");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                sb.AppendLine("}");
+                #endregion
 
+                sb.AppendLine("namespace " + this.GetLocalNamespace());
+                sb.AppendLine("{");
                 sb.AppendLine("    internal static class ReflectionHelpers");
                 sb.AppendLine("    {");
                 sb.AppendLine("        private static Random _rnd = new Random();");
@@ -1189,7 +1193,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("                    SetPropertyByName(entity, property.Name, newValue);");
                 sb.AppendLine("                }");
                 sb.AppendLine("                else");
-                sb.AppendLine("                    throw new ContextConfigurationException(\"The concurrency token cannot be set.\");");
+                sb.AppendLine("                    throw new Exceptions.ContextConfigurationException(\"The concurrency token cannot be set.\");");
                 sb.AppendLine("            }");
                 sb.AppendLine("        }");
                 sb.AppendLine();
@@ -1250,9 +1254,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("              .HasQueryFilter(concreteExpression);");
                 sb.AppendLine("        }");
                 sb.AppendLine("    }");
-
                 sb.AppendLine("}");
-                #endregion
 
             }
             catch (Exception ex)
