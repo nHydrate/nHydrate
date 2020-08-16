@@ -132,14 +132,11 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
-    <Reference Include="System.Management" />
-    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
-    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
+	 <Reference Include="System.Management" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
