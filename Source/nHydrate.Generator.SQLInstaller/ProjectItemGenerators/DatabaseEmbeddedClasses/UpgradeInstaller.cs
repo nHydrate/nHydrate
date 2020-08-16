@@ -488,8 +488,6 @@ namespace PROJECTNAMESPACE
                 if (!setup.CheckOnly)
                     nHydrateDbObject.Save(setup.ConnectionString, MODELKEY, _databaseItems, _transaction);
 
-                //Do not commit if external transaction
-                if (setup.tr)
                 if (_transaction != null && !setup.CheckOnly)
                     _transaction.Commit();
                 else if (_transaction != null && setup.CheckOnly)
@@ -498,7 +496,7 @@ namespace PROJECTNAMESPACE
                 if (setup.CheckOnly)
                 {
                     var sb = new StringBuilder();
-                    _newItems.ForEach(x => sb.AppendLine("New script: " + x));
+                    _newItems.ForEach(x => sb.AppendLine($"New script: {x}"));
                     _databaseItems.OrderBy(x => x.name).Where(x => x.Changed && !_newItems.Contains(x.name)).ToList().ForEach(x => sb.AppendLine("Changed script: " + x.name + " (" + x.Status + ")"));
                     if (!string.IsNullOrEmpty(sb.ToString()))
                     {
