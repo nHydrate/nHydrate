@@ -522,8 +522,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             {
                 sb.AppendLine("        [Required]");
                 sb.AppendLine("        [MaxLength(50)]");
-                sb.AppendLine("        protected virtual string TenantId { get; set; }");
-                sb.AppendLine("        string ITenantEntity.TenantId { get => this.TenantId; }");
+                sb.AppendLine("        protected virtual string " + _model.TenantColumnName + " { get; set; }");
+                sb.AppendLine("        string ITenantEntity.TenantId { get => this." + _model.TenantColumnName + "; }");
+                sb.AppendLine();
             }
 
             //Audit Fields

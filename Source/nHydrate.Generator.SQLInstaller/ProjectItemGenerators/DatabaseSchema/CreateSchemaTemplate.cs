@@ -51,7 +51,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
                 this.AppendCreateSchema();
                 this.AppendCreateTable();
-                this.AppendCreateTenantViews();
                 this.AppendCreateAudit();
                 this.AppendCreatePrimaryKey();
                 this.AppendCreateUniqueKey();
@@ -141,20 +140,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                     sb.AppendLine();
                 }
             }
-        }
-
-        private void AppendCreateTenantViews()
-        {
-            //Tenant Views
-            var grantSB = new StringBuilder();
-            foreach (var table in _model.Database.Tables.Where(x => x.IsTenant).OrderBy(x => x.Name))
-            {
-                var template = new SQLSelectTenantViewTemplate(_model, table, grantSB);
-                sb.Append(template.FileContent);
-            }
-
-            //Add grants
-            sb.Append(grantSB.ToString());
         }
 
         #endregion

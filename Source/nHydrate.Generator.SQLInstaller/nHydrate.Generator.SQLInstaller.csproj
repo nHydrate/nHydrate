@@ -90,7 +90,6 @@
     <Compile Include="ProjectItemGenerators\DatabaseUpgrade\UpgradeVersionedScriptGenerator.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseUpgrade\UpgradeVersionedScriptTemplate.cs" />
     <Compile Include="ProjectItemGenerators\Globals.cs" />
-    <Compile Include="ProjectItemGenerators\DatabaseSchema\SQLSelectTenantViewTemplate.cs" />
     <Compile Include="ProjectItemGenerators\SQLStoredProcedureAll\ISQLGenerate.cs" />
     <Compile Include="ProjectItemGenerators\Views\ViewsGenerator.cs" />
     <Compile Include="ProjectItemGenerators\Views\ViewsTemplate.cs" />

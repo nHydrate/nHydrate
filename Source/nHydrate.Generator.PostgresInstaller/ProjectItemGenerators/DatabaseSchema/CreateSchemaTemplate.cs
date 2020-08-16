@@ -43,7 +43,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
 
             //this.AppendCreateSchema();
             this.AppendCreateTable();
-            this.AppendCreateTenantViews();
             this.AppendCreateAudit();
             //this.AppendCreatePrimaryKey(); //do not add this. user can handle this in upgrade
             //this.AppendCreateUniqueKey();
@@ -104,21 +103,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                 sb.AppendLine("--GO");
                 sb.AppendLine();
             }
-        }
-
-        private void AppendCreateTenantViews()
-        {
-            //Tenant Views
-            var grantSB = new StringBuilder();
-            foreach (var table in _model.Database.Tables.Where(x => x.IsTenant).OrderBy(x => x.Name))
-            {
-                var template = new SQLSelectTenantViewTemplate(_model, table, grantSB);
-                sb.Append(template.FileContent);
-            }
-
-            //Add grants
-            sb.Append(grantSB.ToString());
-            sb.AppendLine();
         }
 
         #endregion

@@ -46,16 +46,6 @@ namespace nHydrate.Generator.SQLInstaller
                         sb.AppendLine();
                     }
 
-                    //If this is a tenant table then add the view as well
-                    if (newT.IsTenant)
-                    {
-                        var grantSB = new StringBuilder();
-                        var q1 = nHydrate.Core.SQLGeneration.SQLEmit.GetSqlTenantView(modelNew, newT, grantSB);
-                        sb.AppendLine(q1);
-                        if (grantSB.ToString() != string.Empty)
-                            sb.AppendLine(grantSB.ToString());
-                    }
-
                 }
             }
 
@@ -279,12 +269,6 @@ namespace nHydrate.Generator.SQLInstaller
                         sb.AppendLine($"DROP INDEX [{indexName}] ON [{newT.GetSQLSchema()}].[{newT.DatabaseName}]");
                         sb.AppendLine();
 
-                        //Drop the associated view
-                        var viewName = $"{modelOld.TenantPrefix}_{oldT.DatabaseName}";
-                        sb.AppendLine($"if exists (select name from sys.objects where name = '{viewName}'  AND type = 'V')");
-                        sb.AppendLine($"DROP VIEW [{viewName}]");
-                        sb.AppendLine();
-
                         //Drop the tenant field
                         sb.AppendLine($"if exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id where c.name = '{modelNew.TenantColumnName}' and t.name = '{newT.DatabaseName}')");
                         sb.AppendLine($"ALTER TABLE [{newT.GetSQLSchema()}].[{newT.DatabaseName}] DROP COLUMN [{modelNew.TenantColumnName}]");
@@ -294,30 +278,10 @@ namespace nHydrate.Generator.SQLInstaller
                     {
                         //Add the tenant field
                         sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlCreateTenantColumn(modelNew, newT));
-
-                        //Add tenant view
-                        var grantSB = new StringBuilder();
-                        sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlTenantView(modelNew, newT, grantSB));
-                        if (grantSB.ToString() != string.Empty)
-                            sb.AppendLine(grantSB.ToString());
                     }
                     else if (oldT.IsTenant && newT.IsTenant && oldT.DatabaseName != newT.DatabaseName)
                     {
                         //If rename tenant table then delete old view and create new view
-
-                        //Drop the old view
-                        var viewName = modelOld.TenantPrefix + "_" + oldT.DatabaseName;
-                        sb.AppendLine($"--DROP OLD TENANT VIEW FOR TABLE [{oldT.DatabaseName}]");
-                        sb.AppendLine($"if exists (select name from sys.objects where name = '{viewName}'  AND type = 'V')");
-                        sb.AppendLine($"DROP VIEW [{viewName}]");
-                        sb.AppendLine("GO");
-
-                        //Add tenant view
-                        var grantSB = new StringBuilder();
-                        sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlTenantView(modelNew, newT, grantSB));
-                        if (grantSB.ToString() != string.Empty)
-                            sb.AppendLine(grantSB.ToString());
-
                     }
 
                     #endregion
@@ -421,20 +385,6 @@ namespace nHydrate.Generator.SQLInstaller
                     {
                         sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.TimestampColumnName, modelNew.Database.TimestampColumnName));
                         sb.AppendLine("GO");
-                    }
-
-                    #endregion
-
-                    #region Emit Tenant View if need be
-
-                    //If the table schema has changed then emit the Tenant view
-                    if (schemaChanged && newT.IsTenant)
-                    {
-                        var grantSB = new StringBuilder();
-                        var q1 = nHydrate.Core.SQLGeneration.SQLEmit.GetSqlTenantView(modelNew, newT, grantSB);
-                        sb.AppendLine(q1);
-                        if (grantSB.ToString() != string.Empty)
-                            sb.AppendLine(grantSB.ToString());
                     }
 
                     #endregion
@@ -658,14 +608,6 @@ namespace nHydrate.Generator.SQLInstaller
                         }
                     }
 
-                    if (newT.IsTenant && tChanged)
-                    {
-                        var grantSB = new StringBuilder();
-                        var q1 = nHydrate.Core.SQLGeneration.SQLEmit.GetSqlTenantView(modelNew, newT, grantSB);
-                        sb.AppendLine(q1);
-                        if (grantSB.ToString() != string.Empty)
-                            sb.AppendLine(grantSB.ToString());
-                    }
                 }
             }
 
