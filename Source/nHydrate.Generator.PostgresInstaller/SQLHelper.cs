@@ -1651,7 +1651,7 @@ namespace nHydrate.Generator.PostgresInstaller
             #region Delete Indexes
 
             //Only drop indexes if the datatype changed
-            if (oldColumn.DataType != newColumn.DataType)
+            if (oldColumn.DataType != newColumn.DataType || oldColumn.AllowNull != newColumn.AllowNull)
             {
                 //Unique Constraint
                 var indexName = "IX_" + newTable.Name.Replace("-", "") + "_" + newColumn.Name.Replace("-", string.Empty);
