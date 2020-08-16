@@ -23,18 +23,6 @@ namespace nHydrate.Generator.Models
 
         #endregion
 
-        #region Menus
-
-        public static void AddMenuItem(this List<MenuCommand> menuList, string text, EventHandler handler)
-        {
-            var newMenu = new DefaultMenuCommand();
-            newMenu.Text = text;
-            if (handler != null) newMenu.Click += handler;
-            menuList.Add(newMenu);
-        }
-
-        #endregion
-
         public static IEnumerable<Relation> FindByChildColumn(this IEnumerable<Relation> list, Column column)
         {
             var retval = new List<Relation>();

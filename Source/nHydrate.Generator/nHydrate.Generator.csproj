@@ -201,9 +201,6 @@
       <DependentUpon>DatabaseConnectionControl.cs</DependentUpon>
     </Compile>
     <Compile Include="DataImportOptions.cs" />
-    <Compile Include="DefaultMenuCommand.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Forms\ErrorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -214,9 +211,6 @@
     <Compile Include="GeneratorFramework\AddinAppData.cs" />
     <Compile Include="GeneratorFramework\GeneratorHelper.cs" />
     <Compile Include="INHydrateModelObject.cs" />
-    <Compile Include="MenuCommand.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Models\ColumnBase.cs" />
     <Compile Include="Models\TableIndexColumn.cs" />
     <Compile Include="Models\TableIndex.cs" />
