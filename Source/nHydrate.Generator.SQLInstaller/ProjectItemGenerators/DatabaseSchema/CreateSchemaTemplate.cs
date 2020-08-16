@@ -1,6 +1,5 @@
 #pragma warning disable 0168
 using nHydrate.Core.SQLGeneration;
-using nHydrate.Generator.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

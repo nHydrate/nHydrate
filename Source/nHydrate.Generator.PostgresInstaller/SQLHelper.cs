@@ -3,7 +3,6 @@ using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.Models;
 using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.PostgresInstaller.ProjectItemGenerators;
-using nHydrate.Generator.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;

@@ -1,10 +1,9 @@
-using nHydrate.Generator.Common.Util;
+using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.Models;
-using nHydrate.Generator.Util;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Linq;
 using System.Text;
-using nHydrate.Generator.Common;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 {

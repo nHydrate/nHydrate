@@ -1,11 +1,11 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.GeneratorFramework;
 using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.GeneratorFramework;
 using nHydrate.Generator.Util;
 using System;
 using System.IO;
-using nHydrate.Generator.Common;
 
 namespace nHydrate.Generator.ProjectItemGenerators
 {

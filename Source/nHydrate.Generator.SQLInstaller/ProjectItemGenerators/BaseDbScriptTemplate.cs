@@ -1,5 +1,3 @@
-
-using nHydrate.Generator.Models;
 using nHydrate.Generator.ProjectItemGenerators;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
