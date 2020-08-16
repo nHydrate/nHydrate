@@ -80,6 +80,13 @@ namespace nHydrate.Generator.GeneratorFramework
                     xDoc.Load(file.FullName);
                     type = Common.Util.XmlHelper.GetAttributeValue(xDoc.DocumentElement, "type", string.Empty);
                     xmlAttributeAssembleValue = Common.Util.XmlHelper.GetAttributeValue(xDoc.DocumentElement, "assembly", string.Empty);
+
+                    //Correct for moving file Aug-16-2020
+                    if (type == "nHydrate.Generator.nHydrateGeneratorProject")
+                        type = "nHydrate.Generator.Common.nHydrateGeneratorProject";
+                    if (xmlAttributeAssembleValue == "nHydrate.Generator.dll")
+                        xmlAttributeAssembleValue = "nHydrate.Generator.Common.dll";
+
                     Uri assemblyUri = null;
                     try { assemblyUri = new Uri(xmlAttributeAssembleValue); }
                     catch { }
