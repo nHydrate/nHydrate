@@ -2,9 +2,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {

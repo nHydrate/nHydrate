@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace nHydrate.Generator.Common.Util
 {
@@ -47,7 +44,7 @@ namespace nHydrate.Generator.Common.Util
             for (var ii = 1; ii <= solution.Count; ii++)
             {
                 var project = solution.Item(ii);
-                switch(project.Kind)
+                switch (project.Kind)
                 {
                     case "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}":
                     case "{66A26722-8FB5-11D2-AA7E-00C04F688DDE}":
@@ -66,7 +63,7 @@ namespace nHydrate.Generator.Common.Util
             for (var ii = 1; ii <= project.ProjectItems.Count; ii++)
             {
                 var child = project.ProjectItems.Item(ii);
-                switch(child.Kind)
+                switch (child.Kind)
                 {
                     case "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}":
                     case "{66A26722-8FB5-11D2-AA7E-00C04F688DDE}":

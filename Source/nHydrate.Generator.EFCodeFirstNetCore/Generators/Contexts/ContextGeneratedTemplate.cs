@@ -1,11 +1,10 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common;
+using nHydrate.Generator.Common.Util;
+using nHydrate.Generator.Models;
 using System;
 using System.Linq;
-using nHydrate.Generator.Models;
 using System.Text;
-using nHydrate.Generator.Common.Util;
-using System.Collections.Generic;
-using nHydrate.Generator.Common;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 {
@@ -521,7 +520,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
                             var index = 0;
                             foreach (var columnPacket in relation.ColumnRelationships
-                                .Select(x => new {Child = x.ChildColumnRef.Object as Column, Parent = x.ParentColumnRef.Object as Column})
+                                .Select(x => new { Child = x.ChildColumnRef.Object as Column, Parent = x.ParentColumnRef.Object as Column })
                                 .Where(x => x.Child != null && x.Parent != null)
                                 .OrderBy(x => x.Parent.Name)
                                 .ToList())

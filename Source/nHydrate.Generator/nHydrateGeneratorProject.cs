@@ -1,7 +1,6 @@
-using System.Windows.Forms;
-using System.Xml;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Models;
+using System.Xml;
 
 namespace nHydrate.Generator
 {

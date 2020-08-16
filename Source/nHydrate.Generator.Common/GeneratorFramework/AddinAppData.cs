@@ -1,8 +1,8 @@
+using nHydrate.Generator.Common.Logging;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.IO;
 using System.Xml.Serialization;
-using nHydrate.Generator.Common.Logging;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Common.GeneratorFramework
 {

@@ -1,10 +1,10 @@
 #pragma warning disable 0168
+using Microsoft.VisualStudio.Modeling.Validation;
+using nHydrate.Generator.Common.Util;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.Modeling.Validation;
-using System.Collections;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Dsl
 {

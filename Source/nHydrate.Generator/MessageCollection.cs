@@ -1,6 +1,6 @@
+using nHydrate.Generator.Common.EventArgs;
 using System.Collections;
 using System.Collections.Generic;
-using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator
 {
@@ -30,7 +30,7 @@ namespace nHydrate.Generator
 
         public Message this[int index]
         {
-            get { return (Message) this.InnerList[index]; }
+            get { return (Message)this.InnerList[index]; }
             set { this.InnerList[index] = value; }
         }
 

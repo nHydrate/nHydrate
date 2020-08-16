@@ -1,4 +1,3 @@
-using System;
 using nHydrate.Generator.Models;
 using System.Text;
 

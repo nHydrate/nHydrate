@@ -1,16 +1,16 @@
 #pragma warning disable 0168
+using nHydrate.Dsl;
+using nHydrate.Generator;
+using nHydrate.Generator.Common.GeneratorFramework;
+using nHydrate.Generator.Common.Util;
+using nHydrate.Generator.Models;
+using nHydrate.Generator.ModelUI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using nHydrate.Generator;
-using nHydrate.Generator.Common.Util;
-using System.Windows.Forms;
-using nHydrate.Dsl;
-using nHydrate.Generator.ModelUI;
-using nHydrate.Generator.Common.GeneratorFramework;
 using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 using System.Xml;
-using nHydrate.Generator.Models;
 
 namespace nHydrate.DslPackage.Objects
 {
@@ -249,7 +249,7 @@ namespace nHydrate.DslPackage.Objects
             genProject.FileName = docData.FileName + ".generating";
             var document = new System.Xml.XmlDocument();
             document.LoadXml("<modelRoot guid=\"" + model.Id + "\" type=\"nHydrate.Generator.nHydrateGeneratorProject\" assembly=\"nHydrate.Generator.dll\"><ModelRoot></ModelRoot></modelRoot>");
-            ((nHydrate.Generator.Common.GeneratorFramework.IXMLable) root).XmlAppend(document.DocumentElement.ChildNodes[0]);
+            ((nHydrate.Generator.Common.GeneratorFramework.IXMLable)root).XmlAppend(document.DocumentElement.ChildNodes[0]);
             System.IO.File.WriteAllText(genProject.FileName, document.ToIndentedString());
 
             ProcessRenamed(genProject.FileName + ".sql.lastgen", root);
@@ -485,7 +485,7 @@ namespace nHydrate.DslPackage.Objects
                                     newRelation.ParentTableRef = parentTable.CreateRef(parentTable.Key);
                                     newRelation.ChildTableRef = childTable.CreateRef(childTable.Key);
                                     newRelation.RoleName = ((EntityHasEntities)connector.ModelElement).RoleName;
-                                    switch(relation.DeleteAction)
+                                    switch (relation.DeleteAction)
                                     {
                                         case DeleteActionConstants.Cascade:
                                             newRelation.DeleteAction = Relation.DeleteActionConstants.Cascade;

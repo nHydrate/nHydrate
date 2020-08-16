@@ -1,6 +1,6 @@
 #pragma warning disable 0168
-using System.Text;
 using nHydrate.Generator.Models;
+using System.Text;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Views
 {

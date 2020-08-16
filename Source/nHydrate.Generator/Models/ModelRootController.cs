@@ -1,6 +1,5 @@
-using System;
-using System.Windows.Forms;
 using nHydrate.Generator.Common;
+using System.Windows.Forms;
 
 namespace nHydrate.Generator.Models
 {
@@ -40,7 +39,7 @@ namespace nHydrate.Generator.Models
             var retval = new MessageCollection();
             retval.AddRange(base.Verify());
 
-            var root = (ModelRoot) this.Object;
+            var root = (ModelRoot)this.Object;
 
             //Check valid name
             if (!ValidationHelper.ValidDatabaseIdenitifer(root.CompanyName) || !ValidationHelper.ValidCodeIdentifier(root.CompanyName))

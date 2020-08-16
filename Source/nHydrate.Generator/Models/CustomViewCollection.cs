@@ -1,5 +1,3 @@
-using nHydrate.Generator.Common.GeneratorFramework;
-
 namespace nHydrate.Generator.Models
 {
     public class CustomViewCollection : BaseModelCollection<CustomView>

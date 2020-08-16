@@ -1,8 +1,8 @@
 #pragma warning disable 0168
+using nHydrate.Dsl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using nHydrate.Dsl;
 
 namespace nHydrate.DslPackage
 {
@@ -158,7 +158,8 @@ namespace nHydrate.DslPackage
 
                             foreach (var col in item.IndexColumns)
                             {
-                                indexCache.Columns.Add(new CopyStateSettings.CopyStateIndexColumn {
+                                indexCache.Columns.Add(new CopyStateSettings.CopyStateIndexColumn
+                                {
                                     Acending = col.Ascending,
                                     Name = col.Field.Name,
                                 });

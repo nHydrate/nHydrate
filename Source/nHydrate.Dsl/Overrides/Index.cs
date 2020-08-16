@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
 
 namespace nHydrate.Dsl
 {

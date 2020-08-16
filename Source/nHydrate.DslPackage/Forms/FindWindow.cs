@@ -1,11 +1,11 @@
+using Microsoft.VisualStudio.Modeling.Shell;
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.Modeling.Shell;
 using System.Runtime.InteropServices;
 
 namespace nHydrate.DslPackage.Forms
 {
-    [Guid("12121DCE-997E-41D2-B2DD-B7F558B10DAF")] 
+    [Guid("12121DCE-997E-41D2-B2DD-B7F558B10DAF")]
     public class FindWindow : ToolWindow
     {
         private FindWindowControl _findControl;
@@ -106,7 +106,7 @@ namespace nHydrate.DslPackage.Forms
             //When the old view is null this is the first time. Only load the first time
             if (newView == null)
                 return;
-            
+
             //Reload model if necessary
             _model = newView.DocData.RootElement as nHydrate.Dsl.nHydrateModel;
             if (_model == null) return;

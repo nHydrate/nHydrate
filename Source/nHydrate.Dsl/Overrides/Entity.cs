@@ -1,8 +1,8 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Dsl
 {
@@ -27,7 +27,7 @@ namespace nHydrate.Dsl
         /// </summary>
         public IEnumerable<Entity> GetTableHierarchy()
         {
-            return new[] {this};
+            return new[] { this };
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Dsl
 {

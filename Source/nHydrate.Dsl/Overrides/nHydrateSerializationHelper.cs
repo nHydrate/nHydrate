@@ -1,10 +1,10 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
 using DslValidation = global::Microsoft.VisualStudio.Modeling.Validation;
-using System.IO;
-using System.Xml;
 
 namespace nHydrate.Dsl
 {

@@ -1,10 +1,9 @@
 #pragma warning disable 0168
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using nHydrate.Generator.Common.Util;
-using System.ComponentModel;
 using nHydrate.Generator.Common.GeneratorFramework;
+using nHydrate.Generator.Common.Util;
+using System;
+using System.ComponentModel;
+using System.Linq;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
 
 namespace nHydrate.Dsl
@@ -240,11 +239,11 @@ namespace nHydrate.Dsl
                     if ((value.Substring(0, 2) == "0x") && (value.Length % 2 == 0) && value.Substring(2, value.Length - 2).IsHex()) return true;
                     return false;
                 case DataTypeConstants.Bit:
-                {
-                    var q = value.ToLower();
-                    if (q == "1" || q == "0") return true;
-                    return bool.TryParse(value, out _);
-                }
+                    {
+                        var q = value.ToLower();
+                        if (q == "1" || q == "0") return true;
+                        return bool.TryParse(value, out _);
+                    }
                 case DataTypeConstants.Date:
                     return !string.IsNullOrEmpty(this.GetCodeDefault());
                 case DataTypeConstants.DateTime:
@@ -279,18 +278,18 @@ namespace nHydrate.Dsl
                 case DataTypeConstants.TinyInt:
                     return byte.TryParse(value, out byte _);
                 case DataTypeConstants.UniqueIdentifier:
-                {
-                    if (value.ToLower() == "newid") return true;
-                    try
                     {
-                        var v = new Guid(value);
-                        return true;
+                        if (value.ToLower() == "newid") return true;
+                        try
+                        {
+                            var v = new Guid(value);
+                            return true;
+                        }
+                        catch
+                        {
+                            return false;
+                        }
                     }
-                    catch
-                    {
-                        return false;
-                    }
-                }
                 case DataTypeConstants.Timestamp:
                 case DataTypeConstants.Structured:
                 case DataTypeConstants.DateTimeOffset:

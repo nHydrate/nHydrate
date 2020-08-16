@@ -1,8 +1,8 @@
 #pragma warning disable 0168
-using System;
-using System.Text;
 using nHydrate.Generator.Models;
+using System;
 using System.IO;
+using System.Text;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseUpgrade
 {

@@ -1,7 +1,6 @@
+using nHydrate.Generator.Common.GeneratorFramework;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Generator
 {

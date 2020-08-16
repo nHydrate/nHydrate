@@ -1,8 +1,8 @@
+using nHydrate.Generator.Common.Util;
+using nHydrate.Generator.Models;
 using System;
 using System.Linq;
-using nHydrate.Generator.Models;
 using System.Text;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 {
@@ -528,7 +528,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             }
 
             //Audit Fields
-            if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedByPascalName, "string","The audit field for the 'Created By' parameter.", "public", "AuditCreatedBy");
+            if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedByPascalName, "string", "The audit field for the 'Created By' parameter.", "public", "AuditCreatedBy");
             if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedDatePascalName, "DateTime", "The audit field for the 'Created Date' parameter.", "public", "AuditCreatedDate");
             if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedByPascalName, "string", "The audit field for the 'Modified By' parameter.", "public", "AuditModifiedBy");
             if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedDatePascalName, "DateTime", "The audit field for the 'Modified Date' parameter.", "public", "AuditModifiedDate");
@@ -1061,7 +1061,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("				}");
                         sb.AppendLine("				else");
                         sb.AppendLine("				{");
-                        var relationParentTable = (Table) column.ParentTableRef.Object;
+                        var relationParentTable = (Table)column.ParentTableRef.Object;
                         var list = relationParentTable.AllRelationships.FindByChildColumn(column).ToList();
                         if (list.Count > 0)
                         {
@@ -1076,7 +1076,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                                 if (column.EnumType == string.Empty)
                                 {
                                     var columnRelationship = relation.ColumnRelationships.GetByParentField(column);
-                                    var parentColumn = (Column) columnRelationship.ParentColumnRef.Object;
+                                    var parentColumn = (Column)columnRelationship.ParentColumnRef.Object;
                                     sb.AppendLine($"						this.{column.PascalName} = (({this.GetLocalNamespace()}.Entity.{pTable.PascalName})newValue).{parentColumn.PascalName};");
 
                                     //REMOVE PK FOR NOW

@@ -230,7 +230,7 @@ namespace nHydrate.Generator.Common.Util
             if (tabs <= 0) return;
             element.AppendChild(element.OwnerDocument.CreateWhitespace(new string('\t', tabs)));
         }
-        
+
         #endregion
 
         #region Add CData

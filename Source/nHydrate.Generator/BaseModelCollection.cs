@@ -1,11 +1,11 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.Util;
+using nHydrate.Generator.Models;
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
-using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator
 {
@@ -110,7 +110,7 @@ namespace nHydrate.Generator
 
         public virtual T this[string name]
         {
-            get { return (T) _internalList.FirstOrDefault(x => x.Name == name); }
+            get { return (T)_internalList.FirstOrDefault(x => x.Name == name); }
         }
 
         public virtual void Insert(int index, T value)
@@ -130,7 +130,7 @@ namespace nHydrate.Generator
 
         public virtual bool Contains(int id)
         {
-            return this.Any(x=>x.Id == id);
+            return this.Any(x => x.Id == id);
         }
 
         public override void Clear()

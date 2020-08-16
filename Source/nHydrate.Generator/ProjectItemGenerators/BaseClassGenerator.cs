@@ -1,7 +1,7 @@
 namespace nHydrate.Generator.ProjectItemGenerators
 {
-  public abstract class BaseClassGenerator : BaseProjectItemGenerator
-  {
-  }
+    public abstract class BaseClassGenerator : BaseProjectItemGenerator
+    {
+    }
 }
 

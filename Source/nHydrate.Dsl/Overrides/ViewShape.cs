@@ -1,10 +1,10 @@
+using Microsoft.VisualStudio.Modeling;
+using Microsoft.VisualStudio.Modeling.Diagrams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DslDiagrams = global::Microsoft.VisualStudio.Modeling.Diagrams;
-using Microsoft.VisualStudio.Modeling.Diagrams;
-using Microsoft.VisualStudio.Modeling;
 using System.Reflection;
+using DslDiagrams = global::Microsoft.VisualStudio.Modeling.Diagrams;
 
 namespace nHydrate.Dsl
 {

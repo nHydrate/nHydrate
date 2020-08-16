@@ -1,6 +1,6 @@
 #pragma warning disable 0168
-using System;
 using nHydrate.Generator.Models;
+using System;
 using System.Text;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity

@@ -1,10 +1,10 @@
 #pragma warning disable 0168
-using System;
-using System.Windows.Forms;
+using nHydrate.DslPackage.Objects;
 using nHydrate.Generator.Common.GeneratorFramework;
+using System;
 using System.Globalization;
 using System.IO;
-using nHydrate.DslPackage.Objects;
+using System.Windows.Forms;
 
 namespace nHydrate.DslPackage.Forms
 {

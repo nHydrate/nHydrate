@@ -1,8 +1,8 @@
 #pragma warning disable 0168
+using nHydrate.Dsl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using nHydrate.Dsl;
 
 namespace nHydrate.DslPackage
 {

@@ -1,12 +1,12 @@
 #pragma warning disable 0168
+using Newtonsoft.Json;
+using nHydrate.Generator.Common.GeneratorFramework;
+using nHydrate.ServerObjects;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using nHydrate.Generator.Common.GeneratorFramework;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Newtonsoft.Json;
-using nHydrate.ServerObjects;
+using System.Text;
 
 namespace nHydrate.DslPackage.Objects
 {

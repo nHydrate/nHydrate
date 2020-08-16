@@ -1,7 +1,7 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Linq;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Dsl
 {
@@ -192,11 +192,11 @@ namespace nHydrate.Dsl
                         if (item.Fields.Count == 0)
                         {
                             var field = new Field(item.Partition)
-                                            {
-                                                DataType = DataTypeConstants.Int,
-                                                Identity = IdentityTypeConstants.Database,
-                                                Name = "ID",
-                                            };
+                            {
+                                DataType = DataTypeConstants.Int,
+                                Identity = IdentityTypeConstants.Database,
+                                Name = "ID",
+                            };
                             item.Fields.Add(field); //Add then set PK so it will trigger index code
                             field.IsPrimaryKey = true;
                         }
@@ -241,10 +241,10 @@ namespace nHydrate.Dsl
                         if (item.Fields.Count == 0)
                         {
                             var field = new ViewField(item.Partition)
-                                            {
-                                                DataType = DataTypeConstants.Int,
-                                                Name = "Field1",
-                                            };
+                            {
+                                DataType = DataTypeConstants.Int,
+                                Name = "Field1",
+                            };
                             item.Fields.Add(field);
                         }
                     }

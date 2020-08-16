@@ -1,8 +1,8 @@
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
@@ -132,13 +132,13 @@ namespace nHydrate.Generator.Models
 
             node.AddAttribute("key", this.Key);
 
-            XmlHelper.AddAttribute((XmlElement) node, "createdByColumnName", CreatedByColumnName);
-            XmlHelper.AddAttribute((XmlElement) node, "createdDateColumnName", CreatedDateColumnName);
-            XmlHelper.AddAttribute((XmlElement) node, "modifiedByColumnName", ModifiedByColumnName);
-            XmlHelper.AddAttribute((XmlElement) node, "modifiedDateColumnName", ModifiedDateColumnName);
-            XmlHelper.AddAttribute((XmlElement) node, "timestampColumnName", TimestampColumnName);
-            XmlHelper.AddAttribute((XmlElement) node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
-            XmlHelper.AddAttribute((XmlElement) node, "grantExecUser", GrantExecUser);
+            XmlHelper.AddAttribute((XmlElement)node, "createdByColumnName", CreatedByColumnName);
+            XmlHelper.AddAttribute((XmlElement)node, "createdDateColumnName", CreatedDateColumnName);
+            XmlHelper.AddAttribute((XmlElement)node, "modifiedByColumnName", ModifiedByColumnName);
+            XmlHelper.AddAttribute((XmlElement)node, "modifiedDateColumnName", ModifiedDateColumnName);
+            XmlHelper.AddAttribute((XmlElement)node, "timestampColumnName", TimestampColumnName);
+            XmlHelper.AddAttribute((XmlElement)node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
+            XmlHelper.AddAttribute((XmlElement)node, "grantExecUser", GrantExecUser);
 
             var columnsNode = oDoc.CreateElement("columns");
             Columns.XmlAppend(columnsNode);

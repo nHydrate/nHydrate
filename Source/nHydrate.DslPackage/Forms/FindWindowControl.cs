@@ -1,12 +1,12 @@
 #pragma warning disable 0168
+using Microsoft.VisualStudio.Modeling.Shell;
+using nHydrate.DslPackage.Objects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.Modeling.Shell;
-using nHydrate.DslPackage.Objects;
 
 namespace nHydrate.DslPackage.Forms
 {

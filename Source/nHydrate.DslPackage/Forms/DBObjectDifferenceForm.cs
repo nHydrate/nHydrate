@@ -1,9 +1,9 @@
 #pragma warning disable 0168
+using nHydrate.DataImport;
 using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using nHydrate.DataImport;
 
 namespace nHydrate.DslPackage.Forms
 {
@@ -31,7 +31,7 @@ namespace nHydrate.DslPackage.Forms
             txtText1.ReadOnly = true;
             txtText1.Scroll += new ScrollEventHandler(txtText1_Scroll);
             txtText1.VisibleRangeChanged += txtText1_VisibleRangeChanged;
-            
+
             txtText2.CurrentLineColor = txtText1.CurrentLineColor;
             txtText2.ChangedLineColor = txtText1.ChangedLineColor;
             txtText2.TextChanged += new EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(txtText2_TextChanged);

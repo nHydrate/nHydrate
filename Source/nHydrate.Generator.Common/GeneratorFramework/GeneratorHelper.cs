@@ -1,16 +1,13 @@
+using EnvDTE;
+using nHydrate.Generator.Common.EventArgs;
+using nHydrate.Generator.Common.Logging;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using EnvDTE;
-using nHydrate.Generator.Common.EventArgs;
-using nHydrate.Generator.Common.Forms;
-using nHydrate.Generator.Common.Logging;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Common.GeneratorFramework
 {

@@ -1,6 +1,6 @@
-using System.Linq;
 using Microsoft.VisualStudio.Modeling.Validation;
 using System.Collections;
+using System.Linq;
 
 namespace nHydrate.Dsl
 {

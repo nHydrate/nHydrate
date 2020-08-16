@@ -1,9 +1,9 @@
 #pragma warning disable 0168
-using System;
-using System.Xml;
 using nHydrate.Generator.Common.Util;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 
 namespace nHydrate.Generator.Models
 {

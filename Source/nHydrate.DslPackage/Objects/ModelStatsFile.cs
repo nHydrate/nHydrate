@@ -31,7 +31,8 @@ namespace nHydrate.DslPackage.Objects
                 try
                 {
                     Task.Run(() => { VersionHelper.LogStats(model); });
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     //Do Nothing
                 }

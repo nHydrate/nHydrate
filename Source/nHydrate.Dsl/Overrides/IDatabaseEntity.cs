@@ -1,7 +1,7 @@
 namespace nHydrate.Dsl
 {
-	public interface IDatabaseEntity
-	{
-	}
+    public interface IDatabaseEntity
+    {
+    }
 }
 

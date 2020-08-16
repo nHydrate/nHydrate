@@ -1,6 +1,5 @@
-using nHydrate.Generator.Common.GeneratorFramework;
-
 using nHydrate.Generator.Common.EventArgs;
+using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCreateRelations
 {

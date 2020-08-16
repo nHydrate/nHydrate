@@ -1,8 +1,8 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common.EventArgs;
+using nHydrate.Generator.Common.GeneratorFramework;
 using System.Linq;
 using System.Text;
-using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Common.EventArgs;
 
 namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Views
 {

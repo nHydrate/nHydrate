@@ -1,11 +1,11 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common.GeneratorFramework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using System.IO;
-using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Dsl
 {
@@ -373,10 +373,10 @@ namespace nHydrate.Dsl
         {
             var stringWriter = new StringWriter(new StringBuilder());
             var xmlTextWriter = new XmlTextWriter(stringWriter)
-                                    {
-                                        Formatting = Formatting.Indented,
-                                        IndentChar = '\t'
-                                    };
+            {
+                Formatting = Formatting.Indented,
+                IndentChar = '\t'
+            };
             doc.Save(xmlTextWriter);
             var t = stringWriter.ToString();
             t = t.Replace(@" encoding=""utf-16""", string.Empty);

@@ -1,7 +1,7 @@
 namespace nHydrate.Generator.Common.Exceptions
 {
-	public class LicenseException : nHydrateException
-	{
-	}
+    public class LicenseException : nHydrateException
+    {
+    }
 }
 
