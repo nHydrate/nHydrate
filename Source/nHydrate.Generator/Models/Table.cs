@@ -64,13 +64,9 @@ namespace nHydrate.Generator.Models
 
             Columns.ObjectPlural = "Fields";
             Columns.ObjectSingular = "Field";
-            Columns.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
-            Columns.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
 
             Relationships.ObjectPlural = "Relationships";
             Relationships.ObjectSingular = "Relationship";
-            Relationships.ImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderClose);
-            Relationships.SelectedImageIndex = ImageHelper.GetImageIndex(TreeIconConstants.FolderOpen);
         }
 
         protected override void OnRootReset(System.EventArgs e)

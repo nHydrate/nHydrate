@@ -248,9 +248,6 @@
     <Compile Include="nHydrateGeneratorProject.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ImageHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Models\CellEntry.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -37,10 +37,6 @@ namespace nHydrate.Generator.Models
 
         public string ObjectPlural { get; set; } = "References";
 
-        public int ImageIndex { get; set; } = -1;
-
-        public int SelectedImageIndex { get; set; } = -1;
-
         #endregion
 
         protected override string NodeOldName => "Reference";
