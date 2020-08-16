@@ -136,19 +136,9 @@
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
-    <Reference Include="System.Design">
-      <Name>system.design</Name>
-    </Reference>
-    <Reference Include="System.Drawing">
-      <Name>system.drawing</Name>
-    </Reference>
-    <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.Web.Services" />
-    <Reference Include="System.Windows.Forms">
-      <Name>system.windows.forms</Name>
-    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -170,7 +160,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Exceptions\LicenseException.cs" />
-    <Compile Include="ListViewItemComparer.cs" />
     <Compile Include="GeneratorFramework\AddinProperties.cs" />
     <Compile Include="GeneratorFramework\INamedObject.cs" />
     <Compile Include="GeneratorFramework\IModelObject.cs" />

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Windows.Forms;
 
-namespace nHydrate.Generator.Common
+namespace nHydrate.DslPackage
 {
     public class ListViewItemComparer : IComparer
     {

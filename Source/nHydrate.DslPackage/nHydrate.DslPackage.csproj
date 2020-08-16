@@ -394,6 +394,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Package.tt</DependentUpon>
     </Compile>
+    <Compile Include="ListViewItemComparer.cs" />
     <Compile Include="Objects\FindWindowColumnItem.cs" />
     <Compile Include="Objects\ModelStatsFile.cs" />
     <Compile Include="Objects\Postgres\ImportDomain.cs" />
