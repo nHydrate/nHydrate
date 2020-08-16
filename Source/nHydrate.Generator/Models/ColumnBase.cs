@@ -1,7 +1,7 @@
-using System;
-using System.Xml;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
+using System;
+using System.Xml;
 
 namespace nHydrate.Generator.Models
 {

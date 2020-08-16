@@ -1,8 +1,7 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Xml;
-using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {

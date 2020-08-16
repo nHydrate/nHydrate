@@ -1,11 +1,11 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common.GeneratorFramework;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml;
-using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Models
 {
@@ -411,7 +411,7 @@ namespace nHydrate.Generator.Models
             this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
             this.AllowModifiedAudit = XmlHelper.GetAttributeValue(node, "modifiedAudit", AllowModifiedAudit);
             this.AllowCreateAudit = XmlHelper.GetAttributeValue(node, "createAudit", _def_createAudit);
-            this.TypedTable = (TypedTableConstants) XmlHelper.GetAttributeValue(node, "typedTable", int.Parse(TypedTable.ToString("d")));
+            this.TypedTable = (TypedTableConstants)XmlHelper.GetAttributeValue(node, "typedTable", int.Parse(TypedTable.ToString("d")));
             this.AllowTimestamp = XmlHelper.GetAttributeValue(node, "timestamp", AllowTimestamp);
             this.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(node, "generatesDoubleDerived", _def_generatesDoubleDerived);
         }

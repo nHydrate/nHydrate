@@ -1,9 +1,9 @@
+using Microsoft.VisualStudio.Modeling;
+using nHydrate.Dsl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using nHydrate.Dsl;
-using Microsoft.VisualStudio.Modeling;
 
 namespace nHydrate.DslPackage.Forms
 {

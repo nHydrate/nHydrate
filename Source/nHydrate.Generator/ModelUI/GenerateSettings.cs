@@ -1,10 +1,10 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common;
+using nHydrate.Generator.Common.GeneratorFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using nHydrate.Generator.Common;
-using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Generator.ModelUI
 {
@@ -219,7 +219,7 @@ namespace nHydrate.Generator.ModelUI
                         }
                     }
                 }
-            
+
             }
         }
 

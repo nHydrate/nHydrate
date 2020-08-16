@@ -1,14 +1,10 @@
 #pragma warning disable 0168
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
-using nHydrate.Generator;
-using nHydrate.Generator.Models;
-using System.Collections;
-using nHydrate.Generator.Common.Util;
-using nHydrate.Generator.ProjectItemGenerators;
 using nHydrate.Core.SQLGeneration;
+using nHydrate.Generator.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 {
@@ -265,7 +261,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
-                if (table.AllowCreateAudit || table.AllowModifiedAudit ||  table.AllowTimestamp | table.IsTenant)
+                if (table.AllowCreateAudit || table.AllowModifiedAudit || table.AllowTimestamp | table.IsTenant)
                 {
                     var dateTimeString = "[DateTime2]";
                     if (table.AllowCreateAudit)

@@ -1,9 +1,7 @@
 #pragma warning disable 0168
-using System;
-using System.ComponentModel;
-using System.Xml;
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
+using System;
+using System.Xml;
 
 namespace nHydrate.Generator.Models
 {
@@ -96,7 +94,7 @@ namespace nHydrate.Generator.Models
             ParentViewRef.XmlAppend(parentViewRefNode);
             node.AppendChild(parentViewRefNode);
 
-            node.AddAttribute("type", (int) this.DataType);
+            node.AddAttribute("type", (int)this.DataType);
 
             if (this.AllowNull != _def_allowNull)
                 node.AddAttribute("allowNull", this.AllowNull);
@@ -130,7 +128,7 @@ namespace nHydrate.Generator.Models
 
             var typeString = node.Attributes["type"].Value;
             if (!string.IsNullOrEmpty(typeString))
-                _dataType = (System.Data.SqlDbType) int.Parse(typeString);
+                _dataType = (System.Data.SqlDbType)int.Parse(typeString);
 
             this.AllowNull = XmlHelper.GetAttributeValue(node, "allowNull", _allowNull);
         }

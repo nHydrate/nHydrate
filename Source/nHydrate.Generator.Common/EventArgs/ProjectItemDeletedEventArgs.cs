@@ -1,6 +1,6 @@
-using System.Collections;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
+using System.Collections;
 
 namespace nHydrate.Generator.Common.EventArgs
 {

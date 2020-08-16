@@ -1,8 +1,8 @@
 ﻿#pragma warning disable 0168
 using Npgsql;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace nHydrate.DslPackage.Objects.Postgres

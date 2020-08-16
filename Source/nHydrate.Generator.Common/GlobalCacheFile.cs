@@ -1,9 +1,9 @@
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Xml;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Common
 {

@@ -1,11 +1,11 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
-using System.ComponentModel;
 
 namespace nHydrate.Dsl
 {
-    partial class IndexColumn: nHydrate.Generator.Common.GeneratorFramework.IDirtyable
+    partial class IndexColumn : nHydrate.Generator.Common.GeneratorFramework.IDirtyable
     {
         #region Constructors
         // Constructors were not generated for this relationship because it had HasCustomConstructor

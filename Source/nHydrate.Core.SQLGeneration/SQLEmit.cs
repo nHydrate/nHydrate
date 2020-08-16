@@ -1,12 +1,12 @@
 #pragma warning disable 0168
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
-using nHydrate.Generator.Models;
-using System.Data;
-using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.Common;
+using nHydrate.Generator.Common.Util;
+using nHydrate.Generator.Models;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
 
 namespace nHydrate.Core.SQLGeneration
 {
@@ -283,8 +283,8 @@ namespace nHydrate.Core.SQLGeneration
                     {
                         var objectName = "FK_" +
                                          parentR.DatabaseRoleName + "_" +
-                                         Globals.GetTableDatabaseName((ModelRoot) t.Root, childT) +
-                                         "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, parentT);
+                                         Globals.GetTableDatabaseName((ModelRoot)t.Root, childT) +
+                                         "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, parentT);
                         objectName = objectName.ToUpper();
 
                         sb.AppendLine("--REMOVE FOREIGN KEY");
@@ -320,8 +320,8 @@ namespace nHydrate.Core.SQLGeneration
                         {
                             var objectName = "FK_" +
                                              parentR.DatabaseRoleName + "_" +
-                                             Globals.GetTableDatabaseName((ModelRoot) t.Root, childT) +
-                                             "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, parentT);
+                                             Globals.GetTableDatabaseName((ModelRoot)t.Root, childT) +
+                                             "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, parentT);
                             objectName = objectName.ToUpper();
 
                             sb.AppendLine("--REMOVE FOREIGN KEY");
@@ -347,7 +347,7 @@ namespace nHydrate.Core.SQLGeneration
 
             if (removePrimaryKey)
             {
-                var objectName = "PK_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, t);
+                var objectName = "PK_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, t);
 
                 //Delete Primary Key
                 sb.AppendLine($"--DELETE PRIMARY KEY FOR TABLE [{t.DatabaseName}]");
@@ -476,8 +476,8 @@ namespace nHydrate.Core.SQLGeneration
                     {
                         var objectName = "FK_" +
                                          parentR.DatabaseRoleName + "_" +
-                                         Globals.GetTableDatabaseName((ModelRoot) oldTable.Root, childT) +
-                                         "_" + Globals.GetTableDatabaseName((ModelRoot) oldTable.Root, parentT);
+                                         Globals.GetTableDatabaseName((ModelRoot)oldTable.Root, childT) +
+                                         "_" + Globals.GetTableDatabaseName((ModelRoot)oldTable.Root, parentT);
                         objectName = objectName.ToUpper();
 
                         sb.AppendLine("--REMOVE FOREIGN KEY");
@@ -514,8 +514,8 @@ namespace nHydrate.Core.SQLGeneration
                         {
                             var objectName = "FK_" +
                                              parentR.DatabaseRoleName + "_" +
-                                             Globals.GetTableDatabaseName((ModelRoot) oldTable.Root, childT) +
-                                             "_" + Globals.GetTableDatabaseName((ModelRoot) oldTable.Root, parentT);
+                                             Globals.GetTableDatabaseName((ModelRoot)oldTable.Root, childT) +
+                                             "_" + Globals.GetTableDatabaseName((ModelRoot)oldTable.Root, parentT);
                             objectName = objectName.ToUpper();
 
                             sb.AppendLine("--REMOVE FOREIGN KEY");
@@ -600,7 +600,8 @@ namespace nHydrate.Core.SQLGeneration
                             if (newColumn.DataType.IsTextType() || newColumn.DataType.IsDateType())
                                 dValue = "'" + dValue.Replace("'", "''") + "'";
 
-                            sb.AppendLine("--UPDATE [" + newTable.GetSQLSchema() + "].[" + newTable.DatabaseName + "] SET [" + newColumn.DatabaseName + "] = " + dValue + " WHERE [" + newColumn.DatabaseName + "] IS NULL"); }
+                            sb.AppendLine("--UPDATE [" + newTable.GetSQLSchema() + "].[" + newTable.DatabaseName + "] SET [" + newColumn.DatabaseName + "] = " + dValue + " WHERE [" + newColumn.DatabaseName + "] IS NULL");
+                        }
 
                         sb.AppendLine();
                     }
@@ -743,17 +744,17 @@ namespace nHydrate.Core.SQLGeneration
 
             for (var ii = t.ParentRoleRelations.Count - 1; ii >= 0; ii--)
             {
-                var parentR = (Relation) t.ParentRoleRelations[ii];
-                var parentT = (Table) parentR.ParentTableRef.Object;
-                var childT = (Table) parentR.ChildTableRef.Object;
+                var parentR = (Relation)t.ParentRoleRelations[ii];
+                var parentT = (Table)parentR.ParentTableRef.Object;
+                var childT = (Table)parentR.ChildTableRef.Object;
                 for (var jj = parentT.ParentRoleRelations.Count - 1; jj >= 0; jj--)
                 {
                     if (parentR.ParentTableRef.Object == t)
                     {
                         var objectNameFK = "FK_" +
                                            parentR.DatabaseRoleName + "_" +
-                                           Globals.GetTableDatabaseName((ModelRoot) t.Root, childT) +
-                                           "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, parentT);
+                                           Globals.GetTableDatabaseName((ModelRoot)t.Root, childT) +
+                                           "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, parentT);
 
                         sb.AppendLine("--REMOVE FOREIGN KEY");
                         sb.AppendLine("if exists(select * from sys.objects where name = '" + objectNameFK + "' and type = 'F' and type_desc = 'FOREIGN_KEY_CONSTRAINT')");
@@ -769,18 +770,18 @@ namespace nHydrate.Core.SQLGeneration
 
             for (var ii = t.ChildRoleRelations.Count - 1; ii >= 0; ii--)
             {
-                var childR = (Relation) t.ChildRoleRelations[ii];
-                var parentT = (Table) childR.ParentTableRef.Object;
-                var childT = (Table) childR.ChildTableRef.Object;
+                var childR = (Relation)t.ChildRoleRelations[ii];
+                var parentT = (Table)childR.ParentTableRef.Object;
+                var childT = (Table)childR.ChildTableRef.Object;
                 for (var jj = parentT.ParentRoleRelations.Count - 1; jj >= 0; jj--)
                 {
-                    var parentR = (Relation) parentT.ParentRoleRelations[jj];
+                    var parentR = (Relation)parentT.ParentRoleRelations[jj];
                     if (parentR.ChildTableRef.Object == t)
                     {
                         var objectNameFK = "FK_" +
                                            parentR.DatabaseRoleName + "_" +
-                                           Globals.GetTableDatabaseName((ModelRoot) t.Root, childT) +
-                                           "_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, parentT);
+                                           Globals.GetTableDatabaseName((ModelRoot)t.Root, childT) +
+                                           "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, parentT);
                         objectNameFK = objectNameFK.ToUpper();
 
                         sb.AppendLine("--REMOVE FOREIGN KEY");
@@ -796,7 +797,7 @@ namespace nHydrate.Core.SQLGeneration
 
             #region Delete Primary Key
 
-            var objectNamePK = "PK_" + Globals.GetTableDatabaseName((ModelRoot) t.Root, t);
+            var objectNamePK = "PK_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, t);
             sb.AppendLine($"--DELETE PRIMARY KEY FOR TABLE [{t.DatabaseName}]");
             sb.AppendLine($"if exists(select * from sys.objects where name = '{objectNamePK}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
             sb.AppendLine($"ALTER TABLE [{t.GetSQLSchema()}].[{t.DatabaseName}] DROP CONSTRAINT [{objectNamePK}]");
@@ -855,7 +856,7 @@ namespace nHydrate.Core.SQLGeneration
             try
             {
                 var sb = new StringBuilder();
-                var model = (ModelRoot) table.Root;
+                var model = (ModelRoot)table.Root;
 
                 //Generate static data
                 if (table.StaticData.Count > 0)

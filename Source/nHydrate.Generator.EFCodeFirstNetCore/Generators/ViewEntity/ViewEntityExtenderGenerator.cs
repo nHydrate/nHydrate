@@ -1,6 +1,6 @@
-using System.Linq;
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.EventArgs;
+using nHydrate.Generator.Common.GeneratorFramework;
+using System.Linq;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 {

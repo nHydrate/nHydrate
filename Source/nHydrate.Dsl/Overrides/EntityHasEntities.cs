@@ -1,6 +1,6 @@
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Linq;
-using nHydrate.Generator.Common.Util;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
 
 namespace nHydrate.Dsl
@@ -42,7 +42,7 @@ namespace nHydrate.Dsl
         #endregion
 
         public Guid InternalId { get; internal set; }
- 
+
         public Entity TargetEntity => this.ChildEntity;
 
         public Entity SourceEntity => this.ParentEntity;

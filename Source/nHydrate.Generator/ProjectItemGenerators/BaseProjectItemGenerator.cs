@@ -20,7 +20,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
 
         public virtual void Initialize(IModelObject model)
         {
-            _model = (ModelRoot) model;
+            _model = (ModelRoot)model;
         }
 
         protected virtual void OnGenerationStart(object sender, System.EventArgs e)

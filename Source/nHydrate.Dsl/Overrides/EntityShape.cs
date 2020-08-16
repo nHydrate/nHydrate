@@ -1,11 +1,11 @@
+using Microsoft.VisualStudio.Modeling;
+using Microsoft.VisualStudio.Modeling.Diagrams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DslModeling = global::Microsoft.VisualStudio.Modeling;
-using DslDiagrams = global::Microsoft.VisualStudio.Modeling.Diagrams;
-using Microsoft.VisualStudio.Modeling.Diagrams;
-using Microsoft.VisualStudio.Modeling;
 using System.Reflection;
+using DslDiagrams = global::Microsoft.VisualStudio.Modeling.Diagrams;
+using DslModeling = global::Microsoft.VisualStudio.Modeling;
 
 namespace nHydrate.Dsl
 {
@@ -41,7 +41,7 @@ namespace nHydrate.Dsl
         public override void OnDoubleClick(Microsoft.VisualStudio.Modeling.Diagrams.DiagramPointEventArgs e)
         {
             base.OnDoubleClick(e);
-            ((nHydrateDiagram) this.Diagram).NotifyShapeDoubleClick(this);
+            ((nHydrateDiagram)this.Diagram).NotifyShapeDoubleClick(this);
         }
 
         protected override DslDiagrams.CompartmentMapping[] GetCompartmentMappings(Type melType)

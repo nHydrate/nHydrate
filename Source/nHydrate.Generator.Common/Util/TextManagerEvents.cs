@@ -1,7 +1,7 @@
 ﻿#pragma warning disable 0168
-using System;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
+using System;
 
 namespace nHydrate.Generator.Common.Util
 {
@@ -16,7 +16,7 @@ namespace nHydrate.Generator.Common.Util
         {
             var textManager = GetService();
             var container = textManager as IConnectionPointContainer;
-            var eventGuid = typeof (IVsTextManagerEvents).GUID;
+            var eventGuid = typeof(IVsTextManagerEvents).GUID;
             container.FindConnectionPoint(ref eventGuid, out var textManagerEventsConnection);
             var textManagerEvents = new TextManagerEvents();
             uint textManagerCookie;
@@ -43,7 +43,7 @@ namespace nHydrate.Generator.Common.Util
         {
             try
             {
-                
+
                 Setup();
 
                 //if (pColorPrefs != null && pColorPrefs.Length > 0 && pColorPrefs[0].pColorTable != null)
@@ -116,10 +116,10 @@ namespace nHydrate.Generator.Common.Util
 
         private static System.Drawing.Color UIntToColor(uint color)
         {
-            var a = (byte) (color >> 24);
-            var r = (byte) (color >> 16);
-            var g = (byte) (color >> 8);
-            var b = (byte) (color >> 0);
+            var a = (byte)(color >> 24);
+            var r = (byte)(color >> 16);
+            var g = (byte)(color >> 8);
+            var b = (byte)(color >> 0);
             return System.Drawing.Color.FromArgb(255, r, g, b);
         }
 

@@ -1,8 +1,8 @@
 #pragma warning disable 0168
-using System;
-using System.Xml;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
+using System;
+using System.Xml;
 
 namespace nHydrate.Generator.Models
 {
@@ -354,7 +354,7 @@ namespace nHydrate.Generator.Models
                 node.AddAttribute("computedColumn", this.ComputedColumn, _def_computedColumn);
                 node.AddAttribute("isReadOnly", this.IsReadOnly, _def_isReadOnly);
                 node.AddAttribute("formula", this.Formula, _def_formula);
-                node.AddAttribute("identity", (int) this.Identity, (int) _def_identity);
+                node.AddAttribute("identity", (int)this.Identity, (int)_def_identity);
                 node.AddAttribute("name", this.Name);
                 node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
                 node.AddAttribute("description", this.Description, _def_description);
@@ -372,7 +372,7 @@ namespace nHydrate.Generator.Models
                 node.AddAttribute("isIndexed", this.IsIndexed, _def_isIndexed);
                 node.AddAttribute("isUnique", this.IsUnique, _def_isUnique);
                 node.AddAttribute("id", this.Id);
-                node.AddAttribute("type", (int) this.DataType);
+                node.AddAttribute("type", (int)this.DataType);
                 node.AddAttribute("allowNull", this.AllowNull, _def_allowNull);
                 node.AddAttribute("obsolete", this.Obsolete, _def_obsolete);
 

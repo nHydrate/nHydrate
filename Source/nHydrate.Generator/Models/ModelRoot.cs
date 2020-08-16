@@ -1,12 +1,11 @@
 #pragma warning disable 0168
-using System;
-using System.Collections;
-using System.Linq;
-using System.Xml;
-using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Xml;
 
 namespace nHydrate.Generator.Models
 {

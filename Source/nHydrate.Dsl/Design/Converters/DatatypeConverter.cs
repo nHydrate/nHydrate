@@ -1,6 +1,6 @@
 using System;
-using System.Linq;
 using System.ComponentModel;
+using System.Linq;
 
 namespace nHydrate.Dsl.Design.Converters
 {

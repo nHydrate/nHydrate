@@ -1,8 +1,8 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using nHydrate.Generator.Common.Util;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
 
 namespace nHydrate.Dsl

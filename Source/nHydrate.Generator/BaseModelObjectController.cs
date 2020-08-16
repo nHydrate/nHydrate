@@ -36,7 +36,7 @@ namespace nHydrate.Generator
         {
             var retval = new MessageCollection();
             foreach (ModelObjectTreeNode node in this.Node.Nodes)
-                retval.AddRange(((BaseModelObjectController) node.Controller).Verify());
+                retval.AddRange(((BaseModelObjectController)node.Controller).Verify());
             return retval;
         }
 

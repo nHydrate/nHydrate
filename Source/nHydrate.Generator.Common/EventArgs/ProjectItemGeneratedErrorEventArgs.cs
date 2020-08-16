@@ -1,23 +1,19 @@
-using System.Collections;
-using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Common.Util;
-
 namespace nHydrate.Generator.Common.EventArgs
 {
-	public class ProjectItemGeneratedErrorEventArgs : System.EventArgs
-	{
-		#region Constructors
+    public class ProjectItemGeneratedErrorEventArgs : System.EventArgs
+    {
+        #region Constructors
 
-		#endregion
+        #endregion
 
-		#region Property Implementations
+        #region Property Implementations
 
-		public string Text { get; set; }
+        public string Text { get; set; }
 
-		public bool ShowError { get; set; }
+        public bool ShowError { get; set; }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }
 

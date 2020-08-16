@@ -1,16 +1,16 @@
 #pragma warning disable 0168
+using nHydrate.DataImport;
+using nHydrate.Dsl;
+using nHydrate.DslPackage.Objects;
+using nHydrate.Generator.Common.Util;
+using nHydrate.Generator.Models;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using System.Windows.Forms;
-using nHydrate.Generator.Models;
-using nHydrate.DataImport;
-using nHydrate.Dsl;
 using System.IO;
-using nHydrate.DslPackage.Objects;
-using nHydrate.Generator.Common.Util;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace nHydrate.DslPackage.Forms
 {
@@ -719,7 +719,7 @@ namespace nHydrate.DslPackage.Forms
                 db.EntityList.Add(newEntity);
 
                 //Load fields
-                foreach(var column in entity.Columns)
+                foreach (var column in entity.Columns)
                 {
                     var isIndexed = allIndexes.Any(x => x.TableName == newEntity.Name && newEntity.FieldList.Any(z => z.Name == column.ColumnName) && newEntity.FieldList.Count == 1);
                     newEntity.FieldList.Add(new DataImport.Field

@@ -1,6 +1,6 @@
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 namespace nHydrate.Generator.Models
@@ -29,7 +29,7 @@ namespace nHydrate.Generator.Models
                 foreach (Reference r in t.Relationships)
                 {
                     if (r.Object == null) delRefList.Add(r);
-                    else if (((Relation) r.Object).ParentTableRef.Object != t)
+                    else if (((Relation)r.Object).ParentTableRef.Object != t)
                         delRefList.Add(r);
                     else System.Diagnostics.Debug.Write("");
                 }
@@ -37,7 +37,7 @@ namespace nHydrate.Generator.Models
                 //Perform actual remove
                 foreach (var r in delRefList)
                 {
-                    ((ModelRoot) this.Root).Database.Relations.Remove((Relation) r.Object);
+                    ((ModelRoot)this.Root).Database.Relations.Remove((Relation)r.Object);
                 }
 
             }
@@ -50,9 +50,9 @@ namespace nHydrate.Generator.Models
                 {
                     if (r.Object == null)
                         delRefList.Add(r);
-                    else if (((Relation) r.Object).ParentTableRef.Object == t)
+                    else if (((Relation)r.Object).ParentTableRef.Object == t)
                         System.Diagnostics.Debug.Write("");
-                    else if (((Relation) r.Object).ChildTableRef.Object == t)
+                    else if (((Relation)r.Object).ChildTableRef.Object == t)
                         System.Diagnostics.Debug.Write("");
                     else
                         delRefList.Add(r);
@@ -61,7 +61,7 @@ namespace nHydrate.Generator.Models
                 //Perform actual remove
                 foreach (var r in delRefList)
                 {
-                    ((ModelRoot) this.Root).Database.Relations.Remove((Relation) r.Object);
+                    ((ModelRoot)this.Root).Database.Relations.Remove((Relation)r.Object);
                 }
 
             }
@@ -94,7 +94,7 @@ namespace nHydrate.Generator.Models
             var table = this.GetById(tableId)[0];
 
             var deleteList = new ArrayList();
-            foreach (Relation relation in ((ModelRoot) this.Root).Database.Relations)
+            foreach (Relation relation in ((ModelRoot)this.Root).Database.Relations)
             {
                 if (relation.ParentTableRef.Object == null)
                     deleteList.Add(relation);
@@ -105,15 +105,15 @@ namespace nHydrate.Generator.Models
             }
 
             foreach (Relation relation in deleteList)
-                ((ModelRoot) this.Root).Database.Relations.Remove(relation);
+                ((ModelRoot)this.Root).Database.Relations.Remove(relation);
 
             //Remove actual columns
             for (var ii = table.Columns.Count - 1; ii >= 0; ii--)
             {
-                var id = ((Column) table.Columns[0].Object).Id;
-                var c = ((ModelRoot) this.Root).Database.Columns.FirstOrDefault(x => x.Id == id);
+                var id = ((Column)table.Columns[0].Object).Id;
+                var c = ((ModelRoot)this.Root).Database.Columns.FirstOrDefault(x => x.Id == id);
                 if (c != null)
-                    ((ModelRoot) this.Root).Database.Columns.Remove(c);
+                    ((ModelRoot)this.Root).Database.Columns.Remove(c);
             }
 
             //Remove column references

@@ -1,10 +1,10 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using nHydrate.Generator.Common.Logging;
 
 namespace nHydrate.Generator.Common.Util
 {
@@ -101,8 +101,8 @@ namespace nHydrate.Generator.Common.Util
 
         public static IEnumerable<string> GetExcludeAssemblies()
         {
-            var excludeList = new string[] 
-            { 
+            var excludeList = new string[]
+            {
                 "nHydrate.EFCore.dll",
                 "NHibernate.dll",
                 "NHibernate.ByteCode.Castle.dll",
@@ -167,7 +167,7 @@ namespace nHydrate.Generator.Common.Util
 
         public static Attribute GetSingleAttribute(System.Type attributeType, object instance)
         {
-            var attributes = (Attribute[]) instance.GetType().GetCustomAttributes(attributeType, true);
+            var attributes = (Attribute[])instance.GetType().GetCustomAttributes(attributeType, true);
             if (attributes.Length > 0)
                 return attributes[0];
             else
@@ -176,7 +176,7 @@ namespace nHydrate.Generator.Common.Util
 
         public static Attribute GetSingleAttribute(System.Type attributeType, System.Type type)
         {
-            var attributes = (Attribute[]) type.GetCustomAttributes(attributeType, true);
+            var attributes = (Attribute[])type.GetCustomAttributes(attributeType, true);
             if (attributes.Length > 0)
                 return attributes[0];
             else

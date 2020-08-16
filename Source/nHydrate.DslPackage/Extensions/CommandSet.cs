@@ -1,15 +1,15 @@
 ﻿#pragma warning disable 0168
+using Microsoft.VisualStudio.Modeling.Diagrams;
+using Microsoft.VisualStudio.Modeling.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using nHydrate.Dsl;
+using nHydrate.DslPackage.Forms;
+using nHydrate.DslPackage.Objects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
-using Microsoft.VisualStudio.Modeling.Diagrams;
-using Microsoft.VisualStudio.Modeling.Shell;
 using System.Windows.Forms;
-using nHydrate.DslPackage.Forms;
-using nHydrate.Dsl;
-using nHydrate.DslPackage.Objects;
-using Microsoft.VisualStudio.Shell.Interop;
 
 //Menu Documentation
 /*
@@ -72,11 +72,11 @@ namespace nHydrate.DslPackage
             var importDatabaseForm = new ImportDatabaseForm(model, database, this.CurrentDocData);
             if (importDatabaseForm.ShowDialog() == DialogResult.OK)
             {
-                ((nHydrateDocData) this.CurrentDocData).IsImporting = true;
+                ((nHydrateDocData)this.CurrentDocData).IsImporting = true;
                 nHydrate.DslPackage.Objects.DatabaseImportDomain.ImportDatabase(model, store, this.CurrentDocView.CurrentDiagram, importDatabaseForm.NewDatabase);
                 if (postArrange) this.ArrangeDiagram();
                 this.CurrentDocView.CurrentDiagram.Reroute();
-                ((nHydrateDocData) this.CurrentDocData).IsImporting = false;
+                ((nHydrateDocData)this.CurrentDocData).IsImporting = false;
                 MessageBox.Show("The database has finished importing.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -93,7 +93,7 @@ namespace nHydrate.DslPackage
         private void OnMenuCommandGenerate(object sender, EventArgs e)
         {
             #region Register
-            
+
             if (VersionHelper.ShouldNag())
             {
                 VersionHelper.DidNag();
@@ -223,7 +223,7 @@ namespace nHydrate.DslPackage
                 if (selectedObject is EntityAssociationConnector)
                 {
                     var model = this.CurrentDocView.CurrentDiagram.ModelElement as nHydrateModel;
-                    var F = new nHydrate.DslPackage.Forms.RelationshipDialog(model, store, ((EntityAssociationConnector) selectedObject).ModelElement as EntityHasEntities);
+                    var F = new nHydrate.DslPackage.Forms.RelationshipDialog(model, store, ((EntityAssociationConnector)selectedObject).ModelElement as EntityHasEntities);
                     F.ShowDialog();
                 }
             }
@@ -625,7 +625,7 @@ namespace nHydrate.DslPackage
                 if (selectedObject is EntityAssociationConnector)
                 {
                     var shape = selectedObject as EntityAssociationConnector;
-                    this.CurrentDocView.SelectObjects(1, new object[] {shape.FromShape}, 0);
+                    this.CurrentDocView.SelectObjects(1, new object[] { shape.FromShape }, 0);
                     return;
                 }
             }
@@ -658,7 +658,7 @@ namespace nHydrate.DslPackage
                 if (selectedObject is EntityAssociationConnector)
                 {
                     var shape = selectedObject as EntityAssociationConnector;
-                    var r = this.CurrentDocView.SelectObjects(1, new object[] {shape.ToShape}, Microsoft.VisualStudio.VSConstants.SELECTED);
+                    var r = this.CurrentDocView.SelectObjects(1, new object[] { shape.ToShape }, Microsoft.VisualStudio.VSConstants.SELECTED);
                     return;
                 }
             }

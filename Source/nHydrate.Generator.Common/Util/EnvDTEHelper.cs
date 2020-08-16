@@ -1,11 +1,11 @@
 #pragma warning disable 0168
-using System;
-using System.Linq;
-using System.Collections;
-using System.IO;
 using EnvDTE;
 using nHydrate.Generator.Common.GeneratorFramework;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace nHydrate.Generator.Common.Util
 {

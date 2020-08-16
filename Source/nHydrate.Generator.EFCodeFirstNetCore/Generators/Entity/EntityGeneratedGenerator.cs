@@ -1,8 +1,8 @@
-using System.Linq;
-using System.Collections.Generic;
+using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Models;
-using nHydrate.Generator.Common.EventArgs;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 {

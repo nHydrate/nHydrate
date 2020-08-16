@@ -1,11 +1,7 @@
+using nHydrate.Generator.Common.Util;
 using System;
-using System.Collections;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
-using System.Xml;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Common.Logging
 {

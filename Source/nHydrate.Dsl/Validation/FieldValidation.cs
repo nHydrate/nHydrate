@@ -1,6 +1,6 @@
 #pragma warning disable 0168
-using System;
 using Microsoft.VisualStudio.Modeling.Validation;
+using System;
 
 namespace nHydrate.Dsl
 {

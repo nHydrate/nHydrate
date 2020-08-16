@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace nHydrate.Generator.Common.Forms
 {
@@ -24,7 +21,7 @@ namespace nHydrate.Generator.Common.Forms
         {
             if (this.IsHandleCreated && _cue != null)
             {
-                SendMessage(this.Handle, 0x1501, (IntPtr) 1, _cue);
+                SendMessage(this.Handle, 0x1501, (IntPtr)1, _cue);
             }
         }
 

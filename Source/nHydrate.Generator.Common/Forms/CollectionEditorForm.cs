@@ -1,7 +1,7 @@
+using nHydrate.Generator.Common.GeneratorFramework;
 using System.Collections;
 using System.Drawing;
 using System.Windows.Forms;
-using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Generator.Common.Forms
 {
@@ -29,16 +29,16 @@ namespace nHydrate.Generator.Common.Forms
             InitializeComponent();
         }
 
-        protected override void Dispose( bool disposing )
+        protected override void Dispose(bool disposing)
         {
-            if( disposing )
+            if (disposing)
             {
-                if(components != null)
+                if (components != null)
                 {
                     components.Dispose();
                 }
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
         #region Windows Form Designer generated code
@@ -104,7 +104,7 @@ namespace nHydrate.Generator.Common.Forms
             // 
             // lblLine
             // 
-            this.lblLine.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.lblLine.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLine.BackColor = System.Drawing.Color.Black;
             this.lblLine.Location = new System.Drawing.Point(11, 4);
@@ -149,7 +149,7 @@ namespace nHydrate.Generator.Common.Forms
             // 
             // lblMembers
             // 
-            this.lblMembers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lblMembers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMembers.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.lblMembers.Location = new System.Drawing.Point(8, 8);
@@ -181,8 +181,8 @@ namespace nHydrate.Generator.Common.Forms
             // 
             // lstMembers
             // 
-            this.lstMembers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.lstMembers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstMembers.IntegralHeight = false;
             this.lstMembers.Location = new System.Drawing.Point(8, 32);
@@ -211,8 +211,8 @@ namespace nHydrate.Generator.Common.Forms
             // 
             // PropertyGrid1
             // 
-            this.PropertyGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.PropertyGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.PropertyGrid1.LineColor = System.Drawing.SystemColors.ScrollBar;
             this.PropertyGrid1.Location = new System.Drawing.Point(8, 32);
@@ -224,7 +224,7 @@ namespace nHydrate.Generator.Common.Forms
             // 
             // lblProperties
             // 
-            this.lblProperties.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lblProperties.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblProperties.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.lblProperties.Location = new System.Drawing.Point(8, 8);
@@ -318,7 +318,7 @@ namespace nHydrate.Generator.Common.Forms
             if (this.CancelButtonClick != null)
                 this.CancelButtonClick(this, e);
         }
-        
+
         #endregion
 
         #region Property Implementations
@@ -349,9 +349,9 @@ namespace nHydrate.Generator.Common.Forms
         public IEnumerable DisplayList
         {
             get { return _displayList; }
-            set 
+            set
             {
-                _displayList = value; 
+                _displayList = value;
                 this.LoadList();
             }
         }
@@ -362,7 +362,7 @@ namespace nHydrate.Generator.Common.Forms
 
         private void cmdUp_Click(object sender, System.EventArgs e)
         {
-            if(lstMembers.SelectedIndex > 0)
+            if (lstMembers.SelectedIndex > 0)
             {
                 var index = lstMembers.SelectedIndex;
                 var o = lstMembers.SelectedItem;
@@ -370,14 +370,14 @@ namespace nHydrate.Generator.Common.Forms
                 lstMembers.Items.Insert(index - 1, o);
                 lstMembers.SelectedIndex = index - 1;
                 this.RefreshButtons();
-                
+
                 this.OnUpButtonClick(this, new System.EventArgs());
-            }			
+            }
         }
 
         private void cmdDown_Click(object sender, System.EventArgs e)
         {
-            if(lstMembers.SelectedIndex < lstMembers.Items.Count - 1)
+            if (lstMembers.SelectedIndex < lstMembers.Items.Count - 1)
             {
                 var index = lstMembers.SelectedIndex;
                 var o = lstMembers.SelectedItem;
@@ -417,7 +417,7 @@ namespace nHydrate.Generator.Common.Forms
         private void LoadList()
         {
             lstMembers.Items.Clear();
-            foreach(var o in this.DisplayList)
+            foreach (var o in this.DisplayList)
                 lstMembers.Items.Add(o);
 
             if (lstMembers.Items.Count > 0)

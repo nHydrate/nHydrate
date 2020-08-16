@@ -1,12 +1,11 @@
+using nHydrate.Core.SQLGeneration;
+using nHydrate.Generator.Common.Util;
+using nHydrate.Generator.Models;
+using nHydrate.Generator.SQLInstaller.ProjectItemGenerators;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using nHydrate.Generator.Models;
 using System.Xml;
-using nHydrate.Generator.Common.Util;
-using nHydrate.Generator.SQLInstaller.ProjectItemGenerators;
-using nHydrate.Core.SQLGeneration;
 
 namespace nHydrate.Generator.SQLInstaller
 {
@@ -321,7 +320,7 @@ namespace nHydrate.Generator.SQLInstaller
                             sb.AppendLine("--GO");
 
                             var sql = SQLEmit.GetSqlCreatePK(newT) + "GO\r\n";
-                            var lines = sql.Split(new char[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
+                            var lines = sql.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
                             //Comment the whole SQL block
                             var index = 0;

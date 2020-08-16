@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
-using System.ComponentModel.Design;
 
 namespace nHydrate.Wizard
 {
@@ -348,7 +348,7 @@ namespace nHydrate.Wizard
 
         public FlatStyle ButtonFlatStyle
         {
-            get {  return _buttonFlatStyle; }
+            get { return _buttonFlatStyle; }
             set
             {
                 _buttonFlatStyle = value;

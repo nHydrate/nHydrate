@@ -1,10 +1,10 @@
 namespace nHydrate.Generator
 {
-	public class DefaultMenuCommand : MenuCommand
-	{
-		public DefaultMenuCommand()
-		{
-		}
-	}
+    public class DefaultMenuCommand : MenuCommand
+    {
+        public DefaultMenuCommand()
+        {
+        }
+    }
 }
 

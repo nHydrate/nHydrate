@@ -1,5 +1,5 @@
-using System;
 using nHydrate.Generator.Common.Util;
+using System;
 using DslModeling = global::Microsoft.VisualStudio.Modeling;
 
 namespace nHydrate.Dsl

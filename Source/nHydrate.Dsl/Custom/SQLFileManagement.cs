@@ -1,13 +1,13 @@
 #pragma warning disable 0168
+using Microsoft.VisualStudio.Modeling;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Xml;
-using nHydrate.Generator.Common.Util;
-using System.Windows.Forms;
-using Microsoft.VisualStudio.Modeling;
 using System.IO.Compression;
+using System.Linq;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace nHydrate.Dsl.Custom
 {
@@ -15,7 +15,7 @@ namespace nHydrate.Dsl.Custom
     {
         private const string FOLDER_ET = "_Entities";
         private const string FOLDER_VW = "_Views";
-        
+
         public static string GetModelFolder(string rootFolder, string modelName)
         {
             return Path.Combine(rootFolder, "_" + modelName);
@@ -593,7 +593,7 @@ namespace nHydrate.Dsl.Custom
                     var connection = entity.Store.CurrentContext.Partitions.First().Value.ElementDirectory.AllElements.Last() as EntityHasEntities;
                     connection.InternalId = XmlHelper.GetAttributeValue(n, "id", Guid.Empty);
                     connection.IsEnforced = XmlHelper.GetAttributeValue(n, "isenforced", connection.IsEnforced);
-                    connection.DeleteAction = (DeleteActionConstants) Enum.Parse(typeof(DeleteActionConstants), XmlHelper.GetAttributeValue(n, "deleteaction", connection.DeleteAction.ToString()));
+                    connection.DeleteAction = (DeleteActionConstants)Enum.Parse(typeof(DeleteActionConstants), XmlHelper.GetAttributeValue(n, "deleteaction", connection.DeleteAction.ToString()));
                     connection.RoleName = XmlHelper.GetAttributeValue(n, "rolename", connection.RoleName);
 
                     var relationColumnsNode = n.SelectSingleNode("relationfieldset");
@@ -608,7 +608,7 @@ namespace nHydrate.Dsl.Custom
                             if ((sourceField != null) && (targetField != null))
                             {
                                 var id = XmlHelper.GetAttributeValue(m, "id", Guid.NewGuid());
-                                var newRelationField = new RelationField(entity.Partition, new PropertyAssignment[] {new PropertyAssignment(ElementFactory.IdPropertyAssignment, id)});
+                                var newRelationField = new RelationField(entity.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, id) });
                                 newRelationField.SourceFieldId = sourceFieldID;
                                 newRelationField.TargetFieldId = targetFieldID;
                                 newRelationField.RelationID = connection.Id;

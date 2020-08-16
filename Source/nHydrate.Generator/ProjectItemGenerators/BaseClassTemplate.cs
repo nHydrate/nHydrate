@@ -1,4 +1,3 @@
-using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Models;
 
 namespace nHydrate.Generator.ProjectItemGenerators
@@ -8,7 +7,7 @@ namespace nHydrate.Generator.ProjectItemGenerators
         protected ModelRoot _model;
 
         public BaseClassTemplate(ModelRoot model)
-            //: this()
+        //: this()
         {
             _model = model;
         }

@@ -1,7 +1,7 @@
+using nHydrate.Core.SQLGeneration;
+using nHydrate.Generator.Models;
 using System.Linq;
 using System.Text;
-using nHydrate.Generator.Models;
-using nHydrate.Core.SQLGeneration;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateRelations
 {

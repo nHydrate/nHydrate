@@ -1,11 +1,10 @@
 #pragma warning disable 0168
+using Microsoft.VisualStudio.Modeling;
+using nHydrate.Dsl;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.Modeling;
-using nHydrate.Dsl;
-using System.Windows.Forms;
-using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.DslPackage.Objects
 {
@@ -446,7 +445,7 @@ namespace nHydrate.DslPackage.Objects
         public static nHydrate.DataImport.Database Convert(nHydrateModel model, Microsoft.VisualStudio.Modeling.Diagrams.Diagram diagram)
         {
             var database = new nHydrate.DataImport.Database();
-            
+
             #region Load the entities
             foreach (var entity in model.Entities)
             {
