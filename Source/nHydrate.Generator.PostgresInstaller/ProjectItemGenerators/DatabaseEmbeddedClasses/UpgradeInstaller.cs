@@ -2160,7 +2160,10 @@ namespace PROJECTNAMESPACE
         internal static List<string> BreakLines(this string text)
         {
             if (string.IsNullOrEmpty(text)) return new List<string>();
-            return text.Replace("\x01", string.Empty).Split(new[] { "\r\n" }, StringSplitOptions.None).ToList();
+            return text.Replace("\x01", string.Empty)
+                .Replace("\r\n", "\n") //convert all Windows to Linux endings
+                .Split('\n', StringSplitOptions.None) //split on Linux endings
+                .ToList();
         }
 
         /// <summary />
