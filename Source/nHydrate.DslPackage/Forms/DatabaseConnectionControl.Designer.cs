@@ -1,4 +1,4 @@
-﻿namespace nHydrate.DslPackage.Forms
+namespace nHydrate.DslPackage.Forms
 {
 	partial class DatabaseConnectionControl
 	{
@@ -30,19 +30,19 @@
 		{
             this.grpConnectionString = new System.Windows.Forms.GroupBox();
             this.lblConnectionString = new System.Windows.Forms.Label();
-            this.txtConnectionString = new nHydrate.Generator.Common.Forms.CueTextBox();
+            this.txtConnectionString = new nHydrate.DslPackage.Forms.CueTextBox();
             this.opt2 = new System.Windows.Forms.RadioButton();
             this.grpProperties = new System.Windows.Forms.GroupBox();
             this.chkWinAuth = new System.Windows.Forms.CheckBox();
             this.lblServer = new System.Windows.Forms.Label();
-            this.txtPWD = new nHydrate.Generator.Common.Forms.CueTextBox();
+            this.txtPWD = new nHydrate.DslPackage.Forms.CueTextBox();
             this.opt1 = new System.Windows.Forms.RadioButton();
             this.lblDatabase = new System.Windows.Forms.Label();
-            this.txtUID = new nHydrate.Generator.Common.Forms.CueTextBox();
+            this.txtUID = new nHydrate.DslPackage.Forms.CueTextBox();
             this.lblUID = new System.Windows.Forms.Label();
-            this.txtDatabase = new nHydrate.Generator.Common.Forms.CueTextBox();
+            this.txtDatabase = new nHydrate.DslPackage.Forms.CueTextBox();
             this.lblPWD = new System.Windows.Forms.Label();
-            this.txtServer = new nHydrate.Generator.Common.Forms.CueTextBox();
+            this.txtServer = new nHydrate.DslPackage.Forms.CueTextBox();
             this.grpConnectionString.SuspendLayout();
             this.grpProperties.SuspendLayout();
             this.SuspendLayout();
@@ -233,18 +233,18 @@
 
 		private System.Windows.Forms.GroupBox grpConnectionString;
 		private System.Windows.Forms.Label lblConnectionString;
-		private nHydrate.Generator.Common.Forms.CueTextBox txtConnectionString;
+		private nHydrate.DslPackage.Forms.CueTextBox txtConnectionString;
 		private System.Windows.Forms.RadioButton opt2;
 		private System.Windows.Forms.GroupBox grpProperties;
 		private System.Windows.Forms.CheckBox chkWinAuth;
 		private System.Windows.Forms.Label lblServer;
-		private nHydrate.Generator.Common.Forms.CueTextBox txtPWD;
+		private nHydrate.DslPackage.Forms.CueTextBox txtPWD;
 		private System.Windows.Forms.RadioButton opt1;
 		private System.Windows.Forms.Label lblDatabase;
-		private nHydrate.Generator.Common.Forms.CueTextBox txtUID;
+		private nHydrate.DslPackage.Forms.CueTextBox txtUID;
 		private System.Windows.Forms.Label lblUID;
-		private nHydrate.Generator.Common.Forms.CueTextBox txtDatabase;
+		private nHydrate.DslPackage.Forms.CueTextBox txtDatabase;
 		private System.Windows.Forms.Label lblPWD;
-        private nHydrate.Generator.Common.Forms.CueTextBox txtServer;
+        private nHydrate.DslPackage.Forms.CueTextBox txtServer;
 	}
 }

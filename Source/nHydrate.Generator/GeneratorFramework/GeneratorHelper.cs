@@ -4,6 +4,7 @@ using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Logging;
 using nHydrate.Generator.Common.Util;
+using nHydrate.Generator.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;

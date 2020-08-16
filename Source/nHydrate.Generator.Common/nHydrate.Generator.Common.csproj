@@ -129,34 +129,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EnvDTE">
-      <Name>envdte</Name>
-    </Reference>
-    <Reference Include="EnvDTE100, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="EnvDTE80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Editor, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ThirdParty\Microsoft.VisualStudio.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <Reference Include="Microsoft.VisualStudio.Shell.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ThirdParty\Microsoft.VisualStudio.Shell.11.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <Reference Include="Microsoft.VisualStudio.TextManager.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <Reference Include="Microsoft.VisualStudio.TextManager.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -178,11 +150,6 @@
       <Name>system.windows.forms</Name>
     </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="VSLangProj">
-      <Name>VSLangProj</Name>
-      <HintPath>..\..\..\Program Files\Microsoft Visual Studio .NET 2003\Common7\IDE\PublicAssemblies\VSLangProj.dll</HintPath>
-      <AssemblyFolderKey>hklm\publicassemblies</AssemblyFolderKey>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
@@ -204,21 +171,6 @@
     </Compile>
     <Compile Include="Exceptions\LicenseException.cs" />
     <Compile Include="ListViewItemComparer.cs" />
-    <Compile Include="Forms\CueBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\ErrorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ErrorForm.Designer.cs">
-      <DependentUpon>ErrorForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\SendErrorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\SendErrorForm.Designer.cs">
-      <DependentUpon>SendErrorForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="GeneratorFramework\AddinProperties.cs" />
     <Compile Include="GeneratorFramework\INamedObject.cs" />
     <Compile Include="GeneratorFramework\IModelObject.cs" />
@@ -226,10 +178,6 @@
     <Compile Include="GeneratorFramework\IDirtyable.cs" />
     <Compile Include="GlobalCacheFile.cs" />
     <Compile Include="Exceptions\nHydrateException.cs" />
-    <Compile Include="Forms\CollectionEditorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GeneratorFramework\AddinAppData.cs" />
     <Compile Include="GeneratorFramework\GeneratorAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -263,17 +211,10 @@
     </Compile>
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\EmbeddedResourceName.cs" />
-    <Compile Include="Util\Extensions.cs" />
     <Compile Include="Util\FileStateInfo.cs" />
     <Compile Include="Util\HashTable.cs" />
     <Compile Include="Util\ProjectItemCacheItem.cs" />
     <Compile Include="Util\SecurityHelper.cs" />
-    <Compile Include="Util\EnvDTEHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Util\GlobalHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Util\ReflectionHelper.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -283,23 +224,12 @@
     <Compile Include="Util\StringHelper.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Util\TextManagerEvents.cs" />
     <Compile Include="Util\XmlHelper.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ValidationHelper.cs" />
-    <EmbeddedResource Include="Forms\CollectionEditorForm.resx">
-      <DependentUpon>CollectionEditorForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ErrorForm.resx">
-      <DependentUpon>ErrorForm.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\SendErrorForm.resx">
-      <DependentUpon>SendErrorForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Images\Default.ico" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
@@ -342,6 +272,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>mkdir $(SolutionDir)bin

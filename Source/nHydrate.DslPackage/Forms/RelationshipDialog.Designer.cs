@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RelationshipDialog));
-			this.txtRole = new nHydrate.Generator.Common.Forms.CueTextBox();
+			this.txtRole = new nHydrate.DslPackage.Forms.CueTextBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.chkEnforce = new System.Windows.Forms.CheckBox();
 			this.cboChildField = new System.Windows.Forms.ComboBox();
@@ -338,7 +338,7 @@
 
 		#endregion
 
-		private nHydrate.Generator.Common.Forms.CueTextBox txtRole;
+		private nHydrate.DslPackage.Forms.CueTextBox txtRole;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.CheckBox chkEnforce;
 		private System.Windows.Forms.ComboBox cboChildField;

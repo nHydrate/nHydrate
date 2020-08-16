@@ -37,7 +37,7 @@
             this.lvwItem = new System.Windows.Forms.ListView();
             this.cmdEdit = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.txtFilter = new nHydrate.Generator.Common.Forms.CueTextBox();
+            this.txtFilter = new nHydrate.DslPackage.Forms.CueTextBox();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -180,6 +180,6 @@
         private System.Windows.Forms.ListView lvwItem;
         private System.Windows.Forms.Button cmdEdit;
         private System.Windows.Forms.Label label1;
-        private nHydrate.Generator.Common.Forms.CueTextBox txtFilter;
+        private nHydrate.DslPackage.Forms.CueTextBox txtFilter;
     }
 }

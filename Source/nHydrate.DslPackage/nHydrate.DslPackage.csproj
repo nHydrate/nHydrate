@@ -266,6 +266,9 @@
     <Compile Include="Extensions\nHydrateExplorer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Forms\CueBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\FindWindow.cs" />
     <Compile Include="Forms\FindWindowColumnSetupForm.cs">
       <SubType>Form</SubType>

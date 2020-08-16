@@ -1,5 +1,6 @@
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
+using nHydrate.Generator.Util;
 using System;
 using System.Xml;
 

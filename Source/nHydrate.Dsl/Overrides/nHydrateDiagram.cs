@@ -1,5 +1,5 @@
 #pragma warning disable 0168
-using nHydrate.Generator.Common.Util;
+using nHydrate.Generator.Util;
 using System;
 using System.Linq;
 
@@ -267,7 +267,7 @@ namespace nHydrate.Dsl
         protected override void InitializeResources(Microsoft.VisualStudio.Modeling.Diagrams.StyleSet classStyleSet)
         {
             var dte = GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
-            nHydrate.Generator.Common.Util.EnvDTEHelper.Instance.SetDTE(dte);
+            nHydrate.Generator.Util.EnvDTEHelper.Instance.SetDTE(dte);
         }
 
     }

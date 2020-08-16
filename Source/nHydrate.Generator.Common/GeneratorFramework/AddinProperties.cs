@@ -4,10 +4,6 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 {
     public class AddinProperties
     {
-        internal AddinProperties()
-        {
-        }
-
         public string ExtensionDirectory { get; set; }
         public string Key { get; set; }
         public bool AllowStats { get; set; }

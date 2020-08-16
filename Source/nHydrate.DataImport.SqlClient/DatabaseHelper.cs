@@ -1,4 +1,5 @@
 using nHydrate.Generator.Common.Util;
+using nHydrate.Generator.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;

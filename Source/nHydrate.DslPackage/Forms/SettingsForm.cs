@@ -1,6 +1,6 @@
 #pragma warning disable 0168
 using nHydrate.DslPackage.Objects;
-using nHydrate.Generator.Common.GeneratorFramework;
+using nHydrate.Generator.GeneratorFramework;
 using System;
 using System.Globalization;
 using System.IO;
