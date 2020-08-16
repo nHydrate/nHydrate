@@ -91,7 +91,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseUpg
                         System.Threading.Thread.Sleep(500);
 
                         //Load the previous model
-                        var generator = nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper.OpenModel(prevFileName);
+                        var generator = nHydrate.Generator.GeneratorFramework.GeneratorHelper.OpenModel(prevFileName);
                         var oldRoot = generator.Model as ModelRoot;
                         sb.Append(SqlHelper.GetModelDifferenceSql(oldRoot, _model));
 

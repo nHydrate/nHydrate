@@ -37,7 +37,7 @@ namespace nHydrate.DslPackage.Objects
                 model.RemovedTables.Remove(x => model.Entities.Select(y => y.PascalName).Contains(x));
                 model.RemovedViews.Remove(x => model.Views.Select(y => y.PascalName).Contains(x));
 
-                var g = new nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper();
+                var g = new nHydrate.Generator.GeneratorFramework.GeneratorHelper();
                 g.ProjectItemGenerated += new nHydrate.Generator.Common.GeneratorFramework.ProjectItemGeneratedEventHandler(g_ProjectItemGenerated);
 
                 var genList = BuildModelList(model, diagram, docData);
@@ -90,7 +90,7 @@ namespace nHydrate.DslPackage.Objects
             List<nHydrateGeneratorProject> genList,
             List<Type> generatorTypeList,
             List<Type> excludeList,
-            nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper genHelper)
+            nHydrate.Generator.GeneratorFramework.GeneratorHelper genHelper)
         {
             if (!genList.Any())
             {
@@ -133,7 +133,7 @@ namespace nHydrate.DslPackage.Objects
             Microsoft.VisualStudio.Modeling.Store store,
             Microsoft.VisualStudio.Modeling.Shell.ModelingDocData docData,
             List<Type> excludeList,
-            nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper genHelper)
+            nHydrate.Generator.GeneratorFramework.GeneratorHelper genHelper)
         {
             _totalFileCount = 0;
             _processedFileCount = 0;
@@ -604,11 +604,11 @@ namespace nHydrate.DslPackage.Objects
         {
             try
             {
-                if (e.FileState == EnvDTEHelper.FileStateConstants.Skipped)
+                if (e.FileState == FileStateConstants.Skipped)
                     this.FilesSkipped++;
-                if (e.FileState == EnvDTEHelper.FileStateConstants.Success)
+                if (e.FileState == FileStateConstants.Success)
                     this.FilesSuccess++;
-                if (e.FileState == EnvDTEHelper.FileStateConstants.Failed)
+                if (e.FileState == FileStateConstants.Failed)
                     this.FilesFailed++;
 
                 this.GeneratedFileList.Add(e);

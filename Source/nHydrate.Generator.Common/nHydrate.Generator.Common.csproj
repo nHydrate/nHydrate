@@ -233,7 +233,6 @@
     <Compile Include="GeneratorFramework\GeneratorAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GeneratorFramework\GeneratorHelper.cs" />
     <Compile Include="GeneratorFramework\Globals.cs" />
     <Compile Include="GeneratorFramework\IGenerator.cs">
       <SubType>Code</SubType>
@@ -262,6 +261,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\EmbeddedResourceName.cs" />
     <Compile Include="Util\Extensions.cs" />
     <Compile Include="Util\FileStateInfo.cs" />

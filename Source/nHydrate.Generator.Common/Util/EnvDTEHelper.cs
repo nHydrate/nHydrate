@@ -19,13 +19,6 @@ namespace nHydrate.Generator.Common.Util
 
         #endregion
 
-        public enum FileStateConstants
-        {
-            Success,
-            Skipped,
-            Failed,
-        }
-
         private EnvDTEHelper()
         {
             BackgroundColor = System.Drawing.Color.White;

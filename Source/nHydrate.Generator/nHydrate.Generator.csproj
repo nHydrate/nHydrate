@@ -154,6 +154,11 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
+    <Reference Include="VSLangProj">
+      <Name>VSLangProj</Name>
+      <HintPath>..\..\..\Program Files\Microsoft Visual Studio .NET 2003\Common7\IDE\PublicAssemblies\VSLangProj.dll</HintPath>
+      <AssemblyFolderKey>hklm\publicassemblies</AssemblyFolderKey>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
@@ -175,6 +180,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GenerationHelper.cs" />
+    <Compile Include="GeneratorFramework\GeneratorHelper.cs" />
     <Compile Include="IModelObjectController.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -421,6 +427,7 @@
       <Name>nHydrate.Generator.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>"%25SystemRoot%25\Microsoft.NET\Framework\v3.5\msbuild" "$(ProjectDir)Build\prebuild.targets.xml" /property:TargetPath=$(TargetExt);TargetPath=$(TargetPath);TargetDir=$(TargetDir);TargetFileName=$(TargetFileName);TargetName=$(TargetName)</PreBuildEvent>
