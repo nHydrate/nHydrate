@@ -1,4 +1,5 @@
 using nHydrate.Core.SQLGeneration;
+using nHydrate.Generator.Common.Models;
 using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.SQLInstaller.ProjectItemGenerators;
 using System;

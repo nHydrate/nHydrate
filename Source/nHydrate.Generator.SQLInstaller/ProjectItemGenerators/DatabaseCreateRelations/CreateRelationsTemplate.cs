@@ -1,4 +1,5 @@
 using nHydrate.Core.SQLGeneration;
+using nHydrate.Generator.Common.Models;
 using System.Linq;
 using System.Text;
 
