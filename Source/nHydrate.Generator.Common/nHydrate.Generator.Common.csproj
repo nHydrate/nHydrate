@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+ <PropertyGroup>
+    <BaseOutputPath>$(MSBuildProjectDirectory)/out/$(MSBuildProjectName)/bin</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(MSBuildProjectDirectory)/out/$(MSBuildProjectName)/obj</BaseIntermediateOutputPath>
+  </PropertyGroup>
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.30729</ProductVersion>
@@ -36,7 +40,7 @@
     <SccProvider>
     </SccProvider>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <PublishUrl>http://localhost/Widgetsphere.Common/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -225,11 +229,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\EmbeddedResourceName.cs" />
     <Compile Include="Util\Extensions.cs" />
@@ -261,10 +260,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <None Include="WidgetSphere.snk" />
   </ItemGroup>
   <ItemGroup>

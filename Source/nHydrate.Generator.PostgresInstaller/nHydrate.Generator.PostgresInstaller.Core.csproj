@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.cs" />
+    <Compile Remove="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseServer.cs" />
+    <Compile Remove="ProjectItemGenerators\DatabaseEmbeddedClasses\Program.cs" />
+    <Compile Remove="ProjectItemGenerators\DatabaseEmbeddedClasses\UpgradeInstaller.cs" />
+    <Compile Remove="ProjectItemGenerators\DatabaseEmbeddedClasses\XmlHelper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.Designer.embed" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.cs" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.Designer.embed" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseServer.cs" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\Program.cs" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\UpgradeInstaller.cs" />
+    <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\XmlHelper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\nHydrate.Core.SQLGeneration\nHydrate.Core.SQLGeneration.Core.csproj" />
+    <ProjectReference Include="..\nHydrate.Generator.Common\nHydrate.Generator.Common.Core.csproj" />
+  </ItemGroup>
+
+</Project>
