@@ -111,6 +111,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.Generator.Postgres
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.Generator.EFCodeFirstNetCore.Core", "Source\nHydrate.Generator.EFCodeFirstNetCore\nHydrate.Generator.EFCodeFirstNetCore.Core.csproj", "{4C0CB822-E2BF-41F1-891A-7104E6565D97}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nHydrate.ModelManagement", "Source\nHydrate.ModelManagement\nHydrate.ModelManagement.csproj", "{569207E2-86F6-442D-A14C-CF6CD3C2A740}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.ModelManagement.Core", "Source\nHydrate.ModelManagement\nHydrate.ModelManagement.Core.csproj", "{3736F4D6-39C3-42F2-B245-57FACA257A55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -271,6 +275,22 @@ Global
 		{4C0CB822-E2BF-41F1-891A-7104E6565D97}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4C0CB822-E2BF-41F1-891A-7104E6565D97}.Release|x86.ActiveCfg = Release|Any CPU
 		{4C0CB822-E2BF-41F1-891A-7104E6565D97}.Release|x86.Build.0 = Release|Any CPU
+		{569207E2-86F6-442D-A14C-CF6CD3C2A740}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{569207E2-86F6-442D-A14C-CF6CD3C2A740}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{569207E2-86F6-442D-A14C-CF6CD3C2A740}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{569207E2-86F6-442D-A14C-CF6CD3C2A740}.Debug|x86.Build.0 = Debug|Any CPU
+		{569207E2-86F6-442D-A14C-CF6CD3C2A740}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{569207E2-86F6-442D-A14C-CF6CD3C2A740}.Release|Any CPU.Build.0 = Release|Any CPU
+		{569207E2-86F6-442D-A14C-CF6CD3C2A740}.Release|x86.ActiveCfg = Release|Any CPU
+		{569207E2-86F6-442D-A14C-CF6CD3C2A740}.Release|x86.Build.0 = Release|Any CPU
+		{3736F4D6-39C3-42F2-B245-57FACA257A55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3736F4D6-39C3-42F2-B245-57FACA257A55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3736F4D6-39C3-42F2-B245-57FACA257A55}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3736F4D6-39C3-42F2-B245-57FACA257A55}.Debug|x86.Build.0 = Debug|Any CPU
+		{3736F4D6-39C3-42F2-B245-57FACA257A55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3736F4D6-39C3-42F2-B245-57FACA257A55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3736F4D6-39C3-42F2-B245-57FACA257A55}.Release|x86.ActiveCfg = Release|Any CPU
+		{3736F4D6-39C3-42F2-B245-57FACA257A55}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
