@@ -62,8 +62,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -88,10 +86,6 @@
     <ProjectReference Include="..\nHydrate.Generator.Common\nHydrate.Generator.Common.csproj">
       <Project>{97136026-3D75-4830-AECB-8E364AFF0B01}</Project>
       <Name>nHydrate.Generator.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\nHydrate.Generator\nHydrate.Generator.csproj">
-      <Project>{E2040FE8-13C7-4A6B-860B-E612A0FDBEFF}</Project>
-      <Name>nHydrate.Generator</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

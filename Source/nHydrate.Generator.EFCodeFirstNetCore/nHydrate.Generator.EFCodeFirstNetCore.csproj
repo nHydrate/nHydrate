@@ -85,10 +85,6 @@
       <Project>{97136026-3d75-4830-aecb-8e364aff0b01}</Project>
       <Name>nHydrate.Generator.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\nHydrate.Generator\nHydrate.Generator.csproj">
-      <Project>{e2040fe8-13c7-4a6b-860b-e612a0fdbeff}</Project>
-      <Name>nHydrate.Generator</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
