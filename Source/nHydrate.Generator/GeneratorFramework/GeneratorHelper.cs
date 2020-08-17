@@ -6,11 +6,9 @@ using nHydrate.Generator.Common.Logging;
 using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.Util;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace nHydrate.Generator.GeneratorFramework
 {
@@ -62,62 +60,62 @@ namespace nHydrate.Generator.GeneratorFramework
         #endregion
 
         #region Model Methods
-        private const string ROOT_NODE = "model";
+        //private const string ROOT_NODE = "model";
 
-        public static IGenerator OpenModel(string filePath)
-        {
-            IGenerator retVal = null;
-            var file = new FileInfo(filePath);
-            var xmlAttributeAssembleValue = string.Empty;
-            if (file.Exists)
-            {
-                var processKey = string.Empty;
-                try
-                {
-                    var xDoc = new XmlDocument();
-                    string type = null;
-                    FileInfo assemblyName = null;
-                    xDoc.Load(file.FullName);
-                    type = Common.Util.XmlHelper.GetAttributeValue(xDoc.DocumentElement, "type", string.Empty);
-                    xmlAttributeAssembleValue = Common.Util.XmlHelper.GetAttributeValue(xDoc.DocumentElement, "assembly", string.Empty);
+        //public static IGenerator OpenModel(string filePath)
+        //{
+        //    IGenerator retVal = null;
+        //    var file = new FileInfo(filePath);
+        //    var xmlAttributeAssembleValue = string.Empty;
+        //    if (file.Exists)
+        //    {
+        //        var processKey = string.Empty;
+        //        try
+        //        {
+        //            var xDoc = new XmlDocument();
+        //            string type = null;
+        //            FileInfo assemblyName = null;
+        //            xDoc.Load(file.FullName);
+        //            type = Common.Util.XmlHelper.GetAttributeValue(xDoc.DocumentElement, "type", string.Empty);
+        //            xmlAttributeAssembleValue = Common.Util.XmlHelper.GetAttributeValue(xDoc.DocumentElement, "assembly", string.Empty);
 
-                    //Correct for moving file Aug-16-2020
-                    if (type == "nHydrate.Generator.nHydrateGeneratorProject")
-                        type = "nHydrate.Generator.Common.nHydrateGeneratorProject";
-                    if (xmlAttributeAssembleValue == "nHydrate.Generator.dll")
-                        xmlAttributeAssembleValue = "nHydrate.Generator.Common.dll";
+        //            //Correct for moving file Aug-16-2020
+        //            if (type == "nHydrate.Generator.nHydrateGeneratorProject")
+        //                type = "nHydrate.Generator.Common.nHydrateGeneratorProject";
+        //            if (xmlAttributeAssembleValue == "nHydrate.Generator.dll")
+        //                xmlAttributeAssembleValue = "nHydrate.Generator.Common.dll";
 
-                    Uri assemblyUri = null;
-                    try { assemblyUri = new Uri(xmlAttributeAssembleValue); }
-                    catch { }
+        //            Uri assemblyUri = null;
+        //            try { assemblyUri = new Uri(xmlAttributeAssembleValue); }
+        //            catch { }
 
-                    if (assemblyUri != null) assemblyName = new FileInfo(assemblyUri.AbsolutePath);
-                    else assemblyName = new FileInfo(xmlAttributeAssembleValue);
+        //            if (assemblyUri != null) assemblyName = new FileInfo(assemblyUri.AbsolutePath);
+        //            else assemblyName = new FileInfo(xmlAttributeAssembleValue);
 
-                    var assemblyFile = Path.Combine(AddinAppData.Instance.ExtensionDirectory, assemblyName.Name);
-                    var currentAssemblyFile = new FileInfo(assemblyFile);
-                    if (currentAssemblyFile.Exists)
-                    {
-                        retVal = (IGenerator)ReflectionHelper.CreateInstance(currentAssemblyFile.FullName, type);
-                        retVal.XmlLoad(xDoc.DocumentElement);
-                        retVal.FileName = filePath;
-                    }
-                    else
-                    {
-                        GlobalHelper.ShowError("The model cannot be opened. You do not have the appropriate assembly. " + currentAssemblyFile.FullName);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(file.FullName + " does not have the correct format.", ex);
-                }
-            }
-            else
-            {
-                throw new Exception("File does not exist:");
-            }
-            return retVal;
-        }
+        //            var assemblyFile = Path.Combine(AddinAppData.Instance.ExtensionDirectory, assemblyName.Name);
+        //            var currentAssemblyFile = new FileInfo(assemblyFile);
+        //            if (currentAssemblyFile.Exists)
+        //            {
+        //                retVal = (IGenerator)ReflectionHelper.CreateInstance(currentAssemblyFile.FullName, type);
+        //                retVal.XmlLoad(xDoc.DocumentElement);
+        //                retVal.FileName = filePath;
+        //            }
+        //            else
+        //            {
+        //                GlobalHelper.ShowError("The model cannot be opened. You do not have the appropriate assembly. " + currentAssemblyFile.FullName);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            throw new Exception(file.FullName + " does not have the correct format.", ex);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        throw new Exception("File does not exist:");
+        //    }
+        //    return retVal;
+        //}
 
         //private static void CreateNewModelFile(string loadingFile)
         //{
@@ -132,76 +130,76 @@ namespace nHydrate.Generator.GeneratorFramework
         //  }
         //}
 
-        public static void SaveModelFile(IGenerator generatorProject, string fullFileName)
-        {
-            var att = (GeneratorAttribute)ReflectionHelper.GetSingleAttribute(typeof(GeneratorAttribute), generatorProject);
+        //public static void SaveModelFile(IGenerator generatorProject, string fullFileName)
+        //{
+        //    var att = (GeneratorAttribute)ReflectionHelper.GetSingleAttribute(typeof(GeneratorAttribute), generatorProject);
 
-            var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(string.Format("<{0}></{0}>", ROOT_NODE));
+        //    var xmlDoc = new XmlDocument();
+        //    xmlDoc.LoadXml(string.Format("<{0}></{0}>", ROOT_NODE));
 
-            var xmlAttr = xmlDoc.CreateAttribute("guid");
-            xmlAttr.Value = att.ProjectGuid.ToString();
-            xmlDoc.DocumentElement.Attributes.Append(xmlAttr);
+        //    var xmlAttr = xmlDoc.CreateAttribute("guid");
+        //    xmlAttr.Value = att.ProjectGuid.ToString();
+        //    xmlDoc.DocumentElement.Attributes.Append(xmlAttr);
 
-            var typeAttribute = xmlDoc.CreateAttribute("type");
-            typeAttribute.Value = generatorProject.GetType().FullName;
-            xmlDoc.DocumentElement.Attributes.Append(typeAttribute);
+        //    var typeAttribute = xmlDoc.CreateAttribute("type");
+        //    typeAttribute.Value = generatorProject.GetType().FullName;
+        //    xmlDoc.DocumentElement.Attributes.Append(typeAttribute);
 
-            var assemblyAttribute = xmlDoc.CreateAttribute("assembly");
-            assemblyAttribute.Value = new FileInfo(generatorProject.GetType().Assembly.Location).Name;
-            xmlDoc.DocumentElement.Attributes.Append(assemblyAttribute);
+        //    var assemblyAttribute = xmlDoc.CreateAttribute("assembly");
+        //    assemblyAttribute.Value = new FileInfo(generatorProject.GetType().Assembly.Location).Name;
+        //    xmlDoc.DocumentElement.Attributes.Append(assemblyAttribute);
 
-            generatorProject.XmlAppend(xmlDoc.DocumentElement);
-            xmlDoc.Save(fullFileName);
-        }
+        //    generatorProject.XmlAppend(xmlDoc.DocumentElement);
+        //    xmlDoc.Save(fullFileName);
+        //}
 
-        public static ArrayList GetModels(ProjectItem projectItem)
-        {
-            var al = new ArrayList();
-            foreach (ProjectItem pi in projectItem.ProjectItems)
-            {
-                if (IsModelFile(pi))
-                {
-                    al.Add(pi);
-                }
-                al.AddRange(GetModels(pi));
-            }
-            return al;
-        }
+        //public static ArrayList GetModels(ProjectItem projectItem)
+        //{
+        //    var al = new ArrayList();
+        //    foreach (ProjectItem pi in projectItem.ProjectItems)
+        //    {
+        //        if (IsModelFile(pi))
+        //        {
+        //            al.Add(pi);
+        //        }
+        //        al.AddRange(GetModels(pi));
+        //    }
+        //    return al;
+        //}
 
-        public static bool IsModelFile(ProjectItem projectItem)
-        {
-            var fullName = projectItem.get_FileNames(1);
-            return IsModelFile(fullName);
-        }
+        //public static bool IsModelFile(ProjectItem projectItem)
+        //{
+        //    var fullName = projectItem.get_FileNames(1);
+        //    return IsModelFile(fullName);
+        //}
 
-        public static bool IsModelFile(string fileName)
-        {
-            var ext = System.IO.Path.GetExtension(fileName);
-            if ((string.Compare(ext, ".wsgen", true) != 0))
-                return false;
-            else
-                return true;
-        }
+        //public static bool IsModelFile(string fileName)
+        //{
+        //    var ext = System.IO.Path.GetExtension(fileName);
+        //    if ((string.Compare(ext, ".wsgen", true) != 0))
+        //        return false;
+        //    else
+        //        return true;
+        //}
 
-        private static Guid ModelFileGuid(string fileName)
-        {
-            var retVal = Guid.Empty;
-            var textReader = new XmlTextReader(fileName);
-            // If the node has value
-            while (textReader.Read())
-            {
-                if (textReader.Name.ToLower() == ROOT_NODE)
-                {
-                    textReader.MoveToAttribute("guid");
-                    var valid = StringHelper.GuidTryParse(textReader.Value, out retVal);
-                    if (valid)
-                        break;
-                }
-            }
-            textReader.Close();
-            return retVal;
-        }
+        //private static Guid ModelFileGuid(string fileName)
+        //{
+        //    var retVal = Guid.Empty;
+        //    var textReader = new XmlTextReader(fileName);
+        //    // If the node has value
+        //    while (textReader.Read())
+        //    {
+        //        if (textReader.Name.ToLower() == ROOT_NODE)
+        //        {
+        //            textReader.MoveToAttribute("guid");
+        //            var valid = StringHelper.GuidTryParse(textReader.Value, out retVal);
+        //            if (valid)
+        //                break;
+        //        }
+        //    }
+        //    textReader.Close();
+        //    return retVal;
+        //}
 
         /// <summary>
         /// In Vista if UAC is on the user does not have permissions to run this application
