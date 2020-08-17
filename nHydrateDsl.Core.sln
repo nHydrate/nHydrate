@@ -1,0 +1,109 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{76F50341-5DB6-4E94-98BF-276990BD7873}"
+	ProjectSection(SolutionItems) = preProject
+		Deploy\nhydrate.vstemplate = Deploy\nhydrate.vstemplate
+		Deploy\nhydrate32.png = Deploy\nhydrate32.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VSADDIN", "VSADDIN", "{F04190DE-4828-490D-9FD8-B6FE4E355896}"
+	ProjectSection(SolutionItems) = preProject
+		VSADDIN\database.csproj = VSADDIN\database.csproj
+		VSADDIN\database.vstemplate = VSADDIN\database.vstemplate
+		VSADDIN\documentation.csproj = VSADDIN\documentation.csproj
+		VSADDIN\documentation.vstemplate = VSADDIN\documentation.vstemplate
+		VSADDIN\efcodefirstnetcore.csproj = VSADDIN\efcodefirstnetcore.csproj
+		VSADDIN\efcodefirstnetcore.vstemplate = VSADDIN\efcodefirstnetcore.vstemplate
+		VSADDIN\efcorepostgresinstaller.csproj = VSADDIN\efcorepostgresinstaller.csproj
+		VSADDIN\efcorepostgresinstaller.vstemplate = VSADDIN\efcorepostgresinstaller.vstemplate
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.Generator.SQLInstaller.Core", "Source\nHydrate.Generator.SQLInstaller\nHydrate.Generator.SQLInstaller.Core.csproj", "{EC9E5FE4-A507-41BA-A107-1A0781DC9F73}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.Generator.Common.Core", "Source\nHydrate.Generator.Common\nHydrate.Generator.Common.Core.csproj", "{6DB6B976-DC82-4791-9750-316197670EF4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.Core.SQLGeneration.Core", "Source\nHydrate.Core.SQLGeneration\nHydrate.Core.SQLGeneration.Core.csproj", "{C3769E86-906D-4605-824F-23826A8E1020}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.DataImport.SqlClient.Core", "Source\nHydrate.DataImport.SqlClient\nHydrate.DataImport.SqlClient.Core.csproj", "{EE57E85B-8A33-493F-AC26-F888C470E4F7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.DataImport.Core", "Source\nHydrate.DataImport\nHydrate.DataImport.Core.csproj", "{BA46B5D4-D6F9-45A9-B225-23D04262D61E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.Generator.PostgresInstaller.Core", "Source\nHydrate.Generator.PostgresInstaller\nHydrate.Generator.PostgresInstaller.Core.csproj", "{DFC34F72-0AE1-418D-8B79-F48D8E798678}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.Generator.EFCodeFirstNetCore.Core", "Source\nHydrate.Generator.EFCodeFirstNetCore\nHydrate.Generator.EFCodeFirstNetCore.Core.csproj", "{4C0CB822-E2BF-41F1-891A-7104E6565D97}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EC9E5FE4-A507-41BA-A107-1A0781DC9F73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC9E5FE4-A507-41BA-A107-1A0781DC9F73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC9E5FE4-A507-41BA-A107-1A0781DC9F73}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EC9E5FE4-A507-41BA-A107-1A0781DC9F73}.Debug|x86.Build.0 = Debug|Any CPU
+		{EC9E5FE4-A507-41BA-A107-1A0781DC9F73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC9E5FE4-A507-41BA-A107-1A0781DC9F73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC9E5FE4-A507-41BA-A107-1A0781DC9F73}.Release|x86.ActiveCfg = Release|Any CPU
+		{EC9E5FE4-A507-41BA-A107-1A0781DC9F73}.Release|x86.Build.0 = Release|Any CPU
+		{6DB6B976-DC82-4791-9750-316197670EF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DB6B976-DC82-4791-9750-316197670EF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DB6B976-DC82-4791-9750-316197670EF4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6DB6B976-DC82-4791-9750-316197670EF4}.Debug|x86.Build.0 = Debug|Any CPU
+		{6DB6B976-DC82-4791-9750-316197670EF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DB6B976-DC82-4791-9750-316197670EF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DB6B976-DC82-4791-9750-316197670EF4}.Release|x86.ActiveCfg = Release|Any CPU
+		{6DB6B976-DC82-4791-9750-316197670EF4}.Release|x86.Build.0 = Release|Any CPU
+		{C3769E86-906D-4605-824F-23826A8E1020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3769E86-906D-4605-824F-23826A8E1020}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3769E86-906D-4605-824F-23826A8E1020}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3769E86-906D-4605-824F-23826A8E1020}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3769E86-906D-4605-824F-23826A8E1020}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3769E86-906D-4605-824F-23826A8E1020}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3769E86-906D-4605-824F-23826A8E1020}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3769E86-906D-4605-824F-23826A8E1020}.Release|x86.Build.0 = Release|Any CPU
+		{EE57E85B-8A33-493F-AC26-F888C470E4F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE57E85B-8A33-493F-AC26-F888C470E4F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE57E85B-8A33-493F-AC26-F888C470E4F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EE57E85B-8A33-493F-AC26-F888C470E4F7}.Debug|x86.Build.0 = Debug|Any CPU
+		{EE57E85B-8A33-493F-AC26-F888C470E4F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE57E85B-8A33-493F-AC26-F888C470E4F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE57E85B-8A33-493F-AC26-F888C470E4F7}.Release|x86.ActiveCfg = Release|Any CPU
+		{EE57E85B-8A33-493F-AC26-F888C470E4F7}.Release|x86.Build.0 = Release|Any CPU
+		{BA46B5D4-D6F9-45A9-B225-23D04262D61E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA46B5D4-D6F9-45A9-B225-23D04262D61E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA46B5D4-D6F9-45A9-B225-23D04262D61E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BA46B5D4-D6F9-45A9-B225-23D04262D61E}.Debug|x86.Build.0 = Debug|Any CPU
+		{BA46B5D4-D6F9-45A9-B225-23D04262D61E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA46B5D4-D6F9-45A9-B225-23D04262D61E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA46B5D4-D6F9-45A9-B225-23D04262D61E}.Release|x86.ActiveCfg = Release|Any CPU
+		{BA46B5D4-D6F9-45A9-B225-23D04262D61E}.Release|x86.Build.0 = Release|Any CPU
+		{DFC34F72-0AE1-418D-8B79-F48D8E798678}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFC34F72-0AE1-418D-8B79-F48D8E798678}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFC34F72-0AE1-418D-8B79-F48D8E798678}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DFC34F72-0AE1-418D-8B79-F48D8E798678}.Debug|x86.Build.0 = Debug|Any CPU
+		{DFC34F72-0AE1-418D-8B79-F48D8E798678}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFC34F72-0AE1-418D-8B79-F48D8E798678}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFC34F72-0AE1-418D-8B79-F48D8E798678}.Release|x86.ActiveCfg = Release|Any CPU
+		{DFC34F72-0AE1-418D-8B79-F48D8E798678}.Release|x86.Build.0 = Release|Any CPU
+		{4C0CB822-E2BF-41F1-891A-7104E6565D97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C0CB822-E2BF-41F1-891A-7104E6565D97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C0CB822-E2BF-41F1-891A-7104E6565D97}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4C0CB822-E2BF-41F1-891A-7104E6565D97}.Debug|x86.Build.0 = Debug|Any CPU
+		{4C0CB822-E2BF-41F1-891A-7104E6565D97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C0CB822-E2BF-41F1-891A-7104E6565D97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C0CB822-E2BF-41F1-891A-7104E6565D97}.Release|x86.ActiveCfg = Release|Any CPU
+		{4C0CB822-E2BF-41F1-891A-7104E6565D97}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1352B2B-68AF-4FA3-8C7E-2972C51FDD68}
+	EndGlobalSection
+EndGlobal
