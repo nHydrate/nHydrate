@@ -112,6 +112,8 @@ namespace nHydrate.DslPackage.Objects
             foreach (var genType in generatorTypeList)
             {
                 var generator = genHelper.GetProjectGenerator(genType);
+                //For the VSIX modeler, this is the object that will create project in Visual Studio
+                generator.ProjectGeneratorProjectCreator = new Generator.ProjectItemGenerators.ProjectGeneratorProjectCreator();
                 modelRoot.ModelConfigurations.Add(generator.GetType().Name, generator.ModelConfiguration);
             }
 

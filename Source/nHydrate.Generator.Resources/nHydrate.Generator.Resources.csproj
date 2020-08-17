@@ -217,10 +217,6 @@
       <Link>nHydrate.Generator.Common.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\bin\nHydrate.Generator.Datasite.dll">
-      <Link>nHydrate.Generator.Datasite.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\bin\nHydrate.Generator.dll">
       <Link>nHydrate.Generator.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -269,10 +265,6 @@
     </Content>
     <Content Include="..\..\ThirdParty\FastColoredTextBox.dll">
       <Link>FastColoredTextBox.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\ThirdParty\MySql.Data.dll">
-      <Link>MySql.Data.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

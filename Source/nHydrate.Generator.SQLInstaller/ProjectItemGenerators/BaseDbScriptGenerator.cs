@@ -1,4 +1,4 @@
-using nHydrate.Generator.ProjectItemGenerators;
+using nHydrate.Generator.Common.ProjectItemGenerators;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
 {

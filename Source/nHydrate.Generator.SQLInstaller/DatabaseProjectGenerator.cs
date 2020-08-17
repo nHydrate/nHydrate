@@ -1,6 +1,6 @@
 using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.ProjectItemGenerators;
+using nHydrate.Generator.Common.ProjectItemGenerators;
 
 namespace nHydrate.Generator.SQLInstaller
 {
@@ -15,7 +15,7 @@ namespace nHydrate.Generator.SQLInstaller
         )]
     public class DatabaseProjectGenerator : BaseProjectGenerator
     {
-        protected override string ProjectTemplate => "database.vstemplate";
+        public override string ProjectTemplate => "database.vstemplate";
 
         public override string LocalNamespaceExtension => DatabaseProjectGenerator.NamespaceExtension;
 
