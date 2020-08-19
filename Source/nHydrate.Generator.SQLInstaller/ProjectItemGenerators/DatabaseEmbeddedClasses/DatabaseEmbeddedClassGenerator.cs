@@ -9,15 +9,10 @@
 
 #pragma warning disable 0168
 using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
-using nHydrate.Generator.ProjectItemGenerators;
 using nHydrate.Generator.Common.Util;
-using nHydrate.Generator.SQLInstaller;
 using nHydrate.Generator.Common.EventArgs;
 using System.IO;
 

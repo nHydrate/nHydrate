@@ -266,6 +266,9 @@
     <Compile Include="Extensions\nHydrateExplorer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Forms\CueBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\FindWindow.cs" />
     <Compile Include="Forms\FindWindowColumnSetupForm.cs">
       <SubType>Form</SubType>
@@ -391,6 +394,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Package.tt</DependentUpon>
     </Compile>
+    <Compile Include="ListViewItemComparer.cs" />
     <Compile Include="Objects\FindWindowColumnItem.cs" />
     <Compile Include="Objects\ModelStatsFile.cs" />
     <Compile Include="Objects\Postgres\ImportDomain.cs" />

@@ -25,7 +25,7 @@ namespace nHydrate.Generator.Common.EventArgs
         #region Property Implementations
         public bool DeleteFile { get; set; } = false;
 
-        public EnvDTEHelper.FileStateConstants FileState { get; set; } = EnvDTEHelper.FileStateConstants.Success;
+        public FileStateConstants FileState { get; set; } = FileStateConstants.Success;
 
         public string FullName { get; set; } = string.Empty;
 

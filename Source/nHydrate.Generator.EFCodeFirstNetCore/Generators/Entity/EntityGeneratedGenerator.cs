@@ -1,6 +1,6 @@
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Models;
+using nHydrate.Generator.Common.Models;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,7 +23,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         public override void Generate()
         {
-            foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 var template = new EntityGeneratedTemplate(_model, table);
                 var fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;

@@ -2,8 +2,8 @@
 using nHydrate.DataImport;
 using nHydrate.Dsl;
 using nHydrate.DslPackage.Objects;
+using nHydrate.Generator.Common.Models;
 using nHydrate.Generator.Common.Util;
-using nHydrate.Generator.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;

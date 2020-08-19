@@ -1,5 +1,5 @@
 #pragma warning disable 0168
-using nHydrate.Generator.Models;
+using nHydrate.Generator.Common.Models;
 using System;
 using System.IO;
 using System.Text;
@@ -91,15 +91,14 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseUpg
                         System.Threading.Thread.Sleep(500);
 
                         //Load the previous model
-                        var generator = nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper.OpenModel(prevFileName);
-                        var oldRoot = generator.Model as ModelRoot;
-                        sb.Append(SqlHelper.GetModelDifferenceSql(oldRoot, _model));
+                        var genProjectLast = new Common.nHydrateGeneratorProject();
+                        var xDoc = new System.Xml.XmlDocument();
+                        xDoc.Load(prevFileName);
+                        genProjectLast.XmlLoad(xDoc.DocumentElement);
+                        sb.Append(SqlHelper.GetModelDifferenceSql(genProjectLast.Model as ModelRoot, _model));
 
                         if (File.Exists(newFile))
                             File.Delete(newFile);
-
-                        //Copy the current LASTGEN file to BACKUP
-                        //fi.CopyTo(fileName + ".bak", true);
                     }
                 }
 

@@ -1,5 +1,3 @@
-using Microsoft.Win32;
-
 namespace nHydrate.Generator.Common.Util
 {
     public class RegistryHelper
@@ -10,11 +8,14 @@ namespace nHydrate.Generator.Common.Util
 
         public static string GetLocalMachineRegistryValue(string path, string item)
         {
-            RegistryKey key = null;
+#if NETSTANDARD
+            return string.Empty;
+#else
+            Microsoft.Win32.RegistryKey key = null;
             var returnVal = string.Empty;
             try
             {
-                key = Registry.LocalMachine.OpenSubKey(path);
+                key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(path);
                 if (key != null)
                 {
                     returnVal = (string)key.GetValue(item);
@@ -28,6 +29,7 @@ namespace nHydrate.Generator.Common.Util
                 key?.Close();
             }
             return returnVal;
+#endif
         }
     }
 }

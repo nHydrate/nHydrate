@@ -1,6 +1,7 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Resources;
 
+#if !NETSTANDARD
 //Common properties moved to specific assembly
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile(@"..\..\Security\nHydrate.snk")]
@@ -12,3 +13,5 @@ using System.Resources;
 
 [assembly: AssemblyVersion("7.0.1.235")]
 [assembly: AssemblyFileVersion("7.0.1.235")]
+
+#endif

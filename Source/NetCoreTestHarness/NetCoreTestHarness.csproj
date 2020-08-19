@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="XmlMapModels.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\nHydrate.ModelManagement\nHydrate.ModelManagement.Core.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <PropertyGroup>
+    <BaseOutputPath>$(MSBuildProjectDirectory)/out/$(MSBuildProjectName)/bin</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(MSBuildProjectDirectory)/out/$(MSBuildProjectName)/obj</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
@@ -129,65 +133,21 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EnvDTE">
-      <Name>envdte</Name>
-    </Reference>
-    <Reference Include="EnvDTE100, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="EnvDTE80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Editor, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ThirdParty\Microsoft.VisualStudio.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <Reference Include="Microsoft.VisualStudio.Shell.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ThirdParty\Microsoft.VisualStudio.Shell.11.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <Reference Include="Microsoft.VisualStudio.TextManager.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <Reference Include="Microsoft.VisualStudio.TextManager.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
-    <Reference Include="System.Design">
-      <Name>system.design</Name>
-    </Reference>
-    <Reference Include="System.Drawing">
-      <Name>system.drawing</Name>
-    </Reference>
-    <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
-    <Reference Include="System.Web.Services" />
-    <Reference Include="System.Windows.Forms">
-      <Name>system.windows.forms</Name>
-    </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="VSLangProj">
-      <Name>VSLangProj</Name>
-      <HintPath>..\..\..\Program Files\Microsoft Visual Studio .NET 2003\Common7\IDE\PublicAssemblies\VSLangProj.dll</HintPath>
-      <AssemblyFolderKey>hklm\publicassemblies</AssemblyFolderKey>
-    </Reference>
+    <Reference Include="System.Management" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoGeneratorCommon.cs">
       <Link>Properties\AssemblyInfoGeneratorCommon.cs</Link>
     </Compile>
+    <Compile Include="BaseModelCollection.cs" />
+    <Compile Include="BaseModelObject.cs" />
     <Compile Include="EventArgs\ProjectItemGeneratedErrorEventArgs.cs" />
     <Compile Include="EventArgs\ProjectItemDeletedEventArgs.cs" />
     <Compile Include="EventArgs\ProgressEventArgs.cs">
@@ -203,22 +163,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Exceptions\LicenseException.cs" />
-    <Compile Include="ListViewItemComparer.cs" />
-    <Compile Include="Forms\CueBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\ErrorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ErrorForm.Designer.cs">
-      <DependentUpon>ErrorForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\SendErrorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\SendErrorForm.Designer.cs">
-      <DependentUpon>SendErrorForm.cs</DependentUpon>
-    </Compile>
+    <Compile Include="GenerationHelper.cs" />
     <Compile Include="GeneratorFramework\AddinProperties.cs" />
     <Compile Include="GeneratorFramework\INamedObject.cs" />
     <Compile Include="GeneratorFramework\IModelObject.cs" />
@@ -226,14 +171,9 @@
     <Compile Include="GeneratorFramework\IDirtyable.cs" />
     <Compile Include="GlobalCacheFile.cs" />
     <Compile Include="Exceptions\nHydrateException.cs" />
-    <Compile Include="Forms\CollectionEditorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GeneratorFramework\AddinAppData.cs" />
     <Compile Include="GeneratorFramework\GeneratorAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GeneratorFramework\GeneratorHelper.cs" />
     <Compile Include="GeneratorFramework\Globals.cs" />
     <Compile Include="GeneratorFramework\IGenerator.cs">
       <SubType>Code</SubType>
@@ -249,31 +189,53 @@
     <Compile Include="GeneratorFramework\GeneratorItemAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="INHydrateModelObject.cs" />
     <Compile Include="Logging\nHydrateLog.cs" />
     <Compile Include="ModelCacheFile.cs" />
+    <Compile Include="Models\CellEntry.cs" />
+    <Compile Include="Models\CellEntryCollection.cs" />
+    <Compile Include="Models\Column.cs" />
+    <Compile Include="Models\ColumnBase.cs" />
+    <Compile Include="Models\ColumnCollection.cs" />
+    <Compile Include="Models\ColumnRelationship.cs" />
+    <Compile Include="Models\ColumnRelationshipCollection.cs" />
+    <Compile Include="Models\CustomView.cs" />
+    <Compile Include="Models\CustomViewCollection.cs" />
+    <Compile Include="Models\CustomViewColumn.cs" />
+    <Compile Include="Models\CustomViewColumnCollection.cs" />
+    <Compile Include="Models\Database.cs" />
+    <Compile Include="Models\Extensions.cs" />
+    <Compile Include="Models\ModelRoot.cs" />
+    <Compile Include="Models\Reference.cs" />
+    <Compile Include="Models\ReferenceCollection.cs" />
+    <Compile Include="Models\Relation.cs" />
+    <Compile Include="Models\RelationCollection.cs" />
+    <Compile Include="Models\RowEntry.cs" />
+    <Compile Include="Models\RowEntryCollection.cs" />
+    <Compile Include="Models\Table.cs" />
+    <Compile Include="Models\TableCollection.cs" />
+    <Compile Include="Models\TableIndex.cs" />
+    <Compile Include="Models\TableIndexColumn.cs" />
+    <Compile Include="Models\VersionHistory.cs" />
+    <Compile Include="Models\VersionHistoryCollection.cs" />
+    <Compile Include="nHydrateGeneratorProject.cs" />
+    <Compile Include="ProjectItemGenerators\BaseClassGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\BaseClassTemplate.cs" />
+    <Compile Include="ProjectItemGenerators\BaseProjectGenerator.cs" />
+    <Compile Include="ProjectItemGenerators\BaseProjectItemGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
+    <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\EmbeddedResourceName.cs" />
     <Compile Include="Util\Extensions.cs" />
     <Compile Include="Util\FileStateInfo.cs" />
     <Compile Include="Util\HashTable.cs" />
     <Compile Include="Util\ProjectItemCacheItem.cs" />
     <Compile Include="Util\SecurityHelper.cs" />
-    <Compile Include="Util\EnvDTEHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Util\GlobalHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Util\ReflectionHelper.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -283,23 +245,12 @@
     <Compile Include="Util\StringHelper.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Util\TextManagerEvents.cs" />
     <Compile Include="Util\XmlHelper.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ValidationHelper.cs" />
-    <EmbeddedResource Include="Forms\CollectionEditorForm.resx">
-      <DependentUpon>CollectionEditorForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ErrorForm.resx">
-      <DependentUpon>ErrorForm.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\SendErrorForm.resx">
-      <DependentUpon>SendErrorForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Images\Default.ico" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
@@ -309,10 +260,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <None Include="WidgetSphere.snk" />
   </ItemGroup>
   <ItemGroup>
@@ -342,6 +289,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>mkdir $(SolutionDir)bin

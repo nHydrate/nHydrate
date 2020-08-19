@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FindWindowControl));
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.pnlType = new System.Windows.Forms.Panel();
-            this.txtSearch = new nHydrate.Generator.Common.Forms.CueTextBox();
+            this.txtSearch = new nHydrate.DslPackage.Forms.CueTextBox();
             this.cmdSettings = new System.Windows.Forms.Button();
             this.lvwMain = new System.Windows.Forms.ListView();
             this.contextMenuMain = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -260,7 +260,7 @@
 
 		private System.Windows.Forms.ImageList imageList1;
 		private System.Windows.Forms.Panel pnlType;
-		private nHydrate.Generator.Common.Forms.CueTextBox txtSearch;
+		private nHydrate.DslPackage.Forms.CueTextBox txtSearch;
 		private System.Windows.Forms.ListView lvwMain;
 		private System.Windows.Forms.Splitter splitter1;
 		private System.Windows.Forms.ListView lvwSubItem;

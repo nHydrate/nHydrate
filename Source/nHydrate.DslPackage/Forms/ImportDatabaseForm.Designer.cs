@@ -35,7 +35,7 @@ namespace nHydrate.DslPackage.Forms
             this.pageConnection = new nHydrate.Wizard.WizardPage();
             this.grpConnectionStringPostgres = new System.Windows.Forms.GroupBox();
             this.lblConnectionString = new System.Windows.Forms.Label();
-            this.txtConnectionStringPostgres = new nHydrate.Generator.Common.Forms.CueTextBox();
+            this.txtConnectionStringPostgres = new nHydrate.DslPackage.Forms.CueTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.optDatabaseTypePostgres = new System.Windows.Forms.RadioButton();
             this.optDatabaseTypeSQL = new System.Windows.Forms.RadioButton();
@@ -445,6 +445,6 @@ namespace nHydrate.DslPackage.Forms
         private System.Windows.Forms.RadioButton optDatabaseTypeSQL;
         private System.Windows.Forms.GroupBox grpConnectionStringPostgres;
         private System.Windows.Forms.Label lblConnectionString;
-        private Generator.Common.Forms.CueTextBox txtConnectionStringPostgres;
+        private nHydrate.DslPackage.Forms.CueTextBox txtConnectionStringPostgres;
     }
 }

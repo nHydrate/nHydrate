@@ -1,5 +1,5 @@
 using nHydrate.Dsl;
-using nHydrate.Generator.Models;
+using nHydrate.Generator.Common.Models;
 using System;
 using System.Linq;
 using System.Windows.Forms;

@@ -32,7 +32,7 @@
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.txtKey = new nHydrate.Generator.Common.Forms.CueTextBox();
+            this.txtKey = new nHydrate.DslPackage.Forms.CueTextBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.cmdRegister = new System.Windows.Forms.Button();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -303,7 +303,7 @@
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Label label1;
-        private nHydrate.Generator.Common.Forms.CueTextBox txtKey;
+        private nHydrate.DslPackage.Forms.CueTextBox txtKey;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.Button cmdRegister;
         private System.Windows.Forms.PictureBox pictureBox2;

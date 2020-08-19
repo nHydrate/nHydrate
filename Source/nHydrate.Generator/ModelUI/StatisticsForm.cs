@@ -25,9 +25,9 @@ namespace nHydrate.Generator.ModelUI
             if (e.Control && e.KeyCode == Keys.Q)
             {
 
-                var text = "Extension Directory: " + nHydrate.Generator.Common.GeneratorFramework.AddinAppData.Instance.ExtensionDirectory + "\n" +
+                var text = "Extension Directory: " + nHydrate.Generator.GeneratorFramework.AddinAppData.Instance.ExtensionDirectory + "\n" +
                            "Current Location: " + System.Reflection.Assembly.GetExecutingAssembly().Location + "\n" +
-                           "DTE: " + nHydrate.Generator.Common.Util.EnvDTEHelper.Instance.Version;
+                           "DTE: " + nHydrate.Generator.Util.EnvDTEHelper.Instance.Version;
                 MessageBox.Show(text, "Debug", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }

@@ -1,6 +1,6 @@
 #pragma warning disable 0168
 using Newtonsoft.Json;
-using nHydrate.Generator.Common.GeneratorFramework;
+using nHydrate.Generator.GeneratorFramework;
 using nHydrate.ServerObjects;
 using System;
 using System.Collections.Generic;
@@ -81,7 +81,7 @@ namespace nHydrate.DslPackage.Objects
         {
             try
             {
-                return (string.IsNullOrEmpty(nHydrate.Generator.Common.GeneratorFramework.AddinAppData.Instance.Key) &&
+                return (string.IsNullOrEmpty(nHydrate.Generator.GeneratorFramework.AddinAppData.Instance.Key) &&
                     (DateTime.Now.Subtract(AddinAppData.Instance.LastNag).TotalDays >= 3));
             }
             catch (Exception ex)

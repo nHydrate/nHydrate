@@ -12,7 +12,7 @@ namespace nHydrate.Generator.Common.Util
         {
         }
 
-        public FileStateInfo(nHydrate.Generator.Common.Util.EnvDTEHelper.FileStateConstants fileState, string fileName)
+        public FileStateInfo(FileStateConstants fileState, string fileName)
         {
             FileName = fileName;
             FileState = fileState;
@@ -22,7 +22,7 @@ namespace nHydrate.Generator.Common.Util
 
         #region Property Impelementations
 
-        public nHydrate.Generator.Common.Util.EnvDTEHelper.FileStateConstants FileState { get; set; } = EnvDTEHelper.FileStateConstants.Success;
+        public FileStateConstants FileState { get; set; } = FileStateConstants.Success;
 
         public string FileName { get; set; } = string.Empty;
 

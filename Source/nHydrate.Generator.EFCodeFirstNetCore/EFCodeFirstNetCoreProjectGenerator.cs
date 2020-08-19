@@ -1,6 +1,6 @@
+using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.Common.Util;
-using nHydrate.Generator.ProjectItemGenerators;
+using nHydrate.Generator.Common.ProjectItemGenerators;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore
 {
@@ -15,7 +15,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore
         )]
     public class EFCodeFirstNetCoreProjectGenerator : BaseProjectGenerator
     {
-        protected override string ProjectTemplate => "efcodefirstnetcore.vstemplate";
+        public override string ProjectTemplate => "efcodefirstnetcore.vstemplate";
 
         public override string LocalNamespaceExtension
         {

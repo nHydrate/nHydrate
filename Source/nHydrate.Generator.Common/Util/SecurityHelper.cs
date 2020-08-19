@@ -1,6 +1,6 @@
 #pragma warning disable 0168
 using System;
-using System.Management;
+
 
 namespace nHydrate.Generator.Common.Util
 {
@@ -12,12 +12,15 @@ namespace nHydrate.Generator.Common.Util
         /// <returns>The unique machine key</returns>
         public static string GetMachineID()
         {
+#if NETSTANDARD
+            return "";
+#else
             try
             {
                 var cpuInfo = String.Empty;
-                var mc = new ManagementClass("Win32_Processor");
+                var mc = new System.Management.ManagementClass("Win32_Processor");
                 var moc = mc.GetInstances();
-                foreach (ManagementObject mo in moc)
+                foreach (System.Management.ManagementObject mo in moc)
                 {
                     if (cpuInfo == String.Empty)
                         cpuInfo = mo.Properties["ProcessorId"].Value.ToString();
@@ -28,6 +31,7 @@ namespace nHydrate.Generator.Common.Util
             {
                 return "";
             }
+#endif
         }
     }
 }

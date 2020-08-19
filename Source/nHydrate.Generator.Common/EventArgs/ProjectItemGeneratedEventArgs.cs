@@ -18,7 +18,7 @@ namespace nHydrate.Generator.Common.EventArgs
             this.ParentItemName = string.Empty;
             this.ContentType = ProjectItemContentType.String;
             this.Overwrite = true;
-            this.FileState = EnvDTEHelper.FileStateConstants.Success;
+            this.FileState = FileStateConstants.Success;
             this.FullName = string.Empty;
             this.BaseGenerator = null;
             this.RunCustomTool = false;
@@ -61,7 +61,7 @@ namespace nHydrate.Generator.Common.EventArgs
 
         #region Property Implementations
 
-        public EnvDTEHelper.FileStateConstants FileState { get; set; }
+        public FileStateConstants FileState { get; set; }
 
         public string FullName { get; set; }
 
@@ -75,7 +75,7 @@ namespace nHydrate.Generator.Common.EventArgs
 
         public string ProjectName { get; }
 
-        public string ProjectItemName { get; internal set; }
+        public string ProjectItemName { get; set; }
 
         public string ProjectItemContent { get; }
 

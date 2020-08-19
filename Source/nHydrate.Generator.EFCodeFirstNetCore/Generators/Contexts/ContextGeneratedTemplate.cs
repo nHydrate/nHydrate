@@ -1,7 +1,7 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common;
+using nHydrate.Generator.Common.Models;
 using nHydrate.Generator.Common.Util;
-using nHydrate.Generator.Models;
 using System;
 using System.Linq;
 using System.Text;
@@ -42,7 +42,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
         private void GenerateContent()
         {
-            nHydrate.Generator.GenerationHelper.AppendFileGeneatedMessageInCode(sb);
+            GenerationHelper.AppendFileGeneatedMessageInCode(sb);
             sb.AppendLine("#pragma warning disable 612");
             this.AppendUsingStatements();
             sb.AppendLine("namespace " + this.GetLocalNamespace());
@@ -261,7 +261,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			#region Map Tables");
 
             //Tables
-            foreach (var item in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var item in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 string schema = null;
                 if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
@@ -293,7 +293,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             //Tables
-            foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 sb.AppendLine("			//Field setup for " + table.PascalName + " entity");
                 foreach (var column in table.GetColumns().OrderBy(x => x.Name))
@@ -402,7 +402,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             sb.AppendLine("			#region Ignore Enum Properties");
             sb.AppendLine();
-            foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 foreach (var column in table.GetColumns().OrderBy(x => x.Name))
                 {
@@ -429,7 +429,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			#region Primary Keys");
             sb.AppendLine();
             foreach (var table in _model.Database.Tables
-                .Where(x => (x.TypedTable != Models.TypedTableConstants.EnumOnly))
+                .Where(x => (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly))
                 .OrderBy(x => x.Name))
             {
                 sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
@@ -468,7 +468,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             sb.AppendLine("			#region Relations");
             sb.AppendLine();
-            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 foreach (Relation relation in table.GetRelations())
                 {
@@ -551,7 +551,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             }
 
             //Associative tables
-            foreach (var table in _model.Database.Tables.Where(x => x.AssociativeTable && (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => x.AssociativeTable && (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 var relations = table.GetRelationsWhereChild().ToList();
                 if (relations.Count == 2)
@@ -722,7 +722,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		#region Entity Sets");
             sb.AppendLine();
 
-            foreach (var item in _model.Database.Tables.Where(x => (x.TypedTable != Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var item in _model.Database.Tables.Where(x => (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 var name = item.PascalName;
                 var scope = "public";

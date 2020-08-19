@@ -1,6 +1,7 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.GeneratorFramework;
-using nHydrate.Generator.ProjectItemGenerators;
+using nHydrate.Generator.Common.ProjectItemGenerators;
 
 namespace nHydrate.Generator.PostgresInstaller
 {
@@ -15,7 +16,7 @@ namespace nHydrate.Generator.PostgresInstaller
         )]
     public class PostgresDatabaseProjectGenerator : BaseProjectGenerator
     {
-        protected override string ProjectTemplate => "efcorepostgresinstaller.vstemplate";
+        public override string ProjectTemplate => "efcorepostgresinstaller.vstemplate";
 
         public override string LocalNamespaceExtension => PostgresDatabaseProjectGenerator.NamespaceExtension;
 
