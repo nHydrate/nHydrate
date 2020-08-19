@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="XmlMapModels.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\nHydrate.ModelManagement\nHydrate.ModelManagement.Core.csproj" />
   </ItemGroup>
 

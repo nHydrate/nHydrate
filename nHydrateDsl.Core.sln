@@ -35,9 +35,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.Generator.Postgres
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.Generator.EFCodeFirstNetCore.Core", "Source\nHydrate.Generator.EFCodeFirstNetCore\nHydrate.Generator.EFCodeFirstNetCore.Core.csproj", "{4C0CB822-E2BF-41F1-891A-7104E6565D97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreTestHarness", "Source\NetCoreTestHarness\NetCoreTestHarness.csproj", "{17992150-E2CD-4DFF-BE25-BA3FE9FBAF0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreTestHarness", "Source\NetCoreTestHarness\NetCoreTestHarness.csproj", "{17992150-E2CD-4DFF-BE25-BA3FE9FBAF0A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.ModelManagement.Core", "Source\nHydrate.ModelManagement\nHydrate.ModelManagement.Core.csproj", "{251B387A-4657-4073-9E03-7E0C2C49C37B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nHydrate.Command.Core", "Source\nHydrate.Command.Core\nHydrate.Command.Core.csproj", "{A4350BC2-099B-4647-A4A6-ED9BC2B53566}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,6 +121,14 @@ Global
 		{251B387A-4657-4073-9E03-7E0C2C49C37B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{251B387A-4657-4073-9E03-7E0C2C49C37B}.Release|x86.ActiveCfg = Release|Any CPU
 		{251B387A-4657-4073-9E03-7E0C2C49C37B}.Release|x86.Build.0 = Release|Any CPU
+		{A4350BC2-099B-4647-A4A6-ED9BC2B53566}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4350BC2-099B-4647-A4A6-ED9BC2B53566}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4350BC2-099B-4647-A4A6-ED9BC2B53566}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A4350BC2-099B-4647-A4A6-ED9BC2B53566}.Debug|x86.Build.0 = Debug|Any CPU
+		{A4350BC2-099B-4647-A4A6-ED9BC2B53566}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4350BC2-099B-4647-A4A6-ED9BC2B53566}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4350BC2-099B-4647-A4A6-ED9BC2B53566}.Release|x86.ActiveCfg = Release|Any CPU
+		{A4350BC2-099B-4647-A4A6-ED9BC2B53566}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

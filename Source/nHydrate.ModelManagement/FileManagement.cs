@@ -1,5 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace nHydrate.ModelManagement
@@ -11,9 +16,63 @@ namespace nHydrate.ModelManagement
 
         public static DiskModel Load(string rootFolder, string modelName)
         {
+            var modelFile = Path.Combine(rootFolder, modelName);
+            var fi = new FileInfo(modelFile);
+            var showError = (fi.Length > 10); //New file is small so show no error if creating new
+
+            var folderName = modelName.Replace(".nhydrate", ".model");
+            var modelFolder = GetModelFolder(rootFolder, folderName);
+
+            //If the model folder does NOT exist
+            if (showError && !Directory.Exists(modelFolder))
+            {
+                //Try to use the ZIP file
+                var compressedFile = Path.Combine(rootFolder, modelName + ".zip");
+                if (!File.Exists(compressedFile))
+                {
+                    throw new Exception("The model folder was not found and the ZIP file is missing. One of these must exist to continue.");
+                }
+
+                //Unzip the whole file
+                ExtractToDirectory(compressedFile, rootFolder, false);
+            }
+
             var results = new DiskModel();
-            LoadEntities(rootFolder, results);
-            LoadViews(rootFolder, results);
+            LoadEntities(modelFolder, results);
+            LoadViews(modelFolder, results);
+
+            #region Clean up
+            //Ensure all arrays are not null
+            foreach (var obj in results.Entities)
+            {
+                if (obj.fieldset == null) obj.fieldset = new Entity.configurationField[0];
+            }
+            foreach (var obj in results.Indexes)
+            {
+                if (obj.index == null) obj.index = new Index.configurationIndex[0];
+                foreach (var obj2 in obj.index)
+                {
+                    if (obj2.indexcolumnset == null) obj2.indexcolumnset = new Index.configurationIndexColumn[0];
+                }
+            }
+            foreach (var obj in results.Relations)
+            {
+                if (obj.relation == null) obj.relation = new Relation.configurationRelation[0];
+                foreach (var obj2 in obj.relation)
+                {
+                    if (obj2.relationfieldset == null) obj2.relationfieldset = new Relation.configurationRelationField[0];
+                }
+            }
+            foreach (var obj in results.StaticData)
+            {
+                if (obj.data == null) obj.data = new StaticData.configurationData[0];
+            }
+            foreach (var obj in results.Views)
+            {
+                if (obj.fieldset == null) obj.fieldset = new View.configurationField[0];
+            }
+            #endregion
+
             return results;
         }
 
@@ -49,6 +108,7 @@ namespace nHydrate.ModelManagement
             {
                 results.StaticData.Add(GetObject<StaticData.configuration>(f));
             }
+
         }
 
         private static void LoadViews(string rootFolder, DiskModel results)
@@ -62,6 +122,22 @@ namespace nHydrate.ModelManagement
                 foreach (var f in fList)
                 {
                     results.Views.Add(GetObject<nHydrate.ModelManagement.View.configuration>(f));
+                }
+
+                fList = Directory.GetFiles(folder, "*.sql");
+                foreach (var f in fList)
+                {
+                    var fi = new FileInfo(f);
+                    if (fi.Name.ToLower().EndsWith(".sql"))
+                    {
+                        var name = fi.Name.Substring(0, fi.Name.Length - 4).ToLower();
+                        var item = results.Views.FirstOrDefault(x => x.name.ToLower() == name);
+                        if (item != null)
+                        {
+                            item.sql = File.ReadAllText(f);
+                        }
+                    }
+
                 }
             }
 
@@ -77,13 +153,53 @@ namespace nHydrate.ModelManagement
 
         }
 
-        public static void Save(string rootFolder, DiskModel model)
+        public static void Save(string rootFolder, string modelName, DiskModel model)
         {
-            SaveEntities(rootFolder, model);
-            SaveViews(rootFolder, model);
+            var folderName = modelName.Replace(".nhydrate", ".model");
+            var modelFolder = GetModelFolder(rootFolder, folderName);
+
+            var generatedFileList = new List<string>();
+            SaveViews(modelFolder, model, generatedFileList); //must come before entities
+            SaveEntities(modelFolder, model, generatedFileList);
+
+            //Do not remove diagram file
+            generatedFileList.Add(Path.Combine(modelFolder, "diagram.xml"));
+
+            RemoveOrphans(modelFolder, generatedFileList);
+
+            try
+            {
+                var compressedFile = Path.Combine(rootFolder, modelName + ".zip");
+                if (File.Exists(compressedFile))
+                {
+                    File.Delete(compressedFile);
+                    System.Threading.Thread.Sleep(300);
+                }
+
+                //Create ZIP file with entire model folder
+                System.IO.Compression.ZipFile.CreateFromDirectory(modelFolder, compressedFile, System.IO.Compression.CompressionLevel.Fastest, true);
+
+                //Now add the top level model artifacts
+                var artifacts = Directory.GetFiles(rootFolder, $"{modelName}.*").ToList();
+                artifacts.RemoveAll(x => x == compressedFile);
+                using (var zipToOpen = System.IO.Compression.ZipFile.Open(compressedFile, System.IO.Compression.ZipArchiveMode.Update))
+                {
+                    foreach (var ff in artifacts)
+                    {
+                        var fi = new FileInfo(ff);
+                        zipToOpen.CreateEntryFromFile(ff, fi.Name);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                //Do Nothing
+            }
+
         }
 
-        private static void SaveEntities(string rootFolder, DiskModel model)
+        private static void SaveEntities(string rootFolder, DiskModel model, List<string> generatedFileList)
         {
             var folder = Path.Combine(rootFolder, FOLDER_ET);
             if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
@@ -92,7 +208,7 @@ namespace nHydrate.ModelManagement
             foreach (var obj in model.Entities)
             {
                 var f = Path.Combine(folder, obj.name + ".configuration.xml");
-                SaveObject(obj, f);
+                SaveObject(obj, f, generatedFileList);
             }
 
             //Save Indexes
@@ -100,7 +216,7 @@ namespace nHydrate.ModelManagement
             {
                 var entity = model.Entities.FirstOrDefault(x => x.id == obj.id);
                 var f = Path.Combine(folder, entity.name + ".indexes.xml");
-                SaveObject(obj, f);
+                SaveObject(obj, f, generatedFileList);
             }
 
             //Save Relations
@@ -108,7 +224,7 @@ namespace nHydrate.ModelManagement
             {
                 var entity = model.Entities.FirstOrDefault(x => x.id == obj.id);
                 var f = Path.Combine(folder, entity.name + ".relations.xml");
-                SaveObject(obj, f);
+                SaveObject(obj, f, generatedFileList);
             }
 
             //Save Static Data
@@ -116,12 +232,14 @@ namespace nHydrate.ModelManagement
             {
                 var entity = model.Entities.FirstOrDefault(x => x.id == obj.id);
                 var f = Path.Combine(folder, entity.name + ".staticdata.xml");
-                SaveObject(obj, f);
+                SaveObject(obj, f, generatedFileList);
             }
+
+            WriteReadMeFile(folder, generatedFileList);
 
         }
 
-        private static void SaveViews(string rootFolder, DiskModel model)
+        private static void SaveViews(string rootFolder, DiskModel model, List<string> generatedFileList)
         {
             var folder = Path.Combine(rootFolder, FOLDER_VW);
             if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
@@ -130,12 +248,16 @@ namespace nHydrate.ModelManagement
             foreach (var obj in model.Views)
             {
                 var f = Path.Combine(folder, obj.name + ".configuration.xml");
-                SaveObject(obj, f);
+                SaveObject(obj, f, generatedFileList);
+
+                var f1 = Path.Combine(folder, obj.name + ".sql");
+                WriteFileIfNeedBe(f1, obj.sql, new List<string>());
             }
 
+            WriteReadMeFile(folder, generatedFileList);
         }
 
-        private static void SaveObject<T>(T obj, string fileName)
+        private static void SaveObject<T>(T obj, string fileName, List<string> generatedFileList)
         {
             var ns = new XmlSerializerNamespaces();
             ns.Add("", "");
@@ -144,7 +266,156 @@ namespace nHydrate.ModelManagement
             {
                 writer.Serialize(wfile, obj, ns);
             }
+            generatedFileList.Add(fileName);
         }
+
+        #region Private Helpers
+
+        private static string GetModelFolder(string rootFolder, string modelName)
+        {
+            return Path.Combine(rootFolder, "_" + modelName);
+        }
+
+        private static void WriteFileIfNeedBe(string fileName, string contents, List<string> generatedFileList)
+        {
+            if (fileName.ToLower().EndsWith(".xml"))
+            {
+                generatedFileList.Add(fileName);
+                try
+                {
+                    //Load formatted original XML
+                    var origXML = string.Empty;
+                    if (File.Exists(fileName))
+                    {
+                        var xmlText = File.ReadAllText(fileName);
+                        if (!string.IsNullOrEmpty(xmlText))
+                        {
+                            var documentCheck = new XmlDocument();
+                            documentCheck.LoadXml(xmlText);
+                            origXML = documentCheck.ToIndentedString();
+                        }
+                    }
+
+                    //Load formatted new XML
+                    var newXML = string.Empty;
+                    {
+                        var documentCheck = new XmlDocument();
+                        documentCheck.LoadXml(contents);
+                        newXML = documentCheck.ToIndentedString();
+                    }
+
+                    if (origXML == newXML)
+                        return;
+                    else
+                        contents = newXML;
+                }
+                catch (Exception ex)
+                {
+                    //If there is an error then process like a non-XML file
+                    //Do Nothing
+                }
+            }
+            else
+            {
+                //Check if this is the same content and if so do nothing
+                generatedFileList.Add(fileName);
+                if (File.Exists(fileName))
+                {
+                    var t = File.ReadAllText(fileName);
+                    if (t == contents)
+                        return;
+                }
+            }
+
+            File.WriteAllText(fileName, contents);
+        }
+
+        private static void WriteReadMeFile(string folder, List<string> generatedFileList)
+        {
+            var f = Path.Combine(folder, "ReadMe.nHydrate.txt");
+            WriteFileIfNeedBe(f, "This is a managed folder of a nHydrate model. You may change '*.configuration.xml' and '*.sql' files in any text editor if desired but do not add or remove files from this folder. This is a distributed model and making changes can break the model load.", generatedFileList);
+        }
+
+        private static void RemoveOrphans(string rootFolder, List<string> generatedFiles)
+        {
+            //Only get these specific folder in case there is version control or some other third-party application running
+            //Only touch the files we know about
+            var files = new List<string>();
+            files.AddRange(Directory.GetFiles(rootFolder, "*.*", SearchOption.TopDirectoryOnly));
+            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_Entities"), "*.*", SearchOption.TopDirectoryOnly));
+            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_Views"), "*.*", SearchOption.TopDirectoryOnly));
+            files.ToList().ForEach(x => x = x.ToLower());
+            generatedFiles.ToList().ForEach(x => x = x.ToLower());
+
+            foreach (var f in files)
+            {
+                var fi = new FileInfo(f);
+                if (fi.Name.ToLower().Contains("readme.nhydrate.txt"))
+                {
+                    //Skip
+                }
+                else if (generatedFiles.Contains(f))
+                {
+                    //Skip
+                }
+                else
+                {
+                    File.Delete(f);
+                }
+
+            }
+        }
+
+        private static void ExtractToDirectory(string compressedFile, string destinationDirectoryName, bool overwrite)
+        {
+            using (var archive = System.IO.Compression.ZipFile.Open(compressedFile, System.IO.Compression.ZipArchiveMode.Update))
+            {
+                var di = Directory.CreateDirectory(destinationDirectoryName);
+                var destinationDirectoryFullPath = di.FullName;
+                foreach (var file in archive.Entries)
+                {
+                    var completeFileName = Path.GetFullPath(Path.Combine(destinationDirectoryFullPath, file.FullName));
+                    if (!completeFileName.StartsWith(destinationDirectoryFullPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new IOException("Trying to extract file outside of destination directory. See this link for more info: https://snyk.io/research/zip-slip-vulnerability");
+                    }
+
+                    if (file.Name == string.Empty)
+                    {
+                        // Assuming Empty for Directory
+                        Directory.CreateDirectory(Path.GetDirectoryName(completeFileName));
+                        continue;
+                    }
+
+                    if (!File.Exists(completeFileName))
+                    {
+                        var folder = (new FileInfo(completeFileName)).DirectoryName;
+                        if (!Directory.Exists(folder))
+                        {
+                            Directory.CreateDirectory(folder);
+                            System.Threading.Thread.Sleep(200);
+                        }
+                        file.ExtractToFile(completeFileName, overwrite);
+                    }
+                }
+            }
+        }
+
+        private static string ToIndentedString(this XmlDocument doc)
+        {
+            var stringWriter = new StringWriter(new StringBuilder());
+            var xmlTextWriter = new XmlTextWriter(stringWriter)
+            {
+                Formatting = Formatting.Indented,
+                IndentChar = '\t'
+            };
+            doc.Save(xmlTextWriter);
+            var t = stringWriter.ToString();
+            t = t.Replace(@" encoding=""utf-16""", string.Empty);
+            return t;
+        }
+
+        #endregion
 
     }
 }

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "nHydrate.Command.Core": {
+      "commandName": "Project",
+      "commandLineArgs": "/model:C:\\code\\nHydrateTestAug\\ModelProject\\Model1.nhydrate /output:C:\\code\\nHydrateTestAug"
+    }
+  }
+}

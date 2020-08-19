@@ -234,6 +234,7 @@
     <Compile Include="Validation\FieldValidation.cs" />
     <Compile Include="Validation\nHydrateModel.cs" />
     <Compile Include="Validation\ValidationHelper.cs" />
+    <None Include="app.config" />
     <None Include="GeneratedCode\nHydrateSchema.xsd">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
