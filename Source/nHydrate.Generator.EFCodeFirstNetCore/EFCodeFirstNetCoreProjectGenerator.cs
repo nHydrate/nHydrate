@@ -17,10 +17,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore
     {
         public override string ProjectTemplate => "efcodefirstnetcore.vstemplate";
 
-        public override string LocalNamespaceExtension
-        {
-            get { return EFCodeFirstNetCoreProjectGenerator.NamespaceExtension; }
-        }
+        public override string LocalNamespaceExtension => NamespaceExtension;
 
         public static string NamespaceExtension => "EFDAL";
 

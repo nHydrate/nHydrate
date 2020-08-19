@@ -65,24 +65,23 @@ namespace nHydrate.Command.Core
             try
             {
                 var root = new nHydrate.Generator.Common.Models.ModelRoot(null);
-                //root.EnableCustomChangeEvents = diskModel.EmitChangeScripts;
-                //root.CompanyName = model.CompanyName;
-                //root.EmitSafetyScripts = model.EmitSafetyScripts;
-                //root.DefaultNamespace = model.DefaultNamespace;
-                //root.ProjectName = model.ProjectName;
-                //root.SupportLegacySearchObject = false;
-                //root.UseUTCTime = model.UseUTCTime;
-                //root.Version = model.Version;
-                //root.Database.ResetKey(model.Id.ToString());
-                //root.OutputTarget = string.Empty; //model.OutputTarget;
-                ////These have the same mapping values flags so we need convert to int and then convert to the other enumeration
-                //root.TenantColumnName = model.TenantColumnName;
-                //root.Database.CreatedByColumnName = model.CreatedByColumnName;
-                //root.Database.CreatedDateColumnName = model.CreatedDateColumnName;
-                //root.Database.ModifiedByColumnName = model.ModifiedByColumnName;
-                //root.Database.ModifiedDateColumnName = model.ModifiedDateColumnName;
-                //root.Database.TimestampColumnName = model.TimestampColumnName;
-                //root.Database.GrantExecUser = model.GrantUser;
+                root.EnableCustomChangeEvents = diskModel.ModelProperties.EmitChangeScripts;
+                root.CompanyName = diskModel.ModelProperties.CompanyName;
+                root.EmitSafetyScripts = diskModel.ModelProperties.EmitSafetyScripts;
+                root.DefaultNamespace = diskModel.ModelProperties.DefaultNamespace;
+                root.ProjectName = diskModel.ModelProperties.ProjectName;
+                root.SupportLegacySearchObject = false;
+                root.UseUTCTime = diskModel.ModelProperties.UseUTCTime;
+                root.Version = diskModel.ModelProperties.Version;
+                root.Database.ResetKey(diskModel.ModelProperties.Id);
+                root.OutputTarget = string.Empty;
+                root.TenantColumnName = diskModel.ModelProperties.TenantColumnName;
+                root.Database.CreatedByColumnName = diskModel.ModelProperties.CreatedByColumnName;
+                root.Database.CreatedDateColumnName = diskModel.ModelProperties.CreatedDateColumnName;
+                root.Database.ModifiedByColumnName = diskModel.ModelProperties.ModifiedByColumnName;
+                root.Database.ModifiedDateColumnName = diskModel.ModelProperties.ModifiedDateColumnName;
+                root.Database.TimestampColumnName = diskModel.ModelProperties.TimestampColumnName;
+                root.Database.GrantExecUser = diskModel.ModelProperties.GrantExecUser;
 
                 #region Load the entities
                 foreach (var entity in diskModel.Entities)

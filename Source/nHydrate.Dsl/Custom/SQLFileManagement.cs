@@ -18,16 +18,32 @@ namespace nHydrate.Dsl.Custom
             return Path.Combine(rootFolder, "_" + modelName);
         }
 
-        public static void SaveToDisk(nHydrateModel modelRoot, string rootFolder, string modelName, nHydrateDiagram diagram)
+        public static void SaveToDisk(nHydrateModel model, string rootFolder, string modelName, nHydrateDiagram diagram)
         {
             var diskModel = new DiskModel();
-            modelRoot.IsSaving = true;
+            model.IsSaving = true;
             try
             {
+                diskModel.ModelProperties.EmitChangeScripts = model.EmitChangeScripts;
+                diskModel.ModelProperties.CompanyName = model.CompanyName;
+                diskModel.ModelProperties.EmitSafetyScripts = model.EmitSafetyScripts;
+                diskModel.ModelProperties.DefaultNamespace = model.DefaultNamespace;
+                diskModel.ModelProperties.ProjectName = model.ProjectName;
+                diskModel.ModelProperties.UseUTCTime = model.UseUTCTime;
+                diskModel.ModelProperties.Version = model.Version;
+                //diskModel.ModelProperties.Id = model.Id.ToString();
+                diskModel.ModelProperties.TenantColumnName = model.TenantColumnName;
+                diskModel.ModelProperties.CreatedByColumnName = model.CreatedByColumnName;
+                diskModel.ModelProperties.CreatedDateColumnName = model.CreatedDateColumnName;
+                diskModel.ModelProperties.ModifiedByColumnName = model.ModifiedByColumnName;
+                diskModel.ModelProperties.ModifiedDateColumnName = model.ModifiedDateColumnName;
+                diskModel.ModelProperties.TimestampColumnName = model.TimestampColumnName;
+                diskModel.ModelProperties.GrantExecUser = model.GrantUser;
+
                 var folderName = modelName.Replace(".nhydrate", ".model");
                 var modelFolder = GetModelFolder(rootFolder, folderName);
-                nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(diskModel, modelRoot.Views);
-                nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(diskModel, modelRoot.Entities);
+                nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(diskModel, model.Views);
+                nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(diskModel, model.Entities);
                 FileManagement.Save(rootFolder, modelName, diskModel);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveDiagramFiles(modelFolder, diagram);
             }
@@ -37,7 +53,7 @@ namespace nHydrate.Dsl.Custom
             }
             finally
             {
-                modelRoot.IsSaving = false;
+                model.IsSaving = false;
             }
         }
 
@@ -266,6 +282,22 @@ namespace nHydrate.Dsl.Custom
             try
             {
                 var diskModel = FileManagement.Load(rootFolder, modelName);
+                model.EmitChangeScripts = diskModel.ModelProperties.EmitChangeScripts;
+                model.CompanyName = diskModel.ModelProperties.CompanyName;
+                model.EmitSafetyScripts = diskModel.ModelProperties.EmitSafetyScripts;
+                model.DefaultNamespace = diskModel.ModelProperties.DefaultNamespace;
+                model.ProjectName = diskModel.ModelProperties.ProjectName;
+                model.UseUTCTime = diskModel.ModelProperties.UseUTCTime;
+                model.Version = diskModel.ModelProperties.Version;
+                //model.Id = new Guid(diskModel.ModelProperties.Id);
+                model.TenantColumnName = diskModel.ModelProperties.TenantColumnName;
+                model.CreatedByColumnName = diskModel.ModelProperties.CreatedByColumnName;
+                model.CreatedDateColumnName = diskModel.ModelProperties.CreatedDateColumnName;
+                model.ModifiedByColumnName = diskModel.ModelProperties.ModifiedByColumnName;
+                model.ModifiedDateColumnName = diskModel.ModelProperties.ModifiedDateColumnName;
+                model.TimestampColumnName = diskModel.ModelProperties.TimestampColumnName;
+                model.GrantUser = diskModel.ModelProperties.GrantExecUser;
+
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Views, model, diskModel); //must come before entities
                 nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Entities, model, diskModel);
             }

@@ -41,6 +41,11 @@ namespace nHydrate.ModelManagement
             LoadEntities(modelFolder, results);
             LoadViews(modelFolder, results);
 
+            //Save the global model properties
+            var globalFile = Path.Combine(modelFolder, "model.xml");
+            if (File.Exists(globalFile))
+                results.ModelProperties = GetObject<ModelProperties>(globalFile);
+
             #region Clean up
             //Ensure all arrays are not null
             foreach (var obj in results.Entities)
@@ -161,6 +166,9 @@ namespace nHydrate.ModelManagement
             var generatedFileList = new List<string>();
             SaveViews(modelFolder, model, generatedFileList); //must come before entities
             SaveEntities(modelFolder, model, generatedFileList);
+
+            //Save the global model properties
+            SaveObject(model.ModelProperties, Path.Combine(modelFolder, "model.xml"), generatedFileList);
 
             //Do not remove diagram file
             generatedFileList.Add(Path.Combine(modelFolder, "diagram.xml"));
