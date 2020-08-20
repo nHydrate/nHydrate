@@ -6,7 +6,7 @@ using System.Text;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Views
 {
-    [GeneratorItem("SQLStoredProcedureAllViewGenerator", typeof(DatabaseProjectGenerator))]
+    [GeneratorItem("SQLStoredProcedureAllViewGenerator", typeof(SqlDatabaseProjectGenerator))]
     public class ViewsGenerator : BaseDbScriptGenerator
     {
         private string ParentItemPath => @"5_Programmability\Views\Model";

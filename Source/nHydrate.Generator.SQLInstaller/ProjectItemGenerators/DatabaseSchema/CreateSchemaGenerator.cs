@@ -3,7 +3,7 @@ using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 {
-    [GeneratorItem("CreateSchema", typeof(DatabaseProjectGenerator))]
+    [GeneratorItem("CreateSchema", typeof(SqlDatabaseProjectGenerator))]
     public class CreateSchemaGenerator : BaseDbScriptGenerator
     {
         #region Class Members

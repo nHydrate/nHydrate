@@ -3,7 +3,7 @@ using nHydrate.Generator.Common.GeneratorFramework;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.UnversionedUpgrade
 {
-    [GeneratorItem("UpgradeVersioned", typeof(DatabaseProjectGenerator))]
+    [GeneratorItem("UpgradeVersioned", typeof(SqlDatabaseProjectGenerator))]
     public class UpgradeUnversionedScriptGenerator : BaseDbScriptGenerator
     {
         #region Class Members

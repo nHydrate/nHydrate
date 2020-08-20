@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
- <PropertyGroup>
+  <PropertyGroup>
     <BaseOutputPath>$(MSBuildProjectDirectory)/out/$(MSBuildProjectName)/bin</BaseOutputPath>
     <BaseIntermediateOutputPath>$(MSBuildProjectDirectory)/out/$(MSBuildProjectName)/obj</BaseIntermediateOutputPath>
   </PropertyGroup>
@@ -86,7 +86,7 @@
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\SqlServers.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\UpgradeInstaller.cs" />
-    <Compile Include="DatabaseProjectGenerator.cs" />
+    <Compile Include="SqlDatabaseProjectGenerator.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseSchema\CreateSchemaGenerator.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseSchema\CreateSchemaTemplate.cs" />
     <Compile Include="ProjectItemGenerators\DatabaseUpgrade\UpgradeVersionedScriptGenerator.cs" />
