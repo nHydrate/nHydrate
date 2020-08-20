@@ -63,7 +63,7 @@ namespace nHydrate.Dsl
 
         public string ModifiedDatePascalName => StringHelper.DatabaseNameToPascalCase(this.ModifiedDateColumnName);
 
-        public string TimestampPascalName => StringHelper.DatabaseNameToPascalCase(this.TimestampColumnName);
+        public string ConcurrencyCheckPascalName => StringHelper.DatabaseNameToPascalCase(this.ConcurrencyCheckColumnName);
 
         public List<string> RemovedTables { get; }
         public List<string> RemovedViews { get; }

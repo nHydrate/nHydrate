@@ -126,10 +126,10 @@
             <xsd:documentation>Determines the name of the modified by field</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: TimestampColumnName -->
-        <xsd:attribute name="timestampColumnName" type="xsd:string" >
+        <!-- Property: ConcurrencyCheckColumnName -->
+        <xsd:attribute name="concurrencyCheckColumnName" type="xsd:string" >
           <xsd:annotation>
-            <xsd:documentation>Determines the name of the timestamp column</xsd:documentation>
+            <xsd:documentation>Determines the name of the column used for optimistic concurrency</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
         <!-- Property: GrantUser -->

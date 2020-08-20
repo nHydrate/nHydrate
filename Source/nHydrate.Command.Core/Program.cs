@@ -1,3 +1,5 @@
+using nHydrate.Generator.Common;
+using nHydrate.Generator.Common.GeneratorFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +11,10 @@ namespace nHydrate.Command.Core
     {
         private const string ModelKey = "model";
         private const string OutputKey = "output";
+        private const string GeneratorsKey = "generators";
 
         /*
-            /model:C:\code\nHydrateTestAug\ModelProject\Model1.nhydrate /output:C:\code\nHydrateTestAug
+            /model:C:\code\nHydrateTestAug\ConsoleApp1\Model1.nhydrate /output:C:\code\nHydrateTestAug /generators:nHydrate.Generator.EFCodeFirstNetCore.EFCodeFirstNetCoreProjectGenerator,nHydrate.Generator.PostgresInstaller.PostgresDatabaseProjectGenerator,nHydrate.Generator.SQLInstaller.Core.DatabaseProjectGenerator
         */
 
         static int Main(string[] args)
@@ -22,13 +25,17 @@ namespace nHydrate.Command.Core
                 return ShowError("The model is required.");
             if (!commandParams.ContainsKey(OutputKey))
                 return ShowError("The output folder is required.");
+            if (!commandParams.ContainsKey(GeneratorsKey))
+                return ShowError("The generators are required.");
 
             var modelFile = commandParams[ModelKey];
             var output = commandParams[OutputKey];
+            var generators = commandParams[GeneratorsKey].Split(",", StringSplitOptions.RemoveEmptyEntries);
 
+            nHydrate.Generator.Common.Models.ModelRoot model = null;
             try
             {
-                var obj = ModelHelper.CreatePOCOModel(modelFile);
+                model = ModelHelper.CreatePOCOModel(modelFile);
             }
             catch (ModelException ex)
             {
@@ -39,6 +46,34 @@ namespace nHydrate.Command.Core
             {
                 Console.WriteLine("Unknown error.");
                 return 1;
+            }
+
+            //Generate
+            if (model != null)
+            {
+                var genHelper = new nHydrate.Command.Core.GeneratorHelper(output);
+
+                var genList = new List<nHydrateGeneratorProject>();
+                var genProject = new nHydrateGeneratorProject();
+                genList.Add(genProject);
+                model.SetKey(model.Id.ToString());
+                model.GeneratorProject = genProject;
+                genProject.Model = model;
+                genProject.FileName = modelFile + ".generating";
+                var document = new System.Xml.XmlDocument();
+                document.LoadXml("<modelRoot guid=\"" + model.Id + "\" type=\"nHydrate.Generator.nHydrateGeneratorProject\" assembly=\"nHydrate.Generator.dll\"><ModelRoot></ModelRoot></modelRoot>");
+                ((nHydrate.Generator.Common.GeneratorFramework.IXMLable)model).XmlAppend(document.DocumentElement.ChildNodes[0]);
+                System.IO.File.WriteAllText(genProject.FileName, document.ToIndentedString());
+
+                var allgenerators = genHelper.GetProjectGenerators(genProject);
+
+                var excludeList = allgenerators.Where(x => !generators.Contains(x.FullName)).ToList();
+
+                foreach (var item in genList)
+                {
+                    genHelper.GenerateAll(item, excludeList);
+                }
+            
             }
 
             return 0;

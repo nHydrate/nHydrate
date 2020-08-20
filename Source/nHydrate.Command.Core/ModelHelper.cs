@@ -84,7 +84,7 @@ namespace nHydrate.Command.Core
                 root.Database.CreatedDateColumnName = diskModel.ModelProperties.CreatedDateColumnName;
                 root.Database.ModifiedByColumnName = diskModel.ModelProperties.ModifiedByColumnName;
                 root.Database.ModifiedDateColumnName = diskModel.ModelProperties.ModifiedDateColumnName;
-                root.Database.TimestampColumnName = diskModel.ModelProperties.TimestampColumnName;
+                root.Database.ConcurrencyCheckColumnName = diskModel.ModelProperties.ConcurrencyCheckColumnName;
                 root.Database.GrantExecUser = diskModel.ModelProperties.GrantExecUser;
 
                 #region Load the entities
@@ -96,7 +96,7 @@ namespace nHydrate.Command.Core
                     newTable.ResetId(HashString(newTable.Key));
                     newTable.AllowCreateAudit = entity.allowcreateaudit.ToBool();
                     newTable.AllowModifiedAudit = entity.allowmodifyaudit.ToBool();
-                    newTable.AllowTimestamp = entity.allowtimestamp.ToBool();
+                    newTable.AllowConcurrencyCheck = entity.allowtimestamp.ToBool();
                     newTable.AssociativeTable = entity.isassociative.ToBool();
                     newTable.CodeFacade = entity.codefacade;
                     newTable.DBSchema = entity.schema;
@@ -377,6 +377,20 @@ namespace nHydrate.Command.Core
                 default:
                     return false;
             }
+        }
+
+        public static string ToIndentedString(this System.Xml.XmlDocument doc)
+        {
+            var stringWriter = new System.IO.StringWriter(new System.Text.StringBuilder());
+            var xmlTextWriter = new System.Xml.XmlTextWriter(stringWriter)
+            {
+                Formatting = System.Xml.Formatting.Indented,
+                IndentChar = '\t'
+            };
+            doc.Save(xmlTextWriter);
+            var t = stringWriter.ToString();
+            t = t.Replace(@" encoding=""utf-16""", string.Empty);
+            return t;
         }
     }
 }

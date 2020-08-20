@@ -31,13 +31,13 @@ namespace nHydrate.Dsl.Custom
                 diskModel.ModelProperties.ProjectName = model.ProjectName;
                 diskModel.ModelProperties.UseUTCTime = model.UseUTCTime;
                 diskModel.ModelProperties.Version = model.Version;
-                //diskModel.ModelProperties.Id = model.Id.ToString();
+                diskModel.ModelProperties.Id = model.Id.ToString();
                 diskModel.ModelProperties.TenantColumnName = model.TenantColumnName;
                 diskModel.ModelProperties.CreatedByColumnName = model.CreatedByColumnName;
                 diskModel.ModelProperties.CreatedDateColumnName = model.CreatedDateColumnName;
                 diskModel.ModelProperties.ModifiedByColumnName = model.ModifiedByColumnName;
                 diskModel.ModelProperties.ModifiedDateColumnName = model.ModifiedDateColumnName;
-                diskModel.ModelProperties.TimestampColumnName = model.TimestampColumnName;
+                diskModel.ModelProperties.ConcurrencyCheckColumnName = model.ConcurrencyCheckColumnName;
                 diskModel.ModelProperties.GrantExecUser = model.GrantUser;
 
                 var folderName = modelName.Replace(".nhydrate", ".model");
@@ -298,7 +298,7 @@ namespace nHydrate.Dsl.Custom
                     model.CreatedDateColumnName = diskModel.ModelProperties.CreatedDateColumnName;
                     model.ModifiedByColumnName = diskModel.ModelProperties.ModifiedByColumnName;
                     model.ModifiedDateColumnName = diskModel.ModelProperties.ModifiedDateColumnName;
-                    model.TimestampColumnName = diskModel.ModelProperties.TimestampColumnName;
+                    model.ConcurrencyCheckColumnName = diskModel.ModelProperties.ConcurrencyCheckColumnName;
                     model.GrantUser = diskModel.ModelProperties.GrantExecUser;
 
                     nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Views, model, diskModel); //must come before entities

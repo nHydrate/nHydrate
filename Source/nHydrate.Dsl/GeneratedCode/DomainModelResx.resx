@@ -241,17 +241,17 @@
     <value>Code</value>
     <comment>Category for DomainProperty &apos;ModifiedByColumnName&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.nHydrateModel/TimestampColumnName.Description" xml:space="preserve">
-    <value>Determines the name of the timestamp column</value>
-    <comment>Description for DomainProperty &apos;TimestampColumnName&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
+  <data name="nHydrate.Dsl.nHydrateModel/ConcurrencyCheckColumnName.Description" xml:space="preserve">
+    <value>Determines the name of the column used for optimistic concurrency</value>
+    <comment>Description for DomainProperty &apos;ConcurrencyCheckColumnName&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.nHydrateModel/TimestampColumnName.DisplayName" xml:space="preserve">
-    <value>Timestamp Column Name</value>
-    <comment>DisplayName for DomainProperty &apos;TimestampColumnName&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
+  <data name="nHydrate.Dsl.nHydrateModel/ConcurrencyCheckColumnName.DisplayName" xml:space="preserve">
+    <value>Concurrency Check Column Name</value>
+    <comment>DisplayName for DomainProperty &apos;ConcurrencyCheckColumnName&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.nHydrateModel/TimestampColumnName.Category" xml:space="preserve">
+  <data name="nHydrate.Dsl.nHydrateModel/ConcurrencyCheckColumnName.Category" xml:space="preserve">
     <value>Code</value>
-    <comment>Category for DomainProperty &apos;TimestampColumnName&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
+    <comment>Category for DomainProperty &apos;ConcurrencyCheckColumnName&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
   <data name="nHydrate.Dsl.nHydrateModel/GrantUser.Description" xml:space="preserve">
     <value>Determines the database user to grant access permissions to for database objects</value>

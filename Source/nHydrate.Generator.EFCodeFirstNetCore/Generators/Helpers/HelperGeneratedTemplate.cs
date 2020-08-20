@@ -457,7 +457,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine("		DateTime? ModifiedDate { get; }");
                 sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		byte[] TimeStamp { get; }");
+                sb.AppendLine("		int Concurrency { get; }");
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
@@ -682,15 +682,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine();
 
                 sb.AppendLine("	/// <summary>");
-                sb.AppendLine("	/// Attribute used to decorate an Audit CreatedDate field");
-                sb.AppendLine("	/// </summary>");
-                sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
-                sb.AppendLine("	public partial class AuditCreatedDateAttribute : System.Attribute");
-                sb.AppendLine("	{");
-                sb.AppendLine("	}");
-                sb.AppendLine();
-
-                sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// Attribute used to decorate an Audit ModifiedBy field");
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
@@ -700,12 +691,35 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine();
 
                 sb.AppendLine("	/// <summary>");
+                sb.AppendLine("	/// Attribute used to decorate an Audit CreatedDate field");
+                sb.AppendLine("	/// </summary>");
+                sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
+                sb.AppendLine("    public partial class AuditCreatedDateAttribute : System.Attribute");
+                sb.AppendLine("    {");
+                sb.AppendLine("        public AuditCreatedDateAttribute() : base() { }");
+                sb.AppendLine("        public AuditCreatedDateAttribute(bool utc) : this()");
+                sb.AppendLine("        {");
+                sb.AppendLine("            this.IsUTC = utc;");
+                sb.AppendLine("        }");
+                sb.AppendLine();
+                sb.AppendLine("        public bool IsUTC { get; }");
+                sb.AppendLine("    }");
+                sb.AppendLine();
+
+                sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// Attribute used to decorate an Audit ModifiedDate field");
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine("	[System.AttributeUsage(System.AttributeTargets.Property)]");
-                sb.AppendLine("	public partial class AuditModifiedDateAttribute : System.Attribute");
-                sb.AppendLine("	{");
-                sb.AppendLine("	}");
+                sb.AppendLine("    public partial class AuditModifiedDateAttribute : System.Attribute");
+                sb.AppendLine("    {");
+                sb.AppendLine("        public AuditModifiedDateAttribute() : base() { }");
+                sb.AppendLine("        public AuditModifiedDateAttribute(bool utc) : this()");
+                sb.AppendLine("        {");
+                sb.AppendLine("            this.IsUTC = utc;");
+                sb.AppendLine("        }");
+                sb.AppendLine();
+                sb.AppendLine("        public bool IsUTC { get; }");
+                sb.AppendLine("    }");
                 #endregion
 
                 #region HasNoKeyAttribute

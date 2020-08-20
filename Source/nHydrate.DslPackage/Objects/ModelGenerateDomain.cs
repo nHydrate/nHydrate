@@ -330,7 +330,7 @@ namespace nHydrate.DslPackage.Objects
                 root.Database.CreatedDateColumnName = model.CreatedDateColumnName;
                 root.Database.ModifiedByColumnName = model.ModifiedByColumnName;
                 root.Database.ModifiedDateColumnName = model.ModifiedDateColumnName;
-                root.Database.TimestampColumnName = model.TimestampColumnName;
+                root.Database.ConcurrencyCheckColumnName = model.ConcurrencyCheckColumnName;
                 root.Database.GrantExecUser = model.GrantUser;
 
                 #region Load the entities
@@ -342,7 +342,7 @@ namespace nHydrate.DslPackage.Objects
                     newTable.ResetId(HashString(newTable.Key));
                     newTable.AllowCreateAudit = entity.AllowCreateAudit;
                     newTable.AllowModifiedAudit = entity.AllowModifyAudit;
-                    newTable.AllowTimestamp = entity.AllowTimestamp;
+                    newTable.AllowConcurrencyCheck = entity.AllowTimestamp;
                     newTable.AssociativeTable = entity.IsAssociative;
                     newTable.CodeFacade = entity.CodeFacade;
                     newTable.DBSchema = entity.Schema;

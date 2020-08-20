@@ -38,7 +38,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
             {
                 var parentTable = column.ParentTable;
                 output.AppendFormat("\t[{2}].[{0}].[{1}]", GetTableDatabaseName(model, parentTable), column.DatabaseName, parentTable.GetPostgresSchema());
-                if ((index < columnList.Count - 1) || (table.AllowCreateAudit) || (table.AllowModifiedAudit) || (table.AllowTimestamp))
+                if ((index < columnList.Count - 1) || (table.AllowCreateAudit) || (table.AllowModifiedAudit) || (table.AllowConcurrencyCheck))
                     output.Append(",");
                 output.AppendLine();
                 index++;
@@ -50,7 +50,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
                 output.AppendLine();
 
                 output.AppendFormat("	[{2}].[{0}].[{1}]", GetTableDatabaseName(model, table), model.Database.CreatedDateColumnName, table.GetPostgresSchema());
-                if ((table.AllowModifiedAudit) || (table.AllowTimestamp))
+                if ((table.AllowModifiedAudit) || (table.AllowConcurrencyCheck))
                     output.Append(",");
                 output.AppendLine();
             }
@@ -61,14 +61,14 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
                 output.AppendLine();
 
                 output.AppendFormat("	[{2}].[{0}].[{1}]", GetTableDatabaseName(model, table), model.Database.ModifiedDateColumnName, table.GetPostgresSchema());
-                if (table.AllowTimestamp)
+                if (table.AllowConcurrencyCheck)
                     output.Append(",");
                 output.AppendLine();
             }
 
-            if (table.AllowTimestamp)
+            if (table.AllowConcurrencyCheck)
             {
-                output.AppendFormat("	[{2}].[{0}].[{1}]", GetTableDatabaseName(model, table.GetAbsoluteBaseTable()), model.Database.TimestampColumnName, table.GetAbsoluteBaseTable().GetPostgresSchema());
+                output.AppendFormat("	[{2}].[{0}].[{1}]", GetTableDatabaseName(model, table.GetAbsoluteBaseTable()), model.Database.ConcurrencyCheckColumnName, table.GetAbsoluteBaseTable().GetPostgresSchema());
                 output.AppendLine();
             }
 
@@ -129,12 +129,12 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
             }
         }
 
-        public static void AppendTimestampAudit(Table table, ModelRoot model, StringBuilder sb)
+        public static void AppendConcurrencyAudit(Table table, ModelRoot model, StringBuilder sb)
         {
             try
             {
-                sb.AppendLine("--APPEND AUDIT TRAIL TIMESTAMP FOR TABLE [" + table.DatabaseName + "]");
-                sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"" + model.Database.TimestampColumnName + "\" timestamp NOT NULL;");
+                sb.AppendLine("--APPEND AUDIT TRAIL CONCURRENCY FOR TABLE [" + table.DatabaseName + "]");
+                sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"" + model.Database.ConcurrencyCheckColumnName + "\" int NOT NULL;");
                 sb.AppendLine("--GO");
                 sb.AppendLine();
             }
@@ -168,8 +168,8 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
 
         public static void DropTimestampAudit(Table table, ModelRoot model, StringBuilder sb)
         {
-            sb.AppendLine($"--REMOVE AUDIT TRAIL TIMESTAMP FOR TABLE [{table.DatabaseName}]");
-            sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.TimestampColumnName}\";");
+            sb.AppendLine($"--REMOVE AUDIT TRAIL CONCURRENCY FOR TABLE [{table.DatabaseName}]");
+            sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.ConcurrencyCheckColumnName}\";");
             sb.AppendLine("--GO");
             sb.AppendLine();
         }

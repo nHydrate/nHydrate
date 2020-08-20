@@ -66,8 +66,8 @@ namespace nHydrate.Dsl
                     auditFieldList.Add(this.ModifiedByColumnName);
                 if (!auditFieldList.Contains(this.ModifiedDateColumnName))
                     auditFieldList.Add(this.ModifiedDateColumnName);
-                if (!auditFieldList.Contains(this.TimestampColumnName))
-                    auditFieldList.Add(this.TimestampColumnName);
+                if (!auditFieldList.Contains(this.ConcurrencyCheckColumnName))
+                    auditFieldList.Add(this.ConcurrencyCheckColumnName);
 
                 if (auditFieldList.Count != 5)
                 {
@@ -83,8 +83,8 @@ namespace nHydrate.Dsl
                         auditFieldList.Add(this.ModifiedByPascalName);
                     if (!auditFieldList.Contains(this.ModifiedDatePascalName))
                         auditFieldList.Add(this.ModifiedDatePascalName);
-                    if (!auditFieldList.Contains(this.TimestampPascalName))
-                        auditFieldList.Add(this.TimestampPascalName);
+                    if (!auditFieldList.Contains(this.ConcurrencyCheckPascalName))
+                        auditFieldList.Add(this.ConcurrencyCheckPascalName);
 
                     if (auditFieldList.Count != 5)
                         context.LogError(ValidationHelper.ErrorTextAuditFieldsNotUnique, string.Empty, this);

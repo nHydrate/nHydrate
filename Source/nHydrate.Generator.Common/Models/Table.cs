@@ -24,7 +24,7 @@ namespace nHydrate.Generator.Common.Models
         protected const bool _def_hasHistory = false;
         protected const bool _def_modifiedAudit = true;
         protected const bool _def_createAudit = true;
-        protected const bool _def_timestamp = true;
+        protected const bool _def_concurrency = true;
         protected const TypedTableConstants _def_isTypeTable = TypedTableConstants.None;
         protected const bool _def_fullIndexSearch = false;
         protected const bool _def_immutable = false;
@@ -122,7 +122,7 @@ namespace nHydrate.Generator.Common.Models
 
         public bool AllowCreateAudit { get; set; } = _def_createAudit;
 
-        public bool AllowTimestamp { get; set; } = _def_timestamp;
+        public bool AllowConcurrencyCheck { get; set; } = _def_concurrency;
 
         public bool FullIndexSearch { get; set; } = _def_fullIndexSearch;
 
@@ -355,7 +355,7 @@ namespace nHydrate.Generator.Common.Models
             node.AddAttribute("modifiedAudit", this.AllowModifiedAudit, _def_modifiedAudit);
             node.AddAttribute("typedTable", this.TypedTable.ToString("d"), _def_isTypeTable.ToString("d"));
             node.AddAttribute("createAudit", this.AllowCreateAudit, _def_createAudit);
-            node.AddAttribute("timestamp", this.AllowTimestamp, _def_timestamp);
+            node.AddAttribute("timestamp", this.AllowConcurrencyCheck, _def_concurrency);
             node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived, _def_generatesDoubleDerived);
             node.AddAttribute("id", this.Id);
 
@@ -408,7 +408,7 @@ namespace nHydrate.Generator.Common.Models
             this.AllowModifiedAudit = XmlHelper.GetAttributeValue(node, "modifiedAudit", AllowModifiedAudit);
             this.AllowCreateAudit = XmlHelper.GetAttributeValue(node, "createAudit", _def_createAudit);
             this.TypedTable = (TypedTableConstants)XmlHelper.GetAttributeValue(node, "typedTable", int.Parse(TypedTable.ToString("d")));
-            this.AllowTimestamp = XmlHelper.GetAttributeValue(node, "timestamp", AllowTimestamp);
+            this.AllowConcurrencyCheck = XmlHelper.GetAttributeValue(node, "timestamp", AllowConcurrencyCheck);
             this.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(node, "generatesDoubleDerived", _def_generatesDoubleDerived);
         }
 

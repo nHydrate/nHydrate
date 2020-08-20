@@ -380,9 +380,9 @@ namespace nHydrate.Generator.SQLInstaller
                         sb.AppendLine("GO");
                     }
 
-                    if (modelOld.Database.TimestampColumnName != modelNew.Database.TimestampColumnName)
+                    if (modelOld.Database.ConcurrencyCheckColumnName != modelNew.Database.ConcurrencyCheckColumnName)
                     {
-                        sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.TimestampColumnName, modelNew.Database.TimestampColumnName));
+                        sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ConcurrencyCheckColumnName, modelNew.Database.ConcurrencyCheckColumnName));
                         sb.AppendLine("GO");
                     }
 
@@ -567,15 +567,15 @@ namespace nHydrate.Generator.SQLInstaller
                         Globals.AppendCreateAudit(newT, modelNew, sb);
                     if (!oldT.AllowModifiedAudit && newT.AllowModifiedAudit)
                         Globals.AppendModifiedAudit(newT, modelNew, sb);
-                    if (!oldT.AllowTimestamp && newT.AllowTimestamp)
-                        Globals.AppendTimestampAudit(newT, modelNew, sb);
+                    if (!oldT.AllowConcurrencyCheck && newT.AllowConcurrencyCheck)
+                        Globals.AppendConcurrencyCheckAudit(newT, modelNew, sb);
 
                     if (oldT.AllowCreateAudit && !newT.AllowCreateAudit)
                         Globals.DropCreateAudit(newT, modelNew, sb);
                     if (oldT.AllowModifiedAudit && !newT.AllowModifiedAudit)
                         Globals.DropModifiedAudit(newT, modelNew, sb);
-                    if (oldT.AllowTimestamp && !newT.AllowTimestamp)
-                        Globals.DropTimestampAudit(newT, modelNew, sb);
+                    if (oldT.AllowConcurrencyCheck && !newT.AllowConcurrencyCheck)
+                        Globals.DropConcurrencyAudit(newT, modelNew, sb);
                 }
             }
 

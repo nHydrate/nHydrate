@@ -132,7 +132,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             if (!_item.GeneratesDoubleDerived)
                 sb.Append(", System.ICloneable");
 
-            if (_item.AllowCreateAudit || _item.AllowModifiedAudit || _item.AllowTimestamp)
+            if (_item.AllowCreateAudit || _item.AllowModifiedAudit || _item.AllowConcurrencyCheck)
                 sb.Append($", {this.GetLocalNamespace()}.IAuditable, {this.GetLocalNamespace()}.IAuditableSet");
 
             //If we can add this item then implement the ICreatable interface
@@ -530,10 +530,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             //Audit Fields
             if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedByPascalName, "string", "The audit field for the 'Created By' parameter.", "public", "AuditCreatedBy");
-            if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedDatePascalName, "DateTime", "The audit field for the 'Created Date' parameter.", "public", "AuditCreatedDate");
+            if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedDatePascalName, "DateTime", "The audit field for the 'Created Date' parameter.", "public", "AuditCreatedDate(utc: " + (_model.UseUTCTime ? "true" : "false") + ")");
             if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedByPascalName, "string", "The audit field for the 'Modified By' parameter.", "public", "AuditModifiedBy");
-            if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedDatePascalName, "DateTime", "The audit field for the 'Modified Date' parameter.", "public", "AuditModifiedDate");
-            if (_item.AllowTimestamp) GenerateAuditField(_model.Database.TimestampPascalName, "byte[]", "The audit field for the 'Timestamp' parameter.", "public", "AuditTimestamp");
+            if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedDatePascalName, "DateTime", "The audit field for the 'Modified Date' parameter.", "public", "AuditModifiedDate(utc: " + (_model.UseUTCTime ? "true" : "false") + ")");
+            if (_item.AllowConcurrencyCheck) GenerateAuditField(_model.Database.ConcurrencyCheckPascalName, "int", "The audit field for the 'Timestamp' parameter.", "public", "AuditTimestamp", true);
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
@@ -666,7 +666,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             if (_item.AllowCreateAudit) this.AppendPropertyEventDeclarations(_model.Database.CreatedDatePascalName, "DateTime");
             if (_item.AllowModifiedAudit) this.AppendPropertyEventDeclarations(_model.Database.ModifiedByPascalName, "string");
             if (_item.AllowModifiedAudit) this.AppendPropertyEventDeclarations(_model.Database.ModifiedDatePascalName, "DateTime");
-            if (_item.AllowTimestamp) this.AppendPropertyEventDeclarations(_model.Database.TimestampPascalName, "byte[]");
+            if (_item.AllowConcurrencyCheck) this.AppendPropertyEventDeclarations(_model.Database.ConcurrencyCheckPascalName, "int");
 
             sb.AppendLine();
             sb.AppendLine("		#endregion");
@@ -1185,7 +1185,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         private void AppendIAuditable()
         {
-            if (!_item.AllowCreateAudit && !_item.AllowModifiedAudit && !_item.AllowTimestamp)
+            if (!_item.AllowCreateAudit && !_item.AllowModifiedAudit && !_item.AllowConcurrencyCheck)
                 return;
 
             sb.AppendLine("		#region Auditing");
@@ -1244,7 +1244,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine();
             sb.AppendLine("		bool " + this.GetLocalNamespace() + ".IAuditable.IsTimestampAuditImplemented");
             sb.AppendLine("		{");
-            sb.AppendLine("			get { return " + (_item.AllowTimestamp ? "true" : "false") + "; }");
+            sb.AppendLine("			get { return " + (_item.AllowConcurrencyCheck ? "true" : "false") + "; }");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		string " + this.GetLocalNamespace() + ".IAuditable.ModifiedBy");
@@ -1265,12 +1265,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		byte[] " + this.GetLocalNamespace() + ".IAuditable.TimeStamp");
+            sb.AppendLine("		int " + this.GetLocalNamespace() + ".IAuditable.Concurrency");
             sb.AppendLine("		{");
-            if (_item.AllowTimestamp)
-                sb.AppendLine("			get { return this." + _model.Database.TimestampPascalName + "; }");
+            if (_item.AllowConcurrencyCheck)
+                sb.AppendLine("			get { return this." + _model.Database.ConcurrencyCheckPascalName + "; }");
             else
-                sb.AppendLine("			get { return new byte[0]; }");
+                sb.AppendLine("			get { return 0; }");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -1322,10 +1322,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             if (!string.IsNullOrEmpty(attributeType))
                 sb.AppendLine($"		[{attributeType}]");
 
+            var virtualText = " virtual ";
             if (isConcurrency)
+            {
                 sb.AppendLine("		[System.ComponentModel.DataAnnotations.ConcurrencyCheck()]");
+                virtualText = " "; //The customer attribute does not work with proxy object
+            }
 
-            sb.AppendLine("		" + propertyScope + " virtual " + codeType + " " + columnName);
+            sb.AppendLine($"		{propertyScope}{virtualText}{codeType} {columnName}");
             sb.AppendLine("		{");
             sb.AppendLine("			get { return _" + StringHelper.DatabaseNameToCamelCase(columnName) + "; }");
             if (propertyScope == "public")
@@ -1397,9 +1401,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("				case \"" + _model.Database.ModifiedDatePascalName + "\": return \"" + _model.Database.ModifiedDateColumnName + "\";");
             }
 
-            if (_item.AllowTimestamp)
+            if (_item.AllowConcurrencyCheck)
             {
-                sb.AppendLine("				case \"" + _model.Database.TimestampPascalName + "\": return \"" + _model.Database.TimestampColumnName + "\";");
+                sb.AppendLine("				case \"" + _model.Database.ConcurrencyCheckPascalName + "\": return \"" + _model.Database.ConcurrencyCheckColumnName + "\";");
             }
 
             sb.AppendLine("			}");

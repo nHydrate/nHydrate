@@ -60,26 +60,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseEmb
             }
         }
 
-        private string GetTimestampTrigger()
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine("CREATE OR REPLACE FUNCTION process_timestamp_audit() RETURNS TRIGGER AS $ui_audit$");
-            sb.AppendLine("   DECLARE");
-            sb.AppendLine("     audit_table_name text := TG_TABLE_NAME || '_audit';");
-            sb.AppendLine("   BEGIN");
-            sb.AppendLine("       IF (TG_OP = 'UPDATE') THEN");
-            sb.AppendLine("		NEW.\"Timestamp\" = TRUNC( random() * 10000000);");
-            sb.AppendLine("           RETURN NEW;");
-            sb.AppendLine("       ELSIF (TG_OP = 'INSERT') THEN");
-            sb.AppendLine("           NEW.\"Timestamp\" = TRUNC( random() * 10000000);");
-            sb.AppendLine("           RETURN NEW;");
-            sb.AppendLine("       END IF;");
-            sb.AppendLine("   END;");
-            sb.AppendLine("$ui_audit$ LANGUAGE plpgsql;");
-            sb.AppendLine();
-            return sb.ToString();
-        }
-
         #region gen Folder 1-6 Files
 
         private void GenerateFolder1()
@@ -97,12 +77,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseEmb
             var folderAlways = Path.Combine(foldername, "Always");
             fileName = Path.Combine(folderAlways, "ReadMe.txt");
             eventArgs = new ProjectItemGeneratedEventArgs(fileName, "Add scripts that will always run first in this folder. Make them embedded resources and they will be run in alphabetical order.", ProjectName, this, true);
-            OnProjectItemGenerated(this, eventArgs);
-
-            //Timestamp trigger in "Always"
-            fileName = Path.Combine(folderAlways, "Setup.sql");
-            eventArgs = new ProjectItemGeneratedEventArgs(fileName, GetTimestampTrigger(), ProjectName, this, true);
-            eventArgs.Properties.Add("BuildAction", 3);
             OnProjectItemGenerated(this, eventArgs);
 
             //New Database

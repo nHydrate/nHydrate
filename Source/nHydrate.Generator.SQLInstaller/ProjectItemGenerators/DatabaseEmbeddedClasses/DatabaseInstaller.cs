@@ -151,8 +151,10 @@ namespace PROJECTNAMESPACE
                 //Setup trace if need be. If showing SQL then auto trace on
                 if (commandParams.ContainsKey(PARAMKEYS_TRACE) || setup.ShowSql)
                 {
+#if NETCOREAPP3_1
                     var trc = new System.Diagnostics.ConsoleTraceListener();
                     System.Diagnostics.Trace.Listeners.Add(trc);
+#endif
                     paramUICount++;
                 }
 
@@ -401,9 +403,9 @@ namespace PROJECTNAMESPACE
             return UpgradeInstaller.GetScript(setup);
         }
 
-        #endregion
+#endregion
 
-        #region Uninstall
+#region Uninstall
 
         /// <summary>
         /// 
@@ -414,9 +416,9 @@ namespace PROJECTNAMESPACE
             base.Uninstall(savedState);
         }
 
-        #endregion
+#endregion
 
-        #region NeedsUpdate
+#region NeedsUpdate
 
         /// <summary>
         /// Determines if the specified database needs to be upgraded
@@ -451,9 +453,9 @@ namespace PROJECTNAMESPACE
             return UpgradeInstaller.IsVersioned(connectionString);
         }
 
-        #endregion
+#endregion
 
-        #region Helpers
+#region Helpers
 
         private bool GetSetting(Dictionary<string, string> commandParams, string[] keys, bool defaultValue)
         {
@@ -516,9 +518,9 @@ namespace PROJECTNAMESPACE
             return retVal;
         }
 
-        #endregion
+#endregion
 
-        #region ShowHelp
+#region ShowHelp
 
         /// <summary />
         public static void ShowHelp()
@@ -571,7 +573,7 @@ namespace PROJECTNAMESPACE
             Console.WriteLine(sb.ToString());
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// The action to take
@@ -589,7 +591,7 @@ namespace PROJECTNAMESPACE
         Upgrade
     }
 
-    #region InstallSetup
+#region InstallSetup
 
     /// <summary />
     public class InstallSetup
@@ -680,7 +682,7 @@ namespace PROJECTNAMESPACE
 
     }
 
-    #endregion
+#endregion
 
 }
 #pragma warning restore 0168

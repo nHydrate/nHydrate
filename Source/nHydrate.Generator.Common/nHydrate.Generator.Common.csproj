@@ -165,6 +165,7 @@
     <Compile Include="Exceptions\LicenseException.cs" />
     <Compile Include="GenerationHelper.cs" />
     <Compile Include="GeneratorFramework\AddinProperties.cs" />
+    <Compile Include="GeneratorFramework\GeneratorHelper.cs" />
     <Compile Include="GeneratorFramework\INamedObject.cs" />
     <Compile Include="GeneratorFramework\IModelObject.cs" />
     <Compile Include="GeneratorFramework\GeneratorProjectAttribute.cs" />

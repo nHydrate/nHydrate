@@ -578,7 +578,7 @@ namespace nHydrate.DslPackage.Forms
                     auditFields.Add(new SpecialField { Name = _model.CreatedDateColumnName, Type = SpecialFieldTypeConstants.CreatedDate });
                     auditFields.Add(new SpecialField { Name = _model.ModifiedByColumnName, Type = SpecialFieldTypeConstants.ModifiedBy });
                     auditFields.Add(new SpecialField { Name = _model.ModifiedDateColumnName, Type = SpecialFieldTypeConstants.ModifiedDate });
-                    auditFields.Add(new SpecialField { Name = _model.TimestampColumnName, Type = SpecialFieldTypeConstants.Timestamp });
+                    auditFields.Add(new SpecialField { Name = _model.ConcurrencyCheckColumnName, Type = SpecialFieldTypeConstants.Timestamp });
                     auditFields.Add(new SpecialField { Name = _model.TenantColumnName, Type = SpecialFieldTypeConstants.Tenant });
 
                     var pkey = ProgressHelper.ProgressingStarted("Importing...", true);
@@ -711,7 +711,7 @@ namespace nHydrate.DslPackage.Forms
                 {
                     AllowCreateAudit = entity.Columns.Any(x => x.ColumnName == _model.CreatedByColumnName),
                     AllowModifyAudit = entity.Columns.Any(x => x.ColumnName == _model.ModifiedByColumnName),
-                    AllowTimestamp = entity.Columns.Any(x => x.ColumnName == _model.TimestampColumnName),
+                    AllowTimestamp = entity.Columns.Any(x => x.ColumnName == _model.ConcurrencyCheckColumnName),
                     IsTenant = entity.Columns.Any(x => x.ColumnName == _model.TenantColumnName),
                     Name = entity.TableName,
                     Schema = entity.SchemaName,
@@ -985,7 +985,7 @@ namespace nHydrate.DslPackage.Forms
             _auditFields.Add(new SpecialField { Name = _model.CreatedDateColumnName, Type = SpecialFieldTypeConstants.CreatedDate });
             _auditFields.Add(new SpecialField { Name = _model.ModifiedByColumnName, Type = SpecialFieldTypeConstants.ModifiedBy });
             _auditFields.Add(new SpecialField { Name = _model.ModifiedDateColumnName, Type = SpecialFieldTypeConstants.ModifiedDate });
-            _auditFields.Add(new SpecialField { Name = _model.TimestampColumnName, Type = SpecialFieldTypeConstants.Timestamp });
+            _auditFields.Add(new SpecialField { Name = _model.ConcurrencyCheckColumnName, Type = SpecialFieldTypeConstants.Timestamp });
             _auditFields.Add(new SpecialField { Name = _model.TenantColumnName, Type = SpecialFieldTypeConstants.Tenant });
 
             var F = new DBObjectDifferenceForm(oldItem, newItem);

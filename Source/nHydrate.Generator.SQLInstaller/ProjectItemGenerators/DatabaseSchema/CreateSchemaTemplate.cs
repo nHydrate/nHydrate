@@ -261,7 +261,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
-                if (table.AllowCreateAudit || table.AllowModifiedAudit || table.AllowTimestamp | table.IsTenant)
+                if (table.AllowCreateAudit || table.AllowModifiedAudit || table.AllowConcurrencyCheck | table.IsTenant)
                 {
                     var dateTimeString = "[DateTime2]";
                     if (table.AllowCreateAudit)
@@ -274,9 +274,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                         Globals.AppendModifiedAudit(table, _model, sb);
                     }
 
-                    if (table.AllowTimestamp)
+                    if (table.AllowConcurrencyCheck)
                     {
-                        Globals.AppendTimestampAudit(table, _model, sb);
+                        Globals.AppendConcurrencyCheckAudit(table, _model, sb);
                     }
 
                     if (table.IsTenant)
@@ -301,7 +301,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
-                if (!table.AllowCreateAudit || !table.AllowModifiedAudit || !table.AllowTimestamp)
+                if (!table.AllowCreateAudit || !table.AllowModifiedAudit || !table.AllowConcurrencyCheck)
                 {
                     if (!table.AllowCreateAudit)
                     {
@@ -313,9 +313,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                         Globals.DropModifiedAudit(table, _model, sb);
                     }
 
-                    if (!table.AllowTimestamp)
+                    if (!table.AllowConcurrencyCheck)
                     {
-                        Globals.DropTimestampAudit(table, _model, sb);
+                        Globals.DropConcurrencyAudit(table, _model, sb);
                     }
 
                     sb.AppendLine("GO");
