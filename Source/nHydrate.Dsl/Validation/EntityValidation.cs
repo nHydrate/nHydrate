@@ -773,7 +773,7 @@ namespace nHydrate.Dsl
                     context.LogError(string.Format(ValidationHelper.ErrorTextPreDefinedNameField, column.Name), string.Empty, this);
                 else if (name.Match(this.nHydrateModel.ModifiedDateColumnName.Replace("_", string.Empty)))
                     context.LogError(string.Format(ValidationHelper.ErrorTextPreDefinedNameField, column.Name), string.Empty, this);
-                if (name.Match(this.nHydrateModel.TimestampColumnName.Replace("_", string.Empty)))
+                if (name.Match(this.nHydrateModel.ConcurrencyCheckColumnName.Replace("_", string.Empty)))
                     context.LogError(string.Format(ValidationHelper.ErrorTextPreDefinedNameField, column.Name), string.Empty, this);
             }
 

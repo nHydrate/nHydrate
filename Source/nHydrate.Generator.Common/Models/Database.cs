@@ -14,7 +14,7 @@ namespace nHydrate.Generator.Common.Models
         protected const string _def_createdDateColumnName = "CreatedDate";
         protected const string _def_modifiedByColumnName = "ModifiedBy";
         protected const string _def_modifiedDateColumnName = "ModifiedDate";
-        protected const string _def_timestampColumnName = "TimeStamp";
+        protected const string _def_timestampColumnName = "__concurrency";
         protected const string _def_fullIndexSearchColumnName = "full_index_text";
 
         #endregion
@@ -58,7 +58,7 @@ namespace nHydrate.Generator.Common.Models
 
         public virtual string ModifiedByPascalName => this.ModifiedByColumnName;
 
-        public virtual string TimestampPascalName => this.TimestampColumnName;
+        public virtual string ConcurrencyCheckPascalName => this.ConcurrencyCheckColumnName;
 
         public virtual string CreatedDateDatabaseName => this.CreatedDateColumnName;
 
@@ -68,7 +68,7 @@ namespace nHydrate.Generator.Common.Models
 
         public virtual string ModifiedByDatabaseName => this.ModifiedByColumnName;
 
-        public virtual string TimestampDatabaseName => this.TimestampColumnName;
+        public virtual string ConcurrencyCheckDatabaseName => this.ConcurrencyCheckColumnName;
 
         public string ModifiedByColumnName { get; set; } = _def_modifiedByColumnName;
 
@@ -76,7 +76,7 @@ namespace nHydrate.Generator.Common.Models
 
         public string FullIndexSearchColumnName { get; set; } = _def_fullIndexSearchColumnName;
 
-        public string TimestampColumnName { get; set; } = _def_timestampColumnName;
+        public string ConcurrencyCheckColumnName { get; set; } = _def_timestampColumnName;
 
         public TableCollection Tables { get; }
 
@@ -136,7 +136,7 @@ namespace nHydrate.Generator.Common.Models
             XmlHelper.AddAttribute((XmlElement)node, "createdDateColumnName", CreatedDateColumnName);
             XmlHelper.AddAttribute((XmlElement)node, "modifiedByColumnName", ModifiedByColumnName);
             XmlHelper.AddAttribute((XmlElement)node, "modifiedDateColumnName", ModifiedDateColumnName);
-            XmlHelper.AddAttribute((XmlElement)node, "timestampColumnName", TimestampColumnName);
+            XmlHelper.AddAttribute((XmlElement)node, "timestampColumnName", ConcurrencyCheckColumnName);
             XmlHelper.AddAttribute((XmlElement)node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
             XmlHelper.AddAttribute((XmlElement)node, "grantExecUser", GrantExecUser);
 
@@ -170,7 +170,7 @@ namespace nHydrate.Generator.Common.Models
             CreatedDateColumnName = XmlHelper.GetAttributeValue(node, "createdDateColumName", CreatedDateColumnName);
             ModifiedByColumnName = XmlHelper.GetAttributeValue(node, "modifiedByColumnName", ModifiedByColumnName);
             ModifiedDateColumnName = XmlHelper.GetAttributeValue(node, "modifiedDateColumnName", ModifiedDateColumnName);
-            TimestampColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", TimestampColumnName);
+            ConcurrencyCheckColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", ConcurrencyCheckColumnName);
             FullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
             GrantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", GrantExecUser);
 
@@ -209,7 +209,7 @@ namespace nHydrate.Generator.Common.Models
             this.CreatedDateColumnName = XmlHelper.GetAttributeValue(node, "createdDateColumnName", _def_createdDateColumnName);
             this.ModifiedByColumnName = XmlHelper.GetAttributeValue(node, "modifiedByColumnName", _def_modifiedByColumnName);
             this.ModifiedDateColumnName = XmlHelper.GetAttributeValue(node, "modifiedDateColumnName", _def_modifiedDateColumnName);
-            this.TimestampColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", _def_timestampColumnName);
+            this.ConcurrencyCheckColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", _def_timestampColumnName);
             this.FullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", _def_fullIndexSearchColumnName);
             this.GrantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", string.Empty);
 

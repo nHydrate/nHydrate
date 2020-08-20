@@ -27,7 +27,7 @@ namespace nHydrate.ModelManagement
         public string CreatedDateColumnName { get; set; }
         public string ModifiedByColumnName { get; set; }
         public string ModifiedDateColumnName { get; set; }
-        public string TimestampColumnName { get; set; }
+        public string ConcurrencyCheckColumnName { get; set; }
         public string GrantExecUser { get; set; }
     }
 }

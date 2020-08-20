@@ -67,13 +67,13 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
             }
         }
 
-        public static void AppendTimestampAudit(Table table, ModelRoot model, StringBuilder sb)
+        public static void AppendConcurrencyCheckAudit(Table table, ModelRoot model, StringBuilder sb)
         {
             try
             {
-                sb.AppendLine("--APPEND AUDIT TRAIL TIMESTAMP FOR TABLE [" + table.DatabaseName + "]");
-                sb.AppendLine($"if exists(select * from sys.tables where name = '{table.DatabaseName}') and not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + model.Database.TimestampColumnName + "' and o.name = '" + table.DatabaseName + "')");
-                sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [" + model.Database.TimestampColumnName + "] [ROWVERSION] NOT NULL");
+                sb.AppendLine("--APPEND AUDIT TRAIL CONCURRENCY FOR TABLE [" + table.DatabaseName + "]");
+                sb.AppendLine($"if exists(select * from sys.tables where name = '{table.DatabaseName}') and not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + model.Database.ConcurrencyCheckColumnName + "' and o.name = '" + table.DatabaseName + "')");
+                sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD [" + model.Database.ConcurrencyCheckColumnName + "] [int] NOT NULL");
                 sb.AppendLine("GO");
                 sb.AppendLine();
             }
@@ -111,11 +111,11 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
             sb.AppendLine();
         }
 
-        public static void DropTimestampAudit(Table table, ModelRoot model, StringBuilder sb)
+        public static void DropConcurrencyAudit(Table table, ModelRoot model, StringBuilder sb)
         {
-            sb.AppendLine($"--REMOVE AUDIT TRAIL TIMESTAMP FOR TABLE [{table.DatabaseName}]");
-            sb.AppendLine($"if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '{model.Database.TimestampColumnName}' and o.name = '{table.DatabaseName}')");
-            sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] DROP COLUMN [{model.Database.TimestampColumnName}]");
+            sb.AppendLine($"--REMOVE AUDIT TRAIL CONCURRENCY FOR TABLE [{table.DatabaseName}]");
+            sb.AppendLine($"if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '{model.Database.ConcurrencyCheckColumnName}' and o.name = '{table.DatabaseName}')");
+            sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] DROP COLUMN [{model.Database.ConcurrencyCheckColumnName}]");
             sb.AppendLine("GO");
             sb.AppendLine();
         }

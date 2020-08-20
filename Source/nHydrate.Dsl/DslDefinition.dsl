@@ -56,7 +56,7 @@
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="eaf7be21-e695-48b8-96b3-e1ace1139aab" Description="Determines the name of the timestamp column" Name="TimestampColumnName" DisplayName="Timestamp Column Name" DefaultValue="Timestamp" Category="Code">
+        <DomainProperty Id="eaf7be21-e695-48b8-96b3-e1ace1139aab" Description="Determines the name of the column used for optimistic concurrency" Name="ConcurrencyCheckColumnName" DisplayName="Concurrency Check Column Name" DefaultValue="__concurrency" Category="Code">
           <Type>
             <ExternalTypeMoniker Name="/System/String" />
           </Type>
@@ -1001,8 +1001,8 @@
           <XmlPropertyData XmlName="modifiedByColumnName">
             <DomainPropertyMoniker Name="nHydrateModel/ModifiedByColumnName" />
           </XmlPropertyData>
-          <XmlPropertyData XmlName="timestampColumnName">
-            <DomainPropertyMoniker Name="nHydrateModel/TimestampColumnName" />
+          <XmlPropertyData XmlName="concurrencyCheckColumnName">
+            <DomainPropertyMoniker Name="nHydrateModel/ConcurrencyCheckColumnName" />
           </XmlPropertyData>
           <XmlPropertyData XmlName="grantUser">
             <DomainPropertyMoniker Name="nHydrateModel/GrantUser" />

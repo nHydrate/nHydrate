@@ -1607,10 +1607,10 @@ namespace nHydrate.Core.SQLGeneration
 
         private static void AppendTimestamp(ModelRoot model, Table table, StringBuilder sb)
         {
-            if (table.AllowTimestamp)
+            if (table.AllowConcurrencyCheck)
             {
                 sb.AppendLine(",");
-                sb.Append("\t[" + model.Database.TimestampColumnName + "] [ROWVERSION] NOT NULL");
+                sb.Append("\t[" + model.Database.ConcurrencyCheckColumnName + "] [int] NOT NULL");
             }
         }
 

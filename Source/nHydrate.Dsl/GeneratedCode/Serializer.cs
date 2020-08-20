@@ -308,20 +308,20 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// TimestampColumnName
+			// ConcurrencyCheckColumnName
 			if (!serializationContext.Result.Failed)
 			{
-				string attribTimestampColumnName = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "timestampColumnName");
-				if (attribTimestampColumnName != null)
+				string attribConcurrencyCheckColumnName = nHydrateSerializationHelper.Instance.ReadAttribute(serializationContext, element, reader, "concurrencyCheckColumnName");
+				if (attribConcurrencyCheckColumnName != null)
 				{
-					global::System.String valueOfTimestampColumnName;
-					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribTimestampColumnName, out valueOfTimestampColumnName))
+					global::System.String valueOfConcurrencyCheckColumnName;
+					if (DslModeling::SerializationUtilities.TryGetValue<global::System.String>(serializationContext, attribConcurrencyCheckColumnName, out valueOfConcurrencyCheckColumnName))
 					{
-						instanceOfnHydrateModel.TimestampColumnName = valueOfTimestampColumnName;
+						instanceOfnHydrateModel.ConcurrencyCheckColumnName = valueOfConcurrencyCheckColumnName;
 					}
 					else
 					{	// Invalid property value, ignored.
-						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "timestampColumnName", typeof(global::System.String), attribTimestampColumnName);
+						nHydrateSerializationBehaviorSerializationMessages.IgnoredPropertyValue(serializationContext, reader, "concurrencyCheckColumnName", typeof(global::System.String), attribConcurrencyCheckColumnName);
 					}
 				}
 			}
@@ -1190,15 +1190,15 @@ namespace nHydrate.Dsl
 					}
 				}
 			}
-			// TimestampColumnName
+			// ConcurrencyCheckColumnName
 			if (!serializationContext.Result.Failed)
 			{
-				global::System.String propValue = instanceOfnHydrateModel.TimestampColumnName;
+				global::System.String propValue = instanceOfnHydrateModel.ConcurrencyCheckColumnName;
 				if (!serializationContext.Result.Failed)
 				{
-					if (propValue != null && (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(propValue, "Timestamp") != 0))
+					if (propValue != null && (serializationContext.WriteOptionalPropertiesWithDefaultValue || string.CompareOrdinal(propValue, "__concurrency") != 0))
 					{	// No need to write the value out if it's the same as default value.
-						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "timestampColumnName", propValue);
+						nHydrateSerializationHelper.Instance.WriteAttributeString(serializationContext, element, writer, "concurrencyCheckColumnName", propValue);
 					}
 				}
 			}

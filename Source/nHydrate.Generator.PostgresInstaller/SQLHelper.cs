@@ -365,9 +365,9 @@ namespace nHydrate.Generator.PostgresInstaller
                             sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ModifiedDateColumnName, modelNew.Database.ModifiedDateColumnName));
                             sb.AppendLine("--GO");
                         }
-                        if (modelOld.Database.TimestampColumnName != modelNew.Database.TimestampColumnName)
+                        if (modelOld.Database.ConcurrencyCheckColumnName != modelNew.Database.ConcurrencyCheckColumnName)
                         {
-                            sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.TimestampColumnName, modelNew.Database.TimestampColumnName));
+                            sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ConcurrencyCheckColumnName, modelNew.Database.ConcurrencyCheckColumnName));
                             sb.AppendLine("--GO");
                         }
                         #endregion
@@ -486,7 +486,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
                 AppendModifiedAudit(model, table, sb);
                 AppendCreateAudit(model, table, sb);
-                AppendTimestamp(model, table, sb);
+                AppendConcurrency(model, table, sb);
                 AppendTenantField(model, table, sb);
 
                 //Emit PK
@@ -612,7 +612,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 case SqlDbType.SmallInt: return "SMALLINT";
                 case SqlDbType.SmallMoney: return "MONEY";
                 case SqlDbType.Text: return "TEXT";
-                case SqlDbType.Timestamp: return "TIMESTAMP";
+                case SqlDbType.Timestamp: return "INTEGER";
                 case SqlDbType.TinyInt: return "SMALLINT";
                 case SqlDbType.VarBinary: return "BYTEA";
                 case SqlDbType.VarChar:
@@ -846,12 +846,12 @@ namespace nHydrate.Generator.PostgresInstaller
             }
         }
 
-        private static void AppendTimestamp(ModelRoot model, Table table, StringBuilder sb)
+        private static void AppendConcurrency(ModelRoot model, Table table, StringBuilder sb)
         {
-            if (table.AllowTimestamp)
+            if (table.AllowConcurrencyCheck)
             {
                 sb.AppendLine(",");
-                sb.Append("\t\"" + model.Database.TimestampColumnName + "\" bytea NOT NULL");
+                sb.Append("\t\"" + model.Database.ConcurrencyCheckColumnName + "\" int NOT NULL");
             }
         }
 

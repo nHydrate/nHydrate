@@ -104,6 +104,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine($"	public partial class {_model.ProjectName}Entities : Microsoft.EntityFrameworkCore.DbContext, IContext");
             sb.AppendLine("	{");
 
+            sb.AppendLine("		protected static List<string> _dbGeneratedProperties = new List<string>();");
+            sb.AppendLine("     private static Dictionary<string, bool> _mapAuditDateFields = new Dictionary<string, bool>();");
+            sb.AppendLine();
+
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		public static Action<string> QueryLogger { get; set; }");
             sb.AppendLine();
@@ -358,17 +362,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 if (table.AllowModifiedAudit)
                     sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.ModifiedDateColumnName + ").IsRequired();");
 
-                if (table.AllowTimestamp)
+                if (table.AllowConcurrencyCheck)
                 {
-                    if (!String.Equals(_model.Database.TimestampDatabaseName, _model.Database.TimestampPascalName, StringComparison.OrdinalIgnoreCase))
+                    if (!String.Equals(_model.Database.ConcurrencyCheckDatabaseName, _model.Database.ConcurrencyCheckPascalName, StringComparison.OrdinalIgnoreCase))
                     {
                         sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
-                        sb.Append(".Property(d => d." + _model.Database.TimestampPascalName + ")");
-                        sb.Append(".HasColumnName(\"" + _model.Database.TimestampDatabaseName + "\")");
+                        sb.Append(".Property(d => d." + _model.Database.ConcurrencyCheckPascalName + ")");
+                        sb.Append(".HasColumnName(\"" + _model.Database.ConcurrencyCheckDatabaseName + "\")");
                         sb.AppendLine(";");
                     }
 
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.TimestampPascalName + ").HasMaxLength(8).IsRowVersion();");
+                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.ConcurrencyCheckPascalName + ").IsRequired();");
                 }
 
                 sb.AppendLine();
@@ -594,6 +598,42 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("                var tableType = eType.ClrType;");
             sb.AppendLine("                var isTenant = tableType.GetInterfaces().Any(x => x == typeof(ITenantEntity));");
             sb.AppendLine();
+
+
+
+
+
+            sb.AppendLine("                    #region Audit Fields");
+            sb.AppendLine("                    foreach (var prop in tableType.Props(false).Where(x => x.GetCustomAttributes(true).Any(z => z.GetType() != typeof(System.ComponentModel.DataAnnotations.Schema.NotMappedAttribute))))");
+            sb.AppendLine("                    {");
+            sb.AppendLine("                        //Created Date");
+            sb.AppendLine("                        var attr2 = prop.GetAttr<AuditCreatedDateAttribute>();");
+            sb.AppendLine("                        if (attr2 != null)");
+            sb.AppendLine("                        {");
+            sb.AppendLine("                            _mapAuditDateFields.Add($\"{tableType.FullName}:{typeof(AuditCreatedDateAttribute).Name}\", attr2.IsUTC);");
+            sb.AppendLine("                        }");
+            sb.AppendLine();
+            sb.AppendLine("                        //Modified Date");
+            sb.AppendLine("                        var attr4 = prop.GetAttr<AuditModifiedDateAttribute>();");
+            sb.AppendLine("                        if (attr4 != null)");
+            sb.AppendLine("                        {");
+            sb.AppendLine("                            _mapAuditDateFields.Add($\"{tableType.FullName}:{typeof(AuditModifiedDateAttribute).Name}\", attr4.IsUTC);");
+            sb.AppendLine("                        }");
+            sb.AppendLine();
+            sb.AppendLine("                        //Timestamp (default .NET attribute)");
+            sb.AppendLine("                        var attr6 = prop.GetAttr<System.ComponentModel.DataAnnotations.TimestampAttribute>();");
+            sb.AppendLine("                        if (attr6 != null)");
+            sb.AppendLine("                        {");
+            sb.AppendLine("                            throw new Exception($\"Error on '{tableType.FullName}.{prop.Name}'. The 'Timestamp' attribute has been replaced with the 'ConcurrencyCheck' attribute.\");");
+            sb.AppendLine("                        }");
+            sb.AppendLine("                    }");
+            sb.AppendLine("                    #endregion");
+            sb.AppendLine();
+
+
+
+
+
             sb.AppendLine("                #region Handle the Tenant mappings");
             sb.AppendLine("                if (isTenant)");
             sb.AppendLine("                {");
@@ -627,10 +667,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		public override int SaveChanges()");
             sb.AppendLine("		{");
 
+            sb.AppendLine("            var markedTime = System.DateTime.Now;");
+            sb.AppendLine("            var markedTimeUtc = System.DateTime.UtcNow;");
+
             sb.AppendLine("			var cancel = false;");
             sb.AppendLine("			OnBeforeSaveChanges(ref cancel);");
             sb.AppendLine("			if (cancel) return 0;");
-            sb.AppendLine("			var markedTime = " + (_model.UseUTCTime ? "System.DateTime.UtcNow" : "System.DateTime.Now") + ";");
             sb.AppendLine("			var tenantId = (this.ContextStartup as TenantContextStartup)?.TenantId;");
             sb.AppendLine();
 
@@ -641,17 +683,32 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			//Process added list");
             sb.AppendLine("			foreach (var item in addedList)");
             sb.AppendLine("			{");
+
+            sb.AppendLine("                var isCreatedUtc = false;");
+            sb.AppendLine("                if (_mapAuditDateFields.ContainsKey($\"{item.Entity}:{typeof(AuditCreatedDateAttribute).Name}\"))");
+            sb.AppendLine("                    isCreatedUtc = _mapAuditDateFields[$\"{item.Entity}:{typeof(AuditCreatedDateAttribute).Name}\"];");
+            sb.AppendLine();
+            sb.AppendLine("                var isModifiedUtc = false;");
+            sb.AppendLine("                if (_mapAuditDateFields.ContainsKey($\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"))");
+            sb.AppendLine("                    isModifiedUtc = _mapAuditDateFields[$\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"];");
+
             sb.AppendLine("				var entity = item.Entity as IAuditable;");
             sb.AppendLine("				if (entity != null)");
             sb.AppendLine("				{");
-            sb.AppendLine("					var audit = entity as IAuditableSet;");
-            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifier)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						if (audit != null) audit.CreatedBy = this.ContextStartup.Modifier;");
-            sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifier;");
-            sb.AppendLine("					}");
-            sb.AppendLine("					audit.CreatedDate = markedTime;");
-            sb.AppendLine("					audit.ModifiedDate = markedTime;");
+            //sb.AppendLine("					var audit = entity as IAuditableSet;");
+            //sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifier)");
+            //sb.AppendLine("					{");
+            //sb.AppendLine("						if (audit != null) audit.CreatedBy = this.ContextStartup.Modifier;");
+            //sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifier;");
+            //sb.AppendLine("					}");
+            //sb.AppendLine("					audit.CreatedDate = markedTime;");
+            //sb.AppendLine("					audit.ModifiedDate = markedTime;");
+            sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditCreatedByAttribute), this.ContextStartup.Modifier);");
+            sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditCreatedDateAttribute), isCreatedUtc ? markedTimeUtc : markedTime);");
+            sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedByAttribute), this.ContextStartup.Modifier);");
+            sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedDateAttribute), isModifiedUtc ? markedTimeUtc : markedTime);");
+            sb.AppendLine("                ReflectionHelpers.SetPropertyConcurrency(entity, typeof(System.ComponentModel.DataAnnotations.ConcurrencyCheckAttribute), _dbGeneratedProperties);");
+
             sb.AppendLine("				}");
             sb.AppendLine();
             sb.AppendLine("				//Only set the TenantID on create. It never changes.");
@@ -672,15 +729,25 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			var modifiedList = this.ChangeTracker.Entries().Where(x => x.State == EntityState.Modified);");
             sb.AppendLine("			foreach (var item in modifiedList)");
             sb.AppendLine("			{");
+
+            sb.AppendLine("                var isModifiedUtc = false;");
+            sb.AppendLine("                if (_mapAuditDateFields.ContainsKey($\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"))");
+            sb.AppendLine("                    isModifiedUtc = _mapAuditDateFields[$\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"];");
+
             sb.AppendLine("				var entity = item.Entity as IAuditable;");
             sb.AppendLine("				if (entity != null)");
             sb.AppendLine("				{");
-            sb.AppendLine("					var audit = entity as IAuditableSet;");
-            sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifier)");
-            sb.AppendLine("					{");
-            sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifier;");
-            sb.AppendLine("					}");
-            sb.AppendLine("					audit.ModifiedDate = markedTime;");
+            //sb.AppendLine("					var audit = entity as IAuditableSet;");
+            //sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifier)");
+            //sb.AppendLine("					{");
+            //sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifier;");
+            //sb.AppendLine("					}");
+            //sb.AppendLine("					audit.ModifiedDate = markedTime;");
+
+            sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedByAttribute), this.ContextStartup.Modifier);");
+            sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedDateAttribute), isModifiedUtc ? markedTimeUtc : markedTime);");
+            sb.AppendLine("                ReflectionHelpers.SetPropertyConcurrency(item.Entity, typeof(System.ComponentModel.DataAnnotations.ConcurrencyCheckAttribute), _dbGeneratedProperties);");
+
             sb.AppendLine("				}");
             sb.AppendLine("			}");
             sb.AppendLine("			this.OnBeforeSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");

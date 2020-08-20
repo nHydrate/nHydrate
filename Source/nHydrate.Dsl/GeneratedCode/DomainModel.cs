@@ -117,7 +117,7 @@ namespace nHydrate.Dsl
 				new DomainMemberInfo(typeof(nHydrateModel), "CreatedDateColumnName", nHydrateModel.CreatedDateColumnNameDomainPropertyId, typeof(nHydrateModel.CreatedDateColumnNamePropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "ModifiedDateColumnName", nHydrateModel.ModifiedDateColumnNameDomainPropertyId, typeof(nHydrateModel.ModifiedDateColumnNamePropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "ModifiedByColumnName", nHydrateModel.ModifiedByColumnNameDomainPropertyId, typeof(nHydrateModel.ModifiedByColumnNamePropertyHandler)),
-				new DomainMemberInfo(typeof(nHydrateModel), "TimestampColumnName", nHydrateModel.TimestampColumnNameDomainPropertyId, typeof(nHydrateModel.TimestampColumnNamePropertyHandler)),
+				new DomainMemberInfo(typeof(nHydrateModel), "ConcurrencyCheckColumnName", nHydrateModel.ConcurrencyCheckColumnNameDomainPropertyId, typeof(nHydrateModel.ConcurrencyCheckColumnNamePropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "GrantUser", nHydrateModel.GrantUserDomainPropertyId, typeof(nHydrateModel.GrantUserPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "ModelToDisk", nHydrateModel.ModelToDiskDomainPropertyId, typeof(nHydrateModel.ModelToDiskPropertyHandler)),
 				new DomainMemberInfo(typeof(nHydrateModel), "ModelVersion", nHydrateModel.ModelVersionDomainPropertyId, typeof(nHydrateModel.ModelVersionPropertyHandler)),

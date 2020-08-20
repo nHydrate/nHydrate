@@ -213,7 +213,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
-                if (table.AllowCreateAudit || table.AllowModifiedAudit || table.AllowTimestamp | table.IsTenant)
+                if (table.AllowCreateAudit || table.AllowModifiedAudit || table.AllowConcurrencyCheck | table.IsTenant)
                 {
                     if (table.AllowCreateAudit)
                     {
@@ -225,9 +225,9 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                         Globals.AppendModifiedAudit(table, _model, sb);
                     }
 
-                    if (table.AllowTimestamp)
+                    if (table.AllowConcurrencyCheck)
                     {
-                        Globals.AppendTimestampAudit(table, _model, sb);
+                        Globals.AppendConcurrencyAudit(table, _model, sb);
                     }
 
                     if (table.IsTenant)
@@ -251,7 +251,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
-                if (!table.AllowCreateAudit || !table.AllowModifiedAudit || !table.AllowTimestamp)
+                if (!table.AllowCreateAudit || !table.AllowModifiedAudit || !table.AllowConcurrencyCheck)
                 {
                     if (!table.AllowCreateAudit)
                     {
@@ -263,7 +263,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                         Globals.DropModifiedAudit(table, _model, sb);
                     }
 
-                    if (!table.AllowTimestamp)
+                    if (!table.AllowConcurrencyCheck)
                     {
                         Globals.DropTimestampAudit(table, _model, sb);
                     }
@@ -355,7 +355,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
             sb.AppendLine("--##SECTION START [TIMESTAMP TRIGGERS]");
             sb.AppendLine();
 
-            foreach (var table in _model.Database.Tables.Where(x => x.AllowTimestamp))
+            foreach (var table in _model.Database.Tables.Where(x => x.AllowConcurrencyCheck))
             {
                 var auditName = $"{table.DatabaseName.ToLower()}_ts_audit";
                 sb.AppendLine($"--TIMESTAMP AUDIT FOR [{table.DatabaseName}]");
