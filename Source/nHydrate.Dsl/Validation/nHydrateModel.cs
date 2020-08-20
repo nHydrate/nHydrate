@@ -138,7 +138,7 @@ namespace nHydrate.Dsl
                 #region Tenant
                 if (this.Entities.Any(x => x.IsTenant))
                 {
-                    if (!ValidationHelper.ValidCodeIdentifier(this.TenantColumnName))
+                    if (!string.IsNullOrEmpty(this.TenantColumnName) && !ValidationHelper.ValidCodeIdentifier(this.TenantColumnName))
                         context.LogError(string.Format(ValidationHelper.ErrorTextInvalidIdentifier, this.TenantColumnName), string.Empty, this);
                 }
                 #endregion

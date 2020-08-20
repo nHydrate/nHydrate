@@ -281,25 +281,29 @@ namespace nHydrate.Dsl.Custom
             model.IsSaving = true;
             try
             {
-                var diskModel = FileManagement.Load(rootFolder, modelName);
-                model.EmitChangeScripts = diskModel.ModelProperties.EmitChangeScripts;
-                model.CompanyName = diskModel.ModelProperties.CompanyName;
-                model.EmitSafetyScripts = diskModel.ModelProperties.EmitSafetyScripts;
-                model.DefaultNamespace = diskModel.ModelProperties.DefaultNamespace;
-                model.ProjectName = diskModel.ModelProperties.ProjectName;
-                model.UseUTCTime = diskModel.ModelProperties.UseUTCTime;
-                model.Version = diskModel.ModelProperties.Version;
-                //model.Id = new Guid(diskModel.ModelProperties.Id);
-                model.TenantColumnName = diskModel.ModelProperties.TenantColumnName;
-                model.CreatedByColumnName = diskModel.ModelProperties.CreatedByColumnName;
-                model.CreatedDateColumnName = diskModel.ModelProperties.CreatedDateColumnName;
-                model.ModifiedByColumnName = diskModel.ModelProperties.ModifiedByColumnName;
-                model.ModifiedDateColumnName = diskModel.ModelProperties.ModifiedDateColumnName;
-                model.TimestampColumnName = diskModel.ModelProperties.TimestampColumnName;
-                model.GrantUser = diskModel.ModelProperties.GrantExecUser;
+                bool wasLoaded;
+                var diskModel = FileManagement.Load(rootFolder, modelName, out wasLoaded);
+                if (wasLoaded)
+                {
+                    model.EmitChangeScripts = diskModel.ModelProperties.EmitChangeScripts;
+                    model.CompanyName = diskModel.ModelProperties.CompanyName;
+                    model.EmitSafetyScripts = diskModel.ModelProperties.EmitSafetyScripts;
+                    model.DefaultNamespace = diskModel.ModelProperties.DefaultNamespace;
+                    model.ProjectName = diskModel.ModelProperties.ProjectName;
+                    model.UseUTCTime = diskModel.ModelProperties.UseUTCTime;
+                    model.Version = diskModel.ModelProperties.Version;
+                    //model.Id = new Guid(diskModel.ModelProperties.Id);
+                    model.TenantColumnName = diskModel.ModelProperties.TenantColumnName;
+                    model.CreatedByColumnName = diskModel.ModelProperties.CreatedByColumnName;
+                    model.CreatedDateColumnName = diskModel.ModelProperties.CreatedDateColumnName;
+                    model.ModifiedByColumnName = diskModel.ModelProperties.ModifiedByColumnName;
+                    model.ModifiedDateColumnName = diskModel.ModelProperties.ModifiedDateColumnName;
+                    model.TimestampColumnName = diskModel.ModelProperties.TimestampColumnName;
+                    model.GrantUser = diskModel.ModelProperties.GrantExecUser;
 
-                nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Views, model, diskModel); //must come before entities
-                nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Entities, model, diskModel);
+                    nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Views, model, diskModel); //must come before entities
+                    nHydrate.Dsl.Custom.SQLFileManagement.LoadFromDisk(model.Entities, model, diskModel);
+                }
             }
             catch (Exception ex)
             {

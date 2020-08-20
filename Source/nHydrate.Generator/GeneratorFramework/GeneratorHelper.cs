@@ -464,6 +464,10 @@ namespace nHydrate.Generator.GeneratorFramework
             try
             {
                 var projectGenerator = GetProjectGenerator(projectGeneratorType);
+
+                //For the VSIX modeler, this is the object that will create project in Visual Studio
+                (projectGenerator as IProjectGenerator).ProjectGeneratorProjectCreator = new Generator.ProjectItemGenerators.ProjectGeneratorProjectCreator();
+
                 projectGenerator.Initialize(generator.Model);
                 projectGenerator.CreateProject();
             }

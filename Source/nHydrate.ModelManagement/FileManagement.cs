@@ -14,8 +14,9 @@ namespace nHydrate.ModelManagement
         private const string FOLDER_ET = "_Entities";
         private const string FOLDER_VW = "_Views";
 
-        public static DiskModel Load(string rootFolder, string modelName)
+        public static DiskModel Load(string rootFolder, string modelName, out bool wasLoaded)
         {
+            wasLoaded = false;
             var modelFile = Path.Combine(rootFolder, modelName);
             var fi = new FileInfo(modelFile);
             var showError = (fi.Length > 10); //New file is small so show no error if creating new
@@ -24,18 +25,22 @@ namespace nHydrate.ModelManagement
             var modelFolder = GetModelFolder(rootFolder, folderName);
 
             //If the model folder does NOT exist
-            if (showError && !Directory.Exists(modelFolder))
+            if (!Directory.Exists(modelFolder))
             {
-                //Try to use the ZIP file
-                var compressedFile = Path.Combine(rootFolder, modelName + ".zip");
-                if (!File.Exists(compressedFile))
+                if (showError)
                 {
-                    throw new Exception("The model folder was not found and the ZIP file is missing. One of these must exist to continue.");
-                }
+                    //Try to use the ZIP file
+                    var compressedFile = Path.Combine(rootFolder, modelName + ".zip");
+                    if (!File.Exists(compressedFile))
+                    {
+                        throw new Exception("The model folder was not found and the ZIP file is missing. One of these must exist to continue.");
+                    }
 
-                //Unzip the whole file
-                ExtractToDirectory(compressedFile, rootFolder, false);
+                    //Unzip the whole file
+                    ExtractToDirectory(compressedFile, rootFolder, false);
+                }
             }
+            else wasLoaded = true;
 
             var results = new DiskModel();
             LoadEntities(modelFolder, results);
@@ -45,6 +50,8 @@ namespace nHydrate.ModelManagement
             var globalFile = Path.Combine(modelFolder, "model.xml");
             if (File.Exists(globalFile))
                 results.ModelProperties = GetObject<ModelProperties>(globalFile);
+
+            RemoveNullStrings(results.ModelProperties);
 
             #region Clean up
             //Ensure all arrays are not null
@@ -168,6 +175,7 @@ namespace nHydrate.ModelManagement
             SaveEntities(modelFolder, model, generatedFileList);
 
             //Save the global model properties
+            RemoveNullStrings(model.ModelProperties);
             SaveObject(model.ModelProperties, Path.Combine(modelFolder, "model.xml"), generatedFileList);
 
             //Do not remove diagram file
@@ -423,6 +431,19 @@ namespace nHydrate.ModelManagement
             return t;
         }
 
+        private static void RemoveNullStrings(object obj)
+        {
+            foreach (var propertyInfo in obj.GetType().GetProperties())
+            {
+                if (propertyInfo.PropertyType == typeof(string))
+                {
+                    var v = propertyInfo.GetValue(obj);
+                    if (v == null)
+                        propertyInfo.SetValue(obj, string.Empty);
+                }
+            }
+
+        }
         #endregion
 
     }

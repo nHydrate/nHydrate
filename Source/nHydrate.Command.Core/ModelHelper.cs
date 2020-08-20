@@ -61,7 +61,11 @@ namespace nHydrate.Command.Core
             if (!fi.Exists)
                 throw new ModelException("The model file does not exist.");
 
-            var diskModel = FileManagement.Load(fi.DirectoryName, fi.Name);
+            bool wasLoaded;
+            var diskModel = FileManagement.Load(fi.DirectoryName, fi.Name, out wasLoaded);
+            if (!wasLoaded)
+                throw new ModelException("The model file does not exist.");
+
             try
             {
                 var root = new nHydrate.Generator.Common.Models.ModelRoot(null);
