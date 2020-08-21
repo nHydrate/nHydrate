@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.ProjectItemGenerators;
@@ -21,13 +22,7 @@ namespace nHydrate.Command.Core
             {
                 var projectGenerator = GetProjectGenerator(projectGeneratorType);
                 projectGenerator.Initialize(generator.Model);
-
-                //TODO
-                //if (DOES NOT EXIST: projectGenerator.ProjectName)
-                //{
-                //    //TODO: CreateProject
-                //}
-
+                CreateProject(generator, projectGeneratorType, _outputFolder);
                 GenerateProjectItems(projectGenerator);
             }
             catch (Exception ex)
@@ -41,9 +36,9 @@ namespace nHydrate.Command.Core
             return System.IO.Directory.GetCurrentDirectory();
         }
 
-        protected override IProjectGeneratorProjectCreator GetProjectGeneratorProjectCreator()
+        protected override IProjectGeneratorProjectCreator GetProjectGeneratorProjectCreator(string outputFolder)
         {
-            return new ProjectGeneratorProjectCreator();
+            return new ProjectGeneratorProjectCreator(outputFolder);
         }
 
         protected override void LogError(string message)
@@ -53,19 +48,30 @@ namespace nHydrate.Command.Core
 
         protected override void projectItemGenerator_ProjectItemDeleted(object sender, ProjectItemDeletedEventArgs e)
         {
-            //throw new NotImplementedException();
+            var name = e.ProjectItemName;
+            if (name.StartsWith(@"\")) name = name.Substring(1, name.Length - 1);
+            var fileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, name);
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
+
+            e.FileState = Generator.Common.Util.FileStateConstants.Success;
+            e.FullName = fileName;
         }
 
         protected override void projectItemGenerator_ProjectItemExists(object sender, ProjectItemExistsEventArgs e)
         {
-            //throw new NotImplementedException();
+            var name = e.ProjectItemName;
+            if (name.StartsWith(@"\")) name = name.Substring(1, name.Length - 1);
+            var fileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, name);
+            e.Exists = File.Exists(fileName);
         }
 
         protected override void projectItemGenerator_ProjectItemGenerated(object sender, ProjectItemGeneratedEventArgs e)
         {
             var name = e.ProjectItemName;
-            if (name.StartsWith(@"\"))
-                name = name.Substring(1, name.Length - 1);
+            if (name.StartsWith(@"\")) name = name.Substring(1, name.Length - 1);
             var fileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, name);
 
             if (!File.Exists(fileName) || e.Overwrite)
@@ -76,15 +82,67 @@ namespace nHydrate.Command.Core
 
         protected override void projectItemGenerator_ProjectItemGenerationError(object sender, ProjectItemGeneratedErrorEventArgs e)
         {
-            //throw new NotImplementedException();
+            if (e.ShowError)
+                LogError(e.Text);
         }
     }
 
     internal class ProjectGeneratorProjectCreator : IProjectGeneratorProjectCreator
     {
+        private string _outputFolder = "";
+
+        public ProjectGeneratorProjectCreator(string outputFolder)
+        {
+            _outputFolder = outputFolder;
+        }
+
         public void CreateProject(IProjectGenerator projectGenerator)
         {
-            throw new NotImplementedException();
+            var folder = Path.Combine(_outputFolder, projectGenerator.ProjectName);
+            var csProjFile = Path.Combine(folder, projectGenerator.ProjectName + ".csproj");
+            
+            //Do not overgen the project file
+            if (File.Exists(csProjFile))
+                return;
+
+            //If the project file does not exist then create it
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            var projectFileName = projectGenerator.ProjectTemplate.Replace(".vstemplate", ".csproj");
+            var embedPath = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + $".Resources.{projectFileName}";
+            var content = GetResource(embedPath);
+
+            //Copy the template and project file to a temp folder and perform replacements
+            var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempPath);
+
+            File.WriteAllText(csProjFile, content);
+
+            projectGenerator.OnAfterGenerate();
+        }
+
+        private string GetResource(string name)
+        {
+
+            var retVal = string.Empty;
+            var asm = System.Reflection.Assembly.GetExecutingAssembly();
+            var manifestStream = asm.GetManifestResourceStream(name);
+            try
+            {
+                using (var sr = new System.IO.StreamReader(manifestStream))
+                {
+                    retVal = sr.ReadToEnd();
+                }
+            }
+            catch
+            {
+            }
+            finally
+            {
+                manifestStream.Close();
+            }
+            return retVal;
         }
     }
 }

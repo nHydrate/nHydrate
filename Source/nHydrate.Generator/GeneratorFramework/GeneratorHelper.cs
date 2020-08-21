@@ -19,8 +19,6 @@ namespace nHydrate.Generator.GeneratorFramework
             return AddinAppData.Instance.ExtensionDirectory;
         }
 
-        #region Generation Methods
-
         #region Public Count Methods
 
         public override int GetFileCount(IGenerator generator, List<Type> excludeList)
@@ -47,13 +45,12 @@ namespace nHydrate.Generator.GeneratorFramework
                 projectGenerator.Initialize(generator.Model);
                 if (!EnvDTEHelper.ProjectExists(projectGenerator.ProjectName))
                 {
-                    CreateProject(generator, projectGeneratorType);
+                    CreateProject(generator, projectGeneratorType, string.Empty);
                 }
                 else if (!EnvDTEHelper.ProjectLoaded(projectGenerator.ProjectName))
                 {
                     //LoadProject(generator, projectGeneratorType);
-                    //throw new Exception("The project '" + projectGenerator.ProjectName + "' is unloaded and cannot be generated.");
-                    _errorList.Add("The project '" + projectGenerator.ProjectName + "' is unloaded and cannot be generated.");
+                    _errorList.Add($"The project '{projectGenerator.ProjectName}' is unloaded and cannot be generated.");
                     return;
                 }
                 GenerateProjectItems(projectGenerator);
@@ -64,7 +61,7 @@ namespace nHydrate.Generator.GeneratorFramework
             }
         }
 
-        protected override IProjectGeneratorProjectCreator GetProjectGeneratorProjectCreator()
+        protected override IProjectGeneratorProjectCreator GetProjectGeneratorProjectCreator(string outputFolder)
         {
             return new Generator.ProjectItemGenerators.ProjectGeneratorProjectCreator();
         }
@@ -76,7 +73,7 @@ namespace nHydrate.Generator.GeneratorFramework
             MessageBox.Show(message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
-        #region Private Helpers
+        #region Private Helpersc
 
         private static Dictionary<string, Project> projectCache = new Dictionary<string, Project>();
         private int _doEventCount = 0;
@@ -277,15 +274,13 @@ namespace nHydrate.Generator.GeneratorFramework
         {
             try
             {
-                e.Exists = EnvDTEHelper.Instance.GetProjectItemExists(e.ProjectName, e.ItemName, e.ItemType);
+                e.Exists = EnvDTEHelper.Instance.GetProjectItemExists(e.ProjectName, e.ProjectItemName, e.ItemType);
             }
             catch (Exception ex)
             {
                 throw;
             }
         }
-
-        #endregion
 
         #endregion
     }

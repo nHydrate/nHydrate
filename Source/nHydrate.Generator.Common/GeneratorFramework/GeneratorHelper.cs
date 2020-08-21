@@ -245,16 +245,16 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
         protected abstract void GenerateProject(IGenerator generator, Type projectGeneratorType);
 
-        protected abstract IProjectGeneratorProjectCreator GetProjectGeneratorProjectCreator();
+        protected abstract IProjectGeneratorProjectCreator GetProjectGeneratorProjectCreator(string outputFolder);
 
-        protected void CreateProject(IGenerator generator, Type projectGeneratorType)
+        protected void CreateProject(IGenerator generator, Type projectGeneratorType, string outputFolder)
         {
             try
             {
                 var projectGenerator = GetProjectGenerator(projectGeneratorType);
 
                 //For the VSIX modeler, this is the object that will create project in Visual Studio
-                (projectGenerator as IProjectGenerator).ProjectGeneratorProjectCreator = GetProjectGeneratorProjectCreator();
+                (projectGenerator as IProjectGenerator).ProjectGeneratorProjectCreator = GetProjectGeneratorProjectCreator(outputFolder);
 
                 projectGenerator.Initialize(generator.Model);
                 projectGenerator.CreateProject();

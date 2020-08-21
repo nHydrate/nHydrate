@@ -9,7 +9,7 @@ namespace nHydrate.Generator.Common.EventArgs
         public ProjectItemExistsEventArgs(string projectName, string itemName, ProjectItemType itemType)
         {
             this.ProjectName = projectName;
-            this.ItemName = itemName;
+            this.ProjectItemName = itemName;
             this.ItemType = itemType;
             this.Exists = false;
         }
@@ -18,7 +18,7 @@ namespace nHydrate.Generator.Common.EventArgs
 
         #region Property Implementations
 
-        public string ItemName { get; }
+        public string ProjectItemName { get; }
         public string ProjectName { get; }
         public ProjectItemType ItemType { get; }
         public bool Exists { get; set; }
