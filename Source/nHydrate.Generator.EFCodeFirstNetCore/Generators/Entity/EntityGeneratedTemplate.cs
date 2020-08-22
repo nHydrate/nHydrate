@@ -533,7 +533,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedDatePascalName, "DateTime", "The audit field for the 'Created Date' parameter.", "public", "AuditCreatedDate(utc: " + (_model.UseUTCTime ? "true" : "false") + ")");
             if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedByPascalName, "string", "The audit field for the 'Modified By' parameter.", "public", "AuditModifiedBy");
             if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedDatePascalName, "DateTime", "The audit field for the 'Modified Date' parameter.", "public", "AuditModifiedDate(utc: " + (_model.UseUTCTime ? "true" : "false") + ")");
-            if (_item.AllowConcurrencyCheck) GenerateAuditField(_model.Database.ConcurrencyCheckPascalName, "int", "The audit field for the 'Timestamp' parameter.", "public", "AuditTimestamp", true);
+            if (_item.AllowConcurrencyCheck) GenerateAuditField(_model.Database.ConcurrencyCheckPascalName, "int", "The audit field for the 'Timestamp' parameter.", "protected internal", "AuditTimestamp", true);
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
@@ -1334,7 +1334,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("			get { return _" + StringHelper.DatabaseNameToCamelCase(columnName) + "; }");
             if (propertyScope == "public")
             {
-                sb.AppendLine("			protected internal set");
+                //Cannot have a property scope and setter scope cannot be explicitly set to same, compile error
+                if (propertyScope == "protected internal")
+                    sb.AppendLine("			set");
+                else
+                    sb.AppendLine("			protected internal set");
             }
             else
             {

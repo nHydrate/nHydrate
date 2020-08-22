@@ -50,7 +50,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
             this.AppendRemoveDefaults();
             this.AppendCreateDefaults();
             //this.AppendClearSP();
-            this.AppendCreateTriggers();
             this.AppendVersionTable();
         }
 
@@ -349,27 +348,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
         }
 
         #endregion
-
-        private void AppendCreateTriggers()
-        {
-            sb.AppendLine("--##SECTION START [TIMESTAMP TRIGGERS]");
-            sb.AppendLine();
-
-            foreach (var table in _model.Database.Tables.Where(x => x.AllowConcurrencyCheck))
-            {
-                var auditName = $"{table.DatabaseName.ToLower()}_ts_audit";
-                sb.AppendLine($"--TIMESTAMP AUDIT FOR [{table.DatabaseName}]");
-                sb.AppendLine($"DROP TRIGGER IF EXISTS {auditName} ON \"{table.DatabaseName}\";");
-                sb.AppendLine($"CREATE TRIGGER {auditName}");
-                sb.AppendLine($"BEFORE INSERT OR UPDATE ON \"{table.DatabaseName}\"");
-                sb.AppendLine("FOR EACH ROW EXECUTE PROCEDURE process_timestamp_audit();");
-                sb.AppendLine();
-            }
-
-            sb.AppendLine("--##SECTION END [TIMESTAMP TRIGGERS]");
-            sb.AppendLine("--GO");
-            sb.AppendLine();
-        }
 
         #region AppendVersionTable
 
