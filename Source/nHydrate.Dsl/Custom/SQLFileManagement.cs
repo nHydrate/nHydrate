@@ -153,7 +153,9 @@ namespace nHydrate.Dsl.Custom
                     nodeIndexColumn.sortorder= indexColumn.SortOrder;
                 }
                 nodeField.indexcolumnset = nodeIndexColumns.ToArray();
+                nodeFields.Add(nodeField);
             }
+            root.index = nodeFields.ToArray();
 
         }
 
