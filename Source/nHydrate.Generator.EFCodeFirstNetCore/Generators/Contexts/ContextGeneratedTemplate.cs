@@ -106,8 +106,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine($"	public partial class {_model.ProjectName}Entities : Microsoft.EntityFrameworkCore.DbContext, IContext");
             sb.AppendLine("	{");
 
-            sb.AppendLine("		protected static List<string> _dbGeneratedProperties = new List<string>();");
-            sb.AppendLine("     private static Dictionary<string, bool> _mapAuditDateFields = new Dictionary<string, bool>();");
+            sb.AppendLine("		private static Dictionary<string, bool> _mapAuditDateFields = new Dictionary<string, bool>();");
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary />");
@@ -136,47 +135,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		private const string _modelKey = \"" + _model.Key + "\";");
             sb.AppendLine("		protected string _connectionString = null;");
             sb.AppendLine();
-
-            //Events
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveModifiedEntity;");
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		protected virtual void OnBeforeSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			if (this.BeforeSaveModifiedEntity != null)");
-            //sb.AppendLine("				this.BeforeSaveModifiedEntity(this, e);");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> BeforeSaveAddedEntity;");
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		protected virtual void OnBeforeSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			if (this.BeforeSaveAddedEntity != null)");
-            //sb.AppendLine("				this.BeforeSaveAddedEntity(this, e);");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveModifiedEntity;");
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		protected virtual void OnAfterSaveModifiedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			if (this.AfterSaveModifiedEntity != null)");
-            //sb.AppendLine("				this.AfterSaveModifiedEntity(this, e);");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs> AfterSaveAddedEntity;");
-            //sb.AppendLine("		/// <summary />");
-            //sb.AppendLine("		protected virtual void OnAfterSaveAddedEntity(" + this.GetLocalNamespace() + ".EventArguments.EntityListEventArgs e)");
-            //sb.AppendLine("		{");
-            //sb.AppendLine("			if (this.AfterSaveAddedEntity != null)");
-            //sb.AppendLine("				this.AfterSaveAddedEntity(this, e);");
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
 
             #region Constructors
 
@@ -247,8 +205,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             #endregion
 
             sb.AppendLine("		partial void OnContextCreated();");
-            //sb.AppendLine("		partial void OnBeforeSaveChanges(ref bool cancel);");
-            //sb.AppendLine("		partial void OnAfterSaveChanges();");
             sb.AppendLine("		partial void OnModelCreated(ModelBuilder modelBuilder);");
             sb.AppendLine();
 
@@ -601,10 +557,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("                var isTenant = tableType.GetInterfaces().Any(x => x == typeof(ITenantEntity));");
             sb.AppendLine();
 
-
-
-
-
             sb.AppendLine("                    #region Audit Fields");
             sb.AppendLine("                    foreach (var prop in tableType.Props(false).Where(x => x.GetCustomAttributes(true).Any(z => z.GetType() != typeof(System.ComponentModel.DataAnnotations.Schema.NotMappedAttribute))))");
             sb.AppendLine("                    {");
@@ -632,10 +584,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("                    #endregion");
             sb.AppendLine();
 
-
-
-
-
             sb.AppendLine("                #region Handle the Tenant mappings");
             sb.AppendLine("                if (isTenant)");
             sb.AppendLine("                {");
@@ -659,31 +607,77 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             #endregion
 
-            sb.AppendLine("        public override int SaveChanges()");
+
+            #region SaveChanges
+
+            sb.AppendLine("        private bool _inSave = false;");
+            sb.AppendLine("        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))");
             sb.AppendLine("        {");
-            sb.AppendLine("            this.SetupSave();");
-            sb.AppendLine("            return base.SaveChanges();");
+            sb.AppendLine("            if (!_inSave)");
+            sb.AppendLine("            {");
+            sb.AppendLine("                _inSave = true;");
+            sb.AppendLine("                try");
+            sb.AppendLine("                {");
+            sb.AppendLine("                    this.SetupSave();");
+            sb.AppendLine("                    return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);");
+            sb.AppendLine("                }");
+            sb.AppendLine("                finally");
+            sb.AppendLine("                {");
+            sb.AppendLine("                    _inSave = false;");
+            sb.AppendLine("                }");
+            sb.AppendLine("            }");
+            sb.AppendLine("            else");
+            sb.AppendLine("                return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);");
             sb.AppendLine("        }");
             sb.AppendLine();
-            sb.AppendLine("        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)");
+            sb.AppendLine("        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))");
             sb.AppendLine("        {");
-            sb.AppendLine("            this.SetupSave();");
-            sb.AppendLine("            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);");
-            sb.AppendLine("        }");
-            sb.AppendLine();
-            sb.AppendLine("        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)");
-            sb.AppendLine("        {");
-            sb.AppendLine("            this.SetupSave();");
-            sb.AppendLine("            return base.SaveChangesAsync(cancellationToken);");
+            sb.AppendLine("            _inSave = true;");
+            sb.AppendLine("            try");
+            sb.AppendLine("            {");
+            sb.AppendLine("                this.SetupSave();");
+            sb.AppendLine("                return base.SaveChangesAsync(cancellationToken);");
+            sb.AppendLine("            }");
+            sb.AppendLine("            finally");
+            sb.AppendLine("            {");
+            sb.AppendLine("                _inSave = false;");
+            sb.AppendLine("            }");
             sb.AppendLine("        }");
             sb.AppendLine();
             sb.AppendLine("        public override int SaveChanges(bool acceptAllChangesOnSuccess)");
             sb.AppendLine("        {");
-            sb.AppendLine("            this.SetupSave();");
-            sb.AppendLine("            return base.SaveChanges(acceptAllChangesOnSuccess);");
+            sb.AppendLine("            if (!_inSave)");
+            sb.AppendLine("            {");
+            sb.AppendLine("                _inSave = true;");
+            sb.AppendLine("                try");
+            sb.AppendLine("                {");
+            sb.AppendLine("                    this.SetupSave();");
+            sb.AppendLine("                    return base.SaveChanges(acceptAllChangesOnSuccess);");
+            sb.AppendLine("                }");
+            sb.AppendLine("                finally");
+            sb.AppendLine("                {");
+            sb.AppendLine("                    _inSave = false;");
+            sb.AppendLine("                }");
+            sb.AppendLine("            }");
+            sb.AppendLine("            else");
+            sb.AppendLine("                return base.SaveChanges(acceptAllChangesOnSuccess);");
             sb.AppendLine("        }");
             sb.AppendLine();
-
+            sb.AppendLine("        public override int SaveChanges()");
+            sb.AppendLine("        {");
+            sb.AppendLine("            _inSave = true;");
+            sb.AppendLine("            try");
+            sb.AppendLine("            {");
+            sb.AppendLine("                this.SetupSave();");
+            sb.AppendLine("                return base.SaveChanges();");
+            sb.AppendLine("            }");
+            sb.AppendLine("            finally");
+            sb.AppendLine("            {");
+            sb.AppendLine("                _inSave = false;");
+            sb.AppendLine("            }");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            #endregion
 
             #region Auditing
 
@@ -715,24 +709,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("                if (_mapAuditDateFields.ContainsKey($\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"))");
             sb.AppendLine("                    isModifiedUtc = _mapAuditDateFields[$\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"];");
 
-            sb.AppendLine("				var entity = item.Entity as IAuditable;");
-            sb.AppendLine("				if (entity != null)");
-            sb.AppendLine("				{");
-            //sb.AppendLine("					var audit = entity as IAuditableSet;");
-            //sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifier)");
-            //sb.AppendLine("					{");
-            //sb.AppendLine("						if (audit != null) audit.CreatedBy = this.ContextStartup.Modifier;");
-            //sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifier;");
-            //sb.AppendLine("					}");
-            //sb.AppendLine("					audit.CreatedDate = markedTime;");
-            //sb.AppendLine("					audit.ModifiedDate = markedTime;");
             sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditCreatedByAttribute), this.ContextStartup.Modifier);");
             sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditCreatedDateAttribute), isCreatedUtc ? markedTimeUtc : markedTime);");
             sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedByAttribute), this.ContextStartup.Modifier);");
             sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedDateAttribute), isModifiedUtc ? markedTimeUtc : markedTime);");
-            sb.AppendLine("                ReflectionHelpers.SetPropertyConcurrency(entity, typeof(System.ComponentModel.DataAnnotations.ConcurrencyCheckAttribute), _dbGeneratedProperties);");
+            sb.AppendLine("                ReflectionHelpers.SetPropertyConcurrency(item, typeof(System.ComponentModel.DataAnnotations.ConcurrencyCheckAttribute));");
 
-            sb.AppendLine("				}");
             sb.AppendLine();
             sb.AppendLine("				//Only set the TenantID on create. It never changes.");
             sb.AppendLine("				if (item.Entity is ITenantEntity)");
@@ -741,7 +723,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("				}");
             sb.AppendLine();
             sb.AppendLine("			}");
-            //sb.AppendLine("			this.OnBeforeSaveAddedEntity(new EventArguments.EntityListEventArgs { List = addedList });");
             sb.AppendLine();
 
             #endregion
@@ -753,27 +734,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			foreach (var item in modifiedList)");
             sb.AppendLine("			{");
 
-            sb.AppendLine("                var isModifiedUtc = false;");
-            sb.AppendLine("                if (_mapAuditDateFields.ContainsKey($\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"))");
-            sb.AppendLine("                    isModifiedUtc = _mapAuditDateFields[$\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"];");
+            sb.AppendLine("              var isModifiedUtc = false;");
+            sb.AppendLine("              if (_mapAuditDateFields.ContainsKey($\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"))");
+            sb.AppendLine("                  isModifiedUtc = _mapAuditDateFields[$\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"];");
 
-            sb.AppendLine("				var entity = item.Entity as IAuditable;");
-            sb.AppendLine("				if (entity != null)");
-            sb.AppendLine("				{");
-            //sb.AppendLine("					var audit = entity as IAuditableSet;");
-            //sb.AppendLine("					if (entity.IsModifyAuditImplemented && entity.ModifiedBy != this.ContextStartup.Modifier)");
-            //sb.AppendLine("					{");
-            //sb.AppendLine("						if (audit != null) audit.ModifiedBy = this.ContextStartup.Modifier;");
-            //sb.AppendLine("					}");
-            //sb.AppendLine("					audit.ModifiedDate = markedTime;");
-
-            sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedByAttribute), this.ContextStartup.Modifier);");
-            sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedDateAttribute), isModifiedUtc ? markedTimeUtc : markedTime);");
-            sb.AppendLine("                ReflectionHelpers.SetPropertyConcurrency(item.Entity, typeof(System.ComponentModel.DataAnnotations.ConcurrencyCheckAttribute), _dbGeneratedProperties);");
-
-            sb.AppendLine("				}");
+            sb.AppendLine("				ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedByAttribute), this.ContextStartup.Modifier);");
+            sb.AppendLine("				ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedDateAttribute), isModifiedUtc ? markedTimeUtc : markedTime);");
+            sb.AppendLine("				ReflectionHelpers.SetPropertyConcurrency(item, typeof(System.ComponentModel.DataAnnotations.ConcurrencyCheckAttribute));");
             sb.AppendLine("			}");
-            //sb.AppendLine("			this.OnBeforeSaveModifiedEntity(new EventArguments.EntityListEventArgs { List = modifiedList });");
             sb.AppendLine();
 
             #endregion
@@ -913,12 +881,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		{");
 
             sb.AppendLine("			if (entity == null) throw new NullReferenceException();");
-            sb.AppendLine($"			var audit = entity as {this.GetLocalNamespace()}.IAuditableSet;");
-            sb.AppendLine("			if (audit != null)");
-            sb.AppendLine("			{");
-            sb.AppendLine("				audit.CreatedBy = _contextStartup.Modifier;");
-            sb.AppendLine("				audit.ModifiedBy = _contextStartup.Modifier;");
-            sb.AppendLine("			}");
+            sb.AppendLine("			ReflectionHelpers.SetPropertyByAttribute(entity, typeof(AuditCreatedByAttribute), this.ContextStartup.Modifier);");
+            sb.AppendLine("			ReflectionHelpers.SetPropertyByAttribute(entity, typeof(AuditModifiedByAttribute), this.ContextStartup.Modifier);");
 
             sb.AppendLine("			if (false) { }");
             foreach (var table in _model.Database.Tables.Where(x => !x.Immutable).OrderBy(x => x.PascalName))

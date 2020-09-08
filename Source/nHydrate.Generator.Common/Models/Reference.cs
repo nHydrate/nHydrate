@@ -103,7 +103,8 @@ namespace nHydrate.Generator.Common.Models
             try
             {
                 this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                Ref = XmlHelper.GetAttributeValue(node, "ref", Ref);
+                this.Ref = XmlHelper.GetAttributeValue(node, "ref", this.Ref);
+                this.ResetId(this.Ref); //this was a mistake but it works now
 
                 var refTypeNode = XmlHelper.GetAttributeValue(node, "refType", -1);
                 if (refTypeNode != -1)

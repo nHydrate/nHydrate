@@ -58,8 +58,27 @@ namespace nHydrate.Dsl
                 #endregion
 
                 #region Validate audit fields
+
+
+                //Fields must have a value
+                if (string.IsNullOrEmpty(this.CreatedByColumnName))
+                    context.LogError(ValidationHelper.ErrorTextAuditFieldsMustExist, this.CreatedByColumnName, this);
+                if (string.IsNullOrEmpty(this.CreatedDateColumnName))
+                    context.LogError(ValidationHelper.ErrorTextAuditFieldsMustExist, this.CreatedDateColumnName, this);
+                if (string.IsNullOrEmpty(this.ModifiedByColumnName))
+                    context.LogError(ValidationHelper.ErrorTextAuditFieldsMustExist, this.ModifiedByColumnName, this);
+                if (string.IsNullOrEmpty(this.ModifiedDateColumnName))
+                    context.LogError(ValidationHelper.ErrorTextAuditFieldsMustExist, this.ModifiedDateColumnName, this);
+                if (string.IsNullOrEmpty(this.ConcurrencyCheckColumnName))
+                    context.LogError(ValidationHelper.ErrorTextAuditFieldsMustExist, this.ConcurrencyCheckColumnName, this);
+                if (string.IsNullOrEmpty(this.TenantColumnName))
+                    context.LogError(ValidationHelper.ErrorTextAuditFieldsMustExist, this.TenantColumnName, this);
+
+
+                //Fields must be unique
                 var auditFieldList = new List<string>();
-                auditFieldList.Add(this.CreatedByColumnName);
+                if (!auditFieldList.Contains(this.CreatedByColumnName))
+                    auditFieldList.Add(this.CreatedByColumnName);
                 if (!auditFieldList.Contains(this.CreatedDateColumnName))
                     auditFieldList.Add(this.CreatedDateColumnName);
                 if (!auditFieldList.Contains(this.ModifiedByColumnName))
@@ -76,7 +95,8 @@ namespace nHydrate.Dsl
                 else
                 {
                     auditFieldList = new List<string>();
-                    auditFieldList.Add(this.CreatedByPascalName);
+                    if (!auditFieldList.Contains(this.CreatedByPascalName))
+                        auditFieldList.Add(this.CreatedByPascalName);
                     if (!auditFieldList.Contains(this.CreatedDatePascalName))
                         auditFieldList.Add(this.CreatedDatePascalName);
                     if (!auditFieldList.Contains(this.ModifiedByPascalName))

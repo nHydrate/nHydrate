@@ -54,7 +54,8 @@ namespace nHydrate.Dsl
         public static readonly string ErrorTextAssociativeTableNotImmutable = "An associative entity cannot be immutable.";
         public static readonly string ErrorTextRelationFieldNotMatchAssociatedTable = "The relation {0}->{1} cannot have the foreign key parameter name the same as the parent entity.";
         public static readonly string ErrorTextTableNotHave1IdentityOnly = "The entity '{0}' must have at least one non-identity parameter or be marked immutable.";
-        public static readonly string ErrorTextAuditFieldsNotUnique = "The audit parameter names must be unique for created, modified, and timestamps.";
+        public static readonly string ErrorTextAuditFieldsNotUnique = "The audit parameter names must exist and be unique for created, modified, and concurrency.";
+        public static readonly string ErrorTextAuditFieldsMustExist = "The audit field {0} must be set.";
         public static readonly string ErrorTextRoleNoStartNumber = "Role names cannot start with a number.";
         public static readonly string ErrorTextInvalidNamespace = "The defined namespace is not valid. It must be in the format A.B.*.";
         public static readonly string ErrorTextColumnCannotHaveDefault = "The parameter '{0}' cannot have a default value";

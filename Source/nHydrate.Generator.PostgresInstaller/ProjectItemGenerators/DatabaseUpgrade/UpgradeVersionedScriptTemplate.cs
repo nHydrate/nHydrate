@@ -60,7 +60,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseUpg
 
                 //Find the previous model file if one exists
                 var fileName = this._model.GeneratorProject.FileName;
-                var prevFileName = fileName + ".sql.lastgen";
+                var prevFileName = fileName + ".postgres.lastgen";
                 var fiPrev = new System.IO.FileInfo(prevFileName);
                 var fi = new System.IO.FileInfo(fileName);
 

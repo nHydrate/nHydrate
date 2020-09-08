@@ -133,7 +133,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.Append(", System.ICloneable");
 
             if (_item.AllowCreateAudit || _item.AllowModifiedAudit || _item.AllowConcurrencyCheck)
-                sb.Append($", {this.GetLocalNamespace()}.IAuditable, {this.GetLocalNamespace()}.IAuditableSet");
+                sb.Append($", {this.GetLocalNamespace()}.IAuditable");
 
             //If we can add this item then implement the ICreatable interface
             if (!_item.AssociativeTable && !_item.Immutable && !_item.GeneratesDoubleDerived)
@@ -1190,119 +1190,108 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             sb.AppendLine("		#region Auditing");
 
-            sb.AppendLine("		string " + this.GetLocalNamespace() + ".IAuditableSet.CreatedBy");
-            sb.AppendLine("		{");
-            //if (_item.AllowCreateAudit)
-            //    sb.AppendLine("			get { return this." + _model.Database.CreatedByPascalName + "; }");
-            //else
-            //    sb.AppendLine("			get { return null; }");
-            if (_item.AllowCreateAudit)
-                sb.AppendLine("			set { this." + _model.Database.CreatedByPascalName + " = value; }");
-            else
-                sb.AppendLine("			set { ; }");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		string " + this.GetLocalNamespace() + ".IAuditableSet.ModifiedBy");
-            sb.AppendLine("		{");
-            //if (_item.AllowModifiedAudit)
-            //    sb.AppendLine("			get { return this." + _model.Database.ModifiedByPascalName + "; }");
-            //else
-            //    sb.AppendLine("			get { return null; }");
-            if (_item.AllowModifiedAudit)
-                sb.AppendLine("			set { this." + _model.Database.ModifiedByPascalName + " = value; }");
-            else
-                sb.AppendLine("			set { ; }");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		string " + this.GetLocalNamespace() + ".IAuditable.CreatedBy");
+            sb.AppendLine($"		string {this.GetLocalNamespace()}.IAuditable.CreatedBy");
             sb.AppendLine("		{");
             if (_item.AllowCreateAudit)
+            {
                 sb.AppendLine("			get { return this." + _model.Database.CreatedByPascalName + "; }");
+                sb.AppendLine("			set { this." + _model.Database.CreatedByPascalName + " = value; }");
+            }
             else
+            {
                 sb.AppendLine("			get { return null; }");
+                sb.AppendLine("			set { }");
+            }
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		System.DateTime? " + this.GetLocalNamespace() + ".IAuditable.CreatedDate");
+            sb.AppendLine($"		System.DateTime? {this.GetLocalNamespace()}.IAuditable.CreatedDate");
             sb.AppendLine("		{");
             if (_item.AllowCreateAudit)
+            {
                 sb.AppendLine("			get { return this." + _model.Database.CreatedDatePascalName + "; }");
+                sb.AppendLine("			set { if (value == null) throw new Exception(\"Invalid Date\"); this." + _model.Database.CreatedDatePascalName + " = (DateTime)value; }");
+            }
             else
+            {
                 sb.AppendLine("			get { return null; }");
+                sb.AppendLine("			set { }");
+            }
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		bool " + this.GetLocalNamespace() + ".IAuditable.IsCreateAuditImplemented");
-            sb.AppendLine("		{");
-            sb.AppendLine("			get { return " + (_item.AllowCreateAudit ? "true" : "false") + "; }");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		bool " + this.GetLocalNamespace() + ".IAuditable.IsModifyAuditImplemented");
-            sb.AppendLine("		{");
-            sb.AppendLine("			get { return " + (_item.AllowModifiedAudit ? "true" : "false") + "; }");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		bool " + this.GetLocalNamespace() + ".IAuditable.IsTimestampAuditImplemented");
-            sb.AppendLine("		{");
-            sb.AppendLine("			get { return " + (_item.AllowConcurrencyCheck ? "true" : "false") + "; }");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		string " + this.GetLocalNamespace() + ".IAuditable.ModifiedBy");
+            sb.AppendLine($"		string {this.GetLocalNamespace()}.IAuditable.ModifiedBy");
             sb.AppendLine("		{");
             if (_item.AllowModifiedAudit)
+            {
                 sb.AppendLine("			get { return this." + _model.Database.ModifiedByPascalName + "; }");
+                sb.AppendLine("			set { this." + _model.Database.ModifiedByPascalName + " = value; }");
+            }
             else
+            {
                 sb.AppendLine("			get { return null; }");
+                sb.AppendLine("			set { }");
+            }
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		System.DateTime? " + this.GetLocalNamespace() + ".IAuditable.ModifiedDate");
+            sb.AppendLine($"		System.DateTime? {this.GetLocalNamespace()}.IAuditable.ModifiedDate");
             sb.AppendLine("		{");
             if (_item.AllowModifiedAudit)
+            {
                 sb.AppendLine("			get { return this." + _model.Database.ModifiedDatePascalName + "; }");
+                sb.AppendLine("			set { if (value == null) throw new Exception(\"Invalid Date\"); this." + _model.Database.ModifiedDatePascalName + " = (DateTime)value; }");
+            }
             else
+            {
                 sb.AppendLine("			get { return null; }");
+                sb.AppendLine("			set { }");
+            }
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		int " + this.GetLocalNamespace() + ".IAuditable.Concurrency");
+            sb.AppendLine($"		int {this.GetLocalNamespace()}.IAuditable.Concurrency");
             sb.AppendLine("		{");
             if (_item.AllowConcurrencyCheck)
+            {
                 sb.AppendLine("			get { return this." + _model.Database.ConcurrencyCheckPascalName + "; }");
+                sb.AppendLine("			set { this." + _model.Database.ConcurrencyCheckPascalName + " = value; }");
+            }
             else
+            {
                 sb.AppendLine("			get { return 0; }");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditableSet.CreatedDate");
-            sb.AppendLine("		{");
-            if (_item.AllowCreateAudit)
-            {
-                //sb.AppendLine("			get { return this." + _model.Database.CreatedDatePascalName + "; }");
-                sb.AppendLine("			set { this." + _model.Database.CreatedDatePascalName + " = value; }");
-            }
-            else
-            {
-                //sb.AppendLine("			get { return null; }");
-                sb.AppendLine("			set { ; }");
+                sb.AppendLine("			set { }");
             }
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditableSet.ModifiedDate");
-            sb.AppendLine("		{");
-            if (_item.AllowModifiedAudit)
-            {
-                //sb.AppendLine("			get { return this." + _model.Database.ModifiedDatePascalName + "; }");
-                sb.AppendLine("			set { this." + _model.Database.ModifiedDatePascalName + " = value; }");
-            }
-            else
-            {
-                //sb.AppendLine("			get { return null; }");
-                sb.AppendLine("			set { ; }");
-            }
-            sb.AppendLine("		}");
-            sb.AppendLine();
+            //sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditableSet.CreatedDate");
+            //sb.AppendLine("		{");
+            //if (_item.AllowCreateAudit)
+            //{
+            //    sb.AppendLine("			get { return this." + _model.Database.CreatedDatePascalName + "; }");
+            //    sb.AppendLine("			set { this." + _model.Database.CreatedDatePascalName + " = value; }");
+            //}
+            //else
+            //{
+            //    //sb.AppendLine("			get { return null; }");
+            //    sb.AppendLine("			set { ; }");
+            //}
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
+
+            //sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditableSet.ModifiedDate");
+            //sb.AppendLine("		{");
+            //if (_item.AllowModifiedAudit)
+            //{
+            //    sb.AppendLine("			get { return this." + _model.Database.ModifiedDatePascalName + "; }");
+            //    sb.AppendLine("			set { this." + _model.Database.ModifiedDatePascalName + " = value; }");
+            //}
+            //else
+            //{
+            //    //sb.AppendLine("			get { return null; }");
+            //    sb.AppendLine("			set { ; }");
+            //}
+            //sb.AppendLine("		}");
+            //sb.AppendLine();
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();

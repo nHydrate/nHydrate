@@ -50,12 +50,27 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("using System.Collections.ObjectModel;");
                 sb.AppendLine("using System.Linq.Expressions;");
                 sb.AppendLine("using System.Reflection;");
+                sb.AppendLine($"using {this.GetLocalNamespace()}.Exceptions;");
 
                 sb.AppendLine();
                 #endregion
 
                 sb.AppendLine($"namespace {this.GetLocalNamespace()}");
                 sb.AppendLine("{");
+
+                sb.AppendLine("	#region Extensions");
+                sb.AppendLine();
+                sb.AppendLine("	public static class Extensions");
+                sb.AppendLine("	{");
+                sb.AppendLine("		public static void ResetConcurrency(this IAuditable item, int value)");
+                sb.AppendLine("		{");
+                sb.AppendLine("			if (item != null) item.Concurrency = value;");
+                sb.AppendLine("		}");
+                sb.AppendLine("	}");
+                sb.AppendLine();
+                sb.AppendLine("	#endregion");
+                sb.AppendLine();
+
 
                 #region GlobalValues
 
@@ -425,39 +440,19 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine();
 
                 sb.AppendLine("	#region IAuditable");
-
-                sb.AppendLine("	/// <summary />");
-                sb.AppendLine("	internal partial interface IAuditableSet");
-                sb.AppendLine("	{");
-                sb.AppendLine("		DateTime CreatedDate { set; }");
-                sb.AppendLine("		DateTime ModifiedDate { set; }");
-                sb.AppendLine("		string ModifiedBy { set; }");
-                sb.AppendLine("		string CreatedBy { set; }");
-                //sb.AppendLine("		void ResetCreatedBy(string modifier);");
-                //sb.AppendLine("		void ResetModifiedBy(string modifier);");
-                sb.AppendLine("	}");
-                sb.AppendLine();
-
                 sb.AppendLine("	/// <summary />");
                 sb.AppendLine("	public partial interface IAuditable");
                 sb.AppendLine("	{");
                 sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		bool IsCreateAuditImplemented { get; }");
+                sb.AppendLine("		string CreatedBy { get; set; }");
                 sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		bool IsModifyAuditImplemented { get; }");
+                sb.AppendLine("		DateTime? CreatedDate { get; set; }");
                 sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		bool IsTimestampAuditImplemented { get; }");
-                sb.AppendLine();
+                sb.AppendLine("		string ModifiedBy { get; set; }");
                 sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		string CreatedBy { get; }");
+                sb.AppendLine("		DateTime? ModifiedDate { get; set; }");
                 sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		DateTime? CreatedDate { get; }");
-                sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		string ModifiedBy { get; }");
-                sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		DateTime? ModifiedDate { get; }");
-                sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		int Concurrency { get; }");
+                sb.AppendLine("		int Concurrency { get; set; }");
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
@@ -663,6 +658,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 #endregion
 
                 #region Audit Attributes
+                sb.AppendLine("	#region Audit Attributes");
                 sb.AppendLine("	/// <summary>");
                 sb.AppendLine("	/// Attribute used to decorate a concurrency field");
                 sb.AppendLine("	/// </summary>");
@@ -720,9 +716,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine();
                 sb.AppendLine("        public bool IsUTC { get; }");
                 sb.AppendLine("    }");
+                sb.AppendLine();
+                sb.AppendLine("	#endregion");
+                sb.AppendLine();
                 #endregion
 
                 #region HasNoKeyAttribute
+                sb.AppendLine("	#region HasNoKeyAttribute");
                 sb.AppendLine("    /// <summary>");
                 sb.AppendLine("    /// Indicates that a table has no primary key");
                 sb.AppendLine("    /// </summary>");
@@ -730,10 +730,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("    public class HasNoKeyAttribute : System.Attribute");
                 sb.AppendLine("    {");
                 sb.AppendLine("    }");
+                sb.AppendLine("	#endregion");
                 sb.AppendLine();
                 #endregion
 
                 #region StringLengthUnboundedAttribute
+                sb.AppendLine("	#region StringLengthUnboundedAttribute");
                 sb.AppendLine("    /// <summary>");
                 sb.AppendLine("    /// Indicates that a string has no set maximum length");
                 sb.AppendLine("    /// </summary>");
@@ -741,10 +743,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("    public class StringLengthUnboundedAttribute : System.Attribute");
                 sb.AppendLine("    {");
                 sb.AppendLine("    }");
+                sb.AppendLine("	#endregion");
                 sb.AppendLine();
                 #endregion
 
                 #region Tenant Attributes
+                sb.AppendLine("	#region TenantEntityAttribute");
                 sb.AppendLine("    /// <summary>");
                 sb.AppendLine("    /// Indicates that a database table is tenant based");
                 sb.AppendLine("    /// </summary>");
@@ -752,10 +756,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("    public class TenantEntityAttribute : System.Attribute");
                 sb.AppendLine("    {");
                 sb.AppendLine("    }");
+                sb.AppendLine("	#endregion");
                 sb.AppendLine();
                 #endregion
 
                 #region ITenantEntity
+                sb.AppendLine("	#region ITenantEntity");
                 sb.AppendLine("    /// <summary>");
                 sb.AppendLine("    /// Entities implementing this interface will have tenant based row security functionality.");
                 sb.AppendLine("    /// When the entity has a string property named \"TenanId\", the functionality will be picked up by convention.");
@@ -765,6 +771,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("    {");
                 sb.AppendLine("        string TenantId { get; }");
                 sb.AppendLine("    }");
+                sb.AppendLine("	#endregion");
                 sb.AppendLine();
                 #endregion
 
@@ -1172,8 +1179,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("            return false;");
                 sb.AppendLine("        }");
                 sb.AppendLine();
-                sb.AppendLine("        internal static void SetPropertyConcurrency(object entity, System.Type attrType, List<string> skipProperties)");
+                sb.AppendLine("        internal static void SetPropertyConcurrency(Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry, System.Type attrType)");
                 sb.AppendLine("        {");
+                sb.AppendLine("            var entity = entry.Entity;");
                 sb.AppendLine("            if (entity == null) return;");
                 sb.AppendLine("            var attr = entity.GetType().GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)");
                 sb.AppendLine("                .FirstOrDefault(x => x.GetCustomAttributes(true).Any(z => z.GetType() == attrType));");
@@ -1182,31 +1190,47 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("            {");
                 sb.AppendLine("                var property = entity.GetType().GetProperty(attr.Name, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);");
                 sb.AppendLine("                var propName = $\"{entity.GetType().FullName}.{property.Name}\";");
-                sb.AppendLine("                if (skipProperties.Contains(propName))");
-                sb.AppendLine("                    return;");
                 sb.AppendLine();
                 sb.AppendLine("                if (property.PropertyType == typeof(int))");
                 sb.AppendLine("                {");
                 sb.AppendLine("                    var value = property.GetValue(entity);");
                 sb.AppendLine("                    SetPropertyByName(entity, property.Name, ((int)value) + 1);");
+                sb.AppendLine();
+                sb.AppendLine("                    var orig = entry.OriginalValues.ToObject();");
+                sb.AppendLine("                    if (SetPropertyByName(orig, property.Name, value))");
+                sb.AppendLine("                        entry.OriginalValues.SetValues(orig);");
                 sb.AppendLine("                }");
                 sb.AppendLine("                else if (property.PropertyType == typeof(long))");
                 sb.AppendLine("                {");
                 sb.AppendLine("                    var value = property.GetValue(entity);");
                 sb.AppendLine("                    SetPropertyByName(entity, property.Name, ((long)value) + 1);");
+                sb.AppendLine();
+                sb.AppendLine("                    var orig = entry.OriginalValues.ToObject();");
+                sb.AppendLine("                    if (SetPropertyByName(orig, property.Name, value))");
+                sb.AppendLine("                        entry.OriginalValues.SetValues(orig);");
                 sb.AppendLine("                }");
                 sb.AppendLine("                else if (property.PropertyType == typeof(Guid))");
                 sb.AppendLine("                {");
+                sb.AppendLine("                    var value = property.GetValue(entity);");
                 sb.AppendLine("                    SetPropertyByName(entity, property.Name, Guid.NewGuid());");
+                sb.AppendLine();
+                sb.AppendLine("                    var orig = entry.OriginalValues.ToObject();");
+                sb.AppendLine("                    if (SetPropertyByName(orig, property.Name, value))");
+                sb.AppendLine("                        entry.OriginalValues.SetValues(orig);");
                 sb.AppendLine("                }");
                 sb.AppendLine("                else if (property.PropertyType == typeof(byte[]))");
                 sb.AppendLine("                {");
+                sb.AppendLine("                    var value = property.GetValue(entity);");
                 sb.AppendLine("                    //Just set 4 bytes for now. Assume at least this big.");
                 sb.AppendLine("                    var newValue = new byte[] { (byte)_rnd.Next(0, 255), (byte)_rnd.Next(0, 255), (byte)_rnd.Next(0, 255), (byte)_rnd.Next(0, 255) };");
                 sb.AppendLine("                    SetPropertyByName(entity, property.Name, newValue);");
+                sb.AppendLine();
+                sb.AppendLine("                    var orig = entry.OriginalValues.ToObject();");
+                sb.AppendLine("                    if (SetPropertyByName(orig, property.Name, value))");
+                sb.AppendLine("                        entry.OriginalValues.SetValues(orig);");
                 sb.AppendLine("                }");
                 sb.AppendLine("                else");
-                sb.AppendLine("                    throw new Exceptions.ContextConfigurationException(\"The concurrency token cannot be set.\");");
+                sb.AppendLine("                    throw new ContextConfigurationException(\"The concurrency token cannot be set.\");");
                 sb.AppendLine("            }");
                 sb.AppendLine("        }");
                 sb.AppendLine();

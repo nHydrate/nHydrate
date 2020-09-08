@@ -1689,8 +1689,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 if (newColumn.ComputedColumn)
                 {
                     sb.AppendLine("--DROP COLUMN");
-                    sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + newColumn.DatabaseName + "' and o.name = '" + newTable.DatabaseName + "')");
-                    sb.AppendLine("ALTER TABLE [" + newTable.GetPostgresSchema() + "].[" + newTable.DatabaseName + "] DROP COLUMN " + AppendColumnDefinition(newColumn, allowDefault: false, allowIdentity: false));
+                    sb.AppendLine($"ALTER TABLE {newTable.GetPostgresSchema()}.\"" + newTable.DatabaseName + "\" DROP COLUMN IF EXISTS " + AppendColumnDefinition(newColumn, allowDefault: false, allowIdentity: false));
                 }
                 else
                 {
@@ -1719,7 +1718,7 @@ namespace nHydrate.Generator.PostgresInstaller
                     }
 
                     sb.AppendLine("--UPDATE COLUMN");
-                    sb.AppendLine("ALTER TABLE [" + newTable.GetPostgresSchema() + "].[" + newTable.DatabaseName + "] ALTER COLUMN " + AppendColumnDefinition(newColumn, allowDefault: false, allowIdentity: false));
+                    sb.AppendLine("ALTER TABLE " + newTable.GetPostgresSchema() + ".\"" + newTable.DatabaseName + "\" ALTER COLUMN " + AppendColumnDefinition(newColumn, allowDefault: false, allowIdentity: false));
                     sb.AppendLine();
                 }
                 sb.AppendLine("END");
