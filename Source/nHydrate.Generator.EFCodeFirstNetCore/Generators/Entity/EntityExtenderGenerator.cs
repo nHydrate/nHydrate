@@ -2,6 +2,7 @@ using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Models;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
@@ -9,7 +10,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
     [GeneratorItem("EntityExtenderGenerator", typeof(EFCodeFirstNetCoreProjectGenerator))]
     public class EntityExtenderGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
-        private const string RELATIVE_OUTPUT_LOCATION = @"\Entity\";
+        private readonly string RELATIVE_OUTPUT_LOCATION = $"{Path.DirectorySeparatorChar}Entity{Path.DirectorySeparatorChar}";
 
         public override int FileCount => GetList().Count;
 

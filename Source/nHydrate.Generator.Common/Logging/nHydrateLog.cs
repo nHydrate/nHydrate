@@ -13,7 +13,7 @@ namespace nHydrate.Generator.Common.Logging
 
         #region Member Variables
         private readonly string _exeName;
-        private static TraceSwitch _currentSwitch;
+        private static TraceSwitch _currentSwitch = new TraceSwitch("nHydrate", "");
         #endregion
 
         #region Setup and Initilize

@@ -29,7 +29,7 @@ namespace nHydrate.Generator.Common
 
         #region Property Implementations
 
-        public virtual Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; }
+        public virtual Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; } = new Dictionary<string, IModelConfiguration>();
 
         protected event EventHandler RootReset;
         protected virtual void OnRootReset(System.EventArgs e)

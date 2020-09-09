@@ -1,12 +1,13 @@
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
+using System.IO;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
 {
     [GeneratorItem("ContextExtensionsGeneratedGenerator", typeof(ContextExtensionsExtenderGenerator))]
     public class ContextExtensionsGeneratedGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
-        private const string RELATIVE_OUTPUT_LOCATION = @"\";
+        private readonly string RELATIVE_OUTPUT_LOCATION = $"{Path.DirectorySeparatorChar}";
 
         public override int FileCount => 1;
 

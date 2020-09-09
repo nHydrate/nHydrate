@@ -1,5 +1,6 @@
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
+using System.IO;
 using System.Linq;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
@@ -7,7 +8,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
     [GeneratorItem("ViewEntityExtenderGenerator", typeof(EFCodeFirstNetCoreProjectGenerator))]
     public class ViewEntityExtenderGenerator : EFCodeFirstNetCoreProjectItemGenerator
     {
-        private const string RELATIVE_OUTPUT_LOCATION = @"\Entity\";
+        private readonly string RELATIVE_OUTPUT_LOCATION = $"{Path.DirectorySeparatorChar}Entity{Path.DirectorySeparatorChar}";
 
         public override int FileCount => 1;
 
