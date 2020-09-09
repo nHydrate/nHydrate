@@ -28,6 +28,7 @@ namespace nHydrate.Command.Core
             if (!commandParams.ContainsKey(GeneratorsKey))
                 return ShowError("The generators are required.");
 
+            var timer = System.Diagnostics.Stopwatch.StartNew();
             var modelFile = commandParams[ModelKey];
             var output = commandParams[OutputKey];
             var generators = commandParams[GeneratorsKey].Split(",", StringSplitOptions.RemoveEmptyEntries);
@@ -71,7 +72,7 @@ namespace nHydrate.Command.Core
 
                 var excludeList = allgenerators.Where(x => !generators.Contains(x.FullName)).ToList();
 
-                Console.WriteLine("Generating code...");
+                Console.WriteLine($"Generating code...");
                 foreach (var item in genList)
                 {
                     genHelper.GenerateAll(item, excludeList);
@@ -82,7 +83,8 @@ namespace nHydrate.Command.Core
                 Console.WriteLine("The model could not be loaded.");
             }
 
-            Console.WriteLine("Generation complete.");
+            timer.Stop();
+            Console.WriteLine($"Generation complete. Elapsed={timer.ElapsedMilliseconds}ms");
             return 0;
         }
 

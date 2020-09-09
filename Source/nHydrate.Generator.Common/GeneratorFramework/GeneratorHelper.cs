@@ -205,6 +205,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
                 var globalCacheFile = new GlobalCacheFile();
                 _generator = generator;
                 var projectGenerators = GetProjectGenerators(generator);
+                Console.WriteLine($"Generator count {projectGenerators.Count}");
                 foreach (var projectGeneratorType in projectGenerators)
                 {
                     try

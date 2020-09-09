@@ -33,7 +33,7 @@ namespace nHydrate.Command.Core
 
         protected override string GetExtensionsFolder()
         {
-            return System.IO.Directory.GetCurrentDirectory();
+            return new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).DirectoryName;
         }
 
         protected override IProjectGeneratorProjectCreator GetProjectGeneratorProjectCreator(string outputFolder)
