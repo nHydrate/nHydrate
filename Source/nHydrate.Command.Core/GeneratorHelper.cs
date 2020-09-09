@@ -72,12 +72,23 @@ namespace nHydrate.Command.Core
         {
             var name = e.ProjectItemName;
             if (name.StartsWith(Path.DirectorySeparatorChar)) name = name.Substring(1, name.Length - 1);
-            var fileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, name);
+            var fileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, e.ParentItemName, name);
 
             if (!File.Exists(fileName) || e.Overwrite)
             {
-                Directory.CreateDirectory(new FileInfo(fileName).DirectoryName);
-                File.WriteAllText(fileName, e.ProjectItemContent);
+                var folderName = new FileInfo(fileName).DirectoryName;
+                //In case this is a parent nested file, do not try to create
+                if (!File.Exists(folderName))
+                {
+                    Directory.CreateDirectory(folderName);
+                    File.WriteAllText(fileName, e.ProjectItemContent);
+                }
+                else
+                {
+                    fileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, name);
+                    File.WriteAllText(fileName, e.ProjectItemContent);
+                }
+                
             }
         }
 
