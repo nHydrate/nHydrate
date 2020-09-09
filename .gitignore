@@ -189,3 +189,6 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+
+#Launch vscode
+.vscode/launch.json
