@@ -35,6 +35,7 @@ namespace nHydrate.Command.Core
             nHydrate.Generator.Common.Models.ModelRoot model = null;
             try
             {
+                Console.WriteLine("Loading model...");
                 model = ModelHelper.CreatePOCOModel(modelFile);
             }
             catch (ModelException ex)
@@ -51,6 +52,7 @@ namespace nHydrate.Command.Core
             //Generate
             if (model != null)
             {
+                Console.WriteLine("Loading generators...");
                 var genHelper = new nHydrate.Command.Core.GeneratorHelper(output);
 
                 var genList = new List<nHydrateGeneratorProject>();
@@ -69,13 +71,18 @@ namespace nHydrate.Command.Core
 
                 var excludeList = allgenerators.Where(x => !generators.Contains(x.FullName)).ToList();
 
+                Console.WriteLine("Generating code...");
                 foreach (var item in genList)
                 {
                     genHelper.GenerateAll(item, excludeList);
                 }
-            
+            }
+            else
+            {
+                Console.WriteLine("The model could not be loaded.");
             }
 
+            Console.WriteLine("Generation complete.");
             return 0;
         }
 

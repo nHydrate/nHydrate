@@ -59,12 +59,12 @@ namespace nHydrate.Command.Core
         {
             var fi = new FileInfo(modelFile);
             if (!fi.Exists)
-                throw new ModelException("The model file does not exist.");
+                throw new ModelException($"The model file '{fi.FullName}' does not exist.");
 
             bool wasLoaded;
             var diskModel = FileManagement.Load(fi.DirectoryName, fi.Name, out wasLoaded);
             if (!wasLoaded)
-                throw new ModelException("The model file does not exist.");
+                throw new ModelException($"The model file '{fi.FullName}' does not exist.");
 
             try
             {
@@ -328,7 +328,6 @@ namespace nHydrate.Command.Core
                 #endregion
 
                 return root;
-
             }
             catch (Exception ex)
             {
