@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="..\..\VSADDIN\database.csproj" Link="Resources\database.csproj" />
     <EmbeddedResource Include="..\..\VSADDIN\databasenetcore.csproj" Link="Resources\databasenetcore.csproj" />
     <EmbeddedResource Include="..\..\VSADDIN\efcodefirstnetcore.csproj" Link="Resources\efcodefirstnetcore.csproj" />
     <EmbeddedResource Include="..\..\VSADDIN\efcorepostgresinstaller.csproj" Link="Resources\efcorepostgresinstaller.csproj" />

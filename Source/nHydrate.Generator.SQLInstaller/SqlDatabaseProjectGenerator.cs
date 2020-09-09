@@ -23,7 +23,6 @@ namespace nHydrate.Generator.SQLInstaller
 
         protected override void OnInitialize(IModelObject model)
         {
-            //nHydrateGeneratorProject.AddICSharpDllToBinFolder();
         }
 
         public override IModelConfiguration ModelConfiguration { get; set; }

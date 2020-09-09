@@ -1,5 +1,6 @@
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
+using System.IO;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateData
 {
@@ -27,7 +28,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateDa
             OnGenerationComplete(this, gcEventArgs);
 
             //Delete the old one
-            var delEventArgs = new ProjectItemDeletedEventArgs($@"\{PARENT_ITEM_NAME}\{template.OldFileName}", ProjectName, this);
+            var delEventArgs = new ProjectItemDeletedEventArgs($@"{Path.DirectorySeparatorChar}{PARENT_ITEM_NAME}{Path.DirectorySeparatorChar}{template.OldFileName}", ProjectName, this);
             delEventArgs.DeleteFile = true;
             OnProjectItemDeleted(this, delEventArgs);
 

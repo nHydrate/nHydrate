@@ -49,7 +49,7 @@ namespace nHydrate.Command.Core
         protected override void projectItemGenerator_ProjectItemDeleted(object sender, ProjectItemDeletedEventArgs e)
         {
             var name = e.ProjectItemName;
-            if (name.StartsWith(@"\")) name = name.Substring(1, name.Length - 1);
+            if (name.StartsWith(Path.DirectorySeparatorChar)) name = name.Substring(1, name.Length - 1);
             var fileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, name);
             if (File.Exists(fileName))
             {
@@ -63,7 +63,7 @@ namespace nHydrate.Command.Core
         protected override void projectItemGenerator_ProjectItemExists(object sender, ProjectItemExistsEventArgs e)
         {
             var name = e.ProjectItemName;
-            if (name.StartsWith(@"\")) name = name.Substring(1, name.Length - 1);
+            if (name.StartsWith(Path.DirectorySeparatorChar)) name = name.Substring(1, name.Length - 1);
             var fileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, name);
             e.Exists = File.Exists(fileName);
         }
@@ -71,11 +71,12 @@ namespace nHydrate.Command.Core
         protected override void projectItemGenerator_ProjectItemGenerated(object sender, ProjectItemGeneratedEventArgs e)
         {
             var name = e.ProjectItemName;
-            if (name.StartsWith(@"\")) name = name.Substring(1, name.Length - 1);
+            if (name.StartsWith(Path.DirectorySeparatorChar)) name = name.Substring(1, name.Length - 1);
             var fileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, name);
 
             if (!File.Exists(fileName) || e.Overwrite)
             {
+                Directory.CreateDirectory(new FileInfo(fileName).DirectoryName);
                 File.WriteAllText(fileName, e.ProjectItemContent);
             }
         }

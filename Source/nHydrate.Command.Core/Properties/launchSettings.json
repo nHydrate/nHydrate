@@ -2,7 +2,7 @@
   "profiles": {
     "nHydrate.Command.Core": {
       "commandName": "Project",
-      "commandLineArgs": "/model:C:\\code\\nHydrateTestAug\\ConsoleApp1\\Model1.nhydrate /output:C:\\code\\nHydrateTestAug /generators:nHydrate.Generator.EFCodeFirstNetCore.EFCodeFirstNetCoreProjectGenerator,nHydrate.Generator.PostgresInstaller.PostgresDatabaseProjectGenerator,nHydrate.Generator.SQLInstaller.SqlDatabaseProjectGenerator"
+      "commandLineArgs": "/model:C:\\code\\nHydrateTestAug\\ConsoleApp1\\Model1.nhydrate /output:C:\\code\\nHydrateTestAugXXX1 /generators:nHydrate.Generator.EFCodeFirstNetCore.EFCodeFirstNetCoreProjectGenerator,nHydrate.Generator.PostgresInstaller.PostgresDatabaseProjectGenerator,nHydrate.Generator.SQLInstaller.SqlDatabaseProjectGenerator"
     }
   }
 }
