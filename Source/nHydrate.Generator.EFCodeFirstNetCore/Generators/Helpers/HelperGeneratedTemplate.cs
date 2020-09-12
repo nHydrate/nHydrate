@@ -50,6 +50,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("using System.Collections.ObjectModel;");
                 sb.AppendLine("using System.Linq.Expressions;");
                 sb.AppendLine("using System.Reflection;");
+                sb.AppendLine("using Microsoft.EntityFrameworkCore;");
+                sb.AppendLine("using System.ComponentModel.DataAnnotations;");
                 sb.AppendLine($"using {this.GetLocalNamespace()}.Exceptions;");
 
                 sb.AppendLine();
@@ -60,7 +62,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
 
                 sb.AppendLine("	#region Extensions");
                 sb.AppendLine();
-                sb.AppendLine("	public static class Extensions");
+                sb.AppendLine("	public static partial class Extensions");
                 sb.AppendLine("	{");
                 sb.AppendLine("		public static void ResetConcurrency(this IAuditable item, int value)");
                 sb.AppendLine("		{");
@@ -76,7 +78,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
 
                 sb.AppendLine("	#region GlobalValues");
                 sb.AppendLine();
-                sb.AppendLine("	internal static class GlobalValues");
+                sb.AppendLine("	internal static partial class GlobalValues");
                 sb.AppendLine("	{");
                 sb.AppendLine("		public const string ERROR_PROPERTY_NULL = \"The value is null and in an invalid state.\";");
                 sb.AppendLine("		public const string ERROR_PROPERTY_SETNULL = \"Cannot set value to null.\";");
@@ -472,6 +474,38 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("	}");
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
+                #endregion
+
+                #region StaticDataAttribute
+                sb.AppendLine("		/// <summary />");
+                sb.AppendLine("    [System.AttributeUsage(System.AttributeTargets.Class)]");
+                sb.AppendLine("    public class StaticDataAttribute : System.Attribute");
+                sb.AppendLine("    {");
+                sb.AppendLine("        public StaticDataAttribute(System.Type parentType)");
+                sb.AppendLine("        {");
+                sb.AppendLine("            if (!parentType.IsEnum)");
+                sb.AppendLine("                throw new ContextConfigurationException($\"StaticDataAttribute can only have an Enum parent type.\");");
+                sb.AppendLine("            this.ParentType = parentType;");
+                sb.AppendLine("        }");
+                sb.AppendLine();
+                sb.AppendLine("        public System.Type ParentType { get; }");
+                sb.AppendLine("    }");
+                sb.AppendLine();
+                sb.AppendLine("    /// <summary>");
+                sb.AppendLine("    /// Marks an integer property as the key for the data item");
+                sb.AppendLine("    /// </summary>");
+                sb.AppendLine("    [System.AttributeUsage(System.AttributeTargets.Property)]");
+                sb.AppendLine("    public class StaticDataIdFieldAttribute : System.Attribute");
+                sb.AppendLine("    {");
+                sb.AppendLine("    }");
+                sb.AppendLine();
+                sb.AppendLine("    /// <summary>");
+                sb.AppendLine("    /// Marks a string property as the name for data item");
+                sb.AppendLine("    /// </summary>");
+                sb.AppendLine("    [System.AttributeUsage(System.AttributeTargets.Property)]");
+                sb.AppendLine("    public class StaticDataNameFieldAttribute : System.Attribute");
+                sb.AppendLine("    {");
+                sb.AppendLine("    }");
                 #endregion
 
                 #region IContext
@@ -1097,10 +1131,34 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
 
                 sb.AppendLine("namespace " + this.GetLocalNamespace());
                 sb.AppendLine("{");
-                sb.AppendLine("    internal static class ReflectionHelpers");
+                sb.AppendLine("    internal static partial class ReflectionHelpers");
                 sb.AppendLine("    {");
                 sb.AppendLine("        private static Random _rnd = new Random();");
                 sb.AppendLine();
+
+
+                sb.AppendLine("        internal static object[] BuildEntityObjectsFromEnum(System.Type classType, System.Type enumType)");
+                sb.AppendLine("        {");
+                sb.AppendLine("            var listObjectsToReturn = new List<object>();");
+                sb.AppendLine("            Dictionary<string, int> dictionary = Enum.GetValues(enumType).Cast<Enum>().ToDictionary(t => t.ToString(), t => System.Convert.ToInt32(t));");
+                sb.AppendLine();
+                sb.AppendLine("            foreach (var item in dictionary)");
+                sb.AppendLine("            {");
+                sb.AppendLine("                var newObject = Activator.CreateInstance(classType, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null);");
+                sb.AppendLine("                var propId = classType.Props(false).FirstOrDefault(x => x.GetCustomAttributes(true).Any(z => z.GetType() == typeof(StaticDataIdFieldAttribute)));");
+                sb.AppendLine("                var propName = classType.Props(false).FirstOrDefault(x => x.GetCustomAttributes(true).Any(z => z.GetType() == typeof(StaticDataNameFieldAttribute)));");
+                sb.AppendLine();
+                sb.AppendLine("                if (propId == null || propName == null)");
+                sb.AppendLine("                    throw new ContextConfigurationException($\"Enumeration '{classType.Name}' not setup correctly.\");");
+                sb.AppendLine();
+                sb.AppendLine("                propId.SetValue(newObject, item.Value); // Enum int id");
+                sb.AppendLine("                propName.SetValue(newObject, item.Key); // Enum string value");
+                sb.AppendLine("                listObjectsToReturn.Add(newObject);");
+                sb.AppendLine("            }");
+                sb.AppendLine("            return listObjectsToReturn.ToArray();");
+                sb.AppendLine("        }");
+                sb.AppendLine();
+
                 sb.AppendLine("        private static readonly MethodInfo SetQueryFilterMethod = typeof(ModelBuilderExtensions)");
                 sb.AppendLine("              .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)");
                 sb.AppendLine("              .Single(t => t.IsGenericMethod && t.Name == \"SetQueryFilter\");");
@@ -1277,7 +1335,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine();
                 sb.AppendLine("    }");
                 sb.AppendLine();
-                sb.AppendLine("    internal static class ModelBuilderExtensions");
+                sb.AppendLine("    internal static partial class ModelBuilderExtensions");
                 sb.AppendLine("    {");
                 sb.AppendLine("        static void SetQueryFilter<TEntity, TEntityInterface>(");
                 sb.AppendLine("          this Microsoft.EntityFrameworkCore.ModelBuilder builder,");

@@ -1610,7 +1610,7 @@ namespace nHydrate.Core.SQLGeneration
             if (table.AllowConcurrencyCheck)
             {
                 sb.AppendLine(",");
-                sb.Append("\t[" + model.Database.ConcurrencyCheckColumnName + "] [int] NOT NULL");
+                sb.Append("\t[" + model.Database.ConcurrencyCheckColumnName + "] [int] NOT NULL DEFAULT(0)");
             }
         }
 

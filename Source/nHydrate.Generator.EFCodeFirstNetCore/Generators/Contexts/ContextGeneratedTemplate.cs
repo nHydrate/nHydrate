@@ -50,6 +50,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             this.AppendTypeTableEnums();
             this.AppendTableMapping();
             this.AppendClass();
+            this.AppendExtensions();
             sb.AppendLine("}");
             sb.AppendLine();
 
@@ -93,6 +94,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("using Microsoft.EntityFrameworkCore.ChangeTracking;");
             sb.AppendLine("using System.Threading.Tasks;");
             sb.AppendLine("using System.Threading;");
+            sb.AppendLine("using System.Reflection;");
+            sb.AppendLine("using System.ComponentModel.DataAnnotations;");
             sb.AppendLine();
         }
 
@@ -286,21 +289,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         else
                             sb.Append(".IsRequired(true)");
 
-                        if (column.Identity == IdentityTypeConstants.Database && column.DataType.IsIntegerType())
-                        {
-                            switch (_modelConfiguration.DatabaseType)
-                            {
-                                case DatabaseTypeConstants.SqlServer:
-                                    sb.Append(".ValueGeneratedOnAdd()");
-                                    break;
-                                case DatabaseTypeConstants.Postgress:
-                                    sb.Append(".ValueGeneratedOnAdd()");
-                                    break;
-                                case DatabaseTypeConstants.Sqlite:
-                                    sb.Append(".ValueGeneratedOnAdd()");
-                                    break;
-                            }
-                        }
+                        //Add the auto-gen value UNLESS it is a type table
+                        if ((table.TypedTable == TypedTableConstants.None) && column.Identity == IdentityTypeConstants.Database && column.DataType.IsIntegerType())
+                            sb.Append(".ValueGeneratedOnAdd()");
 
                         if (column.DataType.IsTextType() && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml)
                             sb.Append($".HasMaxLength({column.GetAnnotationStringLength()})");
@@ -829,6 +820,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             #endregion
 
+            sb.AppendLine("        /// <summary>");
+            sb.AppendLine("        /// Back door add for immutable entities to be called for seed data");
+            sb.AppendLine("        /// </summary>");
+            sb.AppendLine("        internal EntityEntry AddImmutable(object entity)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            return base.Add(entity);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+
             #region Add Functionality
 
             //Add an strongly-typed extension for "AddItem" method
@@ -1060,6 +1060,65 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("	}");
             sb.AppendLine("	#endregion");
             sb.AppendLine();
+        }
+
+        private void AppendExtensions()
+        {
+            sb.AppendLine("    public static class ContextExtensions");
+            sb.AppendLine("    {");
+            sb.AppendLine("        /// <summary>");
+            sb.AppendLine("        /// Load all enum tables and insert data");
+            sb.AppendLine("        /// </summary>");
+            sb.AppendLine($"        public static void EnsureSeedData(this {_model.ProjectName}Entities context)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            //Get the assembly of the containing types");
+            sb.AppendLine("            var assembly = context.Model.GetEntityTypes().FirstOrDefault()?.ClrType?.Assembly;");
+            sb.AppendLine("            if (assembly == null) return;");
+            sb.AppendLine();
+            sb.AppendLine("            var allTypes = context.GetType()");
+            sb.AppendLine("                .GetProperties()");
+            sb.AppendLine("                .Where(pi => pi.PropertyType.IsGenericType && pi.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))");
+            sb.AppendLine("                .SelectMany(x => x.PropertyType.GenericTypeArguments)");
+            sb.AppendLine("                .ToList();");
+            sb.AppendLine();
+            sb.AppendLine("            foreach (var mytype in ReflectionHelpers.GetTypesWithAttribute(allTypes, typeof(StaticDataAttribute)))");
+            sb.AppendLine("            {");
+            sb.AppendLine("                var enumMap = mytype.GetAttr<StaticDataAttribute>();");
+            sb.AppendLine("                var key = mytype");
+            sb.AppendLine("                    .GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)");
+            sb.AppendLine("                    .FirstOrDefault(x => Enumerable.Any<object>(x.GetCustomAttributes(true), z => z.GetType() != typeof(KeyAttribute)));");
+            sb.AppendLine();
+            sb.AppendLine("                var entities = ReflectionHelpers.BuildEntityObjectsFromEnum(mytype, enumMap.ParentType);");
+            sb.AppendLine("                try");
+            sb.AppendLine("                {");
+            sb.AppendLine("                    foreach (var entity in entities)");
+            sb.AppendLine("                    {");
+            sb.AppendLine("                        // attempt to load the existing item from the database");
+            sb.AppendLine("                        var entry = context.Entry(entity);");
+            sb.AppendLine("                        entry.Reload();");
+            sb.AppendLine();
+            sb.AppendLine("                        if (entry.State == EntityState.Detached)");
+            sb.AppendLine("                        {");
+            sb.AppendLine("                            // if it doesn't yet exist, add it as normal");
+            sb.AppendLine("                            context.AddImmutable(entity);");
+            sb.AppendLine("                        }");
+            sb.AppendLine("                        else");
+            sb.AppendLine("                        {");
+            sb.AppendLine("                            // otherwise update its values as the enum name may have changed etc");
+            sb.AppendLine("                            entry.CurrentValues.SetValues(entity);");
+            sb.AppendLine("                        }");
+            sb.AppendLine("                    }");
+            sb.AppendLine("                    context.SaveChanges();");
+            sb.AppendLine("                }");
+            sb.AppendLine("                catch (Exception ex)");
+            sb.AppendLine("                {");
+            sb.AppendLine("                    //TODO: Handle duplicates, second runs");
+            sb.AppendLine("                }");
+            sb.AppendLine("            }");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("    }");
+
         }
 
         private void AppendTypeTableEnums()

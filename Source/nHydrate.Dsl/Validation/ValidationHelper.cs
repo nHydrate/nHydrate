@@ -41,6 +41,7 @@ namespace nHydrate.Dsl
         public static readonly string ErrorTextDataTypeNotSupported = "The parameter '{0}' has an unsupported datatype for the target version of SQL Server.";
         public static readonly string ErrorTextColumnLengthNotZero = "The length of a parameter cannot be zero.";
         public static readonly string ErrorTextIdentityPKNotOnlyKey = "The entity '{0}' has a database identity primary key and a composite primary key.";
+        public static readonly string ErrorTextIdentityPKTypeTable = "The entity '{0}' is a type table and cannot have an identity primary key.";
         public static readonly string ErrorTextDuplicateStaticData = "There are duplicate static data values (key or value) for entity {0}.";
         public static readonly string ErrorTextIdentityOnlyOnePerTable = "The entity '{0}' can have only one database identity parameter.";
         public static readonly string ErrorTextColumnDecimalPrecision = "The decimal parameter '{0}' must have length from 1-38.";

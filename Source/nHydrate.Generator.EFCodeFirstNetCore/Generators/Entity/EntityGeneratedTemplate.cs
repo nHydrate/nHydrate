@@ -104,11 +104,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
 
-            sb.AppendLine("	[FieldNameConstants(typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))]");
+            sb.AppendLine($"	[FieldNameConstants(typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants))]");
+
+            //For type tables add special attribute
+            if (_item.TypedTable != TypedTableConstants.None)
+            {
+                sb.AppendLine($"	[StaticData(typeof({this.GetLocalNamespace()}.{_item.PascalName}Constants))]");
+            }
 
             //Add known types for all descendants
             foreach (var table in _item.GetTablesInheritedFromHierarchy().OrderBy(x => x.PascalName))
-                sb.AppendLine("	[KnownType(typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + "))]");
+                sb.AppendLine($"	[KnownType(typeof({this.GetLocalNamespace()}.Entity.{table.PascalName}))]");
 
             if (_item.Immutable) // && _item.TypedTable == TypedTableConstants.None
                 sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
@@ -117,7 +123,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("	[HasNoKey]");
 
             var boInterface = this.GetLocalNamespace() + ".IBusinessObject";
-            if (_item.Immutable) boInterface = "" + this.GetLocalNamespace() + ".IReadOnlyBusinessObject";
+            if (_item.Immutable) boInterface = $"{this.GetLocalNamespace()}.IReadOnlyBusinessObject";
 
             if (_model.EnableCustomChangeEvents)
                 boInterface += ", System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging";
@@ -360,7 +366,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
                         if (column.Obsolete)
                             sb.AppendLine("		[System.Obsolete()]");
-                        sb.AppendLine("		public virtual " + this.GetLocalNamespace() + "." + typeTable.PascalName + "Constants" + nullSuffix + " " + pascalRoleName + typeTable.PascalName + "Value");
+                        sb.AppendLine($"		public virtual {this.GetLocalNamespace()}.{typeTable.PascalName}Constants{nullSuffix} {pascalRoleName}{typeTable.PascalName}Value");
                         sb.AppendLine("		{");
                         sb.AppendLine("			get { return (" + this.GetLocalNamespace() + "." + typeTable.PascalName + "Constants" + nullSuffix + ")this." + column.PascalName + "; }");
                         sb.AppendLine("			set { this." + column.PascalName + " = (" + column.GetCodeType(true) + ")value; }");
@@ -375,27 +381,26 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 else
                     sb.AppendLine("		/// The property that maps back to the database '" + column.ParentTable.DatabaseName + "." + column.DatabaseName + "' field.");
 
-
                 //If this field has a related convenience property then explain it
                 if (typeTable != null)
                 {
-                    sb.AppendLine("		/// This property has an additional enumeration wrapper property " + pascalRoleName + typeTable.PascalName + "Value. Use it as a strongly-typed property.");
+                    sb.AppendLine($"		/// This property has an additional enumeration wrapper property {pascalRoleName}{typeTable.PascalName}Value. Use it as a strongly-typed property.");
                 }
                 else if (column.PrimaryKey && _item.TypedTable != TypedTableConstants.None)
                 {
-                    sb.AppendLine("		/// This property has an additional enumeration wrapper property " + pascalRoleName + typeTable.PascalName + "Value. Use it as a strongly-typed property.");
+                    sb.AppendLine($"		/// This property has an additional enumeration wrapper property {pascalRoleName}{typeTable.PascalName}Value. Use it as a strongly-typed property.");
                 }
 
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		/// <remarks>" + column.GetIntellisenseRemarks() + "</remarks>");
+                sb.AppendLine($"		/// <remarks>{column.GetIntellisenseRemarks()}</remarks>");
 
-                sb.AppendLine("		[System.ComponentModel.DataAnnotations.Display(Name = \"" + column.Name + "\")]");
+                sb.AppendLine($"		[System.ComponentModel.DataAnnotations.Display(Name = \"{column.Name}\")]");
 
                 if (column.ComputedColumn || column.IsReadOnly)
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
 
                 if (!string.IsNullOrEmpty(column.Description))
-                    sb.AppendLine("		[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(column.Description) + "\")]");
+                    sb.AppendLine($"		[System.ComponentModel.Description(\"{StringHelper.ConvertTextToSingleLineCodeString(column.Description)}\")]");
 
                 if (column.DataType.IsTextType() && column.IsMaxLength())
                     sb.AppendLine("		[StringLengthUnbounded]");
@@ -418,19 +423,34 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 //if (column.ComputedColumn)
                 //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)]");
 
+                var typeTableAttr = string.Empty;
                 var propertySetterScope = string.Empty;
                 if (column.ComputedColumn)
                     propertySetterScope = "protected internal ";
                 else if (_item.Immutable && _item.TypedTable == TypedTableConstants.None)
                     propertySetterScope = "protected internal ";
                 else if (_item.TypedTable != TypedTableConstants.None && StringHelper.Match(_item.GetTypeTableCodeDescription(), column.CamelName, true))
+                {
                     propertySetterScope = "protected internal ";
+                    typeTableAttr = "[StaticDataNameField]";
+                }
                 else if (column.Identity == IdentityTypeConstants.Database)
                     propertySetterScope = "protected internal ";
                 else if (column.IsReadOnly)
                     propertySetterScope = "protected internal ";
 
                 var codeType = column.GetCodeType();
+
+                //For type tables add attributes to the PK
+                if (_item.TypedTable != TypedTableConstants.None && column.PrimaryKey)
+                {
+                    sb.AppendLine("		[Key]");
+                    sb.AppendLine("		[StaticDataIdField]");
+                }
+                else if (!string.IsNullOrEmpty(typeTableAttr))
+                {
+                    sb.AppendLine("		[StaticDataNameField]");
+                }
 
                 sb.AppendLine($"		public virtual {codeType} {column.PascalName}");
                 sb.AppendLine("		{");

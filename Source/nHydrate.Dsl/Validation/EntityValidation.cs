@@ -511,6 +511,16 @@ namespace nHydrate.Dsl
 
             #endregion
 
+            #region Type tables cannot have Identity PK
+
+            if ((pkIdentityCount > 0) && (this.TypedEntity != TypedEntityConstants.None))
+            {
+                //If there is an identity column, error
+                context.LogError(string.Format(ValidationHelper.ErrorTextIdentityPKTypeTable, this.Name), string.Empty, this);
+            }
+
+            #endregion
+
             #region Associative table cannot be immutable
 
             if (this.IsAssociative & this.Immutable)
