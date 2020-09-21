@@ -251,7 +251,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
         private void AppendConstructors()
         {
             var scope = "public";
-            if (_item.Immutable || _item.AssociativeTable)
+            if (_item.Immutable) // || _item.AssociativeTable
                 scope = "protected internal";
 
             //For now only create constructor for Immutable
@@ -602,7 +602,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             sb.AppendLine("		/// <summary>");
                             sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? "" : " (role: '" + otherRelation.PascalRoleName + "') (Multiplicity M:N)"));
                             sb.AppendLine("		/// </summary>");
-                            sb.AppendLine($"		protected internal virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {otherRelation.PascalRoleName}{childTable.PascalName}List");
+                            // This was "protected internal" however there are times that a navigation property is needed
+                            sb.AppendLine($"		public virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {otherRelation.PascalRoleName}{childTable.PascalName}List");
                             sb.AppendLine("		{");
                             sb.AppendLine("			get; set;");
                             sb.AppendLine("		}");

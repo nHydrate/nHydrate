@@ -775,8 +775,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             {
                 var name = item.PascalName;
                 var scope = "public";
-                if (item.AssociativeTable)
-                    scope = "protected";
+                //if (item.AssociativeTable)
+                //    scope = "protected";
 
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Entity set for " + item.PascalName);
