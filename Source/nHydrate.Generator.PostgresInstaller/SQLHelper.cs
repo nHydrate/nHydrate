@@ -851,7 +851,7 @@ namespace nHydrate.Generator.PostgresInstaller
             if (table.AllowConcurrencyCheck)
             {
                 sb.AppendLine(",");
-                sb.Append("\t\"" + model.Database.ConcurrencyCheckColumnName + "\" int NOT NULL");
+                sb.Append("\t\"" + model.Database.ConcurrencyCheckColumnName + "\" int NOT NULL DEFAULT 1");
             }
         }
 
@@ -1866,7 +1866,8 @@ namespace nHydrate.Generator.PostgresInstaller
         {
             var sb = new StringBuilder();
             sb.AppendLine($"--ADD COLUMN [{table.DatabaseName}].[{model.TenantColumnName}]");
-            sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN \"{model.TenantColumnName}\" varchar (128) NOT NULL CONSTRAINT \"DF__{table.DatabaseName.ToUpper()}_{model.TenantColumnName.ToUpper()}\" DEFAULT (current_user)");
+            //sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN \"{model.TenantColumnName}\" varchar (128) NOT NULL CONSTRAINT \"DF__{table.DatabaseName.ToUpper()}_{model.TenantColumnName.ToUpper()}\" DEFAULT (current_user)");
+            sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN \"{model.TenantColumnName}\" varchar (128) NOT NULL");
             return sb.ToString();
         }
 
