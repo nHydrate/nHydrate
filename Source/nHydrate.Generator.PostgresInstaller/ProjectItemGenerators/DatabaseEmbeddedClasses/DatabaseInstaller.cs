@@ -80,6 +80,7 @@ namespace PROJECTNAMESPACE
             base.Install(stateSaver);
 
             var commandParams = GetCommandLineParameters();
+            OverrideEnvironmentalVariables(ref commandParams);
 
             var paramUICount = 0;
             var setup = new InstallSetup();
@@ -467,6 +468,55 @@ namespace PROJECTNAMESPACE
             }
 
             return retVal;
+        }
+
+        private void OverrideEnvOneOfArray(string[] possibleKeys, ref Dictionary<string, string> commandParams)
+        {
+            string envValue = null;
+            foreach (string currentKey in possibleKeys)
+            {
+                envValue = Environment.GetEnvironmentVariable(currentKey);
+                if (envValue != null)
+                {
+                    foreach (string keyToRemove in possibleKeys)
+                    {
+                        commandParams.Remove(keyToRemove);
+                    }
+                    commandParams.Add(possibleKeys[0], envValue);
+                    break;
+                }
+            }
+        }
+
+        private void OverrideEnv(string key, ref Dictionary<string, string> commandParams)
+        {
+            var envValue = Environment.GetEnvironmentVariable(key);
+            if (envValue != null && commandParams.ContainsKey(key))
+                commandParams[key] = envValue;
+            else if (envValue != null)
+                commandParams.Add(key, envValue);
+        }
+
+        private void OverrideEnvironmentalVariables(ref Dictionary<string, string> commandParams)
+        {
+            OverrideEnvOneOfArray(PARAMKEYS_APPDB, ref commandParams);
+            OverrideEnvOneOfArray(PARAMKEYS_UPGRADE, ref commandParams);
+            OverrideEnvOneOfArray(PARAMKEYS_CREATE, ref commandParams);
+            OverrideEnvOneOfArray(PARAMKEYS_MASTERDB, ref commandParams);
+            OverrideEnvOneOfArray(PARAMKEYS_NEWNAME, ref commandParams);
+            OverrideEnvOneOfArray(PARAMKEYS_HELP, ref commandParams);
+            OverrideEnvOneOfArray(PARAMKEYS_APPDB, ref commandParams);
+            OverrideEnvOneOfArray(PARAMKEYS_TRAN, ref commandParams);
+            OverrideEnv(PARAMKEYS_SCRIPTFILE, ref commandParams);
+            OverrideEnv(PARAMKEYS_SCRIPTFILEACTION, ref commandParams);
+            OverrideEnv(PARAMKEYS_DBVERSION, ref commandParams);
+            OverrideEnv(PARAMKEYS_VERSIONWARN, ref commandParams);
+            OverrideEnv(PARAMKEYS_SHOWSQL, ref commandParams);
+            OverrideEnv(PARAMKEYS_LOGSQL, ref commandParams);
+            OverrideEnv(PARAMKEYS_SKIPNORMALIZE, ref commandParams);
+            OverrideEnv(PARAMKEYS_HASH, ref commandParams);
+            OverrideEnv(PARAMKEYS_CHECKONLY, ref commandParams);
+            OverrideEnv(PARAMKEYS_QUIET, ref commandParams);
         }
 
         #endregion
