@@ -24,7 +24,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Views
             }
         }
 
-        public override string FileName => "Views.sql";
+        public override string FileName => "Views.pgsql";
 
         private void GenerateContent()
         {

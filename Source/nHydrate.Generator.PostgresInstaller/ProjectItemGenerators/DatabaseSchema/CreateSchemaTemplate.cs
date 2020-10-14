@@ -26,9 +26,9 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
             }
         }
 
-        public override string FileName => "1_CreateSchema.sql";
+        public override string FileName => "1_CreateSchema.pgsql";
 
-        internal string OldFileName => "CreateSchema.sql";
+        internal string OldFileName => "CreateSchema.pgsql";
 
         #endregion
 
@@ -299,7 +299,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
             {
                 //Add Defaults
                 var tempsb = new StringBuilder();
-                foreach (var column in table.GetColumns().Where(x => !x.PrimaryKey))
+                foreach (var column in table.GetColumns().Where(x => !x.PrimaryKey && x.Identity == IdentityTypeConstants.None))
                 {
                     var defaultText = SQLEmit.GetSqlDropColumnDefault(column);
                     if (!string.IsNullOrEmpty(defaultText)) tempsb.Append(defaultText);
@@ -331,7 +331,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
             {
                 //Add Defaults
                 var tempsb = new StringBuilder();
-                foreach (var column in table.GetColumns())
+                foreach (var column in table.GetColumns().Where(x => !x.PrimaryKey && x.Identity == IdentityTypeConstants.None))
                 {
                     var defaultText = SQLEmit.AppendColumnDefaultCreateSQL(column, false);
                     if (!string.IsNullOrEmpty(defaultText)) tempsb.Append(defaultText);

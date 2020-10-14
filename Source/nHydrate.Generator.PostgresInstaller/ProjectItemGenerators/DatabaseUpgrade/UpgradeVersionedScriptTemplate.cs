@@ -36,7 +36,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseUpg
                 var minor = int.Parse(versionNumbers[1]);
                 var revision = int.Parse(versionNumbers[2]);
                 var build = int.Parse(versionNumbers[3]);
-                return string.Format("{0}_{1}_{2}_{3}_{4}_UpgradeScript.sql", new object[] { major.ToString("0000"), minor.ToString("0000"), revision.ToString("0000"), build.ToString("0000"), _model.GeneratedVersion.ToString("0000") });
+                return string.Format("{0}_{1}_{2}_{3}_{4}_UpgradeScript.pgsql", new object[] { major.ToString("0000"), minor.ToString("0000"), revision.ToString("0000"), build.ToString("0000"), _model.GeneratedVersion.ToString("0000") });
             }
         }
 

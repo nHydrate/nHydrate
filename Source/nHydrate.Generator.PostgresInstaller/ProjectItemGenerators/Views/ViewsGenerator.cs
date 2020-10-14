@@ -27,7 +27,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Views
                 sb.Append(template.FileContent);
             }
 
-            var eventArgs = new ProjectItemGeneratedEventArgs("Views.sql", sb.ToString(), ProjectName, this.ParentItemPath, ProjectItemType.Folder, this, true);
+            var eventArgs = new ProjectItemGeneratedEventArgs("Views.pgsql", sb.ToString(), ProjectName, this.ParentItemPath, ProjectItemType.Folder, this, true);
             eventArgs.Properties.Add("BuildAction", 3);
             OnProjectItemGenerated(this, eventArgs);
 

@@ -28,9 +28,9 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
             }
         }
 
-        public override string FileName => "2_CreateData.sql";
+        public override string FileName => "2_CreateData.pgsql";
 
-        internal string OldFileName => "CreateData.sql";
+        internal string OldFileName => "CreateData.pgsql";
 
         #endregion
 

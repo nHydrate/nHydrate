@@ -27,7 +27,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
             }
         }
 
-        public override string FileName => "3_CreateRelations.sql";
+        public override string FileName => "3_CreateRelations.pgsql";
 
         #endregion
 

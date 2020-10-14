@@ -36,7 +36,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Unversioned
                 var minor = int.Parse(versionNumbers[1]);
                 var revision = int.Parse(versionNumbers[2]);
                 var build = int.Parse(versionNumbers[3]);
-                return string.Format("UnversionedUpgradeScript.sql", new object[] { major, minor, revision, build, _model.GeneratedVersion });
+                return string.Format("UnversionedUpgradeScript.pgsql", new object[] { major, minor, revision, build, _model.GeneratedVersion });
             }
         }
 

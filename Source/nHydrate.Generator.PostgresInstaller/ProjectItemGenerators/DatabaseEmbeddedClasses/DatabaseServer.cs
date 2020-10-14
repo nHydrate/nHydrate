@@ -593,7 +593,7 @@ namespace PROJECTNAMESPACE
 
             #region Load Full Script
             var fullScript = string.Empty;
-            if (resourceFileName.ToLower().EndsWith(".sql"))
+            if (resourceFileName.ToLower().EndsWith(".pgsql"))
             {
                 var asm = Assembly.GetExecutingAssembly();
                 var manifestStream = asm.GetManifestResourceStream(resourceFileName);

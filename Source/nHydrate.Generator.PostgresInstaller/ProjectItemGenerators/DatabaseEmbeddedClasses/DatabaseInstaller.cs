@@ -478,7 +478,7 @@ namespace PROJECTNAMESPACE
         {
             //Create Help dialog
             var sb = new StringBuilder();
-            sb.AppendLine("Creates or updates a Sql Server database");
+            sb.AppendLine("Creates or updates a Postgres database");
             sb.AppendLine();
             sb.AppendLine("InstallUtil.exe PROJECTNAMESPACE.dll [/upgrade] [/create] [/master:connectionstring] [/connectionstring:connectionstring] [/newdb:name] [/showsql:true|false] [/tranaction:true|false] [/skipnormalize] [/scriptfile:filename] [/scriptfileaction:append] [/checkonly] [/usehash] [/acceptwarnings:all|none|new|changed]");
             sb.AppendLine();
@@ -558,7 +558,7 @@ namespace PROJECTNAMESPACE
         }
 
         /// <summary>
-        /// The connection information to the SQL Server master database
+        /// The connection information to the Postgres master database
         /// </summary>
         public string MasterConnectionString { get; set; }
 
