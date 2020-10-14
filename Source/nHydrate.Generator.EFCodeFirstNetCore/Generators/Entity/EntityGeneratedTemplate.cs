@@ -70,7 +70,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("	/// <summary>");
 
                 if (string.IsNullOrEmpty(_item.Description))
-                    sb.AppendLine("	/// The '" + _item.PascalName + "' entity");
+                    sb.AppendLine($"	/// The '{_item.PascalName}' entity");
                 else
                     StringHelper.LineBreakCode(sb, _item.Description, "	/// ");
                 sb.AppendLine("	/// </summary>");
@@ -188,6 +188,16 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("	#endregion");
                 sb.AppendLine();
             }
+
+            sb.AppendLine("		public readonly struct MaxLengthValues");
+            sb.AppendLine("		{");
+            foreach (var column in _item.GetColumns().Where(x => x.DataType.IsTextType()))
+            {
+                var length = column.Length == 0 ? int.MaxValue : column.Length;
+                sb.AppendLine($"			public const int {column.PascalName} = {length};");
+            }
+            sb.AppendLine("		}");
+            sb.AppendLine();
 
             sb.AppendLine("		#region FieldNameConstants Enumeration");
             sb.AppendLine();
@@ -405,7 +415,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 if (column.DataType.IsTextType() && column.IsMaxLength())
                     sb.AppendLine("		[StringLengthUnbounded]");
                 else if (column.DataType.IsTextType() && !column.IsMaxLength())
-                    sb.AppendLine($"		[System.ComponentModel.DataAnnotations.StringLength({column.Length})]");
+                    sb.AppendLine($"		[System.ComponentModel.DataAnnotations.StringLength(MaxLengthValues.{column.PascalName})]");
 
                 sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 
@@ -749,7 +759,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("			{");
             foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
             {
-                sb.AppendLine("				case " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ":");
+                sb.AppendLine($"				case {this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants.{column.PascalName}:");
                 if (_item.GetColumns().Contains(column))
                 {
                     //This is an actual column in this table
@@ -776,7 +786,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             if ((column.Length == 0) && (column.DataType.SupportsMax()))
                                 sb.AppendLine("					return int.MaxValue;");
                             else
-                                sb.AppendLine($"					return {column.Length};");
+                                sb.AppendLine($"					return MaxLengthValues.{column.PascalName};");
                             break;
                         default:
                             sb.AppendLine($"					return 0; //Type={column.DataType}");
