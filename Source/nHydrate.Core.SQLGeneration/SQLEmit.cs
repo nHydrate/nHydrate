@@ -1175,7 +1175,12 @@ namespace nHydrate.Core.SQLGeneration
 
         public static Dictionary<TableIndexColumn, Column> GetIndexColumns(Table table, TableIndex index)
         {
+            var model = table.Root as ModelRoot;
+
             var columnList = new Dictionary<TableIndexColumn, Column>();
+            if (table.IsTenant)
+                columnList.Add(model.TenantColumnName);
+
             foreach (var indexColumn in index.IndexColumnList)
             {
                 var column = table.GetColumns().FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
@@ -1188,6 +1193,8 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetIndexName(Table table, TableIndex index)
         {
+            var model = table.Root as ModelRoot;
+
             //Make sure that the index name is the same each time
             var columnList = GetIndexColumns(table, index);
             var prefix = (index.PrimaryKey ? "PK" : "IDX");
@@ -1256,8 +1263,8 @@ namespace nHydrate.Core.SQLGeneration
             if (columnList.Count > 0)
             {
                 sb.AppendLine("--DELETE INDEX");
-                sb.AppendLine("if exists(select * from sys.indexes where name = '" + indexName + "')");
-                sb.AppendLine("DROP INDEX [" + indexName + "] ON [" + table.GetSQLSchema() + "].[" + tableName + "]");
+                sb.AppendLine($"if exists(select * from sys.indexes where name = '{indexName}')");
+                sb.AppendLine($"DROP INDEX [{indexName}] ON [{table.GetSQLSchema()}].[{tableName}]");
             }
 
             return sb.ToString();
@@ -1265,7 +1272,7 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetSqlTenantIndex(ModelRoot model, Table table)
         {
-            var indexName = "IDX_" + table.DatabaseName.Replace("-", string.Empty) + "_" + model.TenantColumnName;
+            var indexName = $"IDX_{table.DatabaseName.Replace("-", string.Empty)}_{model.TenantColumnName}";
             indexName = indexName.ToUpper();
             var sb = new StringBuilder();
             sb.AppendLine($"--INDEX FOR TABLE [{table.DatabaseName}] TENANT COLUMN: [{model.TenantColumnName}]");

@@ -1,8 +1,8 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace nHydrate.Core.SQLGeneration
 {
@@ -15,24 +15,19 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetSQLIndexField(Table table, TableIndex tableIndex)
         {
-            try
+            var model = table.Root as ModelRoot;
+            var keyList = new List<string>();
+
+            //If tenant table then the tenant id should be first field
+            if (table.IsTenant)
+                keyList.Add($"[{model.TenantColumnName}]");
+
+            foreach (var indexColumn in tableIndex.IndexColumnList)
             {
-                var sb = new StringBuilder();
-                var index = 0;
-                foreach (var indexColumn in tableIndex.IndexColumnList)
-                {
-                    var column = table.GetColumns().FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
-                    sb.Append("[" + column.DatabaseName + "]");
-                    if (index < tableIndex.IndexColumnList.Count - 1)
-                        sb.Append(",");
-                    index++;
-                }
-                return sb.ToString();
+                var column = table.GetColumns().FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
+                keyList.Add($"[{column.DatabaseName}]");
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return string.Join("", keyList);
         }
 
     }
