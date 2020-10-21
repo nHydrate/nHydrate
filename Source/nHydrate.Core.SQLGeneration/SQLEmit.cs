@@ -1175,12 +1175,7 @@ namespace nHydrate.Core.SQLGeneration
 
         public static Dictionary<TableIndexColumn, Column> GetIndexColumns(Table table, TableIndex index)
         {
-            var model = table.Root as ModelRoot;
-
             var columnList = new Dictionary<TableIndexColumn, Column>();
-            if (table.IsTenant)
-                columnList.Add(model.TenantColumnName);
-
             foreach (var indexColumn in index.IndexColumnList)
             {
                 var column = table.GetColumns().FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
@@ -1243,7 +1238,15 @@ namespace nHydrate.Core.SQLGeneration
                     sb.AppendLine($"--INDEX FOR TABLE [{table.DatabaseName}] COLUMNS:" + string.Join(", ", columnList.Select(x => "[" + x.Value.DatabaseName + "]")));
                     sb.AppendLine($"if not exists(select * from sys.indexes where name = '{indexName}') and " + string.Join(" and ", checkSqlList));
                     sb.Append($"CREATE " + (index.IsUnique ? "UNIQUE " : string.Empty) + (index.Clustered ? "CLUSTERED " : "NONCLUSTERED ") + "INDEX [" + indexName + "] ON [" + table.GetSQLSchema() + "].[" + tableName + "] (");
-                    sb.Append(string.Join(",", columnList.Select(x => "[" + x.Value.DatabaseName + "] " + (x.Key.Ascending ? "ASC" : "DESC"))));
+
+                    var cols = columnList.Select(x => "[" + x.Value.DatabaseName + "] " + (x.Key.Ascending ? "ASC" : "DESC")).ToList();
+
+                    //If tenant table then indexes start with Tenant ID
+                    if (table.IsTenant)
+                        cols.Insert(0, $"[{model.TenantColumnName}]");
+
+                    sb.Append(string.Join(",", cols));
+
                     sb.AppendLine(")");
                 }
 
@@ -1312,7 +1315,6 @@ namespace nHydrate.Core.SQLGeneration
                     sb.Append(")");
                     sb.AppendLine();
                 }
-
                 return sb.ToString();
             }
             catch (Exception ex)

@@ -19,15 +19,15 @@ namespace nHydrate.Core.SQLGeneration
             var keyList = new List<string>();
 
             //If tenant table then the tenant id should be first field
-            if (table.IsTenant)
-                keyList.Add($"[{model.TenantColumnName}]");
+            //if (table.IsTenant)
+            //    keyList.Add($"[{model.TenantColumnName}]");
 
             foreach (var indexColumn in tableIndex.IndexColumnList)
             {
                 var column = table.GetColumns().FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
                 keyList.Add($"[{column.DatabaseName}]");
             }
-            return string.Join("", keyList);
+            return string.Join(", ", keyList);
         }
 
     }

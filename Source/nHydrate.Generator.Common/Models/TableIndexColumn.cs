@@ -35,7 +35,10 @@ namespace nHydrate.Generator.Common.Models
             get
             {
                 var modelRoot = this.Root as ModelRoot;
-                var field = modelRoot.Database.Tables.ToList().SelectMany(x => x.GetColumns()).FirstOrDefault(x => new Guid(x.Key) == this.FieldID);
+                var field = modelRoot.Database
+                    .Tables
+                    .ToList().SelectMany(x => x.GetColumns())
+                    .FirstOrDefault(x => new Guid(x.Key) == this.FieldID);
                 var fieldName = string.Empty;
                 if (field != null) fieldName = field.DatabaseName;
                 var prehash =
@@ -50,7 +53,11 @@ namespace nHydrate.Generator.Common.Models
             get
             {
                 var modelRoot = this.Root as ModelRoot;
-                var field = modelRoot.Database.Tables.ToList().SelectMany(x => x.GetColumns()).FirstOrDefault(x => new Guid(x.Key) == this.FieldID);
+                var field = modelRoot.Database
+                    .Tables
+                    .ToList()
+                    .SelectMany(x => x.GetColumns())
+                    .FirstOrDefault(x => new Guid(x.Key) == this.FieldID);
                 var key = string.Empty;
                 if (field != null) key = field.Key;
                 var prehash =

@@ -304,7 +304,7 @@ namespace nHydrate.Generator.PostgresInstaller
                                 }
 
                                 var tableName = Globals.GetTableDatabaseName(modelNew, newT);
-                                var pkName = "PK_" + tableName;
+                                var pkName = $"PK_{tableName}";
                                 pkName = pkName.ToUpper();
                                 sb.AppendLine($"----DROP PRIMARY KEY FOR TABLE [{tableName}]");
                                 sb.AppendLine($"--if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
@@ -779,7 +779,15 @@ namespace nHydrate.Generator.PostgresInstaller
 
                     sb.AppendLine($"--INDEX FOR TABLE [{table.DatabaseName}] COLUMNS:" + string.Join(", ", columnList.Select(x => "[" + x.Value.DatabaseName + "]")));
                     sb.Append($"CREATE INDEX IF NOT EXISTS \"" + indexName + "\" ON \"" + table.GetPostgresSchema() + "\".\"" + tableName + "\" (");
-                    sb.Append(string.Join(",", columnList.Select(x => "\"" + x.Value.DatabaseName + "\" " + (x.Key.Ascending ? "ASC" : "DESC"))));
+
+                    var cols = columnList.Select(x => "\"" + x.Value.DatabaseName + "\" " + (x.Key.Ascending ? "ASC" : "DESC")).ToList();
+
+                    //If tenant table then indexes start with Tenant ID
+                    if (table.IsTenant)
+                        cols.Insert(0, $"\"{model.TenantColumnName}\"");
+
+                    sb.Append(string.Join(",", cols));
+
                     sb.AppendLine(");");
                 }
 
@@ -792,17 +800,19 @@ namespace nHydrate.Generator.PostgresInstaller
         {
             try
             {
-                var sb = new StringBuilder();
-                var index = 0;
+                var model = table.Root as ModelRoot;
+                var keyList = new List<string>();
+
+                //If tenant table then the tenant id should be first field
+                //if (table.IsTenant)
+                //    keyList.Add($"\"{model.TenantColumnName}\"");
+
                 foreach (var indexColumn in tableIndex.IndexColumnList)
                 {
                     var column = table.GetColumns().FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
-                    sb.Append("\"" + column.DatabaseName + "\"");
-                    if (index < tableIndex.IndexColumnList.Count - 1)
-                        sb.Append(",");
-                    index++;
+                    keyList.Add($"\"{column.DatabaseName}\"");
                 }
-                return sb.ToString();
+                return string.Join(", ", keyList);
             }
             catch (Exception ex)
             {
@@ -826,11 +836,11 @@ namespace nHydrate.Generator.PostgresInstaller
         {
             if (table.AllowCreateAudit)
             {
-                var defaultName = "DF__" + table.DatabaseName + "_" + model.Database.CreatedDateColumnName;
+                var defaultName = $"DF__{table.DatabaseName}_{model.Database.CreatedDateColumnName}";
                 defaultName = defaultName.ToUpper();
                 sb.AppendLine(",");
-                sb.AppendLine("\t\"" + model.Database.CreatedByColumnName + "\" Varchar (50) NULL,");
-                sb.Append("\t\"" + model.Database.CreatedDateColumnName + "\" timestamp CONSTRAINT " + defaultName + " NOT NULL DEFAULT current_timestamp");
+                sb.AppendLine($"\t\"{model.Database.CreatedByColumnName}\" Varchar (50) NULL,");
+                sb.Append($"\t\"{model.Database.CreatedDateColumnName}\" timestamp CONSTRAINT {defaultName} NOT NULL DEFAULT current_timestamp");
             }
         }
 
@@ -838,11 +848,11 @@ namespace nHydrate.Generator.PostgresInstaller
         {
             if (table.AllowModifiedAudit)
             {
-                var defaultName = "DF__" + table.DatabaseName + "_" + model.Database.ModifiedDateColumnName;
+                var defaultName = $"DF__{table.DatabaseName}_{model.Database.ModifiedDateColumnName}";
                 defaultName = defaultName.ToUpper();
                 sb.AppendLine(",");
-                sb.AppendLine("\t\"" + model.Database.ModifiedByColumnName + "\" Varchar (50) NULL,");
-                sb.Append("\t\"" + model.Database.ModifiedDateColumnName + "\" timestamp CONSTRAINT " + defaultName + " NOT NULL DEFAULT current_timestamp");
+                sb.AppendLine($"\t\"{model.Database.ModifiedByColumnName}\" Varchar (50) NULL,");
+                sb.Append($"\t\"{model.Database.ModifiedDateColumnName}\" timestamp CONSTRAINT " + defaultName + " NOT NULL DEFAULT current_timestamp");
             }
         }
 
@@ -851,7 +861,7 @@ namespace nHydrate.Generator.PostgresInstaller
             if (table.AllowConcurrencyCheck)
             {
                 sb.AppendLine(",");
-                sb.Append("\t\"" + model.Database.ConcurrencyCheckColumnName + "\" int NOT NULL DEFAULT 1");
+                sb.Append($"\t\"{model.Database.ConcurrencyCheckColumnName}\" int NOT NULL DEFAULT 1");
             }
         }
 
