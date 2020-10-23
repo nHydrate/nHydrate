@@ -240,8 +240,7 @@ namespace nHydrate.Generator.PostgresInstaller
                             //Drop default
                             var defaultName = "DF__" + newT.DatabaseName.ToUpper() + "_" + modelNew.TenantColumnName.ToUpper();
                             sb.AppendLine("--DELETE TENANT DEFAULT FOR [" + newT.DatabaseName + "]");
-                            sb.AppendLine("if exists (select name from sys.objects where name = '" + defaultName + "'  AND type = 'D')");
-                            sb.AppendLine("ALTER TABLE [" + newT.GetPostgresSchema() + "].[" + newT.DatabaseName + "] DROP CONSTRAINT IF EXISTS [" + defaultName + "];");
+                            sb.AppendLine("ALTER TABLE IF EXISTS " + newT.GetPostgresSchema() + ".\"" + newT.DatabaseName + "\" DROP CONSTRAINT IF EXISTS \"" + defaultName + "\";");
                             sb.AppendLine();
 
                             if (newT.PascalName != newT.DatabaseName)
@@ -249,21 +248,18 @@ namespace nHydrate.Generator.PostgresInstaller
                                 //This is for the mistake in name when released. Remove this default June 2013
                                 defaultName = $"DF__{newT.PascalName}_{modelNew.TenantColumnName}".ToUpper();
                                 sb.AppendLine($"--DELETE TENANT DEFAULT FOR [{newT.DatabaseName}]");
-                                sb.AppendLine($"if exists (select name from sys.objects where name = '{defaultName}'  AND type = 'D')");
-                                sb.AppendLine($"ALTER TABLE [{newT.GetPostgresSchema()}].[{newT.DatabaseName}] DROP CONSTRAINT IF EXISTS [{defaultName}];");
+                                sb.AppendLine($"ALTER TABLE IF EXISTS {newT.GetPostgresSchema()}.\"{newT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{defaultName}\";");
                                 sb.AppendLine();
                             }
 
                             //Drop Index
                             var indexName = "IDX_" + newT.DatabaseName.Replace("-", string.Empty) + "_" + modelNew.TenantColumnName;
                             indexName = indexName.ToUpper();
-                            sb.AppendLine($"if exists (select * from sys.indexes where name = '{indexName}')");
-                            sb.AppendLine($"DROP INDEX [{indexName}] ON [{newT.GetPostgresSchema()}].[{newT.DatabaseName}]");
+                            sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\";");
                             sb.AppendLine();
 
                             //Drop the tenant field
-                            sb.AppendLine($"if exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id where c.name = '{modelNew.TenantColumnName}' and t.name = '{newT.DatabaseName}')");
-                            sb.AppendLine($"ALTER TABLE [{newT.GetPostgresSchema()}].[{newT.DatabaseName}] DROP COLUMN [{modelNew.TenantColumnName}]");
+                            sb.AppendLine($"ALTER TABLE IF EXISTS {newT.GetPostgresSchema()}.\"{newT.DatabaseName}\" DROP COLUMN IF EXISTS \"{modelNew.TenantColumnName}\"");
                             sb.AppendLine();
                         }
                         else if (!oldT.IsTenant && newT.IsTenant)
@@ -885,13 +881,21 @@ namespace nHydrate.Generator.PostgresInstaller
                 if (tableIndex != null)
                 {
                     var indexName = $"PK_{table.DatabaseName.ToUpper()}";
+
                     sb.AppendLine($"--PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
-                    sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{table.DatabaseName}\" WITH NOCHECK ADD ");
+                    sb.AppendLine("DO");
+                    sb.AppendLine("$$ BEGIN");
+                    sb.AppendLine($"IF NOT EXISTS(SELECT 1 FROM pg_constraint WHERE conname = '{indexName}')");
+                    sb.AppendLine("THEN");
+                    sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD ");
                     //TODO: handle tableIndex.Clustered
                     sb.AppendLine($"CONSTRAINT \"{indexName}\" PRIMARY KEY ");
                     sb.AppendLine("(");
                     sb.AppendLine("\t" + GetSQLIndexField(table, tableIndex));
                     sb.AppendLine(");");
+                    sb.AppendLine("END IF;");
+                    sb.AppendLine("END");
+                    sb.AppendLine("$$");
                     sb.AppendLine();
                 }
                 return sb.ToString();
@@ -1260,7 +1264,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 indexName = CreateIndexName(t, c);
                 indexName = indexName.ToUpper();
                 sb.AppendLine("--DELETE INDEX");
-                sb.AppendLine($"DROP INDEX [{indexName}] ON [{t.DatabaseName}]");
+                sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\";");
                 sb.AppendLine();
             }
 
@@ -1682,7 +1686,8 @@ namespace nHydrate.Generator.PostgresInstaller
 
             #region Delete Defaults
 
-            sb.AppendLine(GetSqlDropColumnDefault(oldColumn, true));
+            if (oldColumn.Identity == IdentityTypeConstants.None)
+                sb.AppendLine(GetSqlDropColumnDefault(oldColumn, true));
             sb.Append(AppendColumnDefaultRemoveSql(newColumn));
 
             #endregion
@@ -1692,14 +1697,15 @@ namespace nHydrate.Generator.PostgresInstaller
             //Only change if the column type, length, or nullable values have changed
             if (oldColumn.DataType != newColumn.DataType || oldColumn.Length != newColumn.Length || oldColumn.AllowNull != newColumn.AllowNull)
             {
-                sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + newColumn.DatabaseName + "' and o.name = '" + newTable.DatabaseName + "')");
-                sb.AppendLine("BEGIN");
+                //sb.AppendLine("if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + newColumn.DatabaseName + "' and o.name = '" + newTable.DatabaseName + "')");
+                //sb.AppendLine("BEGIN");
 
                 sb.AppendLine(AppendColumnDefaultCreateSQL(newColumn));
                 if (newColumn.ComputedColumn)
                 {
+                    //TODO
                     sb.AppendLine("--DROP COLUMN");
-                    sb.AppendLine($"ALTER TABLE {newTable.GetPostgresSchema()}.\"" + newTable.DatabaseName + "\" DROP COLUMN IF EXISTS " + AppendColumnDefinition(newColumn, allowDefault: false, allowIdentity: false));
+                    //sb.AppendLine($"ALTER TABLE {newTable.GetPostgresSchema()}.\"" + newTable.DatabaseName + "\" DROP COLUMN IF EXISTS " + AppendColumnDefinition(newColumn, allowDefault: false, allowIdentity: false));
                 }
                 else
                 {
@@ -1722,121 +1728,137 @@ namespace nHydrate.Generator.PostgresInstaller
                             if (newColumn.DataType.IsTextType() || newColumn.DataType.IsDateType())
                                 dValue = "'" + dValue.Replace("'", "''") + "'";
 
-                            sb.AppendLine("--UPDATE [" + newTable.GetPostgresSchema() + "].[" + newTable.DatabaseName + "] SET [" + newColumn.DatabaseName + "] = " + dValue + " WHERE [" + newColumn.DatabaseName + "] IS NULL");
+                            sb.AppendLine("--UPDATE " + newTable.GetPostgresSchema() + ".\"" + newTable.DatabaseName + "\" SET \"" + newColumn.DatabaseName + "\" = " + dValue + " WHERE \"" + newColumn.DatabaseName + "\" IS NULL");
                         }
+                        sb.AppendLine();
+
+                        sb.AppendLine("--UPDATE COLUMN");
+                        sb.AppendLine("ALTER TABLE IF EXISTS " + newTable.GetPostgresSchema() + ".\"" + newTable.DatabaseName + "\" ALTER COLUMN \"" + newColumn.DatabaseName + "\" SET NOT NULL;");
+                        sb.AppendLine();
+                    }
+                    else if (newColumn.AllowNull && !oldColumn.AllowNull)
+                    {
+                        sb.AppendLine("--UPDATE COLUMN");
+                        sb.AppendLine("ALTER TABLE IF EXISTS " + newTable.GetPostgresSchema() + ".\"" + newTable.DatabaseName + "\" ALTER COLUMN \"" + newColumn.DatabaseName + "\" DROP NOT NULL;");
                         sb.AppendLine();
                     }
 
-                    sb.AppendLine("--UPDATE COLUMN");
-                    sb.AppendLine("ALTER TABLE " + newTable.GetPostgresSchema() + ".\"" + newTable.DatabaseName + "\" ALTER COLUMN " + AppendColumnDefinition(newColumn, allowDefault: false, allowIdentity: false));
-                    sb.AppendLine();
+                    //Change data type
+                    if (newColumn.DataType != oldColumn.DataType)
+                    {
+                        sb.AppendLine("--UPDATE COLUMN: Change data type");
+                        sb.AppendLine("ALTER TABLE IF EXISTS " + newTable.GetPostgresSchema() + ".\"" + newTable.DatabaseName + "\" ALTER COLUMN \"" + newColumn.DatabaseName + "\" TYPE " + newColumn.PostgresDatabaseType() + ";");
+                        sb.AppendLine();
+                    }
+
                 }
-                sb.AppendLine("END");
+                //sb.AppendLine("END");
             }
 
             #endregion
 
+            //TODO
             #region Change Identity
 
             //If old column was Identity and it has been removed then remove it
-            if (newColumn.Identity == IdentityTypeConstants.None && oldColumn.Identity == IdentityTypeConstants.Database)
-            {
-                //Check PK
-                if (oldColumn.PrimaryKey)
-                {
-                    var indexName = "PK_" + newTable.DatabaseName;
-                    sb.AppendLine("--UNCOMMENT TO DELETE THE PRIMARY KEY CONSTRAINT IF NECESSARY");
-                    sb.AppendLine($"--if exists(select * from sys.indexes where name = '{indexName}')");
-                    sb.AppendLine($"--ALTER TABLE [{newTable.GetPostgresSchema()}].[{newTable.DatabaseName}] DROP CONSTRAINT [{indexName}];");
-                    sb.AppendLine("--GO");
-                    sb.AppendLine();
-                }
+            //if (newColumn.Identity == IdentityTypeConstants.None && oldColumn.Identity == IdentityTypeConstants.Database)
+            //{
+            //    //Check PK
+            //    if (oldColumn.PrimaryKey)
+            //    {
+            //        var indexName = "PK_" + newTable.DatabaseName;
+            //        sb.AppendLine("--UNCOMMENT TO DELETE THE PRIMARY KEY CONSTRAINT IF NECESSARY");
+            //        sb.AppendLine($"--if exists(select * from sys.indexes where name = '{indexName}')");
+            //        sb.AppendLine($"--ALTER TABLE [{newTable.GetPostgresSchema()}].[{newTable.DatabaseName}] DROP CONSTRAINT [{indexName}];");
+            //        sb.AppendLine("--GO");
+            //        sb.AppendLine();
+            //    }
 
-                sb.AppendLine("--NOTE: YOU MAY NEED TO REMOVE OTHER RELATIONSHIPS FOR THIS FIELD HERE");
-                sb.AppendLine();
-                sb.AppendLine("--CREATE A NEW TEMP COLUMN AND MOVE THE DATA THERE");
-                sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] ADD [__TCOL] " + oldColumn.DatabaseType);
-                sb.AppendLine("--GO");
-                sb.AppendLine("UPDATE [" + newTable.DatabaseName + "] SET [__TCOL] = [" + oldColumn.DatabaseName + "]");
-                sb.AppendLine("--GO");
-                sb.AppendLine();
-                sb.AppendLine("--DROP THE ORIGINAL COLUMN WITH THE IDENTITY");
-                sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] DROP COLUMN [" + oldColumn.DatabaseName + "]");
-                sb.AppendLine("--GO");
-                sb.AppendLine();
-                sb.AppendLine("--RENAME THE TEMP COLUMN TO THE ORIGINAL NAME");
-                sb.AppendLine("EXEC sp_rename '" + newTable.DatabaseName + ".__TCOL', '" + newColumn.DatabaseName + "', 'COLUMN';");
-                sb.AppendLine("--GO");
-                sb.AppendLine();
+            //    sb.AppendLine("--NOTE: YOU MAY NEED TO REMOVE OTHER RELATIONSHIPS FOR THIS FIELD HERE");
+            //    sb.AppendLine();
+            //    sb.AppendLine("--CREATE A NEW TEMP COLUMN AND MOVE THE DATA THERE");
+            //    sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] ADD [__TCOL] " + oldColumn.DatabaseType);
+            //    sb.AppendLine("--GO");
+            //    sb.AppendLine("UPDATE [" + newTable.DatabaseName + "] SET [__TCOL] = [" + oldColumn.DatabaseName + "]");
+            //    sb.AppendLine("--GO");
+            //    sb.AppendLine();
+            //    sb.AppendLine("--DROP THE ORIGINAL COLUMN WITH THE IDENTITY");
+            //    sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] DROP COLUMN [" + oldColumn.DatabaseName + "]");
+            //    sb.AppendLine("--GO");
+            //    sb.AppendLine();
+            //    sb.AppendLine("--RENAME THE TEMP COLUMN TO THE ORIGINAL NAME");
+            //    sb.AppendLine("EXEC sp_rename '" + newTable.DatabaseName + ".__TCOL', '" + newColumn.DatabaseName + "', 'COLUMN';");
+            //    sb.AppendLine("--GO");
+            //    sb.AppendLine();
 
-                if (!newColumn.AllowNull)
-                {
-                    sb.AppendLine("--MAKE THE NEW COLUMN NOT NULL AS THE ORIGINAL WAS");
-                    sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] ALTER COLUMN [" + newColumn.DatabaseName + "] " + newColumn.DatabaseType + " NOT NULL");
-                    sb.AppendLine("--GO");
-                    sb.AppendLine();
-                }
-            }
-            else if (newColumn.Identity == IdentityTypeConstants.Database && oldColumn.Identity == IdentityTypeConstants.None)
-            {
-                //sb.AppendLine("--ADD SCRIPT HERE TO CONVERT [" + newTable.DatabaseName + "].[" + newColumn.DatabaseName + "] TO IDENTITY COLUMN");                //Check PK
+            //    if (!newColumn.AllowNull)
+            //    {
+            //        sb.AppendLine("--MAKE THE NEW COLUMN NOT NULL AS THE ORIGINAL WAS");
+            //        sb.AppendLine("ALTER TABLE [" + newTable.DatabaseName + "] ALTER COLUMN [" + newColumn.DatabaseName + "] " + newColumn.DatabaseType + " NOT NULL");
+            //        sb.AppendLine("--GO");
+            //        sb.AppendLine();
+            //    }
+            //}
+            //else if (newColumn.Identity == IdentityTypeConstants.Database && oldColumn.Identity == IdentityTypeConstants.None)
+            //{
+            //    //sb.AppendLine("--ADD SCRIPT HERE TO CONVERT [" + newTable.DatabaseName + "].[" + newColumn.DatabaseName + "] TO IDENTITY COLUMN");                //Check PK
 
-                var tableName = Globals.GetTableDatabaseName(model, newTable);
-                var tempTableName = "__" + tableName;
-                sb.AppendLine("--YOU WILL NEED TO REMOVE ANY RELATIONSHIPS HERE FOR TABLE [" + tableName + "]");
-                sb.AppendLine();
+            //    var tableName = Globals.GetTableDatabaseName(model, newTable);
+            //    var tempTableName = "__" + tableName;
+            //    sb.AppendLine("--YOU WILL NEED TO REMOVE ANY RELATIONSHIPS HERE FOR TABLE [" + tableName + "]");
+            //    sb.AppendLine();
 
-                sb.AppendLine("--DELETE ALL CONSTRAINTS ON THE ORIGINAL TABLE");
-                sb.AppendLine("DECLARE @sql NVARCHAR(MAX);");
-                sb.AppendLine("SET @sql = N'';");
-                sb.AppendLine("SELECT @sql = @sql + N'");
-                sb.AppendLine("  ALTER TABLE ' + QUOTENAME(s.name) + N'.'");
-                sb.AppendLine("  + QUOTENAME(t.name) + N' DROP CONSTRAINT '");
-                sb.AppendLine("  + QUOTENAME(c.name) + ';'");
-                sb.AppendLine("FROM sys.objects AS c INNER JOIN sys.tables AS t ON c.parent_object_id = t.[object_id] INNER JOIN sys.schemas AS s ");
-                sb.AppendLine("ON t.[schema_id] = s.[schema_id]");
-                sb.AppendLine("WHERE c.[type] IN ('D','C','F','PK','UQ') AND t.name = '" + tableName + "'");
-                sb.AppendLine("ORDER BY c.[type];");
-                sb.AppendLine("EXEC(@sql);");
-                sb.AppendLine("--GO");
-                sb.AppendLine();
+            //    sb.AppendLine("--DELETE ALL CONSTRAINTS ON THE ORIGINAL TABLE");
+            //    sb.AppendLine("DECLARE @sql NVARCHAR(MAX);");
+            //    sb.AppendLine("SET @sql = N'';");
+            //    sb.AppendLine("SELECT @sql = @sql + N'");
+            //    sb.AppendLine("  ALTER TABLE ' + QUOTENAME(s.name) + N'.'");
+            //    sb.AppendLine("  + QUOTENAME(t.name) + N' DROP CONSTRAINT '");
+            //    sb.AppendLine("  + QUOTENAME(c.name) + ';'");
+            //    sb.AppendLine("FROM sys.objects AS c INNER JOIN sys.tables AS t ON c.parent_object_id = t.[object_id] INNER JOIN sys.schemas AS s ");
+            //    sb.AppendLine("ON t.[schema_id] = s.[schema_id]");
+            //    sb.AppendLine("WHERE c.[type] IN ('D','C','F','PK','UQ') AND t.name = '" + tableName + "'");
+            //    sb.AppendLine("ORDER BY c.[type];");
+            //    sb.AppendLine("EXEC(@sql);");
+            //    sb.AppendLine("--GO");
+            //    sb.AppendLine();
 
-                //Create temp table
-                sb.AppendLine("--CREATE A TEMP TABLE TO COPY DATA");
-                sb.AppendLine(GetSQLCreateTable(model, newTable, tempTableName, false));
-                sb.AppendLine("--GO");
-                sb.AppendLine();
-                sb.AppendLine("ALTER TABLE [" + tempTableName + "] SET (LOCK_ESCALATION = TABLE)");
-                sb.AppendLine("--GO");
-                sb.AppendLine("SET IDENTITY_INSERT [" + tempTableName + "] ON");
-                sb.AppendLine();
+            //    //Create temp table
+            //    sb.AppendLine("--CREATE A TEMP TABLE TO COPY DATA");
+            //    sb.AppendLine(GetSQLCreateTable(model, newTable, tempTableName, false));
+            //    sb.AppendLine("--GO");
+            //    sb.AppendLine();
+            //    sb.AppendLine("ALTER TABLE [" + tempTableName + "] SET (LOCK_ESCALATION = TABLE)");
+            //    sb.AppendLine("--GO");
+            //    sb.AppendLine("SET IDENTITY_INSERT [" + tempTableName + "] ON");
+            //    sb.AppendLine();
 
-                var fields = newTable.GetColumns().Select(x => x.DatabaseName).ToList();
-                if (newTable.AllowCreateAudit && oldTable.AllowCreateAudit)
-                {
-                    fields.Add(model.Database.CreatedByDatabaseName);
-                    fields.Add(model.Database.CreatedDateDatabaseName);
-                }
-                if (newTable.AllowModifiedAudit && oldTable.AllowModifiedAudit)
-                {
-                    fields.Add(model.Database.ModifiedByDatabaseName);
-                    fields.Add(model.Database.ModifiedDateDatabaseName);
-                }
+            //    var fields = newTable.GetColumns().Select(x => x.DatabaseName).ToList();
+            //    if (newTable.AllowCreateAudit && oldTable.AllowCreateAudit)
+            //    {
+            //        fields.Add(model.Database.CreatedByDatabaseName);
+            //        fields.Add(model.Database.CreatedDateDatabaseName);
+            //    }
+            //    if (newTable.AllowModifiedAudit && oldTable.AllowModifiedAudit)
+            //    {
+            //        fields.Add(model.Database.ModifiedByDatabaseName);
+            //        fields.Add(model.Database.ModifiedDateDatabaseName);
+            //    }
 
-                var fieldSql = string.Join(",", fields.Select(x => "[" + x + "]"));
+            //    var fieldSql = string.Join(",", fields.Select(x => "[" + x + "]"));
 
-                sb.AppendLine("EXEC('INSERT INTO [" + tempTableName + "] (" + fieldSql + ")");
-                sb.AppendLine("    SELECT " + fieldSql + " FROM [" + tableName + "] WITH (HOLDLOCK TABLOCKX)')");
-                sb.AppendLine("--GO");
-                sb.AppendLine();
-                sb.AppendLine("SET IDENTITY_INSERT [" + tempTableName + "] OFF");
-                sb.AppendLine("--GO");
-                sb.AppendLine("DROP TABLE [" + tableName + "]");
-                sb.AppendLine("--GO");
-                sb.AppendLine("--RENAME THE TEMP TABLE TO THE ORIGINAL TABLE NAME");
-                sb.AppendLine("EXEC sp_rename '" + tempTableName + "', '" + tableName + "';");
-                sb.AppendLine("--GO");
-            }
+            //    sb.AppendLine("EXEC('INSERT INTO [" + tempTableName + "] (" + fieldSql + ")");
+            //    sb.AppendLine("    SELECT " + fieldSql + " FROM [" + tableName + "] WITH (HOLDLOCK TABLOCKX)')");
+            //    sb.AppendLine("--GO");
+            //    sb.AppendLine();
+            //    sb.AppendLine("SET IDENTITY_INSERT [" + tempTableName + "] OFF");
+            //    sb.AppendLine("--GO");
+            //    sb.AppendLine("DROP TABLE [" + tableName + "]");
+            //    sb.AppendLine("--GO");
+            //    sb.AppendLine("--RENAME THE TEMP TABLE TO THE ORIGINAL TABLE NAME");
+            //    sb.AppendLine("EXEC sp_rename '" + tempTableName + "', '" + tableName + "';");
+            //    sb.AppendLine("--GO");
+            //}
 
             #endregion
 
@@ -1857,6 +1879,7 @@ namespace nHydrate.Generator.PostgresInstaller
             var table = column.ParentTable;
             var variableName = $"@{column.ParentTable.PascalName}_{column.PascalName}";
             sb.AppendLine("--NOTE: IF YOU HAVE AN NON-MANAGED DEFAULT, ADD SCRIPT TO REMOVE THEM");
+            sb.AppendLine();
             return sb.ToString();
         }
 
