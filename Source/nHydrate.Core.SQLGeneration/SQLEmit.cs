@@ -1188,6 +1188,8 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetIndexName(Table table, TableIndex index)
         {
+            var model = table.Root as ModelRoot;
+
             //Make sure that the index name is the same each time
             var columnList = GetIndexColumns(table, index);
             var prefix = (index.PrimaryKey ? "PK" : "IDX");
@@ -1236,7 +1238,15 @@ namespace nHydrate.Core.SQLGeneration
                     sb.AppendLine($"--INDEX FOR TABLE [{table.DatabaseName}] COLUMNS:" + string.Join(", ", columnList.Select(x => "[" + x.Value.DatabaseName + "]")));
                     sb.AppendLine($"if not exists(select * from sys.indexes where name = '{indexName}') and " + string.Join(" and ", checkSqlList));
                     sb.Append($"CREATE " + (index.IsUnique ? "UNIQUE " : string.Empty) + (index.Clustered ? "CLUSTERED " : "NONCLUSTERED ") + "INDEX [" + indexName + "] ON [" + table.GetSQLSchema() + "].[" + tableName + "] (");
-                    sb.Append(string.Join(",", columnList.Select(x => "[" + x.Value.DatabaseName + "] " + (x.Key.Ascending ? "ASC" : "DESC"))));
+
+                    var cols = columnList.Select(x => "[" + x.Value.DatabaseName + "] " + (x.Key.Ascending ? "ASC" : "DESC")).ToList();
+
+                    //If tenant table then indexes start with Tenant ID
+                    if (table.IsTenant)
+                        cols.Insert(0, $"[{model.TenantColumnName}]");
+
+                    sb.Append(string.Join(",", cols));
+
                     sb.AppendLine(")");
                 }
 
@@ -1256,8 +1266,8 @@ namespace nHydrate.Core.SQLGeneration
             if (columnList.Count > 0)
             {
                 sb.AppendLine("--DELETE INDEX");
-                sb.AppendLine("if exists(select * from sys.indexes where name = '" + indexName + "')");
-                sb.AppendLine("DROP INDEX [" + indexName + "] ON [" + table.GetSQLSchema() + "].[" + tableName + "]");
+                sb.AppendLine($"if exists(select * from sys.indexes where name = '{indexName}')");
+                sb.AppendLine($"DROP INDEX [{indexName}] ON [{table.GetSQLSchema()}].[{tableName}]");
             }
 
             return sb.ToString();
@@ -1265,7 +1275,7 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetSqlTenantIndex(ModelRoot model, Table table)
         {
-            var indexName = "IDX_" + table.DatabaseName.Replace("-", string.Empty) + "_" + model.TenantColumnName;
+            var indexName = $"IDX_{table.DatabaseName.Replace("-", string.Empty)}_{model.TenantColumnName}";
             indexName = indexName.ToUpper();
             var sb = new StringBuilder();
             sb.AppendLine($"--INDEX FOR TABLE [{table.DatabaseName}] TENANT COLUMN: [{model.TenantColumnName}]");
@@ -1305,7 +1315,6 @@ namespace nHydrate.Core.SQLGeneration
                     sb.Append(")");
                     sb.AppendLine();
                 }
-
                 return sb.ToString();
             }
             catch (Exception ex)

@@ -291,7 +291,7 @@ namespace nHydrate.ModelManagement.Entity
 
         private byte isuniqueField;
 
-        private byte lengthField;
+        private int lengthField;
 
         private byte scaleField;
 
@@ -512,7 +512,7 @@ namespace nHydrate.ModelManagement.Entity
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public byte length
+        public int length
         {
             get
             {

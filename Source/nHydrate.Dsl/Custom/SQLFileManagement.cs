@@ -102,7 +102,7 @@ namespace nHydrate.Dsl.Custom
                         nodeField.isprimarykey = field.IsPrimaryKey.ToByte();
                         nodeField.isreadonly = field.IsReadOnly.ToByte();
                         nodeField.isunique = field.IsUnique.ToByte();
-                        nodeField.length = (byte)field.Length;
+                        nodeField.length = field.Length;
                         nodeField.name = field.Name;
                         nodeField.nullable = field.Nullable.ToByte();
                         nodeField.obsolete = field.Obsolete.ToByte();
