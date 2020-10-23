@@ -779,8 +779,8 @@ namespace nHydrate.Generator.PostgresInstaller
                     var cols = columnList.Select(x => "\"" + x.Value.DatabaseName + "\" " + (x.Key.Ascending ? "ASC" : "DESC")).ToList();
 
                     //If tenant table then indexes start with Tenant ID
-                    if (table.IsTenant)
-                        cols.Insert(0, $"\"{model.TenantColumnName}\"");
+                    //if (table.IsTenant)
+                    //    cols.Insert(0, $"\"{model.TenantColumnName}\"");
 
                     sb.Append(string.Join(",", cols));
 
