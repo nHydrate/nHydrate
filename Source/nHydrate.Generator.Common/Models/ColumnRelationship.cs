@@ -7,9 +7,6 @@ namespace nHydrate.Generator.Common.Models
 {
     public class ColumnRelationship : BaseModelObject
     {
-        #region Member Variables
-
-        #endregion
 
         #region Constructor
 
@@ -31,23 +28,13 @@ namespace nHydrate.Generator.Common.Models
 
         public Reference ChildColumnRef { get; set; }
 
-        public Column ParentColumn
-        {
-            get
-            {
-                if (this.ParentColumnRef == null) return null;
-                else return this.ParentColumnRef.Object as Column;
-            }
-        }
+        public Column ParentColumn => this.ParentColumnRef?.Object as Column;
 
         public Column ChildColumn => ChildColumnRef?.Object as Column;
 
         #endregion
 
-        public string CorePropertiesHash
-        {
-            get { return this.ParentColumn.DatabaseName + "|" + this.ChildColumn.DatabaseName; }
-        }
+        public string CorePropertiesHash => $"{this.ParentColumn.DatabaseName}|{this.ChildColumn.DatabaseName}";
 
         #region IXMLable Members
 

@@ -75,10 +75,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
             return output.ToString();
         }
 
-        public static string GetTableDatabaseName(ModelRoot model, Table table)
-        {
-            return table.DatabaseName;
-        }
+        public static string GetTableDatabaseName(ModelRoot model, Table table) => table.DatabaseName;
 
         public static Column GetColumnByKey(ReferenceCollection referenceCollection, string columnKey)
         {
@@ -99,7 +96,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
             {
                 sb.AppendLine("--APPEND AUDIT TRAIL CREATE FOR TABLE [" + table.DatabaseName + "]");
                 sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{model.Database.CreatedByColumnName}\" Varchar (50) NULL;");
-                var dfName = "DF__" + table.DatabaseName + "_" + model.Database.CreatedDateColumnName;
+                var dfName = $"DF__{table.DatabaseName}_{model.Database.CreatedDateColumnName}";
                 dfName = dfName.ToUpper();
                 sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{model.Database.CreatedDateColumnName}\" timestamp CONSTRAINT \"" + dfName + "\" DEFAULT current_timestamp NULL;");
                 sb.AppendLine("--GO");
@@ -117,7 +114,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
             {
                 sb.AppendLine("--APPEND AUDIT TRAIL MODIFY FOR TABLE [" + table.DatabaseName + "]");
                 sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{model.Database.ModifiedByColumnName}\" Varchar (50) NULL;");
-                var dfName = "DF__" + table.DatabaseName + "_" + model.Database.ModifiedDateColumnName;
+                var dfName = $"DF__{table.DatabaseName}_{model.Database.ModifiedDateColumnName}";
                 dfName = dfName.ToUpper();
                 sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{model.Database.ModifiedDateColumnName}\" timestamp CONSTRAINT \"" + dfName + "\" DEFAULT current_timestamp NULL;");
                 sb.AppendLine("--GO");

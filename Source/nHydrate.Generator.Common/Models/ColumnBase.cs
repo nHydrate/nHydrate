@@ -197,18 +197,12 @@ namespace nHydrate.Generator.Common.Models
             }
         }
 
-        public virtual string DatabaseName
-        {
-            get { return this.Name; }
-        }
+        public virtual string DatabaseName => this.Name;
 
         /// <summary>
         /// Gets the SQL Server type mapping for this data type
         /// </summary>
-        public virtual string GetSQLDefaultType()
-        {
-            return GetSQLDefaultType(false);
-        }
+        public virtual string GetSQLDefaultType() => GetSQLDefaultType(false);
 
         /// <summary>
         /// Gets the SQL Server type mapping for this data type
@@ -274,15 +268,9 @@ namespace nHydrate.Generator.Common.Models
             return string.Empty;
         }
 
-        public virtual string GetCodeType()
-        {
-            return GetCodeType(true, false);
-        }
+        public virtual string GetCodeType() => GetCodeType(true, false);
 
-        public virtual string GetCodeType(bool allowNullable)
-        {
-            return GetCodeType(allowNullable, false);
-        }
+        public virtual string GetCodeType(bool allowNullable) => GetCodeType(allowNullable, false);
 
         public virtual string GetCodeType(bool allowNullable, bool forceNull)
         {

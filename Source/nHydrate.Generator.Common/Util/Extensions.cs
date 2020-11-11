@@ -259,5 +259,98 @@ namespace nHydrate.Generator.Common.Util
             return retval;
         }
 
+        public static string GetPostgresDefault(this System.Data.SqlDbType dataType, string defaultValue)
+        {
+            var retval = string.Empty;
+            if ((dataType == System.Data.SqlDbType.DateTime) || (dataType == System.Data.SqlDbType.SmallDateTime))
+            {
+                if (defaultValue == "getdate")
+                {
+                    //retval = defaultValue;
+                }
+                else if (defaultValue == "sysdatetime")
+                {
+                    //retval = defaultValue;
+                }
+                else if (defaultValue == "getutcdate")
+                {
+                    //retval = defaultValue;
+                }
+                else if (defaultValue.StartsWith("getdate+"))
+                {
+                    //Do Nothing - Cannot calculate
+                }
+                //else if (daatType == System.Data.SqlDbType.SmallDateTime)
+                //{
+                //  defaultValue = String.Format("new DateTime(1900, 1, 1)", this.PascalName);
+                //}
+                //else
+                //{
+                //  defaultValue = String.Format("new DateTime(1753, 1, 1)", this.PascalName);
+                //}
+            }
+            else if (dataType == System.Data.SqlDbType.Char)
+            {
+                retval = "' '";
+                if (defaultValue.Length == 1)
+                    retval = "'" + defaultValue[0].ToString().Replace("'", "''") + "'";
+            }
+            else if (dataType.IsBinaryType())
+            {
+                //Do Nothing - Cannot calculate
+            }
+            //else if (dataType == System.Data.SqlDbType.DateTimeOffset)
+            //{
+            //  defaultValue = "DateTimeOffset.MinValue";
+            //}
+            //else if (this.IsDateType)
+            //{
+            //  defaultValue = "System.DateTime.MinValue";
+            //}
+            //else if (dataType == System.Data.SqlDbType.Time)
+            //{
+            //  defaultValue = "0";
+            //}
+            else if (dataType == System.Data.SqlDbType.UniqueIdentifier)
+            {
+                //Do Nothing
+                //if ((StringHelper.Match(defaultValue, "newid", true)) || (StringHelper.Match(defaultValue, "newid()", true)))
+                //  retval = "newid";
+                //else if (string.IsNullOrEmpty(defaultValue))
+                //  retval = string.Empty;
+                //else
+                //{
+                //  Guid g;
+                //  if (Guid.TryParse(defaultValue, out g))
+                //    retval = "'" + g.ToString() + "'";
+                //}
+            }
+            else if (dataType.IsIntegerType())
+            {
+                int i;
+                if (int.TryParse(defaultValue, out i))
+                    retval = defaultValue;
+            }
+            else if (dataType.IsNumericType())
+            {
+                double d;
+                if (double.TryParse(defaultValue, out d))
+                {
+                    retval = defaultValue;
+                }
+            }
+            else if (dataType == System.Data.SqlDbType.Bit)
+            {
+                if (defaultValue == "0" || defaultValue == "1")
+                    retval = (defaultValue == "1") ? "true" : "false";
+            }
+            else
+            {
+                if (dataType.IsTextType() && !string.IsNullOrEmpty(defaultValue))
+                    retval = "'" + defaultValue.Replace("'", "''") + "'";
+            }
+            return retval;
+        }
+
     }
 }
