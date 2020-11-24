@@ -940,7 +940,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the value of one of this object's properties.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public virtual object GetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field)");
+            sb.AppendLine($"		public virtual object GetValue({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field)");
             sb.AppendLine("		{");
             sb.AppendLine("			return GetValue(field, null);");
             sb.AppendLine("		}");
@@ -948,7 +948,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the value of one of this object's properties.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public virtual object GetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, object defaultValue)");
+            sb.AppendLine($"		public virtual object GetValue({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field, object defaultValue)");
             sb.AppendLine("		{");
             var allColumns = _item.GetColumns().ToList();
             foreach (var column in allColumns.OrderBy(x => x.Name))
@@ -964,17 +964,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             if (_item.AllowCreateAudit)
             {
-                sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + _model.Database.CreatedByPascalName + ")");
-                sb.AppendLine("				return ((this." + _model.Database.CreatedByPascalName + " == null) ? defaultValue : this." + _model.Database.CreatedByPascalName + ");");
-                sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + _model.Database.CreatedDatePascalName + ")");
+                sb.AppendLine($"			if (field == {this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants.{_model.Database.CreatedByPascalName})");
+                sb.AppendLine($"				return ((this.{_model.Database.CreatedByPascalName} == null) ? defaultValue : this.{_model.Database.CreatedByPascalName});");
+                sb.AppendLine($"			if (field == {this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants.{_model.Database.CreatedDatePascalName})");
                 sb.AppendLine($"				return this.{_model.Database.CreatedDatePascalName};");
             }
 
             if (_item.AllowModifiedAudit)
             {
-                sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + _model.Database.ModifiedByPascalName + ")");
-                sb.AppendLine("				return ((this." + _model.Database.ModifiedByPascalName + " == null) ? defaultValue : this." + _model.Database.ModifiedByPascalName + ");");
-                sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + _model.Database.ModifiedDatePascalName + ")");
+                sb.AppendLine($"			if (field == {this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants.{_model.Database.ModifiedByPascalName})");
+                sb.AppendLine($"				return ((this.{_model.Database.ModifiedByPascalName} == null) ? defaultValue : this.{_model.Database.ModifiedByPascalName});");
+                sb.AppendLine($"			if (field == {this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants.{_model.Database.ModifiedDatePascalName})");
                 sb.AppendLine($"				return this.{_model.Database.ModifiedDatePascalName};");
             }
 
