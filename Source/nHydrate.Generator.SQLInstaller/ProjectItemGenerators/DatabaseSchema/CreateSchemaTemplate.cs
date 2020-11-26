@@ -11,8 +11,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 {
     public class CreateSchemaTemplate : BaseDbScriptTemplate
     {
-        private StringBuilder sb = new StringBuilder();
-
         #region Constructors
         public CreateSchemaTemplate(ModelRoot model)
             : base(model)
@@ -21,14 +19,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
         #endregion
 
         #region BaseClassTemplate overrides
-        public override string FileContent
-        {
-            get
-            {
-                GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
         public override string FileName => "1_CreateSchema.sql";
 
@@ -37,34 +28,29 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
         #endregion
 
         #region GenerateContent
-        private void GenerateContent()
+        private string Generate()
         {
-            try
-            {
-                sb = new StringBuilder();
-                sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
-                sb.AppendLine("--Data Schema");
-                sb.AppendLine();
+            var sb = new StringBuilder();
+            sb = new StringBuilder();
+            sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
+            sb.AppendLine("--Data Schema");
+            sb.AppendLine();
 
-                this.AppendCreateSchema();
-                this.AppendCreateTable();
-                this.AppendCreateAudit();
-                this.AppendCreatePrimaryKey();
-                this.AppendCreateUniqueKey();
-                this.AppendCreateIndexes();
-                this.AppendRemoveDefaults();
-                this.AppendCreateDefaults();
-                this.AppendVersionTable();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            this.AppendCreateSchema(sb);
+            this.AppendCreateTable(sb);
+            this.AppendCreateAudit(sb);
+            this.AppendCreatePrimaryKey(sb);
+            this.AppendCreateUniqueKey(sb);
+            this.AppendCreateIndexes(sb);
+            this.AppendRemoveDefaults(sb);
+            this.AppendCreateDefaults(sb);
+            this.AppendVersionTable(sb);
+            return sb.ToString();
         }
 
         #region Append CreateTable
 
-        private void AppendCreateSchema()
+        private void AppendCreateSchema(StringBuilder sb)
         {
             var list = new List<string>();
 
@@ -102,7 +88,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         }
 
-        private void AppendCreateTable()
+        private void AppendCreateTable(StringBuilder sb)
         {
             //Emit each create table statement
             foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
@@ -143,7 +129,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         #region Append Primary Key
 
-        private void AppendCreatePrimaryKey()
+        private void AppendCreatePrimaryKey(StringBuilder sb)
         {
             if (_model.EmitSafetyScripts)
             {
@@ -184,7 +170,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         #region AppendCreateIndexes
 
-        private void AppendCreateIndexes()
+        private void AppendCreateIndexes(StringBuilder sb)
         {
             sb.AppendLine("--##SECTION BEGIN [CREATE INDEXES]");
             sb.AppendLine();
@@ -222,7 +208,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         #region AppendCreateUniqueKey
 
-        private void AppendCreateUniqueKey()
+        private void AppendCreateUniqueKey(StringBuilder sb)
         {
             foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
@@ -249,7 +235,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         #region AppendCreateAudit
 
-        private void AppendCreateAudit()
+        private void AppendCreateAudit(StringBuilder sb)
         {
             //These should all be included in the create script so if minimizing scripts just omit these
             if (!_model.EmitSafetyScripts)
@@ -333,7 +319,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         #region AppendDefaults
 
-        private void AppendRemoveDefaults()
+        private void AppendRemoveDefaults(StringBuilder sb)
         {
             //These should all be included in the create script so if minimizing scripts just omit these
             if (!_model.EmitSafetyScripts)
@@ -366,7 +352,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             sb.AppendLine();
         }
 
-        private void AppendCreateDefaults()
+        private void AppendCreateDefaults(StringBuilder sb)
         {
             //These should all be included in the create script so if minimizing scripts just omit these
             if (!_model.EmitSafetyScripts)
@@ -402,7 +388,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         #region AppendVersionTable
 
-        private void AppendVersionTable()
+        private void AppendVersionTable(StringBuilder sb)
         {
             #region Add the schema table
             sb.AppendLine("if not exists(select * from sys.tables where [name] = '__nhydrateschema')");
