@@ -86,17 +86,25 @@ namespace nHydrate.Core.SQLGeneration
             }
 
             //Rename all FK
+            var existingRelations = oldTable.GetRelationsWhereChild().ToList();
             foreach (var relation in newTable.GetRelationsWhereChild())
             {
-                var oldIndexName = "FK_" + relation.RoleName + "_" + oldTable.DatabaseName + "_" + relation.ParentTable.DatabaseName;
-                oldIndexName = oldIndexName.ToUpper();
-                var newIndexName = "FK_" + relation.RoleName + "_" + newTable.DatabaseName + "_" + relation.ParentTable.DatabaseName;
-                newIndexName = newIndexName.ToUpper();
+                var oldParentTable = existingRelations
+                    .FirstOrDefault(x => x.ParentTable.Key == relation.ParentTable.Key &&
+                                        x.ChildTable.Key == relation.ChildTable.Key &&
+                                        x.RoleName == relation.RoleName)
+                    ?.ParentTable;
 
-                sb.AppendLine($"--RENAME FK [{newTable.DatabaseName}].[{oldIndexName}]");
-                sb.AppendLine($"if exists (select * from sys.foreign_keys where name = '{oldIndexName}')");
-                sb.AppendLine($"exec sp_rename @objname='{newTable.GetSQLSchema()}.{oldIndexName}', @newname='{newIndexName}', @objtype='OBJECT';");
-                sb.AppendLine();
+                if (oldParentTable != null)
+                {
+                    var oldIndexName = $"FK_{relation.RoleName}_{oldTable.DatabaseName}_{oldParentTable.DatabaseName}".ToUpper();
+                    var newIndexName = $"FK_{relation.RoleName}_{newTable.DatabaseName}_{relation.ParentTable.DatabaseName}".ToUpper();
+
+                    sb.AppendLine($"--RENAME FK [{oldTable.DatabaseName}].[{oldIndexName}]");
+                    sb.AppendLine($"if exists (select * from sys.foreign_keys where name = '{oldIndexName}')");
+                    sb.AppendLine($"exec sp_rename @objname='{newTable.GetSQLSchema()}.{oldIndexName}', @newname='{newIndexName}', @objtype='OBJECT';");
+                    sb.AppendLine();
+                }
             }
 
             //Rename all indexes for this table's fields
@@ -107,14 +115,14 @@ namespace nHydrate.Core.SQLGeneration
                 {
                     var oldIndexName = CreateIndexName(oldTable, oldColumn);
                     var newIndexName = CreateIndexName(newTable, column);
-                    sb.AppendLine($"--RENAME INDEX [{newTable.DatabaseName}].[{oldIndexName}]");
+                    sb.AppendLine($"--RENAME INDEX [{oldTable.DatabaseName}].[{oldIndexName}]");
                     sb.AppendLine($"if exists (select * from sys.indexes where name = '{oldIndexName}')");
                     sb.AppendLine($"exec sp_rename @objname='{newTable.GetSQLSchema()}.{newTable.DatabaseName}.{oldIndexName}', @newname='{newIndexName}', @objtype='INDEX';");
                     sb.AppendLine();
                 }
             }
 
-            //rename all indexes for this table
+            //Rename all indexes for this table
             foreach (var index in newTable.TableIndexList)
             {
                 var oldIndex = oldTable.TableIndexList.FirstOrDefault(x => x.Key == index.Key);
@@ -122,7 +130,7 @@ namespace nHydrate.Core.SQLGeneration
                 {
                     var oldIndexName = GetIndexName(oldTable, oldIndex);
                     var newIndexName = GetIndexName(newTable, index);
-                    sb.AppendLine($"--RENAME INDEX [{newTable.DatabaseName}].[{oldIndexName}]");
+                    sb.AppendLine($"--RENAME INDEX [{oldTable.DatabaseName}].[{oldIndexName}]");
                     sb.AppendLine($"if exists (select * from sys.indexes where name = '{oldIndexName}')");
                     sb.AppendLine($"exec sp_rename @objname='{newTable.GetSQLSchema()}.{newTable.DatabaseName}.{oldIndexName}', @newname='{newIndexName}', @objtype='INDEX';");
                     sb.AppendLine();
@@ -131,11 +139,22 @@ namespace nHydrate.Core.SQLGeneration
 
             var model = newTable.Root as ModelRoot;
 
+            //Rename tenant field if need be
+            if (newTable.IsTenant && oldTable.IsTenant)
+            {
+                var oldIndexName = $"IDX_{oldTable.DatabaseName.FlatGuid()}_{model.TenantColumnName}".ToUpper();
+                var newIndexName = $"IDX_{newTable.DatabaseName.FlatGuid()}_{model.TenantColumnName}".ToUpper();
+                sb.AppendLine($"--RENAME INDEX [{oldTable.DatabaseName}].[{oldIndexName}]");
+                sb.AppendLine($"if exists (select * from sys.indexes where name = '{oldIndexName}')");
+                sb.AppendLine($"exec sp_rename @objname='{newTable.GetSQLSchema()}.{newTable.DatabaseName}.{oldIndexName}', @newname='{newIndexName}', @objtype='INDEX';");
+                sb.AppendLine();
+            }
+
             //Change the default name for all audit fields
             if (oldTable.AllowCreateAudit)
             {
-                var defaultName = ("DF__" + oldTable.DatabaseName + "_" + model.Database.CreatedDateColumnName).ToUpper();
-                var defaultName2 = ("DF__" + newTable.DatabaseName + "_" + model.Database.CreatedDateColumnName).ToUpper();
+                var defaultName = $"DF__{oldTable.DatabaseName}_{model.Database.CreatedDateColumnName}".ToUpper();
+                var defaultName2 = $"DF__{newTable.DatabaseName}_{model.Database.CreatedDateColumnName}".ToUpper();
                 sb.AppendLine("--CHANGE THE DEFAULT NAME FOR CREATED AUDIT");
                 sb.AppendLine($"if exists (select * from sys.default_constraints where name = '{defaultName}')");
                 sb.AppendLine($"exec sp_rename @objname='{defaultName}', @newname='{defaultName2}';");
@@ -144,8 +163,8 @@ namespace nHydrate.Core.SQLGeneration
 
             if (oldTable.AllowModifiedAudit)
             {
-                var defaultName = ("DF__" + oldTable.DatabaseName + "_" + model.Database.ModifiedDateColumnName).ToUpper();
-                var defaultName2 = ("DF__" + newTable.DatabaseName + "_" + model.Database.ModifiedDateColumnName).ToUpper();
+                var defaultName = $"DF__{oldTable.DatabaseName}_{model.Database.ModifiedDateColumnName}".ToUpper();
+                var defaultName2 = $"DF__{newTable.DatabaseName}_{model.Database.ModifiedDateColumnName}".ToUpper();
                 sb.AppendLine("--CHANGE THE DEFAULT NAME FOR MODIFIED AUDIT");
                 sb.AppendLine($"if exists (select * from sys.default_constraints where name = '{defaultName}')");
                 sb.AppendLine($"exec sp_rename @objname='{defaultName}', @newname='{defaultName2}';");
@@ -364,8 +383,7 @@ namespace nHydrate.Core.SQLGeneration
             {
                 if (string.Compare(column.DatabaseName, c.DatabaseName, true) == 0)
                 {
-                    var indexName = "IX_" + t.Name.Replace("-", "") + "_" + c.Name.Replace("-", string.Empty);
-                    indexName = indexName.ToUpper();
+                    var indexName = $"IX_{t.Name.FlatGuid()}_{c.Name.FlatGuid()}".ToUpper();
                     sb.AppendLine("--DELETE UNIQUE CONTRAINT");
                     sb.AppendLine($"if exists(select * from sys.objects where name = '{indexName}' and type = 'UQ')");
                     sb.AppendLine($"ALTER TABLE [{t.GetSQLSchema()}].[{t.DatabaseName}] DROP CONSTRAINT [{indexName}]");
@@ -536,16 +554,14 @@ namespace nHydrate.Core.SQLGeneration
             if (oldColumn.DataType != newColumn.DataType || oldColumn.AllowNull != newColumn.AllowNull)
             {
                 //Unique Constraint
-                var indexName = "IX_" + newTable.Name.Replace("-", "") + "_" + newColumn.Name.Replace("-", string.Empty);
-                indexName = indexName.ToUpper();
+                var indexName = $"IX_{newTable.Name.FlatGuid()}_{newColumn.Name.FlatGuid()}".ToUpper();
                 sb.AppendLine("--DELETE UNIQUE CONTRAINT");
                 sb.AppendLine($"if exists(select * from sys.objects where name = '{indexName}' and type = 'UQ')");
                 sb.AppendLine($"ALTER TABLE [{newTable.GetSQLSchema()}].[{newTable.DatabaseName}] DROP CONSTRAINT [{indexName}]");
                 sb.AppendLine();
 
                 //Other Index
-                indexName = CreateIndexName(newTable, newColumn);
-                indexName = indexName.ToUpper();
+                indexName = CreateIndexName(newTable, newColumn).ToUpper();
                 sb.AppendLine("--DELETE INDEX");
                 sb.AppendLine($"if exists (select * from sys.indexes where name = '{indexName}')");
                 sb.AppendLine($"DROP INDEX [{indexName}] ON [{newTable.DatabaseName}]");
@@ -567,9 +583,7 @@ namespace nHydrate.Core.SQLGeneration
             if (oldColumn.DataType != newColumn.DataType || oldColumn.Length != newColumn.Length ||
                 oldColumn.AllowNull != newColumn.AllowNull)
             {
-                sb.AppendLine(
-                    "if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" +
-                    newColumn.DatabaseName + "' and o.name = '" + newTable.DatabaseName + "')");
+                sb.AppendLine($"if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '{newColumn.DatabaseName}' and o.name = '{newTable.DatabaseName}')");
                 sb.AppendLine("BEGIN");
 
                 sb.AppendLine(AppendColumnDefaultCreateSQL(newColumn));
@@ -809,8 +823,7 @@ namespace nHydrate.Core.SQLGeneration
 
             foreach (var c in t.GetColumns().Where(x => x.IsUnique))
             {
-                var indexName = "IX_" + t.Name.Replace("-", "") + "_" + c.Name.Replace("-", string.Empty);
-                indexName = indexName.ToUpper();
+                var indexName = $"IX_{t.Name.FlatGuid()}_{c.Name.FlatGuid()}".ToUpper();
                 sb.AppendLine("--DELETE UNIQUE CONTRAINT");
                 sb.AppendLine($"if exists(select * from sys.objects where name = '{indexName}' and type = 'UQ')");
                 sb.AppendLine($"ALTER TABLE [{t.GetSQLSchema()}].[{t.DatabaseName}] DROP CONSTRAINT [{indexName}]");
@@ -823,8 +836,7 @@ namespace nHydrate.Core.SQLGeneration
 
             foreach (var c in t.GetColumns().Where(x => !x.IsUnique))
             {
-                var indexName = "IX_" + t.Name.Replace("-", "") + "_" + c.Name.Replace("-", string.Empty);
-                indexName = indexName.ToUpper();
+                var indexName = $"IX_{t.Name.FlatGuid()}_{c.Name.FlatGuid()}".ToUpper();
                 sb.AppendLine("--DELETE UNIQUE CONTRAINT");
                 sb.AppendLine($"if exists(select * from sys.objects where name = '{indexName}' and type = 'UQ')");
                 sb.AppendLine($"ALTER TABLE [{t.GetSQLSchema()}].[{t.DatabaseName}] DROP CONSTRAINT [{indexName}]");
@@ -1193,7 +1205,7 @@ namespace nHydrate.Core.SQLGeneration
             //Make sure that the index name is the same each time
             var columnList = GetIndexColumns(table, index);
             var prefix = (index.PrimaryKey ? "PK" : "IDX");
-            var indexName = prefix + "_" + table.Name.Replace("-", "") + "_" +
+            var indexName = prefix + "_" + table.Name.FlatGuid() + "_" +
                             string.Join("_", columnList.Select(x => x.Value.Name));
             indexName = indexName.ToUpper();
             return indexName;
@@ -1275,8 +1287,7 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetSqlTenantIndex(ModelRoot model, Table table)
         {
-            var indexName = $"IDX_{table.DatabaseName.Replace("-", string.Empty)}_{model.TenantColumnName}";
-            indexName = indexName.ToUpper();
+            var indexName = $"IDX_{table.DatabaseName.FlatGuid()}_{model.TenantColumnName}".ToUpper();
             var sb = new StringBuilder();
             sb.AppendLine($"--INDEX FOR TABLE [{table.DatabaseName}] TENANT COLUMN: [{model.TenantColumnName}]");
             sb.AppendLine($"if not exists(select * from sys.indexes where name = '{indexName}')");

@@ -253,7 +253,7 @@ namespace nHydrate.Generator.PostgresInstaller
                             }
 
                             //Drop Index
-                            var indexName = $"IDX_{newT.DatabaseName.Replace("-", string.Empty)}_{modelNew.TenantColumnName}".ToUpper();
+                            var indexName = $"IDX_{newT.DatabaseName.FlatGuid()}_{modelNew.TenantColumnName}".ToUpper();
                             sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\";");
                             sb.AppendLine();
 
@@ -738,7 +738,7 @@ namespace nHydrate.Generator.PostgresInstaller
             //Make sure that the index name is the same each time
             var columnList = GetIndexColumns(table, index);
             var prefix = (index.PrimaryKey ? "PK" : "IDX");
-            var indexName = prefix + "_" + table.Name.Replace("-", "") + "_" + string.Join("_", columnList.Select(x => x.Value.Name));
+            var indexName = prefix + "_" + table.Name.FlatGuid() + "_" + string.Join("_", columnList.Select(x => x.Value.Name));
             indexName = indexName.ToUpper();
             return indexName;
         }
@@ -905,7 +905,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlTenantIndex(ModelRoot model, Table table)
         {
-            var indexName = $"IDX_{table.DatabaseName.Replace("-", string.Empty)}_{model.TenantColumnName}".ToUpper();
+            var indexName = $"IDX_{table.DatabaseName.FlatGuid()}_{model.TenantColumnName}".ToUpper();
             var sb = new StringBuilder();
             sb.AppendLine($"--INDEX FOR TABLE [{table.DatabaseName}] TENANT COLUMN: [{model.TenantColumnName}]");
             sb.Append($"CREATE INDEX IF NOT EXISTS \"{indexName}\" ON \"{table.GetPostgresSchema()}\".\"{table.DatabaseName}\" (");
@@ -1239,7 +1239,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
             foreach (var c in t.GetColumns().Where(x => x.IsUnique))
             {
-                var indexName = "IX_" + t.Name.Replace("-", "") + "_" + c.Name.Replace("-", string.Empty);
+                var indexName = "IX_" + t.Name.FlatGuid() + "_" + c.Name.FlatGuid();
                 indexName = indexName.ToUpper();
                 sb.AppendLine("--DELETE UNIQUE CONTRAINT");
                 sb.AppendLine($"ALTER TABLE {t.GetPostgresSchema()}.\"{t.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
@@ -1252,7 +1252,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
             foreach (var c in t.GetColumns().Where(x => !x.IsUnique))
             {
-                var indexName = "IX_" + t.Name.Replace("-", "") + "_" + c.Name.Replace("-", string.Empty);
+                var indexName = "IX_" + t.Name.FlatGuid() + "_" + c.Name.FlatGuid();
                 indexName = indexName.ToUpper();
                 sb.AppendLine("--DELETE UNIQUE CONTRAINT");
                 sb.AppendLine($"ALTER TABLE {t.GetPostgresSchema()}.\"{t.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
@@ -1292,7 +1292,7 @@ namespace nHydrate.Generator.PostgresInstaller
             //RENAME TABLE
             var sb = new StringBuilder();
             sb.AppendLine($"--RENAME TABLE '{oldTable.DatabaseName}' TO '{newTable.DatabaseName}'");
-            sb.AppendLine($"ALTER TABLE IF EXISTS \"{oldTable.GetPostgresSchema()}\".\"{oldTable.DatabaseName}\" RENAME TO \"{newTable.GetPostgresSchema()}\".\"{newTable.DatabaseName}\";");
+            sb.AppendLine($"ALTER TABLE IF EXISTS \"{oldTable.GetPostgresSchema()}\".\"{oldTable.DatabaseName}\" RENAME TO \"{newTable.DatabaseName}\";");
             sb.AppendLine("--GO");
             sb.AppendLine();
 
@@ -1306,14 +1306,24 @@ namespace nHydrate.Generator.PostgresInstaller
             }
 
             //Rename all FK
+            var existingRelations = oldTable.GetRelationsWhereChild().ToList();
             foreach (var relation in newTable.GetRelationsWhereChild())
             {
-                var oldIndexName = $"FK_{relation.RoleName}_{oldTable.DatabaseName}_{relation.ParentTable.DatabaseName}".ToUpper();
-                var newIndexName = $"FK_{relation.RoleName}_{newTable.DatabaseName}_{relation.ParentTable.DatabaseName}".ToUpper();
+                var oldParentTable = existingRelations
+                    .FirstOrDefault(x => x.ParentTable.Key == relation.ParentTable.Key &&
+                                        x.ChildTable.Key == relation.ChildTable.Key &&
+                                        x.RoleName == relation.RoleName)
+                    ?.ParentTable;
 
-                sb.AppendLine($"--RENAME FK [{newTable.DatabaseName}].[{oldIndexName}]");
-                sb.AppendLine($"ALTER TABLE {newTable.GetPostgresSchema()}.\"{newTable.DatabaseName}\" RENAME CONSTRAINT \"{oldIndexName}\" TO \"{newIndexName}\";");
-                sb.AppendLine();
+                if (oldParentTable != null)
+                {
+                    var oldIndexName = $"FK_{relation.RoleName}_{oldTable.DatabaseName}_{oldParentTable.DatabaseName}".ToUpper();
+                    var newIndexName = $"FK_{relation.RoleName}_{newTable.DatabaseName}_{relation.ParentTable.DatabaseName}".ToUpper();
+
+                    sb.AppendLine($"--RENAME FK [{oldTable.DatabaseName}].[{oldIndexName}]");
+                    sb.AppendLine($"ALTER TABLE {newTable.GetPostgresSchema()}.\"{newTable.DatabaseName}\" RENAME CONSTRAINT \"{oldIndexName}\" TO \"{newIndexName}\";");
+                    sb.AppendLine();
+                }
             }
 
             //Rename all indexes for this table's fields
@@ -1324,13 +1334,13 @@ namespace nHydrate.Generator.PostgresInstaller
                 {
                     var oldIndexName = CreateIndexName(oldTable, oldColumn);
                     var newIndexName = CreateIndexName(newTable, column);
-                    sb.AppendLine($"--RENAME INDEX [{newTable.DatabaseName}].[{oldIndexName}]");
+                    sb.AppendLine($"--RENAME INDEX [{oldTable.DatabaseName}].[{oldIndexName}]");
                     sb.AppendLine($"ALTER INDEX IF EXISTS \"{oldIndexName}\" RENAME TO \"{newIndexName}\";");
                     sb.AppendLine();
                 }
             }
 
-            //rename all indexes for this table
+            //Rename all indexes for this table
             foreach (var index in newTable.TableIndexList)
             {
                 var oldIndex = oldTable.TableIndexList.FirstOrDefault(x => x.Key == index.Key);
@@ -1338,13 +1348,23 @@ namespace nHydrate.Generator.PostgresInstaller
                 {
                     var oldIndexName = GetIndexName(oldTable, oldIndex);
                     var newIndexName = GetIndexName(newTable, index);
-                    sb.AppendLine($"--RENAME INDEX [{newTable.DatabaseName}].[{oldIndexName}]");
+                    sb.AppendLine($"--RENAME INDEX [{oldTable.DatabaseName}].[{oldIndexName}]");
                     sb.AppendLine($"ALTER INDEX IF EXISTS \"{oldIndexName}\" RENAME TO \"{newIndexName}\";");
                     sb.AppendLine();
                 }
             }
 
             var model = newTable.Root as ModelRoot;
+
+            //Rename tenant field if need be
+            if (newTable.IsTenant && oldTable.IsTenant)
+            {
+                var oldIndexName = $"IDX_{oldTable.DatabaseName.FlatGuid()}_{model.TenantColumnName}".ToUpper();
+                var newIndexName = $"IDX_{newTable.DatabaseName.FlatGuid()}_{model.TenantColumnName}".ToUpper();
+                sb.AppendLine($"--RENAME INDEX [{oldTable.DatabaseName}].[{oldIndexName}]");
+                sb.AppendLine($"ALTER INDEX IF EXISTS \"{oldIndexName}\" RENAME TO \"{newIndexName}\";");
+                sb.AppendLine();
+            }
 
             //NOTE: I do not think that this needs to be done anymore
             ////Change the default name for all audit fields
@@ -1505,7 +1525,7 @@ namespace nHydrate.Generator.PostgresInstaller
             {
                 if (string.Compare(column.DatabaseName, c.DatabaseName, true) == 0)
                 {
-                    var indexName = "IX_" + t.Name.Replace("-", "") + "_" + c.Name.Replace("-", string.Empty);
+                    var indexName = "IX_" + t.Name.FlatGuid() + "_" + c.Name.FlatGuid();
                     indexName = indexName.ToUpper();
                     sb.AppendLine("--DELETE UNIQUE CONTRAINT");
                     sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\";");
@@ -1663,7 +1683,7 @@ namespace nHydrate.Generator.PostgresInstaller
             if (oldColumn.DataType != newColumn.DataType || oldColumn.AllowNull != newColumn.AllowNull)
             {
                 //Unique Constraint
-                var indexName = "IX_" + newTable.Name.Replace("-", "") + "_" + newColumn.Name.Replace("-", string.Empty);
+                var indexName = "IX_" + newTable.Name.FlatGuid() + "_" + newColumn.Name.FlatGuid();
                 indexName = indexName.ToUpper();
                 sb.AppendLine("--DELETE UNIQUE CONTRAINT");
                 sb.AppendLine($"ALTER TABLE {newTable.GetPostgresSchema()}.\"{newTable.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
@@ -1894,7 +1914,6 @@ namespace nHydrate.Generator.PostgresInstaller
         {
             var sb = new StringBuilder();
             sb.AppendLine($"--ADD COLUMN [{table.DatabaseName}].[{model.TenantColumnName}]");
-            //sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN \"{model.TenantColumnName}\" varchar (128) NOT NULL CONSTRAINT \"DF__{table.DatabaseName.ToUpper()}_{model.TenantColumnName.ToUpper()}\" DEFAULT (current_user)");
             sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN \"{model.TenantColumnName}\" varchar (128) NOT NULL;");
             return sb.ToString();
         }

@@ -226,14 +226,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			#region Map Tables");
 
             //Tables
-            foreach (var item in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var item in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 string schema = null;
                 if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
                 if (string.IsNullOrEmpty(schema))
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + item.DatabaseName + "\");");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{item.PascalName}>().ToTable(\"{item.DatabaseName}\");");
                 else
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + item.DatabaseName + "\", \"" + schema + "\");");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{item.PascalName}>().ToTable(\"{item.DatabaseName}\", \"{schema}\");");
             }
 
             //Views
@@ -242,9 +242,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 string schema = null;
                 if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
                 if (string.IsNullOrEmpty(schema))
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + item.DatabaseName + "\");");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{item.PascalName}>().ToTable(\"{item.DatabaseName}\");");
                 else
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">().ToTable(\"" + item.DatabaseName + "\", \"" + schema + "\");");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{item.PascalName}>().ToTable(\"{item.DatabaseName}\", \"{schema}\");");
             }
 
             sb.AppendLine("			#endregion");
@@ -421,7 +421,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             sb.AppendLine("			#region Relations");
             sb.AppendLine();
-            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 foreach (Relation relation in table.GetRelations())
                 {
@@ -434,10 +434,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>()");
                             sb.AppendLine($"							.HasOne(a => a.{relation.PascalRoleName}{childTable.PascalName})");
                             sb.AppendLine($"							.WithOne(x => x.{relation.PascalRoleName}{table.PascalName})");
-                            sb.AppendLine("							.HasForeignKey<" + this.GetLocalNamespace() + ".Entity." + childTable.PascalName + ">(q => new { " +
-                                          string.Join(",", relation.ColumnRelationships.Select(x => x.ChildColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                            sb.AppendLine($"							.HasForeignKey<{this.GetLocalNamespace()}.Entity." + childTable.PascalName + ">(q => new { " +
+                                          string.Join(",", relation.ColumnRelationships.Select(x => x.ChildColumn.PascalName).OrderBy(x => x).Select(c => "q." + c)) + " })");
                             sb.AppendLine("							.HasPrincipalKey<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">(q => new { " +
-                                          string.Join(",", relation.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                                          string.Join(",", relation.ColumnRelationships.Select(x => x.ParentColumn.PascalName).OrderBy(x => x).Select(c => "q." + c)) + " })");
                             if (relation.IsRequired)
                                 sb.AppendLine("							.IsRequired(true)");
                             else
@@ -468,17 +468,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             else
                                 sb.AppendLine("							.IsRequired(false)");
 
-                            sb.AppendLine("							.HasPrincipalKey(q => new { " + string.Join(", ", relation.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                            sb.AppendLine("							.HasPrincipalKey(q => new { " + string.Join(", ", relation.ColumnRelationships.Select(x => x.ParentColumn.PascalName).OrderBy(x => x).Select(c => "q." + c)) + " })");
                             sb.Append("							.HasForeignKey(u => new { ");
 
                             var index = 0;
                             foreach (var columnPacket in relation.ColumnRelationships
                                 .Select(x => new { Child = x.ChildColumnRef.Object as Column, Parent = x.ParentColumnRef.Object as Column })
                                 .Where(x => x.Child != null && x.Parent != null)
-                                .OrderBy(x => x.Parent.Name)
+                                .OrderBy(x => x.Parent.PascalName)
                                 .ToList())
                             {
-                                sb.Append("u." + columnPacket.Child.PascalName);
+                                sb.Append($"u.{columnPacket.Child.PascalName}");
                                 if (index < relation.ColumnRelationships.Count - 1)
                                     sb.Append(", ");
                                 index++;
@@ -486,7 +486,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
                             sb.AppendLine(" })");
 
-                            var indexName = ("FK_" + relation.RoleName + "_" + relation.ChildTable.DatabaseName + "_" + relation.ParentTable.DatabaseName).ToUpper();
+                            var indexName = $"FK_{relation.RoleName}_{relation.ChildTable.DatabaseName}_{relation.ParentTable.DatabaseName}".ToUpper();
                             sb.AppendLine($"							.HasConstraintName(\"{indexName}\")");
 
                             //Specify what to do on delete
@@ -504,7 +504,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             }
 
             //Associative tables
-            foreach (var table in _model.Database.Tables.Where(x => x.AssociativeTable && (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => x.AssociativeTable && (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 var relations = table.GetRelationsWhereChild().ToList();
                 if (relations.Count == 2)
@@ -512,16 +512,16 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     var relation1 = relations.First();
                     var relation2 = relations.Last();
 
-                    var index1Name = ("FK_" + relation1.RoleName + "_" + relation1.ChildTable.DatabaseName + "_" + relation1.ParentTable.DatabaseName).ToUpper();
-                    var index2Name = ("FK_" + relation2.RoleName + "_" + relation2.ChildTable.DatabaseName + "_" + relation2.ParentTable.DatabaseName).ToUpper();
+                    var index1Name = $"FK_{relation1.RoleName}_{relation1.ChildTable.DatabaseName}_{relation1.ParentTable.DatabaseName}".ToUpper();
+                    var index2Name = $"FK_{relation2.RoleName}_{relation2.ChildTable.DatabaseName}_{relation2.ParentTable.DatabaseName}".ToUpper();
 
                     sb.AppendLine($"			//Relation for [{relation1.ParentTable.PascalName}] -> [{relation2.ParentTable.PascalName}] (Multiplicity N:M)");
                     sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{relation1.ParentTable.PascalName}>()");
                     sb.AppendLine($"							.HasMany(q => q.{relation1.PascalRoleName}{table.PascalName}List)");
                     sb.AppendLine($"							.WithOne(q => q.{relation1.PascalRoleName}{relation1.ParentTable.PascalName})");
                     sb.AppendLine($"							.HasConstraintName(\"{index1Name}\")");
-                    sb.AppendLine("							.HasPrincipalKey(q => new { " + string.Join(", ", relation1.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
-                    sb.AppendLine("							.HasForeignKey(q => new { " + string.Join(", ", relation1.ColumnRelationships.Select(x => x.ChildColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                    sb.AppendLine("							.HasPrincipalKey(q => new { " + string.Join(", ", relation1.ColumnRelationships.Select(x => x.ParentColumn.PascalName).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                    sb.AppendLine("							.HasForeignKey(q => new { " + string.Join(", ", relation1.ColumnRelationships.Select(x => x.ChildColumn.PascalName).OrderBy(x => x).Select(c => "q." + c)) + " })");
                     sb.AppendLine("							.OnDelete(DeleteBehavior.Restrict);");
                     sb.AppendLine();
 
@@ -530,8 +530,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                     sb.AppendLine($"							.HasMany(q => q.{relation2.PascalRoleName}{table.PascalName}List)");
                     sb.AppendLine($"							.WithOne(q => q.{relation2.PascalRoleName}{relation2.ParentTable.PascalName})");
                     sb.AppendLine($"							.HasConstraintName(\"{index2Name}\")");
-                    sb.AppendLine("							.HasPrincipalKey(q => new { " + string.Join(", ", relation2.ColumnRelationships.Select(x => x.ParentColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
-                    sb.AppendLine("							.HasForeignKey(q => new { " + string.Join(", ", relation2.ColumnRelationships.Select(x => x.ChildColumn.Name).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                    sb.AppendLine("							.HasPrincipalKey(q => new { " + string.Join(", ", relation2.ColumnRelationships.Select(x => x.ParentColumn.PascalName).OrderBy(x => x).Select(c => "q." + c)) + " })");
+                    sb.AppendLine("							.HasForeignKey(q => new { " + string.Join(", ", relation2.ColumnRelationships.Select(x => x.ChildColumn.PascalName).OrderBy(x => x).Select(c => "q." + c)) + " })");
                     sb.AppendLine("							.OnDelete(DeleteBehavior.Restrict);");
                     sb.AppendLine();
                 }
@@ -771,7 +771,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		#region Entity Sets");
             sb.AppendLine();
 
-            foreach (var item in _model.Database.Tables.Where(x => (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var item in _model.Database.Tables.Where(x => (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
                 var name = item.PascalName;
                 var scope = "public";
@@ -781,16 +781,16 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Entity set for " + item.PascalName);
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine($"		{scope} virtual DbSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + name + " { get; set; }");
+                sb.AppendLine($"		{scope} virtual DbSet<{this.GetLocalNamespace()}.Entity.{item.PascalName}> " + name + " { get; set; }");
                 sb.AppendLine();
             }
 
-            foreach (var item in _model.Database.CustomViews.OrderBy(x => x.Name))
+            foreach (var item in _model.Database.CustomViews.OrderBy(x => x.PascalName))
             {
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Entity set for " + item.PascalName);
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine("		public virtual DbSet<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + "> " + item.PascalName + " { get; set; }");
+                sb.AppendLine($"		public virtual DbSet<{this.GetLocalNamespace()}.Entity.{item.PascalName}> " + item.PascalName + " { get; set; }");
                 sb.AppendLine();
             }
 
@@ -1123,7 +1123,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
         private void AppendTypeTableEnums()
         {
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.None).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.None).OrderBy(x => x.PascalName))
             {
                 if (table.PrimaryKeyColumns.Count == 1)
                 {

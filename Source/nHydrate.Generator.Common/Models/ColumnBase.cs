@@ -92,15 +92,9 @@ namespace nHydrate.Generator.Common.Models
 
         #region ICodeFacadeObject Members
 
-        public string CodeFacade { get; set; } = _def_codefacade;
+        public virtual string CodeFacade { get; set; } = _def_codefacade;
 
-        public string GetCodeFacade()
-        {
-            if (this.CodeFacade == string.Empty)
-                return this.Name;
-            else
-                return this.CodeFacade;
-        }
+        public virtual string GetCodeFacade() => string.IsNullOrEmpty(this.CodeFacade) ? this.Name : this.CodeFacade;
 
         #endregion
 
@@ -188,14 +182,7 @@ namespace nHydrate.Generator.Common.Models
 
         public virtual string CamelName => StringHelper.FirstCharToLower(this.PascalName);
 
-        public virtual string PascalName
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(this.CodeFacade)) return this.CodeFacade;
-                else return this.Name;
-            }
-        }
+        public virtual string PascalName => this.GetCodeFacade();
 
         public virtual string DatabaseName => this.Name;
 

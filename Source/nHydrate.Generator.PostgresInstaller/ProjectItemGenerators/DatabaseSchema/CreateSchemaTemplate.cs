@@ -1,4 +1,5 @@
 using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common.Util;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -187,7 +188,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                     if (column.IsUnique && !table.PrimaryKeyColumns.Contains(column))
                     {
                         //Make sure that the index name is the same each time
-                        var indexName = "IX_" + table.Name.Replace("-", "") + "_" + column.Name.Replace("-", string.Empty);
+                        var indexName = "IX_" + table.Name.FlatGuid() + "_" + column.Name.FlatGuid();
                         indexName = indexName.ToUpper();
 
                         sb.AppendLine("--UNIQUE COLUMN TABLE [" + tableName + "].[" + column.DatabaseName + "] (NON-PRIMARY KEY)");

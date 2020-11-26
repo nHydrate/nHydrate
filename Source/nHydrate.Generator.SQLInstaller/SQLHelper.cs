@@ -262,8 +262,7 @@ namespace nHydrate.Generator.SQLInstaller
                         }
 
                         //Drop Index
-                        var indexName = "IDX_" + newT.DatabaseName.Replace("-", string.Empty) + "_" + modelNew.TenantColumnName;
-                        indexName = indexName.ToUpper();
+                        var indexName = $"IDX_{newT.DatabaseName.FlatGuid()}_{modelNew.TenantColumnName}".ToUpper();
                         sb.AppendLine($"if exists (select * from sys.indexes where name = '{indexName}')");
                         sb.AppendLine($"DROP INDEX [{indexName}] ON [{newT.GetSQLSchema()}].[{newT.DatabaseName}]");
                         sb.AppendLine();

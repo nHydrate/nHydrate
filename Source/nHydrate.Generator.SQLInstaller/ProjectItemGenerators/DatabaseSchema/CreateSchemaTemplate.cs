@@ -1,6 +1,7 @@
 #pragma warning disable 0168
 using nHydrate.Core.SQLGeneration;
 using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -233,12 +234,10 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                     if (column.IsUnique && !table.PrimaryKeyColumns.Contains(column))
                     {
                         //Make sure that the index name is the same each time
-                        var indexName = "IX_" + table.Name.Replace("-", "") + "_" + column.Name.Replace("-", string.Empty);
-                        indexName = indexName.ToUpper();
-
-                        sb.AppendLine("--UNIQUE COLUMN TABLE [" + tableName + "].[" + column.DatabaseName + "] (NON-PRIMARY KEY)");
-                        sb.AppendLine("if not exists(select * from sys.indexes where name = '" + indexName + "')");
-                        sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{tableName}] ADD CONSTRAINT [" + indexName + "] UNIQUE ([" + column.DatabaseName + "]) ");
+                        var indexName = $"IX_{table.Name.FlatGuid()}_{column.Name.FlatGuid()}".ToUpper();
+                        sb.AppendLine($"--UNIQUE COLUMN TABLE [{tableName}].[{column.DatabaseName}] (NON-PRIMARY KEY)");
+                        sb.AppendLine($"if not exists(select * from sys.indexes where name = '{indexName}')");
+                        sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{tableName}] ADD CONSTRAINT [{indexName}] UNIQUE ([{column.DatabaseName}]) ");
                         sb.AppendLine("GO");
                         sb.AppendLine();
                     }

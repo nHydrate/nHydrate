@@ -76,27 +76,27 @@ namespace nHydrate.Generator.Common.Models
 
         #region Property Implementations
 
-        public bool IsTenant { get; set; } = _def_isTenant;
+        public virtual bool IsTenant { get; set; } = _def_isTenant;
 
-        public List<TableIndex> TableIndexList { get; } = new List<TableIndex>();
+        public virtual List<TableIndex> TableIndexList { get; } = new List<TableIndex>();
 
-        public TypedTableConstants TypedTable { get; set; } = _def_isTypeTable;
+        public virtual TypedTableConstants TypedTable { get; set; } = _def_isTypeTable;
 
-        public string DBSchema { get; set; } = _def_dbSchema;
+        public virtual string DBSchema { get; set; } = _def_dbSchema;
 
-        public bool GeneratesDoubleDerived { get; set; } = _def_generatesDoubleDerived;
+        public virtual bool GeneratesDoubleDerived { get; set; } = _def_generatesDoubleDerived;
 
-        public string Description { get; set; } = _def_description;
+        public virtual string Description { get; set; } = _def_description;
 
-        public bool Immutable
+        public virtual bool Immutable
         {
             get { return _immutable || this.TypedTable != TypedTableConstants.None; }
             set { _immutable = value; }
         }
 
-        public ReferenceCollection Relationships { get; private set; } = null;
+        public virtual ReferenceCollection Relationships { get; private set; } = null;
 
-        public RelationCollection AllRelationships
+        public virtual RelationCollection AllRelationships
         {
             get
             {
@@ -116,11 +116,11 @@ namespace nHydrate.Generator.Common.Models
             }
         }
 
-        public ReferenceCollection Columns { get; private set; } = null;
+        public virtual ReferenceCollection Columns { get; private set; } = null;
 
-        public bool AllowModifiedAudit { get; set; } = _def_modifiedAudit;
+        public virtual bool AllowModifiedAudit { get; set; } = _def_modifiedAudit;
 
-        public bool AllowCreateAudit { get; set; } = _def_createAudit;
+        public virtual bool AllowCreateAudit { get; set; } = _def_createAudit;
 
         public bool AllowConcurrencyCheck { get; set; } = _def_concurrency;
 
@@ -432,14 +432,7 @@ namespace nHydrate.Generator.Common.Models
 
         public string CamelName => StringHelper.DatabaseNameToCamelCase(this.PascalName);
 
-        public string PascalName
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(this.CodeFacade)) return this.CodeFacade;
-                else return this.Name;
-            }
-        }
+        public string PascalName => this.GetCodeFacade();
 
         public string DatabaseName => this.Name;
 
@@ -496,17 +489,11 @@ namespace nHydrate.Generator.Common.Models
 
         #region ICodeFacadeObject Members
 
-        public string CodeFacade { get; set; } = _def_codeFacade;
+        public virtual string CodeFacade { get; set; } = _def_codeFacade;
 
-        public string GetCodeFacade()
-        {
-            if (string.IsNullOrEmpty(this.CodeFacade))
-                return this.Name;
-            else
-                return this.CodeFacade;
-        }
+        public virtual string GetCodeFacade() => string.IsNullOrEmpty(this.CodeFacade) ? this.Name : this.CodeFacade;
 
         #endregion
 
-    }
+}
 }

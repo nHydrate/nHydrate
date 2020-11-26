@@ -1226,7 +1226,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
                 sb.AppendLine("        {");
                 sb.AppendLine("            if (entity == null) return false;");
                 sb.AppendLine("            var attr = entity.GetType().GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)");
-                sb.AppendLine("                .FirstOrDefault(x => x.GetCustomAttributes(true).Any(z => z.GetType() == attrType));");
+                sb.AppendLine("                .FirstOrDefault(x => x.GetCustomAttributes().Any(z => z.GetType() == attrType));");
                 sb.AppendLine();
                 sb.AppendLine("            if (attr != null)");
                 sb.AppendLine("            {");

@@ -352,5 +352,19 @@ namespace nHydrate.Generator.Common.Util
             return retval;
         }
 
+        /// <summary>
+        /// Removes the dashes from a GUID/string
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string FlatGuid(this string str)
+        {
+            return str.Replace("-", string.Empty);
+        }
+        public static string FlatGuid(this System.Guid g)
+        {
+            return g.ToString().FlatGuid();
+        }
+
     }
 }
