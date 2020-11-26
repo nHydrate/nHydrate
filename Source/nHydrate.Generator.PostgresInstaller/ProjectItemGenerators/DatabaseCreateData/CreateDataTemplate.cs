@@ -8,8 +8,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
 {
     class CreateDataTemplate : BaseDbScriptTemplate
     {
-        private StringBuilder sb = new StringBuilder();
-
         #region Constructors
         public CreateDataTemplate(ModelRoot model)
             : base(model)
@@ -19,14 +17,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
 
         #region BaseClassTemplate overrides
 
-        public override string FileContent
-        {
-            get
-            {
-                GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
         public override string FileName => "2_CreateData.pgsql";
 
@@ -34,38 +25,31 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
 
         #endregion
 
-        #region GenerateContent
-        private void GenerateContent()
+        private string Generate()
         {
-            try
+            var sb = new StringBuilder();
+            sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
+            sb.AppendLine("--Static Data");
+            sb.AppendLine();
+
+            //Turn OFF CONSTRAINTS
+            //sb.AppendLine("if (SERVERPROPERTY('EngineEdition') <> 5) --NOT AZURE");
+            //sb.AppendLine("exec sp_MSforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'");
+            //sb.AppendLine();
+
+            #region Add Static Data
+            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
-                sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
-                sb.AppendLine("--Static Data");
-                sb.AppendLine();
-
-                //Turn OFF CONSTRAINTS
-                //sb.AppendLine("if (SERVERPROPERTY('EngineEdition') <> 5) --NOT AZURE");
-                //sb.AppendLine("exec sp_MSforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'");
-                //sb.AppendLine();
-
-                #region Add Static Data
-                foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
-                {
-                    sb.Append(SQLEmit.GetSqlInsertStaticData(table));
-                }
-                #endregion
-
-                //Turn ON CONSTRAINTS
-                //sb.AppendLine("if (SERVERPROPERTY('EngineEdition') <> 5) --NOT AZURE");
-                //sb.AppendLine("exec sp_MSforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL'");
-                //sb.AppendLine();
+                sb.Append(SQLEmit.GetSqlInsertStaticData(table));
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            #endregion
+
+            //Turn ON CONSTRAINTS
+            //sb.AppendLine("if (SERVERPROPERTY('EngineEdition') <> 5) --NOT AZURE");
+            //sb.AppendLine("exec sp_MSforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL'");
+            //sb.AppendLine();
+            return sb.ToString();
         }
 
-        #endregion
     }
 }

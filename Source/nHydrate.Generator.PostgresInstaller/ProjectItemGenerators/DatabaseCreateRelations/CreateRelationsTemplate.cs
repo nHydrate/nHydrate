@@ -8,8 +8,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
 {
     public class CreateRelationsTemplate : BaseDbScriptTemplate
     {
-        private StringBuilder sb = new StringBuilder();
-
         #region Constructors
         public CreateRelationsTemplate(ModelRoot model)
             : base(model)
@@ -17,38 +15,22 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
         }
         #endregion
 
-        #region BaseClassTemplate overrides
-        public override string FileContent
-        {
-            get
-            {
-                GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
         public override string FileName => "3_CreateRelations.pgsql";
 
-        #endregion
-
-        #region GenerateContent
-        private void GenerateContent()
+        private string Generate()
         {
-            try
-            {
-                sb = new StringBuilder();
-                sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
-                sb.AppendLine("--Relations");
-                sb.AppendLine();
-                this.AppendAll();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var sb = new StringBuilder();
+            sb = new StringBuilder();
+            sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
+            sb.AppendLine("--Relations");
+            sb.AppendLine();
+            this.AppendAll(sb);
+            return sb.ToString();
         }
 
-        private void AppendAll()
+        private void AppendAll(StringBuilder sb)
         {
             sb.AppendLine("--##SECTION BEGIN [RELATIONS]");
             sb.AppendLine();
@@ -71,7 +53,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
             sb.AppendLine();
 
         }
-        #endregion
 
     }
 }

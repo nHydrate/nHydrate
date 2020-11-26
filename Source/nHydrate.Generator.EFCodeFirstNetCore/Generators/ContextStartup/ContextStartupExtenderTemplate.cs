@@ -6,8 +6,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
 {
     public class ContextStartupExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private StringBuilder sb = new StringBuilder();
-
         public ContextStartupExtenderTemplate(ModelRoot model)
             : base(model)
         {
@@ -15,17 +13,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
 
         public override string FileName => "ContextStartup.cs";
 
-        public override string FileContent
-        {
-            get
-            {
-                GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
-        private void GenerateContent()
+        private string Generate()
         {
+            var sb = new StringBuilder();
             sb.AppendLine("namespace " + this.GetLocalNamespace());
             sb.AppendLine("{");
             sb.AppendLine("	partial class ContextStartup");
@@ -39,6 +31,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
             sb.AppendLine();
 
             sb.AppendLine("}");
+
+            return sb.ToString();
         }
 
     }

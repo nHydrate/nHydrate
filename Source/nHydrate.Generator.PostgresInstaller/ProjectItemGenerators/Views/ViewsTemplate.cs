@@ -6,7 +6,6 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Views
 {
     class ViewsTemplate : BaseDbScriptTemplate
     {
-        private StringBuilder sb = new StringBuilder();
         private CustomView _view;
 
         public ViewsTemplate(ModelRoot model, CustomView view)
@@ -15,22 +14,17 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Views
             _view = view;
         }
 
-        public override string FileContent
-        {
-            get
-            {
-                this.GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
         public override string FileName => "Views.pgsql";
 
-        private void GenerateContent()
+        private string Generate()
         {
+            var sb = new StringBuilder();
             sb.AppendLine($"--This SQL is generated for the model defined view [{_view.DatabaseName}]");
             sb.AppendLine();
             sb.Append(SQLEmit.GetSqlCreateView(_view, true));
+            return sb.ToString();
         }
     }
 }

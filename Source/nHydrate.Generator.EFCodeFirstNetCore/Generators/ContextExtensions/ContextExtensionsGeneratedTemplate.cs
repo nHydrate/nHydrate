@@ -9,8 +9,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
 {
     public class ContextExtensionsGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private StringBuilder sb = new StringBuilder();
-
         public ContextExtensionsGeneratedTemplate(ModelRoot model)
             : base(model)
         {
@@ -20,36 +18,24 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
         public override string FileName => _model.ProjectName + "EntitiesExtensions.Generated.cs";
         public string ParentItemName => _model.ProjectName + "EntitiesExtensions.cs";
 
-        public override string FileContent
-        {
-            get
-            {
-                this.GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
         #endregion
 
         #region GenerateContent
 
-        private void GenerateContent()
+        private string Generate()
         {
-            try
-            {
-                GenerationHelper.AppendFileGeneatedMessageInCode(sb);
-                this.AppendUsingStatements();
-                sb.AppendLine($"namespace {this.GetLocalNamespace()}");
-                sb.AppendLine("{");
-                this.AppendExtensions();
-                sb.AppendLine("}");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var sb = new StringBuilder();
+            GenerationHelper.AppendFileGeneatedMessageInCode(sb);
+            this.AppendUsingStatements(sb);
+            sb.AppendLine($"namespace {this.GetLocalNamespace()}");
+            sb.AppendLine("{");
+            this.AppendExtensions(sb);
+            sb.AppendLine("}");
+            return sb.ToString();
         }
 
-        private void AppendUsingStatements()
+        private void AppendUsingStatements(StringBuilder sb)
         {
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
@@ -58,7 +44,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine();
         }
 
-        private void AppendExtensions()
+        private void AppendExtensions(StringBuilder sb)
         {
             sb.AppendLine($"	#region {_model.ProjectName}EntitiesExtensions");
             sb.AppendLine();

@@ -7,7 +7,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 {
     public class EntityExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private StringBuilder sb = new StringBuilder();
         private Table _currentTable = null;
 
         public EntityExtenderTemplate(ModelRoot model, Table table)
@@ -18,30 +17,18 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         public override string FileName => $"{_currentTable.PascalName}.cs";
 
-        public override string FileContent
-        {
-            get
-            {
-                try
-                {
-                    GenerateContent();
-                    return sb.ToString();
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
-        public void GenerateContent()
+        private string Generate()
         {
+            var sb = new StringBuilder();
             sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
             sb.AppendLine("{");
             sb.AppendLine("	partial class " + _currentTable.PascalName);
             sb.AppendLine("	{");
             sb.AppendLine("	}");
             sb.AppendLine("}");
+            return sb.ToString();
         }
 
     }

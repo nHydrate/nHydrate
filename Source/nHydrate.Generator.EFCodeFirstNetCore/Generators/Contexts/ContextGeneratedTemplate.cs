@@ -10,7 +10,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 {
     public class ContextGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private StringBuilder sb = new StringBuilder();
         private ModelConfiguration _modelConfiguration = null;
 
         public ContextGeneratedTemplate(ModelRoot model)
@@ -27,30 +26,24 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
         public override string FileName => _model.ProjectName + "Entities.Generated.cs";
         public string ParentItemName => _model.ProjectName + "Entities.cs";
 
-        public override string FileContent
-        {
-            get
-            {
-                GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
         #endregion
 
         #region GenerateContent
 
-        private void GenerateContent()
+        private string Generate()
         {
+            var sb = new StringBuilder();
             GenerationHelper.AppendFileGeneatedMessageInCode(sb);
             sb.AppendLine("#pragma warning disable 612");
-            this.AppendUsingStatements();
+            this.AppendUsingStatements(sb);
             sb.AppendLine("namespace " + this.GetLocalNamespace());
             sb.AppendLine("{");
-            this.AppendTypeTableEnums();
-            this.AppendTableMapping();
-            this.AppendClass();
-            this.AppendExtensions();
+            this.AppendTypeTableEnums(sb);
+            this.AppendTableMapping(sb);
+            this.AppendClass(sb);
+            this.AppendExtensions(sb);
             sb.AppendLine("}");
             sb.AppendLine();
 
@@ -58,9 +51,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("{");
             sb.AppendLine("}");
             sb.AppendLine("#pragma warning restore 612");
+            return sb.ToString();
         }
 
-        private void AppendTableMapping()
+        private void AppendTableMapping(StringBuilder sb)
         {
             sb.AppendLine("	#region EntityMappingConstants Enumeration");
             sb.AppendLine();
@@ -84,7 +78,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
         }
 
-        private void AppendUsingStatements()
+        private void AppendUsingStatements(StringBuilder sb)
         {
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
@@ -99,7 +93,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
         }
 
-        private void AppendClass()
+        private void AppendClass(StringBuilder sb)
         {
             sb.AppendLine("	#region Entity Context");
             sb.AppendLine();
@@ -1041,28 +1035,26 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             #endregion
 
-            #region ObjectContext
-
-            sb.AppendLine("		#region ObjectContext");
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Determines the timeout of the database connection");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public int? CommandTimeout");
             sb.AppendLine("		{");
             sb.AppendLine("			get { return this.Database.GetCommandTimeout(); }");
-            sb.AppendLine("			set { this.Database.SetCommandTimeout(value); }");
+            sb.AppendLine("			set { ");
+            sb.AppendLine("				try { this.Database.SetCommandTimeout(value); }");
+            sb.AppendLine("				catch (System.InvalidOperationException ex) { if (!ex.Message.Contains(\"relational database\")) throw; }");
+            sb.AppendLine("				catch { throw; }");
+            sb.AppendLine("			}");
             sb.AppendLine("		}");
-            sb.AppendLine("		#endregion");
             sb.AppendLine();
-
-            #endregion
 
             sb.AppendLine("	}");
             sb.AppendLine("	#endregion");
             sb.AppendLine();
         }
 
-        private void AppendExtensions()
+        private void AppendExtensions(StringBuilder sb)
         {
             sb.AppendLine("    public static class ContextExtensions");
             sb.AppendLine("    {");
@@ -1121,7 +1113,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
         }
 
-        private void AppendTypeTableEnums()
+        private void AppendTypeTableEnums(StringBuilder sb)
         {
             foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.None).OrderBy(x => x.PascalName))
             {
