@@ -34,7 +34,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.UnversionedUpgra
         #endregion
 
         #region GenerateContent
-        private string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             sb = new StringBuilder();

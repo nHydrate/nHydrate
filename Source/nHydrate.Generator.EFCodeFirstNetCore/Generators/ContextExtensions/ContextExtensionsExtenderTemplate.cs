@@ -15,7 +15,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
 
         public override string FileContent { get => Generate(); }
 
-        public string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             sb.AppendLine($"namespace {this.GetLocalNamespace()}");

@@ -24,7 +24,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
         public override string FileContent { get => Generate(); }
         #endregion
 
-        private string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             GenerationHelper.AppendFileGeneatedMessageInCode(sb);

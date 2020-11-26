@@ -1,6 +1,5 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.Models;
-using System;
 using System.Text;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
@@ -19,10 +18,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         public override string FileContent { get => Generate(); }
 
-        private string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
-            sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+            sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
             sb.AppendLine("{");
             sb.AppendLine("	partial class " + _currentTable.PascalName);
             sb.AppendLine("	{");

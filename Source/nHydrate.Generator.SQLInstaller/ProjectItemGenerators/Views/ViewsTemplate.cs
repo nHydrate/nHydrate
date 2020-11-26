@@ -24,7 +24,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Views
         #endregion
 
         #region GenerateContent
-        private string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             foreach (var view in _model.Database.CustomViews.OrderBy(x => x.Name))

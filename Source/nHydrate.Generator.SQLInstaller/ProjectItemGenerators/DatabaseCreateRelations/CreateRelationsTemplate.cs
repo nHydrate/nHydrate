@@ -16,7 +16,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateRe
 
         public override string FileName => "3_CreateRelations.sql";
 
-        private string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             sb = new StringBuilder();

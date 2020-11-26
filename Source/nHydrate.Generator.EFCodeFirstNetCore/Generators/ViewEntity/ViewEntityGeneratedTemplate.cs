@@ -26,12 +26,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 
         #region GenerateContent
 
-        private string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             GenerationHelper.AppendFileGeneatedMessageInCode(sb);
             this.AppendUsingStatements(sb);
-            sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+            sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
             sb.AppendLine("{");
             this.AppendEntityClass(sb);
             sb.AppendLine("}");

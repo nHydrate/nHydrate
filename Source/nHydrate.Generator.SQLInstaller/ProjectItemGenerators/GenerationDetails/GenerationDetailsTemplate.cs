@@ -23,7 +23,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.GenerationDetail
         #endregion
 
         #region GenerateContent
-        private string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             sb.AppendLine("DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");

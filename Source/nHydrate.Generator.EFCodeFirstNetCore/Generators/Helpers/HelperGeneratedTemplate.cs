@@ -22,7 +22,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
 
         #region GenerateContent
 
-        public string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
 

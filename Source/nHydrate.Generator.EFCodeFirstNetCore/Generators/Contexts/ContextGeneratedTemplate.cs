@@ -32,7 +32,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
         #region GenerateContent
 
-        private string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             GenerationHelper.AppendFileGeneatedMessageInCode(sb);

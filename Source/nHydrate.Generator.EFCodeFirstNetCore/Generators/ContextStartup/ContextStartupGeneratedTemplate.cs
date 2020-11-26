@@ -16,7 +16,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
 
         public override string FileContent { get => Generate(); }
 
-        private string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             GenerationHelper.AppendFileGeneatedMessageInCode(sb);

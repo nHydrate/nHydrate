@@ -19,7 +19,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
 
         public override string FileName => "3_CreateRelations.pgsql";
 
-        private string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             sb = new StringBuilder();

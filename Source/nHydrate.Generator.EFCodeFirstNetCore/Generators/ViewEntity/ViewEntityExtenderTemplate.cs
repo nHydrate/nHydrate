@@ -17,10 +17,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 
         public override string FileContent { get => Generate(); }
 
-        public string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
-            sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+            sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
             sb.AppendLine("{");
             sb.AppendLine("	partial class " + _currentView.PascalName);
             sb.AppendLine("	{");

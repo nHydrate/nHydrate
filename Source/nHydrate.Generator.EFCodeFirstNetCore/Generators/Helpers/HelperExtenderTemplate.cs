@@ -1,6 +1,5 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.Models;
-using System;
 using System.Text;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
@@ -16,7 +15,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
 
         public override string FileContent { get => Generate(); }
 
-        private string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             sb.AppendLine("namespace " + this.GetLocalNamespace());

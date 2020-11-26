@@ -18,7 +18,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Views
 
         public override string FileName => "Views.pgsql";
 
-        private string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             sb.AppendLine($"--This SQL is generated for the model defined view [{_view.DatabaseName}]");

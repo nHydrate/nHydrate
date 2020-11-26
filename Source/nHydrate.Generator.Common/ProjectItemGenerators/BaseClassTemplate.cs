@@ -30,5 +30,7 @@ namespace nHydrate.Generator.Common.ProjectItemGenerators
         public abstract string FileName { get; }
         public abstract string LocalNamespaceExtension { get; }
 
+        public abstract string Generate();
+
     }
 }

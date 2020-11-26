@@ -6,7 +6,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 {
     public class ContextExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-
         public ContextExtenderTemplate(ModelRoot model)
             : base(model)
         {
@@ -16,7 +15,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
         public override string FileContent { get => Generate(); }
 
-        private string Generate()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             sb.AppendLine("using System;");
