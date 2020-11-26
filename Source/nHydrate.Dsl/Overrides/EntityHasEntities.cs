@@ -200,22 +200,11 @@ namespace nHydrate.Dsl
                 if (this.ChildEntity == null) return "(Unknown)";
                 if (!this.FieldMapList().Any()) return "(Unknown)";
 
-                retval = this.ParentEntity.Name + " -> " + this.ChildEntity.Name;
-
+                retval = $"{this.ParentEntity.Name} -> {this.ChildEntity.Name}";
                 if (!string.IsNullOrEmpty(this.RoleName))
-                {
-                    retval += " (Role: " + this.RoleName + ")";
-                }
+                    retval += $" (Role: {this.RoleName})";
 
-                var index = 0;
-                var fields = this.FieldMapList().ToList();
-                foreach (var cr in fields)
-                {
-                    retval += " [" + cr.GetSourceField(this).Name + ":" + cr.GetTargetField(this).Name + "]";
-                    if (index < fields.Count - 1) retval += ",";
-                    index++;
-                }
-
+                retval += string.Join(",", this.FieldMapList().Select(cr => $" [{cr.GetSourceField(this).Name}:{cr.GetTargetField(this).Name}]"));
                 return retval;
 
             }

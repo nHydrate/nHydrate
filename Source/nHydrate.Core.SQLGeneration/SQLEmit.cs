@@ -704,9 +704,9 @@ namespace nHydrate.Core.SQLGeneration
                 sb.AppendLine(GetSQLCreateTable(model, newTable, tempTableName, false));
                 sb.AppendLine("GO");
                 sb.AppendLine();
-                sb.AppendLine("ALTER TABLE [" + tempTableName + "] SET (LOCK_ESCALATION = TABLE)");
+                sb.AppendLine($"ALTER TABLE [{tempTableName}] SET (LOCK_ESCALATION = TABLE)");
                 sb.AppendLine("GO");
-                sb.AppendLine("SET IDENTITY_INSERT [" + tempTableName + "] ON");
+                sb.AppendLine($"SET IDENTITY_INSERT [{tempTableName}] ON");
                 sb.AppendLine();
 
                 var fields = newTable.GetColumns().Select(x => x.DatabaseName).ToList();
@@ -722,18 +722,18 @@ namespace nHydrate.Core.SQLGeneration
                     fields.Add(model.Database.ModifiedDateDatabaseName);
                 }
 
-                var fieldSql = string.Join(",", fields.Select(x => "[" + x + "]"));
+                var fieldSql = string.Join(",", fields.Select(x => $"[{x}]"));
 
-                sb.AppendLine("EXEC('INSERT INTO [" + tempTableName + "] (" + fieldSql + ")");
-                sb.AppendLine("    SELECT " + fieldSql + " FROM [" + tableName + "] WITH (HOLDLOCK TABLOCKX)')");
+                sb.AppendLine($"EXEC('INSERT INTO [{tempTableName}] ({fieldSql})");
+                sb.AppendLine($"    SELECT {fieldSql} FROM [{tableName}] WITH (HOLDLOCK TABLOCKX)')");
                 sb.AppendLine("GO");
                 sb.AppendLine();
-                sb.AppendLine("SET IDENTITY_INSERT [" + tempTableName + "] OFF");
+                sb.AppendLine($"SET IDENTITY_INSERT [{tempTableName}] OFF");
                 sb.AppendLine("GO");
-                sb.AppendLine("DROP TABLE [" + tableName + "]");
+                sb.AppendLine($"DROP TABLE [{tableName}]");
                 sb.AppendLine("GO");
                 sb.AppendLine("--RENAME THE TEMP TABLE TO THE ORIGINAL TABLE NAME");
-                sb.AppendLine("EXEC sp_rename '" + tempTableName + "', '" + tableName + "';");
+                sb.AppendLine($"EXEC sp_rename '{tempTableName}', '{tableName}';");
                 sb.AppendLine("GO");
             }
 
@@ -1419,7 +1419,7 @@ namespace nHydrate.Core.SQLGeneration
                 //Loop through the ordered columns of the parent table's primary key index
                 //var columnList = crList.OrderBy(x => x.ParentColumn.Name).Select(cr => cr.ChildColumn).ToList();
                 var columnList = crList.Select(cr => cr.ChildColumn).ToList();
-                return string.Join(",", columnList.Select(x => "	[" + x.Name + "]\r\n"));
+                return string.Join(",", columnList.Select(x => $"	[{x.Name}]\r\n"));
             }
             catch (Exception ex)
             {
@@ -1438,7 +1438,7 @@ namespace nHydrate.Core.SQLGeneration
                 //Loop through the ordered columns of the parent table's primary key index
                 //var columnList = crList.OrderBy(x => x.ParentColumn.Name).Select(cr => cr.ParentColumn).ToList();
                 var columnList = crList.Select(cr => cr.ParentColumn).ToList();
-                return string.Join(",", columnList.Select(x => "	[" + x.Name + "]\r\n"));
+                return string.Join(",", columnList.Select(x => $"	[{x.Name}]\r\n"));
             }
             catch (Exception ex)
             {
