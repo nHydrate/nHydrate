@@ -361,7 +361,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             nullSuffix = "?";
 
                         sb.AppendLine("		/// <summary>");
-                        sb.AppendLine("		/// This property is a wrapper for the typed enumeration for the '" + column.PascalName + "' field.");
+                        sb.AppendLine($"		/// This property is a wrapper for the typed enumeration for the '{column.PascalName}' field.");
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
@@ -369,7 +369,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             sb.AppendLine("		[System.Obsolete()]");
                         sb.AppendLine($"		public virtual {this.GetLocalNamespace()}.{typeTable.PascalName}Constants{nullSuffix} {pascalRoleName}{typeTable.PascalName}Value");
                         sb.AppendLine("		{");
-                        sb.AppendLine("			get { return (" + this.GetLocalNamespace() + ".{typeTable.PascalName}Constants" + nullSuffix + ")this." + column.PascalName + "; }");
+                        sb.AppendLine("			get { return (" + this.GetLocalNamespace() + "." + typeTable.PascalName + "Constants" + nullSuffix + ")this." + column.PascalName + "; }");
                         sb.AppendLine("			set { this." + column.PascalName + " = (" + column.GetCodeType(true) + ")value; }");
                         sb.AppendLine("		}");
                         sb.AppendLine();
