@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Text;
 using Microsoft.Data.SqlClient;
+using Serilog;
 
 namespace PROJECTNAMESPACE
 {
@@ -53,8 +54,6 @@ namespace PROJECTNAMESPACE
         private string PARAMKEYS_SCRIPTFILEACTION = "scriptfileaction";
         private string PARAMKEYS_DBVERSION = "dbversion";
         private string PARAMKEYS_VERSIONWARN = "acceptwarnings";
-        private string PARAMKEYS_SHOWSQL = "showsql";
-        private string PARAMKEYS_LOGSQL = "logsql";
         private string[] PARAMKEYS_TRAN = new string[] { "tranaction", "transaction" };
         private string PARAMKEYS_SKIPNORMALIZE = "skipnormalize";
         private string PARAMKEYS_HASH = "usehash";
@@ -88,31 +87,6 @@ namespace PROJECTNAMESPACE
             var setup = new InstallSetup();
             if (commandParams.Count > 0)
             {
-                if (commandParams.ContainsKey(PARAMKEYS_SHOWSQL))
-                {
-                    if (commandParams[PARAMKEYS_SHOWSQL].ToLower() == "true" || commandParams[PARAMKEYS_SHOWSQL].ToLower() == "1" || commandParams[PARAMKEYS_SHOWSQL].ToLower() == string.Empty)
-                        setup.ShowSql = true;
-                    else if (commandParams[PARAMKEYS_SHOWSQL].ToLower() == "false" || commandParams[PARAMKEYS_SHOWSQL].ToLower() == "0")
-                        setup.ShowSql = false;
-                    else
-                        throw new Exception("The /" + PARAMKEYS_SHOWSQL + " parameter must be set to 'true or false'.");
-                    paramUICount++;
-                }
-
-                if (commandParams.ContainsKey(PARAMKEYS_LOGSQL))
-                {
-                    var logFile = commandParams[PARAMKEYS_LOGSQL];
-                    if (!string.IsNullOrEmpty(logFile))
-                    {
-                        //var isValid = !string.IsNullOrEmpty(logFile) && logFile.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
-                        //if (!isValid)
-                        //    throw new Exception("The /" + PARAMKEYS_LOGSQL + " parameter must have a valid file name.");
-                        if (File.Exists(logFile)) File.Delete(logFile);
-                        setup.LogFilename = logFile;
-                    }
-                    paramUICount++;
-                }
-
                 if (commandParams.Any(x => PARAMKEYS_TRAN.Contains(x.Key)))
                 {
                     setup.UseTransaction = GetSetting(commandParams, PARAMKEYS_TRAN, true);
@@ -302,7 +276,7 @@ namespace PROJECTNAMESPACE
                 }
             }
 
-            Console.WriteLine("Invalid configuration");
+            Log.Information("Invalid configuration");
 
         }
 
@@ -381,7 +355,7 @@ namespace PROJECTNAMESPACE
                 sb.AppendLine(ex.SQL);
                 sb.AppendLine("END ERROR SQL");
                 sb.AppendLine();
-                System.Diagnostics.Trace.WriteLine(sb.ToString());
+                Log.Verbose(sb.ToString());
                 UpgradeInstaller.LogError(ex, sb.ToString());
                 throw;
             }
@@ -559,8 +533,6 @@ namespace PROJECTNAMESPACE
             OverrideEnv(PARAMKEYS_SCRIPTFILEACTION, ref commandParams);
             OverrideEnv(PARAMKEYS_DBVERSION, ref commandParams);
             OverrideEnv(PARAMKEYS_VERSIONWARN, ref commandParams);
-            OverrideEnv(PARAMKEYS_SHOWSQL, ref commandParams);
-            OverrideEnv(PARAMKEYS_LOGSQL, ref commandParams);
             OverrideEnv(PARAMKEYS_SKIPNORMALIZE, ref commandParams);
             OverrideEnv(PARAMKEYS_HASH, ref commandParams);
             OverrideEnv(PARAMKEYS_CHECKONLY, ref commandParams);
@@ -619,7 +591,7 @@ namespace PROJECTNAMESPACE
             sb.AppendLine("Specifies check mode and that no scripts will be run against the database. If any changes have occurred, an exception is thrown with the change list.");
             sb.AppendLine();
 
-            Console.WriteLine(sb.ToString());
+            Log.Information(sb.ToString());
         }
 
         #endregion
@@ -699,12 +671,6 @@ namespace PROJECTNAMESPACE
 
         /// <summary />
         public string NewDatabaseName { get; set; }
-
-        /// <summary />
-        public bool ShowSql { get; set; }
-
-        /// <summary />
-        public string LogFilename { get; set; }
 
         /// <summary />
         public bool CheckOnly { get; set; }

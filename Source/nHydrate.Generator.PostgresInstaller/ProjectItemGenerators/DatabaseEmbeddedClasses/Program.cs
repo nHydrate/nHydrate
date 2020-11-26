@@ -1,4 +1,5 @@
-using System;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 using System.Collections.Generic;
 
 namespace PROJECTNAMESPACE
@@ -22,11 +23,22 @@ namespace PROJECTNAMESPACE
 
              */
 
-            System.Console.WriteLine("Starting Install...");
+            IConfiguration Configuration = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile("appsettings.development.json", optional: true, reloadOnChange: true)
+                    .AddEnvironmentVariables()
+                    .AddCommandLine(args)
+                    .Build();
+
+            Log.Logger = new LoggerConfiguration()
+             .ReadFrom.Configuration(Configuration)
+             .CreateLogger();
+
+            Log.Information("Starting Install...");
             var stateSaver = new Dictionary<object, object>();
             var installer = new DatabaseInstaller();
             installer.Install(stateSaver);
-            System.Console.WriteLine("Install Complete");
+            Log.Information("Install Complete");
         }
     }
 }

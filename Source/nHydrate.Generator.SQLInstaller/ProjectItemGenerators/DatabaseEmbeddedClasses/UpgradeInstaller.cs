@@ -10,7 +10,6 @@
 #pragma warning disable 0168
 using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
@@ -18,6 +17,7 @@ using System.Xml;
 using System.Security.Cryptography;
 using System.IO;
 using Microsoft.Data.SqlClient;
+using Serilog;
 
 namespace PROJECTNAMESPACE
 {
@@ -125,7 +125,7 @@ namespace PROJECTNAMESPACE
                 if (settings.ModelKey != new Guid(MODELKEY) && !_setup.SuppressUI)
                 {
                     //TODO: Add way to override with parameters
-                    Console.WriteLine("The database being updated was created against a different model. This may cause database versioning issues");
+                    Log.Information("The database being updated was created against a different model. This may cause database versioning issues");
                 }
             }
 
@@ -337,7 +337,7 @@ namespace PROJECTNAMESPACE
 
                 if (currentDbVersion > _upgradeToVersion && !_setup.SuppressUI)
                 {
-                    Console.WriteLine($"The current database version ({currentDbVersion}) is greater than the current library ({_upgradeToVersion}). The upgrade will not proceed.");
+                    Log.Information($"The current database version ({currentDbVersion}) is greater than the current library ({_upgradeToVersion}). The upgrade will not proceed.");
                     return;
                 }
 
@@ -377,7 +377,7 @@ namespace PROJECTNAMESPACE
                                     if (!_setup.SuppressUI)
                                     {
                                         //TODO: allow override with parameters. i.e. "Do you wish to proceed with the install?"
-                                        Console.WriteLine($"The script '{fileName}' is part of the install but has never been applied to the database. The script version is lower than the database version so it will never be applied.");
+                                        Log.Information($"The script '{fileName}' is part of the install but has never been applied to the database. The script version is lower than the database version so it will never be applied.");
                                         return;
                                     }
                                     else
@@ -405,7 +405,7 @@ namespace PROJECTNAMESPACE
                                 if (!_setup.SuppressUI)
                                 {
                                     //TODO: Allow override with parameters, i.e. "Do you wish to continue"
-                                    Console.WriteLine($"The script '{fileName}' was previously run on the database, but the current script is not the same.");
+                                    Log.Information($"The script '{fileName}' was previously run on the database, but the current script is not the same.");
                                     return;
                                 }
                                 else
@@ -530,7 +530,7 @@ namespace PROJECTNAMESPACE
             {
                 if (!setup.CheckOnly && !setup.SuppressUI)
                 {
-                    Console.WriteLine(ex.ToString());
+                    Log.Information(ex.ToString());
                     return;
                 }
                 try
@@ -545,7 +545,7 @@ namespace PROJECTNAMESPACE
             {
                 if (!setup.CheckOnly && !setup.SuppressUI)
                 {
-                    Console.WriteLine(ex.ToString());
+                    Log.Information(ex.ToString());
                     return;
                 }
                 try
@@ -1465,39 +1465,12 @@ namespace PROJECTNAMESPACE
 
         public static void LogInfo(string text)
         {
-            try
-            {
-                var fileName = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
-                                                                        Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetExecutingAssembly().Location) + ".log");
-
-                if (!string.IsNullOrEmpty(text))
-                    File.AppendAllText(fileName, "[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "] " + text + "\r\n");
-            }
-            catch
-            {
-                //Do Nothing
-            }
+            Log.Information(text);
         }
 
         public static void LogError(Exception exception, string otherText)
         {
-            try
-            {
-                var fileName = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetExecutingAssembly().Location) + ".errorlog.txt");
-                var text = string.Empty;
-                if (exception != null)
-                    text += exception.ToString() + "\r\n\r\n";
-
-                if (!string.IsNullOrEmpty(otherText))
-                    text += otherText + "\r\n\r\n";
-
-                if (!string.IsNullOrEmpty(text))
-                    File.AppendAllText(fileName, "[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "]\r\n" + text);
-            }
-            catch
-            {
-                //Do Nothing
-            }
+            Log.Error(exception, otherText);
         }
 
         private string GetFileHash(string name, InstallSetup setup)

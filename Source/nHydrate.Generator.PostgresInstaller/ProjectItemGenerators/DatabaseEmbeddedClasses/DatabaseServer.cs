@@ -22,6 +22,7 @@ using System.Globalization;
 using System.IO.Compression;
 using System.Diagnostics;
 using Npgsql;
+using Serilog;
 
 namespace PROJECTNAMESPACE
 {
@@ -57,7 +58,7 @@ namespace PROJECTNAMESPACE
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.ToString());
+                    Log.Warning(ex.ToString());
                     valid = false;
                 }
                 finally
@@ -200,7 +201,7 @@ namespace PROJECTNAMESPACE
             var timer = Stopwatch.StartNew();
             var tempFolder = string.Empty;
             var scripts = ReadSQLFileSectionsFromResource(resourceFileName, setup);
-            System.Diagnostics.Trace.WriteLine(TheDate + " Start File=" + Extensions.StripResourceAssem(resourceFileName));
+            Log.Verbose(TheDate + " Start File=" + Extensions.StripResourceAssem(resourceFileName));
 
             #region Load script hashes
             var runScript = !setup.UseHash;
@@ -242,7 +243,7 @@ namespace PROJECTNAMESPACE
             }
 
             timer.Start();
-            System.Diagnostics.Trace.WriteLine(TheDate + " End File=" + Extensions.StripResourceAssem(resourceFileName) + ", Elapsed=" + timer.FormattedTime());
+            Log.Verbose(TheDate + " End File=" + Extensions.StripResourceAssem(resourceFileName) + ", Elapsed=" + timer.FormattedTime());
         }
 
         internal static void ExecuteSQL(NpgsqlConnection connection, NpgsqlTransaction transaction, string sql, InstallSetup setup)
@@ -332,25 +333,19 @@ namespace PROJECTNAMESPACE
             {
                 if (!setup.CheckOnly)
                 {
-                    if (setup.ShowSql && !string.IsNullOrEmpty(sql))
-                    {
-                        var debugText = "[" + DateTime.Now.ToString() + "]\r\n";
-                        const int MAX_SQL = 500;
-                        var sqlLength = Math.Min(sql.Length, MAX_SQL);
-                        debugText += sql.Substring(0, sqlLength);
-                        if (sqlLength == MAX_SQL) debugText += "...";
-                        debugText += "\r\n\r\n";
-                        System.Diagnostics.Trace.WriteLine(debugText);
-                    }
+                    var debugText = "[" + DateTime.Now.ToString() + "]\r\n";
+                    const int MAX_SQL = 500;
+                    var sqlLength = Math.Min(sql.Length, MAX_SQL);
+                    debugText += sql.Substring(0, sqlLength);
+                    if (sqlLength == MAX_SQL) debugText += "...";
+                    debugText += "\r\n\r\n";
+                    Log.Verbose(debugText);
 
                     _timer.Restart();
                     DatabaseServer.ExecuteCommand(command);
                     _timer.Stop();
 
-                    if (!string.IsNullOrEmpty(setup.LogFilename))
-                    {
-                        LoadSql(setup.LogFilename, sql, _timer.ElapsedMilliseconds);
-                    }
+                    Log.Debug<long, string>("Time:{Elapsed:000} Sql:{sql}", _timer.ElapsedMilliseconds, sql);
 
                     if (successOrderScripts != null && isBody)
                         successOrderScripts.Add(key);
@@ -380,39 +375,6 @@ namespace PROJECTNAMESPACE
             }
         }
 
-        private static void LoadSql(string fileName, string sql, long elapsed)
-        {
-            try
-            {
-                System.Xml.Linq.XDocument xmlDoc = null;
-                System.Xml.Linq.XElement rootElement = null;
-                const string RootName = "SQL";
-                if (File.Exists(fileName))
-                {
-                    xmlDoc = System.Xml.Linq.XDocument.Load(fileName);
-                    rootElement = xmlDoc.Element(RootName);
-                }
-                else
-                {
-                    xmlDoc = new System.Xml.Linq.XDocument();
-                    rootElement = new System.Xml.Linq.XElement(RootName);
-                    xmlDoc.Add(rootElement);
-                }
-
-                var parentElement = new System.Xml.Linq.XElement("Entry",
-                    new System.Xml.Linq.XAttribute("datetime", DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fff")),
-                    new System.Xml.Linq.XAttribute("elapsed", elapsed.ToString()));
-                parentElement.Add(new System.Xml.Linq.XElement("sql", new System.Xml.Linq.XCData(sql)));
-                rootElement.Add(parentElement);
-                xmlDoc.Save(fileName);
-
-            }
-            catch (Exception ex)
-            {
-                //Do Nothing
-            }
-        }
-
         private static string TheDate => System.DateTime.Now.ToString("HH:mm:ss");
 
         private static bool SkipScriptPrompt(InvalidSQLException ex)
@@ -420,7 +382,7 @@ namespace PROJECTNAMESPACE
             //TODO: Allow a way to allow override from parameters
             //This used to popup a dialog and ask for "OK"
             //for now just logging and skipping
-            Console.WriteLine(ex.Message);
+            Log.Information(ex.Message);
             return true;
         }
 
@@ -445,7 +407,7 @@ namespace PROJECTNAMESPACE
                 if (methodType == null)
                     throw new Exception("Method: '" + methodName + "' not implemented");
 
-                System.Diagnostics.Trace.WriteLine(TheDate + " Start CallMethod=" + methodName);
+                Log.Verbose(TheDate + " Start CallMethod=" + methodName);
                 if (methodType.GetParameters().Count() == 2)
                 {
                     methodType.Invoke(null, new object[] { connection, transaction });
@@ -460,7 +422,7 @@ namespace PROJECTNAMESPACE
                 }
 
                 timer.Stop();
-                System.Diagnostics.Trace.WriteLine(TheDate + " End CallMethod=" + methodName + ", Elapsed=" + timer.FormattedTime());
+                Log.Verbose(TheDate + " End CallMethod=" + methodName + ", Elapsed=" + timer.FormattedTime());
             }
             catch (Exception ex)
             {
