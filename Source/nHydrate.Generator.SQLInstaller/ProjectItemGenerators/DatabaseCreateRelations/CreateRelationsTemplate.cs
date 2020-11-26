@@ -7,34 +7,27 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateRe
 {
     public class CreateRelationsTemplate : BaseDbScriptTemplate
     {
-        private StringBuilder sb = new StringBuilder();
-
         public CreateRelationsTemplate(ModelRoot model)
             : base(model)
         {
         }
 
-        public override string FileContent
-        {
-            get
-            {
-                GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
         public override string FileName => "3_CreateRelations.sql";
 
-        private void GenerateContent()
+        public override string Generate()
         {
+            var sb = new StringBuilder();
             sb = new StringBuilder();
             sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
             sb.AppendLine("--Relations");
             sb.AppendLine();
-            this.AppendAll();
+            this.AppendAll(sb);
+            return sb.ToString();
         }
 
-        private void AppendAll()
+        private void AppendAll(StringBuilder sb)
         {
             sb.AppendLine("--##SECTION BEGIN [RELATIONS]");
             sb.AppendLine();

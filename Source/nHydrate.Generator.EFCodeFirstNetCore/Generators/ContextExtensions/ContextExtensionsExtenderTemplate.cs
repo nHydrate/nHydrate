@@ -6,8 +6,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
 {
     public class ContextExtensionsExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private StringBuilder sb = new StringBuilder();
-
         public ContextExtensionsExtenderTemplate(ModelRoot model)
             : base(model)
         {
@@ -15,23 +13,18 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
 
         public override string FileName => _model.ProjectName + "EntitiesExtensions.cs";
 
-        public override string FileContent
-        {
-            get
-            {
-                GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
-        public void GenerateContent()
+        public override string Generate()
         {
-            sb.AppendLine("namespace " + this.GetLocalNamespace());
+            var sb = new StringBuilder();
+            sb.AppendLine($"namespace {this.GetLocalNamespace()}");
             sb.AppendLine("{");
-            sb.AppendLine("	partial class " + _model.ProjectName + "EntitiesExtensions");
+            sb.AppendLine($"	partial class {_model.ProjectName}EntitiesExtensions");
             sb.AppendLine("	{");
             sb.AppendLine("	}");
             sb.AppendLine("}");
+            return sb.ToString();
         }
 
     }

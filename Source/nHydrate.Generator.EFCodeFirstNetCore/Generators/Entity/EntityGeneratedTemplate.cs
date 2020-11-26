@@ -9,7 +9,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 {
     public class EntityGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private StringBuilder sb = new StringBuilder();
         private Table _item;
 
         public EntityGeneratedTemplate(ModelRoot model, Table currentTable)
@@ -22,34 +21,26 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
         public override string FileName => $"{_item.PascalName}.Generated.cs";
         public string ParentItemName => $"{_item.PascalName}.cs";
 
-        public override string FileContent
-        {
-            get
-            {
-                sb = new StringBuilder();
-                this.GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
         #endregion
 
-        #region GenerateContent
-
-        private void GenerateContent()
+        public override string Generate()
         {
+            var sb = new StringBuilder();
             GenerationHelper.AppendFileGeneatedMessageInCode(sb);
             sb.AppendLine("#pragma warning disable 612");
-            this.AppendUsingStatements();
-            sb.AppendLine("namespace " + this.GetLocalNamespace() + ".Entity");
+            this.AppendUsingStatements(sb);
+            sb.AppendLine($"namespace {this.GetLocalNamespace()}.Entity");
             sb.AppendLine("{");
-            this.AppendEntityClass();
+            this.AppendEntityClass(sb);
             sb.AppendLine("}");
             sb.AppendLine();
             sb.AppendLine("#pragma warning restore 612");
             sb.AppendLine();
+            return sb.ToString();
         }
 
-        private void AppendUsingStatements()
+        private void AppendUsingStatements(StringBuilder sb)
         {
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
@@ -60,7 +51,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine();
         }
 
-        private void AppendEntityClass()
+        private void AppendEntityClass(StringBuilder sb)
         {
             var doubleDerivedClassName = _item.PascalName;
             if (_item.GeneratesDoubleDerived)
@@ -75,24 +66,24 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     StringHelper.LineBreakCode(sb, _item.Description, "	/// ");
                 sb.AppendLine("	/// </summary>");
                 sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
-                sb.Append("	public partial class " + _item.PascalName + " : " + doubleDerivedClassName + ", System.ICloneable");
+                sb.Append($"	public partial class {_item.PascalName} : " + doubleDerivedClassName + ", System.ICloneable");
 
                 //If we can add this item then implement the ICreatable interface
                 if (!_item.AssociativeTable && !_item.Immutable)
-                    sb.Append(", " + this.GetLocalNamespace() + ".ICreatable");
+                    sb.Append($", {this.GetLocalNamespace()}.ICreatable");
 
                 sb.AppendLine();
                 sb.AppendLine("	{");
-                this.AppendClone();
+                this.AppendClone(sb);
                 sb.AppendLine("	}");
                 sb.AppendLine();
             }
 
             sb.AppendLine("	/// <summary>");
             if (_item.GeneratesDoubleDerived)
-                sb.AppendLine("	/// The base for the double derived '" + _item.PascalName + "' entity");
+                sb.AppendLine($"	/// The base for the double derived '{_item.PascalName}' entity");
             else
-                sb.AppendLine("	/// The '" + _item.PascalName + "' entity");
+                sb.AppendLine($"	/// The '{_item.PascalName}' entity");
 
             if (!string.IsNullOrEmpty(_item.Description))
                 sb.AppendLine("	/// " + _item.Description);
@@ -143,27 +134,27 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             //If we can add this item then implement the ICreatable interface
             if (!_item.AssociativeTable && !_item.Immutable && !_item.GeneratesDoubleDerived)
-                sb.Append(", " + this.GetLocalNamespace() + ".ICreatable");
+                sb.Append($", {this.GetLocalNamespace()}.ICreatable");
 
             sb.AppendLine();
             sb.AppendLine("	{");
-            this.AppendedFieldEnum();
-            this.AppendConstructors();
-            this.AppendProperties();
-            this.AppendGenerateEvents();
-            this.AppendRegionBusinessObject();
+            this.AppendedFieldEnum(sb);
+            this.AppendConstructors(sb);
+            this.AppendProperties(sb);
+            this.AppendGenerateEvents(sb);
+            this.AppendRegionBusinessObject(sb);
             if (!_item.GeneratesDoubleDerived)
-                this.AppendClone();
-            this.AppendRegionGetValue();
-            this.AppendRegionSetValue();
-            this.AppendNavigationProperties();
-            this.AppendRegionGetDatabaseFieldName();
-            this.AppendIAuditable();
-            this.AppendIEquatable();
+                this.AppendClone(sb);
+            this.AppendRegionGetValue(sb);
+            this.AppendRegionSetValue(sb);
+            this.AppendNavigationProperties(sb);
+            this.AppendRegionGetDatabaseFieldName(sb);
+            this.AppendIAuditable(sb);
+            this.AppendIEquatable(sb);
             sb.AppendLine("	}");
         }
 
-        private void AppendedFieldEnum()
+        private void AppendedFieldEnum(StringBuilder sb)
         {
             var imageColumnList = _item.GetColumnsByType(System.Data.SqlDbType.Image).OrderBy(x => x.Name).ToList();
             if (imageColumnList.Count != 0)
@@ -202,7 +193,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		#region FieldNameConstants Enumeration");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Enumeration to define each property that maps to a database field for the '" + _item.PascalName + "' table.");
+            sb.AppendLine($"		/// Enumeration to define each property that maps to a database field for the '{_item.PascalName}' table.");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public enum FieldNameConstants");
             sb.AppendLine("		{");
@@ -258,7 +249,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine();
         }
 
-        private void AppendConstructors()
+        private void AppendConstructors(StringBuilder sb)
         {
             var scope = "public";
             if (_item.Immutable) // || _item.AssociativeTable
@@ -290,7 +281,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine();
         }
 
-        private void AppendClone()
+        private void AppendClone(StringBuilder sb)
         {
             var modifieraux = "virtual";
 
@@ -301,7 +292,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public " + modifieraux + " object Clone()");
             sb.AppendLine("		{");
-            sb.AppendLine("			return " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".Clone(this);");
+            sb.AppendLine($"			return {this.GetLocalNamespace()}.Entity.{_item.PascalName}.Clone(this);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
@@ -310,7 +301,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		public " + modifieraux + " object CloneAsNew()");
             sb.AppendLine("		{");
-            sb.AppendLine("			var item = " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".Clone(this);");
+            sb.AppendLine($"			var item = {this.GetLocalNamespace()}.Entity.{_item.PascalName}.Clone(this);");
             foreach (var pk in _item.GetColumns().Where(x => x.Identity == IdentityTypeConstants.Database && x.DataType.IsNumericType()))
             {
                 sb.AppendLine("			item._" + pk.CamelName + " = 0;");
@@ -323,9 +314,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Creates a shallow copy of this object");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static " + _item.PascalName + " Clone(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + " item)");
+            sb.AppendLine($"		public static {_item.PascalName} Clone({this.GetLocalNamespace()}.Entity.{_item.PascalName} item)");
             sb.AppendLine("		{");
-            sb.AppendLine("			var newItem = new " + _item.PascalName + "();");
+            sb.AppendLine($"			var newItem = new {_item.PascalName}();");
             foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
             {
                 sb.AppendLine("			newItem." + column.PascalName + " = item." + column.PascalName + ";");
@@ -333,14 +324,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             if (_item.AllowCreateAudit)
             {
-                sb.AppendLine("			newItem." + _model.Database.CreatedDatePascalName + " = item." + _model.Database.CreatedDatePascalName + ";");
-                sb.AppendLine("			newItem." + _model.Database.CreatedByPascalName + " = item." + _model.Database.CreatedByPascalName + ";");
+                sb.AppendLine($"			newItem.{_model.Database.CreatedDatePascalName} = item.{_model.Database.CreatedDatePascalName};");
+                sb.AppendLine($"			newItem.{_model.Database.CreatedByPascalName} = item.{_model.Database.CreatedByPascalName};");
             }
 
             if (_item.AllowModifiedAudit)
             {
-                sb.AppendLine("			newItem." + _model.Database.ModifiedDatePascalName + " = item." + _model.Database.ModifiedDatePascalName + ";");
-                sb.AppendLine("			newItem." + _model.Database.ModifiedByPascalName + " = item." + _model.Database.ModifiedByPascalName + ";");
+                sb.AppendLine($"			newItem.{_model.Database.ModifiedDatePascalName} = item.{_model.Database.ModifiedDatePascalName};");
+                sb.AppendLine($"			newItem.{_model.Database.ModifiedByPascalName} = item.{_model.Database.ModifiedByPascalName};");
             }
 
             sb.AppendLine("			return newItem;");
@@ -351,7 +342,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine();
         }
 
-        private void AppendProperties()
+        private void AppendProperties(StringBuilder sb)
         {
             sb.AppendLine("		#region Properties");
             sb.AppendLine();
@@ -370,7 +361,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             nullSuffix = "?";
 
                         sb.AppendLine("		/// <summary>");
-                        sb.AppendLine("		/// This property is a wrapper for the typed enumeration for the '" + column.PascalName + "' field.");
+                        sb.AppendLine($"		/// This property is a wrapper for the typed enumeration for the '{column.PascalName}' field.");
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
@@ -389,7 +380,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 if (!string.IsNullOrEmpty(column.Description))
                     StringHelper.LineBreakCode(sb, column.Description, "		/// ");
                 else
-                    sb.AppendLine("		/// The property that maps back to the database '" + column.ParentTable.DatabaseName + "." + column.DatabaseName + "' field.");
+                    sb.AppendLine($"		/// The property that maps back to the database '{column.ParentTable.DatabaseName}.{column.DatabaseName}' field.");
 
                 //If this field has a related convenience property then explain it
                 if (typeTable != null)
@@ -472,8 +463,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 //Error Check for field size
                 if (column.DataType.IsTextType())
                 {
-                    sb.Append("				if ((value != null) && (value.Length > GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")))");
-                    sb.AppendLine(" throw new Exception(string.Format(GlobalValues.ERROR_DATA_TOO_BIG, value, \"" + _item.PascalName + "." + column.PascalName + "\", GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")));");
+                    sb.Append($"				if ((value != null) && (value.Length > GetMaxLength({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants." + column.PascalName + ")))");
+                    sb.AppendLine($" throw new Exception(string.Format(GlobalValues.ERROR_DATA_TOO_BIG, value, \"{_item.PascalName}.{column.PascalName}\", GetMaxLength({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants." + column.PascalName + ")));");
                 }
                 else if (column.DataType == System.Data.SqlDbType.DateTime)
                 {
@@ -483,8 +474,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 }
                 else if (column.DataType.IsBinaryType())
                 {
-                    sb.Append("				if ((value != null) && (value.Length > GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")))");
-                    sb.AppendLine(" throw new Exception(string.Format(GlobalValues.ERROR_DATA_TOO_BIG, value, \"" + _item.PascalName + "." + column.PascalName + "\", GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")));");
+                    sb.Append($"				if ((value != null) && (value.Length > GetMaxLength({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants." + column.PascalName + ")))");
+                    sb.AppendLine($" throw new Exception(string.Format(GlobalValues.ERROR_DATA_TOO_BIG, value, \"{_item.PascalName}.{column.PascalName}\", GetMaxLength({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants.{column.PascalName})));");
                 }
 
                 //If this column is related to a type table then add additional validation
@@ -502,7 +493,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("					case " + idValue + ":");
                     }
                     sb.AppendLine("						break;");
-                    sb.AppendLine("					default: throw new Exception(string.Format(GlobalValues.ERROR_INVALID_ENUM, value.ToString(), \"" + _item.PascalName + "." + column.PascalName + "\"));");
+                    sb.AppendLine($"					default: throw new Exception(string.Format(GlobalValues.ERROR_INVALID_ENUM, value.ToString(), \"{_item.PascalName}." + column.PascalName + "\"));");
                     sb.AppendLine("				}");
 
                     if (column.AllowNull)
@@ -512,7 +503,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 }
 
                 //Do not process the setter if the value is NOT changing
-                sb.AppendLine("				if (value == _" + column.CamelName + ") return;");
+                sb.AppendLine($"				if (value == _{column.CamelName}) return;");
 
                 #endregion
 
@@ -532,7 +523,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 }
                 else if (_model.EnableCustomChangeEvents)
                 {
-                    sb.AppendLine("				var eventArg = new " + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + column.PascalName + "\");");
+                    sb.AppendLine($"				var eventArg = new {this.GetLocalNamespace()}.EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + column.PascalName + "\");");
                     sb.AppendLine("				this.OnPropertyChanging(eventArg);");
                     sb.AppendLine("				if (eventArg.Cancel) return;");
                     sb.AppendLine("				_" + column.CamelName + " = eventArg.Value;");
@@ -559,17 +550,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             }
 
             //Audit Fields
-            if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedByPascalName, "string", "The audit field for the 'Created By' parameter.", "public", "AuditCreatedBy");
-            if (_item.AllowCreateAudit) GenerateAuditField(_model.Database.CreatedDatePascalName, "DateTime", "The audit field for the 'Created Date' parameter.", "public", "AuditCreatedDate(utc: " + (_model.UseUTCTime ? "true" : "false") + ")");
-            if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedByPascalName, "string", "The audit field for the 'Modified By' parameter.", "public", "AuditModifiedBy");
-            if (_item.AllowModifiedAudit) GenerateAuditField(_model.Database.ModifiedDatePascalName, "DateTime", "The audit field for the 'Modified Date' parameter.", "public", "AuditModifiedDate(utc: " + (_model.UseUTCTime ? "true" : "false") + ")");
-            if (_item.AllowConcurrencyCheck) GenerateAuditField(_model.Database.ConcurrencyCheckPascalName, "int", "The audit field for the 'Timestamp' parameter.", "protected internal", "AuditTimestamp", true);
+            if (_item.AllowCreateAudit) GenerateAuditField(sb, _model.Database.CreatedByPascalName, "string", "The audit field for the 'Created By' parameter.", "public", "AuditCreatedBy");
+            if (_item.AllowCreateAudit) GenerateAuditField(sb, _model.Database.CreatedDatePascalName, "DateTime", "The audit field for the 'Created Date' parameter.", "public", "AuditCreatedDate(utc: " + (_model.UseUTCTime ? "true" : "false") + ")");
+            if (_item.AllowModifiedAudit) GenerateAuditField(sb, _model.Database.ModifiedByPascalName, "string", "The audit field for the 'Modified By' parameter.", "public", "AuditModifiedBy");
+            if (_item.AllowModifiedAudit) GenerateAuditField(sb, _model.Database.ModifiedDatePascalName, "DateTime", "The audit field for the 'Modified Date' parameter.", "public", "AuditModifiedDate(utc: " + (_model.UseUTCTime ? "true" : "false") + ")");
+            if (_item.AllowConcurrencyCheck) GenerateAuditField(sb, _model.Database.ConcurrencyCheckPascalName, "int", "The audit field for the 'Timestamp' parameter.", "protected internal", "AuditTimestamp", true);
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
         }
 
-        private void AppendNavigationProperties()
+        private void AppendNavigationProperties(StringBuilder sb)
         {
             sb.AppendLine("		#region Navigation Properties");
             sb.AppendLine();
@@ -610,7 +601,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         if ((targetTable.TypedTable != TypedTableConstants.EnumOnly))
                         {
                             sb.AppendLine("		/// <summary>");
-                            sb.AppendLine("		/// The navigation definition for walking " + _item.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? "" : " (role: '" + otherRelation.PascalRoleName + "') (Multiplicity M:N)"));
+                            sb.AppendLine($"		/// The navigation definition for walking {_item.PascalName}->" + childTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? "" : " (role: '" + otherRelation.PascalRoleName + "') (Multiplicity M:N)"));
                             sb.AppendLine("		/// </summary>");
                             // This was "protected internal" however there are times that a navigation property is needed
                             sb.AppendLine($"		public virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {otherRelation.PascalRoleName}{childTable.PascalName}List");
@@ -680,7 +671,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         }
 
-        private void AppendGenerateEvents()
+        private void AppendGenerateEvents(StringBuilder sb)
         {
             sb.AppendLine("		#region Property Holders");
             sb.AppendLine();
@@ -689,71 +680,71 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             {
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine($"		protected {column.GetCodeType()} _{column.CamelName};");
-                this.AppendPropertyEventDeclarations(column, column.GetCodeType());
+                this.AppendPropertyEventDeclarations(sb, column, column.GetCodeType());
             }
 
             //Audit Fields
-            if (_item.AllowCreateAudit) this.AppendPropertyEventDeclarations(_model.Database.CreatedByPascalName, "string");
-            if (_item.AllowCreateAudit) this.AppendPropertyEventDeclarations(_model.Database.CreatedDatePascalName, "DateTime");
-            if (_item.AllowModifiedAudit) this.AppendPropertyEventDeclarations(_model.Database.ModifiedByPascalName, "string");
-            if (_item.AllowModifiedAudit) this.AppendPropertyEventDeclarations(_model.Database.ModifiedDatePascalName, "DateTime");
-            if (_item.AllowConcurrencyCheck) this.AppendPropertyEventDeclarations(_model.Database.ConcurrencyCheckPascalName, "int");
+            if (_item.AllowCreateAudit) this.AppendPropertyEventDeclarations(sb, _model.Database.CreatedByPascalName, "string");
+            if (_item.AllowCreateAudit) this.AppendPropertyEventDeclarations(sb, _model.Database.CreatedDatePascalName, "DateTime");
+            if (_item.AllowModifiedAudit) this.AppendPropertyEventDeclarations(sb, _model.Database.ModifiedByPascalName, "string");
+            if (_item.AllowModifiedAudit) this.AppendPropertyEventDeclarations(sb, _model.Database.ModifiedDatePascalName, "DateTime");
+            if (_item.AllowConcurrencyCheck) this.AppendPropertyEventDeclarations(sb, _model.Database.ConcurrencyCheckPascalName, "int");
 
             sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
         }
 
-        private void AppendPropertyEventDeclarations(Column column, string codeType)
+        private void AppendPropertyEventDeclarations(StringBuilder sb, Column column, string codeType)
         {
-            this.AppendPropertyEventDeclarations(column.PascalName, codeType);
+            this.AppendPropertyEventDeclarations(sb, column.PascalName, codeType);
         }
 
-        private void AppendPropertyEventDeclarations(string columnName, string codeType)
+        private void AppendPropertyEventDeclarations(StringBuilder sb, string columnName, string codeType)
         {
             //Do not support custom events
             if (!_model.EnableCustomChangeEvents) return;
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Occurs when the '" + columnName + "' property value change is a pending.");
+            sb.AppendLine($"		/// Occurs when the '{columnName}' property value change is a pending.");
             sb.AppendLine("		/// </summary>");
             //sb.AppendLine("		[field:NonSerialized]");
-            sb.AppendLine("		public event EventHandler<" + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">> " + columnName + "Changing;");
+            sb.AppendLine($"		public event EventHandler<{this.GetLocalNamespace()}.EventArguments.ChangingEventArgs<{codeType}>> {columnName}Changing;");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Raises the On" + columnName + "Changing event.");
+            sb.AppendLine($"		/// Raises the On{columnName}Changing event.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		protected virtual void On" + columnName + "Changing(" + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + "> e)");
+            sb.AppendLine($"		protected virtual void On{columnName}Changing({this.GetLocalNamespace()}.EventArguments.ChangingEventArgs<{codeType}> e)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if (this." + columnName + "Changing != null)");
-            sb.AppendLine("				this." + columnName + "Changing(this, e);");
+            sb.AppendLine($"			if (this.{columnName}Changing != null)");
+            sb.AppendLine($"				this.{columnName}Changing(this, e);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Occurs when the '" + columnName + "' property value has changed.");
+            sb.AppendLine($"		/// Occurs when the '{columnName}' property value has changed.");
             sb.AppendLine("		/// </summary>");
             //sb.AppendLine("		[field:NonSerialized]");
-            sb.AppendLine("		public event EventHandler<ChangedEventArgs<" + codeType + ">> " + columnName + "Changed;");
+            sb.AppendLine($"		public event EventHandler<ChangedEventArgs<{codeType}>> {columnName}Changed;");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Raises the On" + columnName + "Changed event.");
+            sb.AppendLine($"		/// Raises the On{columnName}Changed event.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		protected virtual void On" + columnName + "Changed(ChangedEventArgs<" + codeType + "> e)");
+            sb.AppendLine($"		protected virtual void On{columnName}Changed(ChangedEventArgs<{codeType}> e)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if (this." + columnName + "Changed != null)");
-            sb.AppendLine("				this." + columnName + "Changed(this, e);");
+            sb.AppendLine($"			if (this.{columnName}Changed != null)");
+            sb.AppendLine($"				this.{columnName}Changed(this, e);");
             sb.AppendLine("		}");
             sb.AppendLine();
         }
 
-        private void AppendRegionBusinessObject()
+        private void AppendRegionBusinessObject(StringBuilder sb)
         {
             sb.AppendLine("		#region GetMaxLength");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the maximum size of the field value.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static int GetMaxLength(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field)");
+            sb.AppendLine($"		public static int GetMaxLength({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field)");
             sb.AppendLine("		{");
             sb.AppendLine("			switch (field)");
             sb.AppendLine("			{");
@@ -798,9 +789,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("			return 0;");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		int " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetMaxLength(Enum field)");
+            sb.AppendLine($"		int {this.GetLocalNamespace()}.IReadOnlyBusinessObject.GetMaxLength(Enum field)");
             sb.AppendLine("		{");
-            sb.AppendLine("			return GetMaxLength((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field);");
+            sb.AppendLine($"			return GetMaxLength(({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants)field);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
@@ -808,9 +799,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             sb.AppendLine("		#region GetFieldNameConstants");
             sb.AppendLine();
-            sb.AppendLine("		System.Type " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetFieldNameConstants()");
+            sb.AppendLine($"		System.Type {this.GetLocalNamespace()}.IReadOnlyBusinessObject.GetFieldNameConstants()");
             sb.AppendLine("		{");
-            sb.AppendLine("			return typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants);");
+            sb.AppendLine($"			return typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
@@ -822,27 +813,27 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the system type of a field on this object");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static System.Type GetFieldType(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field)");
+            sb.AppendLine($"		public static System.Type GetFieldType({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
-            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
+            sb.AppendLine($"			if (field.GetType() != typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants))");
+            sb.AppendLine($"				throw new Exception(\"The field parameter must be of type '{this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants'.\");");
             sb.AppendLine();
-            sb.AppendLine("			switch ((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field)");
+            sb.AppendLine($"			switch (({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants)field)");
             sb.AppendLine("			{");
             foreach (var column in _item.GetColumns())
             {
-                sb.AppendLine("				case " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ": return typeof(" + column.GetCodeType() + ");");
+                sb.AppendLine($"				case {this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants." + column.PascalName + ": return typeof(" + column.GetCodeType() + ");");
             }
             sb.AppendLine("			}");
             sb.AppendLine("			return null;");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		System.Type " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetFieldType(Enum field)");
+            sb.AppendLine($"		System.Type {this.GetLocalNamespace()}.IReadOnlyBusinessObject.GetFieldType(Enum field)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
-            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
+            sb.AppendLine($"			if (field.GetType() != typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants))");
+            sb.AppendLine($"				throw new Exception(\"The field parameter must be of type '{this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants'.\");");
             sb.AppendLine();
-            sb.AppendLine("			return GetFieldType((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field);");
+            sb.AppendLine($"			return GetFieldType(({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants)field);");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
@@ -851,33 +842,33 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             //GetValue
             sb.AppendLine("		#region Get/Set Value");
             sb.AppendLine();
-            sb.AppendLine("		object " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetValue(System.Enum field)");
+            sb.AppendLine($"		object {this.GetLocalNamespace()}.IReadOnlyBusinessObject.GetValue(System.Enum field)");
             sb.AppendLine("		{");
-            sb.AppendLine("			return ((" + this.GetLocalNamespace() + ".IReadOnlyBusinessObject)this).GetValue(field, null);");
+            sb.AppendLine($"			return (({this.GetLocalNamespace()}.IReadOnlyBusinessObject)this).GetValue(field, null);");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("		object " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetValue(System.Enum field, object defaultValue)");
+            sb.AppendLine($"		object {this.GetLocalNamespace()}.IReadOnlyBusinessObject.GetValue(System.Enum field, object defaultValue)");
             sb.AppendLine("		{");
-            sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
-            sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
-            sb.AppendLine("			return this.GetValue((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field, defaultValue);");
+            sb.AppendLine($"			if (field.GetType() != typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants))");
+            sb.AppendLine($"				throw new Exception(\"The field parameter must be of type '{this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants'.\");");
+            sb.AppendLine($"			return this.GetValue(({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants)field, defaultValue);");
             sb.AppendLine("		}");
             sb.AppendLine();
 
             if (!_item.Immutable)
             {
-                sb.AppendLine("		void " + this.GetLocalNamespace() + ".IBusinessObject.SetValue(System.Enum field, object newValue)");
+                sb.AppendLine($"		void {this.GetLocalNamespace()}.IBusinessObject.SetValue(System.Enum field, object newValue)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
-                sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
-                sb.AppendLine("			this.SetValue((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field, newValue);");
+                sb.AppendLine($"			if (field.GetType() != typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants))");
+                sb.AppendLine($"				throw new Exception(\"The field parameter must be of type '{this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants'.\");");
+                sb.AppendLine($"			this.SetValue(({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants)field, newValue);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
-                sb.AppendLine("		void " + this.GetLocalNamespace() + ".IBusinessObject.SetValue(System.Enum field, object newValue, bool fixLength)");
+                sb.AppendLine($"		void {this.GetLocalNamespace()}.IBusinessObject.SetValue(System.Enum field, object newValue, bool fixLength)");
                 sb.AppendLine("		{");
-                sb.AppendLine("			if (field.GetType() != typeof(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants))");
-                sb.AppendLine("				throw new Exception(\"The field parameter must be of type '" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants'.\");");
-                sb.AppendLine("			this.SetValue((" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants)field, newValue, fixLength);");
+                sb.AppendLine($"			if (field.GetType() != typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants))");
+                sb.AppendLine($"				throw new Exception(\"The field parameter must be of type '{this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants'.\");");
+                sb.AppendLine($"			this.SetValue(({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants)field, newValue, fixLength);");
                 sb.AppendLine("		}");
                 sb.AppendLine();
             }
@@ -910,7 +901,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             var setOriginalGuid = String.Format("\t\t\t" + propertyObjectPrefix + "._{0} = System.Guid.NewGuid();", _item.PrimaryKeyColumns.First().CamelName);
 
             var returnVal = new StringBuilder();
-            if (_item.PrimaryKeyColumns.Count == 1 && ((Column)_item.PrimaryKeyColumns.First()).DataType == System.Data.SqlDbType.UniqueIdentifier)
+            if (_item.PrimaryKeyColumns.Count == 1 && _item.PrimaryKeyColumns.First().DataType == System.Data.SqlDbType.UniqueIdentifier)
             {
                 if (_item.PrimaryKeyColumns.First().DataType == System.Data.SqlDbType.UniqueIdentifier)
                     returnVal.AppendLine(setOriginalGuid);
@@ -925,7 +916,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                     //Write the actual code
                     if (!string.IsNullOrEmpty(defaultValue))
-                        returnVal.AppendLine("			" + propertyObjectPrefix + "._" + column.CamelName + " = " + defaultValue + ";");
+                        returnVal.AppendLine($"			{propertyObjectPrefix}._{column.CamelName} = {defaultValue};");
                 }
             }
             //DEFAULT PROPERTIES END
@@ -933,7 +924,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             return returnVal.ToString();
         }
 
-        private void AppendRegionGetValue()
+        private void AppendRegionGetValue(StringBuilder sb)
         {
             sb.AppendLine("		#region GetValue");
             sb.AppendLine();
@@ -955,7 +946,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             {
                 var relationParentTable = (Table)column.ParentTableRef.Object;
                 var childColumnList = relationParentTable.AllRelationships.FindByChildColumn(column);
-                sb.AppendLine("			if (field == " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")");
+                sb.AppendLine($"			if (field == {this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants." + column.PascalName + ")");
                 if (column.AllowNull)
                     sb.AppendLine("				return ((this." + column.PascalName + " == null) ? defaultValue : this." + column.PascalName + ");");
                 else
@@ -992,7 +983,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine();
         }
 
-        private void AppendRegionSetValue()
+        private void AppendRegionSetValue(StringBuilder sb)
         {
             if (_item.Immutable)
                 return;
@@ -1004,7 +995,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"field\">The field to set</param>");
             sb.AppendLine("		/// <param name=\"newValue\">The new value to assign to the field</param>");
-            sb.AppendLine("		public virtual void SetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, object newValue)");
+            sb.AppendLine($"		public virtual void SetValue({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field, object newValue)");
             sb.AppendLine("		{");
             sb.AppendLine("			SetValue(field, newValue, false);");
             sb.AppendLine("		}");
@@ -1015,7 +1006,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <param name=\"field\">The field to set</param>");
             sb.AppendLine("		/// <param name=\"newValue\">The new value to assign to the field</param>");
             sb.AppendLine("		/// <param name=\"fixLength\">Determines if the length should be truncated if too long. When false, an error will be raised if data is too large to be assigned to the field.</param>");
-            sb.AppendLine("		public virtual void SetValue(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field, object newValue, bool fixLength)");
+            sb.AppendLine($"		public virtual void SetValue({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field, object newValue, bool fixLength)");
             sb.AppendLine("		{");
 
             var allColumns = _item.GetColumns().ToList();
@@ -1026,7 +1017,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 if (count == 0) sb.Append("			");
                 else sb.Append("			else ");
 
-                sb.AppendLine("if (field == " + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants." + column.PascalName + ")");
+                sb.AppendLine($"if (field == {this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants." + column.PascalName + ")");
                 sb.AppendLine("			{");
                 if (column.PrimaryKey)
                 {
@@ -1144,7 +1135,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             }
 
                             sb.AppendLine("					}");
-                            sb.AppendLine("					else if (newValue is " + this.GetLocalNamespace() + ".IBusinessObject)");
+                            sb.AppendLine($"					else if (newValue is {this.GetLocalNamespace()}.IBusinessObject)");
                             sb.AppendLine("					{");
                             sb.AppendLine("						throw new Exception(\"An invalid object of type 'IBusinessObject' was passed in. Perhaps a relationship was not enforced correctly.\");");
                             sb.AppendLine("					}");
@@ -1174,7 +1165,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine();
         }
 
-        private void AppendIEquatable()
+        private void AppendIEquatable(StringBuilder sb)
         {
             sb.AppendLine("		#region Equals");
             sb.AppendLine("		/// <summary>");
@@ -1214,7 +1205,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine();
         }
 
-        private void AppendIAuditable()
+        private void AppendIAuditable(StringBuilder sb)
         {
             if (!_item.AllowCreateAudit && !_item.AllowModifiedAudit && !_item.AllowConcurrencyCheck)
                 return;
@@ -1294,41 +1285,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            //sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditableSet.CreatedDate");
-            //sb.AppendLine("		{");
-            //if (_item.AllowCreateAudit)
-            //{
-            //    sb.AppendLine("			get { return this." + _model.Database.CreatedDatePascalName + "; }");
-            //    sb.AppendLine("			set { this." + _model.Database.CreatedDatePascalName + " = value; }");
-            //}
-            //else
-            //{
-            //    //sb.AppendLine("			get { return null; }");
-            //    sb.AppendLine("			set { ; }");
-            //}
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
-
-            //sb.AppendLine("		System.DateTime " + this.GetLocalNamespace() + ".IAuditableSet.ModifiedDate");
-            //sb.AppendLine("		{");
-            //if (_item.AllowModifiedAudit)
-            //{
-            //    sb.AppendLine("			get { return this." + _model.Database.ModifiedDatePascalName + "; }");
-            //    sb.AppendLine("			set { this." + _model.Database.ModifiedDatePascalName + " = value; }");
-            //}
-            //else
-            //{
-            //    //sb.AppendLine("			get { return null; }");
-            //    sb.AppendLine("			set { ; }");
-            //}
-            //sb.AppendLine("		}");
-            //sb.AppendLine();
 
             sb.AppendLine("		#endregion");
             sb.AppendLine();
         }
 
-        private void GenerateAuditField(string columnName, string codeType, string description, string propertyScope, string attributeType, bool isConcurrency = false)
+        private void GenerateAuditField(StringBuilder sb, string columnName, string codeType, string description, string propertyScope, string attributeType, bool isConcurrency = false)
         {
             if (!string.IsNullOrEmpty(description))
             {
@@ -1369,7 +1331,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             //Cannot hide setter but gut the thing so cannot make changes
             if (_model.EnableCustomChangeEvents)
             {
-                sb.AppendLine("				var eventArg = new " + this.GetLocalNamespace() + ".EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + columnName + "\");");
+                sb.AppendLine($"				var eventArg = new {this.GetLocalNamespace()}.EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + columnName + "\");");
                 sb.AppendLine("				this.OnPropertyChanging(eventArg);");
                 sb.AppendLine("				if (eventArg.Cancel) return;");
                 sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = eventArg.Value;");
@@ -1389,14 +1351,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         }
 
-        private void AppendRegionGetDatabaseFieldName()
+        private void AppendRegionGetDatabaseFieldName(StringBuilder sb)
         {
             sb.AppendLine("		#region GetDatabaseFieldName");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Returns the actual database name of the specified field.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		internal static string GetDatabaseFieldName(" + this.GetLocalNamespace() + ".Entity." + _item.PascalName + ".FieldNameConstants field)");
+            sb.AppendLine($"		internal static string GetDatabaseFieldName({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field)");
             sb.AppendLine("		{");
             sb.AppendLine("			return GetDatabaseFieldName(field.ToString());");
             sb.AppendLine("		}");
@@ -1437,8 +1399,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		#endregion");
             sb.AppendLine();
         }
-
-        #endregion
 
     }
 }

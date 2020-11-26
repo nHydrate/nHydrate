@@ -7,36 +7,20 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateDa
 {
     class CreateDataTemplate : BaseDbScriptTemplate
     {
-        private StringBuilder sb = new StringBuilder();
-
         public CreateDataTemplate(ModelRoot model)
             : base(model)
         {
         }
 
-        public override string FileContent
-        {
-            get
-            {
-                try
-                {
-                    GenerateContent();
-                    return sb.ToString();
-
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
         public override string FileName => "2_CreateData.sql";
 
         internal string OldFileName => "CreateData.sql";
 
-        private void GenerateContent()
+        public override string Generate()
         {
+            var sb = new StringBuilder();
             sb.AppendLine("--DO NOT MODIFY THIS FILE. IT IS ALWAYS OVERWRITTEN ON GENERATION.");
             sb.AppendLine("--Static Data");
             sb.AppendLine();
@@ -59,6 +43,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateDa
             //sb.AppendLine("if (SERVERPROPERTY('EngineEdition') <> 5) --NOT AZURE");
             //sb.AppendLine("exec sp_MSforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL'");
             //sb.AppendLine();
+            return sb.ToString();
         }
 
     }

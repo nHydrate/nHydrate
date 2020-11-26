@@ -8,8 +8,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseUpgrade
 {
     public class UpgradeVersionedTemplate : BaseDbScriptTemplate
     {
-        private StringBuilder sb = new StringBuilder();
-
         #region Constructors
         public UpgradeVersionedTemplate(ModelRoot model)
             : base(model)
@@ -18,14 +16,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseUpgrade
         #endregion
 
         #region BaseClassTemplate overrides
-        public override string FileContent
-        {
-            get
-            {
-                this.GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
         public override string FileName
         {
@@ -43,80 +34,75 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseUpgrade
         #endregion
 
         #region GenerateContent
-        private void GenerateContent()
+        public override string Generate()
         {
-            try
+            var sb = new StringBuilder();
+            sb = new StringBuilder();
+            sb.AppendLine("--Generated Upgrade For Version " + _model.Version + "." + _model.GeneratedVersion);
+            sb.AppendLine("--Generated on " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            sb.AppendLine();
+
+            //***********************************************************
+            //ATTEMPT TO GENERATE AN UPGRADE SCRIPT FROM PREVIOUS VERSION
+            //***********************************************************
+
+            #region Generate Upgrade Script
+
+            //Find the previous model file if one exists
+            var fileName = this._model.GeneratorProject.FileName;
+            var prevFileName = fileName + ".sql.lastgen";
+            var fiPrev = new System.IO.FileInfo(prevFileName);
+            var fi = new System.IO.FileInfo(fileName);
+
+            if (fiPrev.Exists)
             {
-                sb = new StringBuilder();
-                sb.AppendLine("--Generated Upgrade For Version " + _model.Version + "." + _model.GeneratedVersion);
-                sb.AppendLine("--Generated on " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                sb.AppendLine();
+                var newFileName = string.Format(fileName, "sql.");
 
-                //***********************************************************
-                //ATTEMPT TO GENERATE AN UPGRADE SCRIPT FROM PREVIOUS VERSION
-                //***********************************************************
-
-                #region Generate Upgrade Script
-
-                //Find the previous model file if one exists
-                var fileName = this._model.GeneratorProject.FileName;
-                var prevFileName = fileName + ".sql.lastgen";
-                var fiPrev = new System.IO.FileInfo(prevFileName);
-                var fi = new System.IO.FileInfo(fileName);
-
-                if (fiPrev.Exists)
+                //Rename old style to new style
+                if (File.Exists(prevFileName) && !File.Exists(fileName))
                 {
-                    var newFileName = string.Format(fileName, "sql.");
-
-                    //Rename old style to new style
-                    if (File.Exists(prevFileName) && !File.Exists(fileName))
-                    {
-                        File.Move(fileName, newFileName);
-                    }
-
-                    fileName = newFileName;
-
-                    fi = new System.IO.FileInfo(fileName);
-                    if (fi.Exists)
-                    {
-                        var newFile = fileName + ".converting";
-                        if (File.Exists(newFile))
-                        {
-                            File.Delete(newFile);
-                            System.Threading.Thread.Sleep(250);
-                        }
-                        File.Copy(fileName, newFile);
-                        var fileText = File.ReadAllText(newFile);
-                        File.WriteAllText(newFile, fileText);
-                        System.Threading.Thread.Sleep(500);
-
-                        //Load the previous model
-                        var genProjectLast = new Common.nHydrateGeneratorProject();
-                        var xDoc = new System.Xml.XmlDocument();
-                        xDoc.Load(prevFileName);
-                        genProjectLast.XmlLoad(xDoc.DocumentElement);
-                        sb.Append(SqlHelper.GetModelDifferenceSql(genProjectLast.Model as ModelRoot, _model));
-
-                        if (File.Exists(newFile))
-                            File.Delete(newFile);
-                    }
+                    File.Move(fileName, newFileName);
                 }
 
-                //Just in case it was there, but there is already a new file name, just remove it
-                if (File.Exists(prevFileName))
-                    File.Delete(prevFileName);
+                fileName = newFileName;
 
-                //Save this version on top of the old version
-                var currentFile = new System.IO.FileInfo(this._model.GeneratorProject.FileName);
-                currentFile.CopyTo(prevFileName, true);
+                fi = new System.IO.FileInfo(fileName);
+                if (fi.Exists)
+                {
+                    var newFile = fileName + ".converting";
+                    if (File.Exists(newFile))
+                    {
+                        File.Delete(newFile);
+                        System.Threading.Thread.Sleep(250);
+                    }
+                    File.Copy(fileName, newFile);
+                    var fileText = File.ReadAllText(newFile);
+                    File.WriteAllText(newFile, fileText);
+                    System.Threading.Thread.Sleep(500);
 
-                #endregion
+                    //Load the previous model
+                    var genProjectLast = new Common.nHydrateGeneratorProject();
+                    var xDoc = new System.Xml.XmlDocument();
+                    xDoc.Load(prevFileName);
+                    genProjectLast.XmlLoad(xDoc.DocumentElement);
+                    sb.Append(SqlHelper.GetModelDifferenceSql(genProjectLast.Model as ModelRoot, _model));
 
+                    if (File.Exists(newFile))
+                        File.Delete(newFile);
+                }
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            //Just in case it was there, but there is already a new file name, just remove it
+            if (File.Exists(prevFileName))
+                File.Delete(prevFileName);
+
+            //Save this version on top of the old version
+            var currentFile = new System.IO.FileInfo(this._model.GeneratorProject.FileName);
+            currentFile.CopyTo(prevFileName, true);
+
+            #endregion
+
+            return sb.ToString();
         }
         #endregion
     }

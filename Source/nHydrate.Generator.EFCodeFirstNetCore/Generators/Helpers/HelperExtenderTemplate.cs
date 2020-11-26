@@ -1,61 +1,28 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.Models;
-using System;
 using System.Text;
 
 namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
 {
     public class HelperExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private StringBuilder sb = new StringBuilder();
-
         public HelperExtenderTemplate(ModelRoot model)
             : base(model)
         {
         }
 
-        #region BaseClassTemplate overrides
-
         public override string FileName => "Globals.cs";
 
-        public override string FileContent
+        public override string FileContent { get => Generate(); }
+
+        public override string Generate()
         {
-            get
-            {
-                try
-                {
-                    sb = new StringBuilder();
-                    GenerateContent();
-                    return sb.ToString();
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
+            var sb = new StringBuilder();
+            sb.AppendLine("namespace " + this.GetLocalNamespace());
+            sb.AppendLine("{");
+            sb.AppendLine("}");
+            return sb.ToString();
         }
-
-        #endregion
-
-        #region GenerateContent
-
-        public void GenerateContent()
-        {
-            try
-            {
-                sb.AppendLine("namespace " + this.GetLocalNamespace());
-                sb.AppendLine("{");
-                sb.AppendLine("}");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
-        }
-
-        #endregion
-
-
+ 
     }
 }

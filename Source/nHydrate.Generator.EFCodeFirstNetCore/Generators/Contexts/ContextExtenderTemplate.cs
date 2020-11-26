@@ -6,8 +6,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 {
     public class ContextExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private StringBuilder sb = new StringBuilder();
-
         public ContextExtenderTemplate(ModelRoot model)
             : base(model)
         {
@@ -15,17 +13,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
         public override string FileName => $"{_model.ProjectName}Entities.cs";
 
-        public override string FileContent
-        {
-            get
-            {
-                this.GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
-        private void GenerateContent()
+        public override string Generate()
         {
+            var sb = new StringBuilder();
             sb.AppendLine("using System;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
             sb.AppendLine();
@@ -59,6 +51,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
             sb.AppendLine("	}");
             sb.AppendLine("}");
+            return sb.ToString();
         }
 
     }

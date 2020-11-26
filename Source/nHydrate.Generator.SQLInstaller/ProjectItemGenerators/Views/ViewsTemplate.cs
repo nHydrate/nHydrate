@@ -8,8 +8,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Views
 {
     public class ViewsTemplate : BaseDbScriptTemplate
     {
-        private StringBuilder sb = new StringBuilder();
-
         #region Constructors
         public ViewsTemplate(ModelRoot model)
             : base(model)
@@ -19,42 +17,30 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Views
 
         #region BaseClassTemplate overrides
 
-        public override string FileContent
-        {
-            get
-            {
-                this.GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
         public override string FileName => "Views.sql";
 
         #endregion
 
         #region GenerateContent
-        private void GenerateContent()
+        public override string Generate()
         {
-            try
+            var sb = new StringBuilder();
+            foreach (var view in _model.Database.CustomViews.OrderBy(x => x.Name))
             {
-                foreach (var view in _model.Database.CustomViews.OrderBy(x => x.Name))
+                sb.AppendLine($"--This SQL is generated for the model defined view [{view.DatabaseName}]");
+                sb.AppendLine();
+                sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlCreateView(view, true));
+                if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))
                 {
-                    sb.AppendLine($"--This SQL is generated for the model defined view [{view.DatabaseName}]");
+                    sb.AppendFormat("GRANT ALL ON [" + view.GetSQLSchema() + "].[{0}] TO [{1}]", view.DatabaseName, _model.Database.GrantExecUser).AppendLine();
+                    sb.AppendLine($"--MODELID: {sb}");
+                    sb.AppendLine("GO");
                     sb.AppendLine();
-                    sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlCreateView(view, true));
-                    if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))
-                    {
-                        sb.AppendFormat("GRANT ALL ON [" + view.GetSQLSchema() + "].[{0}] TO [{1}]", view.DatabaseName, _model.Database.GrantExecUser).AppendLine();
-                        sb.AppendLine($"--MODELID: {sb}");
-                        sb.AppendLine("GO");
-                        sb.AppendLine();
-                    }
                 }
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return sb.ToString();
         }
 
         #endregion

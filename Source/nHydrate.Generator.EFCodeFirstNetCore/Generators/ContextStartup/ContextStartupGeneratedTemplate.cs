@@ -6,8 +6,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
 {
     public class ContextStartupGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private StringBuilder sb = new StringBuilder();
-
         public ContextStartupGeneratedTemplate(ModelRoot model)
             : base(model)
         {
@@ -16,19 +14,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
         public override string FileName => "ContextStartup.Generated.cs";
         public string ParentItemName => "ContextStartup.cs";
 
-        public override string FileContent
-        {
-            get
-            {
-                this.GenerateContent();
-                return sb.ToString();
-            }
-        }
+        public override string FileContent { get => Generate(); }
 
-        private void GenerateContent()
+        public override string Generate()
         {
+            var sb = new StringBuilder();
             GenerationHelper.AppendFileGeneatedMessageInCode(sb);
-            this.AppendUsingStatements();
+            this.AppendUsingStatements(sb);
             sb.AppendLine("namespace " + this.GetLocalNamespace());
             sb.AppendLine("{");
 
@@ -45,7 +37,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
             sb.AppendLine("	#region ContextStartup");
             sb.AppendLine();
             sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// This object holds the modifier information for audits on an ObjectContext");
+            sb.AppendLine("	/// This object holds the initialization information for a context");
             sb.AppendLine("	/// </summary>");
             sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
             sb.AppendLine("	public partial class ContextStartup : IContextStartup, ICloneable");
@@ -141,9 +133,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
 
             sb.AppendLine("}");
             sb.AppendLine();
+            return sb.ToString();
         }
 
-        private void AppendUsingStatements()
+        private void AppendUsingStatements(StringBuilder sb)
         {
             sb.AppendLine("using System;");
             sb.AppendLine();
