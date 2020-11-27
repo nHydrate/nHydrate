@@ -80,12 +80,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
             eventArgs = new ProjectItemGeneratedEventArgs(fileName, "Add scripts that will always run first in this folder. Make them embedded resources and they will be run in alphabetical order.", ProjectName, this, true);
             OnProjectItemGenerated(this, eventArgs);
 
-            //New Database
-            var folderNewDatabase = Path.Combine(foldername, "NewDatabase");
-            fileName = Path.Combine(folderNewDatabase, "ReadMe.txt");
-            eventArgs = new ProjectItemGeneratedEventArgs(fileName, "Add scripts that will be run first on a database creation in this folder. Make them embedded resources and they will be run in alphabetical order.", ProjectName, this, true);
-            OnProjectItemGenerated(this, eventArgs);
-
             //Unversioned
             var folderUnversioned = Path.Combine(foldername, "UnVersioned");
             fileName = Path.Combine(folderUnversioned, "ReadMe.txt");
@@ -138,12 +132,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
             var folderAlways = Path.Combine(foldername, "Always");
             fileName = Path.Combine(folderAlways, "ReadMe.txt");
             eventArgs = new ProjectItemGeneratedEventArgs(fileName, "Add scripts that will always run after schema and upgrades in this folder. Make them embedded resources and they will be run in alphabetical order.", ProjectName, this, true);
-            OnProjectItemGenerated(this, eventArgs);
-
-            //New Database
-            var folderNewDatabase = Path.Combine(foldername, "NewDatabase");
-            fileName = Path.Combine(folderNewDatabase, "ReadMe.txt");
-            eventArgs = new ProjectItemGeneratedEventArgs(fileName, "Add scripts that will be run after schema and upgrades on a database creation in this folder. Make them embedded resources and they will be run in alphabetical order.", ProjectName, this, true);
             OnProjectItemGenerated(this, eventArgs);
 
             //Unversioned
@@ -203,12 +191,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
             eventArgs = new ProjectItemGeneratedEventArgs(fileName, "Add scripts that will always run after all other scripts in this folder. Make them embedded resources and they will be run in alphabetical order.", ProjectName, this, true);
             OnProjectItemGenerated(this, eventArgs);
 
-            //New Database
-            var folderNewDatabase = Path.Combine(foldername, "NewDatabase");
-            fileName = Path.Combine(folderNewDatabase, "ReadMe.txt");
-            eventArgs = new ProjectItemGeneratedEventArgs(fileName, "Add scripts that will be run after all other scripts on a database creation in this folder. Make them embedded resources and they will be run in alphabetical order.", ProjectName, this, true);
-            OnProjectItemGenerated(this, eventArgs);
-
             //Unversioned
             var folderUnversioned = Path.Combine(foldername, "UnVersioned");
             fileName = Path.Combine(folderUnversioned, "ReadMe.txt");
@@ -233,7 +215,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
             sb.AppendLine("Please place any custom scripts that need to run prior to all generated scripts here. Make sure they are an embedded resource");
             sb.AppendLine();
             sb.AppendLine("There are three ways that a database install happens:");
-            sb.AppendLine("\"NewDatabase\" Folder - During the process of installation the user chooses to create a new database. ");
             sb.AppendLine("\"Unversioned\" Folder - During the process of installation the user chooses to upgrade a database that has not been versioned by nHydrate");
             sb.AppendLine("\"Versioned\" Folder - During the process of installation the user chooses to upgrade a database that has been versioned by nHydrate");
             sb.AppendLine("\"Always\" Folder: After the scenario specific scripts have run. Scripts in the \"Always\" folder will be run regardless of scenario.");
@@ -253,7 +234,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
             sb.AppendLine("Please place any custom scripts that need to run after the generated schema and data files have been run.  Make sure they are an embedded resource.");
             sb.AppendLine();
             sb.AppendLine("There are three ways that an db install happens:");
-            sb.AppendLine("\"NewDatabase\" Folder - During the process of installation the user chooses to create a new database. ");
             sb.AppendLine("\"Unversioned\" Folder - During the process of installation the user chooses to upgrade a database that has not been versioned by nHydrate");
             sb.AppendLine("\"Versioned\" Folder - During the process of installation the user chooses to upgrade a database that has been versioned by nHydrate");
             sb.AppendLine("\"Always\" Folder: After the scenario specific scripts have run. Scripts in the \"Always\" folder will be run regardless of scenario.");
@@ -274,7 +254,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseEmbedded
             sb.AppendLine("Please place any custom scripts that need to run after everything else here. Make sure they are an embedded resource.");
             sb.AppendLine();
             sb.AppendLine("There are three ways that an db install happens:");
-            sb.AppendLine("\"NewDatabase\" Folder - During the process of installation the user chooses to create a new database. ");
             sb.AppendLine("\"Unversioned\" Folder - During the process of installation the user chooses to upgrade a database that has not been versioned by nHydrate");
             sb.AppendLine("\"Versioned\" Folder - During the process of installation the user chooses to upgrade a database that has been versioned by nHydrate");
             sb.AppendLine("\"Always\" Folder: After the scenario specific scripts have run. Scripts in the \"Always\" folder will be run regardless of scenario.");

@@ -807,7 +807,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the value of one of this object's properties.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public virtual object GetValue({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field)");
+            sb.AppendLine($"		protected virtual object GetValue({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field)");
             sb.AppendLine("		{");
             sb.AppendLine("			return GetValue(field, null);");
             sb.AppendLine("		}");
@@ -815,7 +815,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Gets the value of one of this object's properties.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public virtual object GetValue({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field, object defaultValue)");
+            sb.AppendLine($"		protected virtual object GetValue({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field, object defaultValue)");
             sb.AppendLine("		{");
             var allColumns = _item.GetColumns().ToList();
             foreach (var column in allColumns.OrderBy(x => x.Name))
@@ -871,7 +871,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"field\">The field to set</param>");
             sb.AppendLine("		/// <param name=\"newValue\">The new value to assign to the field</param>");
-            sb.AppendLine($"		public virtual void SetValue({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field, object newValue)");
+            sb.AppendLine($"		protected virtual void SetValue({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field, object newValue)");
             sb.AppendLine("		{");
             sb.AppendLine("			SetValue(field, newValue, false);");
             sb.AppendLine("		}");
@@ -882,7 +882,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <param name=\"field\">The field to set</param>");
             sb.AppendLine("		/// <param name=\"newValue\">The new value to assign to the field</param>");
             sb.AppendLine("		/// <param name=\"fixLength\">Determines if the length should be truncated if too long. When false, an error will be raised if data is too large to be assigned to the field.</param>");
-            sb.AppendLine($"		public virtual void SetValue({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field, object newValue, bool fixLength)");
+            sb.AppendLine($"		protected virtual void SetValue({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field, object newValue, bool fixLength)");
             sb.AppendLine("		{");
 
             var allColumns = _item.GetColumns().ToList();

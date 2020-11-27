@@ -88,44 +88,6 @@ namespace PROJECTNAMESPACE
 
         #endregion
 
-        #region create database
-        internal static void CreateDatabase(InstallSetup setup)
-        {
-            try
-            {
-                using (var conn = new SqlConnection())
-                {
-                    conn.ConnectionString = setup.MasterConnectionString;
-                    conn.Open();
-                    var cmdCreateDb = new SqlCommand();
-                    var collate = string.Empty;
-                    if (!string.IsNullOrEmpty(collate)) collate = " COLLATE " + collate;
-                    var fileInfo = string.Empty;
-                    if (!string.IsNullOrEmpty(setup.DiskPath))
-                        fileInfo = " ON (NAME='" + setup.NewDatabaseName + "', FILENAME= '" + Path.Combine(setup.DiskPath, setup.NewDatabaseName) + ".mdf')";
-                    cmdCreateDb.CommandText = "CREATE DATABASE [" + setup.NewDatabaseName + "]" + collate + fileInfo;
-                    cmdCreateDb.CommandType = System.Data.CommandType.Text;
-                    cmdCreateDb.Connection = conn;
-                    SqlServers.ExecuteCommand(cmdCreateDb);
-
-                    var sb = new StringBuilder();
-                    sb.AppendLine("declare @databasename nvarchar(500)");
-                    sb.AppendLine("set @databasename = (select [name] from master.sys.master_files where database_id = (select top 1 [dbid] from master.sys.sysdatabases where name = '" + setup.NewDatabaseName + "' and [type] = 0))");
-                    sb.AppendLine("exec('ALTER DATABASE [" + setup.NewDatabaseName + "] MODIFY FILE (NAME = [' + @databasename + '],  MAXSIZE = UNLIMITED, FILEGROWTH = 10MB)')");
-                    sb.AppendLine("set @databasename = (select [name] from master.sys.master_files where database_id = (select top 1 [dbid] from master.sys.sysdatabases where name = '" + setup.NewDatabaseName + "' and [type] = 1))");
-                    sb.AppendLine("exec('ALTER DATABASE [" + setup.NewDatabaseName + "] MODIFY FILE (NAME = [' + @databasename + '],  MAXSIZE = UNLIMITED, FILEGROWTH = 10MB)')");
-                    cmdCreateDb.CommandText = sb.ToString();
-                    SqlServers.ExecuteCommand(cmdCreateDb);
-                }
-            }
-            catch { throw; }
-            finally
-            {
-                System.Threading.Thread.Sleep(1000);
-            }
-        }
-        #endregion
-
         #region database column operations
 
         public static bool HasLength(System.Data.SqlDbType dataType)
@@ -365,10 +327,7 @@ namespace PROJECTNAMESPACE
                 }
                 else
                 {
-                    if (setup.SuppressUI)
-                        throw new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql, FileName = setup.DebugScriptName };
-                    else if (!SkipScriptPrompt(new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql, FileName = setup.DebugScriptName }))
-                        throw new HandledSQLException(sqlexp.Message, sqlexp);
+                    throw new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql, FileName = setup.DebugScriptName };
                 }
             }
             catch (Exception ex) { throw; }
@@ -1096,17 +1055,6 @@ namespace PROJECTNAMESPACE
 
         public string SQL { get; set; }
         public string FileName { get; set; }
-    }
-
-    #endregion
-
-    #region HandledSQLException
-
-    internal class HandledSQLException : System.Exception
-    {
-        public HandledSQLException() : base() { }
-        public HandledSQLException(string message) : base(message) { }
-        public HandledSQLException(string message, Exception innerException) : base(message, innerException) { }
     }
 
     #endregion
