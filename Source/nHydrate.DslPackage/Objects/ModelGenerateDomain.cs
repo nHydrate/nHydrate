@@ -314,7 +314,6 @@ namespace nHydrate.DslPackage.Objects
             try
             {
                 var root = new nHydrate.Generator.Common.Models.ModelRoot(null);
-                root.EnableCustomChangeEvents = model.EmitChangeScripts;
                 root.CompanyName = model.CompanyName;
                 root.EmitSafetyScripts = model.EmitSafetyScripts;
                 root.DefaultNamespace = model.DefaultNamespace;

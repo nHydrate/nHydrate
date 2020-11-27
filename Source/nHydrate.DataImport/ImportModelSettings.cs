@@ -5,4 +5,3 @@ namespace nHydrate.DataImport
         public bool OverridePrimaryKey { get; set; }
     }
 }
-

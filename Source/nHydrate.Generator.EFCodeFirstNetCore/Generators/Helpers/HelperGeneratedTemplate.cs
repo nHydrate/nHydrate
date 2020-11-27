@@ -293,8 +293,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("			{");
             sb.AppendLine("				return func();");
             sb.AppendLine("			}");
-            //sb.AppendLine("			catch (Exceptions.ConcurrencyException dbcex) { throw new Exceptions.ConcurrencyException(GlobalValues.ERROR_CONCURRENCY_FAILURE, dbcex); }");
-            //sb.AppendLine("			catch (System.Data.SqlClient.SqlException sqlexp) { if (sqlexp.Number == 547 || sqlexp.Number == 2627) throw new UniqueConstraintViolatedException(GlobalValues.ERROR_CONSTRAINT_FAILURE, sqlexp); else throw; }");
             sb.AppendLine("			catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex.ToString()); throw; }");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -304,8 +302,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("			{");
             sb.AppendLine("				action();");
             sb.AppendLine("			}");
-            //sb.AppendLine("			catch (Exceptions.ConcurrencyException dbcex) { throw new Exceptions.ConcurrencyException(GlobalValues.ERROR_CONCURRENCY_FAILURE, dbcex); }");
-            //sb.AppendLine("			catch (System.Data.SqlClient.SqlException sqlexp) { if (sqlexp.Number == 547 || sqlexp.Number == 2627) throw new UniqueConstraintViolatedException(GlobalValues.ERROR_CONSTRAINT_FAILURE, sqlexp); else throw; }");
             sb.AppendLine("			catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex.ToString()); throw; }");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -531,52 +527,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		Enum GetEntityFromField(Enum field);");
             sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Given a field enumeration value, returns the system type of the associated property");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"field\"></param>");
-            sb.AppendLine("		/// <returns></returns>");
-            sb.AppendLine("		System.Type GetFieldType(Enum field);");
-            sb.AppendLine("	}");
-            sb.AppendLine("	#endregion");
-            sb.AppendLine();
-            #endregion
-
-            #region BaseEntity
-            sb.AppendLine("	#region BaseEntity");
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// The base class for all entity objects using EF 6");
-            sb.AppendLine("	/// </summary>");
-            //sb.AppendLine("	[System.Runtime.Serialization.DataContract(IsReference = true)]");
-            sb.AppendLine("	public abstract partial class BaseEntity");
-            sb.AppendLine("	{");
-            if (_model.EnableCustomChangeEvents)
-            {
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Event raised after a property is changed");
-                sb.AppendLine("		/// </summary>");
-                //sb.AppendLine("		[field:NonSerialized]");
-                sb.AppendLine("		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;");
-                sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Event raised before a property is changed");
-                sb.AppendLine("		/// </summary>");
-                //sb.AppendLine("		[field:NonSerialized]");
-                sb.AppendLine("		public event System.ComponentModel.PropertyChangingEventHandler PropertyChanging;");
-                sb.AppendLine();
-                sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		protected virtual void OnPropertyChanging(System.ComponentModel.PropertyChangingEventArgs e)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			if (this.PropertyChanging != null)");
-                sb.AppendLine("				this.PropertyChanging(this, e);");
-                sb.AppendLine("		}");
-                sb.AppendLine();
-                sb.AppendLine("		/// <summary />");
-                sb.AppendLine("		protected virtual void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)");
-                sb.AppendLine("		{");
-                sb.AppendLine("			if (this.PropertyChanged != null)");
-                sb.AppendLine("				this.PropertyChanged(this, e);");
-                sb.AppendLine("		}");
-            }
             sb.AppendLine("	}");
             sb.AppendLine("	#endregion");
             sb.AppendLine();
@@ -827,12 +777,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("		/// <returns></returns>");
             sb.AppendLine("		object GetValue(Enum field, object defaultValue);");
             sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Returns the system type of the specified field");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"field\"></param>");
-            sb.AppendLine("		/// <returns></returns>");
-            sb.AppendLine("		System.Type GetFieldType(Enum field);");
             sb.AppendLine("	}");
             sb.AppendLine("	#endregion");
             sb.AppendLine();
@@ -942,88 +886,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("}");
             sb.AppendLine();
 
-            #region EventArgs
-            sb.AppendLine($"namespace {this.GetLocalNamespace()}.EventArguments");
-            sb.AppendLine("{");
-            sb.AppendLine("	#region ChangedEventArgs");
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// The event argument type of all property setters after the property is changed");
-            sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	/// <typeparam name=\"T\"></typeparam>");
-            sb.AppendLine("	public partial class ChangedEventArgs<T> : System.ComponentModel.PropertyChangingEventArgs");
-            sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Initializes a new instance of the ChangingEventArgs class");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value of the property being set</param>");
-            sb.AppendLine("		/// <param name=\"propertyName\">The name of the property being set</param>");
-            sb.AppendLine("		public ChangedEventArgs(T newValue, string propertyName)");
-            sb.AppendLine("			: base(propertyName)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			this.Value = newValue;");
-            sb.AppendLine("		}");
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// The new value of the property");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public T Value { get; set; }");
-            sb.AppendLine("	}");
-            sb.AppendLine("	#endregion");
-            sb.AppendLine();
-            sb.AppendLine("	#region ChangingEventArgs");
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// The event argument type of all property setters before the property is changed");
-            sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	public partial class ChangingEventArgs<T> : ChangedEventArgs<T>");
-            sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Initializes a new instance of the ChangingEventArgs class");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"newValue\">The new value of the property being set</param>");
-            sb.AppendLine("		/// <param name=\"propertyName\">The name of the property being set</param>");
-            sb.AppendLine("		public ChangingEventArgs(T newValue, string propertyName)");
-            sb.AppendLine("			: base(newValue, propertyName)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Determines if this operation is cancelled.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public bool Cancel { get; set; }");
-            sb.AppendLine("	}");
-            sb.AppendLine("	/// <summary />");
-            sb.AppendLine("	public class EntityListEventArgs : System.EventArgs");
-            sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public IEnumerable<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry> List { get; set; }");
-            sb.AppendLine("	}");
-            sb.AppendLine("	#endregion");
-            sb.AppendLine("}");
-            sb.AppendLine();
-            #endregion
 
             #region Exceptions
             sb.AppendLine($"namespace {this.GetLocalNamespace()}.Exceptions");
             sb.AppendLine("{");
-
-            sb.AppendLine("	#region ConcurrencyException");
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// Summary description for ConcurrencyException.");
-            sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	public partial class ConcurrencyException : nHydrateException");
-            sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public ConcurrencyException(string message)");
-            sb.AppendLine("			: base(message)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public ConcurrencyException(string message, System.Exception ex)");
-            sb.AppendLine("			: base(message, ex)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine("	}");
-            sb.AppendLine("	#endregion");
-            sb.AppendLine();
 
             sb.AppendLine("	#region nHydrateException");
             sb.AppendLine("	/// <summary />");
@@ -1075,26 +941,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("			this.ErrorCode = ErrorCode;");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("	}");
-            sb.AppendLine("	#endregion");
-            sb.AppendLine();
-
-            sb.AppendLine("	#region UniqueConstraintViolatedException");
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// Summary description for UniqueConstraintViolatedException.");
-            sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	public partial class UniqueConstraintViolatedException : nHydrateException");
-            sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public UniqueConstraintViolatedException(string message)");
-            sb.AppendLine("			: base(message)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public UniqueConstraintViolatedException(string message, System.Exception ex)");
-            sb.AppendLine("			: base(message, ex)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
             sb.AppendLine("	}");
             sb.AppendLine("	#endregion");
             sb.AppendLine();

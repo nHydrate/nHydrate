@@ -20,32 +20,13 @@ using Serilog;
 namespace PROJECTNAMESPACE
 {
     /// <summary>
-    /// 
-    /// </summary>
-    internal enum ActionTypeConstants
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        Create,
-        /// <summary>
-        /// 
-        /// </summary>
-        Upgrade,
-    }
-
-    /// <summary>
     /// The database installer class
     /// </summary>
     [RunInstaller(true)]
     public partial class DatabaseInstaller : Installer
     {
         #region Members
-        private string[] PARAMKEYS_UPGRADE = new string[] { "upgrade", "update" };
-        private string[] PARAMKEYS_CREATE = new string[] { "create" };
-        private string[] PARAMKEYS_MASTERDB = new string[] { "master", "masterdb" };
-        private string[] PARAMKEYS_APPDB = new string[] { "applicationdb", "connectionstring" };
-        private string[] PARAMKEYS_NEWNAME = new string[] { "newdb", "newdatabase", "dbname" };
+        private string[] PARAMKEYS_APPDB = new string[] { "connectionstring" };
         private string[] PARAMKEYS_HELP = new string[] { "showhelp" };
         private string PARAMKEYS_SCRIPT = "script";
         private string PARAMKEYS_SCRIPTFILE = "scriptfile";
@@ -56,7 +37,6 @@ namespace PROJECTNAMESPACE
         private string PARAMKEYS_SKIPNORMALIZE = "skipnormalize";
         private string PARAMKEYS_HASH = "usehash";
         private string PARAMKEYS_CHECKONLY = "checkonly";
-        private string PARAMKEYS_QUIET = "quiet";
         #endregion
 
         #region Constructor
@@ -114,12 +94,6 @@ namespace PROJECTNAMESPACE
                     paramUICount++;
                 }
 
-                if (commandParams.ContainsKey(PARAMKEYS_QUIET))
-                {
-                    setup.SuppressUI = true;
-                    paramUICount++;
-                }
-
                 if (commandParams.ContainsKey(PARAMKEYS_VERSIONWARN))
                 {
                     if (commandParams[PARAMKEYS_VERSIONWARN].ToLower() == "all")
@@ -154,18 +128,6 @@ namespace PROJECTNAMESPACE
                 }
 
                 setup.ConnectionString = GetSetting(commandParams, PARAMKEYS_APPDB, string.Empty);
-                setup.MasterConnectionString = GetSetting(commandParams, PARAMKEYS_MASTERDB, string.Empty);
-                if (GetSetting(commandParams, PARAMKEYS_UPGRADE, setup.IsUpgrade))
-                    setup.InstallStatus = InstallStatusConstants.Upgrade;
-                if (commandParams.Any(x => PARAMKEYS_CREATE.Contains(x.Key)))
-                    setup.InstallStatus = InstallStatusConstants.Create;
-
-                if (commandParams.Any(x => PARAMKEYS_UPGRADE.Contains(x.Key)) && commandParams.Any(x => PARAMKEYS_CREATE.Contains(x.Key)))
-                    throw new Exception("You cannot specify both the create and update action.");
-                if (commandParams.Count(x => PARAMKEYS_NEWNAME.Contains(x.Key)) > 1)
-                    throw new Exception("The new database name was specified more than once.");
-                if (commandParams.Count(x => PARAMKEYS_MASTERDB.Contains(x.Key)) > 1)
-                    throw new Exception("The master database connection string was specified more than once.");
                 if (commandParams.Count(x => PARAMKEYS_APPDB.Contains(x.Key)) > 1)
                     throw new Exception("The connection string was specified more than once.");
 
@@ -177,10 +139,8 @@ namespace PROJECTNAMESPACE
                     {
                         case "versioned":
                         case "unversioned":
-                        case "create":
-                            break;
                         default:
-                            throw new Exception("The script action must be 'create', 'versioned', or 'unversioned'.");
+                            throw new Exception("The script action must be 'versioned' or 'unversioned'.");
                     }
 
                     if (!commandParams.ContainsKey(PARAMKEYS_SCRIPTFILE))
@@ -222,17 +182,10 @@ namespace PROJECTNAMESPACE
                                 }
                             }
 
-                            setup.InstallStatus = InstallStatusConstants.Upgrade;
                             File.AppendAllText(dumpFile, UpgradeInstaller.GetScript(setup));
                             break;
                         case "unversioned":
-                            setup.InstallStatus = InstallStatusConstants.Upgrade;
                             setup.Version = UpgradeInstaller._def_Version;
-                            File.AppendAllText(dumpFile, UpgradeInstaller.GetScript(setup));
-                            break;
-                        case "create":
-                            setup.InstallStatus = InstallStatusConstants.Create;
-                            setup.Version = new GeneratedVersion(-1, -1, -1, -1, -1);
                             File.AppendAllText(dumpFile, UpgradeInstaller.GetScript(setup));
                             break;
                     }
@@ -241,9 +194,8 @@ namespace PROJECTNAMESPACE
                 }
 
                 //If we processed all parameters and they were UI then we need to show UI
-                if ((paramUICount < commandParams.Count) || setup.SuppressUI)
+                if (paramUICount < commandParams.Count)
                 {
-                    setup.NewDatabaseName = commandParams.Where(x => PARAMKEYS_NEWNAME.Contains(x.Key)).Select(x => x.Value).FirstOrDefault();
                     Install(setup);
                     return;
                 }
@@ -271,29 +223,9 @@ namespace PROJECTNAMESPACE
         /// </summary>
         public void Install(InstallSetup setup)
         {
-            if (setup.InstallStatus == InstallStatusConstants.Create)
-            {
-                //Connection cannot reference an existing database
-                if (DatabaseServer.TestConnectionString(setup.ConnectionString))
-                    throw new Exception("The connection string references an existing database.");
-
-                //The new database name must be specified
-                if (string.IsNullOrEmpty(setup.NewDatabaseName))
-                    throw new Exception("A new database name was not specified.");
-
-                //The connection string and the new database name must be the same
-                var builder = new Npgsql.NpgsqlConnectionStringBuilder(setup.ConnectionString);
-                if (builder.Database.ToLower() != setup.NewDatabaseName.ToLower())
-                    throw new Exception("A new database name does not match the specified connection string.");
-
-                DatabaseServer.CreateDatabase(setup);
-            }
-            else if (setup.InstallStatus == InstallStatusConstants.Upgrade)
-            {
-                //The connection string must reference an existing database
-                if (!DatabaseServer.TestConnectionString(setup.ConnectionString))
-                    throw new Exception("The connection string does not reference a valid database.");
-            }
+            //The connection string must reference an existing database
+            if (!DatabaseServer.TestConnectionString(setup.ConnectionString))
+                throw new Exception("The connection string does not reference a valid database.");
 
             try
             {
@@ -474,10 +406,6 @@ namespace PROJECTNAMESPACE
         private void OverrideEnvironmentalVariables(ref Dictionary<string, string> commandParams)
         {
             OverrideEnvOneOfArray(PARAMKEYS_APPDB, ref commandParams);
-            OverrideEnvOneOfArray(PARAMKEYS_UPGRADE, ref commandParams);
-            OverrideEnvOneOfArray(PARAMKEYS_CREATE, ref commandParams);
-            OverrideEnvOneOfArray(PARAMKEYS_MASTERDB, ref commandParams);
-            OverrideEnvOneOfArray(PARAMKEYS_NEWNAME, ref commandParams);
             OverrideEnvOneOfArray(PARAMKEYS_HELP, ref commandParams);
             OverrideEnvOneOfArray(PARAMKEYS_APPDB, ref commandParams);
             OverrideEnvOneOfArray(PARAMKEYS_TRAN, ref commandParams);
@@ -488,7 +416,6 @@ namespace PROJECTNAMESPACE
             OverrideEnv(PARAMKEYS_SKIPNORMALIZE, ref commandParams);
             OverrideEnv(PARAMKEYS_HASH, ref commandParams);
             OverrideEnv(PARAMKEYS_CHECKONLY, ref commandParams);
-            OverrideEnv(PARAMKEYS_QUIET, ref commandParams);
         }
 
         #endregion
@@ -500,29 +427,14 @@ namespace PROJECTNAMESPACE
         {
             //Create Help dialog
             var sb = new StringBuilder();
-            sb.AppendLine("Creates or updates a Postgres database");
+            sb.AppendLine("Updates a Postgres database");
             sb.AppendLine();
-            sb.AppendLine("InstallUtil.exe PROJECTNAMESPACE.dll [/upgrade] [/create] [/master:connectionstring] [/connectionstring:connectionstring] [/newdb:name] [/showsql:true|false] [/tranaction:true|false] [/skipnormalize] [/scriptfile:filename] [/scriptfileaction:append] [/checkonly] [/usehash] [/acceptwarnings:all|none|new|changed]");
+            sb.AppendLine("InstallUtil.exe PROJECTNAMESPACE.dll [/connectionstring:connectionstring] [/tranaction:true|false] [/skipnormalize] [/scriptfile:filename] [/scriptfileaction:append] [/checkonly] [/usehash] [/acceptwarnings:all|none|new|changed]");
             sb.AppendLine();
             sb.AppendLine("Providing no parameters will display the default UI.");
             sb.AppendLine();
-            sb.AppendLine("/upgrade");
-            sb.AppendLine("Specifies that this is an update database operation");
-            sb.AppendLine();
-            sb.AppendLine("/create");
-            sb.AppendLine("Specifies that this is a create database operation");
-            sb.AppendLine();
-            sb.AppendLine("/master:\"connectionstring\"");
-            sb.AppendLine("Specifies the master connection string. This is only required for create database.");
-            sb.AppendLine();
             sb.AppendLine("/connectionstring:\"connectionstring\"");
             sb.AppendLine("/Specifies the connection string to the upgrade database");
-            sb.AppendLine();
-            sb.AppendLine("newdb:name");
-            sb.AppendLine("When creating a new database, this is the name of the newly created database.");
-            sb.AppendLine();
-            sb.AppendLine("/showsql:[true|false]");
-            sb.AppendLine("Displays each SQL statement in the console window as its executed. Default is false.");
             sb.AppendLine();
             sb.AppendLine("/tranaction:[true|false]");
             sb.AppendLine("Specifies whether to use a database transaction. Outside of a transaction there is no rollback functionality if an error occurs! Default is true.");
@@ -547,20 +459,6 @@ namespace PROJECTNAMESPACE
 
         #endregion
 
-        /// <summary>
-        /// The action to take
-        /// </summary>
-        internal ActionTypeConstants Action { get; private set; }
-
-    }
-
-    /// <summary />
-    public enum InstallStatusConstants
-    {
-        /// <summary />
-        Create,
-        /// <summary />
-        Upgrade
     }
 
     #region InstallSetup
@@ -572,17 +470,10 @@ namespace PROJECTNAMESPACE
         public InstallSetup()
         {
             this.SkipSections = new List<string>();
-            this.InstallStatus = InstallStatusConstants.Upgrade;
             this.UseTransaction = true;
             this.UseHash = true;
             this.SkipNormalize = false;
-            this.SuppressUI = false;
         }
-
-        /// <summary>
-        /// The connection information to the Postgres master database
-        /// </summary>
-        public string MasterConnectionString { get; set; }
 
         /// <summary>
         /// The connection string to the newly created database
@@ -591,17 +482,6 @@ namespace PROJECTNAMESPACE
 
         /// <summary />
         public GeneratedVersion Version { get; set; }
-
-        /// <summary />
-        public bool SuppressUI { get; set; }
-
-        /// <summary>
-        /// Determines if this is a database upgrade
-        /// </summary>
-        internal bool IsUpgrade
-        {
-            get { return this.InstallStatus == InstallStatusConstants.Upgrade; }
-        }
 
         /// <summary />
         public bool UseHash { get; set; }
@@ -621,18 +501,7 @@ namespace PROJECTNAMESPACE
         public List<string> SkipSections { get; set; }
 
         /// <summary />
-        public string NewDatabaseName { get; set; }
-
-        /// <summary />
         public bool CheckOnly { get; set; }
-
-        internal bool NewInstall
-        {
-            get { return this.InstallStatus == InstallStatusConstants.Create; }
-        }
-
-        /// <summary />
-        public InstallStatusConstants InstallStatus { get; set; }
 
         /// <summary />
         /// <summary />

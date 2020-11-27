@@ -5,16 +5,10 @@ namespace nHydrate.DataImport
 {
     public class Relationship : DatabaseBaseObject
     {
-        public Relationship()
-        {
-            this.RelationshipColumnList = new List<RelationshipDetail>();
-            this.ConstraintName = string.Empty;
-        }
-
         public Entity SourceEntity { get; set; }
         public Entity TargetEntity { get; set; }
-        public List<RelationshipDetail> RelationshipColumnList { get; set; }
-        public string ConstraintName { get; set; }
+        public List<RelationshipDetail> RelationshipColumnList { get; set; } = new List<RelationshipDetail>();
+        public string ConstraintName { get; set; } = string.Empty;
 
         /// <summary>
         /// A related piece of data to track imports

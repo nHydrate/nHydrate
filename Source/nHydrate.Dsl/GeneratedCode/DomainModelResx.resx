@@ -325,18 +325,6 @@
     <value>Database</value>
     <comment>Category for DomainProperty &apos;EmitSafetyScripts&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
   </data>
-  <data name="nHydrate.Dsl.nHydrateModel/EmitChangeScripts.Description" xml:space="preserve">
-    <value>Determines if change events are generated around all entity property setters</value>
-    <comment>Description for DomainProperty &apos;EmitChangeScripts&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/EmitChangeScripts.DisplayName" xml:space="preserve">
-    <value>Emit Change Scripts</value>
-    <comment>DisplayName for DomainProperty &apos;EmitChangeScripts&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
-  <data name="nHydrate.Dsl.nHydrateModel/EmitChangeScripts.Category" xml:space="preserve">
-    <value>Code</value>
-    <comment>Category for DomainProperty &apos;EmitChangeScripts&apos; on DomainClass &apos;nHydrateModel&apos;</comment>
-  </data>
   <data name="nHydrate.Dsl.Entity.Description" xml:space="preserve">
     <value>This object represents a database table</value>
     <comment>Description for DomainClass &apos;Entity&apos;</comment>

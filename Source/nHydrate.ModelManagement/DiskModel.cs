@@ -15,7 +15,6 @@ namespace nHydrate.ModelManagement
     public class ModelProperties
     {
         public string Id { get; set; }
-        public bool EmitChangeScripts { get; set; }
         public string CompanyName { get; set; }
         public bool EmitSafetyScripts { get; set; }
         public string DefaultNamespace { get; set; }

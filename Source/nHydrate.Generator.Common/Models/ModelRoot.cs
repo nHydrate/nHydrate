@@ -15,7 +15,6 @@ namespace nHydrate.Generator.Common.Models
 
         protected internal const string _def_version = "0.0.0.0";
         protected const bool _def_useUTCTime = false;
-        protected const bool _def_enableCustomChangeEvents = false;
         protected const bool _def_supportLegacySearchObject = false;
         protected const string _def_defaultNamespace = "";
         protected const string _def_storedProcedurePrefix = "gen";
@@ -61,8 +60,6 @@ namespace nHydrate.Generator.Common.Models
         }
 
         public string DefaultNamespace { get; set; } = _def_defaultNamespace;
-
-        public bool EnableCustomChangeEvents { get; set; } = _def_enableCustomChangeEvents;
 
         public bool SupportLegacySearchObject { get; set; } = _def_supportLegacySearchObject;
 
@@ -117,7 +114,6 @@ namespace nHydrate.Generator.Common.Models
 
                 node.AddAttribute("key", this.Key);
                 node.AddAttribute("projectName", this.ProjectName);
-                node.AddAttribute("enableCustomChangeEvents", this.EnableCustomChangeEvents);
                 node.AddAttribute("supportLegacySearchObject", this.SupportLegacySearchObject);
                 node.AddAttribute("useUTCTime", this.UseUTCTime.ToString());
                 node.AddAttribute("version", this.Version);
@@ -148,7 +144,6 @@ namespace nHydrate.Generator.Common.Models
             {
                 this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
                 this.ProjectName = XmlHelper.GetAttributeValue(node, "projectName", string.Empty);
-                this.EnableCustomChangeEvents = XmlHelper.GetAttributeValue(node, "enableCustomChangeEvents", _def_enableCustomChangeEvents);
                 this.SupportLegacySearchObject = XmlHelper.GetAttributeValue(node, "supportLegacySearchObject", _def_supportLegacySearchObject);
                 _version = XmlHelper.GetAttributeValue(node, "version", _def_version);
                 this.UseUTCTime = XmlHelper.GetAttributeValue(node, "useUTCTime", this.UseUTCTime);

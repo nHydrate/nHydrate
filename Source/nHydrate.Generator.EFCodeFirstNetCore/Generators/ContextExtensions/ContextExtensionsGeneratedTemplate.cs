@@ -55,26 +55,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine($"	public static partial class {_model.ProjectName}EntitiesExtensions");
             sb.AppendLine("	{");
 
-            #region GetFieldType
-            sb.AppendLine("		#region GetFieldType Extension Method");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Get the system type of a field of one of the contained context objects");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public static System.Type GetFieldType(this {this.GetLocalNamespace()}.{_model.ProjectName}Entities context, Enum field)");
-            sb.AppendLine("		{");
-            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine($"			if (field is {this.GetLocalNamespace()}.Entity.{table.PascalName}.FieldNameConstants)");
-                sb.AppendLine($"				return {this.GetLocalNamespace()}.Entity.{table.PascalName}.GetFieldType(({this.GetLocalNamespace()}.Entity.{table.PascalName}.FieldNameConstants)field);");
-            }
-            sb.AppendLine("			throw new Exception(\"Unknown field type!\");");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-            #endregion
-
             #region GetEntityType
 
             sb.AppendLine("		#region GetEntityType");
@@ -111,7 +91,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		/// <param name=\"selector\">The field to retrieve</param>");
             sb.AppendLine("		/// <returns></returns>");
             sb.AppendLine("		public static T GetValue<T, R>(this R item, System.Linq.Expressions.Expression<System.Func<R, T>> selector)");
-            sb.AppendLine("			where R : BaseEntity");
+            sb.AppendLine("			where R : IBusinessObject");
             sb.AppendLine("		{");
             sb.AppendLine("			var b = selector.Body.ToString();");
             sb.AppendLine("			var arr = b.Split('.');");
@@ -134,7 +114,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		/// <param name=\"defaultValue\">The default value to return if the specified value is NULL</param>");
             sb.AppendLine("		/// <returns></returns>");
             sb.AppendLine("		public static T GetValue<T, R>(this R item, System.Linq.Expressions.Expression<System.Func<R, T>> selector, T defaultValue)");
-            sb.AppendLine("			where R : BaseEntity");
+            sb.AppendLine("			where R : IBusinessObject");
             sb.AppendLine("		{");
             sb.AppendLine("			var b = selector.Body.ToString();");
             sb.AppendLine("			var arr = b.Split('.');");
@@ -157,7 +137,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		/// <param name=\"defaultValue\">The default value to return if the specified value is NULL</param>");
             sb.AppendLine("		/// <returns></returns>");
             sb.AppendLine("		private static T GetValueInternal<T, R>(this R item, System.Enum field, T defaultValue)");
-            sb.AppendLine("			where R : BaseEntity");
+            sb.AppendLine("			where R : IBusinessObject");
             sb.AppendLine("		{");
             sb.AppendLine("			var valid = false;");
             sb.AppendLine("			if (typeof(T) == typeof(bool)) valid = true;");
@@ -237,7 +217,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		/// <param name=\"selector\">The field on the entity to set</param>");
             sb.AppendLine("		/// <param name=\"newValue\">The new value to assign to the field</param>");
             sb.AppendLine("		public static void SetValue<TResult, R>(this R item, System.Linq.Expressions.Expression<System.Func<R, TResult>> selector, TResult newValue)");
-            sb.AppendLine("			where R : BaseEntity, IBusinessObject");
+            sb.AppendLine("			where R : IBusinessObject");
             sb.AppendLine("		{");
             sb.AppendLine("			SetValue(item: item, selector: selector, newValue: newValue, fixLength: false);");
             sb.AppendLine("		}");
@@ -251,7 +231,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		/// <param name=\"newValue\">The new value to assign to the field</param>");
             sb.AppendLine("		/// <param name=\"fixLength\">Determines if the length should be truncated if too long. When false, an error will be raised if data is too large to be assigned to the field.</param>");
             sb.AppendLine("		public static void SetValue<TResult, R>(this R item, System.Linq.Expressions.Expression<System.Func<R, TResult>> selector, TResult newValue, bool fixLength)");
-            sb.AppendLine("			where R : BaseEntity, IBusinessObject");
+            sb.AppendLine("			where R : IBusinessObject");
             sb.AppendLine("		{");
             sb.AppendLine("			var b = selector.Body.ToString();");
             sb.AppendLine("			var arr = b.Split('.');");
@@ -263,23 +243,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		}");
             sb.AppendLine();
 
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-            #endregion
-
-            #region ObservableCollection
-            sb.AppendLine("		#region ObservableCollection");
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Returns an observable collection that can bound to UI controls");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static System.Collections.ObjectModel.ObservableCollection<T> AsObservable<T>(this System.Collections.Generic.IEnumerable<T> list)");
-            sb.AppendLine("			where T : " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject");
-            sb.AppendLine("		{");
-            sb.AppendLine("			var retval = new System.Collections.ObjectModel.ObservableCollection<T>();");
-            sb.AppendLine("			foreach (var o in list)");
-            sb.AppendLine("				retval.Add(o);");
-            sb.AppendLine("			return retval;");
-            sb.AppendLine("		}");
             sb.AppendLine("		#endregion");
             sb.AppendLine();
             #endregion

@@ -4,22 +4,15 @@ namespace nHydrate.DataImport
     {
         private int _length = 50;
 
-        public Field()
-        {
-            this.DataType = System.Data.SqlDbType.VarChar;
-            this.IsBrowsable = true;
-            this.DefaultValue = string.Empty;
-        }
-
-        public System.Data.SqlDbType DataType { get; set; }
+        public System.Data.SqlDbType DataType { get; set; } = System.Data.SqlDbType.VarChar;
         public bool Identity { get; set; }
-        public string DefaultValue { get; set; }
+        public string DefaultValue { get; set; } = string.Empty;
         public bool PrimaryKey { get; set; }
         public bool Nullable { get; set; }
         public int Scale { get; set; }
         public string ImportedDefaultName { get; set; }
         public bool IsReadOnly { get; set; }
-        public bool IsBrowsable { get; set; }
+        public bool IsBrowsable { get; set; } = true;
 
         private bool _isUnique;
         public bool IsUnique
@@ -51,10 +44,7 @@ namespace nHydrate.DataImport
 
         public override string ObjectType => "Field";
 
-        public override string ToString()
-        {
-            return this.Name;
-        }
+        public override string ToString() => this.Name;
 
         public string CorePropertiesHash
         {
@@ -97,10 +87,7 @@ namespace nHydrate.DataImport
 
         }
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => base.GetHashCode();
 
     }
 }

@@ -94,44 +94,6 @@ namespace PROJECTNAMESPACE
 
         #endregion
 
-        #region create database
-        internal static void CreateDatabase(InstallSetup setup)
-        {
-            try
-            {
-                using (var conn = new NpgsqlConnection(setup.MasterConnectionString))
-                {
-                    conn.Open();
-                    var cmdCreateDb = new NpgsqlCommand();
-                    var fileInfo = string.Empty;
-                    if (!string.IsNullOrEmpty(setup.DiskPath))
-                        fileInfo = " WITH LOCATION '" + Path.Combine(setup.DiskPath, setup.NewDatabaseName) + "')";
-                    cmdCreateDb.CommandText = $"CREATE DATABASE \"{setup.NewDatabaseName}\"" + fileInfo;
-                    cmdCreateDb.CommandType = System.Data.CommandType.Text;
-                    cmdCreateDb.Connection = conn;
-                    DatabaseServer.ExecuteCommand(cmdCreateDb);
-                }
-
-                using (var conn = new NpgsqlConnection(setup.ConnectionString))
-                {
-                    conn.Open();
-                    //Add UUID generator
-                    var command = new NpgsqlCommand();
-                    command.CommandText = "CREATE EXTENSION \"uuid-ossp\";";
-                    command.CommandType = System.Data.CommandType.Text;
-                    command.Connection = conn;
-                    DatabaseServer.ExecuteCommand(command);
-                }
-
-            }
-            catch { throw; }
-            finally
-            {
-                System.Threading.Thread.Sleep(1000);
-            }
-        }
-        #endregion
-
         #region database column operations
 
         public static bool HasLength(System.Data.SqlDbType dataType)
@@ -361,10 +323,7 @@ namespace PROJECTNAMESPACE
                 }
                 else
                 {
-                    if (setup.SuppressUI)
-                        throw new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql, FileName = setup.DebugScriptName };
-                    else if (!SkipScriptPrompt(new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql, FileName = setup.DebugScriptName }))
-                        throw new HandledSQLException(sqlexp.Message, sqlexp);
+                    throw new InvalidSQLException(sqlexp.Message, sqlexp) { SQL = sql, FileName = setup.DebugScriptName };
                 }
             }
             catch (Exception ex) { throw; }
@@ -1074,16 +1033,6 @@ namespace PROJECTNAMESPACE
 
     #endregion
 
-    #region HandledSQLException
-
-    internal class HandledSQLException : System.Exception
-    {
-        public HandledSQLException() : base() { }
-        public HandledSQLException(string message) : base(message) { }
-        public HandledSQLException(string message, Exception innerException) : base(message, innerException) { }
-    }
-
-    #endregion
 
     #region ScriptDifferenceException
 

@@ -1,9 +1,8 @@
-using System;
-using System.IO;
-using System.Text;
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.ProjectItemGenerators;
+using System;
+using System.IO;
 
 namespace nHydrate.Command.Core
 {
@@ -88,7 +87,7 @@ namespace nHydrate.Command.Core
                     fileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, name);
                     File.WriteAllText(fileName, e.ProjectItemContent);
                 }
-                
+
             }
         }
 
@@ -112,7 +111,7 @@ namespace nHydrate.Command.Core
         {
             var folder = Path.Combine(_outputFolder, projectGenerator.ProjectName);
             var csProjFile = Path.Combine(folder, projectGenerator.ProjectName + ".csproj");
-            
+
             //Do not overgen the project file
             if (File.Exists(csProjFile))
                 return;

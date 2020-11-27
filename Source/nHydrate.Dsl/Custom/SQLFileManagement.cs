@@ -24,7 +24,6 @@ namespace nHydrate.Dsl.Custom
             model.IsSaving = true;
             try
             {
-                diskModel.ModelProperties.EmitChangeScripts = model.EmitChangeScripts;
                 diskModel.ModelProperties.CompanyName = model.CompanyName;
                 diskModel.ModelProperties.EmitSafetyScripts = model.EmitSafetyScripts;
                 diskModel.ModelProperties.DefaultNamespace = model.DefaultNamespace;
@@ -287,7 +286,6 @@ namespace nHydrate.Dsl.Custom
                 var diskModel = FileManagement.Load(rootFolder, modelName, out wasLoaded);
                 if (wasLoaded)
                 {
-                    model.EmitChangeScripts = diskModel.ModelProperties.EmitChangeScripts;
                     model.CompanyName = diskModel.ModelProperties.CompanyName;
                     model.EmitSafetyScripts = diskModel.ModelProperties.EmitSafetyScripts;
                     model.DefaultNamespace = diskModel.ModelProperties.DefaultNamespace;

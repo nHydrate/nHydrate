@@ -168,12 +168,6 @@
             <xsd:documentation>Determines if normalization safety scripts are emitted into the installer</xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <!-- Property: EmitChangeScripts -->
-        <xsd:attribute name="emitChangeScripts" type="xsd:boolean" >
-          <xsd:annotation>
-            <xsd:documentation>Determines if change events are generated around all entity property setters</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>

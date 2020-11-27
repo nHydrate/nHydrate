@@ -122,7 +122,7 @@ namespace PROJECTNAMESPACE
             //Verify that this is the proper database for this model, if there is a previous key
             if (settings.ModelKey != Guid.Empty)
             {
-                if (settings.ModelKey != new Guid(MODELKEY) && !_setup.SuppressUI)
+                if (settings.ModelKey != new Guid(MODELKEY))
                 {
                     //TODO: Add way to override with parameters
                     Log.Information("The database being updated was created against a different model. This may cause database versioning issues");
@@ -155,22 +155,9 @@ namespace PROJECTNAMESPACE
         public static string GetScript(InstallSetup setup)
         {
             var tempsSections = new List<string>();
-            if (setup.InstallStatus == InstallStatusConstants.Create)
-            {
-                tempsSections.AddRange(setup.SkipSections);
-                setup.SkipSections.Add("FIELD CREATE");
-                setup.SkipSections.Add("AUDIT TRAIL CREATE");
-                setup.SkipSections.Add("AUDIT TRAIL REMOVE");
-                setup.SkipSections.Add("RENAME PK");
-                setup.SkipSections.Add("DROP PK");
-                setup.SkipSections.Add("REMOVE DEFAULTS");
-                setup.SkipSections.Add("CREATE DEFAULTS");
-            }
-
             var upgradeInstaller = new UpgradeInstaller(setup);
             upgradeInstaller.Initialize();
-            if (setup.InstallStatus == InstallStatusConstants.Upgrade)
-                upgradeInstaller._databaseItems = nHydrateDbObject.Load(setup.ConnectionString, MODELKEY, null);
+            upgradeInstaller._databaseItems = nHydrateDbObject.Load(setup.ConnectionString, MODELKEY, null);
             var sb = new StringBuilder();
             upgradeInstaller.UpgradeFolder1(sb, setup);
             upgradeInstaller.UpgradeFolder2(sb, setup);
@@ -236,14 +223,6 @@ namespace PROJECTNAMESPACE
             {
                 return sb.ToString();
             }
-            finally
-            {
-                if (setup.InstallStatus == InstallStatusConstants.Create)
-                {
-                    setup.SkipSections.Clear();
-                    setup.SkipSections.AddRange(tempsSections);
-                }
-            }
         }
 
         public static bool NeedsUpdate(string connectionString)
@@ -308,18 +287,6 @@ namespace PROJECTNAMESPACE
             //    _transaction = setup.Transaction;
             //}
 
-            //If this is a create then skip some unnecessary script sections
-            if (setup.InstallStatus == InstallStatusConstants.Create && setup.SkipSections == null)
-            {
-                var skipSections = new List<string>();
-                skipSections.Add("FIELD CREATE");
-                skipSections.Add("AUDIT TRAIL REMOVE");
-                skipSections.Add("RENAME PK");
-                skipSections.Add("DROP PK");
-                skipSections.Add("REMOVE DEFAULTS");
-                setup.SkipSections = skipSections;
-            }
-
             _databaseItems = nHydrateDbObject.Load(setup.ConnectionString, MODELKEY, _transaction);
             var timer = new System.Diagnostics.Stopwatch();
 
@@ -332,7 +299,7 @@ namespace PROJECTNAMESPACE
                 if (!string.IsNullOrEmpty(settings.dbVersion))
                     currentDbVersion = new GeneratedVersion(settings.dbVersion.Split('.'));
 
-                if (currentDbVersion > _upgradeToVersion && !_setup.SuppressUI)
+                if (currentDbVersion > _upgradeToVersion)
                 {
                     Log.Information($"The current database version ({currentDbVersion}) is greater than the current library ({_upgradeToVersion}). The upgrade will not proceed.");
                     return;
@@ -346,98 +313,56 @@ namespace PROJECTNAMESPACE
                     setup.AcceptVersionWarningsChangedScripts = true;
                     setup.AcceptVersionWarningsNewScripts = true;
                 }
-                if (setup.InstallStatus == InstallStatusConstants.Upgrade)
+
+                //Test Upgrades for missed scripts
+                var upgradeSchemaScripts = this.GetResourceNameUnderLocation(UPGRADE_GENERATED_FOLDER);
+                var sortByVersionScripts = new SortedDictionary<string, EmbeddedResourceName>(upgradeSchemaScripts, new UpgradeFileNameComparer());
+                foreach (var item in sortByVersionScripts)
                 {
-                    //Test Upgrades for missed scripts
-                    var upgradeSchemaScripts = this.GetResourceNameUnderLocation(UPGRADE_GENERATED_FOLDER);
-                    var sortByVersionScripts = new SortedDictionary<string, EmbeddedResourceName>(upgradeSchemaScripts, new UpgradeFileNameComparer());
-                    foreach (var item in sortByVersionScripts)
+                    var hashValue = string.Join("\r\n--GO\r\n", DatabaseServer.ReadSQLFileSectionsFromResource(item.Key, setup)).CalculateMD5Hash();
+                    var fileName = item.Key.Substring(item.Key.IndexOf(UPGRADE_GENERATED_FOLDER) + UPGRADE_GENERATED_FOLDER.Length, item.Key.Length - (item.Key.IndexOf(UPGRADE_GENERATED_FOLDER) + UPGRADE_GENERATED_FOLDER.Length));
+                    var di = _databaseItems.FirstOrDefault(x => x.name == item.Key);
+
+                    if (di == null) //Just in case the version name is formatted differently
                     {
-                        var hashValue = string.Join("\r\n--GO\r\n", DatabaseServer.ReadSQLFileSectionsFromResource(item.Key, setup)).CalculateMD5Hash();
-                        var fileName = item.Key.Substring(item.Key.IndexOf(UPGRADE_GENERATED_FOLDER) + UPGRADE_GENERATED_FOLDER.Length, item.Key.Length - (item.Key.IndexOf(UPGRADE_GENERATED_FOLDER) + UPGRADE_GENERATED_FOLDER.Length));
-                        var di = _databaseItems.FirstOrDefault(x => x.name == item.Key);
+                        di = _databaseItems.FirstOrDefault(x => (new GeneratedVersion(x.name)).ToString() == (new GeneratedVersion(item.Key)).ToString());
+                        if (di != null) di.name = item.Key;
+                    }
 
-                        if (di == null) //Just in case the version name is formatted differently
+                    if (di == null)
+                    {
+                        var fileVersion = new GeneratedVersion(fileName);
+                        if ((new GeneratedVersion(settings.dbVersion.Split('.'))) > fileVersion)
                         {
-                            di = _databaseItems.FirstOrDefault(x => (new GeneratedVersion(x.name)).ToString() == (new GeneratedVersion(item.Key)).ToString());
-                            if (di != null) di.name = item.Key;
-                        }
-
-                        if (di == null)
-                        {
-                            var fileVersion = new GeneratedVersion(fileName);
-                            if ((new GeneratedVersion(settings.dbVersion.Split('.'))) > fileVersion)
+                            //script is in installer but never run on database
+                            if (!setup.AcceptVersionWarningsNewScripts && !setup.CheckOnly)
                             {
-                                //script is in installer but never run on database
-                                if (!setup.AcceptVersionWarningsNewScripts && !setup.CheckOnly)
-                                {
-                                    if (!_setup.SuppressUI)
-                                    {
-                                        //TODO: allow override with parameters. i.e. "Do you wish to proceed with the install?"
-                                        Log.Information($"The script '{fileName}' is part of the install but has never been applied to the database. The script version is lower than the database version so it will never be applied.");
-                                        return;
-                                    }
-                                    else
-                                    {
-                                        throw new ScriptDifferenceException($"The script '{fileName}' has never been applied to the database and never will due to its version.");
-                                    }
-                                }
-                                _databaseItems.Add(new nHydrateDbObject()
-                                {
-                                    name = item.Key,
-                                    type = "FILE",
-                                    Hash = hashValue,
-                                    ModelKey = new Guid(MODELKEY),
-                                    Status = "skipped:upgrade",
-                                    Changed = true,
-                                });
-                                UpgradeInstaller.LogInfo($"The script '{fileName}' has never been applied to the database and never will due to its version.");
+                                throw new ScriptDifferenceException($"The script '{fileName}' has never been applied to the database and never will due to its version.");
                             }
-                        }
-                        else if (di.Hash != hashValue)
-                        {
-                            //Said script is in installer and was run but the installer version is different than what was run
-                            if (!setup.AcceptVersionWarningsChangedScripts && !setup.CheckOnly)
+                            _databaseItems.Add(new nHydrateDbObject()
                             {
-                                if (!_setup.SuppressUI)
-                                {
-                                    //TODO: Allow override with parameters, i.e. "Do you wish to continue"
-                                    Log.Information($"The script '{fileName}' was previously run on the database, but the current script is not the same.");
-                                    return;
-                                }
-                                else
-                                {
-                                    Log.Information($"The script '{fileName}' is different than the one run on the database.");
-                                    return;
-                                }
-                            }
-                            di.Hash = hashValue;
-                            di.Status = "versiondiff:upgrade";
-                            di.Changed = true;
-                            UpgradeInstaller.LogInfo($"The script '{fileName}' is different than the one run on the database.");
+                                name = item.Key,
+                                type = "FILE",
+                                Hash = hashValue,
+                                ModelKey = new Guid(MODELKEY),
+                                Status = "skipped:upgrade",
+                                Changed = true,
+                            });
+                            UpgradeInstaller.LogInfo($"The script '{fileName}' has never been applied to the database and never will due to its version.");
                         }
                     }
-                }
-                else if (setup.InstallStatus == InstallStatusConstants.Create)
-                {
-                    //Test Upgrades for missed scripts
-                    var upgradeSchemaScripts = this.GetResourceNameUnderLocation(UPGRADE_GENERATED_FOLDER);
-                    var sortByVersionScripts = new SortedDictionary<string, EmbeddedResourceName>(upgradeSchemaScripts, new UpgradeFileNameComparer());
-                    foreach (var item in sortByVersionScripts)
+                    else if (di.Hash != hashValue)
                     {
-                        var hashValue = string.Join("\r\n--GO\r\n", DatabaseServer.ReadSQLFileSectionsFromResource(item.Key, setup)).CalculateMD5Hash();
-                        var fileName = item.Key.Substring(item.Key.IndexOf(UPGRADE_GENERATED_FOLDER) + UPGRADE_GENERATED_FOLDER.Length, item.Key.Length - (item.Key.IndexOf(UPGRADE_GENERATED_FOLDER) + UPGRADE_GENERATED_FOLDER.Length));
-                        var fileVersion = new GeneratedVersion(fileName);
-                        _databaseItems.Add(new nHydrateDbObject()
+                        //Said script is in installer and was run but the installer version is different than what was run
+                        if (!setup.AcceptVersionWarningsChangedScripts && !setup.CheckOnly)
                         {
-                            name = item.Key,
-                            type = "FILE",
-                            Hash = hashValue,
-                            ModelKey = new Guid(MODELKEY),
-                            Status = "skipped:create",
-                            Changed = true,
-                        });
-                        UpgradeInstaller.LogError(null, "The script '" + fileName + "' has never been applied to the database and never will due to its version.");
+                            Log.Information($"The script '{fileName}' is different than the one run on the database.");
+                            return;
+                        }
+                        di.Hash = hashValue;
+                        di.Status = "versiondiff:upgrade";
+                        di.Changed = true;
+                        UpgradeInstaller.LogInfo($"The script '{fileName}' is different than the one run on the database.");
                     }
                 }
 
@@ -520,38 +445,26 @@ namespace PROJECTNAMESPACE
                 timer.Stop();
                 LogInfo($"Installation Complete, Model: {MODELKEY}, Elapsed time: {timer.ElapsedMilliseconds}");
             }
-            catch (HandledSQLException ex)
-            {
-                //Do Nothing
-            }
             catch (InvalidSQLException ex)
             {
-                if (!setup.CheckOnly && !setup.SuppressUI)
-                {
-                    Log.Information(ex.ToString());
-                    return;
-                }
                 try
                 {
                     if (_transaction != null)
                         _transaction.Rollback();
                 }
                 catch { }
+                Log.Error(ex.ToString());
                 throw;
             }
             catch (Exception ex)
             {
-                if (!setup.CheckOnly && !setup.SuppressUI)
-                {
-                    Log.Information(ex.ToString());
-                    return;
-                }
                 try
                 {
                     if (_transaction != null)
                         _transaction.Rollback();
                 }
                 catch { }
+                Log.Error(ex.ToString());
                 throw;
             }
             finally
@@ -616,25 +529,10 @@ namespace PROJECTNAMESPACE
         {
             const string MAIN_FOLDER = "._1_UserDefinedInitialization.";
             const string ALWAYS_FOLDER = MAIN_FOLDER + "Always";
-            const string NEWDATABASE_FOLDER = MAIN_FOLDER + "NewDatabase";
             const string UNVERSIONED_FOLDER = MAIN_FOLDER + "UnVersioned";
             const string VERSIONED_FOLDER = MAIN_FOLDER + "Versioned";
 
-            if (_setup.NewInstall) //NEW DATABASE
-            {
-                var scripts = this.GetResourceNameUnderLocation(NEWDATABASE_FOLDER);
-                foreach (var file in scripts.Keys)
-                {
-                    var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
-                    if (hashItem == null) _newItems.Add(scripts[file].FullName);
-                    if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
-                    {
-                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
-                        else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
-                    }
-                }
-            }
-            else if (_def_Version.Equals(_previousVersion)) //UNVERSIONED
+            if (_def_Version.Equals(_previousVersion)) //UNVERSIONED
             {
                 var scripts = this.GetResourceNameUnderLocation(UNVERSIONED_FOLDER);
                 foreach (var file in scripts.Keys)
@@ -682,7 +580,6 @@ namespace PROJECTNAMESPACE
 
         private void UpgradeFolder2(StringBuilder sb, InstallSetup setup)
         {
-            if (setup.NewInstall) return;
             if (_previousVersion == _def_Version) return; //existing db with no version table
 
             var upgradeSchemaScripts = this.GetResourceNameUnderLocation(UPGRADE_GENERATED_FOLDER);
@@ -755,25 +652,10 @@ namespace PROJECTNAMESPACE
         {
             const string MAIN_FOLDER = "._4_UserDefinedPostTablesAndData.";
             const string ALWAYS_FOLDER = MAIN_FOLDER + "Always";
-            const string NEWDATABASE_FOLDER = MAIN_FOLDER + "NewDatabase";
             const string UNVERSIONED_FOLDER = MAIN_FOLDER + "UnVersioned";
             const string VERSIONED_FOLDER = MAIN_FOLDER + "Versioned";
 
-            if (_setup.NewInstall) //NEW DATABASE
-            {
-                var scripts = this.GetResourceNameUnderLocation(NEWDATABASE_FOLDER);
-                foreach (var file in scripts.Keys)
-                {
-                    var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
-                    if (hashItem == null) _newItems.Add(scripts[file].FullName);
-                    if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
-                    {
-                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, _databaseItems, setup);
-                        else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
-                    }
-                }
-            }
-            else if (_def_Version.Equals(_previousVersion)) //UNVERSIONED
+            if (_def_Version.Equals(_previousVersion)) //UNVERSIONED
             {
                 var scripts = this.GetResourceNameUnderLocation(UNVERSIONED_FOLDER);
                 foreach (var file in scripts.Keys)
@@ -864,25 +746,10 @@ namespace PROJECTNAMESPACE
         {
             const string MAIN_FOLDER = "._6_UserDefinedFinalize.";
             const string ALWAYS_FOLDER = MAIN_FOLDER + "Always";
-            const string NEWDATABASE_FOLDER = MAIN_FOLDER + "NewDatabase";
             const string UNVERSIONED_FOLDER = MAIN_FOLDER + "UnVersioned";
             const string VERSIONED_FOLDER = MAIN_FOLDER + "Versioned";
 
-            if (_setup.NewInstall) //NEW DATABASE
-            {
-                var scripts = this.GetResourceNameUnderLocation(NEWDATABASE_FOLDER);
-                foreach (var file in scripts.Keys)
-                {
-                    var hashItem = _databaseItems.FirstOrDefault(x => x.name == scripts[file].FullName);
-                    if (hashItem == null) _newItems.Add(scripts[file].FullName);
-                    if (!setup.UseHash || (hashItem == null || hashItem.Hash != GetFileHash(scripts[file].FullName, setup)))
-                    {
-                        if (sb == null) DatabaseServer.RunEmbeddedFile(_connection, _transaction, file, null, null, _databaseItems, setup);
-                        else DatabaseServer.ReadSQLFileSectionsFromResource(file, setup).ToList().ForEach(s => AppendCleanScript(file, s, sb));
-                    }
-                }
-            }
-            else if (_def_Version.Equals(_previousVersion)) //UNVERSIONED
+            if (_def_Version.Equals(_previousVersion)) //UNVERSIONED
             {
                 var scripts = this.GetResourceNameUnderLocation(UNVERSIONED_FOLDER);
                 foreach (var file in scripts.Keys)

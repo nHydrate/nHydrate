@@ -121,7 +121,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             if (!string.IsNullOrEmpty(_item.Description))
                 sb.AppendLine("	[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\")]");
             sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
-            sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : " + GetLocalNamespace() + ".BaseEntity, System.ICloneable, IReadOnlyBusinessObject");
+            sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : System.ICloneable, IReadOnlyBusinessObject");
             sb.AppendLine();
 
             sb.AppendLine("	{");
@@ -313,42 +313,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 
             sb.AppendLine("		#region GetFieldNameConstants");
             sb.AppendLine();
-            sb.AppendLine("		System.Type " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetFieldNameConstants()");
-            sb.AppendLine("		{");
-            sb.AppendLine($"			return typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-
-            //GetFieldType
-            sb.AppendLine("		#region GetFieldType");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Gets the system type of a field on this object");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public static System.Type GetFieldType({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field)");
-            sb.AppendLine("		{");
-            sb.AppendLine($"			if (field.GetType() != typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants))");
-            sb.AppendLine($"				throw new Exception(\"The field parameter must be of type '{this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants'.\");");
-            sb.AppendLine();
-            sb.AppendLine($"			switch (({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants)field)");
-            sb.AppendLine("			{");
-            foreach (var column in _item.GetColumns())
-            {
-                sb.AppendLine($"				case {this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants.{column.PascalName}: return typeof(" + column.GetCodeType() + ");");
-            }
-            sb.AppendLine("			}");
-            sb.AppendLine("			return null;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		System.Type " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject.GetFieldType(Enum field)");
-            sb.AppendLine("		{");
-            sb.AppendLine($"			if (field.GetType() != typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants))");
-            sb.AppendLine($"				throw new Exception(\"The field parameter must be of type '{this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants'.\");");
-            sb.AppendLine();
-            sb.AppendLine($"			return GetFieldType(({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants)field);");
-            sb.AppendLine("		}");
+            sb.AppendLine($"		System.Type {this.GetLocalNamespace()}.IReadOnlyBusinessObject.GetFieldNameConstants() => typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants);");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
@@ -399,16 +364,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             sb.AppendLine("		public " + modifieraux + " object Clone()");
             sb.AppendLine("		{");
             sb.AppendLine($"			return {this.GetLocalNamespace()}.Entity.{_item.PascalName}.Clone(this);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Creates a shallow copy of this object with defined, default values and new PK");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + modifieraux + " object CloneAsNew()");
-            sb.AppendLine("		{");
-            sb.AppendLine($"			var item = {this.GetLocalNamespace()}.Entity.{_item.PascalName}.Clone(this);");
-            sb.AppendLine("			return item;");
             sb.AppendLine("		}");
             sb.AppendLine();
 
