@@ -403,16 +403,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Creates a shallow copy of this object with defined, default values and new PK");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public " + modifieraux + " object CloneAsNew()");
-            sb.AppendLine("		{");
-            sb.AppendLine($"			var item = {this.GetLocalNamespace()}.Entity.{_item.PascalName}.Clone(this);");
-            sb.AppendLine("			return item;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Creates a shallow copy of this object");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine($"		public static {_item.PascalName} Clone({this.GetLocalNamespace()}.Entity.{_item.PascalName} item)");

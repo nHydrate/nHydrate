@@ -297,21 +297,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Creates a shallow copy of this object with defined, default values and new PK");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public {modifieraux} object CloneAsNew()");
-            sb.AppendLine("		{");
-            sb.AppendLine($"			var item = {this.GetLocalNamespace()}.Entity.{_item.PascalName}.Clone(this);");
-            foreach (var pk in _item.GetColumns().Where(x => x.Identity == IdentityTypeConstants.Database && x.DataType.IsNumericType()))
-            {
-                sb.AppendLine($"			item._{pk.CamelName} = 0;");
-            }
-            sb.Append(this.SetInitialValues("item"));
-            sb.AppendLine("			return item;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-
-            sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Creates a shallow copy of this object");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine($"		public static {_item.PascalName} Clone({this.GetLocalNamespace()}.Entity.{_item.PascalName} item)");
