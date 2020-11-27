@@ -267,23 +267,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine();
             #endregion
 
-            #region ObservableCollection
-            sb.AppendLine("		#region ObservableCollection");
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Returns an observable collection that can bound to UI controls");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public static System.Collections.ObjectModel.ObservableCollection<T> AsObservable<T>(this System.Collections.Generic.IEnumerable<T> list)");
-            sb.AppendLine("			where T : " + this.GetLocalNamespace() + ".IReadOnlyBusinessObject");
-            sb.AppendLine("		{");
-            sb.AppendLine("			var retval = new System.Collections.ObjectModel.ObservableCollection<T>();");
-            sb.AppendLine("			foreach (var o in list)");
-            sb.AppendLine("				retval.Add(o);");
-            sb.AppendLine("			return retval;");
-            sb.AppendLine("		}");
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-            #endregion
-
             #region Many-to-Many Convenience extensions
 
             sb.AppendLine("        #region Many-to-Many Convenience Extensions");

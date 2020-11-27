@@ -148,7 +148,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             this.AppendRegionGetValue(sb);
             this.AppendRegionSetValue(sb);
             this.AppendNavigationProperties(sb);
-            this.AppendRegionGetDatabaseFieldName(sb);
             this.AppendIAuditable(sb);
             this.AppendIEquatable(sb);
             sb.AppendLine("	}");
@@ -1334,55 +1333,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		protected " + codeType + " _" + StringHelper.DatabaseNameToCamelCase(columnName) + ";");
             sb.AppendLine();
 
-        }
-
-        private void AppendRegionGetDatabaseFieldName(StringBuilder sb)
-        {
-            sb.AppendLine("		#region GetDatabaseFieldName");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Returns the actual database name of the specified field.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		internal static string GetDatabaseFieldName({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return GetDatabaseFieldName(field.ToString());");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Returns the actual database name of the specified field.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		internal static string GetDatabaseFieldName(string field)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			switch (field)");
-            sb.AppendLine("			{");
-            foreach (var column in _item.GetColumns())
-            {
-                sb.AppendLine($"				case \"{column.PascalName}\": return \"" + column.Name + "\";");
-            }
-
-            if (_item.AllowCreateAudit)
-            {
-                sb.AppendLine("				case \"" + _model.Database.CreatedByPascalName + "\": return \"" + _model.Database.CreatedByColumnName + "\";");
-                sb.AppendLine("				case \"" + _model.Database.CreatedDatePascalName + "\": return \"" + _model.Database.CreatedDateColumnName + "\";");
-            }
-
-            if (_item.AllowModifiedAudit)
-            {
-                sb.AppendLine("				case \"" + _model.Database.ModifiedByPascalName + "\": return \"" + _model.Database.ModifiedByColumnName + "\";");
-                sb.AppendLine("				case \"" + _model.Database.ModifiedDatePascalName + "\": return \"" + _model.Database.ModifiedDateColumnName + "\";");
-            }
-
-            if (_item.AllowConcurrencyCheck)
-            {
-                sb.AppendLine("				case \"" + _model.Database.ConcurrencyCheckPascalName + "\": return \"" + _model.Database.ConcurrencyCheckColumnName + "\";");
-            }
-
-            sb.AppendLine("			}");
-            sb.AppendLine("			return string.Empty;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
         }
 
     }

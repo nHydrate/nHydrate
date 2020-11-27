@@ -293,8 +293,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("			{");
             sb.AppendLine("				return func();");
             sb.AppendLine("			}");
-            //sb.AppendLine("			catch (Exceptions.ConcurrencyException dbcex) { throw new Exceptions.ConcurrencyException(GlobalValues.ERROR_CONCURRENCY_FAILURE, dbcex); }");
-            //sb.AppendLine("			catch (System.Data.SqlClient.SqlException sqlexp) { if (sqlexp.Number == 547 || sqlexp.Number == 2627) throw new UniqueConstraintViolatedException(GlobalValues.ERROR_CONSTRAINT_FAILURE, sqlexp); else throw; }");
             sb.AppendLine("			catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex.ToString()); throw; }");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -304,8 +302,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("			{");
             sb.AppendLine("				action();");
             sb.AppendLine("			}");
-            //sb.AppendLine("			catch (Exceptions.ConcurrencyException dbcex) { throw new Exceptions.ConcurrencyException(GlobalValues.ERROR_CONCURRENCY_FAILURE, dbcex); }");
-            //sb.AppendLine("			catch (System.Data.SqlClient.SqlException sqlexp) { if (sqlexp.Number == 547 || sqlexp.Number == 2627) throw new UniqueConstraintViolatedException(GlobalValues.ERROR_CONSTRAINT_FAILURE, sqlexp); else throw; }");
             sb.AppendLine("			catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex.ToString()); throw; }");
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -1004,27 +1000,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine($"namespace {this.GetLocalNamespace()}.Exceptions");
             sb.AppendLine("{");
 
-            sb.AppendLine("	#region ConcurrencyException");
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// Summary description for ConcurrencyException.");
-            sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	public partial class ConcurrencyException : nHydrateException");
-            sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public ConcurrencyException(string message)");
-            sb.AppendLine("			: base(message)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public ConcurrencyException(string message, System.Exception ex)");
-            sb.AppendLine("			: base(message, ex)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine("	}");
-            sb.AppendLine("	#endregion");
-            sb.AppendLine();
-
             sb.AppendLine("	#region nHydrateException");
             sb.AppendLine("	/// <summary />");
             sb.AppendLine("	public partial class nHydrateException : System.Exception");
@@ -1075,26 +1050,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("			this.ErrorCode = ErrorCode;");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine("	}");
-            sb.AppendLine("	#endregion");
-            sb.AppendLine();
-
-            sb.AppendLine("	#region UniqueConstraintViolatedException");
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// Summary description for UniqueConstraintViolatedException.");
-            sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	public partial class UniqueConstraintViolatedException : nHydrateException");
-            sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public UniqueConstraintViolatedException(string message)");
-            sb.AppendLine("			: base(message)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public UniqueConstraintViolatedException(string message, System.Exception ex)");
-            sb.AppendLine("			: base(message, ex)");
-            sb.AppendLine("		{");
-            sb.AppendLine("		}");
             sb.AppendLine("	}");
             sb.AppendLine("	#endregion");
             sb.AppendLine();
