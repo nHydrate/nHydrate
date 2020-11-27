@@ -220,8 +220,121 @@ namespace nHydrate.ModelManagement
                 SaveObject(obj, f, generatedFileList);
             }
 
-            WriteReadMeFile(folder, generatedFileList);
 
+            //YAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAML
+            foreach (var obj in model.Entities)
+            {
+                var serializer = new YamlDotNet.Serialization.SerializerBuilder()
+                        .WithTypeConverter(new SystemTypeTypeConverter())
+                        .Build();
+
+                var newEntity = new EntityYaml
+                {
+                    AllowCreateAudit = obj.allowcreateaudit != 0,
+                    AllowModifyAudit = obj.allowmodifyaudit != 0,
+                    AllowTimestamp = obj.allowtimestamp != 0,
+                    CodeFacade = obj.codefacade,
+                    GeneratesDoubleDerived = obj.generatesdoublederived != 0,
+                    Id = obj.id,
+                    Immutable = obj.immutable != 0,
+                    IsAssociative = obj.isassociative != 0,
+                    IsTenant = obj.isTenant != 0,
+                    Name = obj.name,
+                    Schema = obj.schema,
+                    Summary = obj.summary,
+                    Type = obj.type,
+                    Typedentity = obj.typedentity,
+                };
+
+                foreach (var ff in obj.fieldset)
+                {
+                    newEntity.Fields.Add(new EntityFieldYaml
+                    {
+                        CodeFacade = ff.codefacade,
+                        DataFormatString = ff.dataformatstring,
+                        Datatype = ff.datatype,
+                        Default = ff.@default,
+                        DefaultIsFunc = ff.defaultisfunc != 0,
+                        Formula = ff.formula,
+                        Id = ff.id,
+                        Identity = ff.identity,
+                        IsCalculated = ff.Iscalculated != 0,
+                        IsIndexed = ff.isindexed != 0,
+                        IsPrimaryKey = ff.isprimarykey != 0,
+                        IsReadonly = ff.isreadonly != 0,
+                        IsUnique = ff.isunique != 0,
+                        Length = ff.length,
+                        Name = ff.name,
+                        Nullable = ff.nullable != 0,
+                        Obsolete = ff.obsolete != 0,
+                        Scale = ff.scale,
+                        SortOrder = ff.sortorder,
+                        Summary = ff.summary,
+                    });
+                }
+
+                foreach (var rr in model.Relations.Where(x=>x.id == obj.id))
+                {
+                    if (rr.relation.Any())
+                    {
+                        var entity = model.Entities.FirstOrDefault(x => x.id == rr.id);
+                        var entity2 = model.Entities.FirstOrDefault(x => x.id == rr.relation[0].childid);
+                        var newRelation = new RelationYaml
+                        {
+                            ChildEntity = entity2.name,
+                            ChildId = entity2.id,
+                        };
+                        newEntity.Relations.Add(newRelation);
+                        newRelation.IsEnforced = rr.relation[0].isenforced != 0;
+                        newRelation.DeleteAction = rr.relation[0].deleteaction;
+                        newRelation.RoleName = rr.relation[0].rolename;
+                        newRelation.Summary = rr.relation[0].summary;
+                        foreach (var fsi in rr.relation[0].relationfieldset)
+                        {
+                            var newRelationField = new RelationFieldYaml {
+                                Id = fsi.id,
+                                SourceFieldId = fsi.sourcefieldid,
+                                SourceFieldName = entity.fieldset.FirstOrDefault(x => x.id == fsi.sourcefieldid)?.name,
+                                TargetFieldId = fsi.targetfieldid,
+                                TargetFieldName = entity2.fieldset.FirstOrDefault(x => x.id == fsi.targetfieldid)?.name,
+                            };
+                            newRelation.Fields.Add(newRelationField);
+                        }
+                    }
+                }
+
+                //foreach (var ii in model.Indexes)
+                //{
+                //    var entity = model.Entities.FirstOrDefault(x => x.id == ii.id);
+                //    var newIndex = new IndexYaml
+                //    {
+                //        Id = ii.id,
+                //        Type = ii.type,
+                //    };
+                //    newEntity.Indexes.Add(newIndex);
+                //    foreach (var ifield in ii.index)
+                //    {
+                //        //newIndex.Fields.Add()
+                //        ifield.clustered,
+                //            ifield.id
+                //            ifield.importedname
+                //            //ifield.indexcolumnset
+                //            ifield.indextype
+                //            ifield.isunique
+                //            ifield.summary
+                //    }
+                //}
+
+                var yaml = serializer.Serialize(newEntity);
+                var f = Path.Combine(folder, obj.name + ".yaml");
+                generatedFileList.Add(f);
+                File.WriteAllText(f, yaml);
+            }
+            //YAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAML
+
+
+
+            WriteReadMeFile(folder, generatedFileList);
         }
 
         private static void SaveViews(string rootFolder, DiskModel model, List<string> generatedFileList)

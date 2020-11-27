@@ -6,8 +6,11 @@ namespace NetCoreTestHarness
     {
         static void Main(string[] args)
         {
-            var rootFolder = @"C:\code\nHydrateTestAug\ConsoleApp1";
-            var modelName = "Model1.nhydrate";
+            //var rootFolder = @"C:\code\nHydrateTestAug\ConsoleApp1";
+            //var modelName = "Model1.nhydrate";
+            var rootFolder = @"C:\code\SupplyChain\Customer\ModelProject";
+            var modelName = "vuln.nhydrate";
+            
             bool wasLoaded;
             var model = FileManagement.Load(rootFolder, modelName, out wasLoaded);
 
