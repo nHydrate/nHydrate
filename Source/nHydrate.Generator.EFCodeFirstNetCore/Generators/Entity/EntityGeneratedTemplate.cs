@@ -788,38 +788,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		#endregion");
             sb.AppendLine();
 
-            //GetFieldType
-            sb.AppendLine("		#region GetFieldType");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Gets the system type of a field on this object");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public static System.Type GetFieldType({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants field)");
-            sb.AppendLine("		{");
-            sb.AppendLine($"			if (field.GetType() != typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants))");
-            sb.AppendLine($"				throw new Exception(\"The field parameter must be of type '{this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants'.\");");
-            sb.AppendLine();
-            sb.AppendLine($"			switch (({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants)field)");
-            sb.AppendLine("			{");
-            foreach (var column in _item.GetColumns())
-            {
-                sb.AppendLine($"				case {this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants.{column.PascalName}: return typeof(" + column.GetCodeType() + ");");
-            }
-            sb.AppendLine("			}");
-            sb.AppendLine("			return null;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine($"		System.Type {this.GetLocalNamespace()}.IReadOnlyBusinessObject.GetFieldType(Enum field)");
-            sb.AppendLine("		{");
-            sb.AppendLine($"			if (field.GetType() != typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants))");
-            sb.AppendLine($"				throw new Exception(\"The field parameter must be of type '{this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants'.\");");
-            sb.AppendLine();
-            sb.AppendLine($"			return GetFieldType(({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants)field);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-
             //GetValue
             sb.AppendLine("		#region Get/Set Value");
             sb.AppendLine();

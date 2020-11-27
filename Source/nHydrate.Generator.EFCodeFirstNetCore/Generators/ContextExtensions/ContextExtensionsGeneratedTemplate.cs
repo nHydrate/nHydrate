@@ -55,26 +55,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine($"	public static partial class {_model.ProjectName}EntitiesExtensions");
             sb.AppendLine("	{");
 
-            #region GetFieldType
-            sb.AppendLine("		#region GetFieldType Extension Method");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Get the system type of a field of one of the contained context objects");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public static System.Type GetFieldType(this {this.GetLocalNamespace()}.{_model.ProjectName}Entities context, Enum field)");
-            sb.AppendLine("		{");
-            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
-            {
-                sb.AppendLine($"			if (field is {this.GetLocalNamespace()}.Entity.{table.PascalName}.FieldNameConstants)");
-                sb.AppendLine($"				return {this.GetLocalNamespace()}.Entity.{table.PascalName}.GetFieldType(({this.GetLocalNamespace()}.Entity.{table.PascalName}.FieldNameConstants)field);");
-            }
-            sb.AppendLine("			throw new Exception(\"Unknown field type!\");");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		#endregion");
-            sb.AppendLine();
-            #endregion
-
             #region GetEntityType
 
             sb.AppendLine("		#region GetEntityType");

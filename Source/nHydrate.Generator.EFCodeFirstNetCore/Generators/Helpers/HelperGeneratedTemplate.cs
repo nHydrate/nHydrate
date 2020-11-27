@@ -527,12 +527,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		Enum GetEntityFromField(Enum field);");
             sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Given a field enumeration value, returns the system type of the associated property");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"field\"></param>");
-            sb.AppendLine("		/// <returns></returns>");
-            sb.AppendLine("		System.Type GetFieldType(Enum field);");
             sb.AppendLine("	}");
             sb.AppendLine("	#endregion");
             sb.AppendLine();
@@ -823,12 +817,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("		/// <returns></returns>");
             sb.AppendLine("		object GetValue(Enum field, object defaultValue);");
             sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine("		/// Returns the system type of the specified field");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		/// <param name=\"field\"></param>");
-            sb.AppendLine("		/// <returns></returns>");
-            sb.AppendLine("		System.Type GetFieldType(Enum field);");
             sb.AppendLine("	}");
             sb.AppendLine("	#endregion");
             sb.AppendLine();

@@ -990,7 +990,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             sb.AppendLine("		#region IContext Interface");
             sb.AppendLine("		Enum IContext.GetEntityFromField(Enum field) => GetEntityFromField(field);");
-            sb.AppendLine("		System.Type IContext.GetFieldType(Enum field) => this.GetFieldType(field);");
             sb.AppendLine("		#endregion");
             sb.AppendLine();
 
