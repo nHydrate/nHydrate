@@ -107,7 +107,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public static Action<string> QueryLogger { get; set; }");
+            sb.AppendLine($"		public static Action<string> QueryLogger {GetSetSuffix}");
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
@@ -254,7 +254,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             //Tables
             foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
-                sb.AppendLine("			//Field setup for " + table.PascalName + " entity");
+                sb.AppendLine($"			//Field setup for {table.PascalName} entity");
                 foreach (var column in table.GetColumns().OrderBy(x => x.Name))
                 {
                     #region Determine if this is a type table Value field and if so ignore
@@ -266,7 +266,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             typeTable = table.GetRelatedTypeTableByColumn(column, out pascalRoleName);
                             if (typeTable == null) typeTable = table;
                             if (typeTable != null)
-                                sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Ignore(d => d." + pascalRoleName + typeTable.PascalName + "Value);");
+                                sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Ignore(d => d.{pascalRoleName}{typeTable.PascalName}Value);");
                         }
                     }
 
@@ -297,25 +297,25 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
                 if (table.IsTenant)
                 {
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(\"" + _model.TenantColumnName + "\").IsRequired();");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Property(\"" + _model.TenantColumnName + "\").IsRequired();");
                 }
 
                 if (table.AllowCreateAudit)
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.CreatedDateColumnName + ").IsRequired();");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Property(d => d." + _model.Database.CreatedDateColumnName + ").IsRequired();");
                 if (table.AllowModifiedAudit)
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.ModifiedDateColumnName + ").IsRequired();");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Property(d => d." + _model.Database.ModifiedDateColumnName + ").IsRequired();");
 
                 if (table.AllowConcurrencyCheck)
                 {
                     if (!String.Equals(_model.Database.ConcurrencyCheckDatabaseName, _model.Database.ConcurrencyCheckPascalName, StringComparison.OrdinalIgnoreCase))
                     {
-                        sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">()");
+                        sb.Append($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>()");
                         sb.Append(".Property(d => d." + _model.Database.ConcurrencyCheckPascalName + ")");
                         sb.Append(".HasColumnName(\"" + _model.Database.ConcurrencyCheckDatabaseName + "\")");
                         sb.AppendLine(";");
                     }
 
-                    sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Property(d => d." + _model.Database.ConcurrencyCheckPascalName + ").IsRequired();");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Property(d => d." + _model.Database.ConcurrencyCheckPascalName + ").IsRequired();");
                 }
 
                 sb.AppendLine();
@@ -327,13 +327,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("			//Field setup for " + item.PascalName + " entity");
                 foreach (var column in item.GetColumns().OrderBy(x => x.Name))
                 {
-                    sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + item.PascalName + ">()");
-                    sb.Append(".Property(d => d." + column.PascalName + ")");
+                    sb.Append($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity." + item.PascalName + ">()");
+                    sb.Append($".Property(d => d." + column.PascalName + ")");
                     if (!column.AllowNull)
                         sb.Append(".IsRequired()");
 
                     if (column.DataType.IsTextType() && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
-                    if (column.DatabaseName != column.PascalName) sb.Append(".HasColumnName(\"" + column.DatabaseName + "\")");
+                    if (column.DatabaseName != column.PascalName) sb.Append($".HasColumnName(\"{column.DatabaseName}\")");
                     sb.AppendLine(";");
                 }
 
@@ -359,7 +359,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         if (typeTable == null) typeTable = table;
                         if (typeTable != null)
                         {
-                            sb.AppendLine("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().Ignore(t => t." + pascalRoleName + typeTable.PascalName + "Value);");
+                            sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Ignore(t => t.{pascalRoleName}{typeTable.PascalName}Value);");
                         }
                     }
                 }
@@ -379,7 +379,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 .Where(x => (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly))
                 .OrderBy(x => x.Name))
             {
-                sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
+                sb.Append($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity." + table.PascalName + ">().HasKey(x => new { ");
                 var columnList = table.GetColumns().Where(x => x.PrimaryKey).OrderBy(x => x.Name).ToList();
                 foreach (var c in columnList)
                 {
@@ -393,7 +393,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             foreach (var table in _model.Database.CustomViews.OrderBy(x => x.Name))
             {
-                sb.Append("			modelBuilder.Entity<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">().HasKey(x => new { ");
+                sb.Append($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity." + table.PascalName + ">().HasKey(x => new { ");
                 var columnList = table.GetColumns().Where(x => x.IsPrimaryKey).OrderBy(x => x.Name).ToList();
                 foreach (var c in columnList)
                 {
@@ -430,7 +430,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             sb.AppendLine($"							.WithOne(x => x.{relation.PascalRoleName}{table.PascalName})");
                             sb.AppendLine($"							.HasForeignKey<{this.GetLocalNamespace()}.Entity." + childTable.PascalName + ">(q => new { " +
                                           string.Join(",", relation.ColumnRelationships.Select(x => x.ChildColumn.PascalName).OrderBy(x => x).Select(c => "q." + c)) + " })");
-                            sb.AppendLine("							.HasPrincipalKey<" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ">(q => new { " +
+                            sb.AppendLine($"							.HasPrincipalKey<{this.GetLocalNamespace()}.Entity." + table.PascalName + ">(q => new { " +
                                           string.Join(",", relation.ColumnRelationships.Select(x => x.ParentColumn.PascalName).OrderBy(x => x).Select(c => "q." + c)) + " })");
                             if (relation.IsRequired)
                                 sb.AppendLine("							.IsRequired(true)");
@@ -774,7 +774,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Entity set for " + item.PascalName);
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine($"		{scope} virtual DbSet<{this.GetLocalNamespace()}.Entity.{item.PascalName}> " + name + " { get; set; }");
+                sb.AppendLine($"		{scope} virtual DbSet<{this.GetLocalNamespace()}.Entity.{item.PascalName}> {name} {GetSetSuffix}");
                 sb.AppendLine();
             }
 
@@ -783,7 +783,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 sb.AppendLine("		/// <summary>");
                 sb.AppendLine("		/// Entity set for " + item.PascalName);
                 sb.AppendLine("		/// </summary>");
-                sb.AppendLine($"		public virtual DbSet<{this.GetLocalNamespace()}.Entity.{item.PascalName}> " + item.PascalName + " { get; set; }");
+                sb.AppendLine($"		public virtual DbSet<{this.GetLocalNamespace()}.Entity.{item.PascalName}> {item.PascalName} {GetSetSuffix}");
                 sb.AppendLine();
             }
 
@@ -870,7 +870,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// Adds an entity of to the object context");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"entity\">The entity to add</param>");
-            sb.AppendLine($"		public virtual {this.GetLocalNamespace()}.IBusinessObject AddItem({this.GetLocalNamespace()}.IBusinessObject entity)");
+            sb.AppendLine($"		public virtual T AddItem<T>(T entity) where T : class, IBusinessObject");
             sb.AppendLine("		{");
 
             sb.AppendLine("			if (entity == null) throw new NullReferenceException();");
@@ -910,13 +910,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		#region RemoveItem Methods");
             sb.AppendLine();
 
-            sb.AppendLine("        public override EntityEntry Remove( object entity)");
+            sb.AppendLine("        public override EntityEntry Remove(object entity)");
             sb.AppendLine("        {");
             sb.AppendLine("            //No model validation. You should use the RemoveItem method.");
             sb.AppendLine("            return base.Remove(entity);");
             sb.AppendLine("        }");
             sb.AppendLine();
-            sb.AppendLine("        public override EntityEntry<TEntity> Remove<TEntity>( TEntity entity)");
+            sb.AppendLine("        public override EntityEntry<TEntity> Remove<TEntity>(TEntity entity)");
             sb.AppendLine("        {");
             sb.AppendLine("            //No model validation. You should use the RemoveItem method.");
             sb.AppendLine("            return base.Remove(entity);");
@@ -949,7 +949,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// Deletes an entity from the context");
             sb.AppendLine("		/// </summary>");
             sb.AppendLine("		/// <param name=\"entity\">The entity to delete</param>");
-            sb.AppendLine("		public virtual void RemoveItem(IBusinessObject entity)");
+            sb.AppendLine("		public virtual void RemoveItem<T>(T entity) where T : class, IBusinessObject");
             sb.AppendLine("		{");
             sb.AppendLine("			if (entity == null) return;");
             sb.AppendLine("			else this.Remove(entity);");
@@ -1005,7 +1005,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		{");
             foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
-                sb.AppendLine("			if (field is " + this.GetLocalNamespace() + ".Entity." + table.PascalName + ".FieldNameConstants) return " + this.GetLocalNamespace() + ".EntityMappingConstants." + table.PascalName + ";");
+                sb.AppendLine($"			if (field is {this.GetLocalNamespace()}.Entity.{table.PascalName}.FieldNameConstants) return {this.GetLocalNamespace()}.EntityMappingConstants.{table.PascalName};");
             }
 
             sb.AppendLine("			throw new Exception(\"Unknown field type!\");");
@@ -1118,11 +1118,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 if (table.PrimaryKeyColumns.Count == 1)
                 {
                     var pk = table.PrimaryKeyColumns.First();
-                    sb.AppendLine("	#region StaticDataConstants Enumeration for '" + table.PascalName + "' entity");
+                    sb.AppendLine($"	#region StaticDataConstants Enumeration for '{table.PascalName}' entity");
                     sb.AppendLine("	/// <summary>");
-                    sb.AppendLine("	/// Enumeration to define static data items and their ids '" + table.PascalName + "' table.");
+                    sb.AppendLine($"	/// Enumeration to define static data items and their ids '{table.PascalName}' table.");
                     sb.AppendLine("	/// </summary>");
-                    sb.Append("	public enum " + table.PascalName + "Constants");
+                    sb.Append($"	public enum {table.PascalName}Constants");
 
                     //Non-integer types must explicitly add the type
                     if (pk.DataType != System.Data.SqlDbType.Int)
@@ -1142,12 +1142,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             sb.AppendLine("		/// <summary>");
                             StringHelper.LineBreakCode(sb, description, "		/// ");
                             sb.AppendLine("		/// </summary>");
-                            sb.AppendLine("		[Description(\"" + description + "\")]");
+                            sb.AppendLine($"		[Description(\"{description}\")]");
                         }
                         else
                         {
                             sb.AppendLine("		/// <summary>");
-                            sb.AppendLine("		/// Enumeration for the '" + identifier + "' item");
+                            sb.AppendLine($"		/// Enumeration for the '{identifier}' item");
                             sb.AppendLine("		/// </summary>");
                         }
 
@@ -1165,8 +1165,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             sort = string.Empty;
                         }
 
-                        sb.AppendLine("		[System.ComponentModel.DataAnnotations.Display(Name = \"" + raw + "\"" + sort + ")]");
-                        sb.AppendLine("		" + key + " = " + idValue + ",");
+                        sb.AppendLine($"		[System.ComponentModel.DataAnnotations.Display(Name = \"{raw}\"{sort})]");
+                        sb.AppendLine($"		{key} = {idValue},");
                     }
 
                     sb.AppendLine("	}");

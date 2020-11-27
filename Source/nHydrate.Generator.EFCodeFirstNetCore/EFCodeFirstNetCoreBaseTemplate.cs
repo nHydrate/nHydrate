@@ -11,5 +11,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore
         }
 
         public override string LocalNamespaceExtension => "EFDAL";
+
+        public const string GetSetSuffix = "{ get; set; }";
     }
 }

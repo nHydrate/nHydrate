@@ -425,15 +425,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("	public partial interface IAuditable");
             sb.AppendLine("	{");
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		string CreatedBy { get; set; }");
+            sb.AppendLine($"		string CreatedBy {GetSetSuffix}");
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		DateTime? CreatedDate { get; set; }");
+            sb.AppendLine($"		DateTime? CreatedDate {GetSetSuffix}");
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		string ModifiedBy { get; set; }");
+            sb.AppendLine($"		string ModifiedBy {GetSetSuffix}");
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		DateTime? ModifiedDate { get; set; }");
+            sb.AppendLine($"		DateTime? ModifiedDate {GetSetSuffix}");
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		int Concurrency { get; set; }");
+            sb.AppendLine($"		int Concurrency {GetSetSuffix}");
             sb.AppendLine("	}");
             sb.AppendLine("	#endregion");
             sb.AppendLine();
@@ -782,104 +782,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine();
             #endregion
 
-            #region AuditPaging
-            sb.AppendLine("	#region AuditPaging");
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// ");
-            sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	/// <typeparam name=\"T\">An audit object</typeparam>");
-            sb.AppendLine("	public partial class AuditPaging<T>");
-            sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public AuditPaging() { }");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public int PageOffset { get; set; }");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public int RecordsPerPage { get; set; }");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public IEnumerable<T> InnerList { get; set; }");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public int TotalRecordCount { get; set; }");
-            sb.AppendLine("	}");
-            sb.AppendLine("	#endregion");
-            sb.AppendLine();
-            #endregion
-
-            #region AuditResult
-            sb.AppendLine("	#region AuditResult");
-            sb.AppendLine("	/// <summary>");
-            sb.AppendLine("	/// A result structure for audit records");
-            sb.AppendLine("	/// </summary>");
-            sb.AppendLine("	/// <typeparam name=\"T\"></typeparam>");
-            sb.AppendLine("	public class AuditResult<T>");
-            sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public AuditResult(T item1, T item2)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			this.Item1 = item1;");
-            sb.AppendLine("			this.Item2 = item2;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public IEnumerable<IAuditResultFieldCompare> Differences { get; set; }");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public T Item1 { get; internal set; }");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public T Item2 { get; internal set; }");
-            sb.AppendLine("	}");
-            sb.AppendLine("	#endregion");
-            sb.AppendLine();
-            #endregion
-
-            #region IAuditResultFieldCompare
-            sb.AppendLine("	#region IAuditResultFieldCompare");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("	public interface IAuditResultFieldCompare");
-            sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		System.Enum Field { get; }");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		object Value1 { get; }");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		object Value2 { get; }");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		System.Type DataType { get; }");
-            sb.AppendLine("	}");
-            sb.AppendLine("	#endregion");
-            sb.AppendLine();
-            #endregion
-
-            #region AuditResultFieldCompare
-            sb.AppendLine("	#region AuditResultFieldCompare");
-            sb.AppendLine("	/// <summary />");
-            sb.AppendLine("	public class AuditResultFieldCompare<R, E> : IAuditResultFieldCompare");
-            sb.AppendLine("	{");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public AuditResultFieldCompare(R value1, R value2, E field, System.Type dataType)");
-            sb.AppendLine("		{");
-            sb.AppendLine("			this.Field = field;");
-            sb.AppendLine("			this.Value1 = value1;");
-            sb.AppendLine("			this.Value2 = value2;");
-            sb.AppendLine("			this.DataType = dataType;");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public E Field { get; internal set; }");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public R Value1 { get; internal set; }");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public R Value2 { get; internal set; }");
-            sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public System.Type DataType { get; internal set; }");
-            sb.AppendLine();
-            sb.AppendLine("		System.Enum IAuditResultFieldCompare.Field => (System.Enum)Enum.Parse(typeof(E), this.Field.ToString());");
-            sb.AppendLine("		object IAuditResultFieldCompare.Value1 => this.Value1;");
-            sb.AppendLine("		object IAuditResultFieldCompare.Value2 => this.Value2;");
-            sb.AppendLine();
-            sb.AppendLine("	}");
-            sb.AppendLine("	#endregion");
-            sb.AppendLine();
-            #endregion
 
             #endregion
 

@@ -42,7 +42,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
             sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
             sb.AppendLine("	public partial class ContextStartup : IContextStartup, ICloneable");
             sb.AppendLine("	{");
-            sb.AppendLine("		protected internal string DebugInfo { get; set; }");
+            sb.AppendLine($"		protected internal string DebugInfo {GetSetSuffix}");
             sb.AppendLine("		protected internal bool DefaultTimeout { get; private set; }");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
@@ -92,7 +92,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
             sb.AppendLine("		public virtual int CommandTimeout { get; protected internal set; }");
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
-            sb.AppendLine("		public object Clone()");
+            sb.AppendLine("		object ICloneable.Clone()");
             sb.AppendLine("		{");
             sb.AppendLine("			return (ContextStartup)this.MemberwiseClone();");
             sb.AppendLine("		}");

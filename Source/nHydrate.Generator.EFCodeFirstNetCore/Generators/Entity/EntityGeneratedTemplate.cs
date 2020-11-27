@@ -278,14 +278,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         private void AppendClone(StringBuilder sb)
         {
-            var modifieraux = "virtual";
-
             sb.AppendLine("		#region Clone");
             sb.AppendLine();
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Creates a shallow copy of this object");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		public {modifieraux} object Clone()");
+            sb.AppendLine($"		object ICloneable.Clone()");
             sb.AppendLine("		{");
             sb.AppendLine($"			return {this.GetLocalNamespace()}.Entity.{_item.PascalName}.Clone(this);");
             sb.AppendLine("		}");
@@ -505,7 +503,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             {
                 sb.AppendLine("        [Required]");
                 sb.AppendLine("        [MaxLength(50)]");
-                sb.AppendLine("        protected virtual string " + _model.TenantColumnName + " { get; set; }");
+                sb.AppendLine($"        protected virtual string {_model.TenantColumnName} {GetSetSuffix}");
                 sb.AppendLine("        string ITenantEntity.TenantId { get => this." + _model.TenantColumnName + "; }");
                 sb.AppendLine();
             }
@@ -541,7 +539,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine($"		/// The navigation definition for walking {_item.PascalName}->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:1)"));
                         sb.AppendLine("		/// </summary>");
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
-                        sb.AppendLine("		public virtual " + childTable.PascalName + " " + relation.PascalRoleName + childTable.PascalName + " { get; set; }");
+                        sb.AppendLine($"		public virtual {childTable.PascalName} {relation.PascalRoleName}{childTable.PascalName} {GetSetSuffix}");
                         sb.AppendLine();
                     }
 
@@ -620,7 +618,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:N)"));
                         sb.AppendLine("		/// </summary>");
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
-                        sb.AppendLine("		public virtual " + parentTable.PascalName + " " + relation.PascalRoleName + parentTable.PascalName + " { get; set; }");
+                        sb.AppendLine($"		public virtual {parentTable.PascalName} {relation.PascalRoleName}{parentTable.PascalName} {GetSetSuffix}");
                         sb.AppendLine();
                     }
                 }
