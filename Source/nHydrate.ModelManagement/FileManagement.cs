@@ -29,18 +29,19 @@ namespace nHydrate.ModelManagement
             {
                 if (showError)
                 {
-                    //Try to use the ZIP file
-                    var compressedFile = Path.Combine(rootFolder, modelName + ".zip");
-                    if (!File.Exists(compressedFile))
-                    {
-                        throw new Exception("The model folder was not found and the ZIP file is missing. One of these must exist to continue.");
-                    }
-
-                    //Unzip the whole file
-                    ExtractToDirectory(compressedFile, rootFolder, false);
+                    throw new Exception("The model folder was not found.");
                 }
             }
             else wasLoaded = true;
+
+            //Remove old ZIP file. It is no longer used
+            try
+            {
+                var compressedFile = Path.Combine(rootFolder, modelName + ".zip");
+                if (File.Exists(compressedFile))
+                    File.Delete(compressedFile);
+            }
+            catch { }
 
             var results = new DiskModel();
             LoadEntities(modelFolder, results);
@@ -182,37 +183,6 @@ namespace nHydrate.ModelManagement
             generatedFileList.Add(Path.Combine(modelFolder, "diagram.xml"));
 
             RemoveOrphans(modelFolder, generatedFileList);
-
-            try
-            {
-                var compressedFile = Path.Combine(rootFolder, modelName + ".zip");
-                if (File.Exists(compressedFile))
-                {
-                    File.Delete(compressedFile);
-                    System.Threading.Thread.Sleep(300);
-                }
-
-                //Create ZIP file with entire model folder
-                System.IO.Compression.ZipFile.CreateFromDirectory(modelFolder, compressedFile, System.IO.Compression.CompressionLevel.Fastest, true);
-
-                //Now add the top level model artifacts
-                var artifacts = Directory.GetFiles(rootFolder, $"{modelName}.*").ToList();
-                artifacts.RemoveAll(x => x == compressedFile);
-                using (var zipToOpen = System.IO.Compression.ZipFile.Open(compressedFile, System.IO.Compression.ZipArchiveMode.Update))
-                {
-                    foreach (var ff in artifacts)
-                    {
-                        var fi = new FileInfo(ff);
-                        zipToOpen.CreateEntryFromFile(ff, fi.Name);
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                //Do Nothing
-            }
-
         }
 
         private static void SaveEntities(string rootFolder, DiskModel model, List<string> generatedFileList)
@@ -377,42 +347,6 @@ namespace nHydrate.ModelManagement
                 else
                 {
                     File.Delete(f);
-                }
-
-            }
-        }
-
-        private static void ExtractToDirectory(string compressedFile, string destinationDirectoryName, bool overwrite)
-        {
-            using (var archive = System.IO.Compression.ZipFile.Open(compressedFile, System.IO.Compression.ZipArchiveMode.Update))
-            {
-                var di = Directory.CreateDirectory(destinationDirectoryName);
-                var destinationDirectoryFullPath = di.FullName;
-                foreach (var file in archive.Entries)
-                {
-                    var completeFileName = Path.GetFullPath(Path.Combine(destinationDirectoryFullPath, file.FullName));
-                    if (!completeFileName.StartsWith(destinationDirectoryFullPath, StringComparison.OrdinalIgnoreCase))
-                    {
-                        throw new IOException("Trying to extract file outside of destination directory. See this link for more info: https://snyk.io/research/zip-slip-vulnerability");
-                    }
-
-                    if (file.Name == string.Empty)
-                    {
-                        // Assuming Empty for Directory
-                        Directory.CreateDirectory(Path.GetDirectoryName(completeFileName));
-                        continue;
-                    }
-
-                    if (!File.Exists(completeFileName))
-                    {
-                        var folder = (new FileInfo(completeFileName)).DirectoryName;
-                        if (!Directory.Exists(folder))
-                        {
-                            Directory.CreateDirectory(folder);
-                            System.Threading.Thread.Sleep(200);
-                        }
-                        file.ExtractToFile(completeFileName, overwrite);
-                    }
                 }
             }
         }

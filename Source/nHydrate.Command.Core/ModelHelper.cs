@@ -66,7 +66,6 @@ namespace nHydrate.Command.Core
             try
             {
                 var root = new nHydrate.Generator.Common.Models.ModelRoot(null);
-                root.EnableCustomChangeEvents = diskModel.ModelProperties.EmitChangeScripts;
                 root.CompanyName = diskModel.ModelProperties.CompanyName;
                 root.EmitSafetyScripts = diskModel.ModelProperties.EmitSafetyScripts;
                 root.DefaultNamespace = diskModel.ModelProperties.DefaultNamespace;
