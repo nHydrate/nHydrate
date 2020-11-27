@@ -783,10 +783,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             sb.AppendLine("		#region GetFieldNameConstants");
             sb.AppendLine();
-            sb.AppendLine($"		System.Type {this.GetLocalNamespace()}.IReadOnlyBusinessObject.GetFieldNameConstants()");
-            sb.AppendLine("		{");
-            sb.AppendLine($"			return typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants);");
-            sb.AppendLine("		}");
+            sb.AppendLine($"		System.Type {this.GetLocalNamespace()}.IReadOnlyBusinessObject.GetFieldNameConstants() => typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants);");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
