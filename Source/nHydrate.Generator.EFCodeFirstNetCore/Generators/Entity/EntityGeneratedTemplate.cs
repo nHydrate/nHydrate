@@ -440,6 +440,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("			{");
 
                 #region Validation
+
+                if (column.AllowNull)
+                {
+                    sb.AppendLine("				if (value == null) throw new Exception(GlobalValues.ERROR_PROPERTY_SETNULL);");
+                }
+
                 //Error Check for field size
                 if (column.DataType.IsTextType())
                 {
