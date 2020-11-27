@@ -121,7 +121,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             if (!string.IsNullOrEmpty(_item.Description))
                 sb.AppendLine("	[System.ComponentModel.Description(\"" + StringHelper.ConvertTextToSingleLineCodeString(_item.Description) + "\")]");
             sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
-            sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : " + GetLocalNamespace() + ".BaseEntity, System.ICloneable, IReadOnlyBusinessObject");
+            sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : System.ICloneable, IReadOnlyBusinessObject");
             sb.AppendLine();
 
             sb.AppendLine("	{");

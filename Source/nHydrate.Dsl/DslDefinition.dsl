@@ -91,11 +91,6 @@
             <ExternalTypeMoniker Name="/System/Boolean" />
           </Type>
         </DomainProperty>
-        <DomainProperty Id="bca19c13-0e3b-4ecf-9627-a50367e1aee4" Description="Determines if change events are generated around all entity property setters" Name="EmitChangeScripts" DisplayName="Emit Change Scripts" DefaultValue="true" Category="Code">
-          <Type>
-            <ExternalTypeMoniker Name="/System/Boolean" />
-          </Type>
-        </DomainProperty>
       </Properties>
       <ElementMergeDirectives>
         <ElementMergeDirective>
@@ -1024,9 +1019,6 @@
           </XmlPropertyData>
           <XmlPropertyData XmlName="emitSafetyScripts">
             <DomainPropertyMoniker Name="nHydrateModel/EmitSafetyScripts" />
-          </XmlPropertyData>
-          <XmlPropertyData XmlName="emitChangeScripts">
-            <DomainPropertyMoniker Name="nHydrateModel/EmitChangeScripts" />
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>

@@ -592,7 +592,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
             #endregion
 
-
             #region SaveChanges
 
             sb.AppendLine("        private bool _inSave = false;");
@@ -1024,7 +1023,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Reloads the context object from database");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public void ReloadItem(BaseEntity entity)");
+            sb.AppendLine("		public void ReloadItem(IBusinessObject entity)");
             sb.AppendLine("		{");
             sb.AppendLine("			this.Entry(entity).Reload();");
             sb.AppendLine("		}");

@@ -47,7 +47,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.ComponentModel.DataAnnotations;");
-            sb.AppendLine($"using {this.GetLocalNamespace()}.EventArguments;");
             sb.AppendLine();
         }
 
@@ -116,16 +115,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             var boInterface = this.GetLocalNamespace() + ".IBusinessObject";
             if (_item.Immutable) boInterface = $"{this.GetLocalNamespace()}.IReadOnlyBusinessObject";
 
-            if (_model.EnableCustomChangeEvents)
-                boInterface += ", System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging";
-
             if (_item.IsTenant)
             {
                 sb.AppendLine("	[TenantEntity]");
                 boInterface += ", ITenantEntity";
             }
 
-            sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : BaseEntity, " + boInterface);
+            sb.Append("	public " + (_item.GeneratesDoubleDerived ? "abstract " : "") + "partial class " + doubleDerivedClassName + " : " + boInterface);
             if (!_item.GeneratesDoubleDerived)
                 sb.Append(", System.ICloneable");
 
@@ -491,32 +487,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                 #endregion
 
-                //TODO: For now type tables need to able to set properties because we could set OTHER properties not the ID/NAME. Really need to make these two properties 
-                //if (_item.Immutable && _item.TypedTable == TypedTableConstants.None)
-                //{
-                //    sb.AppendLine("				//Setter is left for deserialization but should never be used");
-                //}
-                //else if (_item.TypedTable != TypedTableConstants.None && StringHelper.Match(_item.GetTypeTableCodeDescription(), column.CamelName, true))
-                //{
-                //    sb.AppendLine("				//Setter is left for deserialization but should never be used");
-                //}
-                //else
-                if (column.ComputedColumn)
-                {
-                    sb.AppendLine($"				_{column.CamelName} = value;");
-                }
-                else if (_model.EnableCustomChangeEvents)
-                {
-                    sb.AppendLine($"				var eventArg = new {this.GetLocalNamespace()}.EventArguments.ChangingEventArgs<{codeType}>(value, \"{column.PascalName}\");");
-                    sb.AppendLine("				this.OnPropertyChanging(eventArg);");
-                    sb.AppendLine("				if (eventArg.Cancel) return;");
-                    sb.AppendLine($"				_{column.CamelName} = eventArg.Value;");
-                    sb.AppendLine($"				this.OnPropertyChanged(new PropertyChangedEventArgs(\"{column.PascalName}\"));");
-                }
-                else
-                {
-                    sb.AppendLine($"				_{column.CamelName} = value;");
-                }
+                sb.AppendLine($"				_{column.CamelName} = value;");
 
                 sb.AppendLine("			}");
                 sb.AppendLine("		}");
@@ -664,60 +635,10 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             {
                 sb.AppendLine("		/// <summary />");
                 sb.AppendLine($"		protected {column.GetCodeType()} _{column.CamelName};");
-                this.AppendPropertyEventDeclarations(sb, column, column.GetCodeType());
             }
-
-            //Audit Fields
-            if (_item.AllowCreateAudit) this.AppendPropertyEventDeclarations(sb, _model.Database.CreatedByPascalName, "string");
-            if (_item.AllowCreateAudit) this.AppendPropertyEventDeclarations(sb, _model.Database.CreatedDatePascalName, "DateTime");
-            if (_item.AllowModifiedAudit) this.AppendPropertyEventDeclarations(sb, _model.Database.ModifiedByPascalName, "string");
-            if (_item.AllowModifiedAudit) this.AppendPropertyEventDeclarations(sb, _model.Database.ModifiedDatePascalName, "DateTime");
-            if (_item.AllowConcurrencyCheck) this.AppendPropertyEventDeclarations(sb, _model.Database.ConcurrencyCheckPascalName, "int");
 
             sb.AppendLine();
             sb.AppendLine("		#endregion");
-            sb.AppendLine();
-        }
-
-        private void AppendPropertyEventDeclarations(StringBuilder sb, Column column, string codeType)
-        {
-            this.AppendPropertyEventDeclarations(sb, column.PascalName, codeType);
-        }
-
-        private void AppendPropertyEventDeclarations(StringBuilder sb, string columnName, string codeType)
-        {
-            //Do not support custom events
-            if (!_model.EnableCustomChangeEvents) return;
-
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine($"		/// Occurs when the '{columnName}' property value change is a pending.");
-            sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		[field:NonSerialized]");
-            sb.AppendLine($"		public event EventHandler<{this.GetLocalNamespace()}.EventArguments.ChangingEventArgs<{codeType}>> {columnName}Changing;");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine($"		/// Raises the On{columnName}Changing event.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		protected virtual void On{columnName}Changing({this.GetLocalNamespace()}.EventArguments.ChangingEventArgs<{codeType}> e)");
-            sb.AppendLine("		{");
-            sb.AppendLine($"			if (this.{columnName}Changing != null)");
-            sb.AppendLine($"				this.{columnName}Changing(this, e);");
-            sb.AppendLine("		}");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine($"		/// Occurs when the '{columnName}' property value has changed.");
-            sb.AppendLine("		/// </summary>");
-            //sb.AppendLine("		[field:NonSerialized]");
-            sb.AppendLine($"		public event EventHandler<ChangedEventArgs<{codeType}>> {columnName}Changed;");
-            sb.AppendLine();
-            sb.AppendLine("		/// <summary>");
-            sb.AppendLine($"		/// Raises the On{columnName}Changed event.");
-            sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		protected virtual void On{columnName}Changed(ChangedEventArgs<{codeType}> e)");
-            sb.AppendLine("		{");
-            sb.AppendLine($"			if (this.{columnName}Changed != null)");
-            sb.AppendLine($"				this.{columnName}Changed(this, e);");
-            sb.AppendLine("		}");
             sb.AppendLine();
         }
 
@@ -1276,28 +1197,13 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine("			set");
             }
             sb.AppendLine("			{");
-
-            //Cannot hide setter but gut the thing so cannot make changes
-            if (_model.EnableCustomChangeEvents)
-            {
-                sb.AppendLine($"				var eventArg = new {this.GetLocalNamespace()}.EventArguments.ChangingEventArgs<" + codeType + ">(value, \"" + columnName + "\");");
-                sb.AppendLine("				this.OnPropertyChanging(eventArg);");
-                sb.AppendLine("				if (eventArg.Cancel) return;");
-                sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = eventArg.Value;");
-                sb.AppendLine("				this.OnPropertyChanged(new PropertyChangedEventArgs(\"" + columnName + "\"));");
-            }
-            else
-            {
-                sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = value;");
-            }
-
+            sb.AppendLine("				_" + StringHelper.DatabaseNameToCamelCase(columnName) + " = value;");
             sb.AppendLine("			}");
             sb.AppendLine("		}");
             sb.AppendLine();
             sb.AppendLine("		/// <summary />");
             sb.AppendLine("		protected " + codeType + " _" + StringHelper.DatabaseNameToCamelCase(columnName) + ";");
             sb.AppendLine();
-
         }
 
     }

@@ -91,7 +91,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		/// <param name=\"selector\">The field to retrieve</param>");
             sb.AppendLine("		/// <returns></returns>");
             sb.AppendLine("		public static T GetValue<T, R>(this R item, System.Linq.Expressions.Expression<System.Func<R, T>> selector)");
-            sb.AppendLine("			where R : BaseEntity");
+            sb.AppendLine("			where R : IBusinessObject");
             sb.AppendLine("		{");
             sb.AppendLine("			var b = selector.Body.ToString();");
             sb.AppendLine("			var arr = b.Split('.');");
@@ -114,7 +114,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		/// <param name=\"defaultValue\">The default value to return if the specified value is NULL</param>");
             sb.AppendLine("		/// <returns></returns>");
             sb.AppendLine("		public static T GetValue<T, R>(this R item, System.Linq.Expressions.Expression<System.Func<R, T>> selector, T defaultValue)");
-            sb.AppendLine("			where R : BaseEntity");
+            sb.AppendLine("			where R : IBusinessObject");
             sb.AppendLine("		{");
             sb.AppendLine("			var b = selector.Body.ToString();");
             sb.AppendLine("			var arr = b.Split('.');");
@@ -137,7 +137,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		/// <param name=\"defaultValue\">The default value to return if the specified value is NULL</param>");
             sb.AppendLine("		/// <returns></returns>");
             sb.AppendLine("		private static T GetValueInternal<T, R>(this R item, System.Enum field, T defaultValue)");
-            sb.AppendLine("			where R : BaseEntity");
+            sb.AppendLine("			where R : IBusinessObject");
             sb.AppendLine("		{");
             sb.AppendLine("			var valid = false;");
             sb.AppendLine("			if (typeof(T) == typeof(bool)) valid = true;");
@@ -217,7 +217,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		/// <param name=\"selector\">The field on the entity to set</param>");
             sb.AppendLine("		/// <param name=\"newValue\">The new value to assign to the field</param>");
             sb.AppendLine("		public static void SetValue<TResult, R>(this R item, System.Linq.Expressions.Expression<System.Func<R, TResult>> selector, TResult newValue)");
-            sb.AppendLine("			where R : BaseEntity, IBusinessObject");
+            sb.AppendLine("			where R : IBusinessObject");
             sb.AppendLine("		{");
             sb.AppendLine("			SetValue(item: item, selector: selector, newValue: newValue, fixLength: false);");
             sb.AppendLine("		}");
@@ -231,7 +231,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		/// <param name=\"newValue\">The new value to assign to the field</param>");
             sb.AppendLine("		/// <param name=\"fixLength\">Determines if the length should be truncated if too long. When false, an error will be raised if data is too large to be assigned to the field.</param>");
             sb.AppendLine("		public static void SetValue<TResult, R>(this R item, System.Linq.Expressions.Expression<System.Func<R, TResult>> selector, TResult newValue, bool fixLength)");
-            sb.AppendLine("			where R : BaseEntity, IBusinessObject");
+            sb.AppendLine("			where R : IBusinessObject");
             sb.AppendLine("		{");
             sb.AppendLine("			var b = selector.Body.ToString();");
             sb.AppendLine("			var arr = b.Split('.');");
