@@ -12,11 +12,6 @@ namespace nHydrate.DataImport
 
     public abstract class DatabaseBaseObject
     {
-        public DatabaseBaseObject()
-        {
-            this.ImportState = ImportStateConstants.Unchanged;
-        }
-
         public string Name { get; set; }
 
         /// <summary>
@@ -27,7 +22,7 @@ namespace nHydrate.DataImport
         /// <summary>
         /// The state of this object after import
         /// </summary>
-        public ImportStateConstants ImportState { get; set; }
+        public ImportStateConstants ImportState { get; set; } = ImportStateConstants.Unchanged;
 
         public abstract string ObjectType { get; }
 

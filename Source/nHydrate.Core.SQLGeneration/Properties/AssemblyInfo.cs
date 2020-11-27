@@ -1,5 +1,3 @@
-using System.Reflection;
-using System.Runtime.InteropServices;
 
 #if !NETSTANDARD
 // General Information about an assembly is controlled through the following 

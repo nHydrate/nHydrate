@@ -6,4 +6,3 @@ namespace nHydrate.DataImport
         public Field ChildField { get; set; }
     }
 }
-

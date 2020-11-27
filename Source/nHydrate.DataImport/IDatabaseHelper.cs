@@ -5,4 +5,3 @@ namespace nHydrate.DataImport
         bool TestConnectionString(string connectString);
     }
 }
-

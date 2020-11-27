@@ -1,10 +1,8 @@
 using nHydrate.Generator.Common.Models;
 using nHydrate.ModelManagement;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using static nHydrate.Generator.Common.Models.Relation;
 
 namespace nHydrate.Command.Core
@@ -61,8 +59,7 @@ namespace nHydrate.Command.Core
             if (!fi.Exists)
                 throw new ModelException($"The model file '{fi.FullName}' does not exist.");
 
-            bool wasLoaded;
-            var diskModel = FileManagement.Load(fi.DirectoryName, fi.Name, out wasLoaded);
+            var diskModel = FileManagement.Load(fi.DirectoryName, fi.Name, out bool wasLoaded);
             if (!wasLoaded)
                 throw new ModelException($"The model file '{fi.FullName}' does not exist.");
 
@@ -354,10 +351,7 @@ namespace nHydrate.Command.Core
             return (int)(hash % int.MaxValue);
         }
 
-        private static bool ToBool(this byte value)
-        {
-            return value != 0;
-        }
+        private static bool ToBool(this byte value) => value != 0;
 
         private static DataTypeConstants GetDataType(string str)
         {

@@ -7,14 +7,11 @@ namespace nHydrate.DataImport
         public Entity()
             : base()
         {
-            this.FieldList = new List<Field>();
-            this.RelationshipList = new List<Relationship>();
-            this.Schema = string.Empty;
         }
 
-        public string Schema { get; set; }
-        public override List<Field> FieldList { get; internal set; }
-        public List<Relationship> RelationshipList { get; }
+        public string Schema { get; set; } = string.Empty;
+        public override List<Field> FieldList { get; internal set; } = new List<Field>();
+        public List<Relationship> RelationshipList { get; } = new List<Relationship>();
         public bool AllowCreateAudit { get; set; }
         public bool AllowModifyAudit { get; set; }
         public bool AllowTimestamp { get; set; }

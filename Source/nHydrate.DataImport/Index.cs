@@ -4,10 +4,6 @@ namespace nHydrate.DataImport
 {
     public class Index
     {
-        public Index()
-        {
-        }
-
         public string IndexName { get; set; }
         public string TableName { get; set; }
         public bool IsPrimaryKey { get; set; }

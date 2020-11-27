@@ -5,7 +5,6 @@ namespace nHydrate.Command.Core
         public ModelException(string message)
             : base(message)
         {
-
         }
     }
 }
