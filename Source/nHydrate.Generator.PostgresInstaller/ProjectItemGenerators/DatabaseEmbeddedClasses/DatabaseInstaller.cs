@@ -49,6 +49,13 @@ namespace PROJECTNAMESPACE
         }
         #endregion
 
+        private List<System.Type> GetDatabaseActions()
+        {
+            return System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
+                 .Where(x => typeof(IDatabaseAction).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
+                 .ToList();
+        }
+
         #region Install
 
         /// <summary>
@@ -518,6 +525,11 @@ namespace PROJECTNAMESPACE
     }
 
     #endregion
+
+    public interface IDatabaseAction
+    {
+        void Execute(Dictionary<string, string> input);
+    }
 
 }
 #pragma warning restore 0168

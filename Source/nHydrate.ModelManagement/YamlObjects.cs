@@ -7,7 +7,7 @@ using YamlDotNet.Serialization;
 
 namespace nHydrate.ModelManagement
 {
-    public class EntityYaml
+    internal class EntityYaml
     {
         public string Name { get; set; }
      
@@ -57,7 +57,7 @@ namespace nHydrate.ModelManagement
         public List<IndexYaml> Indexes { get; set; } = new List<IndexYaml>();
     }
 
-    public class EntityFieldYaml
+    internal class EntityFieldYaml
     {
         public string Id { get; set; }
         
@@ -65,7 +65,7 @@ namespace nHydrate.ModelManagement
         
         public bool Nullable { get; set; }
         
-        public string Datatype { get; set; }
+        public Utilities.DataTypeConstants Datatype { get; set; }
         
         public string Identity { get; set; }
 
@@ -126,7 +126,7 @@ namespace nHydrate.ModelManagement
         public bool Obsolete { get; set; }
     }
 
-    public class RelationYaml
+    internal class RelationYaml
     {
         public string ChildEntity { get; set; }
         
@@ -149,7 +149,7 @@ namespace nHydrate.ModelManagement
         public List<RelationFieldYaml> Fields { get; set; } = new List<RelationFieldYaml>();
     }
 
-    public class RelationFieldYaml
+    internal class RelationFieldYaml
     {
         public string Id { get; set; }
         
@@ -162,20 +162,12 @@ namespace nHydrate.ModelManagement
         public string TargetFieldName { get; set; }
     }
 
-    public class IndexYaml
-    {
-        public string Id { get; set; }
-        public string Type { get; set; }
-
-        public List<IndexFieldYaml> Fields { get; set; }
-    }
-
-    public class IndexFieldYaml
+    internal class IndexYaml
     {
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(false)]
         public bool Clustered { get; set; }
-        
+
         public string Id { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
@@ -184,7 +176,7 @@ namespace nHydrate.ModelManagement
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue("")]
-        public string IndexType { get; set; }
+        public Utilities.IndexTypeConstants IndexType { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(false)]
@@ -193,9 +185,24 @@ namespace nHydrate.ModelManagement
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue("")]
         public string Summary { get; set; }
+
+        public List<IndexFieldYaml> Fields { get; set; } = new List<IndexFieldYaml>();
     }
 
-    public class SystemTypeTypeConverter : IYamlTypeConverter
+    internal class IndexFieldYaml
+    {
+        [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        [DefaultValue(true)]
+        public bool Ascending { get; set; }
+        
+        public string FieldId { get; set; }
+        
+        public string Id { get; set; }
+
+        public int SortOrder { get; set; }
+    }
+
+    internal class SystemTypeTypeConverter : IYamlTypeConverter
     {
         public bool Accepts(Type type)
         {
