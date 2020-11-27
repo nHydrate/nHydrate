@@ -441,7 +441,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                 #region Validation
 
-                if (column.AllowNull)
+                if (!column.AllowNull)
                 {
                     sb.AppendLine("				if (value == null) throw new Exception(GlobalValues.ERROR_PROPERTY_SETNULL);");
                 }
