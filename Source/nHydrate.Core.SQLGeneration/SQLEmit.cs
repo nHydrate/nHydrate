@@ -1371,13 +1371,13 @@ namespace nHydrate.Core.SQLGeneration
             if ((parentTable.TypedTable != TypedTableConstants.EnumOnly) &&
                 (childTable.TypedTable != TypedTableConstants.EnumOnly))
             {
-                sb.AppendLine("--FOREIGN KEY RELATIONSHIP [" + parentTable.DatabaseName + "] -> [" + childTable.DatabaseName + "] (" + GetFieldNames(relation) + ")");
-                sb.AppendLine("if not exists(select * from sys.objects where name = '" + indexName + "' and type = 'F')");
-                sb.AppendLine("ALTER TABLE [" + childTable.GetSQLSchema() + "].[" + childTable.DatabaseName + "] ADD ");
-                sb.AppendLine("CONSTRAINT [" + indexName + "] FOREIGN KEY ");
+                sb.AppendLine($"--FOREIGN KEY RELATIONSHIP [{parentTable.DatabaseName}] -> [{childTable.DatabaseName}] ({GetFieldNames(relation)})");
+                sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'F')");
+                sb.AppendLine($"ALTER TABLE [{childTable.GetSQLSchema()}].[{childTable.DatabaseName}] ADD ");
+                sb.AppendLine($"CONSTRAINT [{indexName}] FOREIGN KEY ");
                 sb.AppendLine("(");
                 sb.Append(AppendChildTableColumns(relation));
-                sb.AppendLine(") REFERENCES [" + parentTable.GetSQLSchema() + "].[" + parentTable.DatabaseName + "] (");
+                sb.AppendLine($") REFERENCES [{parentTable.GetSQLSchema()}].[{parentTable.DatabaseName}] (");
                 sb.Append(AppendParentTableColumns(relation, childTable));
                 sb.AppendLine(")");
             }
@@ -1397,8 +1397,8 @@ namespace nHydrate.Core.SQLGeneration
                 var childColumn = columnRelationship.ChildColumn;
                 var parentTable = parentColumn.ParentTable;
                 var childTable = childColumn.ParentTable;
-                retval.Append("[" + parentTable.DatabaseName + "].[" + parentColumn.DatabaseName + "] -> ");
-                retval.Append("[" + childTable.DatabaseName + "].[" + childColumn.DatabaseName + "]");
+                retval.Append($"[{parentTable.DatabaseName}].[{parentColumn.DatabaseName}] -> ");
+                retval.Append($"[{childTable.DatabaseName}].[{childColumn.DatabaseName}]");
                 if (kk < relation.ColumnRelationships.Count - 1)
                 {
                     retval.Append(", ");
@@ -1468,7 +1468,7 @@ namespace nHydrate.Core.SQLGeneration
             if (!allowComputed || !column.ComputedColumn)
             {
                 //Add column
-                sb.Append("[" + column.DatabaseName + "] " + column.DatabaseType);
+                sb.Append($"[{column.DatabaseName}] {column.DatabaseType}");
 
                 ////Add length
                 //if (ModelHelper.VariableLengthType(column.DataType))
