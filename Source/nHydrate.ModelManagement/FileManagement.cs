@@ -252,7 +252,7 @@ namespace nHydrate.ModelManagement
                     {
                         CodeFacade = ff.codefacade,
                         DataFormatString = ff.dataformatstring,
-                        Datatype = ff.datatype,
+                        Datatype =  ff.datatype.ToEnum<Utilities.DataTypeConstants>(),
                         Default = ff.@default,
                         DefaultIsFunc = ff.defaultisfunc != 0,
                         Formula = ff.formula,
@@ -303,27 +303,33 @@ namespace nHydrate.ModelManagement
                     }
                 }
 
-                //foreach (var ii in model.Indexes)
-                //{
-                //    var entity = model.Entities.FirstOrDefault(x => x.id == ii.id);
-                //    var newIndex = new IndexYaml
-                //    {
-                //        Id = ii.id,
-                //        Type = ii.type,
-                //    };
-                //    newEntity.Indexes.Add(newIndex);
-                //    foreach (var ifield in ii.index)
-                //    {
-                //        //newIndex.Fields.Add()
-                //        ifield.clustered,
-                //            ifield.id
-                //            ifield.importedname
-                //            //ifield.indexcolumnset
-                //            ifield.indextype
-                //            ifield.isunique
-                //            ifield.summary
-                //    }
-                //}
+                foreach (var ii in model.Indexes.Where(x => x.id == obj.id))
+                {
+                    var entity = model.Entities.FirstOrDefault(x => x.id == ii.id);
+                    foreach (var ifield in ii.index)
+                    {
+                        var newIndex = newEntity.Indexes.AddItem(new IndexYaml
+                        {
+                            Clustered = ifield.clustered != 0,
+                            Id = ifield.id,
+                            ImportedName = ifield.importedname,
+                            IndexType = (Utilities.IndexTypeConstants)ifield.indextype,
+                            IsUnique = ifield.isunique != 0,
+                            Summary = ifield.summary,
+                        });
+
+                        foreach (var i2 in ifield.indexcolumnset)
+                        {
+                            newIndex.Fields.AddItem(new IndexFieldYaml
+                            {
+                                Ascending = i2.ascending != 0,
+                                FieldId = i2.fieldid,
+                                Id = i2.id,
+                                SortOrder = i2.sortorder,
+                            });
+                        }
+                    }
+                }
 
                 var yaml = serializer.Serialize(newEntity);
                 var f = Path.Combine(folder, obj.name + ".yaml");
