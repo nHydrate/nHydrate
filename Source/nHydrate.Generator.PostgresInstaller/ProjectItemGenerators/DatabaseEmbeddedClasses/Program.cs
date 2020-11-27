@@ -35,10 +35,18 @@ namespace PROJECTNAMESPACE
              .CreateLogger();
 
             Log.Information("Starting Install...");
-            var stateSaver = new Dictionary<object, object>();
-            var installer = new DatabaseInstaller();
-            installer.Install(stateSaver);
+            try
+            {
+                var stateSaver = new Dictionary<object, object>();
+                var installer = new DatabaseInstaller();
+                installer.Install(stateSaver);
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Install Exception");
+            }
             Log.Information("Install Complete");
+
         }
     }
 }
