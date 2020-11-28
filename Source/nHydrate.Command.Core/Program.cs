@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using nHydrate.Generator.Common;
 using System;
 using System.Collections.Generic;
@@ -13,24 +14,47 @@ namespace nHydrate.Command.Core
         private const string GeneratorsKey = "generators";
 
         /*
-            /model:C:\code\nHydrateTestAug\ConsoleApp1\Model1.nhydrate /output:C:\code\nHydrateTestAug /generators:nHydrate.Generator.EFCodeFirstNetCore.EFCodeFirstNetCoreProjectGenerator,nHydrate.Generator.PostgresInstaller.PostgresDatabaseProjectGenerator,nHydrate.Generator.SQLInstaller.Core.DatabaseProjectGenerator
+            /model=C:\code\nHydrateTestAug\ConsoleApp1\Model1.nhydrate /output=C:\code\nHydrateTestAug /generators=nHydrate.Generator.EFCodeFirstNetCore.EFCodeFirstNetCoreProjectGenerator,nHydrate.Generator.PostgresInstaller.PostgresDatabaseProjectGenerator,nHydrate.Generator.SQLInstaller.Core.DatabaseProjectGenerator
         */
 
         static int Main(string[] args)
         {
-            var commandParams = GetCommandLineParameters();
+            IConfiguration Configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.development.json", optional: true, reloadOnChange: true)
+                .AddCommandLine(args)
+                .Build();
 
-            if (!commandParams.ContainsKey(ModelKey))
+            var modelFile = string.Empty;
+            var output = string.Empty;
+            var generators = new string[0];
+
+            //AppSettings
+            var allValues = Configuration.GetSection("nHydrate").GetChildren().Select(x => new { x.Key, x.Value }).ToDictionary(x => x.Key.ToString(), x => x.Value?.ToString());
+            if (allValues.ContainsKey(ModelKey))
+                modelFile = allValues[ModelKey];
+            if (allValues.ContainsKey(OutputKey))
+                output = allValues[OutputKey];
+            if (allValues.ContainsKey(GeneratorsKey))
+                generators = allValues[GeneratorsKey].Split(",", StringSplitOptions.RemoveEmptyEntries);
+
+            //Command line (overrides above)
+            allValues = Configuration.GetChildren().Select(x => new { x.Key, x.Value }).ToDictionary(x => x.Key.ToString(), x => x.Value?.ToString());
+            if (allValues.ContainsKey(ModelKey))
+                modelFile = allValues[ModelKey];
+            if (allValues.ContainsKey(OutputKey))
+                output = allValues[OutputKey];
+            if (allValues.ContainsKey(GeneratorsKey))
+                generators = allValues[GeneratorsKey].Split(",", StringSplitOptions.RemoveEmptyEntries);
+
+            if (string.IsNullOrEmpty(modelFile))
                 return ShowError("The model is required.");
-            if (!commandParams.ContainsKey(OutputKey))
+            if (string.IsNullOrEmpty(output))
                 return ShowError("The output folder is required.");
-            if (!commandParams.ContainsKey(GeneratorsKey))
+            if (!generators.Any())
                 return ShowError("The generators are required.");
 
             var timer = System.Diagnostics.Stopwatch.StartNew();
-            var modelFile = commandParams[ModelKey];
-            var output = commandParams[OutputKey];
-            var generators = commandParams[GeneratorsKey].Split(",", StringSplitOptions.RemoveEmptyEntries);
 
             nHydrate.Generator.Common.Models.ModelRoot model = null;
             try

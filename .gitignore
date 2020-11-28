@@ -192,3 +192,6 @@ FakesAssemblies/
 
 #Launch vscode
 .vscode/launch.json
+
+appsettings.[dD]evelopment.json
+launchSettings.json

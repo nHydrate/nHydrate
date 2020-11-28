@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="appsettings*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\nHydrate.Core.SQLGeneration\nHydrate.Core.SQLGeneration.Core.csproj" />
     <ProjectReference Include="..\nHydrate.DataImport.SqlClient\nHydrate.DataImport.SqlClient.Core.csproj" />
     <ProjectReference Include="..\nHydrate.DataImport\nHydrate.DataImport.Core.csproj" />
@@ -25,6 +31,12 @@
     <EmbeddedResource Include="..\..\VSADDIN\databasenetcore.csproj" Link="Resources\databasenetcore.csproj" />
     <EmbeddedResource Include="..\..\VSADDIN\efcodefirstnetcore.csproj" Link="Resources\efcodefirstnetcore.csproj" />
     <EmbeddedResource Include="..\..\VSADDIN\efcorepostgresinstaller.csproj" Link="Resources\efcorepostgresinstaller.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
   </ItemGroup>
 
 </Project>
