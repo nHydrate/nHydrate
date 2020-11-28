@@ -73,7 +73,7 @@ namespace nHydrate.Command.Core
                 root.SupportLegacySearchObject = false;
                 root.UseUTCTime = diskModel.ModelProperties.UseUTCTime;
                 root.Version = diskModel.ModelProperties.Version;
-                root.Database.ResetKey(diskModel.ModelProperties.Id);
+                root.ResetKey(diskModel.ModelProperties.Id);
                 root.OutputTarget = string.Empty;
                 root.TenantColumnName = diskModel.ModelProperties.TenantColumnName;
                 root.Database.CreatedByColumnName = diskModel.ModelProperties.CreatedByColumnName;
@@ -230,7 +230,8 @@ namespace nHydrate.Command.Core
                             //var relation = connector.ModelElement as EntityHasEntities;
                             //var fieldList = model.RelationFields.Where(x => x.RelationID == relation.Id);
 
-                            var parentTable = root.Database.Tables.FirstOrDefault(x => x.Key == shape.id);
+                            //var parentTable = root.Database.Tables.FirstOrDefault(x => x.Key == shape.id);
+                            var parentTable = root.Database.Tables.FirstOrDefault(x => x.Key == entity.id);
                             var childTable = root.Database.Tables.FirstOrDefault(x => x.Key == shape.childid);
 
                             //If we found both parent and child tables...
@@ -282,6 +283,10 @@ namespace nHydrate.Command.Core
                                     if (newRelation.ColumnRelationships.Count > 0)
                                         parentTable.Relationships.Add(newRelation.CreateRef(newRelation.Key));
                                 }
+                            }
+                            else
+                            {
+                                //Should never get here
                             }
                         }
 

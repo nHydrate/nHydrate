@@ -1511,6 +1511,26 @@ namespace nHydrate.ModelManagement.View
 
 }
 
+namespace nHydrate.ModelManagement.Entity
+{
+    partial class configuration
+    {
+        public override string ToString() => this.name;
+    }
+
+    partial class configurationField
+    {
+        public override string ToString() => this.name;
+    }
+}
+
+namespace nHydrate.ModelManagement.Relation
+{
+    partial class configuration
+    {
+        public override string ToString() => this.id;
+    }
+}
 
 namespace nHydrate.ModelManagement.View
 {
@@ -1518,5 +1538,7 @@ namespace nHydrate.ModelManagement.View
     {
         [XmlIgnore]
         public string sql { get; set; }
+
+        public override string ToString() => this.name;
     }
 }

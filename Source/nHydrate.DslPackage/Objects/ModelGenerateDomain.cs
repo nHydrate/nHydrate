@@ -243,7 +243,7 @@ namespace nHydrate.DslPackage.Objects
             var genProject = new nHydrateGeneratorProject();
             genList.Add(genProject);
             var root = CreatePOCOModel(model, diagram);
-            root.SetKey(model.Id.ToString());
+            root.ResetKey(model.Id.ToString());
             root.GeneratorProject = genProject;
             genProject.Model = root;
             var fi = new System.IO.FileInfo(docData.FileName);

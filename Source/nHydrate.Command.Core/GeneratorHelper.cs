@@ -2,7 +2,9 @@ using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.ProjectItemGenerators;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace nHydrate.Command.Core
 {
@@ -71,7 +73,24 @@ namespace nHydrate.Command.Core
         {
             var name = e.ProjectItemName;
             if (name.StartsWith(Path.DirectorySeparatorChar)) name = name.Substring(1, name.Length - 1);
-            var fileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, e.ParentItemName, name);
+            var paths = new List<string>();
+            paths.AddRange(_outputFolder.Split(Path.DirectorySeparatorChar));
+            paths.AddRange(e.ProjectName.Split(Path.DirectorySeparatorChar));
+            if (!string.IsNullOrEmpty(e.ParentItemName) && !e.ParentItemName.Contains("."))
+            {
+                paths.AddRange(e.ParentItemName.Split(Path.DirectorySeparatorChar));
+            }
+            else if (!string.IsNullOrEmpty(e.ParentItemName) && e.ParentItemName.Contains("."))
+            {
+                var arr = e.ParentItemName.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList();
+                if (arr.Count > 1)
+                {
+                    arr.RemoveAt(arr.Count - 1);
+                    paths.AddRange(arr);
+                }
+            }
+            paths.AddRange(name.Split(Path.DirectorySeparatorChar));
+            var fileName = System.IO.Path.Combine(paths.ToArray());
 
             if (!File.Exists(fileName) || e.Overwrite)
             {
@@ -87,7 +106,6 @@ namespace nHydrate.Command.Core
                     fileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, name);
                     File.WriteAllText(fileName, e.ProjectItemContent);
                 }
-
             }
         }
 

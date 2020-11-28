@@ -439,7 +439,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                 #region Validation
 
-                if (!column.AllowNull)
+                //Only perform null check for text types
+                if (!column.AllowNull && column.DataType.IsTextType())
                 {
                     sb.AppendLine("				if (value == null) throw new Exception(GlobalValues.ERROR_PROPERTY_SETNULL);");
                 }

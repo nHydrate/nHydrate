@@ -57,11 +57,6 @@ namespace nHydrate.Generator.Common
             this.Id = newId;
         }
 
-        public virtual void SetKey(string key)
-        {
-            this.Key = key;
-        }
-
         public string Name { get; set; } = string.Empty;
 
         public virtual string Key { get; protected set; } = Guid.NewGuid().ToString();

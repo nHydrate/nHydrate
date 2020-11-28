@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using nHydrate.Generator.Common;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -82,7 +83,7 @@ namespace nHydrate.Command.Core
                 var genList = new List<nHydrateGeneratorProject>();
                 var genProject = new nHydrateGeneratorProject();
                 genList.Add(genProject);
-                model.SetKey(model.Id.ToString());
+                model.ResetKey(model.Key);
                 model.GeneratorProject = genProject;
                 genProject.Model = model;
                 genProject.FileName = modelFile + ".generating";
@@ -92,14 +93,28 @@ namespace nHydrate.Command.Core
                 System.IO.File.WriteAllText(genProject.FileName, document.ToIndentedString());
 
                 var allgenerators = genHelper.GetProjectGenerators(genProject);
-
                 var excludeList = allgenerators.Where(x => !generators.Contains(x.FullName)).ToList();
+
+                //Get the last version we generated on this machine
+                //We will use this to determine if any other generations have been performed on other machines
+                var cacheFile = new nHydrate.Generator.Common.ModelCacheFile(genList.First());
+                var cachedGeneratedVersion = cacheFile.GeneratedVersion;
+                var generatedVersion = cachedGeneratedVersion + 1;
+                model.GeneratedVersion = generatedVersion;
 
                 Console.WriteLine($"Generating code...");
                 foreach (var item in genList)
                 {
                     genHelper.GenerateAll(item, excludeList);
                 }
+
+                //Save local copy of last generated version
+                cacheFile.GeneratedVersion = generatedVersion;
+                cacheFile.ModelerVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                cacheFile.Save();
+
+                if (File.Exists(genProject.FileName))
+                    File.Delete(genProject.FileName);
             }
             else
             {
