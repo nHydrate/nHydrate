@@ -46,6 +46,11 @@ namespace nHydrate.ModelManagement
             LoadEntities(modelFolder, results);
             LoadViews(modelFolder, results);
 
+            //Yaml
+            //var results2 = new DiskModelYaml();
+            //LoadEntitiesYaml(modelFolder, results2);
+            //LoadViewsYaml(modelFolder, results2);
+
             //Save the global model properties
             var globalFile = Path.Combine(modelFolder, "model.xml");
             if (File.Exists(globalFile))
@@ -94,33 +99,28 @@ namespace nHydrate.ModelManagement
             if (!Directory.Exists(folder)) return;
 
             //Load Entities
-            var fList = Directory.GetFiles(folder, "*.configuration.xml");
-            foreach (var f in fList)
+            foreach (var f in Directory.GetFiles(folder, "*.configuration.xml"))
             {
                 results.Entities.Add(GetObject<Entity.configuration>(f));
             }
 
             //Load Indexes
-            fList = Directory.GetFiles(folder, "*.indexes.xml");
-            foreach (var f in fList)
+            foreach (var f in Directory.GetFiles(folder, "*.indexes.xml"))
             {
                 results.Indexes.Add(GetObject<nHydrate.ModelManagement.Index.configuration>(f));
             }
 
             //Load Relations
-            fList = Directory.GetFiles(folder, "*.relations.xml");
-            foreach (var f in fList)
+            foreach (var f in Directory.GetFiles(folder, "*.relations.xml"))
             {
                 results.Relations.Add(GetObject<Relation.configuration>(f));
             }
 
             //Load Static Data
-            fList = Directory.GetFiles(folder, "*.staticdata.xml");
-            foreach (var f in fList)
+            foreach (var f in Directory.GetFiles(folder, "*.staticdata.xml"))
             {
                 results.StaticData.Add(GetObject<StaticData.configuration>(f));
             }
-
         }
 
         private static void LoadViews(string rootFolder, DiskModel results)
@@ -130,39 +130,73 @@ namespace nHydrate.ModelManagement
             //Load Views
             if (Directory.Exists(folder))
             {
-                var fList = Directory.GetFiles(folder, "*.configuration.xml");
-                foreach (var f in fList)
+                foreach (var f in Directory.GetFiles(folder, "*.configuration.xml"))
                 {
                     results.Views.Add(GetObject<nHydrate.ModelManagement.View.configuration>(f));
                 }
 
-                fList = Directory.GetFiles(folder, "*.sql");
-                foreach (var f in fList)
+                foreach (var f in Directory.GetFiles(folder, "*.sql"))
                 {
                     var fi = new FileInfo(f);
-                    if (fi.Name.ToLower().EndsWith(".sql"))
-                    {
-                        var name = fi.Name.Substring(0, fi.Name.Length - 4).ToLower();
-                        var item = results.Views.FirstOrDefault(x => x.name.ToLower() == name);
-                        if (item != null)
-                        {
-                            item.sql = File.ReadAllText(f);
-                        }
-                    }
-
+                    var name = fi.Name.Substring(0, fi.Name.Length - fi.Extension.Length).ToLower();
+                    var item = results.Views.FirstOrDefault(x => x.name.ToLower() == name);
+                    if (item != null)
+                        item.sql = File.ReadAllText(f);
                 }
             }
-
         }
 
-        private static T GetObject<T> (string fileName)
+        private static void LoadEntitiesYaml(string rootFolder, DiskModelYaml results)
         {
-            var reader =    new System.Xml.Serialization.XmlSerializer(typeof(T));
+            var folder = Path.Combine(rootFolder, FOLDER_ET);
+            if (!Directory.Exists(folder)) return;
+            var fList = Directory.GetFiles(folder, "*.yaml");
+            //Only use Yaml if there are actual files
+            if (!fList.Any()) return;
+
+            results.Entities.Clear();
+            foreach (var f in fList)
+                results.Entities.Add(GetYamlObject<EntityYaml>(f));
+        }
+
+        private static void LoadViewsYaml(string rootFolder, DiskModelYaml results)
+        {
+            var folder = Path.Combine(rootFolder, FOLDER_VW);
+            if (!Directory.Exists(folder)) return;
+            var fList = Directory.GetFiles(folder, "*.yaml");
+            //Only use Yaml if there are actual files
+            if (!fList.Any()) return;
+
+            results.Views.Clear();
+            foreach (var f in fList)
+                results.Views.Add(GetYamlObject<ViewYaml>(f));
+
+            foreach (var f in Directory.GetFiles(folder, "*.sql"))
+            {
+                var fi = new FileInfo(f);
+                var name = fi.Name.Substring(0, fi.Name.Length - fi.Extension.Length).ToLower();
+                var item = results.Views.FirstOrDefault(x => x.Name.ToLower() == name);
+                if (item != null)
+                    item.Sql = File.ReadAllText(f);
+            }
+        }
+
+        private static T GetObject<T>(string fileName)
+        {
+            var reader = new System.Xml.Serialization.XmlSerializer(typeof(T));
             using (var file = new System.IO.StreamReader(fileName))
             {
-                return  (T)reader.Deserialize(file);
+                return (T)reader.Deserialize(file);
             }
+        }
 
+        private static T GetYamlObject<T>(string fileName)
+        {
+            var serializer = new YamlDotNet.Serialization.DeserializerBuilder()
+                   .WithTypeConverter(new SystemTypeTypeConverter())
+                   .Build();
+            var yaml = File.ReadAllText(fileName);
+            return serializer.Deserialize<T>(yaml);
         }
 
         public static void Save(string rootFolder, string modelName, DiskModel model)
@@ -173,6 +207,10 @@ namespace nHydrate.ModelManagement
             var generatedFileList = new List<string>();
             SaveViews(modelFolder, model, generatedFileList); //must come before entities
             SaveEntities(modelFolder, model, generatedFileList);
+
+            //Yaml
+            //SaveViewsYaml(modelFolder, model, generatedFileList); //must come before entities
+            //SaveEntitiesYaml(modelFolder, model, generatedFileList);
 
             //Save the global model properties
             RemoveNullStrings(model.ModelProperties);
@@ -220,8 +258,134 @@ namespace nHydrate.ModelManagement
                 SaveObject(obj, f, generatedFileList);
             }
 
-            WriteReadMeFile(folder, generatedFileList);
 
+            //YAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAML
+            //Entities
+            foreach (var obj in model.Entities)
+            {
+                var newEntity = new EntityYaml
+                {
+                    AllowCreateAudit = obj.allowcreateaudit != 0,
+                    AllowModifyAudit = obj.allowmodifyaudit != 0,
+                    AllowTimestamp = obj.allowtimestamp != 0,
+                    CodeFacade = obj.codefacade,
+                    GeneratesDoubleDerived = obj.generatesdoublederived != 0,
+                    Id = obj.id,
+                    Immutable = obj.immutable != 0,
+                    IsAssociative = obj.isassociative != 0,
+                    IsTenant = obj.isTenant != 0,
+                    Name = obj.name,
+                    Schema = obj.schema,
+                    Summary = obj.summary,
+                    Identity = obj.typedentity,
+                };
+
+                //Fields
+                foreach (var ff in obj.fieldset.OrderBy(x => x.sortorder))
+                {
+                    newEntity.Fields.Add(new EntityFieldYaml
+                    {
+                        CodeFacade = ff.codefacade,
+                        DataFormatString = ff.dataformatstring,
+                        Datatype = ff.datatype.ToEnum<Utilities.DataTypeConstants>(),
+                        Default = ff.@default,
+                        DefaultIsFunc = ff.defaultisfunc != 0,
+                        Formula = ff.formula,
+                        Id = ff.id,
+                        Identity = ff.identity,
+                        IsCalculated = ff.Iscalculated != 0,
+                        IsIndexed = ff.isindexed != 0,
+                        IsPrimaryKey = ff.isprimarykey != 0,
+                        IsReadonly = ff.isreadonly != 0,
+                        IsUnique = ff.isunique != 0,
+                        Length = ff.length,
+                        Name = ff.name,
+                        Nullable = ff.nullable != 0,
+                        Obsolete = ff.obsolete != 0,
+                        Scale = ff.scale,
+                        Summary = ff.summary,
+                    });
+                }
+
+                //Relations
+                foreach (var rr in model.Relations.Where(x => x.id == obj.id))
+                {
+                    foreach(var relation in rr.relation)
+                    {
+                        var entity = model.Entities.FirstOrDefault(x => x.id == rr.id);
+                        var entity2 = model.Entities.FirstOrDefault(x => x.id == rr.relation[0].childid);
+                        var newRelation = new RelationYaml
+                        {
+                            ChildEntity = entity2.name,
+                            ChildId = entity2.id,
+                        };
+                        newEntity.Relations.Add(newRelation);
+                        newRelation.IsEnforced = rr.relation[0].isenforced != 0;
+                        newRelation.DeleteAction = rr.relation[0].deleteaction;
+                        newRelation.RoleName = rr.relation[0].rolename;
+                        newRelation.Summary = rr.relation[0].summary;
+                        foreach (var fsi in rr.relation[0].relationfieldset)
+                        {
+                            var newRelationField = new RelationFieldYaml
+                            {
+                                Id = fsi.id,
+                                SourceFieldId = fsi.sourcefieldid,
+                                SourceFieldName = entity.fieldset.FirstOrDefault(x => x.id == fsi.sourcefieldid)?.name,
+                                TargetFieldId = fsi.targetfieldid,
+                                TargetFieldName = entity2.fieldset.FirstOrDefault(x => x.id == fsi.targetfieldid)?.name,
+                            };
+                            newRelation.Fields.Add(newRelationField);
+                        }
+                    }
+                }
+
+                //Indexes
+                foreach (var ii in model.Indexes.Where(x => x.id == obj.id))
+                {
+                    foreach (var ifield in ii.index)
+                    {
+                        var newIndex = newEntity.Indexes.AddItem(new IndexYaml
+                        {
+                            Clustered = ifield.clustered != 0,
+                            Id = ifield.id,
+                            ImportedName = ifield.importedname,
+                            IndexType = (Utilities.IndexTypeConstants)ifield.indextype,
+                            IsUnique = ifield.isunique != 0,
+                            Summary = ifield.summary,
+                        });
+
+                        foreach (var i2 in ifield.indexcolumnset.OrderBy(x => x.sortorder))
+                        {
+                            newIndex.Fields.AddItem(new IndexFieldYaml
+                            {
+                                Ascending = i2.ascending != 0,
+                                FieldId = i2.fieldid,
+                                Id = i2.id,
+                            });
+                        }
+                    }
+                }
+
+                //Static data
+                foreach (var sd in model.StaticData.Where(x => x.id == obj.id))
+                {
+                    foreach (var dd in sd.data.OrderBy(x => x.orderkey))
+                    {
+                        newEntity.StaticData.AddItem(new StaticDataYaml
+                        {
+                            Key = dd.columnkey,
+                            Value = dd.value
+                        });
+                    }
+                }
+
+                SaveYamlObject(newEntity, Path.Combine(folder, obj.name + ".yaml"), generatedFileList);
+            }
+            //YAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAML
+
+
+
+            WriteReadMeFile(folder, generatedFileList);
         }
 
         private static void SaveViews(string rootFolder, DiskModel model, List<string> generatedFileList)
@@ -239,7 +403,214 @@ namespace nHydrate.ModelManagement
                 WriteFileIfNeedBe(f1, obj.sql, new List<string>());
             }
 
+            //YAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAML
+            //Entities
+            foreach (var obj in model.Views)
+            {
+                var newEntity = new ViewYaml
+                {
+                    CodeFacade = obj.codefacade,
+                    GeneratesDoubleDerived = obj.generatesdoublederived != 0,
+                    Id = obj.id,
+                    Sql = obj.sql,
+                    Name = obj.name,
+                    Schema = obj.schema,
+                    Summary = obj.summary,
+                };
+
+                //Fields
+                foreach (var ff in obj.fieldset)
+                {
+                    newEntity.Fields.Add(new ViewFieldYaml
+                    {
+                        CodeFacade = ff.codefacade,
+                        Datatype = ff.datatype.ToEnum<Utilities.DataTypeConstants>(),
+                        Default = ff.@default,
+                        Id = ff.id,
+                        IsPrimaryKey = ff.isprimarykey != 0,
+                        Length = ff.length,
+                        Name = ff.name,
+                        Nullable = ff.nullable != 0,
+                        Scale = ff.scale,
+                        Summary = ff.summary,
+                    });
+                }
+
+                SaveYamlObject(newEntity, Path.Combine(folder, obj.name + ".yaml"), generatedFileList);
+            }
+
+            //YAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAML
+
             WriteReadMeFile(folder, generatedFileList);
+        }
+
+        private static void SaveEntitiesYaml(string rootFolder, DiskModel model, List<string> generatedFileList)
+        {
+            var folder = Path.Combine(rootFolder, FOLDER_ET);
+            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+            //Entities
+            foreach (var obj in model.Entities)
+            {
+                var newEntity = new EntityYaml
+                {
+                    AllowCreateAudit = obj.allowcreateaudit != 0,
+                    AllowModifyAudit = obj.allowmodifyaudit != 0,
+                    AllowTimestamp = obj.allowtimestamp != 0,
+                    CodeFacade = obj.codefacade,
+                    GeneratesDoubleDerived = obj.generatesdoublederived != 0,
+                    Id = obj.id,
+                    Immutable = obj.immutable != 0,
+                    IsAssociative = obj.isassociative != 0,
+                    IsTenant = obj.isTenant != 0,
+                    Name = obj.name,
+                    Schema = obj.schema,
+                    Summary = obj.summary,
+                    Identity = obj.typedentity,
+                };
+
+                //Fields
+                foreach (var ff in obj.fieldset.OrderBy(x => x.sortorder))
+                {
+                    newEntity.Fields.Add(new EntityFieldYaml
+                    {
+                        CodeFacade = ff.codefacade,
+                        DataFormatString = ff.dataformatstring,
+                        Datatype = ff.datatype.ToEnum<Utilities.DataTypeConstants>(),
+                        Default = ff.@default,
+                        DefaultIsFunc = ff.defaultisfunc != 0,
+                        Formula = ff.formula,
+                        Id = ff.id,
+                        Identity = ff.identity,
+                        IsCalculated = ff.Iscalculated != 0,
+                        IsIndexed = ff.isindexed != 0,
+                        IsPrimaryKey = ff.isprimarykey != 0,
+                        IsReadonly = ff.isreadonly != 0,
+                        IsUnique = ff.isunique != 0,
+                        Length = ff.length,
+                        Name = ff.name,
+                        Nullable = ff.nullable != 0,
+                        Obsolete = ff.obsolete != 0,
+                        Scale = ff.scale,
+                        Summary = ff.summary,
+                    });
+                }
+
+                //Relations
+                foreach (var rr in model.Relations.Where(x => x.id == obj.id))
+                {
+                    foreach (var relation in rr.relation)
+                    {
+                        var entity = model.Entities.FirstOrDefault(x => x.id == rr.id);
+                        var entity2 = model.Entities.FirstOrDefault(x => x.id == rr.relation[0].childid);
+                        var newRelation = new RelationYaml
+                        {
+                            ChildEntity = entity2.name,
+                            ChildId = entity2.id,
+                        };
+                        newEntity.Relations.Add(newRelation);
+                        newRelation.IsEnforced = rr.relation[0].isenforced != 0;
+                        newRelation.DeleteAction = rr.relation[0].deleteaction;
+                        newRelation.RoleName = rr.relation[0].rolename;
+                        newRelation.Summary = rr.relation[0].summary;
+                        foreach (var fsi in rr.relation[0].relationfieldset)
+                        {
+                            var newRelationField = new RelationFieldYaml
+                            {
+                                Id = fsi.id,
+                                SourceFieldId = fsi.sourcefieldid,
+                                SourceFieldName = entity.fieldset.FirstOrDefault(x => x.id == fsi.sourcefieldid)?.name,
+                                TargetFieldId = fsi.targetfieldid,
+                                TargetFieldName = entity2.fieldset.FirstOrDefault(x => x.id == fsi.targetfieldid)?.name,
+                            };
+                            newRelation.Fields.Add(newRelationField);
+                        }
+                    }
+                }
+
+                //Indexes
+                foreach (var ii in model.Indexes.Where(x => x.id == obj.id))
+                {
+                    foreach (var ifield in ii.index)
+                    {
+                        var newIndex = newEntity.Indexes.AddItem(new IndexYaml
+                        {
+                            Clustered = ifield.clustered != 0,
+                            Id = ifield.id,
+                            ImportedName = ifield.importedname,
+                            IndexType = (Utilities.IndexTypeConstants)ifield.indextype,
+                            IsUnique = ifield.isunique != 0,
+                            Summary = ifield.summary,
+                        });
+
+                        foreach (var i2 in ifield.indexcolumnset.OrderBy(x => x.sortorder))
+                        {
+                            newIndex.Fields.AddItem(new IndexFieldYaml
+                            {
+                                Ascending = i2.ascending != 0,
+                                FieldId = i2.fieldid,
+                                Id = i2.id,
+                            });
+                        }
+                    }
+                }
+
+                //Static data
+                foreach (var sd in model.StaticData.Where(x => x.id == obj.id))
+                {
+                    foreach (var dd in sd.data.OrderBy(x => x.orderkey))
+                    {
+                        newEntity.StaticData.AddItem(new StaticDataYaml
+                        {
+                            Key = dd.columnkey,
+                            Value = dd.value
+                        });
+                    }
+                }
+
+                SaveYamlObject(newEntity, Path.Combine(folder, obj.name + ".yaml"), generatedFileList);
+            }
+        }
+
+        private static void SaveViewsYaml(string rootFolder, DiskModel model, List<string> generatedFileList)
+        {
+            var folder = Path.Combine(rootFolder, FOLDER_VW);
+            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+            //Views
+            foreach (var obj in model.Views)
+            {
+                var newView = new ViewYaml
+                {
+                    CodeFacade = obj.codefacade,
+                    GeneratesDoubleDerived = obj.generatesdoublederived != 0,
+                    Id = obj.id,
+                    Sql = obj.sql,
+                    Name = obj.name,
+                    Schema = obj.schema,
+                    Summary = obj.summary,
+                };
+
+                //Fields
+                foreach (var ff in obj.fieldset)
+                {
+                    newView.Fields.Add(new ViewFieldYaml
+                    {
+                        CodeFacade = ff.codefacade,
+                        Datatype = ff.datatype.ToEnum<Utilities.DataTypeConstants>(),
+                        Default = ff.@default,
+                        Id = ff.id,
+                        IsPrimaryKey = ff.isprimarykey != 0,
+                        Length = ff.length,
+                        Name = ff.name,
+                        Nullable = ff.nullable != 0,
+                        Scale = ff.scale,
+                        Summary = ff.summary,
+                    });
+                }
+
+                SaveYamlObject(newView, Path.Combine(folder, obj.name + ".yaml"), generatedFileList);
+            }
         }
 
         private static void SaveObject<T>(T obj, string fileName, List<string> generatedFileList)
@@ -251,6 +622,18 @@ namespace nHydrate.ModelManagement
             {
                 writer.Serialize(wfile, obj, ns);
             }
+            generatedFileList.Add(fileName);
+        }
+
+        private static void SaveYamlObject<T>(T obj, string fileName, List<string> generatedFileList)
+        {
+            var serializer = new YamlDotNet.Serialization.SerializerBuilder()
+                    .WithTypeConverter(new SystemTypeTypeConverter())
+                    .Build();
+
+            var yaml = serializer.Serialize(obj);
+            generatedFileList.Add(fileName);
+            File.WriteAllText(fileName, yaml);
             generatedFileList.Add(fileName);
         }
 
