@@ -140,8 +140,6 @@ namespace PROJECTNAMESPACE
                 }
 
                 setup.ConnectionString = GetSetting(commandParams, PARAMKEYS_APPDB, string.Empty);
-                if (commandParams.Count(x => PARAMKEYS_APPDB.Contains(x.Key)) > 1)
-                    throw new Exception("The connection string was specified more than once.");
 
                 //Determine if calling as a script generator
                 if (commandParams.ContainsKey(PARAMKEYS_SCRIPT))
@@ -149,8 +147,8 @@ namespace PROJECTNAMESPACE
                     var scriptAction = commandParams[PARAMKEYS_SCRIPT].ToLower();
                     switch (scriptAction)
                     {
-                        case "versioned":
-                        case "unversioned":
+                        case "versioned": break;
+                        case "unversioned": break;
                         default:
                             throw new Exception("The script action must be 'versioned' or 'unversioned'.");
                     }
