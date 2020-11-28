@@ -26,14 +26,14 @@ namespace PROJECTNAMESPACE
     public partial class DatabaseInstaller : Installer
     {
         #region Members
-        private string[] PARAMKEYS_APPDB = new string[] { "connectionstring" };
-        private string[] PARAMKEYS_HELP = new string[] { "showhelp" };
+        private string PARAMKEYS_APPDB = "connectionstring";
+        private string PARAMKEYS_HELP = "showhelp";
         private string PARAMKEYS_SCRIPT = "script";
         private string PARAMKEYS_SCRIPTFILE = "scriptfile";
         private string PARAMKEYS_SCRIPTFILEACTION = "scriptfileaction";
         private string PARAMKEYS_DBVERSION = "dbversion";
         private string PARAMKEYS_VERSIONWARN = "acceptwarnings";
-        private string[] PARAMKEYS_TRAN = new string[] { "tranaction", "transaction" };
+        private string PARAMKEYS_TRAN = "transaction";
         private string PARAMKEYS_SKIPNORMALIZE = "skipnormalize";
         private string PARAMKEYS_HASH = "usehash";
         private string PARAMKEYS_CHECKONLY = "checkonly";
@@ -52,8 +52,8 @@ namespace PROJECTNAMESPACE
         private List<System.Type> GetDatabaseActions()
         {
             return System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
-                 .Where(x => typeof(IDatabaseAction).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
-                 .ToList();
+                  .Where(x => typeof(IDatabaseAction).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
+                  .ToList();
         }
 
         #region Install
@@ -63,10 +63,14 @@ namespace PROJECTNAMESPACE
         /// </summary>
         public override void Install(System.Collections.IDictionary stateSaver)
         {
-            base.Install(stateSaver);
+            //base.Install(stateSaver);
+            var commandParams = stateSaver as Dictionary<string, string>;
 
-            var commandParams = GetCommandLineParameters();
-            OverrideEnvironmentalVariables(ref commandParams);
+            foreach (var tt in GetDatabaseActions())
+            {
+                var action = Activator.CreateInstance(tt) as IDatabaseAction;
+                action.Execute(commandParams);
+            }
 
             var paramUICount = 0;
             var setup = new InstallSetup();
@@ -321,110 +325,28 @@ namespace PROJECTNAMESPACE
         #endregion
 
         #region Helpers
-
-        private bool GetSetting(Dictionary<string, string> commandParams, string[] keys, bool defaultValue)
+        internal static bool GetSetting(Dictionary<string, string> commandParams, string key, bool defaultValue)
         {
-            foreach (var s in keys)
+            if (commandParams.ContainsKey(key))
             {
-                if (commandParams.ContainsKey(s))
-                {
-                    if (commandParams[s] == "true" || commandParams[s] == "1")
-                        return true;
-                    else if (commandParams[s] == "false" || commandParams[s] == "0")
-                        return false;
-                    bool v;
-                    if (bool.TryParse(commandParams[s], out v))
-                        return v;
-                    return defaultValue;
-                }
+                if (commandParams[key] == "true" || commandParams[key] == "1")
+                    return true;
+                else if (commandParams[key] == "false" || commandParams[key] == "0")
+                    return false;
+                bool v;
+                if (bool.TryParse(commandParams[key], out v))
+                    return v;
+                return defaultValue;
             }
             return defaultValue;
         }
 
-        private string GetSetting(Dictionary<string, string> commandParams, string[] keys, string defaultValue)
+        internal static string GetSetting(Dictionary<string, string> commandParams, string key, string defaultValue)
         {
-            var retVal = defaultValue;
-            foreach (string s in keys)
-            {
-                if (commandParams.ContainsKey(s))
-                {
-                    retVal = commandParams[s];
-                    break;
-                }
-            }
-            return retVal;
+            if (commandParams.ContainsKey(key))
+                return commandParams[key];
+            return defaultValue;
         }
-
-        private Dictionary<string, string> GetCommandLineParameters()
-        {
-            var retVal = new Dictionary<string, string>();
-            var args = Environment.GetCommandLineArgs();
-
-            var loopcount = 0;
-            foreach (var arg in args.Skip(1))
-            {
-                var regEx = new Regex(@"^\s?[-/](\w+)(:(.*))?");
-                var regExMatch = regEx.Match(arg);
-                if (regExMatch.Success)
-                {
-                    retVal.Add(regExMatch.Groups[1].Value.ToLower(), regExMatch.Groups[3].Value);
-                }
-                else
-                {
-                    //var tmpKey = Guid.NewGuid().ToString();
-                    //if (loopcount == 0)
-                    //  tmpKey = EXENAME_KEY;
-                    //else if (loopcount == 1)
-                    //  tmpKey = DLLNAME_KEY;
-                }
-                loopcount++;
-            }
-
-            return retVal;
-        }
-
-        private void OverrideEnvOneOfArray(string[] possibleKeys, ref Dictionary<string, string> commandParams)
-        {
-            string envValue = null;
-            foreach (string currentKey in possibleKeys)
-            {
-                envValue = Environment.GetEnvironmentVariable(currentKey);
-                if (envValue != null)
-                {
-                    foreach (string keyToRemove in possibleKeys)
-                    {
-                        commandParams.Remove(keyToRemove);
-                    }
-                    commandParams.Add(possibleKeys[0], envValue);
-                    break;
-                }
-            }
-        }
-
-        private void OverrideEnv(string key, ref Dictionary<string, string> commandParams)
-        {
-            var envValue = Environment.GetEnvironmentVariable(key);
-            if (envValue != null && commandParams.ContainsKey(key))
-                commandParams[key] = envValue;
-            else if (envValue != null)
-                commandParams.Add(key, envValue);
-        }
-
-        private void OverrideEnvironmentalVariables(ref Dictionary<string, string> commandParams)
-        {
-            OverrideEnvOneOfArray(PARAMKEYS_APPDB, ref commandParams);
-            OverrideEnvOneOfArray(PARAMKEYS_HELP, ref commandParams);
-            OverrideEnvOneOfArray(PARAMKEYS_APPDB, ref commandParams);
-            OverrideEnvOneOfArray(PARAMKEYS_TRAN, ref commandParams);
-            OverrideEnv(PARAMKEYS_SCRIPTFILE, ref commandParams);
-            OverrideEnv(PARAMKEYS_SCRIPTFILEACTION, ref commandParams);
-            OverrideEnv(PARAMKEYS_DBVERSION, ref commandParams);
-            OverrideEnv(PARAMKEYS_VERSIONWARN, ref commandParams);
-            OverrideEnv(PARAMKEYS_SKIPNORMALIZE, ref commandParams);
-            OverrideEnv(PARAMKEYS_HASH, ref commandParams);
-            OverrideEnv(PARAMKEYS_CHECKONLY, ref commandParams);
-        }
-
         #endregion
 
         #region ShowHelp
@@ -436,14 +358,14 @@ namespace PROJECTNAMESPACE
             var sb = new StringBuilder();
             sb.AppendLine("Updates a Postgres database");
             sb.AppendLine();
-            sb.AppendLine("InstallUtil.exe PROJECTNAMESPACE.dll [/connectionstring:connectionstring] [/tranaction:true|false] [/skipnormalize] [/scriptfile:filename] [/scriptfileaction:append] [/checkonly] [/usehash] [/acceptwarnings:all|none|new|changed]");
+            sb.AppendLine("InstallUtil.exe PROJECTNAMESPACE.dll [/connectionstring:connectionstring] [/transaction:true|false] [/skipnormalize] [/scriptfile:filename] [/scriptfileaction:append] [/checkonly] [/usehash] [/acceptwarnings:all|none|new|changed]");
             sb.AppendLine();
             sb.AppendLine("Providing no parameters will display the default UI.");
             sb.AppendLine();
             sb.AppendLine("/connectionstring:\"connectionstring\"");
             sb.AppendLine("/Specifies the connection string to the upgrade database");
             sb.AppendLine();
-            sb.AppendLine("/tranaction:[true|false]");
+            sb.AppendLine("/transaction:[true|false]");
             sb.AppendLine("Specifies whether to use a database transaction. Outside of a transaction there is no rollback functionality if an error occurs! Default is true.");
             sb.AppendLine();
             sb.AppendLine("/skipnormalize");

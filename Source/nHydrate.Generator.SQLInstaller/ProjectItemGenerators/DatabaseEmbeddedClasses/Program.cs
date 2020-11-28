@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace PROJECTNAMESPACE
 {
@@ -27,18 +29,26 @@ namespace PROJECTNAMESPACE
             IConfiguration Configuration = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                     .AddJsonFile("appsettings.development.json", optional: true, reloadOnChange: true)
-                    .AddEnvironmentVariables()
                     .AddCommandLine(args)
+                    .AddEnvironmentVariables()
                     .Build();
+
+            var allValues = Configuration.GetChildren().Select(x => new { x.Key, x.Value }).ToDictionary(x => x.Key.ToString(), x => x.Value?.ToString());
 
             Log.Logger = new LoggerConfiguration()
              .ReadFrom.Configuration(Configuration)
              .CreateLogger();
 
             Log.Information("Starting Install...");
-            var stateSaver = new Dictionary<object, object>();
-            var installer = new DatabaseInstaller();
-            installer.Install(stateSaver);
+            try
+            {
+                var installer = new DatabaseInstaller();
+                installer.Install(allValues);
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Install Exception");
+            }
             Log.Information("Install Complete");
         }
     }
