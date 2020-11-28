@@ -7,7 +7,14 @@ using YamlDotNet.Serialization;
 
 namespace nHydrate.ModelManagement
 {
-    internal class EntityYaml
+    public class DiskModelYaml
+    {
+        public List<EntityYaml> Entities { get; internal set; } = new List<EntityYaml>();
+        public List<ViewYaml> Views { get; internal set; } = new List<ViewYaml>();
+        public ModelProperties ModelProperties { get; set; } = new ModelProperties();
+    }
+
+    public class EntityYaml
     {
         public string Name { get; set; }
      
@@ -30,14 +37,12 @@ namespace nHydrate.ModelManagement
         [DefaultValue(false)]
         public bool IsAssociative { get; set; }
 
-        public string Typedentity { get; set; }
+        public string Identity { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue("")]
         public string Schema { get; set; }
    
-        public string Type { get; set; }
-
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue("")]
         public string Summary { get; set; }
@@ -55,9 +60,11 @@ namespace nHydrate.ModelManagement
         public List<RelationYaml> Relations { get; set; } = new List<RelationYaml>();
 
         public List<IndexYaml> Indexes { get; set; } = new List<IndexYaml>();
+
+        public List<StaticDataYaml> StaticData { get; set; } = new List<StaticDataYaml>();
     }
 
-    internal class EntityFieldYaml
+    public class EntityFieldYaml
     {
         public string Id { get; set; }
         
@@ -110,10 +117,6 @@ namespace nHydrate.ModelManagement
         public int Scale { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
-        [DefaultValue(0)]
-        public int SortOrder { get; set; }
-
-        [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(false)]
         public bool IsReadonly { get; set; }
 
@@ -126,7 +129,7 @@ namespace nHydrate.ModelManagement
         public bool Obsolete { get; set; }
     }
 
-    internal class RelationYaml
+    public class RelationYaml
     {
         public string ChildEntity { get; set; }
         
@@ -149,7 +152,7 @@ namespace nHydrate.ModelManagement
         public List<RelationFieldYaml> Fields { get; set; } = new List<RelationFieldYaml>();
     }
 
-    internal class RelationFieldYaml
+    public class RelationFieldYaml
     {
         public string Id { get; set; }
         
@@ -162,7 +165,7 @@ namespace nHydrate.ModelManagement
         public string TargetFieldName { get; set; }
     }
 
-    internal class IndexYaml
+    public class IndexYaml
     {
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(false)]
@@ -189,7 +192,7 @@ namespace nHydrate.ModelManagement
         public List<IndexFieldYaml> Fields { get; set; } = new List<IndexFieldYaml>();
     }
 
-    internal class IndexFieldYaml
+    public class IndexFieldYaml
     {
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(true)]
@@ -198,8 +201,70 @@ namespace nHydrate.ModelManagement
         public string FieldId { get; set; }
         
         public string Id { get; set; }
+    }
 
-        public int SortOrder { get; set; }
+    public class StaticDataYaml
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
+    }
+
+    public class ViewYaml
+    {
+        public string Name { get; set; }
+
+        public string Id { get; set; }
+
+        [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        [DefaultValue("")]
+        public string CodeFacade { get; set; }
+
+        [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        [DefaultValue("")]
+        public string Schema { get; set; }
+
+        [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        [DefaultValue("")]
+        public string Summary { get; set; }
+
+        public string Sql { get; set; }
+
+        [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        [DefaultValue(false)]
+        public bool GeneratesDoubleDerived { get; set; }
+
+        public List<ViewFieldYaml> Fields { get; set; } = new List<ViewFieldYaml>();
+    }
+
+    public class ViewFieldYaml
+    {
+        public string Id { get; set; }
+
+        public string Name { get; set; }
+
+        public bool Nullable { get; set; }
+
+        public Utilities.DataTypeConstants Datatype { get; set; }
+
+        [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        [DefaultValue("")]
+        public string CodeFacade { get; set; }
+
+        [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        [DefaultValue(false)]
+        public bool IsPrimaryKey { get; set; }
+
+        [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        [DefaultValue("")]
+        public string Default { get; set; }
+
+        public int Length { get; set; }
+
+        public int Scale { get; set; }
+
+        [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        [DefaultValue("")]
+        public string Summary { get; set; }
     }
 
     internal class SystemTypeTypeConverter : IYamlTypeConverter

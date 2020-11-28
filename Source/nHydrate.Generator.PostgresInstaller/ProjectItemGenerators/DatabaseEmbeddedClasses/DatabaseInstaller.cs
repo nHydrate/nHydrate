@@ -26,17 +26,17 @@ namespace PROJECTNAMESPACE
     public partial class DatabaseInstaller : Installer
     {
         #region Members
-        private string PARAMKEYS_APPDB = "connectionstring";
-        private string PARAMKEYS_HELP = "showhelp";
-        private string PARAMKEYS_SCRIPT = "script";
-        private string PARAMKEYS_SCRIPTFILE = "scriptfile";
-        private string PARAMKEYS_SCRIPTFILEACTION = "scriptfileaction";
-        private string PARAMKEYS_DBVERSION = "dbversion";
-        private string PARAMKEYS_VERSIONWARN = "acceptwarnings";
-        private string PARAMKEYS_TRAN = "transaction";
-        private string PARAMKEYS_SKIPNORMALIZE = "skipnormalize";
-        private string PARAMKEYS_HASH = "usehash";
-        private string PARAMKEYS_CHECKONLY = "checkonly";
+        internal const string PARAMKEYS_APPDB = "connectionstring";
+        internal const string PARAMKEYS_HELP = "showhelp";
+        internal const string PARAMKEYS_SCRIPT = "script";
+        internal const string PARAMKEYS_SCRIPTFILE = "scriptfile";
+        internal const string PARAMKEYS_SCRIPTFILEACTION = "scriptfileaction";
+        internal const string PARAMKEYS_DBVERSION = "dbversion";
+        internal const string PARAMKEYS_VERSIONWARN = "acceptwarnings";
+        internal const string PARAMKEYS_TRAN = "transaction";
+        internal const string PARAMKEYS_SKIPNORMALIZE = "skipnormalize";
+        internal const string PARAMKEYS_HASH = "usehash";
+        internal const string PARAMKEYS_CHECKONLY = "checkonly";
         #endregion
 
         #region Constructor

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace nHydrate.ModelManagement
 {
-    internal static class Utilities
+    public static class Utilities
     {
         //Copy from Dsl
         public enum IndexTypeConstants
