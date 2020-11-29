@@ -42,7 +42,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.UnversionedUpgra
             sb.AppendLine("--Generated on " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             sb.AppendLine();
 
-            sb.AppendLine("--UNCOMMENT TO DROP ALL DEFAULTS IF NEEDED. IF THIS MODEL WAS IMPORTED FROM AN EXISTSING DATABASE THE MODEL WILL RECREATE ALL DEFAULTS WITH A GENERATED NAME.");
+            sb.AppendLine("--UNCOMMENT TO DROP ALL DEFAULTS IF NEEDED. IF THIS MODEL WAS IMPORTED FROM AN EXISTING DATABASE THE MODEL WILL RECREATE ALL DEFAULTS WITH A GENERATED NAME.");
             sb.AppendLine("--DROP ALL DEFAULTS");
             sb.AppendLine("--DECLARE @SqlCmd varchar(4000); SET @SqlCmd = ''");
             sb.AppendLine("--DECLARE @Cnt int; SET @Cnt = 0");

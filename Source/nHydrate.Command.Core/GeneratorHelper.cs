@@ -1,3 +1,4 @@
+using Microsoft.Build.Evaluation;
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.ProjectItemGenerators;
@@ -5,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 
 namespace nHydrate.Command.Core
 {
@@ -73,12 +75,15 @@ namespace nHydrate.Command.Core
         {
             var name = e.ProjectItemName;
             if (name.StartsWith(Path.DirectorySeparatorChar)) name = name.Substring(1, name.Length - 1);
+            var pathsRelative = new List<string>();
             var paths = new List<string>();
+
             paths.AddRange(_outputFolder.Split(Path.DirectorySeparatorChar));
             paths.AddRange(e.ProjectName.Split(Path.DirectorySeparatorChar));
             if (!string.IsNullOrEmpty(e.ParentItemName) && !e.ParentItemName.Contains("."))
             {
                 paths.AddRange(e.ParentItemName.Split(Path.DirectorySeparatorChar));
+                pathsRelative.AddRange(e.ParentItemName.Split(Path.DirectorySeparatorChar));
             }
             else if (!string.IsNullOrEmpty(e.ParentItemName) && e.ParentItemName.Contains("."))
             {
@@ -87,9 +92,11 @@ namespace nHydrate.Command.Core
                 {
                     arr.RemoveAt(arr.Count - 1);
                     paths.AddRange(arr);
+                    pathsRelative.AddRange(arr);
                 }
             }
             paths.AddRange(name.Split(Path.DirectorySeparatorChar));
+            pathsRelative.AddRange(name.Split(Path.DirectorySeparatorChar));
             var fileName = System.IO.Path.Combine(paths.ToArray());
 
             if (!File.Exists(fileName) || e.Overwrite)
@@ -107,6 +114,57 @@ namespace nHydrate.Command.Core
                     File.WriteAllText(fileName, e.ProjectItemContent);
                 }
             }
+
+            //Embed the file in the project if need be
+            if (e.Properties.ContainsKey("BuildAction") && (int)e.Properties["BuildAction"] == 3)
+            {
+                var projectFileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, $"{e.ProjectName}.csproj");
+                if (File.Exists(projectFileName))
+                {
+                    var includeFile = System.IO.Path.Combine(pathsRelative.ToArray());
+
+                    var document = new XmlDocument();
+                    document.PreserveWhitespace = true;
+                    document.Load(projectFileName);
+                    var groups = document.DocumentElement.SelectNodes("ItemGroup");
+
+                    //Ensure file is not already embedded
+                    if (document.DocumentElement.SelectSingleNode($"ItemGroup/EmbeddedResource[@Include='{includeFile}']") == null)
+                    {
+                        var whiteSpace = "  ";
+                        XmlNode targetGroup = null;
+                        foreach (XmlElement g in groups)
+                        {
+                            //Find the first "ItemGroup" with a "EmbeddedResource" item
+                            //This will be the one to which we add the new embedded file
+                            if (g.SelectSingleNode("EmbeddedResource") != null)
+                            {
+                                if (g.FirstChild.NodeType == XmlNodeType.Whitespace)
+                                {
+                                    if (g.FirstChild.Value.Replace("\r", "").Replace("\n", "").Contains('\t'))
+                                        whiteSpace = "\t";
+                                }
+                                targetGroup = g;
+                                break;
+                            }
+                        }
+
+                        //If there is no group create a new one
+                        if (targetGroup == null)
+                            targetGroup = document.DocumentElement.AppendChild(document.CreateElement("ItemGroup"));
+
+                        //Add whitespace and the item
+                        targetGroup.AppendChild(document.CreateSignificantWhitespace(whiteSpace));
+                        var node = targetGroup.AppendChild(document.CreateElement("EmbeddedResource"));
+                        var attr = node.Attributes.Append(document.CreateAttribute("Include"));
+                        attr.Value = includeFile;
+                        targetGroup.AppendChild(document.CreateSignificantWhitespace("\r\n" + whiteSpace));
+
+                        document.Save(projectFileName);
+                    }
+                }
+            }
+
         }
 
         protected override void projectItemGenerator_ProjectItemGenerationError(object sender, ProjectItemGeneratedErrorEventArgs e)
