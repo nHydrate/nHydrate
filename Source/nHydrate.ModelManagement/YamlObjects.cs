@@ -35,10 +35,12 @@ namespace nHydrate.ModelManagement
         public bool Immutable { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        [DefaultValue(TypedTableConstants.None)]
+        public TypedTableConstants TypedTable { get; set; }
+
+        [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(false)]
         public bool IsAssociative { get; set; }
-
-        public IdentityTypeConstants Identity { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue("")]
@@ -63,6 +65,8 @@ namespace nHydrate.ModelManagement
         public List<IndexYaml> Indexes { get; set; } = new List<IndexYaml>();
 
         public List<StaticDataYaml> StaticData { get; set; } = new List<StaticDataYaml>();
+
+        public override string ToString() => this.Name;
     }
 
     public class EntityFieldYaml
@@ -75,7 +79,7 @@ namespace nHydrate.ModelManagement
 
         public bool Nullable { get; set; }
 
-        public string Identity { get; set; }
+        public IdentityTypeConstants Identity { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue("")]
@@ -128,11 +132,15 @@ namespace nHydrate.ModelManagement
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(false)]
         public bool Obsolete { get; set; }
+
+        public override string ToString() => this.Name;
     }
 
     public class RelationYaml
     {
         public string ChildEntity { get; set; }
+
+        public string Id { get; set; }
 
         public string ChildId { get; set; }
 
@@ -202,8 +210,10 @@ namespace nHydrate.ModelManagement
 
     public class StaticDataYaml
     {
-        public string Key { get; set; }
+        public string ColumnKey { get; set; }
         public string Value { get; set; }
+        public int OrderKey { get; set; }
+        public override string ToString() => this.ColumnKey;
     }
 
     public class ViewYaml
@@ -231,6 +241,8 @@ namespace nHydrate.ModelManagement
         public bool GeneratesDoubleDerived { get; set; }
 
         public List<ViewFieldYaml> Fields { get; set; } = new List<ViewFieldYaml>();
+
+        public override string ToString() => this.Name;
     }
 
     public class ViewFieldYaml
@@ -262,6 +274,8 @@ namespace nHydrate.ModelManagement
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue("")]
         public string Summary { get; set; }
+
+        public override string ToString() => this.Name;
     }
 
     internal class SystemTypeTypeConverter : IYamlTypeConverter

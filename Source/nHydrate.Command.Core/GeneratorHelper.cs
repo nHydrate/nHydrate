@@ -1,4 +1,3 @@
-using Microsoft.Build.Evaluation;
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.ProjectItemGenerators;
