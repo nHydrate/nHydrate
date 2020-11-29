@@ -46,12 +46,7 @@ namespace nHydrate.ModelManagement
             LoadEntities(modelFolder, results);
             LoadViews(modelFolder, results);
 
-            //Yaml
-            //var results2 = new DiskModelYaml();
-            //LoadEntitiesYaml(modelFolder, results2);
-            //LoadViewsYaml(modelFolder, results2);
-
-            //Save the global model properties
+            //Load the global model properties
             var globalFile = Path.Combine(modelFolder, "model.xml");
             if (File.Exists(globalFile))
                 results.ModelProperties = GetObject<ModelProperties>(globalFile);
@@ -146,6 +141,59 @@ namespace nHydrate.ModelManagement
             }
         }
 
+        public static DiskModelYaml Load2(string rootFolder, string modelName, out bool wasLoaded)
+        {
+            wasLoaded = false;
+            var modelFile = Path.Combine(rootFolder, modelName);
+            var fi = new FileInfo(modelFile);
+            var showError = (fi.Length > 10); //New file is small so show no error if creating new
+
+            var folderName = modelName.Replace(".nhydrate", ".model");
+            var modelFolder = GetModelFolder(rootFolder, folderName);
+
+            //If the model folder does NOT exist
+            if (!Directory.Exists(modelFolder))
+            {
+                if (showError)
+                {
+                    throw new Exception("The model folder was not found.");
+                }
+            }
+            else wasLoaded = true;
+
+            //Remove old ZIP file. It is no longer used
+            try
+            {
+                var compressedFile = Path.Combine(rootFolder, modelName + ".zip");
+                if (File.Exists(compressedFile))
+                    File.Delete(compressedFile);
+            }
+            catch { }
+
+            var results = new DiskModelYaml();
+
+            //Determine if model is old XML style and convert
+            var oldModel = Load(rootFolder, modelName, out bool wasOldLoaded);
+            if (wasOldLoaded && !string.IsNullOrEmpty(oldModel.ModelProperties.Id))
+            {
+                ConvertEntitiesOld2Yaml(rootFolder, oldModel, results);
+                ConvertViewsOld2Yaml(rootFolder, oldModel, results);
+                results.ModelProperties = oldModel.ModelProperties;
+            }
+            else
+            {
+                LoadEntitiesYaml(modelFolder, results);
+                LoadViewsYaml(modelFolder, results);
+
+                //Save the global model properties
+                var globalFile = Path.Combine(modelFolder, "model.yaml");
+                if (File.Exists(globalFile))
+                    results.ModelProperties = GetYamlObject<ModelProperties>(globalFile);
+            }
+
+            return results;
+        }
+
         private static void LoadEntitiesYaml(string rootFolder, DiskModelYaml results)
         {
             var folder = Path.Combine(rootFolder, FOLDER_ET);
@@ -207,10 +255,6 @@ namespace nHydrate.ModelManagement
             var generatedFileList = new List<string>();
             SaveViews(modelFolder, model, generatedFileList); //must come before entities
             SaveEntities(modelFolder, model, generatedFileList);
-
-            //Yaml
-            //SaveViewsYaml(modelFolder, model, generatedFileList); //must come before entities
-            //SaveEntitiesYaml(modelFolder, model, generatedFileList);
 
             //Save the global model properties
             RemoveNullStrings(model.ModelProperties);
@@ -279,7 +323,51 @@ namespace nHydrate.ModelManagement
             WriteReadMeFile(folder, generatedFileList);
         }
 
-        private static void SaveEntitiesYaml(string rootFolder, DiskModel model, List<string> generatedFileList)
+        public static void Save2(string rootFolder, string modelName, DiskModelYaml model)
+        {
+            var folderName = modelName.Replace(".nhydrate", ".model");
+            var modelFolder = GetModelFolder(rootFolder, folderName);
+
+            var generatedFileList = new List<string>();
+            SaveViewsYaml(modelFolder, model, generatedFileList); //must come before entities
+            SaveEntitiesYaml(modelFolder, model, generatedFileList);
+
+            //Save the global model properties
+            SaveYamlObject(model.ModelProperties, Path.Combine(modelFolder, "model.yaml"), generatedFileList);
+
+            //Do not remove diagram file
+            generatedFileList.Add(Path.Combine(modelFolder, "diagram.xml"));
+
+            RemoveOrphans(modelFolder, generatedFileList);
+        }
+
+        private static void SaveEntitiesYaml(string rootFolder, DiskModelYaml model, List<string> generatedFileList)
+        {
+            var folder = Path.Combine(rootFolder, FOLDER_ET);
+            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+            //Save Entities
+            foreach (var obj in model.Entities)
+            {
+                var f = Path.Combine(folder, obj.Name + ".yaml");
+                SaveYamlObject(obj, f, generatedFileList);
+            }
+        }
+
+        private static void SaveViewsYaml(string rootFolder, DiskModelYaml model, List<string> generatedFileList)
+        {
+            var folder = Path.Combine(rootFolder, FOLDER_VW);
+            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+            //Save Views
+            foreach (var obj in model.Views)
+            {
+                var f = Path.Combine(folder, obj.Name + ".yaml");
+                SaveYamlObject(obj, f, generatedFileList);
+            }
+        }
+
+        private static void ConvertEntitiesOld2Yaml(string rootFolder, DiskModel model, DiskModelYaml model2)
         {
             var folder = Path.Combine(rootFolder, FOLDER_ET);
             if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
@@ -287,7 +375,7 @@ namespace nHydrate.ModelManagement
             //Entities
             foreach (var obj in model.Entities)
             {
-                var newEntity = new EntityYaml
+                var newEntity = model2.Entities.AddItem(new EntityYaml
                 {
                     AllowCreateAudit = obj.allowcreateaudit != 0,
                     AllowModifyAudit = obj.allowmodifyaudit != 0,
@@ -296,13 +384,13 @@ namespace nHydrate.ModelManagement
                     GeneratesDoubleDerived = obj.generatesdoublederived != 0,
                     Id = obj.id,
                     Immutable = obj.immutable != 0,
+                    TypedTable = obj.typedentity.ToEnum<Utilities.TypedTableConstants>(),
                     IsAssociative = obj.isassociative != 0,
                     IsTenant = obj.isTenant != 0,
                     Name = obj.name,
                     Schema = obj.schema,
                     Summary = obj.summary,
-                    Identity = obj.typedentity.ToEnum<Utilities.IdentityTypeConstants>(),
-                };
+                });
 
                 //Fields
                 foreach (var ff in obj.fieldset.OrderBy(x => x.sortorder))
@@ -316,7 +404,7 @@ namespace nHydrate.ModelManagement
                         DefaultIsFunc = ff.defaultisfunc != 0,
                         Formula = ff.formula,
                         Id = ff.id,
-                        Identity = ff.identity,
+                        Identity = ff.identity.ToEnum<Utilities.IdentityTypeConstants>(),
                         IsCalculated = ff.Iscalculated != 0,
                         IsIndexed = ff.isindexed != 0,
                         IsPrimaryKey = ff.isprimarykey != 0,
@@ -340,6 +428,7 @@ namespace nHydrate.ModelManagement
                         var entity2 = model.Entities.FirstOrDefault(x => x.id == rr.relation[0].childid);
                         var newRelation = new RelationYaml
                         {
+                            Id = relation.id,
                             ChildEntity = entity2.name,
                             ChildId = entity2.id,
                         };
@@ -397,17 +486,16 @@ namespace nHydrate.ModelManagement
                     {
                         newEntity.StaticData.AddItem(new StaticDataYaml
                         {
-                            Key = dd.columnkey,
-                            Value = dd.value
+                            ColumnKey = dd.columnkey,
+                            Value = dd.value,
+                            OrderKey = dd.orderkey,
                         });
                     }
                 }
-
-                SaveYamlObject(newEntity, Path.Combine(folder, obj.name + ".yaml"), generatedFileList);
             }
         }
 
-        private static void SaveViewsYaml(string rootFolder, DiskModel model, List<string> generatedFileList)
+        private static void ConvertViewsOld2Yaml(string rootFolder, DiskModel model, DiskModelYaml model2)
         {
             var folder = Path.Combine(rootFolder, FOLDER_VW);
             if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
@@ -415,7 +503,7 @@ namespace nHydrate.ModelManagement
             //Views
             foreach (var obj in model.Views)
             {
-                var newView = new ViewYaml
+                var newView = model2.Views.AddItem(new ViewYaml
                 {
                     CodeFacade = obj.codefacade,
                     GeneratesDoubleDerived = obj.generatesdoublederived != 0,
@@ -424,7 +512,7 @@ namespace nHydrate.ModelManagement
                     Name = obj.name,
                     Schema = obj.schema,
                     Summary = obj.summary,
-                };
+                });
 
                 //Fields
                 foreach (var ff in obj.fieldset)
@@ -443,8 +531,6 @@ namespace nHydrate.ModelManagement
                         Summary = ff.summary,
                     });
                 }
-
-                SaveYamlObject(newView, Path.Combine(folder, obj.name + ".yaml"), generatedFileList);
             }
         }
 

@@ -21,6 +21,14 @@ namespace nHydrate.ModelManagement
         }
 
         //Copy from Dsl
+        public enum TypedTableConstants
+        {
+            None,
+            DatabaseTable,
+            EnumOnly,
+        }
+
+        //Copy from Dsl
         public enum DataTypeConstants
         {
             BigInt,
