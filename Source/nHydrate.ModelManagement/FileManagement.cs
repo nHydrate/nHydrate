@@ -372,7 +372,6 @@ namespace nHydrate.ModelManagement
             var folder = Path.Combine(rootFolder, FOLDER_ET);
             if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 
-            //Entities
             foreach (var obj in model.Entities)
             {
                 var newEntity = model2.Entities.AddItem(new EntityYaml
@@ -392,7 +391,7 @@ namespace nHydrate.ModelManagement
                     Summary = obj.summary,
                 });
 
-                //Fields
+                #region Fields
                 foreach (var ff in obj.fieldset.OrderBy(x => x.sortorder))
                 {
                     newEntity.Fields.AddItem(new EntityFieldYaml
@@ -418,41 +417,9 @@ namespace nHydrate.ModelManagement
                         Summary = ff.summary,
                     });
                 }
+                #endregion
 
-                //Relations
-                foreach (var rr in model.Relations.Where(x => x.id == obj.id))
-                {
-                    foreach (var relation in rr.relation)
-                    {
-                        var entity = model.Entities.FirstOrDefault(x => x.id == rr.id);
-                        var entity2 = model.Entities.FirstOrDefault(x => x.id == rr.relation[0].childid);
-                        var newRelation = new RelationYaml
-                        {
-                            Id = relation.id,
-                            ChildEntity = entity2.name,
-                            ChildId = entity2.id,
-                        };
-                        newEntity.Relations.Add(newRelation);
-                        newRelation.IsEnforced = rr.relation[0].isenforced != 0;
-                        newRelation.DeleteAction = rr.relation[0].deleteaction;
-                        newRelation.RoleName = rr.relation[0].rolename;
-                        newRelation.Summary = rr.relation[0].summary;
-                        foreach (var fsi in rr.relation[0].relationfieldset)
-                        {
-                            var newRelationField = new RelationFieldYaml
-                            {
-                                Id = fsi.id,
-                                SourceFieldId = fsi.sourcefieldid,
-                                SourceFieldName = entity.fieldset.FirstOrDefault(x => x.id == fsi.sourcefieldid)?.name,
-                                TargetFieldId = fsi.targetfieldid,
-                                TargetFieldName = entity2.fieldset.FirstOrDefault(x => x.id == fsi.targetfieldid)?.name,
-                            };
-                            newRelation.Fields.Add(newRelationField);
-                        }
-                    }
-                }
-
-                //Indexes
+                #region Indexes
                 foreach (var ii in model.Indexes.Where(x => x.id == obj.id))
                 {
                     foreach (var ifield in ii.index)
@@ -478,8 +445,9 @@ namespace nHydrate.ModelManagement
                         }
                     }
                 }
+                #endregion
 
-                //Static data
+                #region Static data
                 foreach (var sd in model.StaticData.Where(x => x.id == obj.id))
                 {
                     foreach (var dd in sd.data.OrderBy(x => x.orderkey))
@@ -492,7 +460,47 @@ namespace nHydrate.ModelManagement
                         });
                     }
                 }
+                #endregion
             }
+
+            #region Relations (After all entities are loaded)
+
+            var qq = model.Relations.Where(x => model.Entities.Select(x => x.id).Contains(x.id)).ToList();
+            foreach (var obj in model.Entities)
+            {
+                var newEntity = model2.Entities.First(x => x.Id == obj.id);
+                foreach (var rr in model.Relations.Where(x => x.id == obj.id))
+                {
+                    foreach (var relation in rr.relation)
+                    {
+                        var entity = model.Entities.FirstOrDefault(x => x.id == rr.id);
+                        var entity2 = model.Entities.FirstOrDefault(x => x.id == relation.childid);
+                        var newRelation = newEntity.Relations.AddItem(new RelationYaml
+                        {
+                            Id = relation.id,
+                            ChildEntity = entity2.name,
+                            ChildId = entity2.id,
+                        });
+                        newRelation.IsEnforced = relation.isenforced != 0;
+                        newRelation.DeleteAction = relation.deleteaction;
+                        newRelation.RoleName = relation.rolename;
+                        newRelation.Summary = relation.summary;
+                        foreach (var fsi in relation.relationfieldset)
+                        {
+                            var newRelationField = new RelationFieldYaml
+                            {
+                                Id = fsi.id,
+                                SourceFieldId = fsi.sourcefieldid,
+                                SourceFieldName = entity.fieldset.FirstOrDefault(x => x.id == fsi.sourcefieldid)?.name,
+                                TargetFieldId = fsi.targetfieldid,
+                                TargetFieldName = entity2.fieldset.FirstOrDefault(x => x.id == fsi.targetfieldid)?.name,
+                            };
+                            newRelation.Fields.AddItem(newRelationField);
+                        }
+                    }
+                }
+            }
+            #endregion
         }
 
         private static void ConvertViewsOld2Yaml(string rootFolder, DiskModel model, DiskModelYaml model2)

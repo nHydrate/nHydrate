@@ -179,7 +179,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		{");
             foreach (var column in _item.GetColumns().Where(x => x.DataType.IsTextType()))
             {
-                var length = column.Length == 0 ? int.MaxValue : column.Length;
+                var length = column.Length == 0 ? "int.MaxValue" : $"{column.Length}";
                 sb.AppendLine($"			public const int {column.PascalName} = {length};");
             }
             sb.AppendLine("		}");
@@ -559,7 +559,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             sb.AppendLine($"		/// The navigation definition for walking {_item.PascalName}->" + childTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? "" : " (role: '" + otherRelation.PascalRoleName + "') (Multiplicity M:N)"));
                             sb.AppendLine("		/// </summary>");
                             // This was "protected internal" however there are times that a navigation property is needed
-                            sb.AppendLine($"		public virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {otherRelation.PascalRoleName}{childTable.PascalName}List" + "{ get; set; }");
+                            sb.AppendLine($"		public virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {otherRelation.PascalRoleName}{childTable.PascalName}List" + " { get; set; }");
                             sb.AppendLine();
 
                             sb.AppendLine("		/// <summary>");

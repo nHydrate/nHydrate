@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -13,6 +14,8 @@ namespace nHydrate.ModelManagement
         public List<EntityYaml> Entities { get; internal set; } = new List<EntityYaml>();
         public List<ViewYaml> Views { get; internal set; } = new List<ViewYaml>();
         public ModelProperties ModelProperties { get; set; } = new ModelProperties();
+
+        public int RelationCount { get { return this.Entities.SelectMany(x => x.Relations).Count(); } }
     }
 
     public class EntityYaml
