@@ -210,10 +210,10 @@ namespace nHydrate.ModelManagement
 
     public class StaticDataYaml
     {
-        public string Key { get; set; }
+        public string ColumnKey { get; set; }
         public string Value { get; set; }
-
-        public override string ToString() => this.Key;
+        public int OrderKey { get; set; }
+        public override string ToString() => this.ColumnKey;
     }
 
     public class ViewYaml
