@@ -1,3 +1,5 @@
+using System;
+
 namespace nHydrate.Generator.Common.Util
 {
     public static class Extensions
@@ -364,6 +366,14 @@ namespace nHydrate.Generator.Common.Util
         public static string FlatGuid(this System.Guid g)
         {
             return g.ToString().FlatGuid();
+        }
+
+        public static Guid ToGuid(this string str)
+        {
+            if (string.IsNullOrEmpty(str)) return Guid.Empty;
+            if (Guid.TryParse(str, out Guid v))
+                return v;
+            return Guid.Empty;
         }
 
     }

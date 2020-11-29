@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 using static nHydrate.Generator.Common.Models.Relation;
+using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Command.Core
 {
@@ -59,9 +60,13 @@ namespace nHydrate.Command.Core
             if (!fi.Exists)
                 throw new ModelException($"The model file '{fi.FullName}' does not exist.");
 
-            var diskModel = FileManagement.Load(fi.DirectoryName, fi.Name, out bool wasLoaded);
+            var diskModel = FileManagement.Load2(fi.DirectoryName, fi.Name, out bool wasLoaded);
             if (!wasLoaded)
                 throw new ModelException($"The model file '{fi.FullName}' does not exist.");
+
+            var q = 0;
+            if (q == 1)
+                FileManagement.Save2(fi.DirectoryName, fi.Name.Replace(".nhydrate", ".model"), diskModel);
 
             try
             {
@@ -88,140 +93,134 @@ namespace nHydrate.Command.Core
                 {
                     #region Table Info
                     var newTable = root.Database.Tables.Add();
-                    newTable.ResetKey(entity.id.ToString());
+                    newTable.ResetKey(entity.Id.ToString());
                     newTable.ResetId(HashString(newTable.Key));
-                    newTable.AllowCreateAudit = entity.allowcreateaudit.ToBool();
-                    newTable.AllowModifiedAudit = entity.allowmodifyaudit.ToBool();
-                    newTable.AllowConcurrencyCheck = entity.allowtimestamp.ToBool();
-                    newTable.AssociativeTable = entity.isassociative.ToBool();
-                    newTable.CodeFacade = entity.codefacade;
-                    newTable.DBSchema = entity.schema;
-                    newTable.Description = entity.summary;
-                    newTable.Immutable = entity.immutable.ToBool();
-                    newTable.TypedTable = (nHydrate.Generator.Common.Models.TypedTableConstants)Enum.Parse(typeof(nHydrate.Generator.Common.Models.TypedTableConstants), entity.typedentity.ToString(), true);
-                    newTable.Name = entity.name;
-                    newTable.GeneratesDoubleDerived = entity.generatesdoublederived.ToBool();
-                    newTable.IsTenant = entity.isTenant.ToBool();
+                    newTable.AllowCreateAudit = entity.AllowCreateAudit;
+                    newTable.AllowModifiedAudit = entity.AllowModifyAudit;
+                    newTable.AllowConcurrencyCheck = entity.AllowTimestamp;
+                    newTable.AssociativeTable = entity.IsAssociative;
+                    newTable.CodeFacade = entity.CodeFacade;
+                    newTable.DBSchema = entity.Schema;
+                    newTable.Description = entity.Summary;
+                    newTable.Immutable = entity.Immutable;
+                    newTable.TypedTable = entity.TypedTable.Convert<TypedTableConstants>();
+                    newTable.Name = entity.Name;
+                    newTable.GeneratesDoubleDerived = entity.GeneratesDoubleDerived;
+                    newTable.IsTenant = entity.IsTenant;
                     #endregion
 
                     #region Load the fields for this entity
-                    var fieldList = entity.fieldset.ToList();
-                    foreach (var field in fieldList.OrderBy(x => x.sortorder))
+                    var loopIndex = 0;
+                    foreach (var field in entity.Fields)
                     {
                         var newColumn = root.Database.Columns.Add();
-                        newColumn.ResetKey(field.id.ToString());
+                        newColumn.ResetKey(field.Id.ToString());
                         newColumn.ResetId(HashString(newColumn.Key));
-                        newColumn.AllowNull = field.nullable.ToBool();
-                        newColumn.CodeFacade = field.codefacade;
-                        newColumn.ComputedColumn = field.Iscalculated.ToBool();
-                        newColumn.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), field.datatype.ToString());
-                        newColumn.Default = field.@default;
-                        newColumn.DefaultIsFunc = field.defaultisfunc.ToBool();
-                        newColumn.Description = field.summary;
-                        newColumn.Formula = field.formula;
-                        newColumn.Identity = (nHydrate.Generator.Common.Models.IdentityTypeConstants)Enum.Parse(typeof(nHydrate.Generator.Common.Models.IdentityTypeConstants), field.identity.ToString());
-                        newColumn.IsIndexed = field.isindexed.ToBool();
-                        newColumn.IsReadOnly = field.isreadonly.ToBool();
-                        newColumn.IsUnique = field.isunique.ToBool();
-                        newColumn.Length = field.length;
-                        newColumn.Name = field.name;
+                        newColumn.AllowNull = field.Nullable;
+                        newColumn.CodeFacade = field.CodeFacade;
+                        newColumn.ComputedColumn = field.IsCalculated;
+                        newColumn.DataType = field.Datatype.Convert<System.Data.SqlDbType>();
+                        newColumn.Default = field.Default;
+                        newColumn.DefaultIsFunc = field.DefaultIsFunc;
+                        newColumn.Description = field.Summary;
+                        newColumn.Formula = field.Formula;
+                        newColumn.Identity = field.Identity.Convert<IdentityTypeConstants>();
+                        newColumn.IsIndexed = field.IsIndexed;
+                        newColumn.IsReadOnly = field.IsReadonly;
+                        newColumn.IsUnique = field.IsUnique;
+                        newColumn.Length = field.Length;
+                        newColumn.Name = field.Name;
                         newColumn.ParentTableRef = newTable.CreateRef(newTable.Key);
-                        newColumn.PrimaryKey = field.isprimarykey.ToBool();
-                        newColumn.Scale = field.scale;
-                        newColumn.SortOrder = field.sortorder;
-                        newColumn.Obsolete = field.obsolete.ToBool();
+                        newColumn.PrimaryKey = field.IsPrimaryKey;
+                        newColumn.Scale = field.Scale;
+                        newColumn.SortOrder = loopIndex++;
+                        newColumn.Obsolete = field.Obsolete;
                         newTable.Columns.Add(newColumn.CreateRef(newColumn.Key));
                     }
                     #endregion
-                }
 
-                #endregion
+                    #region Indexes
 
-                #region Indexes
-
-                foreach (var outter in diskModel.Indexes)
-                {
-                    var newTable = root.Database.Tables.First(x => x.Key == outter.id);
-                    foreach (var index in outter.index)
+                    foreach (var index in entity.Indexes)
                     {
                         var newIndex = new nHydrate.Generator.Common.Models.TableIndex(newTable.Root)
                         {
-                            Description = index.summary,
-                            IsUnique = index.isunique.ToBool(),
-                            Clustered = index.clustered.ToBool(),
-                            PrimaryKey = (index.indextype == (byte)IndexTypeConstants.PrimaryKey)
+                            Description = index.Summary,
+                            IsUnique = index.IsUnique,
+                            Clustered = index.Clustered,
+                            PrimaryKey = (index.IndexType == (byte)IndexTypeConstants.PrimaryKey)
                         };
                         newTable.TableIndexList.Add(newIndex);
-                        newIndex.ResetKey(index.id.ToString());
+                        //newIndex.ResetKey(index.Id.ToString());
                         newIndex.ResetId(HashString(newIndex.Key));
-                        newIndex.ImportedName = index.importedname;
+                        newIndex.ImportedName = index.ImportedName;
 
                         //Add index columns
-                        foreach (var ic in index.indexcolumnset.OrderBy(x => x.sortorder))
+                        foreach (var ic in index.Fields)
                         {
                             var newColumn = new nHydrate.Generator.Common.Models.TableIndexColumn(newTable.Root)
                             {
-                                Ascending = ic.ascending.ToBool(),
-                                FieldID = new Guid(ic.fieldid)
+                                Ascending = ic.Ascending,
+                                FieldID = ic.FieldId,
                             };
                             newIndex.IndexColumnList.Add(newColumn);
                         }
                     }
-                }
 
-                #endregion
+                    #endregion
 
-                #region Static Data
-                foreach (var entity in diskModel.Entities)
-                {
-                    //Determine how many rows there are
-                    var dataList = diskModel.StaticData.Where(x => x.id == entity.id).SelectMany(x => x.data).ToList();
-                    var orderKeyList = dataList.Select(x => x.orderkey).Distinct().ToList();
-                    var rowCount = orderKeyList.Count;
-
-                    var newTable = root.Database.Tables.First(x => x.Key == entity.id);
-
-                    //Create a OLD static data row for each one
-                    for (var ii = 0; ii < rowCount; ii++)
+                    #region Static Data
+                    //foreach (var entity in diskModel.Entities)
                     {
-                        //For each row create N cells one for each column
-                        var rowEntry = new nHydrate.Generator.Common.Models.RowEntry(newTable.Root);
-                        var staticDataFieldList = entity.fieldset.Where(x => !(GetDataType(x.datatype).IsBinaryType()) && GetDataType(x.datatype) != DataTypeConstants.Timestamp).ToList();
-                        for (var jj = 0; jj < staticDataFieldList.Count; jj++)
+                        //Determine how many rows there are
+                        //var dataList = entity.StaticData.Where(x => x.id == entity.id).SelectMany(x => x.data).ToList();
+                        var orderKeyList = entity.StaticData.Select(x => x.SortOrder).Distinct().ToList();
+                        //var rowCount = orderKeyList.Count;
+
+                        //Create a OLD static data row for each one
+                        for (var ii = 0; ii < orderKeyList.Count; ii++)
                         {
-                            var cellEntry = new nHydrate.Generator.Common.Models.CellEntry(newTable.Root);
-                            var column = newTable.GetColumns().ToList()[jj];
-                            cellEntry.ColumnRef = column.CreateRef(column.Key);
-
-                            var currentColumn = entity.fieldset.FirstOrDefault(x => x.id == column.Key);
-                            if (currentColumn != null)
+                            //For each row create N cells one for each column
+                            var rowEntry = new nHydrate.Generator.Common.Models.RowEntry(newTable.Root);
+                            var staticDataFieldList = entity.Fields.Where(x => !(GetDataType(x.Datatype.ToString()).IsBinaryType()) && GetDataType(x.Datatype.ToString()) != DataTypeConstants.Timestamp).ToList();
+                            for (var jj = 0; jj < staticDataFieldList.Count; jj++)
                             {
-                                var dataum = dataList.FirstOrDefault(x =>
-                                    x.columnkey == currentColumn.id &&
-                                    x.orderkey == orderKeyList[ii]);
+                                var cellEntry = new nHydrate.Generator.Common.Models.CellEntry(newTable.Root);
+                                var column = newTable.GetColumns().ToList()[jj];
+                                cellEntry.ColumnRef = column.CreateRef(column.Key);
 
-                                if (dataum != null)
+                                var currentColumn = entity.Fields.FirstOrDefault(x => x.Id == column.Key.ToGuid());
+                                if (currentColumn != null)
                                 {
-                                    cellEntry.Value = dataum.value;
-                                    cellEntry.ResetKey(dataum.columnkey);
-                                }
+                                    var dataum = entity.StaticData.FirstOrDefault(x =>
+                                        x.ColumnId == currentColumn.Id &&
+                                        x.SortOrder == orderKeyList[ii]);
 
-                                //Add the cell to the row
-                                rowEntry.CellEntries.Add(cellEntry);
+                                    if (dataum != null)
+                                    {
+                                        cellEntry.Value = dataum.Value;
+                                        cellEntry.ResetKey(dataum.ColumnId.ToString());
+                                    }
+
+                                    //Add the cell to the row
+                                    rowEntry.CellEntries.Add(cellEntry);
+                                }
                             }
+                            newTable.StaticData.Add(rowEntry);
                         }
-                        newTable.StaticData.Add(rowEntry);
                     }
+                    #endregion
                 }
+
                 #endregion
 
                 #region Relations
                 foreach (var entity in diskModel.Entities)
                 {
-                    foreach (var relationNode in diskModel.Relations.Where(x => x.id == entity.id).ToList())
+                    foreach (var shape in entity.Relations)
                     {
                         //var relationConnectors = diagram.NestedChildShapes.Where(x => x is EntityAssociationConnector).Cast<EntityAssociationConnector>().ToList();
-                        foreach (var shape in relationNode.relation)
+                        //foreach (var shape in relationNode.relation)
                         {
                             //var connector = shape as EntityAssociationConnector;
                             //var parent = connector.FromShape.ModelElement as Entity;
@@ -231,8 +230,8 @@ namespace nHydrate.Command.Core
                             //var fieldList = model.RelationFields.Where(x => x.RelationID == relation.Id);
 
                             //var parentTable = root.Database.Tables.FirstOrDefault(x => x.Key == shape.id);
-                            var parentTable = root.Database.Tables.FirstOrDefault(x => x.Key == entity.id);
-                            var childTable = root.Database.Tables.FirstOrDefault(x => x.Key == shape.childid);
+                            var parentTable = root.Database.Tables.FirstOrDefault(x => x.Key.ToGuid() == entity.Id);
+                            var childTable = root.Database.Tables.FirstOrDefault(x => x.Key.ToGuid() == shape.ForeignEntityId);
 
                             //If we found both parent and child tables...
                             if (parentTable != null && childTable != null)
@@ -241,32 +240,19 @@ namespace nHydrate.Command.Core
                                 if (isValidRelation)
                                 {
                                     var newRelation = root.Database.Relations.Add();
-                                    newRelation.ResetKey(shape.id);
+                                    //newRelation.ResetKey(shape.Id);
                                     newRelation.ResetId(HashString(newRelation.Key));
                                     newRelation.ParentTableRef = parentTable.CreateRef(parentTable.Key);
                                     newRelation.ChildTableRef = childTable.CreateRef(childTable.Key);
-                                    newRelation.RoleName = shape.rolename;
-                                    var da = (DeleteActionConstants)Enum.Parse(typeof(DeleteActionConstants), shape.deleteaction);
-                                    switch (da)
-                                    {
-                                        case DeleteActionConstants.Cascade:
-                                            newRelation.DeleteAction = Relation.DeleteActionConstants.Cascade;
-                                            break;
-                                        case DeleteActionConstants.NoAction:
-                                            newRelation.DeleteAction = Relation.DeleteActionConstants.NoAction;
-                                            break;
-                                        case DeleteActionConstants.SetNull:
-                                            newRelation.DeleteAction = Relation.DeleteActionConstants.SetNull;
-                                            break;
-                                    }
-
-                                    newRelation.Enforce = shape.isenforced.ToBool();
+                                    newRelation.RoleName = shape.RoleName;
+                                    newRelation.Enforce = shape.IsEnforced;
+                                    newRelation.DeleteAction = shape.DeleteAction.Convert<DeleteActionConstants>();
 
                                     //Create the column links
-                                    foreach (var columnSet in shape.relationfieldset)
+                                    foreach (var columnSet in shape.Fields)
                                     {
-                                        var field1 = parentTable.GetColumns().FirstOrDefault(x => x.Key == columnSet.sourcefieldid);
-                                        var field2 = childTable.GetColumns().FirstOrDefault(x => x.Key == columnSet.targetfieldid);
+                                        var field1 = parentTable.GetColumns().FirstOrDefault(x => new Guid(x.Key) == columnSet.PrimaryFieldId);
+                                        var field2 = childTable.GetColumns().FirstOrDefault(x => new Guid(x.Key) == columnSet.ForeignFieldId);
 
                                         var column1 = parentTable.GetColumnsFullHierarchy().FirstOrDefault(x => x.Name == field1.Name);
                                         var column2 = childTable.GetColumnsFullHierarchy().FirstOrDefault(x => x.Name == field2.Name);
@@ -298,29 +284,29 @@ namespace nHydrate.Command.Core
                 foreach (var view in diskModel.Views)
                 {
                     var newView = root.Database.CustomViews.Add();
-                    newView.ResetKey(view.id);
+                    newView.ResetKey(view.Id.ToString());
                     newView.ResetId(HashString(newView.Key));
-                    newView.CodeFacade = view.codefacade;
-                    newView.DBSchema = view.schema;
-                    newView.Description = view.summary;
-                    newView.Name = view.name;
-                    newView.SQL = view.sql;
-                    newView.GeneratesDoubleDerived = view.generatesdoublederived.ToBool();
+                    newView.CodeFacade = view.CodeFacade;
+                    newView.DBSchema = view.Schema;
+                    newView.Description = view.Summary;
+                    newView.Name = view.Name;
+                    newView.SQL = view.Sql;
+                    newView.GeneratesDoubleDerived = view.GeneratesDoubleDerived;
 
-                    foreach (var field in view.fieldset)
+                    foreach (var field in view.Fields)
                     {
                         var newField = root.Database.CustomViewColumns.Add();
-                        newField.ResetKey(field.id);
+                        newField.ResetKey(field.Id);
                         newField.ResetId(HashString(newField.Key));
-                        newField.AllowNull = field.nullable.ToBool();
-                        newField.CodeFacade = field.codefacade;
-                        newField.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), field.datatype.ToString());
-                        newField.Default = field.@default;
-                        newField.Description = field.summary;
-                        newField.IsPrimaryKey = field.isprimarykey.ToBool();
-                        newField.Length = field.length;
-                        newField.Name = field.name;
-                        newField.Scale = field.scale;
+                        newField.AllowNull = field.Nullable;
+                        newField.CodeFacade = field.CodeFacade;
+                        newField.DataType = (System.Data.SqlDbType)Enum.Parse(typeof(System.Data.SqlDbType), field.Datatype.ToString());
+                        newField.Default = field.Default;
+                        newField.Description = field.Summary;
+                        newField.IsPrimaryKey = field.IsPrimaryKey;
+                        newField.Length = field.Length;
+                        newField.Name = field.Name;
+                        newField.Scale = field.Scale;
                         newView.Columns.Add(newField.CreateRef(newField.Key));
                         newField.ParentViewRef = newView.CreateRef(newView.Key);
                     }

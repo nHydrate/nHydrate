@@ -666,6 +666,10 @@ rem copy "$(SolutionDir)bin\*.*" "%25USERPROFILE%25\AppData\Local\Microsoft\Visu
       <Project>{E2040FE8-13C7-4A6B-860B-E612A0FDBEFF}</Project>
       <Name>nHydrate.Generator</Name>
     </ProjectReference>
+    <ProjectReference Include="..\nHydrate.ModelManagement\nHydrate.ModelManagement.csproj">
+      <Project>{569207E2-86F6-442D-A14C-CF6CD3C2A740}</Project>
+      <Name>nHydrate.ModelManagement</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

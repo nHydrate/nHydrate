@@ -30,6 +30,7 @@ namespace nHydrate.Generator.Common.Util
 
         public static string FirstCharToUpper(string inputString)
         {
+            if (string.IsNullOrEmpty(inputString)) return string.Empty;
             var sb = new StringBuilder();
             if (inputString.Length > 0)
             {
@@ -40,6 +41,7 @@ namespace nHydrate.Generator.Common.Util
 
         public static string FirstCharToLower(string inputString)
         {
+            if (string.IsNullOrEmpty(inputString)) return string.Empty;
             var sb = new StringBuilder();
             if (inputString.Length > 0)
             {

@@ -68,6 +68,13 @@ namespace nHydrate.Generator.Common
             this.Key = newKey;
         }
 
+        public void ResetKey(Guid newKey)
+        {
+            if (newKey == Guid.Empty)
+                throw new Exception("The key value must have a value!");
+            this.Key = newKey.ToString();
+        }
+
         #endregion
 
         #region IXMLable Members

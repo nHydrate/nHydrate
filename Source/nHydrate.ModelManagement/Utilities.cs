@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace nHydrate.ModelManagement
@@ -26,6 +27,14 @@ namespace nHydrate.ModelManagement
             None,
             DatabaseTable,
             EnumOnly,
+        }
+
+        //Copy from Dsl
+        public enum DeleteActionConstants
+        {
+            NoAction,
+            Cascade,
+            SetNull,
         }
 
         //Copy from Dsl
@@ -70,6 +79,21 @@ namespace nHydrate.ModelManagement
             return item;
         }
 
+        public static T AddNew<T>(this List<T> list)
+            where T: new()
+        {
+            T item = new T();
+            list.Add(item);
+            return item;
+        }
+
+        public static T Convert<T>(this System.Enum type)
+            where T: struct, System.Enum
+        {
+            System.Enum.TryParse<T>(type.ToString(), out T v);
+            return v;
+        }
+
         public static T ToEnum<T>(this string str)
             where T: struct, System.Enum
         {
@@ -77,5 +101,12 @@ namespace nHydrate.ModelManagement
             return (T)v;
         }
 
+        internal static Guid ToGuid(this string str)
+        {
+            if (string.IsNullOrEmpty(str)) return Guid.Empty;
+            if (Guid.TryParse(str, out Guid v))
+                return v;
+            return Guid.Empty;
+        }
     }
 }

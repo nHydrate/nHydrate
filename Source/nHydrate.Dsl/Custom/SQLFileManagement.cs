@@ -20,7 +20,7 @@ namespace nHydrate.Dsl.Custom
 
         public static void SaveToDisk(nHydrateModel model, string rootFolder, string modelName, nHydrateDiagram diagram)
         {
-            var diskModel = new DiskModel();
+            var diskModel = new DiskModelYaml();
             model.IsSaving = true;
             try
             {
@@ -43,7 +43,7 @@ namespace nHydrate.Dsl.Custom
                 var modelFolder = GetModelFolder(rootFolder, folderName);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(diskModel, model.Views);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveToDisk(diskModel, model.Entities);
-                FileManagement.Save(rootFolder, modelName, diskModel);
+                FileManagement.Save2(rootFolder, modelName, diskModel);
                 nHydrate.Dsl.Custom.SQLFileManagement.SaveDiagramFiles(modelFolder, diagram);
             }
             catch (Exception ex)
@@ -59,58 +59,60 @@ namespace nHydrate.Dsl.Custom
         /// <summary>
         /// Saves Stored Procedures to disk
         /// </summary>
-        private static void SaveToDisk(DiskModel model, IEnumerable<Entity> list)
+        private static void SaveToDisk(DiskModelYaml model, IEnumerable<Entity> list)
         {
             #region Save other parameter/field information
 
             foreach (var item in list)
             {
-                var node = new nHydrate.ModelManagement.Entity.configuration();
-                model.Entities.Add(node);
-                node.allowcreateaudit = item.AllowCreateAudit.ToByte();
-                node.allowmodifyaudit = item.AllowModifyAudit.ToByte();
-                node.allowtimestamp = item.AllowTimestamp.ToByte();
-                node.codefacade = item.CodeFacade;
-                node.generatesdoublederived = item.GeneratesDoubleDerived.ToByte();
-                node.id = item.Id.ToString();
-                node.immutable = item.Immutable.ToByte();
-                node.isassociative = item.IsAssociative.ToByte();
-                node.isTenant = item.IsTenant.ToByte();
-                node.name = item.Name;
-                node.schema = item.Schema;
-                node.summary = item.Summary;
-                node.type = "entity";
-                node.typedentity = item.TypedEntity.ToString();
+                //var node = new nHydrate.ModelManagement.Entity.configuration();
+                //model.Entities.Add(node);
+                var node = model.Entities.AddNew();
+                node.AllowCreateAudit = item.AllowCreateAudit;
+                node.AllowModifyAudit = item.AllowModifyAudit;
+                node.AllowTimestamp = item.AllowTimestamp;
+                node.CodeFacade = item.CodeFacade;
+                node.GeneratesDoubleDerived = item.GeneratesDoubleDerived;
+                node.Id = item.Id;
+                node.Immutable = item.Immutable;
+                node.IsAssociative = item.IsAssociative;
+                node.IsTenant = item.IsTenant;
+                node.Name = item.Name;
+                node.Schema = item.Schema;
+                node.Summary = item.Summary;
+                //node.type = "entity";
+                node.TypedTable = item.TypedEntity.Convert<Utilities.TypedTableConstants>();
 
                 #region Fields
-                    var nodeFields = new List<ModelManagement.Entity.configurationField>();
-                    foreach (var field in item.Fields.OrderBy(x => x.Name))
-                    {
-                        var nodeField = new ModelManagement.Entity.configurationField();
-                        nodeFields.Add(nodeField);
-                        nodeField.codefacade = field.CodeFacade;
-                        nodeField.dataformatstring = field.DataFormatString;
-                        nodeField.datatype = field.DataType.ToString();
-                        nodeField.@default = field.Default;
-                        nodeField.defaultisfunc = field.DefaultIsFunc.ToByte();
-                        nodeField.formula = field.Formula;
-                        nodeField.id = field.Id.ToString();
-                        nodeField.identity = field.Identity.ToString();
-                        nodeField.Iscalculated = field.IsCalculated.ToByte();
-                        nodeField.isindexed = field.IsIndexed.ToByte();
-                        nodeField.isprimarykey = field.IsPrimaryKey.ToByte();
-                        nodeField.isreadonly = field.IsReadOnly.ToByte();
-                        nodeField.isunique = field.IsUnique.ToByte();
-                        nodeField.length = field.Length;
-                        nodeField.name = field.Name;
-                        nodeField.nullable = field.Nullable.ToByte();
-                        nodeField.obsolete = field.Obsolete.ToByte();
-                        nodeField.scale = (byte)field.Scale;
-                        nodeField.sortorder = (byte)field.SortOrder;
-                        nodeField.summary = field.Summary;
-                        node.fieldset = nodeFields.ToArray();
-                    }
-                    node.fieldset = nodeFields.ToArray();
+                //var nodeFields = new List<ModelManagement.Entity.configurationField>();
+                var loopIndex = 0;
+                foreach (var field in item.Fields.OrderBy(x => x.SortOrder))
+                {
+                    //var nodeField = new ModelManagement.Entity.configurationField();
+                    //nodeFields.Add(nodeField);
+                    var nodeField = node.Fields.AddNew();
+                    nodeField.CodeFacade = field.CodeFacade;
+                    nodeField.DataFormatString = field.DataFormatString;
+                    nodeField.Datatype = field.DataType.Convert<Utilities.DataTypeConstants>();
+                    nodeField.Default = field.Default;
+                    nodeField.DefaultIsFunc = field.DefaultIsFunc;
+                    nodeField.Formula = field.Formula;
+                    nodeField.Id = field.Id;
+                    nodeField.Identity = field.Identity.Convert<Utilities.IdentityTypeConstants>();
+                    nodeField.IsCalculated = field.IsCalculated;
+                    nodeField.IsIndexed = field.IsIndexed;
+                    nodeField.IsPrimaryKey = field.IsPrimaryKey;
+                    nodeField.IsReadonly = field.IsReadOnly;
+                    nodeField.IsUnique = field.IsUnique;
+                    nodeField.Length = field.Length;
+                    nodeField.Name = field.Name;
+                    nodeField.Nullable = field.Nullable;
+                    nodeField.Obsolete = field.Obsolete;
+                    nodeField.Scale = (byte)field.Scale;
+                    nodeField.Summary = field.Summary;
+                    //node.fieldset = nodeFields.ToArray();
+                }
+                //node.fieldset = nodeFields.ToArray();
                 #endregion
 
                 //Save other files
@@ -122,96 +124,101 @@ namespace nHydrate.Dsl.Custom
             #endregion
         }
 
-        private static void SaveEntityIndexes(DiskModel model, Entity item, ModelManagement.Entity.configuration node)
+        private static void SaveEntityIndexes(DiskModelYaml model, Entity item, EntityYaml node)
         {
-            var root = new ModelManagement.Index.configuration();
-            model.Indexes.Add(root);
-            root.id = item.Id.ToString();
-            root.type = "entity.indexes";
+            //var root = new ModelManagement.Index.configuration();
+            //model.Indexes.Add(root);
+            //root.id = item.Id.ToString();
+            //root.type = "entity.indexes";
 
-            var nodeFields = new List<ModelManagement.Index.configurationIndex>();
+            //var nodeFields = new List<ModelManagement.Index.configurationIndex>();
             foreach (var index in item.Indexes)
             {
-                var nodeField = new ModelManagement.Index.configurationIndex();
-                nodeFields.Add(nodeField);
-                nodeField.clustered = index.Clustered.ToByte();
-                nodeField.id = index.Id.ToString();
-                nodeField.importedname = index.ImportedName;
-                nodeField.indextype = (byte)index.IndexType;
-                nodeField.isunique = index.IsUnique.ToByte();
-                nodeField.summary = index.Summary;
+                //var nodeField = new ModelManagement.Index.configurationIndex();
+                //nodeFields.Add(nodeField);
+                var nodeField = node.Indexes.AddNew();
+                nodeField.Clustered = index.Clustered;
+                //nodeField.Id = index.Id;
+                nodeField.ImportedName = index.ImportedName;
+                nodeField.IndexType = index.IndexType.Convert<Utilities.IndexTypeConstants>();
+                nodeField.IsUnique = index.IsUnique;
+                nodeField.Summary = index.Summary;
 
                 var nodeIndexColumns = new List<ModelManagement.Index.configurationIndexColumn>();
-                foreach (var indexColumn in index.IndexColumns)
+                foreach (var indexColumn in index.IndexColumns.OrderBy(x => x.SortOrder))
                 {
-                    var nodeIndexColumn = new ModelManagement.Index.configurationIndexColumn();
-                    nodeIndexColumns.Add(nodeIndexColumn);
-                    nodeIndexColumn.ascending= indexColumn.Ascending.ToByte();
-                    nodeIndexColumn.fieldid= indexColumn.FieldID.ToString();
-                    nodeIndexColumn.id= indexColumn.Id.ToString();
-                    nodeIndexColumn.sortorder= indexColumn.SortOrder;
+                    //var nodeIndexColumn = new ModelManagement.Index.configurationIndexColumn();
+                    //nodeIndexColumns.Add(nodeIndexColumn);
+                    var nodeIndexColumn = nodeField.Fields.AddNew();
+                    nodeIndexColumn.Ascending = indexColumn.Ascending;
+                    nodeIndexColumn.FieldId = indexColumn.FieldID;
+                    nodeIndexColumn.FieldName = item.Fields.FirstOrDefault(x => x.Id == indexColumn.FieldID)?.Name;
+                    //nodeIndexColumn.Id = indexColumn.Id;
                 }
-                nodeField.indexcolumnset = nodeIndexColumns.ToArray();
-                nodeFields.Add(nodeField);
+                //nodeField.indexcolumnset = nodeIndexColumns.ToArray();
+                //nodeFields.Add(nodeField);
             }
-            root.index = nodeFields.ToArray();
+            //root.index = nodeFields.ToArray();
 
         }
 
-        private static void SaveEntityStaticData(DiskModel model, Entity item, ModelManagement.Entity.configuration node)
+        private static void SaveEntityStaticData(DiskModelYaml model, Entity item, EntityYaml node)
         {
-            if (item.StaticDatum.Count == 0)
-                return;
+            //if (item.StaticDatum.Count == 0)
+            //    return;
 
-            var nodeData = new nHydrate.ModelManagement.StaticData.configuration();
-            nodeData.id = item.Id.ToString();
-            nodeData.type = "entity.staticdata";
+            //var nodeData = new nHydrate.ModelManagement.StaticData.configuration();
+            //nodeData.id = item.Id.ToString();
+            //nodeData.type = "entity.staticdata";
 
-            var nodeDataItems = new List<ModelManagement.StaticData.configurationData>();
+            //var nodeDataItems = new List<ModelManagement.StaticData.configurationData>();
             foreach (var data in item.StaticDatum)
             {
-                var nodeDataItem = new ModelManagement.StaticData.configurationData();
-                nodeDataItems.Add(nodeDataItem);
-                nodeDataItem.columnkey = data.ColumnKey.ToString();
-                nodeDataItem.orderkey = data.OrderKey;
-                nodeDataItem.value = data.Value;
+                //var nodeDataItem = new ModelManagement.StaticData.configurationData();
+                //nodeDataItems.Add(nodeDataItem);
+                var nodeDataItem = node.StaticData.AddNew();
+                nodeDataItem.ColumnId = data.ColumnKey;
+                nodeDataItem.SortOrder = data.OrderKey;
+                nodeDataItem.Value = data.Value;
             }
-            nodeData.data = nodeDataItems.ToArray();
-            model.StaticData.Add(nodeData);
+            //nodeData.data = nodeDataItems.ToArray();
+            //model.StaticData.Add(nodeData);
         }
 
-        private static void SaveRelations(DiskModel model, Entity item, ModelManagement.Entity.configuration node)
+        private static void SaveRelations(DiskModelYaml model, Entity item, EntityYaml node)
         {
-            var nodeData = new nHydrate.ModelManagement.Relation.configuration();
-            nodeData.id = item.Id.ToString();
-            nodeData.type = "entity.relations";
+            //var nodeData = new nHydrate.ModelManagement.Relation.configuration();
+            //nodeData.id = item.Id.ToString();
+            //nodeData.type = "entity.relations";
 
-            var nodeRelations = new List<ModelManagement.Relation.configurationRelation>();
+            //var nodeRelations = new List<ModelManagement.Relation.configurationRelation>();
             foreach (var relation in item.RelationshipList)
             {
 
-                var nodeRelationItem = new ModelManagement.Relation.configurationRelation();
-                nodeRelations.Add(nodeRelationItem);
-                nodeRelationItem.childid = relation.ChildEntity.Id.ToString();
-                nodeRelationItem.deleteaction = relation.DeleteAction.ToString();
-                nodeRelationItem.id = relation.InternalId.ToString();
-                nodeRelationItem.isenforced = relation.IsEnforced.ToByte();
-                nodeRelationItem.rolename = relation.RoleName;
-                nodeRelationItem.summary = relation.Summary;
+                //var nodeRelationItem = new ModelManagement.Relation.configurationRelation();
+                //nodeRelations.Add(nodeRelationItem);
+                var nodeRelationItem = node.Relations.AddNew();
+                nodeRelationItem.ForeignEntityId = relation.ChildEntity.Id;
+                nodeRelationItem.DeleteAction = relation.DeleteAction.Convert<Utilities.DeleteActionConstants>();
+                //nodeRelationItem.Id = relation.InternalId;
+                nodeRelationItem.IsEnforced = relation.IsEnforced;
+                nodeRelationItem.RoleName = relation.RoleName;
+                nodeRelationItem.Summary = relation.Summary;
 
                 var nodeRelationFields = new List<ModelManagement.Relation.configurationRelationField>();
                 foreach (var relationField in relation.FieldMapList())
                 {
-                    var nodeRelationField = new ModelManagement.Relation.configurationRelationField();
-                    nodeRelationFields.Add(nodeRelationField);
-                    nodeRelationField.id = relationField.Id.ToString();
-                    nodeRelationField.sourcefieldid = relationField.SourceFieldId.ToString();
-                    nodeRelationField.targetfieldid = relationField.TargetFieldId.ToString();
+                    //var nodeRelationField = new ModelManagement.Relation.configurationRelationField();
+                    //nodeRelationFields.Add(nodeRelationField);
+                    var nodeRelationField = nodeRelationItem.Fields.AddNew();
+                    //nodeRelationField.Id = relationField.Id;
+                    nodeRelationField.PrimaryFieldId = relationField.SourceFieldId;
+                    nodeRelationField.ForeignFieldId = relationField.TargetFieldId;
                 }
-                nodeRelationItem.relationfieldset = nodeRelationFields.ToArray();
+                //nodeRelationItem.relationfieldset = nodeRelationFields.ToArray();
             }
-            nodeData.relation = nodeRelations.ToArray();
-            model.Relations.Add(nodeData);
+            //nodeData.relation = nodeRelations.ToArray();
+            //model.Relations.Add(nodeData);
         }
 
         private static void SaveDiagramFiles(string rootFolder, nHydrateDiagram diagram)
@@ -242,37 +249,39 @@ namespace nHydrate.Dsl.Custom
         /// <summary>
         /// Saves Views to disk
         /// </summary>
-        private static void SaveToDisk(DiskModel model, IEnumerable<View> list)
+        private static void SaveToDisk(DiskModelYaml model, IEnumerable<View> list)
         {
             #region Save other parameter/field information
             foreach (var item in list)
             {
-                var node = new nHydrate.ModelManagement.View.configuration();
-                model.Views.Add(node);
-                node.codefacade = item.CodeFacade;
-                node.generatesdoublederived = item.GeneratesDoubleDerived.ToByte();
-                node.id = item.Id.ToString();
-                node.name = item.Name;
-                node.schema = item.Schema;
-                node.summary = item.Summary;
-                node.type = "view";
+                //var node = new nHydrate.ModelManagement.View.configuration();
+                //model.Views.Add(node);
+                var node = model.Views.AddNew();
+                node.CodeFacade = item.CodeFacade;
+                node.GeneratesDoubleDerived = item.GeneratesDoubleDerived;
+                node.Id = item.Id;
+                node.Name = item.Name;
+                node.Schema = item.Schema;
+                node.Summary = item.Summary;
+                //node.type = "view";
                 #endregion
 
-                var nodeFields = new List<ModelManagement.View.configurationField>();
+                //var nodeFields = new List<ModelManagement.View.configurationField>();
                 foreach (var field in item.Fields.OrderBy(x => x.Name))
                 {
-                    var nodeField = new ModelManagement.View.configurationField();
-                    nodeFields.Add(nodeField);
-                    nodeField.codefacade = field.CodeFacade;
-                    nodeField.datatype = field.DataType.ToString();
-                    nodeField.@default = field.Default;
-                    nodeField.id = field.Id.ToString();
-                    nodeField.isprimarykey = field.IsPrimaryKey.ToByte();
-                    nodeField.length = field.Length;
-                    nodeField.name = field.Name;
-                    nodeField.nullable = field.Nullable.ToByte();
-                    nodeField.scale = (byte)field.Scale;
-                    nodeField.summary = field.Summary;
+                    //var nodeField = new ModelManagement.View.configurationField();
+                    //nodeFields.Add(nodeField);
+                    var nodeField = node.Fields.AddNew();
+                    nodeField.CodeFacade = field.CodeFacade;
+                    nodeField.Datatype = field.DataType.Convert<Utilities.DataTypeConstants>();
+                    nodeField.Default = field.Default;
+                    nodeField.Id = field.Id;
+                    nodeField.IsPrimaryKey = field.IsPrimaryKey;
+                    nodeField.Length = field.Length;
+                    nodeField.Name = field.Name;
+                    nodeField.Nullable = field.Nullable;
+                    nodeField.Scale = (byte)field.Scale;
+                    nodeField.Summary = field.Summary;
                 }
             }
         }
@@ -283,7 +292,7 @@ namespace nHydrate.Dsl.Custom
             try
             {
                 bool wasLoaded;
-                var diskModel = FileManagement.Load(rootFolder, modelName, out wasLoaded);
+                var diskModel = FileManagement.Load2(rootFolder, modelName, out wasLoaded);
                 if (wasLoaded)
                 {
                     model.CompanyName = diskModel.ModelProperties.CompanyName;
@@ -315,16 +324,15 @@ namespace nHydrate.Dsl.Custom
             }
         }
 
-        private static void LoadFromDisk(IEnumerable<Entity> list, nHydrateModel model, DiskModel diskModel)
+        private static void LoadFromDisk(IEnumerable<Entity> list, nHydrateModel model, DiskModelYaml diskModel)
         {
             #region Load other parameter/field information
             foreach (var entity in diskModel.Entities)
             {
-                var itemID = new Guid(entity.id);
-                var item = list.FirstOrDefault(x => x.Id == itemID);
+                var item = list.FirstOrDefault(x => x.Id == entity.Id);
                 if (item == null)
                 {
-                    item = new Entity(model.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, itemID) });
+                    item = new Entity(model.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, entity.Id) });
                     model.Entities.Add(item);
                 }
 
@@ -332,61 +340,53 @@ namespace nHydrate.Dsl.Custom
 
                 #region Properties
 
-                item.Name = entity.name;
-                item.AllowCreateAudit = entity.allowcreateaudit != 0;
-                item.AllowModifyAudit = entity.allowmodifyaudit != 0;
-                item.AllowTimestamp = entity.allowtimestamp != 0;
-                item.CodeFacade = entity.codefacade;
-                item.Immutable = entity.immutable != 0;
-                item.IsAssociative = entity.isassociative != 0;
-                item.GeneratesDoubleDerived = entity.generatesdoublederived != 0;
-                item.IsTenant = entity.isTenant != 0;
-
-                if (Enum.TryParse<TypedEntityConstants>(entity.typedentity, true, out var te))
-                    item.TypedEntity = te;
-
-                item.Schema = entity.schema;
-                item.Summary = entity.summary;
+                item.Name = entity.Name;
+                item.AllowCreateAudit = entity.AllowCreateAudit;
+                item.AllowModifyAudit = entity.AllowModifyAudit;
+                item.AllowTimestamp = entity.AllowTimestamp;
+                item.CodeFacade = entity.CodeFacade;
+                item.Immutable = entity.Immutable;
+                item.IsAssociative = entity.IsAssociative;
+                item.GeneratesDoubleDerived = entity.GeneratesDoubleDerived;
+                item.IsTenant = entity.IsTenant;
+                item.TypedEntity = entity.TypedTable.Convert<TypedEntityConstants>();
+                item.Schema = entity.Schema;
+                item.Summary = entity.Summary;
 
                 #endregion
 
                 #region Fields
 
                 var nameList = new List<string>();
-                foreach (var fieldNode in entity.fieldset)
+                var loopIndex = 0;
+                foreach (var fieldNode in entity.Fields)
                 {
-                    var subItemID = new Guid(fieldNode.id);
-                    var field = item.Fields.FirstOrDefault(x => x.Id == subItemID);
+                    var field = item.Fields.FirstOrDefault(x => x.Id == fieldNode.Id);
                     if (field == null)
                     {
-                        field = new Field(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, subItemID) });
+                        field = new Field(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, fieldNode.Id) });
                         item.Fields.Add(field);
                     }
-                    field.Name = fieldNode.name;
-                    field.CodeFacade = fieldNode.codefacade;
+                    field.Name = fieldNode.Name;
+                    field.CodeFacade = fieldNode.CodeFacade;
                     nameList.Add(field.Name.ToLower());
-                    field.Nullable = fieldNode.nullable != 0;
-
-                    if (Enum.TryParse<DataTypeConstants>(fieldNode.datatype, true, out var dt))
-                        field.DataType = dt;
-
-                    if (Enum.TryParse<IdentityTypeConstants>(fieldNode.identity, true, out var it))
-                        field.Identity = it;
-
-                    field.DataFormatString = fieldNode.dataformatstring;
-                    field.Default = fieldNode.@default;
-                    field.DefaultIsFunc = fieldNode.defaultisfunc != 0;
-                    field.Formula = fieldNode.formula;
-                    field.IsIndexed = fieldNode.isindexed != 0;
-                    field.IsPrimaryKey = fieldNode.isprimarykey != 0;
-                    field.IsCalculated = fieldNode.Iscalculated != 0;
-                    field.IsUnique = fieldNode.isunique != 0;
-                    field.Length = fieldNode.length;
-                    field.Scale = fieldNode.scale;
-                    field.SortOrder = fieldNode.sortorder;
-                    field.IsReadOnly = fieldNode.isreadonly != 0;
-                    field.Obsolete = fieldNode.obsolete != 0;
-                    field.Summary = fieldNode.summary;
+                    field.Nullable = fieldNode.Nullable;
+                    field.DataType = fieldNode.Datatype.Convert<DataTypeConstants>();
+                    field.Identity = fieldNode.Identity.Convert<IdentityTypeConstants>();
+                    field.DataFormatString = fieldNode.DataFormatString;
+                    field.Default = fieldNode.Default;
+                    field.DefaultIsFunc = fieldNode.DefaultIsFunc;
+                    field.Formula = fieldNode.Formula;
+                    field.IsIndexed = fieldNode.IsIndexed;
+                    field.IsPrimaryKey = fieldNode.IsPrimaryKey;
+                    field.IsCalculated = fieldNode.IsCalculated;
+                    field.IsUnique = fieldNode.IsUnique;
+                    field.Length = fieldNode.Length;
+                    field.Scale = fieldNode.Scale;
+                    field.SortOrder = loopIndex++;
+                    field.IsReadOnly = fieldNode.IsReadonly;
+                    field.Obsolete = fieldNode.Obsolete;
+                    field.Summary = fieldNode.Summary;
                 }
                 if (item.Fields.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
                     item.nHydrateModel.IsDirty = true;
@@ -412,65 +412,68 @@ namespace nHydrate.Dsl.Custom
 
         }
 
-        private static void LoadEntityIndexes(Entity entity, DiskModel diskModel)
+        private static void LoadEntityIndexes(Entity entity, DiskModelYaml diskModel)
         {
-            foreach (var indexNode in diskModel.Indexes.Where(x => new Guid(x.id) == entity.Id).SelectMany(x => x.index))
+            var entityYaml = diskModel.Entities.FirstOrDefault(x => x.Id == entity.Id);
+            if (entityYaml == null) return;
+            foreach (var indexNode in entityYaml.Indexes)
             {
-                var id = new Guid(indexNode.id);
-                var newIndex = entity.Indexes.FirstOrDefault(x => x.Id == id);
+                var newId = Guid.NewGuid(); // indexNode.Id
+                var newIndex = entity.Indexes.FirstOrDefault(x => x.Id == newId);
                 if (newIndex == null)
                 {
-                    newIndex = new Index(entity.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, id) });
+                    newIndex = new Index(entity.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, newId) });
                     entity.Indexes.Add(newIndex);
                 }
-                newIndex.Clustered = indexNode.clustered != 0;
-                newIndex.ImportedName = indexNode.importedname;
-                newIndex.IndexType = (IndexTypeConstants)indexNode.indextype;
-                newIndex.IsUnique = indexNode.isunique != 0;
+                newIndex.Clustered = indexNode.Clustered;
+                newIndex.ImportedName = indexNode.ImportedName;
+                newIndex.IndexType = (IndexTypeConstants)indexNode.IndexType;
+                newIndex.IsUnique = indexNode.IsUnique;
 
-                foreach (var indexColumnNode in indexNode.indexcolumnset)
+                var loopIndex = 0;
+                foreach (var indexColumnNode in indexNode.Fields)
                 {
-                    id = new Guid(indexColumnNode.id);
-                    var newIndexColumn = newIndex.IndexColumns.FirstOrDefault(x => x.Id == id);
+                    var newId2 = Guid.NewGuid(); //indexColumnNode.Id
+                    var newIndexColumn = newIndex.IndexColumns.FirstOrDefault(x => x.Id == newId2);
                     if (newIndexColumn == null)
                     {
-                        newIndexColumn = new IndexColumn(entity.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, id) });
+                        newIndexColumn = new IndexColumn(entity.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, newId2) });
                         newIndex.IndexColumns.Add(newIndexColumn);
                     }
-                    newIndexColumn.Ascending = indexColumnNode.ascending != 0;
-                    newIndexColumn.FieldID = new Guid(indexColumnNode.fieldid);
-                    newIndexColumn.SortOrder = indexColumnNode.sortorder;
+                    newIndexColumn.Ascending = indexColumnNode.Ascending;
+                    newIndexColumn.FieldID = indexColumnNode.FieldId;
+                    newIndexColumn.SortOrder = loopIndex++;
                     newIndexColumn.IsInternal = true;
                 }
             }
 
         }
 
-        private static void LoadEntityRelations(Entity entity, DiskModel diskModel)
+        private static void LoadEntityRelations(Entity entity, DiskModelYaml diskModel)
         {
-            foreach (var relationNode in diskModel.Relations.Where(x => new Guid(x.id) == entity.Id).SelectMany(x => x.relation))
+            var entityYaml = diskModel.Entities.FirstOrDefault(x => x.Id == entity.Id);
+            if (entityYaml == null) return;
+            foreach (var relationNode in entityYaml.Relations)
             {
-                var childid = new Guid(relationNode.childid);
-                var child = entity.nHydrateModel.Entities.FirstOrDefault(x => x.Id == childid);
+                var child = entity.nHydrateModel.Entities.FirstOrDefault(x => x.Id == relationNode.ForeignEntityId);
                 if (child != null)
                 {
                     entity.ChildEntities.Add(child);
                     var connection = entity.Store.CurrentContext.Partitions.First().Value.ElementDirectory.AllElements.Last() as EntityHasEntities;
-                    connection.InternalId = new Guid(relationNode.id);
-                    connection.IsEnforced = relationNode.isenforced != 0;
-                    connection.DeleteAction = (DeleteActionConstants)Enum.Parse(typeof(DeleteActionConstants), relationNode.deleteaction);
-                    connection.RoleName = relationNode.rolename;
+                    connection.InternalId = Guid.NewGuid(); //relationNode.Id;
+                    connection.IsEnforced = relationNode.IsEnforced;
+                    connection.DeleteAction = relationNode.DeleteAction.Convert<DeleteActionConstants>();
+                    connection.RoleName = relationNode.RoleName;
 
-                    foreach (var relationFieldNode in relationNode.relationfieldset)
+                    foreach (var relationFieldNode in relationNode.Fields)
                     {
-                        var sourceFieldID = new Guid(relationFieldNode.sourcefieldid);
-                        var targetFieldID = new Guid(relationFieldNode.targetfieldid);
+                        var sourceFieldID = relationFieldNode.PrimaryFieldId;
+                        var targetFieldID = relationFieldNode.ForeignFieldId;
                         var sourceField = entity.Fields.FirstOrDefault(x => x.Id == sourceFieldID);
                         var targetField = entity.nHydrateModel.Entities.SelectMany(x => x.Fields).FirstOrDefault(x => x.Id == targetFieldID);
                         if ((sourceField != null) && (targetField != null))
                         {
-                            var id = new Guid(relationFieldNode.id);
-                            var newRelationField = new RelationField(entity.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, id) });
+                            var newRelationField = new RelationField(entity.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, Guid.NewGuid()) });
                             newRelationField.SourceFieldId = sourceFieldID;
                             newRelationField.TargetFieldId = targetFieldID;
                             newRelationField.RelationID = connection.Id;
@@ -482,63 +485,63 @@ namespace nHydrate.Dsl.Custom
 
         }
 
-        private static void LoadEntityStaticData(Entity entity, DiskModel diskModel)
+        private static void LoadEntityStaticData(Entity entity, DiskModelYaml diskModel)
         {
-            foreach (var dataNode in diskModel.StaticData.Where(x => new Guid(x.id) == entity.Id).SelectMany(x => x.data))
+            var entityYaml = diskModel.Entities.FirstOrDefault(x => x.Id == entity.Id);
+            if (entityYaml == null) return;
+            foreach (var dataNode in entityYaml.StaticData)
             {
                 var newData = new StaticData(entity.Partition);
                 entity.StaticDatum.Add(newData);
-                newData.OrderKey = dataNode.orderkey;
-                newData.Value = dataNode.value;
-                newData.ColumnKey = new Guid(dataNode.columnkey);
+                newData.OrderKey = dataNode.SortOrder;
+                newData.Value = dataNode.Value;
+                newData.ColumnKey = dataNode.ColumnId;
             }
 
         }
 
-        private static void LoadFromDisk(IEnumerable<View> list, nHydrateModel model, DiskModel diskModel)
+        private static void LoadFromDisk(IEnumerable<View> list, nHydrateModel model, DiskModelYaml diskModel)
         {
             #region Load other parameter/field information
 
             foreach (var view in diskModel.Views)
             {
-                var item = list.FirstOrDefault(x => x.Id == new Guid(view.id));
+                var item = list.FirstOrDefault(x => x.Id == view.Id);
                 if (item == null)
                 {
-                    item = new View(model.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, new Guid(view.id)) });
+                    item = new View(model.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, view.Id) });
                     model.Views.Add(item);
                 }
 
                 System.Windows.Forms.Application.DoEvents();
 
-                item.Name = view.name;
-                item.CodeFacade = view.codefacade;
-                item.Schema = view.schema;
-                item.GeneratesDoubleDerived = view.generatesdoublederived != 0;
-                item.Summary = view.summary;
-                item.SQL = view.sql;
+                item.Name = view.Name;
+                item.CodeFacade = view.CodeFacade;
+                item.Schema = view.Schema;
+                item.GeneratesDoubleDerived = view.GeneratesDoubleDerived;
+                item.Summary = view.Summary;
+                item.SQL = view.Sql;
 
                 var nameList = new List<string>();
-                foreach (var fieldNode in view.fieldset)
+                foreach (var fieldNode in view.Fields)
                 {
-                    var subItemID = new Guid(fieldNode.id);
-                    var field = item.Fields.FirstOrDefault(x => x.Id == subItemID);
+                    var field = item.Fields.FirstOrDefault(x => x.Id == fieldNode.Id);
                     if (field == null)
                     {
-                        field = new ViewField(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, subItemID) });
+                        field = new ViewField(item.Partition, new PropertyAssignment[] { new PropertyAssignment(ElementFactory.IdPropertyAssignment, fieldNode.Id) });
                         item.Fields.Add(field);
                     }
 
-                    field.Name = fieldNode.name;
-                    field.CodeFacade = fieldNode.codefacade;
+                    field.Name = fieldNode.Name;
+                    field.CodeFacade = fieldNode.CodeFacade;
                     nameList.Add(field.Name.ToLower());
-                    field.Nullable = fieldNode.nullable != 0;
-                    if (Enum.TryParse<DataTypeConstants>(fieldNode.datatype, true, out var dt))
-                        field.DataType = dt;
-                    field.Default = fieldNode.@default;
-                    field.Length = fieldNode.length;
-                    field.Scale = fieldNode.scale;
-                    field.Summary = fieldNode.summary;
-                    field.IsPrimaryKey = fieldNode.isprimarykey != 0;
+                    field.Nullable = fieldNode.Nullable;
+                    field.DataType = fieldNode.Datatype.Convert<DataTypeConstants>();
+                    field.Default = fieldNode.Default;
+                    field.Length = fieldNode.Length;
+                    field.Scale = fieldNode.Scale;
+                    field.Summary = fieldNode.Summary;
+                    field.IsPrimaryKey = fieldNode.IsPrimaryKey;
                 }
                 if (item.Fields.Remove(x => !nameList.Contains(x.Name.ToLower())) > 0)
                     item.nHydrateModel.IsDirty = true;

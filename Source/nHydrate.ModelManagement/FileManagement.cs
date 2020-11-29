@@ -105,6 +105,22 @@ namespace nHydrate.ModelManagement
                 results.Indexes.Add(GetObject<nHydrate.ModelManagement.Index.configuration>(f));
             }
 
+            //Clean up indexes
+            var indexIdList = new List<string>();
+            foreach(var i1 in results.Indexes)
+            {
+                var newList = new List<Index.configurationIndex>();
+                foreach (var i2 in i1.index)
+                {
+                    if (!indexIdList.Contains(i2.id))
+                    {
+                        indexIdList.Add(i2.id);
+                        newList.Add(i2);
+                    }
+                }
+                i1.index = newList.ToArray();
+            }
+
             //Load Relations
             foreach (var f in Directory.GetFiles(folder, "*.relations.xml"))
             {
@@ -205,6 +221,87 @@ namespace nHydrate.ModelManagement
             results.Entities.Clear();
             foreach (var f in fList)
                 results.Entities.Add(GetYamlObject<EntityYaml>(f));
+
+            //Validate model. Ensure all Guids match up, etc
+            var allEntities = results.Entities.Select(x => x.Id).ToList();
+            if (allEntities.Count != allEntities.Distinct().Count())
+                throw new Exception("Entities must have unique ID values.");
+
+            foreach (var entity in results.Entities)
+            {
+                //Fill in ID if need be
+                if (entity.Id == Guid.Empty)
+                    entity.Id = Guid.NewGuid();
+
+                //Fill in field IDs if need be
+                entity.Fields
+                    .Where(x => x.Id == Guid.Empty)
+                    .ToList()
+                    .ForEach(x => x.Id = Guid.NewGuid());
+
+                if (entity.Fields.Count != entity.Fields.Select(x => x.Id).Count())
+                    throw new Exception("All fields must have a unique ID.");
+
+                //Indexes
+                if (entity.Indexes.Count(x => x.Clustered) > 1)
+                    throw new Exception("An entity can have only one clustered index.");
+
+                foreach (var index in entity.Indexes)
+                {
+                    foreach (var field in index.Fields)
+                    {
+                        var targetField = entity.Fields.FirstOrDefault(x => x.Id == field.FieldId);
+                        if (field.FieldId == Guid.Empty)
+                            targetField = entity.Fields.FirstOrDefault(x => x.Name?.ToLower() == field.FieldName?.ToLower());
+
+                        if (targetField == null)
+                            throw new Exception("The index must map to an existing field.");
+
+                        field.FieldId = targetField.Id;
+                        field.FieldName = targetField.Name;
+                    }
+                }
+
+                //Relations
+                foreach (var relation in entity.Relations)
+                {
+                    if (!relation.Fields.Any())
+                        throw new Exception("The relation must have at least one field.");
+
+                    var foreignEntity = results.Entities.FirstOrDefault(x => x.Id == relation.ForeignEntityId);
+                    if (relation.ForeignEntityId == Guid.Empty)
+                        foreignEntity = results.Entities.FirstOrDefault(x => x.Name?.ToLower() == relation.ForeignEntityName?.ToLower());
+
+                    if (foreignEntity == null)
+                        throw new Exception("The relation must map to an existing entity.");
+
+                    relation.ForeignEntityName = foreignEntity.Name;
+                    relation.ForeignEntityId = foreignEntity.Id;
+                    foreach (var field in relation.Fields)
+                    {
+                        var primaryField = entity.Fields.FirstOrDefault(x => x.Id == field.PrimaryFieldId);
+                        if (field.PrimaryFieldId == Guid.Empty)
+                            primaryField = entity.Fields.FirstOrDefault(x => x.Name?.ToLower() == field.PrimaryFieldName?.ToLower());
+
+                        var foreignField = foreignEntity.Fields.FirstOrDefault(x => x.Id == field.ForeignFieldId);
+                        if(field.ForeignFieldId == Guid.Empty)
+                            foreignField = foreignEntity.Fields.FirstOrDefault(x => x.Name?.ToLower() == field.ForeignFieldName?.ToLower());
+
+                        if (primaryField == null)
+                            throw new Exception("The relation primary field must map to an existing field.");
+
+                        if (foreignField == null)
+                            throw new Exception("The relation primary field must map to an existing field.");
+
+                        field.PrimaryFieldId = primaryField.Id;
+                        field.PrimaryFieldName = primaryField.Name;
+
+                        field.ForeignFieldId = foreignField.Id;
+                        field.ForeignFieldName = foreignField.Name;
+                    }
+                }
+            }
+
         }
 
         private static void LoadViewsYaml(string rootFolder, DiskModelYaml results)
@@ -381,7 +478,7 @@ namespace nHydrate.ModelManagement
                     AllowTimestamp = obj.allowtimestamp != 0,
                     CodeFacade = obj.codefacade,
                     GeneratesDoubleDerived = obj.generatesdoublederived != 0,
-                    Id = obj.id,
+                    Id = obj.id.ToGuid(),
                     Immutable = obj.immutable != 0,
                     TypedTable = obj.typedentity.ToEnum<Utilities.TypedTableConstants>(),
                     IsAssociative = obj.isassociative != 0,
@@ -402,7 +499,7 @@ namespace nHydrate.ModelManagement
                         Default = ff.@default,
                         DefaultIsFunc = ff.defaultisfunc != 0,
                         Formula = ff.formula,
-                        Id = ff.id,
+                        Id = ff.id.ToGuid(),
                         Identity = ff.identity.ToEnum<Utilities.IdentityTypeConstants>(),
                         IsCalculated = ff.Iscalculated != 0,
                         IsIndexed = ff.isindexed != 0,
@@ -427,7 +524,7 @@ namespace nHydrate.ModelManagement
                         var newIndex = newEntity.Indexes.AddItem(new IndexYaml
                         {
                             Clustered = ifield.clustered != 0,
-                            Id = ifield.id,
+                            //Id = ifield.id.ToGuid(),
                             ImportedName = ifield.importedname,
                             IndexType = (Utilities.IndexTypeConstants)ifield.indextype,
                             IsUnique = ifield.isunique != 0,
@@ -439,8 +536,9 @@ namespace nHydrate.ModelManagement
                             newIndex.Fields.AddItem(new IndexFieldYaml
                             {
                                 Ascending = i2.ascending != 0,
-                                FieldId = i2.fieldid,
-                                Id = i2.id,
+                                FieldId = i2.fieldid.ToGuid(),
+                                FieldName = newEntity.Fields.FirstOrDefault(x => x.Id == i2.fieldid.ToGuid())?.Name,
+                                //Id = i2.id.ToGuid(),
                             });
                         }
                     }
@@ -454,9 +552,9 @@ namespace nHydrate.ModelManagement
                     {
                         newEntity.StaticData.AddItem(new StaticDataYaml
                         {
-                            ColumnKey = dd.columnkey,
+                            ColumnId = dd.columnkey.ToGuid(),
                             Value = dd.value,
-                            OrderKey = dd.orderkey,
+                            SortOrder = dd.orderkey,
                         });
                     }
                 }
@@ -465,10 +563,9 @@ namespace nHydrate.ModelManagement
 
             #region Relations (After all entities are loaded)
 
-            var qq = model.Relations.Where(x => model.Entities.Select(x => x.id).Contains(x.id)).ToList();
             foreach (var obj in model.Entities)
             {
-                var newEntity = model2.Entities.First(x => x.Id == obj.id);
+                var newEntity = model2.Entities.First(x => x.Id == new Guid(obj.id));
                 foreach (var rr in model.Relations.Where(x => x.id == obj.id))
                 {
                     foreach (var relation in rr.relation)
@@ -477,23 +574,23 @@ namespace nHydrate.ModelManagement
                         var entity2 = model.Entities.FirstOrDefault(x => x.id == relation.childid);
                         var newRelation = newEntity.Relations.AddItem(new RelationYaml
                         {
-                            Id = relation.id,
-                            ChildEntity = entity2.name,
-                            ChildId = entity2.id,
+                            //Id = relation.id.ToGuid(),
+                            ForeignEntityName = entity2.name,
+                            ForeignEntityId = entity2.id.ToGuid(),
                         });
                         newRelation.IsEnforced = relation.isenforced != 0;
-                        newRelation.DeleteAction = relation.deleteaction;
+                        newRelation.DeleteAction = relation.deleteaction.ToEnum<Utilities.DeleteActionConstants>();
                         newRelation.RoleName = relation.rolename;
                         newRelation.Summary = relation.summary;
                         foreach (var fsi in relation.relationfieldset)
                         {
                             var newRelationField = new RelationFieldYaml
                             {
-                                Id = fsi.id,
-                                SourceFieldId = fsi.sourcefieldid,
-                                SourceFieldName = entity.fieldset.FirstOrDefault(x => x.id == fsi.sourcefieldid)?.name,
-                                TargetFieldId = fsi.targetfieldid,
-                                TargetFieldName = entity2.fieldset.FirstOrDefault(x => x.id == fsi.targetfieldid)?.name,
+                                //Id = fsi.id.ToGuid(),
+                                PrimaryFieldId = fsi.sourcefieldid.ToGuid(),
+                                PrimaryFieldName = entity.fieldset.FirstOrDefault(x => x.id == fsi.sourcefieldid)?.name,
+                                ForeignFieldId = fsi.targetfieldid.ToGuid(),
+                                ForeignFieldName = entity2.fieldset.FirstOrDefault(x => x.id == fsi.targetfieldid)?.name,
                             };
                             newRelation.Fields.AddItem(newRelationField);
                         }
@@ -515,7 +612,7 @@ namespace nHydrate.ModelManagement
                 {
                     CodeFacade = obj.codefacade,
                     GeneratesDoubleDerived = obj.generatesdoublederived != 0,
-                    Id = obj.id,
+                    Id = obj.id.ToGuid(),
                     Sql = obj.sql,
                     Name = obj.name,
                     Schema = obj.schema,
@@ -530,7 +627,7 @@ namespace nHydrate.ModelManagement
                         CodeFacade = ff.codefacade,
                         Datatype = ff.datatype.ToEnum<Utilities.DataTypeConstants>(),
                         Default = ff.@default,
-                        Id = ff.id,
+                        Id = ff.id.ToGuid(),
                         IsPrimaryKey = ff.isprimarykey != 0,
                         Length = ff.length,
                         Name = ff.name,
@@ -647,11 +744,7 @@ namespace nHydrate.ModelManagement
             foreach (var f in files)
             {
                 var fi = new FileInfo(f);
-                if (fi.Name.ToLower().Contains("readme.nhydrate.txt"))
-                {
-                    //Skip
-                }
-                else if (generatedFiles.Contains(f))
+                if (generatedFiles.Contains(f))
                 {
                     //Skip
                 }
