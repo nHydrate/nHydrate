@@ -1293,30 +1293,11 @@ namespace PROJECTNAMESPACE
 
             #region Properties
 
-            public string FullName
-            {
-                get { return _fullName; }
-            }
-
-            public string FileName
-            {
-                get { return _fileName; }
-            }
-
-            public string FileExtension
-            {
-                get { return _fileExtension; }
-            }
-
-            public string AsmLocation
-            {
-                get { return _asmLocation; }
-            }
-
-            public string AsmNamespace
-            {
-                get { return _asmNamespace; }
-            }
+            public string FullName { get { return _fullName; } }
+            public string FileName { get { return _fileName; } }
+            public string FileExtension { get { return _fileExtension; } }
+            public string AsmLocation { get { return _asmLocation; } }
+            public string AsmNamespace { get { return _asmNamespace; } }
 
             #endregion
 
@@ -1589,10 +1570,7 @@ namespace PROJECTNAMESPACE
         }
 
         /// <summary />
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => base.GetHashCode();
 
         /// <summary />
         public string ToString(string seperationChars)
@@ -1608,10 +1586,7 @@ namespace PROJECTNAMESPACE
         }
 
         /// <summary />
-        public override string ToString()
-        {
-            return this.ToString(".");
-        }
+        public override string ToString() => this.ToString(".");
 
         #endregion
 

@@ -202,10 +202,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Serves as a hash function for this type.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public override int GetHashCode()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return base.GetHashCode();");
-            sb.AppendLine("		}");
+            sb.AppendLine("		public override int GetHashCode() => base.GetHashCode();");
             sb.AppendLine();
 
             sb.AppendLine("		#endregion");

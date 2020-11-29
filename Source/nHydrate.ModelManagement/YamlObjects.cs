@@ -4,6 +4,7 @@ using System.ComponentModel;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
+using static nHydrate.ModelManagement.Utilities;
 
 namespace nHydrate.ModelManagement
 {
@@ -17,32 +18,32 @@ namespace nHydrate.ModelManagement
     public class EntityYaml
     {
         public string Name { get; set; }
-     
+
         public string Id { get; set; }
-     
+
         public bool AllowCreateAudit { get; set; }
         public bool AllowModifyAudit { get; set; }
-     
+
         public bool AllowTimestamp { get; set; }
-      
+
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue("")]
         public string CodeFacade { get; set; }
-      
+
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(false)]
         public bool Immutable { get; set; }
-      
+
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(false)]
         public bool IsAssociative { get; set; }
 
-        public string Identity { get; set; }
+        public IdentityTypeConstants Identity { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue("")]
         public string Schema { get; set; }
-   
+
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue("")]
         public string Summary { get; set; }
@@ -66,14 +67,14 @@ namespace nHydrate.ModelManagement
 
     public class EntityFieldYaml
     {
-        public string Id { get; set; }
-        
         public string Name { get; set; }
-        
-        public bool Nullable { get; set; }
-        
+
+        public string Id { get; set; }
+
         public Utilities.DataTypeConstants Datatype { get; set; }
-        
+
+        public bool Nullable { get; set; }
+
         public string Identity { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
@@ -103,11 +104,11 @@ namespace nHydrate.ModelManagement
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(false)]
         public bool IsPrimaryKey { get; set; }
-        
+
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(false)]
         public bool IsCalculated { get; set; }
-        
+
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(false)]
         public bool IsUnique { get; set; }
@@ -132,13 +133,13 @@ namespace nHydrate.ModelManagement
     public class RelationYaml
     {
         public string ChildEntity { get; set; }
-        
+
         public string ChildId { get; set; }
-        
+
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(true)]
         public bool IsEnforced { get; set; }
-        
+
         public string DeleteAction { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
@@ -154,15 +155,11 @@ namespace nHydrate.ModelManagement
 
     public class RelationFieldYaml
     {
-        public string Id { get; set; }
-        
-        public string SourceFieldId { get; set; }
-        
         public string SourceFieldName { get; set; }
-        
-        public string TargetFieldId { get; set; }
-        
         public string TargetFieldName { get; set; }
+        public string Id { get; set; }
+        public string SourceFieldId { get; set; }
+        public string TargetFieldId { get; set; }
     }
 
     public class IndexYaml
@@ -197,9 +194,9 @@ namespace nHydrate.ModelManagement
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(true)]
         public bool Ascending { get; set; }
-        
+
         public string FieldId { get; set; }
-        
+
         public string Id { get; set; }
     }
 
@@ -238,13 +235,13 @@ namespace nHydrate.ModelManagement
 
     public class ViewFieldYaml
     {
-        public string Id { get; set; }
-
         public string Name { get; set; }
 
-        public bool Nullable { get; set; }
+        public string Id { get; set; }
 
         public Utilities.DataTypeConstants Datatype { get; set; }
+
+        public bool Nullable { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue("")]

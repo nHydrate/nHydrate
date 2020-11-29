@@ -266,8 +266,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// </summary>");
             sb.AppendLine($"		{scope} {doubleDerivedClassName}()");
             sb.AppendLine("		{");
-            if (_item.PrimaryKeyColumns.Count == 1 && _item.PrimaryKeyColumns[0].DataType == System.Data.SqlDbType.UniqueIdentifier)
-                sb.AppendLine("			this." + _item.PrimaryKeyColumns[0].PascalName + " = Guid.NewGuid();");
             sb.Append(this.SetInitialValues("this"));
             sb.AppendLine("		}");
             sb.AppendLine();
@@ -283,10 +281,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Creates a shallow copy of this object");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine($"		object ICloneable.Clone()");
-            sb.AppendLine("		{");
-            sb.AppendLine($"			return {this.GetLocalNamespace()}.Entity.{_item.PascalName}.Clone(this);");
-            sb.AppendLine("		}");
+            sb.AppendLine($"		object ICloneable.Clone() => {this.GetLocalNamespace()}.Entity.{_item.PascalName}.Clone(this);");
             sb.AppendLine();
 
             sb.AppendLine("		/// <summary>");
@@ -564,20 +559,17 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                             sb.AppendLine($"		/// The navigation definition for walking {_item.PascalName}->" + childTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? "" : " (role: '" + otherRelation.PascalRoleName + "') (Multiplicity M:N)"));
                             sb.AppendLine("		/// </summary>");
                             // This was "protected internal" however there are times that a navigation property is needed
-                            sb.AppendLine($"		public virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {otherRelation.PascalRoleName}{childTable.PascalName}List");
-                            sb.AppendLine("		{");
-                            sb.AppendLine("			get; set;");
-                            sb.AppendLine("		}");
+                            sb.AppendLine($"		public virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {otherRelation.PascalRoleName}{childTable.PascalName}List" + "{ get; set; }");
                             sb.AppendLine();
 
-                            sb.AppendLine("        /// <summary>");
-                            sb.AppendLine($"        /// Gets a readonly list of associated {targetRelation.ParentTable.PascalName} entities for this many-to-many relationship");
-                            sb.AppendLine("        /// </summary>");
-                            sb.AppendLine("        [System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
-                            sb.AppendLine($"        public IList<{this.GetLocalNamespace()}.Entity.{targetRelation.ParentTable.PascalName}> Associated{targetRelation.ParentTable.PascalName}List");
-                            sb.AppendLine("        {");
-                            sb.AppendLine("            get { return this." + otherRelation.PascalRoleName + childTable.PascalName + "List?.Select(x => x." + targetRelation.PascalRoleName + targetRelation.ParentTable.PascalName + ").ToList(); }");
-                            sb.AppendLine("        }");
+                            sb.AppendLine("		/// <summary>");
+                            sb.AppendLine($"		/// Gets a readonly list of associated {targetRelation.ParentTable.PascalName} entities for this many-to-many relationship");
+                            sb.AppendLine("		/// </summary>");
+                            sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
+                            sb.AppendLine($"		public IList<{this.GetLocalNamespace()}.Entity.{targetRelation.ParentTable.PascalName}> Associated{targetRelation.ParentTable.PascalName}List");
+                            sb.AppendLine("		{");
+                            sb.AppendLine("			get { return this." + otherRelation.PascalRoleName + childTable.PascalName + "List?.Select(x => x." + targetRelation.PascalRoleName + targetRelation.ParentTable.PascalName + ").ToList(); }");
+                            sb.AppendLine("		}");
                             sb.AppendLine();
                         }
                     }
@@ -588,10 +580,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         sb.AppendLine("		/// <summary>");
                         sb.AppendLine($"		/// The navigation definition for walking {parentTable.PascalName}->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:N)"));
                         sb.AppendLine("		/// </summary>");
-                        sb.AppendLine($"		public virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {relation.PascalRoleName}{childTable.PascalName}List");
-                        sb.AppendLine("		{");
-                        sb.AppendLine("			get; set;");
-                        sb.AppendLine("		}");
+                        sb.AppendLine($"		public virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {relation.PascalRoleName}{childTable.PascalName}List" + " { get; set; }");
                         sb.AppendLine();
                     }
                 }
@@ -699,10 +688,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("			return 0;");
             sb.AppendLine("		}");
             sb.AppendLine();
-            sb.AppendLine($"		int {this.GetLocalNamespace()}.IReadOnlyBusinessObject.GetMaxLength(Enum field)");
-            sb.AppendLine("		{");
-            sb.AppendLine($"			return GetMaxLength(({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants)field);");
-            sb.AppendLine("		}");
+            sb.AppendLine($"		int {this.GetLocalNamespace()}.IReadOnlyBusinessObject.GetMaxLength(Enum field) => GetMaxLength(({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants)field);");
             sb.AppendLine();
             sb.AppendLine("		#endregion");
             sb.AppendLine();
@@ -1070,10 +1056,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		/// <summary>");
             sb.AppendLine("		/// Serves as a hash function for this type.");
             sb.AppendLine("		/// </summary>");
-            sb.AppendLine("		public override int GetHashCode()");
-            sb.AppendLine("		{");
-            sb.AppendLine("			return base.GetHashCode();");
-            sb.AppendLine("		}");
+            sb.AppendLine("		public override int GetHashCode() => base.GetHashCode();");
             sb.AppendLine();
 
             sb.AppendLine("		#endregion");

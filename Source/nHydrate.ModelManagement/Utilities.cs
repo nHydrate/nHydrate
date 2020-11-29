@@ -13,6 +13,14 @@ namespace nHydrate.ModelManagement
         }
 
         //Copy from Dsl
+        public enum IdentityTypeConstants
+        {
+            None,
+            Database,
+            Code,
+        }
+
+        //Copy from Dsl
         public enum DataTypeConstants
         {
             BigInt,

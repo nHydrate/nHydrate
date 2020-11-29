@@ -1296,30 +1296,12 @@ namespace PROJECTNAMESPACE
 
             #region Properties
 
-            public string FullName
-            {
-                get { return _fullName; }
-            }
+            public string FullName { get { return _fullName; } }
+            public string FileName { get { return _fileName; } }
+            public string FileExtension { get { return _fileExtension; } }
+            public string AsmLocation { get { return _asmLocation; } }
+            public string AsmNamespace { get { return _asmNamespace; } }
 
-            public string FileName
-            {
-                get { return _fileName; }
-            }
-
-            public string FileExtension
-            {
-                get { return _fileExtension; }
-            }
-
-            public string AsmLocation
-            {
-                get { return _asmLocation; }
-            }
-
-            public string AsmNamespace
-            {
-                get { return _asmNamespace; }
-            }
 
             #endregion
 

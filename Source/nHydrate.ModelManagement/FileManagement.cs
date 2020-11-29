@@ -258,133 +258,6 @@ namespace nHydrate.ModelManagement
                 SaveObject(obj, f, generatedFileList);
             }
 
-
-            //YAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAML
-            //Entities
-            foreach (var obj in model.Entities)
-            {
-                var newEntity = new EntityYaml
-                {
-                    AllowCreateAudit = obj.allowcreateaudit != 0,
-                    AllowModifyAudit = obj.allowmodifyaudit != 0,
-                    AllowTimestamp = obj.allowtimestamp != 0,
-                    CodeFacade = obj.codefacade,
-                    GeneratesDoubleDerived = obj.generatesdoublederived != 0,
-                    Id = obj.id,
-                    Immutable = obj.immutable != 0,
-                    IsAssociative = obj.isassociative != 0,
-                    IsTenant = obj.isTenant != 0,
-                    Name = obj.name,
-                    Schema = obj.schema,
-                    Summary = obj.summary,
-                    Identity = obj.typedentity,
-                };
-
-                //Fields
-                foreach (var ff in obj.fieldset.OrderBy(x => x.sortorder))
-                {
-                    newEntity.Fields.Add(new EntityFieldYaml
-                    {
-                        CodeFacade = ff.codefacade,
-                        DataFormatString = ff.dataformatstring,
-                        Datatype = ff.datatype.ToEnum<Utilities.DataTypeConstants>(),
-                        Default = ff.@default,
-                        DefaultIsFunc = ff.defaultisfunc != 0,
-                        Formula = ff.formula,
-                        Id = ff.id,
-                        Identity = ff.identity,
-                        IsCalculated = ff.Iscalculated != 0,
-                        IsIndexed = ff.isindexed != 0,
-                        IsPrimaryKey = ff.isprimarykey != 0,
-                        IsReadonly = ff.isreadonly != 0,
-                        IsUnique = ff.isunique != 0,
-                        Length = ff.length,
-                        Name = ff.name,
-                        Nullable = ff.nullable != 0,
-                        Obsolete = ff.obsolete != 0,
-                        Scale = ff.scale,
-                        Summary = ff.summary,
-                    });
-                }
-
-                //Relations
-                foreach (var rr in model.Relations.Where(x => x.id == obj.id))
-                {
-                    foreach(var relation in rr.relation)
-                    {
-                        var entity = model.Entities.FirstOrDefault(x => x.id == rr.id);
-                        var entity2 = model.Entities.FirstOrDefault(x => x.id == rr.relation[0].childid);
-                        var newRelation = new RelationYaml
-                        {
-                            ChildEntity = entity2.name,
-                            ChildId = entity2.id,
-                        };
-                        newEntity.Relations.Add(newRelation);
-                        newRelation.IsEnforced = rr.relation[0].isenforced != 0;
-                        newRelation.DeleteAction = rr.relation[0].deleteaction;
-                        newRelation.RoleName = rr.relation[0].rolename;
-                        newRelation.Summary = rr.relation[0].summary;
-                        foreach (var fsi in rr.relation[0].relationfieldset)
-                        {
-                            var newRelationField = new RelationFieldYaml
-                            {
-                                Id = fsi.id,
-                                SourceFieldId = fsi.sourcefieldid,
-                                SourceFieldName = entity.fieldset.FirstOrDefault(x => x.id == fsi.sourcefieldid)?.name,
-                                TargetFieldId = fsi.targetfieldid,
-                                TargetFieldName = entity2.fieldset.FirstOrDefault(x => x.id == fsi.targetfieldid)?.name,
-                            };
-                            newRelation.Fields.Add(newRelationField);
-                        }
-                    }
-                }
-
-                //Indexes
-                foreach (var ii in model.Indexes.Where(x => x.id == obj.id))
-                {
-                    foreach (var ifield in ii.index)
-                    {
-                        var newIndex = newEntity.Indexes.AddItem(new IndexYaml
-                        {
-                            Clustered = ifield.clustered != 0,
-                            Id = ifield.id,
-                            ImportedName = ifield.importedname,
-                            IndexType = (Utilities.IndexTypeConstants)ifield.indextype,
-                            IsUnique = ifield.isunique != 0,
-                            Summary = ifield.summary,
-                        });
-
-                        foreach (var i2 in ifield.indexcolumnset.OrderBy(x => x.sortorder))
-                        {
-                            newIndex.Fields.AddItem(new IndexFieldYaml
-                            {
-                                Ascending = i2.ascending != 0,
-                                FieldId = i2.fieldid,
-                                Id = i2.id,
-                            });
-                        }
-                    }
-                }
-
-                //Static data
-                foreach (var sd in model.StaticData.Where(x => x.id == obj.id))
-                {
-                    foreach (var dd in sd.data.OrderBy(x => x.orderkey))
-                    {
-                        newEntity.StaticData.AddItem(new StaticDataYaml
-                        {
-                            Key = dd.columnkey,
-                            Value = dd.value
-                        });
-                    }
-                }
-
-                SaveYamlObject(newEntity, Path.Combine(folder, obj.name + ".yaml"), generatedFileList);
-            }
-            //YAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAML
-
-
-
             WriteReadMeFile(folder, generatedFileList);
         }
 
@@ -402,44 +275,6 @@ namespace nHydrate.ModelManagement
                 var f1 = Path.Combine(folder, obj.name + ".sql");
                 WriteFileIfNeedBe(f1, obj.sql, new List<string>());
             }
-
-            //YAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAML
-            //Entities
-            foreach (var obj in model.Views)
-            {
-                var newEntity = new ViewYaml
-                {
-                    CodeFacade = obj.codefacade,
-                    GeneratesDoubleDerived = obj.generatesdoublederived != 0,
-                    Id = obj.id,
-                    Sql = obj.sql,
-                    Name = obj.name,
-                    Schema = obj.schema,
-                    Summary = obj.summary,
-                };
-
-                //Fields
-                foreach (var ff in obj.fieldset)
-                {
-                    newEntity.Fields.Add(new ViewFieldYaml
-                    {
-                        CodeFacade = ff.codefacade,
-                        Datatype = ff.datatype.ToEnum<Utilities.DataTypeConstants>(),
-                        Default = ff.@default,
-                        Id = ff.id,
-                        IsPrimaryKey = ff.isprimarykey != 0,
-                        Length = ff.length,
-                        Name = ff.name,
-                        Nullable = ff.nullable != 0,
-                        Scale = ff.scale,
-                        Summary = ff.summary,
-                    });
-                }
-
-                SaveYamlObject(newEntity, Path.Combine(folder, obj.name + ".yaml"), generatedFileList);
-            }
-
-            //YAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAMLYAML
 
             WriteReadMeFile(folder, generatedFileList);
         }
@@ -466,13 +301,13 @@ namespace nHydrate.ModelManagement
                     Name = obj.name,
                     Schema = obj.schema,
                     Summary = obj.summary,
-                    Identity = obj.typedentity,
+                    Identity = obj.typedentity.ToEnum<Utilities.IdentityTypeConstants>(),
                 };
 
                 //Fields
                 foreach (var ff in obj.fieldset.OrderBy(x => x.sortorder))
                 {
-                    newEntity.Fields.Add(new EntityFieldYaml
+                    newEntity.Fields.AddItem(new EntityFieldYaml
                     {
                         CodeFacade = ff.codefacade,
                         DataFormatString = ff.dataformatstring,
@@ -594,7 +429,7 @@ namespace nHydrate.ModelManagement
                 //Fields
                 foreach (var ff in obj.fieldset)
                 {
-                    newView.Fields.Add(new ViewFieldYaml
+                    newView.Fields.AddItem(new ViewFieldYaml
                     {
                         CodeFacade = ff.codefacade,
                         Datatype = ff.datatype.ToEnum<Utilities.DataTypeConstants>(),
