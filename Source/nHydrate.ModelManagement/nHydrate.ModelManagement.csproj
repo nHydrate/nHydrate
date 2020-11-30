@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="DiskModel.cs" />
     <Compile Include="FileManagement.cs" />
+    <Compile Include="ModelException.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="XmlMapModels.cs" />
     <Compile Include="YamlObjects.cs" />

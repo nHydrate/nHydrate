@@ -11,8 +11,8 @@ namespace nHydrate.ModelManagement
 {
     public static class FileManagement
     {
-        private const string FOLDER_ET = "_Entities";
-        private const string FOLDER_VW = "_Views";
+        private const string FOLDER_ET = "_entities";
+        private const string FOLDER_VW = "_views";
         public const string ModelExtension = ".nhydrate.yaml";
 
         public static DiskModel Load(string rootFolder, string modelName, out bool wasLoaded)
@@ -251,11 +251,11 @@ namespace nHydrate.ModelManagement
                     .ForEach(x => x.Id = Guid.NewGuid());
 
                 if (entity.Fields.Count != entity.Fields.Select(x => x.Id).Count())
-                    throw new ModelException("All fields must have a unique ID.");
+                    throw new ModelException($"Entity: '{entity.Name}': All fields must have a unique ID.");
 
                 //Indexes
                 if (entity.Indexes.Count(x => x.Clustered) > 1)
-                    throw new ModelException("An entity can have only one clustered index.");
+                    throw new ModelException($"Entity: '{entity.Name}': An entity can have only one clustered index.");
 
                 foreach (var index in entity.Indexes)
                 {
@@ -266,7 +266,7 @@ namespace nHydrate.ModelManagement
                             targetField = entity.Fields.FirstOrDefault(x => x.Name?.ToLower() == field.FieldName?.ToLower());
 
                         if (targetField == null)
-                            throw new ModelException("The index must map to an existing field.");
+                            throw new ModelException($"Entity: '{entity.Name}': The index must map to an existing field.");
 
                         field.FieldId = targetField.Id;
                         field.FieldName = targetField.Name;
@@ -277,14 +277,14 @@ namespace nHydrate.ModelManagement
                 foreach (var relation in entity.Relations)
                 {
                     if (!relation.Fields.Any())
-                        throw new ModelException("The relation must have at least one field.");
+                        throw new ModelException($"Entity: '{entity.Name}': The relation must have at least one field.");
 
                     var foreignEntity = results.Entities.FirstOrDefault(x => x.Id == relation.ForeignEntityId);
                     if (relation.ForeignEntityId == Guid.Empty)
                         foreignEntity = results.Entities.FirstOrDefault(x => x.Name?.ToLower() == relation.ForeignEntityName?.ToLower());
 
                     if (foreignEntity == null)
-                        throw new ModelException("The relation must map to an existing entity.");
+                        throw new ModelException($"Entity: '{entity.Name}': The relation must map to an existing entity.");
 
                     relation.ForeignEntityName = foreignEntity.Name;
                     relation.ForeignEntityId = foreignEntity.Id;
@@ -299,10 +299,10 @@ namespace nHydrate.ModelManagement
                             foreignField = foreignEntity.Fields.FirstOrDefault(x => x.Name?.ToLower() == field.ForeignFieldName?.ToLower());
 
                         if (primaryField == null)
-                            throw new ModelException("The relation primary field must map to an existing field.");
+                            throw new ModelException($"Entity: '{entity.Name}': The relation primary field must map to an existing field.");
 
                         if (foreignField == null)
-                            throw new ModelException("The relation primary field must map to an existing field.");
+                            throw new ModelException($"Entity: '{entity.Name}': The relation foreign field must map to an existing field.");
 
                         field.PrimaryFieldId = primaryField.Id;
                         field.PrimaryFieldName = primaryField.Name;
@@ -458,7 +458,7 @@ namespace nHydrate.ModelManagement
             //Save Entities
             foreach (var obj in model.Entities)
             {
-                var f = Path.Combine(folder, obj.Name + ".yaml");
+                var f = Path.Combine(folder, $"{obj.Name}.yaml".ToLower());
                 SaveYamlObject(obj, f, generatedFileList);
             }
         }
@@ -471,7 +471,7 @@ namespace nHydrate.ModelManagement
             //Save Views
             foreach (var obj in model.Views)
             {
-                var f = Path.Combine(folder, obj.Name + ".yaml");
+                var f = Path.Combine(folder, $"{obj.Name}.yaml".ToLower());
                 SaveYamlObject(obj, f, generatedFileList);
             }
         }
