@@ -1,6 +1,6 @@
-namespace nHydrate.Command.Core
+namespace nHydrate.ModelManagement
 {
-    internal class ModelException : System.Exception
+    public class ModelException : System.Exception
     {
         public ModelException(string message)
             : base(message)

@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using nHydrate.Generator.Common;
+using nHydrate.ModelManagement;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,7 +32,7 @@ namespace nHydrate.Command.Core
             var generators = new string[0];
 
             //AppSettings
-            var allValues = Configuration.GetSection("nHydrate").GetChildren().Select(x => new { x.Key, x.Value }).ToDictionary(x => x.Key.ToString(), x => x.Value?.ToString());
+            var allValues = Configuration.GetChildren().Select(x => new { x.Key, x.Value }).ToDictionary(x => x.Key.ToString(), x => x.Value?.ToString());
             if (allValues.ContainsKey(ModelKey))
                 modelFile = allValues[ModelKey];
             if (allValues.ContainsKey(OutputKey))
@@ -40,13 +41,13 @@ namespace nHydrate.Command.Core
                 generators = allValues[GeneratorsKey].Split(",", StringSplitOptions.RemoveEmptyEntries);
 
             //Command line (overrides above)
-            allValues = Configuration.GetChildren().Select(x => new { x.Key, x.Value }).ToDictionary(x => x.Key.ToString(), x => x.Value?.ToString());
-            if (allValues.ContainsKey(ModelKey))
-                modelFile = allValues[ModelKey];
-            if (allValues.ContainsKey(OutputKey))
-                output = allValues[OutputKey];
-            if (allValues.ContainsKey(GeneratorsKey))
-                generators = allValues[GeneratorsKey].Split(",", StringSplitOptions.RemoveEmptyEntries);
+            //allValues = Configuration.GetChildren().Select(x => new { x.Key, x.Value }).ToDictionary(x => x.Key.ToString(), x => x.Value?.ToString());
+            //if (allValues.ContainsKey(ModelKey))
+            //    modelFile = allValues[ModelKey];
+            //if (allValues.ContainsKey(OutputKey))
+            //    output = allValues[OutputKey];
+            //if (allValues.ContainsKey(GeneratorsKey))
+            //    generators = allValues[GeneratorsKey].Split(",", StringSplitOptions.RemoveEmptyEntries);
 
             if (string.IsNullOrEmpty(modelFile))
                 return ShowError("The model is required.");
@@ -54,6 +55,43 @@ namespace nHydrate.Command.Core
                 return ShowError("The output folder is required.");
             if (!generators.Any())
                 return ShowError("The generators are required.");
+
+            Console.WriteLine($"modelFile='{modelFile}'");
+            Console.WriteLine($"output='{output}'");
+            Console.WriteLine($"generators='{allValues[GeneratorsKey]}'");
+
+            //Console.WriteLine();
+            //Console.WriteLine("ALL KEYS");
+            //foreach(var key in allValues.Keys)
+            //    Console.WriteLine($"Key={key}, Value={allValues[key]}");
+            //Console.WriteLine();
+
+            //NOTE: Yaml Model files must end with ".nhydrate.yaml"
+
+            //If a yaml file then check name and if not match look in parent folder
+            if (!modelFile.EndsWith(FileManagement.ModelExtension) && File.Exists(modelFile))
+            {
+                //Look in parent folder for model file
+                var fi = new FileInfo(modelFile);
+                var parentFolder = fi.Directory.Parent.FullName;
+                var f = Directory.GetFiles(parentFolder, "*" + FileManagement.ModelExtension).FirstOrDefault();
+                if (File.Exists(f)) modelFile = f;
+                else return ShowError("Model file not found.");
+            }
+
+            //If a folder then find the model in the folder or parent folder
+            if (Directory.Exists(modelFile))
+            {
+                var f = Directory.GetFiles(modelFile, "*" + FileManagement.ModelExtension).FirstOrDefault();
+                if (File.Exists(f)) modelFile = f;
+                else
+                {
+                    var parentFolder = (new DirectoryInfo(modelFile)).Parent.FullName;
+                    f = Directory.GetFiles(parentFolder, "*" + FileManagement.ModelExtension).FirstOrDefault();
+                    if (File.Exists(f)) modelFile = f;
+                    else return ShowError("Model file not found.");
+                }
+            }
 
             var timer = System.Diagnostics.Stopwatch.StartNew();
 

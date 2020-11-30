@@ -1,3 +1,4 @@
+using nHydrate.ModelManagement;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +13,7 @@ namespace nHydrate.ModelManagement
     {
         private const string FOLDER_ET = "_Entities";
         private const string FOLDER_VW = "_Views";
+        public const string ModelExtension = ".nhydrate.yaml";
 
         public static DiskModel Load(string rootFolder, string modelName, out bool wasLoaded)
         {
@@ -229,17 +231,19 @@ namespace nHydrate.ModelManagement
             foreach (var f in fList)
                 results.Entities.Add(GetYamlObject<EntityYaml>(f));
 
+            //Fill in field IDs if need be
+            results.Entities
+                .Where(x => x.Id == Guid.Empty)
+                .ToList()
+                .ForEach(x => x.Id = Guid.NewGuid());
+
             //Validate model. Ensure all Guids match up, etc
             var allEntities = results.Entities.Select(x => x.Id).ToList();
             if (allEntities.Count != allEntities.Distinct().Count())
-                throw new Exception("Entities must have unique ID values.");
+                throw new ModelException("Entities must have unique ID values.");
 
             foreach (var entity in results.Entities)
             {
-                //Fill in ID if need be
-                if (entity.Id == Guid.Empty)
-                    entity.Id = Guid.NewGuid();
-
                 //Fill in field IDs if need be
                 entity.Fields
                     .Where(x => x.Id == Guid.Empty)
@@ -247,11 +251,11 @@ namespace nHydrate.ModelManagement
                     .ForEach(x => x.Id = Guid.NewGuid());
 
                 if (entity.Fields.Count != entity.Fields.Select(x => x.Id).Count())
-                    throw new Exception("All fields must have a unique ID.");
+                    throw new ModelException("All fields must have a unique ID.");
 
                 //Indexes
                 if (entity.Indexes.Count(x => x.Clustered) > 1)
-                    throw new Exception("An entity can have only one clustered index.");
+                    throw new ModelException("An entity can have only one clustered index.");
 
                 foreach (var index in entity.Indexes)
                 {
@@ -262,7 +266,7 @@ namespace nHydrate.ModelManagement
                             targetField = entity.Fields.FirstOrDefault(x => x.Name?.ToLower() == field.FieldName?.ToLower());
 
                         if (targetField == null)
-                            throw new Exception("The index must map to an existing field.");
+                            throw new ModelException("The index must map to an existing field.");
 
                         field.FieldId = targetField.Id;
                         field.FieldName = targetField.Name;
@@ -273,14 +277,14 @@ namespace nHydrate.ModelManagement
                 foreach (var relation in entity.Relations)
                 {
                     if (!relation.Fields.Any())
-                        throw new Exception("The relation must have at least one field.");
+                        throw new ModelException("The relation must have at least one field.");
 
                     var foreignEntity = results.Entities.FirstOrDefault(x => x.Id == relation.ForeignEntityId);
                     if (relation.ForeignEntityId == Guid.Empty)
                         foreignEntity = results.Entities.FirstOrDefault(x => x.Name?.ToLower() == relation.ForeignEntityName?.ToLower());
 
                     if (foreignEntity == null)
-                        throw new Exception("The relation must map to an existing entity.");
+                        throw new ModelException("The relation must map to an existing entity.");
 
                     relation.ForeignEntityName = foreignEntity.Name;
                     relation.ForeignEntityId = foreignEntity.Id;
@@ -295,10 +299,10 @@ namespace nHydrate.ModelManagement
                             foreignField = foreignEntity.Fields.FirstOrDefault(x => x.Name?.ToLower() == field.ForeignFieldName?.ToLower());
 
                         if (primaryField == null)
-                            throw new Exception("The relation primary field must map to an existing field.");
+                            throw new ModelException("The relation primary field must map to an existing field.");
 
                         if (foreignField == null)
-                            throw new Exception("The relation primary field must map to an existing field.");
+                            throw new ModelException("The relation primary field must map to an existing field.");
 
                         field.PrimaryFieldId = primaryField.Id;
                         field.PrimaryFieldName = primaryField.Name;
@@ -430,7 +434,7 @@ namespace nHydrate.ModelManagement
         public static void Save2(string rootFolder, string modelName, DiskModelYaml model)
         {
             var modelFolder = GetModelFolder(rootFolder, modelName.Replace(".nhydrate", ".model"));
-            if (modelName.EndsWith(".yaml"))
+            if (modelName.EndsWith(ModelExtension))
                 modelFolder = rootFolder;
 
             var generatedFileList = new List<string>();
@@ -438,7 +442,7 @@ namespace nHydrate.ModelManagement
             SaveEntitiesYaml(modelFolder, model, generatedFileList);
 
             //Save the global model properties
-            SaveYamlObject(model.ModelProperties, Path.Combine(modelFolder, "model.yaml"), generatedFileList);
+            SaveYamlObject(model.ModelProperties, Path.Combine(modelFolder, "model" + ModelExtension), generatedFileList);
 
             //Do not remove diagram file
             generatedFileList.Add(Path.Combine(modelFolder, "diagram.xml"));
