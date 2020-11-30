@@ -54,7 +54,7 @@ namespace nHydrate.Command.Core
             Xml,
         }
 
-        public static nHydrate.Generator.Common.Models.ModelRoot CreatePOCOModel(string modelFile)
+        public static nHydrate.Generator.Common.Models.ModelRoot CreatePOCOModel(string modelFile, bool buildModel)
         {
             var fi = new FileInfo(modelFile);
             if (!fi.Exists)
@@ -64,9 +64,12 @@ namespace nHydrate.Command.Core
             if (!wasLoaded)
                 throw new ModelException($"The model file '{fi.FullName}' does not exist.");
 
-            var q = 0;
-            if (q == 1)
-                FileManagement.Save2(fi.DirectoryName, fi.Name.Replace(".nhydrate", ".model"), diskModel);
+            //Build out the model only and return
+            if (buildModel)
+            {
+                FileManagement.Save2(fi.DirectoryName, fi.Name, diskModel);
+                return null;
+            }
 
             try
             {

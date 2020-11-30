@@ -57,11 +57,13 @@ namespace nHydrate.Command.Core
 
             var timer = System.Diagnostics.Stopwatch.StartNew();
 
+            var buildModel = (allValues.ContainsKey("buildmodel") && allValues["buildmodel"] == "true");
+
             nHydrate.Generator.Common.Models.ModelRoot model = null;
             try
             {
                 Console.WriteLine("Loading model...");
-                model = ModelHelper.CreatePOCOModel(modelFile);
+                model = ModelHelper.CreatePOCOModel(modelFile, buildModel);
             }
             catch (ModelException ex)
             {
@@ -75,7 +77,7 @@ namespace nHydrate.Command.Core
             }
 
             //Generate
-            if (model != null)
+            if (model != null && !buildModel)
             {
                 Console.WriteLine("Loading generators...");
                 var genHelper = new nHydrate.Command.Core.GeneratorHelper(output);
@@ -116,7 +118,7 @@ namespace nHydrate.Command.Core
                 if (File.Exists(genProject.FileName))
                     File.Delete(genProject.FileName);
             }
-            else
+            else if (!buildModel)
             {
                 Console.WriteLine("The model could not be loaded.");
             }

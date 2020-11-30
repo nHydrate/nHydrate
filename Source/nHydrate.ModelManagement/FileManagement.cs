@@ -16,6 +16,7 @@ namespace nHydrate.ModelManagement
         public static DiskModel Load(string rootFolder, string modelName, out bool wasLoaded)
         {
             wasLoaded = false;
+            if (modelName.EndsWith(".yaml")) return null;
             var modelFile = Path.Combine(rootFolder, modelName);
             var fi = new FileInfo(modelFile);
             var showError = (fi.Length > 10); //New file is small so show no error if creating new
@@ -164,11 +165,17 @@ namespace nHydrate.ModelManagement
             var fi = new FileInfo(modelFile);
             var showError = (fi.Length > 10); //New file is small so show no error if creating new
 
-            var folderName = modelName.Replace(".nhydrate", ".model");
-            var modelFolder = GetModelFolder(rootFolder, folderName);
+            var modelFolder = GetModelFolder(rootFolder, modelName.Replace(".nhydrate", ".model"));
+            if (modelName.EndsWith(".yaml"))
+                modelFolder = rootFolder;
 
-            //If the model folder does NOT exist
-            if (!Directory.Exists(modelFolder))
+            //If the model file is empty and folder has 1 file
+            if (fi.Length == 0 && Directory.EnumerateFileSystemEntries(modelFolder).Count() == 1)
+            {
+                //The model file is 0 bytes and there is no folder, so this is a new model
+                wasLoaded = true;
+            }
+            else if (!Directory.Exists(modelFolder))
             {
                 if (showError)
                 {
@@ -190,7 +197,7 @@ namespace nHydrate.ModelManagement
 
             //Determine if model is old XML style and convert
             var oldModel = Load(rootFolder, modelName, out bool wasOldLoaded);
-            if (wasOldLoaded && !string.IsNullOrEmpty(oldModel.ModelProperties.Id))
+            if (wasOldLoaded && oldModel.ModelProperties.Id != Guid.Empty)
             {
                 ConvertEntitiesOld2Yaml(rootFolder, oldModel, results);
                 ConvertViewsOld2Yaml(rootFolder, oldModel, results);
@@ -204,7 +211,7 @@ namespace nHydrate.ModelManagement
                 //Save the global model properties
                 var globalFile = Path.Combine(modelFolder, "model.yaml");
                 if (File.Exists(globalFile))
-                    results.ModelProperties = GetYamlObject<ModelProperties>(globalFile);
+                    results.ModelProperties = GetYamlObject<ModelProperties>(globalFile) ?? new ModelProperties { Id = Guid.NewGuid() };
             }
 
             return results;
@@ -422,8 +429,9 @@ namespace nHydrate.ModelManagement
 
         public static void Save2(string rootFolder, string modelName, DiskModelYaml model)
         {
-            var folderName = modelName.Replace(".nhydrate", ".model");
-            var modelFolder = GetModelFolder(rootFolder, folderName);
+            var modelFolder = GetModelFolder(rootFolder, modelName.Replace(".nhydrate", ".model"));
+            if (modelName.EndsWith(".yaml"))
+                modelFolder = rootFolder;
 
             var generatedFileList = new List<string>();
             SaveViewsYaml(modelFolder, model, generatedFileList); //must come before entities

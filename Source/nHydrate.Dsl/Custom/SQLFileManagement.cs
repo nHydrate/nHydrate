@@ -30,7 +30,7 @@ namespace nHydrate.Dsl.Custom
                 diskModel.ModelProperties.ProjectName = model.ProjectName;
                 diskModel.ModelProperties.UseUTCTime = model.UseUTCTime;
                 diskModel.ModelProperties.Version = model.Version;
-                diskModel.ModelProperties.Id = model.Id.ToString();
+                diskModel.ModelProperties.Id = model.Id;
                 diskModel.ModelProperties.TenantColumnName = model.TenantColumnName;
                 diskModel.ModelProperties.CreatedByColumnName = model.CreatedByColumnName;
                 diskModel.ModelProperties.CreatedDateColumnName = model.CreatedDateColumnName;

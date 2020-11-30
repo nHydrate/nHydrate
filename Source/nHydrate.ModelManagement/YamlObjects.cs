@@ -14,8 +14,25 @@ namespace nHydrate.ModelManagement
         public List<EntityYaml> Entities { get; internal set; } = new List<EntityYaml>();
         public List<ViewYaml> Views { get; internal set; } = new List<ViewYaml>();
         public ModelProperties ModelProperties { get; set; } = new ModelProperties();
-
         public int RelationCount { get { return this.Entities.SelectMany(x => x.Relations).Count(); } }
+    }
+
+    public class ModelProperties
+    {
+        public Guid Id { get; set; }
+        public string CompanyName { get; set; } = string.Empty;
+        public bool EmitSafetyScripts { get; set; } = true;
+        public string DefaultNamespace { get; set; } = string.Empty;
+        public string ProjectName { get; set; } = string.Empty;
+        public bool UseUTCTime { get; set; } = false;
+        public string Version { get; set; } = "0.0.0.0";
+        public string TenantColumnName { get; set; } = "__tenant_user";
+        public string CreatedByColumnName { get; set; } = "CreatedBy";
+        public string CreatedDateColumnName { get; set; } = "CreatedDate";
+        public string ModifiedByColumnName { get; set; } = "ModifiedBy";
+        public string ModifiedDateColumnName { get; set; } = "ModifiedDate";
+        public string ConcurrencyCheckColumnName { get; set; } = "__concurrency";
+        public string GrantExecUser { get; set; } = string.Empty;
     }
 
     public class EntityYaml
