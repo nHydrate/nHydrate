@@ -69,7 +69,11 @@ namespace nHydrate.Command.Core
             //NOTE: Yaml Model files must end with ".nhydrate.yaml"
 
             //If a yaml file then check name and if not match look in parent folder
-            if (!modelFile.EndsWith(FileManagement.ModelExtension) && File.Exists(modelFile))
+            if (modelFile.EndsWith(FileManagement.OldModelExtension))
+            {
+                //Do Nothing
+            }
+            else if (!modelFile.EndsWith(FileManagement.ModelExtension) && File.Exists(modelFile))
             {
                 //Look in parent folder for model file
                 var fi = new FileInfo(modelFile);

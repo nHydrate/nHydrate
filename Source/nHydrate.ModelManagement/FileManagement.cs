@@ -14,6 +14,7 @@ namespace nHydrate.ModelManagement
         private const string FOLDER_ET = "_entities";
         private const string FOLDER_VW = "_views";
         public const string ModelExtension = ".nhydrate.yaml";
+        public const string OldModelExtension = ".nhydrate";
 
         public static DiskModel Load(string rootFolder, string modelName, out bool wasLoaded)
         {
@@ -670,7 +671,6 @@ namespace nHydrate.ModelManagement
                     .Build();
 
             var yaml = serializer.Serialize(obj);
-            generatedFileList.Add(fileName);
             File.WriteAllText(fileName, yaml);
             generatedFileList.Add(fileName);
         }
@@ -748,8 +748,8 @@ namespace nHydrate.ModelManagement
             //Only touch the files we know about
             var files = new List<string>();
             files.AddRange(Directory.GetFiles(rootFolder, "*.*", SearchOption.TopDirectoryOnly));
-            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_Entities"), "*.*", SearchOption.TopDirectoryOnly));
-            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_Views"), "*.*", SearchOption.TopDirectoryOnly));
+            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_entities"), "*.*", SearchOption.TopDirectoryOnly));
+            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_views"), "*.*", SearchOption.TopDirectoryOnly));
             files.ToList().ForEach(x => x = x.ToLower());
             generatedFiles.ToList().ForEach(x => x = x.ToLower());
 
