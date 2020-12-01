@@ -1,5 +1,4 @@
 using nHydrate.Generator.Common;
-using nHydrate.Generator.Common.Models;
 using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
@@ -110,7 +109,7 @@ namespace nHydrate.ModelManagement
 
             //Clean up indexes
             var indexIdList = new List<string>();
-            foreach(var i1 in results.Indexes)
+            foreach (var i1 in results.Indexes)
             {
                 var newList = new List<Index.configurationIndex>();
                 foreach (var i2 in i1.index)
@@ -266,7 +265,7 @@ namespace nHydrate.ModelManagement
                     .ForEach(x => x.Id = Guid.NewGuid());
 
                 //Reset predefined sizes if necessary
-                foreach(var field in entity.Fields)
+                foreach (var field in entity.Fields)
                 {
                     var size = nHydrate.Generator.Common.Models.ColumnBase.GetPredefinedSize(field.Datatype.Convert<System.Data.SqlDbType>());
                     field.Length = (size == -1) ? field.Length : size;
@@ -317,7 +316,7 @@ namespace nHydrate.ModelManagement
                             primaryField = entity.Fields.FirstOrDefault(x => x.Name?.ToLower() == field.PrimaryFieldName?.ToLower());
 
                         var foreignField = foreignEntity.Fields.FirstOrDefault(x => x.Id == field.ForeignFieldId);
-                        if(field.ForeignFieldId == Guid.Empty)
+                        if (field.ForeignFieldId == Guid.Empty)
                             foreignField = foreignEntity.Fields.FirstOrDefault(x => x.Name?.ToLower() == field.ForeignFieldName?.ToLower());
 
                         if (primaryField == null)

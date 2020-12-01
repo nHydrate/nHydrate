@@ -193,7 +193,7 @@ namespace nHydrate.Generator.Common.Models
 
         public IEnumerable<Column> GetColumns() => this.Columns.Select(x => x.Object as Column).Where(x => x != null).OrderBy(x => x.Name);
 
-        public IEnumerable<Column> GetColumnsByType(System.Data.SqlDbType type)=> this.GetColumnsFullHierarchy().Where(x => x.DataType == type).ToList();
+        public IEnumerable<Column> GetColumnsByType(System.Data.SqlDbType type) => this.GetColumnsFullHierarchy().Where(x => x.DataType == type).ToList();
 
         public RelationCollection GetRelations()
         {
@@ -210,7 +210,7 @@ namespace nHydrate.Generator.Common.Models
             return retval;
         }
 
-        public IEnumerable<Relation> GetRelationsWhereChild(bool fullHierarchy = false)=> ((ModelRoot)_root).Database.GetRelationsWhereChild(this, fullHierarchy);
+        public IEnumerable<Relation> GetRelationsWhereChild(bool fullHierarchy = false) => ((ModelRoot)_root).Database.GetRelationsWhereChild(this, fullHierarchy);
 
         public bool IsColumnRelatedToTypeTable(Column column, out string roleName)
         {
@@ -419,5 +419,5 @@ namespace nHydrate.Generator.Common.Models
 
         #endregion
 
-}
+    }
 }

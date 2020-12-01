@@ -1,6 +1,7 @@
 #pragma warning disable 0168
-using System;
 
+
+using System;
 
 namespace nHydrate.Generator.Common.Util
 {

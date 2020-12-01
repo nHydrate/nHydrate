@@ -13,7 +13,7 @@ namespace nHydrate.Generator.Common
         Database,
         Code,
     }
-    
+
     //Copy from Dsl
     public enum IndexTypeConstants
     {

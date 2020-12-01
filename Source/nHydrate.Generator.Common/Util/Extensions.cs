@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using YamlDotNet.Core;
-using YamlDotNet.Serialization;
 using YamlDotNet.Core.Events;
+using YamlDotNet.Serialization;
 
 namespace nHydrate.Generator.Common.Util
 {

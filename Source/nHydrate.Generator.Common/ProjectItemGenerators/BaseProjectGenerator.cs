@@ -6,7 +6,7 @@ using System.IO;
 
 namespace nHydrate.Generator.Common.ProjectItemGenerators
 {
-    public  interface IProjectGeneratorProjectCreator
+    public interface IProjectGeneratorProjectCreator
     {
         void CreateProject(IProjectGenerator projectGenerator);
     }

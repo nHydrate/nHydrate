@@ -1,4 +1,3 @@
-using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.Models;
 
 namespace nHydrate.Generator.Common.ProjectItemGenerators

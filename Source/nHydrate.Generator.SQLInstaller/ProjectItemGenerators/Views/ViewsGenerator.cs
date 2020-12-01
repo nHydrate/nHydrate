@@ -1,7 +1,6 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
-using System;
 using System.Text;
 
 namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Views

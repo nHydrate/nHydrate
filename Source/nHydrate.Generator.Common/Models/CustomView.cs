@@ -58,7 +58,7 @@ namespace nHydrate.Generator.Common.Models
 
         public ReferenceCollection Columns { get; protected set; } = null;
 
-        public IEnumerable<CustomViewColumn> GeneratedColumns=> this.GetColumns().OrderBy(x => x.Name);
+        public IEnumerable<CustomViewColumn> GeneratedColumns => this.GetColumns().OrderBy(x => x.Name);
 
         public string SQL { get; set; } = string.Empty;
 
@@ -66,7 +66,7 @@ namespace nHydrate.Generator.Common.Models
 
         #region Methods
 
-        public override string ToString()=> this.Name;
+        public override string ToString() => this.Name;
 
         protected internal System.Data.DataTable CreateDataTable()
         {
@@ -82,7 +82,7 @@ namespace nHydrate.Generator.Common.Models
 
         public IEnumerable<CustomViewColumn> GetColumns() => this.Columns.Select(x => (CustomViewColumn)x.Object).ToList().Where(x => x != null).OrderBy(x => x.Name);
 
-        public List<CustomViewColumn> GetColumnsByType(System.Data.SqlDbType type)=> this.GetColumns().Where(x => x.DataType == type).OrderBy(x => x.Name).ToList();
+        public List<CustomViewColumn> GetColumnsByType(System.Data.SqlDbType type) => this.GetColumns().Where(x => x.DataType == type).OrderBy(x => x.Name).ToList();
 
         public string GetSQLSchema() => (string.IsNullOrEmpty(this.DBSchema)) ? "dbo" : this.DBSchema;
 
