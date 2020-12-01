@@ -90,24 +90,6 @@ namespace nHydrate.Generator.Common.Models
 
         #region Methods
 
-        protected internal bool RelationRoleExists(string roleName, Relation skipItem)
-        {
-            foreach (Relation relation in this.Relations)
-            {
-                //If this is not the skip item and the role matches then return true
-                if ((relation != skipItem) && (StringHelper.Match(relation.RoleName, roleName, true)))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public IEnumerable<Relation> GetRelationsWhereChild(Table table)
-        {
-            return GetRelationsWhereChild(table, false);
-        }
-
         public IEnumerable<Relation> GetRelationsWhereChild(Table table, bool fullHierarchy)
         {
             var retval = new List<Relation>();

@@ -109,7 +109,6 @@ namespace nHydrate.Generator.Common.Models
                 {
                     this.OnBeforeParentTableChange(this, new System.EventArgs());
                     _parentTableRef = value;
-                    this.RefreshRoleName();
                     this.OnAfterParentTableChange(this, new System.EventArgs());
                 }
             }
@@ -124,7 +123,6 @@ namespace nHydrate.Generator.Common.Models
                 {
                     this.OnBeforeChildTableChange(this, new System.EventArgs());
                     _childTableRef = value;
-                    this.RefreshRoleName();
                     this.OnAfterChildTableChange(this, new System.EventArgs());
                 }
             }
@@ -523,32 +521,6 @@ namespace nHydrate.Generator.Common.Models
             var retval = string.Empty;
             retval = (this.RoleName == "" ? "" : this.RoleName + " ") + "[" + ((parentList.Length == 0) ? "(Unknown)" : parentList[0].Name) + " -> " + ((childList.Length == 0) ? "(Unknown)" : childList[0].Name) + "]";
             return retval;
-        }
-
-        private void RefreshRoleName()
-        {
-            //try
-            //{
-            //  string newRoleName = string.Empty;
-            //  if ((this.ParentTableRef != null) && (this.ChildTableRef != null))
-            //  {
-            //    newRoleName = ((Table)this.ParentTableRef.Object).Name + "_" + ((Table)this.ChildTableRef.Object).Name;
-            //    Database database = ((ModelRoot)this.Root).Database;
-            //    if (database.RelationRoleExists(newRoleName, this))
-            //    {
-            //      //If we are in there then need to loop and find a new name
-            //      int ii = 1;
-            //      while (database.RelationRoleExists(newRoleName + ii.ToString(), this))
-            //        ii++;
-            //      newRoleName = newRoleName + ii.ToString();
-            //    }
-            //  }
-            //  this.RoleName = newRoleName;
-            //}
-            //catch (Exception ex)
-            //{
-            //  throw;
-            //}
         }
 
         #endregion

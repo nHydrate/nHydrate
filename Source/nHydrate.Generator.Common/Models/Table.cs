@@ -141,17 +141,6 @@ namespace nHydrate.Generator.Common.Models
             return this.Name;
         }
 
-        protected internal System.Data.DataTable CreateDataTable()
-        {
-            var retval = new System.Data.DataSet();
-            var t = retval.Tables.Add(this.Name);
-            foreach (var column in this.GetColumns())
-            {
-                t.Columns.Add(column.Name, typeof(string));
-            }
-            return retval.Tables[0];
-        }
-
         public bool IsInheritedFrom(Table table)
         {
             return false;
@@ -207,19 +196,6 @@ namespace nHydrate.Generator.Common.Models
             {
                 throw;
             }
-        }
-
-        public IEnumerable<Table> GetParentTables()
-        {
-            var retval = new List<Table>();
-            foreach (var r in this.AllRelationships.ToList())
-            {
-                if (r.ChildTableRef.Object == this)
-                {
-                    retval.Add((Table)r.ParentTableRef.Object);
-                }
-            }
-            return retval;
         }
 
         public IEnumerable<Table> GetParentTablesFullHierarchy()
