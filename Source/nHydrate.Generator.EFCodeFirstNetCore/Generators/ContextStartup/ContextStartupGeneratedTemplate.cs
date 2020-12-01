@@ -20,7 +20,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
         {
             var sb = new StringBuilder();
             GenerationHelper.AppendFileGeneatedMessageInCode(sb);
-            this.AppendUsingStatements(sb);
+            sb.AppendLine("using System;");
+            sb.AppendLine();
             sb.AppendLine("namespace " + this.GetLocalNamespace());
             sb.AppendLine("{");
 
@@ -134,12 +135,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextStartup
             sb.AppendLine("}");
             sb.AppendLine();
             return sb.ToString();
-        }
-
-        private void AppendUsingStatements(StringBuilder sb)
-        {
-            sb.AppendLine("using System;");
-            sb.AppendLine();
         }
 
     }

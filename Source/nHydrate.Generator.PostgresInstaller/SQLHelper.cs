@@ -842,7 +842,7 @@ namespace nHydrate.Generator.PostgresInstaller
             {
                 var defaultName = $"DF__{table.DatabaseName}_{model.Database.CreatedDateColumnName}".ToUpper();
                 sb.AppendLine(",");
-                sb.AppendLine($"\t\"{model.Database.CreatedByColumnName}\" Varchar COLLATE case_insensitive (50) NULL,");
+                sb.AppendLine($"\t\"{model.Database.CreatedByColumnName}\" Varchar (50) COLLATE case_insensitive NULL,");
                 sb.Append($"\t\"{model.Database.CreatedDateColumnName}\" timestamp CONSTRAINT {defaultName} NOT NULL DEFAULT current_timestamp");
             }
         }
@@ -853,7 +853,7 @@ namespace nHydrate.Generator.PostgresInstaller
             {
                 var defaultName = $"DF__{table.DatabaseName}_{model.Database.ModifiedDateColumnName}".ToUpper();
                 sb.AppendLine(",");
-                sb.AppendLine($"\t\"{model.Database.ModifiedByColumnName}\" Varchar COLLATE case_insensitive (50) NULL,");
+                sb.AppendLine($"\t\"{model.Database.ModifiedByColumnName}\" Varchar (50) COLLATE case_insensitive NULL,");
                 sb.Append($"\t\"{model.Database.ModifiedDateColumnName}\" timestamp CONSTRAINT {defaultName} NOT NULL DEFAULT current_timestamp");
             }
         }

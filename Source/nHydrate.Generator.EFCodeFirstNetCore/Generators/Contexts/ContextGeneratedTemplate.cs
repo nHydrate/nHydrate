@@ -128,8 +128,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
 
             // Create consts for version and modelKey
-            sb.AppendLine("		private const string _version = \"" + _model.Version + "." + _model.GeneratedVersion + "\";");
-            sb.AppendLine("		private const string _modelKey = \"" + _model.Key + "\";");
+            sb.AppendLine($"		private const string _version = \"{_model.Version}.{_model.GeneratedVersion}\";");
+            sb.AppendLine($"		private const string _modelKey = \"{_model.Key}\";");
             sb.AppendLine("		protected string _connectionString = null;");
             sb.AppendLine();
 
@@ -144,7 +144,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine($"		public {_model.ProjectName}Entities() :");
             sb.AppendLine("			base()");
             sb.AppendLine("		{");
-            sb.AppendLine("			_connectionString = ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"]?.ConnectionString;");
+            sb.AppendLine($"			_connectionString = ConfigurationManager.ConnectionStrings[\"{_model.ProjectName}Entities\"]?.ConnectionString;");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
             sb.AppendLine("			_contextStartup = new ContextStartup(null, true);");
             sb.AppendLine("			this.CommandTimeout = _contextStartup.CommandTimeout;");
@@ -160,7 +160,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		{");
             sb.AppendLine("			_contextStartup = contextStartup;");
             sb.AppendLine("			_tenantId = (this.ContextStartup as TenantContextStartup)?.TenantId;");
-            sb.AppendLine("			_connectionString = ConfigurationManager.ConnectionStrings[\"" + _model.ProjectName + "Entities\"]?.ConnectionString;");
+            sb.AppendLine($"			_connectionString = ConfigurationManager.ConnectionStrings[\"{_model.ProjectName}Entities\"]?.ConnectionString;");
             sb.AppendLine("			InstanceKey = Guid.NewGuid();");
             sb.AppendLine("			this.CommandTimeout = _contextStartup.CommandTimeout;");
             sb.AppendLine("			this.OnContextCreated();");
@@ -297,25 +297,25 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
                 if (table.IsTenant)
                 {
-                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Property(\"" + _model.TenantColumnName + "\").IsRequired();");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Property(\"{_model.TenantColumnName}\").IsRequired();");
                 }
 
                 if (table.AllowCreateAudit)
-                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Property(d => d." + _model.Database.CreatedDateColumnName + ").IsRequired();");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Property(d => d.{_model.Database.CreatedDateColumnName}).IsRequired();");
                 if (table.AllowModifiedAudit)
-                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Property(d => d." + _model.Database.ModifiedDateColumnName + ").IsRequired();");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Property(d => d.{_model.Database.ModifiedDateColumnName}).IsRequired();");
 
                 if (table.AllowConcurrencyCheck)
                 {
                     if (!String.Equals(_model.Database.ConcurrencyCheckDatabaseName, _model.Database.ConcurrencyCheckPascalName, StringComparison.OrdinalIgnoreCase))
                     {
                         sb.Append($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>()");
-                        sb.Append(".Property(d => d." + _model.Database.ConcurrencyCheckPascalName + ")");
-                        sb.Append(".HasColumnName(\"" + _model.Database.ConcurrencyCheckDatabaseName + "\")");
+                        sb.Append($".Property(d => d.{_model.Database.ConcurrencyCheckPascalName})");
+                        sb.Append($".HasColumnName(\"{_model.Database.ConcurrencyCheckDatabaseName}\")");
                         sb.AppendLine(";");
                     }
 
-                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Property(d => d." + _model.Database.ConcurrencyCheckPascalName + ").IsRequired();");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Property(d => d.{_model.Database.ConcurrencyCheckPascalName}).IsRequired();");
                 }
 
                 sb.AppendLine();
@@ -324,15 +324,15 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             //Views
             foreach (var item in _model.Database.CustomViews.OrderBy(x => x.Name))
             {
-                sb.AppendLine("			//Field setup for " + item.PascalName + " entity");
+                sb.AppendLine($"			//Field setup for {item.PascalName} entity");
                 foreach (var column in item.GetColumns().OrderBy(x => x.Name))
                 {
-                    sb.Append($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity." + item.PascalName + ">()");
+                    sb.Append($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{item.PascalName}>()");
                     sb.Append($".Property(d => d." + column.PascalName + ")");
                     if (!column.AllowNull)
                         sb.Append(".IsRequired()");
 
-                    if (column.DataType.IsTextType() && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml) sb.Append(".HasMaxLength(" + column.GetAnnotationStringLength() + ")");
+                    if (column.DataType.IsTextType() && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml) sb.Append($".HasMaxLength({column.GetAnnotationStringLength()})");
                     if (column.DatabaseName != column.PascalName) sb.Append($".HasColumnName(\"{column.DatabaseName}\")");
                     sb.AppendLine(";");
                 }
