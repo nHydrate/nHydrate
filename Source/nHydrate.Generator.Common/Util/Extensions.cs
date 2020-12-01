@@ -372,5 +372,6 @@ namespace nHydrate.Generator.Common.Util
             return Guid.Empty;
         }
 
+        public static bool IsEmpty(this string str) => string.IsNullOrEmpty(str);
     }
 }

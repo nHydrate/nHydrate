@@ -68,38 +68,64 @@ namespace nHydrate.Command.Core
             //Console.WriteLine();
 
             //NOTE: Yaml Model files must end with ".nhydrate.yaml"
+            //Old Xml file ends with ".nhydrate"
 
-            //If a yaml file then check name and if not match look in parent folder
-            if (!Directory.Exists(modelFile) && modelFile.EndsWith(FileManagement.OldModelExtension))
-            {
-                //Do Nothing
-            }
-            else if (!modelFile.EndsWith(FileManagement.ModelExtension) && File.Exists(modelFile))
-            {
-                //Look in parent folder for model file
-                var fi = new FileInfo(modelFile);
-                var parentFolder = fi.Directory.Parent.FullName;
-                var f = Directory.GetFiles(parentFolder, "*" + FileManagement.ModelExtension).FirstOrDefault();
-                if (File.Exists(f)) modelFile = f;
-                else return ShowError("Model file not found.");
-            }
-
-            //If a folder then find the model in the folder or parent folder
+            //Specified a folder so look for the file
+            string actualFile = null;
             if (Directory.Exists(modelFile))
             {
-                var f = Directory.GetFiles(modelFile, "*" + FileManagement.ModelExtension).FirstOrDefault();
-                if (File.Exists(f)) modelFile = f;
-                else
+                var folderName = modelFile;
+
+                //Look for new Yaml file
+                var f = Directory.GetFiles(folderName, "*" + FileManagement.ModelExtension).FirstOrDefault();
+                if (File.Exists(f)) actualFile = f;
+
+                //Look for old xml file
+                if (actualFile.IsEmpty())
                 {
-                    var parentFolder = (new DirectoryInfo(modelFile)).Parent.FullName;
-                    f = Directory.GetFiles(parentFolder, "*" + FileManagement.ModelExtension).FirstOrDefault();
-                    if (File.Exists(f)) modelFile = f;
-                    else return ShowError("Model file not found.");
+                    f = Directory.GetFiles(folderName, "*" + FileManagement.OldModelExtension).FirstOrDefault();
+                    if (File.Exists(f)) actualFile = f;
+                }
+
+                if (actualFile.IsEmpty())
+                {
+                    //Back 1 folder
+                    folderName = (new DirectoryInfo(folderName)).Parent.FullName;
+
+                    f = Directory.GetFiles(folderName, "*" + FileManagement.ModelExtension).FirstOrDefault();
+                    if (File.Exists(f)) actualFile = f;
+
+                    //Look for old xml file
+                    if (actualFile.IsEmpty())
+                    {
+                        f = Directory.GetFiles(folderName, "*" + FileManagement.OldModelExtension).FirstOrDefault();
+                        if (File.Exists(f)) actualFile = f;
+                    }
+                }
+            }
+            else
+            {
+                //Is this the Yaml model?
+                if (modelFile.EndsWith(FileManagement.ModelExtension))
+                    actualFile = modelFile;
+
+                //Is this the Xml model?
+                if (modelFile.EndsWith(FileManagement.OldModelExtension))
+                    actualFile = modelFile;
+
+                //Look one folder back for Yaml
+                if (actualFile.IsEmpty())
+                {
+                    var folderName = (new FileInfo(modelFile)).Directory.Parent.FullName;
+                    var f = Directory.GetFiles(folderName, "*" + FileManagement.ModelExtension).FirstOrDefault();
+                    if (File.Exists(f)) actualFile = f;
                 }
             }
 
-            var timer = System.Diagnostics.Stopwatch.StartNew();
+            if (actualFile.IsEmpty()) return ShowError("Model file not found.");
+            modelFile = actualFile;
 
+            var timer = System.Diagnostics.Stopwatch.StartNew();
             var buildModel = (allValues.ContainsKey("buildmodel") && allValues["buildmodel"] == "true");
 
             nHydrate.Generator.Common.Models.ModelRoot model = null;

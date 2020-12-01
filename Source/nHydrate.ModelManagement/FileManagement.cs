@@ -226,7 +226,22 @@ namespace nHydrate.ModelManagement
 
             results.Entities.Clear();
             foreach (var f in fList)
-                results.Entities.Add(GetYamlObject<EntityYaml>(f));
+            {
+                //Try single object
+                var wasError = false;
+                try
+                {
+                    results.Entities.Add(GetYamlObject<EntityYaml>(f));
+                }
+                catch (Exception ex) { wasError = true; }
+
+                if (wasError)
+                {
+                    //If fails try multiple objects. If error then really throw
+                    results.Entities.AddRange(GetYamlObject<EntityYaml[]>(f));
+                }
+
+            }
 
             //Fill in field IDs if need be
             results.Entities
