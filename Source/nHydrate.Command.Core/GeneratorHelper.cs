@@ -11,7 +11,7 @@ namespace nHydrate.Command.Core
 {
     internal class GeneratorHelper : nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper
     {
-        private string _outputFolder;
+        private readonly string _outputFolder;
 
         public GeneratorHelper(string outputFolder)
         {

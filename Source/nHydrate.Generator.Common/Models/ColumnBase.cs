@@ -261,7 +261,7 @@ namespace nHydrate.Generator.Common.Models
 
         public virtual string GetCodeType(bool allowNullable, bool forceNull)
         {
-            var retval = string.Empty;
+            string retval;
             if (StringHelper.Match(this.DataType.ToString(), "bigint", true))
                 retval = "long";
             else if (StringHelper.Match(this.DataType.ToString(), "binary", true))

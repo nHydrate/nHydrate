@@ -88,7 +88,7 @@ namespace nHydrate.Generator.Common.Models
             foreach (Reference reference in this.Columns)
             {
                 var column = (CustomViewColumn)reference.Object;
-                var c = t.Columns.Add(column.Name, typeof(string));
+                t.Columns.Add(column.Name, typeof(string));
             }
             return retval.Tables[0];
         }

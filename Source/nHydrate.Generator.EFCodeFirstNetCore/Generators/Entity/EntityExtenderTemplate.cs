@@ -6,7 +6,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 {
     public class EntityExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private Table _currentTable = null;
+        private readonly Table _currentTable = null;
 
         public EntityExtenderTemplate(ModelRoot model, Table table)
             : base(model)

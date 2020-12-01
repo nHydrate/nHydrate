@@ -67,26 +67,22 @@ namespace nHydrate.Generator.Common.Models
 
         protected virtual void OnBeforeChildTableChange(object sender, System.EventArgs e)
         {
-            if (this.BeforeChildTableChange != null)
-                this.BeforeChildTableChange(sender, e);
+            this.BeforeChildTableChange?.Invoke(sender, e);
         }
 
         protected virtual void OnBeforeParentTableChange(object sender, System.EventArgs e)
         {
-            if (this.BeforeParentTableChange != null)
-                this.BeforeParentTableChange(sender, e);
+            this.BeforeParentTableChange?.Invoke(sender, e);
         }
 
         protected virtual void OnAfterChildTableChange(object sender, System.EventArgs e)
         {
-            if (this.AfterChildTableChange != null)
-                this.AfterChildTableChange(sender, e);
+            this.AfterChildTableChange?.Invoke(sender, e);
         }
 
         protected virtual void OnAfterParentTableChange(object sender, System.EventArgs e)
         {
-            if (this.AfterParentTableChange != null)
-                this.AfterParentTableChange(sender, e);
+            this.AfterParentTableChange?.Invoke(sender, e);
         }
 
         #endregion

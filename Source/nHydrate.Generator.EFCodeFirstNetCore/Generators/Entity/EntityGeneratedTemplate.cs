@@ -9,7 +9,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 {
     public class EntityGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private Table _item;
+        private readonly Table _item;
 
         public EntityGeneratedTemplate(ModelRoot model, Table currentTable)
             : base(model)

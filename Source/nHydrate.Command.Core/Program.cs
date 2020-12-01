@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using nHydrate.Generator.Common;
+using nHydrate.Generator.Common.Util;
 using nHydrate.ModelManagement;
 using System;
 using System.Collections.Generic;
@@ -69,7 +70,7 @@ namespace nHydrate.Command.Core
             //NOTE: Yaml Model files must end with ".nhydrate.yaml"
 
             //If a yaml file then check name and if not match look in parent folder
-            if (modelFile.EndsWith(FileManagement.OldModelExtension))
+            if (!Directory.Exists(modelFile) && modelFile.EndsWith(FileManagement.OldModelExtension))
             {
                 //Do Nothing
             }

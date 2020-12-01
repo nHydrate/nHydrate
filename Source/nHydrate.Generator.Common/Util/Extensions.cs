@@ -236,14 +236,12 @@ namespace nHydrate.Generator.Common.Util
             }
             else if (dataType.IsIntegerType())
             {
-                int i;
-                if (int.TryParse(defaultValue, out i))
+                if (int.TryParse(defaultValue, out _))
                     retval = defaultValue;
             }
             else if (dataType.IsNumericType())
             {
-                double d;
-                if (double.TryParse(defaultValue, out d))
+                if (double.TryParse(defaultValue, out _))
                 {
                     retval = defaultValue;
                 }
@@ -329,14 +327,12 @@ namespace nHydrate.Generator.Common.Util
             }
             else if (dataType.IsIntegerType())
             {
-                int i;
-                if (int.TryParse(defaultValue, out i))
+                if (int.TryParse(defaultValue, out _))
                     retval = defaultValue;
             }
             else if (dataType.IsNumericType())
             {
-                double d;
-                if (double.TryParse(defaultValue, out d))
+                if (double.TryParse(defaultValue, out _))
                 {
                     retval = defaultValue;
                 }

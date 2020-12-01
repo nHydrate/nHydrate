@@ -10,7 +10,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 {
     public class ContextGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private ModelConfiguration _modelConfiguration = null;
+        private readonly ModelConfiguration _modelConfiguration = null;
 
         public ContextGeneratedTemplate(ModelRoot model)
             : base(model)

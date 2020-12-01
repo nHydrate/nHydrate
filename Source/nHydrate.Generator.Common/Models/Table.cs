@@ -147,7 +147,7 @@ namespace nHydrate.Generator.Common.Models
             var t = retval.Tables.Add(this.Name);
             foreach (var column in this.GetColumns())
             {
-                var c = t.Columns.Add(column.Name, typeof(string));
+                t.Columns.Add(column.Name, typeof(string));
             }
             return retval.Tables[0];
         }

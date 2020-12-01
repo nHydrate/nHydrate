@@ -1,11 +1,7 @@
-using nHydrate.ModelManagement;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace nHydrate.ModelManagement
 {
@@ -212,7 +208,7 @@ namespace nHydrate.ModelManagement
                 LoadViewsYaml(modelFolder, results);
 
                 //Save the global model properties
-                var globalFile = Path.Combine(modelFolder, "model.yaml");
+                var globalFile = Path.Combine(modelFolder, modelName);
                 if (File.Exists(globalFile))
                     results.ModelProperties = GetYamlObject<ModelProperties>(globalFile) ?? new ModelProperties { Id = Guid.NewGuid() };
             }
@@ -349,87 +345,7 @@ namespace nHydrate.ModelManagement
 
         private static T GetYamlObject<T>(string fileName)
         {
-            var serializer = new YamlDotNet.Serialization.DeserializerBuilder()
-                   .WithTypeConverter(new SystemTypeTypeConverter())
-                   .Build();
-            var yaml = File.ReadAllText(fileName);
-            return serializer.Deserialize<T>(yaml);
-        }
-
-        public static void Save(string rootFolder, string modelName, DiskModel model)
-        {
-            var folderName = modelName.Replace(".nhydrate", ".model");
-            var modelFolder = GetModelFolder(rootFolder, folderName);
-
-            var generatedFileList = new List<string>();
-            SaveViews(modelFolder, model, generatedFileList); //must come before entities
-            SaveEntities(modelFolder, model, generatedFileList);
-
-            //Save the global model properties
-            RemoveNullStrings(model.ModelProperties);
-            SaveObject(model.ModelProperties, Path.Combine(modelFolder, "model.xml"), generatedFileList);
-
-            //Do not remove diagram file
-            generatedFileList.Add(Path.Combine(modelFolder, "diagram.xml"));
-
-            RemoveOrphans(modelFolder, generatedFileList);
-        }
-
-        private static void SaveEntities(string rootFolder, DiskModel model, List<string> generatedFileList)
-        {
-            var folder = Path.Combine(rootFolder, FOLDER_ET);
-            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-            //Save Entities
-            foreach (var obj in model.Entities)
-            {
-                var f = Path.Combine(folder, obj.name + ".configuration.xml");
-                SaveObject(obj, f, generatedFileList);
-            }
-
-            //Save Indexes
-            foreach (var obj in model.Indexes)
-            {
-                var entity = model.Entities.FirstOrDefault(x => x.id == obj.id);
-                var f = Path.Combine(folder, entity.name + ".indexes.xml");
-                SaveObject(obj, f, generatedFileList);
-            }
-
-            //Save Relations
-            foreach (var obj in model.Relations)
-            {
-                var entity = model.Entities.FirstOrDefault(x => x.id == obj.id);
-                var f = Path.Combine(folder, entity.name + ".relations.xml");
-                SaveObject(obj, f, generatedFileList);
-            }
-
-            //Save Static Data
-            foreach (var obj in model.StaticData)
-            {
-                var entity = model.Entities.FirstOrDefault(x => x.id == obj.id);
-                var f = Path.Combine(folder, entity.name + ".staticdata.xml");
-                SaveObject(obj, f, generatedFileList);
-            }
-
-            WriteReadMeFile(folder, generatedFileList);
-        }
-
-        private static void SaveViews(string rootFolder, DiskModel model, List<string> generatedFileList)
-        {
-            var folder = Path.Combine(rootFolder, FOLDER_VW);
-            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-            //Save Views
-            foreach (var obj in model.Views)
-            {
-                var f = Path.Combine(folder, obj.name + ".configuration.xml");
-                SaveObject(obj, f, generatedFileList);
-
-                var f1 = Path.Combine(folder, obj.name + ".sql");
-                WriteFileIfNeedBe(f1, obj.sql, new List<string>());
-            }
-
-            WriteReadMeFile(folder, generatedFileList);
+            return File.ReadAllText(fileName).FromYaml<T>();
         }
 
         public static void Save2(string rootFolder, string modelName, DiskModelYaml model)
@@ -652,25 +568,21 @@ namespace nHydrate.ModelManagement
             }
         }
 
-        private static void SaveObject<T>(T obj, string fileName, List<string> generatedFileList)
-        {
-            var ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
-            var writer = new System.Xml.Serialization.XmlSerializer(typeof(T));
-            using (var wfile = new System.IO.StreamWriter(fileName))
-            {
-                writer.Serialize(wfile, obj, ns);
-            }
-            generatedFileList.Add(fileName);
-        }
+        //private static void SaveObject<T>(T obj, string fileName, List<string> generatedFileList)
+        //{
+        //    var ns = new XmlSerializerNamespaces();
+        //    ns.Add("", "");
+        //    var writer = new System.Xml.Serialization.XmlSerializer(typeof(T));
+        //    using (var wfile = new System.IO.StreamWriter(fileName))
+        //    {
+        //        writer.Serialize(wfile, obj, ns);
+        //    }
+        //    generatedFileList.Add(fileName);
+        //}
 
         private static void SaveYamlObject<T>(T obj, string fileName, List<string> generatedFileList)
         {
-            var serializer = new YamlDotNet.Serialization.SerializerBuilder()
-                    .WithTypeConverter(new SystemTypeTypeConverter())
-                    .Build();
-
-            var yaml = serializer.Serialize(obj);
+            var yaml = obj.ToYaml();
             File.WriteAllText(fileName, yaml);
             generatedFileList.Add(fileName);
         }
@@ -682,65 +594,65 @@ namespace nHydrate.ModelManagement
             return Path.Combine(rootFolder, "_" + modelName);
         }
 
-        private static void WriteFileIfNeedBe(string fileName, string contents, List<string> generatedFileList)
-        {
-            if (fileName.ToLower().EndsWith(".xml"))
-            {
-                generatedFileList.Add(fileName);
-                try
-                {
-                    //Load formatted original XML
-                    var origXML = string.Empty;
-                    if (File.Exists(fileName))
-                    {
-                        var xmlText = File.ReadAllText(fileName);
-                        if (!string.IsNullOrEmpty(xmlText))
-                        {
-                            var documentCheck = new XmlDocument();
-                            documentCheck.LoadXml(xmlText);
-                            origXML = documentCheck.ToIndentedString();
-                        }
-                    }
+        //private static void WriteFileIfNeedBe(string fileName, string contents, List<string> generatedFileList)
+        //{
+        //    if (fileName.ToLower().EndsWith(".xml"))
+        //    {
+        //        generatedFileList.Add(fileName);
+        //        try
+        //        {
+        //            //Load formatted original XML
+        //            var origXML = string.Empty;
+        //            if (File.Exists(fileName))
+        //            {
+        //                var xmlText = File.ReadAllText(fileName);
+        //                if (!string.IsNullOrEmpty(xmlText))
+        //                {
+        //                    var documentCheck = new XmlDocument();
+        //                    documentCheck.LoadXml(xmlText);
+        //                    origXML = documentCheck.ToIndentedString();
+        //                }
+        //            }
 
-                    //Load formatted new XML
-                    var newXML = string.Empty;
-                    {
-                        var documentCheck = new XmlDocument();
-                        documentCheck.LoadXml(contents);
-                        newXML = documentCheck.ToIndentedString();
-                    }
+        //            //Load formatted new XML
+        //            var newXML = string.Empty;
+        //            {
+        //                var documentCheck = new XmlDocument();
+        //                documentCheck.LoadXml(contents);
+        //                newXML = documentCheck.ToIndentedString();
+        //            }
 
-                    if (origXML == newXML)
-                        return;
-                    else
-                        contents = newXML;
-                }
-                catch (Exception ex)
-                {
-                    //If there is an error then process like a non-XML file
-                    //Do Nothing
-                }
-            }
-            else
-            {
-                //Check if this is the same content and if so do nothing
-                generatedFileList.Add(fileName);
-                if (File.Exists(fileName))
-                {
-                    var t = File.ReadAllText(fileName);
-                    if (t == contents)
-                        return;
-                }
-            }
+        //            if (origXML == newXML)
+        //                return;
+        //            else
+        //                contents = newXML;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            //If there is an error then process like a non-XML file
+        //            //Do Nothing
+        //        }
+        //    }
+        //    else
+        //    {
+        //        //Check if this is the same content and if so do nothing
+        //        generatedFileList.Add(fileName);
+        //        if (File.Exists(fileName))
+        //        {
+        //            var t = File.ReadAllText(fileName);
+        //            if (t == contents)
+        //                return;
+        //        }
+        //    }
 
-            File.WriteAllText(fileName, contents);
-        }
+        //    File.WriteAllText(fileName, contents);
+        //}
 
-        private static void WriteReadMeFile(string folder, List<string> generatedFileList)
-        {
-            var f = Path.Combine(folder, "ReadMe.nHydrate.txt");
-            WriteFileIfNeedBe(f, "This is a managed folder of a nHydrate model. You may change '*.configuration.xml' and '*.sql' files in any text editor if desired but do not add or remove files from this folder. This is a distributed model and making changes can break the model load.", generatedFileList);
-        }
+        //private static void WriteReadMeFile(string folder, List<string> generatedFileList)
+        //{
+        //    var f = Path.Combine(folder, "ReadMe.nHydrate.txt");
+        //    WriteFileIfNeedBe(f, "This is a managed folder of a nHydrate model. You may change '*.configuration.xml' and '*.sql' files in any text editor if desired but do not add or remove files from this folder. This is a distributed model and making changes can break the model load.", generatedFileList);
+        //}
 
         private static void RemoveOrphans(string rootFolder, List<string> generatedFiles)
         {
@@ -767,19 +679,19 @@ namespace nHydrate.ModelManagement
             }
         }
 
-        private static string ToIndentedString(this XmlDocument doc)
-        {
-            var stringWriter = new StringWriter(new StringBuilder());
-            var xmlTextWriter = new XmlTextWriter(stringWriter)
-            {
-                Formatting = Formatting.Indented,
-                IndentChar = '\t'
-            };
-            doc.Save(xmlTextWriter);
-            var t = stringWriter.ToString();
-            t = t.Replace(@" encoding=""utf-16""", string.Empty);
-            return t;
-        }
+        //private static string ToIndentedString(this XmlDocument doc)
+        //{
+        //    var stringWriter = new StringWriter(new StringBuilder());
+        //    var xmlTextWriter = new XmlTextWriter(stringWriter)
+        //    {
+        //        Formatting = Formatting.Indented,
+        //        IndentChar = '\t'
+        //    };
+        //    doc.Save(xmlTextWriter);
+        //    var t = stringWriter.ToString();
+        //    t = t.Replace(@" encoding=""utf-16""", string.Empty);
+        //    return t;
+        //}
 
         private static void RemoveNullStrings(object obj)
         {

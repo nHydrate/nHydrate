@@ -68,8 +68,7 @@ namespace nHydrate.Generator.Common
 
             //First 
             var firstChar = name.First();
-            int n;
-            if (int.TryParse(firstChar.ToString(), out n))
+            if (int.TryParse(firstChar.ToString(), out int _))
                 return false;
 
             return true;
@@ -102,8 +101,7 @@ namespace nHydrate.Generator.Common
 
             //First 
             var firstChar = name.First();
-            int n;
-            if (int.TryParse(firstChar.ToString(), out n))
+            if (int.TryParse(firstChar.ToString(), out int _))
                 return false;
 
             return true;
@@ -112,14 +110,14 @@ namespace nHydrate.Generator.Common
         public static string MakeCodeIdentifer(string name)
         {
             if (name.Length == 0)
-                return "";
+                return string.Empty;
 
             var retval = string.Empty;
             var validchars2 = ValidCodeChars;
 
             foreach (var c in name)
             {
-                if (validchars2.IndexOf(c) == -1)
+                if (!validchars2.Contains(c))
                     retval += "_";
                 else
                     retval += c;
@@ -130,7 +128,7 @@ namespace nHydrate.Generator.Common
         public static string MakeDatabaseIdentifier(string name)
         {
             if (name.Length == 0)
-                return "";
+                return string.Empty;
 
             var retval = string.Empty;
             var validchars2 = ValidCodeChars + " /#";
@@ -148,7 +146,7 @@ namespace nHydrate.Generator.Common
         public static string MakeDatabaseScriptIdentifier(string name)
         {
             if (name.Length == 0)
-                return "";
+                return string.Empty;
 
             var retval = string.Empty;
             foreach (var c in name)

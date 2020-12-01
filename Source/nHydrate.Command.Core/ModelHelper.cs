@@ -348,7 +348,7 @@ namespace nHydrate.Command.Core
 
         private static DataTypeConstants GetDataType(string str)
         {
-            Enum.TryParse<DataTypeConstants>(str, out DataTypeConstants v);
+            Enum.TryParse(str, out DataTypeConstants v);
             return v;
         }
 

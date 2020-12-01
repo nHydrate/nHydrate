@@ -90,7 +90,7 @@ namespace nHydrate.ModelManagement
         public static T Convert<T>(this System.Enum type)
             where T: struct, System.Enum
         {
-            System.Enum.TryParse<T>(type.ToString(), out T v);
+            Enum.TryParse(type.ToString(), out T v);
             return v;
         }
 
@@ -108,5 +108,24 @@ namespace nHydrate.ModelManagement
                 return v;
             return Guid.Empty;
         }
+
+        public static string ToYaml<T>(this T obj)
+        {
+            if (obj == null) return null;
+            var serializer = new YamlDotNet.Serialization.SerializerBuilder()
+                    .WithTypeConverter(new SystemTypeTypeConverter())
+                    .Build();
+            return serializer.Serialize(obj);
+        }
+
+        public static T FromYaml<T>(this string value)
+        {
+            if (string.IsNullOrEmpty(value)) return default(T);
+            var serializer = new YamlDotNet.Serialization.DeserializerBuilder()
+                   .WithTypeConverter(new SystemTypeTypeConverter())
+                   .Build();
+            return serializer.Deserialize<T>(value);
+        }
+
     }
 }

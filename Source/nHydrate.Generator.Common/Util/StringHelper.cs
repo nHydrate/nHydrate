@@ -10,7 +10,7 @@ namespace nHydrate.Generator.Common.Util
         public static bool GuidTryParse(string s, out Guid result)
         {
             if (s == null)
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException(nameof(s));
             var format = new Regex(
                     "^[A-Fa-f0-9]{32}$|" +
                     "^({|\\()?[A-Fa-f0-9]{8}-([A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}(}|\\))?$|" +
@@ -69,7 +69,7 @@ namespace nHydrate.Generator.Common.Util
             text = text.Replace("\r", "\n");
             var arr = text.Split('\n');
 
-            var retval = string.Empty;
+            string retval;
             if (convertBreaks)
                 retval = string.Join(@"\n", arr);
             else

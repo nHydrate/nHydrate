@@ -1613,12 +1613,11 @@ namespace nHydrate.Core.SQLGeneration
             if (!string.IsNullOrEmpty(theValue))
             {
                 //We know that something was typed in so create the default clause
-                var table = column.ParentTableRef.Object as Table;
                 var defaultName = GetDefaultValueConstraintName(column);
-                sb.Append("CONSTRAINT [" + defaultName + "] ");
+                sb.Append($"CONSTRAINT [{defaultName}] ");
 
                 var tempBuilder = new StringBuilder();
-                tempBuilder.Append("DEFAULT (" + theValue + ")");
+                tempBuilder.Append($"DEFAULT ({theValue})");
                 sb.Append(tempBuilder.ToString());
             }
 

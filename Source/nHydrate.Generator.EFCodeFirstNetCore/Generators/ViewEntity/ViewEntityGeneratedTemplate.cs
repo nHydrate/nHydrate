@@ -9,7 +9,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 {
     public class ViewEntityGeneratedTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private CustomView _item;
+        private readonly CustomView _item;
 
         public ViewEntityGeneratedTemplate(ModelRoot model, CustomView currentTable)
             : base(model)

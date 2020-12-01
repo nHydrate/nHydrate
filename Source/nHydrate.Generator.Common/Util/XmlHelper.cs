@@ -347,11 +347,8 @@ namespace nHydrate.Generator.Common.Util
 
         public static XmlAttribute AddAttribute(this XmlNode element, string name, bool value)
         {
-            XmlDocument docOwner = null;
-            XmlAttribute attrNew = null;
-
-            docOwner = element.OwnerDocument;
-            attrNew = docOwner.CreateAttribute(name);
+            var docOwner = element.OwnerDocument;
+            var attrNew = docOwner.CreateAttribute(name);
             if (value) attrNew.InnerText = "1";
             else attrNew.InnerText = "0";
             element.Attributes.Append(attrNew);
@@ -369,13 +366,10 @@ namespace nHydrate.Generator.Common.Util
 
         public static void RemoveElement(XmlDocument document, string XPath)
         {
-            XmlNode parentNode = null;
-            XmlNodeList nodes = null;
-
-            nodes = document.SelectNodes(XPath);
+            var nodes = document.SelectNodes(XPath);
             foreach (XmlElement node in nodes)
             {
-                parentNode = node.ParentNode;
+                var parentNode = node.ParentNode;
                 node.RemoveAll();
                 parentNode.RemoveChild(node);
             }
