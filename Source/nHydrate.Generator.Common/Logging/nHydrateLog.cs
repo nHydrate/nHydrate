@@ -290,9 +290,9 @@ namespace nHydrate.Generator.Common.Logging
             }
 #endif
         }
-#endregion
+        #endregion
 
-#region File System Watcher
+        #region File System Watcher
 
         private void AddListener(string listenerName, string typeString, string initializationData)
         {
@@ -342,7 +342,7 @@ namespace nHydrate.Generator.Common.Logging
 
         }
 
-#endregion
+        #endregion
 
     }
 

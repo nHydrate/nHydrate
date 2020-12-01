@@ -29,26 +29,17 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
         protected virtual void OnProjectItemDeleted(object sender, ProjectItemDeletedEventArgs pigArgs)
         {
-            if (ProjectItemDeleted != null)
-            {
-                this.ProjectItemDeleted(sender, pigArgs);
-            }
+            ProjectItemDeleted?.Invoke(sender, pigArgs);
         }
 
         protected virtual void OnGenerationComplete(object sender, ProjectItemGenerationCompleteEventArgs args)
         {
-            if (GenerationComplete != null)
-            {
-                this.GenerationComplete(sender, args);
-            }
+            GenerationComplete?.Invoke(sender, args);
         }
 
         protected virtual void OnProjectItemGeneratedError(object sender, ProjectItemGeneratedEventArgs pigArgs)
         {
-            if (ProjectItemGeneratedError != null)
-            {
-                this.ProjectItemGeneratedError(sender, pigArgs);
-            }
+            ProjectItemGeneratedError?.Invoke(sender, pigArgs);
         }
 
         #endregion
@@ -110,59 +101,37 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         private int GetFileCount(IGenerator generator, Type projectGeneratorType, System.Type[] generatorTypes)
         {
             var retval = 0;
-            try
-            {
-                var projectGenerator = GetProjectGenerator(projectGeneratorType);
-                projectGenerator.Initialize(generator.Model);
-                retval += GetFileCount(projectGenerator, generatorTypes);
-                retval += 1; // The actual project file it self
-                return retval;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var projectGenerator = GetProjectGenerator(projectGeneratorType);
+            projectGenerator.Initialize(generator.Model);
+            retval += GetFileCount(projectGenerator, generatorTypes);
+            retval += 1; // The actual project file it self
+            return retval;
         }
-
         private int GetFileCount(IProjectGenerator projectGenerator, System.Type[] generatorTypes)
         {
             var retval = 0;
-            try
+            var projectItemGenerators = GetProjectItemGenerators(projectGenerator);
+            foreach (var projectItemGeneratorType in projectItemGenerators)
             {
-                var projectItemGenerators = GetProjectItemGenerators(projectGenerator);
-                foreach (var projectItemGeneratorType in projectItemGenerators)
+                try
                 {
-                    try
-                    {
-                        retval += GetFileCount(projectItemGeneratorType, generatorTypes);
-                    }
-                    catch (Exception ex)
-                    {
-                        nHydrateLog.LogWarning(ex);
-                    }
+                    retval += GetFileCount(projectItemGeneratorType, generatorTypes);
                 }
-                return retval;
+                catch (Exception ex)
+                {
+                    nHydrateLog.LogWarning(ex);
+                }
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return retval;
         }
 
         private int GetFileCount(Type projectItemGeneratorType, System.Type[] generatorTypes)
         {
             var retval = 0;
-            try
-            {
-                var projectItemGenerator = GetProjectItemGenerator(projectItemGeneratorType);
-                projectItemGenerator.Initialize(_generator.Model);
-                retval += GetFileCount(projectItemGenerator, generatorTypes);
-                return retval;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var projectItemGenerator = GetProjectItemGenerator(projectItemGeneratorType);
+            projectItemGenerator.Initialize(_generator.Model);
+            retval += GetFileCount(projectItemGenerator, generatorTypes);
+            return retval;
         }
 
         private int GetFileCount(IProjectItemGenerator projectItemGenerator, System.Type[] generatorTypes)
@@ -200,48 +169,38 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         protected IGenerator _generator;
         public virtual void GenerateAll(IGenerator generator, List<Type> excludeList)
         {
-            try
+            var globalCacheFile = new GlobalCacheFile();
+            _generator = generator;
+            var projectGenerators = GetProjectGenerators(generator);
+            Console.WriteLine($"Generator count {projectGenerators.Count}");
+            foreach (var projectGeneratorType in projectGenerators)
             {
-                var globalCacheFile = new GlobalCacheFile();
-                _generator = generator;
-                var projectGenerators = GetProjectGenerators(generator);
-                Console.WriteLine($"Generator count {projectGenerators.Count}");
-                foreach (var projectGeneratorType in projectGenerators)
+                try
                 {
-                    try
+                    var exclude = false;
+                    foreach (var key in globalCacheFile.ExcludeList)
                     {
-                        var exclude = false;
-                        foreach (var key in globalCacheFile.ExcludeList)
-                        {
-                            if (key == projectGeneratorType.FullName)
-                                exclude = true;
-                        }
-
-                        //Check the passed in exclude list
-                        if (excludeList.Contains(projectGeneratorType))
+                        if (key == projectGeneratorType.FullName)
                             exclude = true;
-
-                        if (!exclude)
-                        {
-                            GenerateProject(generator, projectGeneratorType);
-                        }
-
                     }
-                    catch (Exception ex)
+
+                    //Check the passed in exclude list
+                    if (excludeList.Contains(projectGeneratorType))
+                        exclude = true;
+
+                    if (!exclude)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
-                        LogError(ex.ToString());
+                        GenerateProject(generator, projectGeneratorType);
                     }
+
                 }
-
-                System.Diagnostics.Debug.Write(string.Empty);
-
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex);
+                    LogError(ex.ToString());
+                }
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
+            System.Diagnostics.Debug.Write(string.Empty);
         }
 
         protected abstract void GenerateProject(IGenerator generator, Type projectGeneratorType);
@@ -250,106 +209,61 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
         protected void CreateProject(IGenerator generator, Type projectGeneratorType, string outputFolder)
         {
-            try
-            {
-                var projectGenerator = GetProjectGenerator(projectGeneratorType);
+            var projectGenerator = GetProjectGenerator(projectGeneratorType);
 
-                //For the VSIX modeler, this is the object that will create project in Visual Studio
-                (projectGenerator as IProjectGenerator).ProjectGeneratorProjectCreator = GetProjectGeneratorProjectCreator(outputFolder);
+            //For the VSIX modeler, this is the object that will create project in Visual Studio
+            (projectGenerator as IProjectGenerator).ProjectGeneratorProjectCreator = GetProjectGeneratorProjectCreator(outputFolder);
 
-                projectGenerator.Initialize(generator.Model);
-                projectGenerator.CreateProject();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            projectGenerator.Initialize(generator.Model);
+            projectGenerator.CreateProject();
         }
 
         public IProjectGenerator GetProjectGenerator(Type projectGeneratorType)
         {
-            try
-            {
-                var projectGenerator = (IProjectGenerator)ReflectionHelper.CreateInstance(projectGeneratorType);
-                return projectGenerator;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return (IProjectGenerator)ReflectionHelper.CreateInstance(projectGeneratorType);
         }
-
         protected IProjectItemGenerator GetProjectItemGenerator(Type projectItemGeneratorType)
         {
-            try
-            {
-                var projectGenerator = (IProjectItemGenerator)ReflectionHelper.CreateInstance(projectItemGeneratorType);
-                return projectGenerator;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return (IProjectItemGenerator)ReflectionHelper.CreateInstance(projectItemGeneratorType);
         }
 
         protected void GenerateProjectItems(IProjectGenerator projectGenerator)
         {
-            try
+            var projectItemGenerators = GetProjectItemGenerators(projectGenerator);
+            foreach (var projectItemGeneratorType in projectItemGenerators)
             {
-                var projectItemGenerators = GetProjectItemGenerators(projectGenerator);
-                foreach (var projectItemGeneratorType in projectItemGenerators)
+                try
                 {
-                    try
-                    {
-                        GenerateProjectItems(projectItemGeneratorType);
-                    }
-                    catch (Exception ex)
-                    {
-                        nHydrateLog.LogWarning(ex);
-                    }
+                    GenerateProjectItems(projectItemGeneratorType);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw;
+                catch (Exception ex)
+                {
+                    nHydrateLog.LogWarning(ex);
+                }
             }
         }
 
         protected void GenerateSubItems(IProjectItemGenerator projectItemGenerator)
         {
-            try
+            var projectItemGenerators = GetProjectItemGenerators(projectItemGenerator);
+            foreach (var projectItemGeneratorType in projectItemGenerators)
             {
-                var projectItemGenerators = GetProjectItemGenerators(projectItemGenerator);
-                foreach (var projectItemGeneratorType in projectItemGenerators)
+                try
                 {
-                    try
-                    {
-                        GenerateProjectItems(projectItemGeneratorType);
-                    }
-                    catch (Exception ex)
-                    {
-                        nHydrateLog.LogWarning(ex);
-                    }
+                    GenerateProjectItems(projectItemGeneratorType);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw;
+                catch (Exception ex)
+                {
+                    nHydrateLog.LogWarning(ex);
+                }
             }
         }
 
         private void GenerateProjectItems(Type projectItemGeneratorType)
         {
-            try
-            {
-                var projectItemGenerator = GetProjectItemGenerator(projectItemGeneratorType);
-                projectItemGenerator.Initialize(_generator.Model);
-                GenerateProjectItems(projectItemGenerator);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var projectItemGenerator = GetProjectItemGenerator(projectItemGeneratorType);
+            projectItemGenerator.Initialize(_generator.Model);
+            GenerateProjectItems(projectItemGenerator);
         }
 
         protected abstract void projectItemGenerator_ProjectItemGenerated(object sender, ProjectItemGeneratedEventArgs e);
@@ -376,20 +290,11 @@ namespace nHydrate.Generator.Common.GeneratorFramework
             }
         }
 
-        public List<Type> GetProjectGenerators(IGenerator generator)
-        {
-            return GetGeneratorsImpl(generator);
-        }
+        public List<Type> GetProjectGenerators(IGenerator generator) => GetGeneratorsImpl(generator);
 
-        protected List<Type> GetProjectItemGenerators(IProjectGenerator projectGenerator)
-        {
-            return GetGeneratorsImpl(projectGenerator);
-        }
+        protected List<Type> GetProjectItemGenerators(IProjectGenerator projectGenerator) => GetGeneratorsImpl(projectGenerator);
 
-        private List<Type> GetProjectItemGenerators(IProjectItemGenerator projectItemGenerator)
-        {
-            return GetGeneratorsImpl(projectItemGenerator);
-        }
+        private List<Type> GetProjectItemGenerators(IProjectItemGenerator projectItemGenerator) => GetGeneratorsImpl(projectItemGenerator);
         #endregion
 
         #region Private Helpers
@@ -400,10 +305,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         /// Gets the errors that have occured since object instantiation
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<string> GetErrorList()
-        {
-            return _errorList;
-        }
+        public IEnumerable<string> GetErrorList() => _errorList;
 
         private void projectItemGenerator_GenerationComplete(object sender, ProjectItemGenerationCompleteEventArgs e)
         {
@@ -422,47 +324,32 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         private readonly Dictionary<object, List<Type>> _detGeneratorsImplCache = new Dictionary<object, List<Type>>();
         private List<Type> GetGeneratorsImpl(object parent)
         {
-            try
+            if (_detGeneratorsImplCache.ContainsKey(parent))
+                return _detGeneratorsImplCache[parent];
+
+            var returnVal = new List<Type>();
+            Type[] generatorTypes = null;
+            if (ReflectionHelper.ImplementsInterface(parent, typeof(IGenerator)))
+                generatorTypes = ReflectionHelper.GetCreatableObjectImplementsInterface(typeof(IProjectGenerator), GetExtensionsFolder());
+            else
+                generatorTypes = ReflectionHelper.GetCreatableObjectImplementsInterface(typeof(IProjectItemGenerator), GetExtensionsFolder());
+
+            if (generatorTypes.Length == 0)
+                LogError($"There are no generators installed or there was an error loading the installed generators from the following path. '{GetExtensionsFolder()}'");
+
+            foreach (var type in generatorTypes)
             {
-                if (_detGeneratorsImplCache.ContainsKey(parent))
+                var genItemAttribute = (GeneratorItemAttribute)ReflectionHelper.GetSingleAttribute(typeof(GeneratorItemAttribute), type);
+                if (genItemAttribute != null && genItemAttribute.ParentType == parent.GetType())
                 {
-                    return _detGeneratorsImplCache[parent];
+                    returnVal.Add(type);
                 }
-
-                var returnVal = new List<Type>();
-                Type[] generatorTypes = null;
-                if (ReflectionHelper.ImplementsInterface(parent, typeof(IGenerator)))
-                {
-                    generatorTypes = ReflectionHelper.GetCreatableObjectImplementsInterface(typeof(IProjectGenerator), GetExtensionsFolder());
-                }
-                else
-                {
-                    generatorTypes = ReflectionHelper.GetCreatableObjectImplementsInterface(typeof(IProjectItemGenerator), GetExtensionsFolder());
-                }
-
-                if (generatorTypes.Length == 0)
-                {
-                    LogError($"There are no generators installed or there was an error loading the installed generators from the following path. '{GetExtensionsFolder()}'");
-                }
-
-                foreach (var type in generatorTypes)
-                {
-                    var genItemAttribute = (GeneratorItemAttribute)ReflectionHelper.GetSingleAttribute(typeof(GeneratorItemAttribute), type);
-                    if (genItemAttribute != null && genItemAttribute.ParentType == parent.GetType())
-                    {
-                        returnVal.Add(type);
-                    }
-                }
-
-                //Cache this for next time
-                _detGeneratorsImplCache.Add(parent, returnVal);
-                return returnVal;
-
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            //Cache this for next time
+            _detGeneratorsImplCache.Add(parent, returnVal);
+            return returnVal;
+
         }
 
         #endregion

@@ -164,11 +164,7 @@ namespace nHydrate.Generator.Common.Models
                 return this.Length;
         }
 
-        public override string ToString()
-        {
-            var retval = this.Name;
-            return retval;
-        }
+        public override string ToString() => this.Name;
 
         #endregion
 

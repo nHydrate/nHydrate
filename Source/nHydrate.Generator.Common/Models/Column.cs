@@ -193,7 +193,7 @@ namespace nHydrate.Generator.Common.Models
 
         public string GetIntellisenseRemarks()
         {
-            var text = "Field: [" + (this.ParentTableRef.Object as Table).DatabaseName + "].[" + this.DatabaseName + "], ";
+            var text = $"Field: [{(this.ParentTableRef.Object as Table).DatabaseName}].[{this.DatabaseName}], ";
 
             var length = this.GetCommentLengthString();
             if (!string.IsNullOrEmpty(length))
@@ -334,10 +334,7 @@ namespace nHydrate.Generator.Common.Models
             return defaultValue;
         }
 
-        public virtual string GetSQLDefault()
-        {
-            return this.DataType.GetSQLDefault(this.Default);
-        }
+        public virtual string GetSQLDefault() => this.DataType.GetSQLDefault(this.Default);
 
         #endregion
 
@@ -454,10 +451,7 @@ namespace nHydrate.Generator.Common.Models
 
         #region Helpers
 
-        public override Reference CreateRef()
-        {
-            return CreateRef(Guid.NewGuid().ToString());
-        }
+        public override Reference CreateRef() => CreateRef(Guid.NewGuid().ToString());
 
         public override Reference CreateRef(string key)
         {

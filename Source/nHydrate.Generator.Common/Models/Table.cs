@@ -136,10 +136,7 @@ namespace nHydrate.Generator.Common.Models
 
         #region Methods
 
-        public override string ToString()
-        {
-            return this.Name;
-        }
+        public override string ToString() => this.Name;
 
         public bool IsInheritedFrom(Table table)
         {
@@ -152,20 +149,7 @@ namespace nHydrate.Generator.Common.Models
             return retval;
         }
 
-        public Table GetAbsoluteBaseTable()
-        {
-            var tableList = GetTableHierarchy().ToList();
-            if (!tableList.Any())
-                return this;
-            return tableList.First();
-        }
-
-        public IEnumerable<Table> GetTableHierarchy()
-        {
-            var retval = new List<Table>();
-            retval.Add(this);
-            return retval;
-        }
+        public Table GetAbsoluteBaseTable() => this;
 
         public ColumnCollection GetColumnsFullHierarchy()
         {
@@ -214,31 +198,9 @@ namespace nHydrate.Generator.Common.Models
             return retval;
         }
 
-        public IEnumerable<Column> GetColumns()
-        {
-            var list = new List<Column>();
-            foreach (var r in this.Columns.ToList())
-            {
-                var c = r.Object as Column;
-                if (c == null) System.Diagnostics.Debug.Write(string.Empty);
-                else list.Add(c);
-            }
+        public IEnumerable<Column> GetColumns() => this.Columns.Select(x => x.Object as Column).Where(x => x != null).OrderBy(x => x.Name);
 
-            return list.OrderBy(x => x.Name);
-        }
-
-        public IEnumerable<Column> GetColumnsByType(System.Data.SqlDbType type)
-        {
-            var retval = new List<Column>();
-            foreach (Column column in this.GetColumnsFullHierarchy())
-            {
-                if (column.DataType == type)
-                {
-                    retval.Add(column);
-                }
-            }
-            return retval;
-        }
+        public IEnumerable<Column> GetColumnsByType(System.Data.SqlDbType type)=> this.GetColumnsFullHierarchy().Where(x => x.DataType == type).ToList();
 
         public RelationCollection GetRelations()
         {
@@ -255,10 +217,7 @@ namespace nHydrate.Generator.Common.Models
             return retval;
         }
 
-        public IEnumerable<Relation> GetRelationsWhereChild(bool fullHierarchy = false)
-        {
-            return ((ModelRoot)_root).Database.GetRelationsWhereChild(this, fullHierarchy);
-        }
+        public IEnumerable<Relation> GetRelationsWhereChild(bool fullHierarchy = false)=> ((ModelRoot)_root).Database.GetRelationsWhereChild(this, fullHierarchy);
 
         public bool IsColumnRelatedToTypeTable(Column column, out string roleName)
         {
@@ -291,11 +250,7 @@ namespace nHydrate.Generator.Common.Models
             return null;
         }
 
-        public string GetSQLSchema()
-        {
-            if (string.IsNullOrEmpty(this.DBSchema)) return "dbo";
-            return this.DBSchema;
-        }
+        public string GetSQLSchema() => (string.IsNullOrEmpty(this.DBSchema)) ? "dbo" : this.DBSchema;
 
         #endregion
 

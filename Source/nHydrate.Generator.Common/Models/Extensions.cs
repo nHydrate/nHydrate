@@ -104,16 +104,6 @@ namespace nHydrate.Generator.Common.Models
 
         #endregion
 
-        public static List<T> ToList<T>(this System.Collections.ICollection list)
-        {
-            var retval = new List<T>();
-            foreach (T o in list)
-            {
-                retval.Add(o);
-            }
-            return retval;
-        }
-
         public static string GetTypeTableCodeDescription(this Table table)
         {
             try
@@ -134,7 +124,5 @@ namespace nHydrate.Generator.Common.Models
                 throw;
             }
         }
-
-
     }
 }

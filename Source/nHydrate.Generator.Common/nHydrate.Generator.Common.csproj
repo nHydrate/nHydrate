@@ -175,7 +175,6 @@
     <Compile Include="GeneratorFramework\GeneratorAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GeneratorFramework\Globals.cs" />
     <Compile Include="GeneratorFramework\IGenerator.cs">
       <SubType>Code</SubType>
     </Compile>

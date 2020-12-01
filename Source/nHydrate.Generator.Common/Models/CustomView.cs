@@ -58,14 +58,7 @@ namespace nHydrate.Generator.Common.Models
 
         public ReferenceCollection Columns { get; protected set; } = null;
 
-        public IEnumerable<CustomViewColumn> GeneratedColumns
-        {
-            get
-            {
-                return this.GetColumns()
-                    .OrderBy(x => x.Name);
-            }
-        }
+        public IEnumerable<CustomViewColumn> GeneratedColumns=> this.GetColumns().OrderBy(x => x.Name);
 
         public string SQL { get; set; } = string.Empty;
 
@@ -73,13 +66,7 @@ namespace nHydrate.Generator.Common.Models
 
         #region Methods
 
-        public override string ToString()
-        {
-            var retval = this.Name;
-            //if(!string.IsNullOrEmpty(this.CodeFacade))
-            //  retval += " AS " + this.CodeFacade;
-            return retval;
-        }
+        public override string ToString()=> this.Name;
 
         protected internal System.Data.DataTable CreateDataTable()
         {
@@ -93,42 +80,11 @@ namespace nHydrate.Generator.Common.Models
             return retval.Tables[0];
         }
 
-        public IEnumerable<CustomViewColumn> GetColumns()
-        {
-            try
-            {
-                var retval = new List<CustomViewColumn>();
-                foreach (Reference r in this.Columns)
-                {
-                    retval.Add((CustomViewColumn)r.Object);
-                }
-                retval.RemoveAll(x => x == null);
-                return retval.OrderBy(x => x.Name);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+        public IEnumerable<CustomViewColumn> GetColumns() => this.Columns.Select(x => (CustomViewColumn)x.Object).ToList().Where(x => x != null).OrderBy(x => x.Name);
 
-        public List<CustomViewColumn> GetColumnsByType(System.Data.SqlDbType type)
-        {
-            var retval = new List<CustomViewColumn>();
-            foreach (var column in this.GetColumns())
-            {
-                if (column.DataType == type)
-                {
-                    retval.Add(column);
-                }
-            }
-            return retval.OrderBy(x => x.Name).ToList();
-        }
+        public List<CustomViewColumn> GetColumnsByType(System.Data.SqlDbType type)=> this.GetColumns().Where(x => x.DataType == type).OrderBy(x => x.Name).ToList();
 
-        public string GetSQLSchema()
-        {
-            if (string.IsNullOrEmpty(this.DBSchema)) return "dbo";
-            return this.DBSchema;
-        }
+        public string GetSQLSchema() => (string.IsNullOrEmpty(this.DBSchema)) ? "dbo" : this.DBSchema;
 
         #endregion
 

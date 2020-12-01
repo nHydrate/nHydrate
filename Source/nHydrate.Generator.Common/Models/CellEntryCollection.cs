@@ -10,7 +10,7 @@ namespace nHydrate.Generator.Common.Models
         protected override string NodeOldName => "cellEntry";
         protected override string NodeName => "ce";
 
-        public CellEntry this[string columnName]
+        public override CellEntry this[string columnName]
         {
             get
             {
