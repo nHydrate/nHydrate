@@ -348,7 +348,7 @@ namespace nHydrate.DslPackage.Objects
                     newTable.DBSchema = entity.Schema;
                     newTable.Description = entity.Summary;
                     newTable.Immutable = entity.Immutable;
-                    newTable.TypedTable = entity.TypedEntity.Convert< Generator.Common.Models.TypedTableConstants>();
+                    newTable.TypedTable = entity.TypedEntity.Convert<Generator.Common.TypedTableConstants>();
                     newTable.Name = entity.Name;
                     newTable.GeneratesDoubleDerived = entity.GeneratesDoubleDerived;
                     newTable.IsTenant = entity.IsTenant;
@@ -369,7 +369,7 @@ namespace nHydrate.DslPackage.Objects
                         newColumn.DefaultIsFunc = field.DefaultIsFunc;
                         newColumn.Description = field.Summary;
                         newColumn.Formula = field.Formula;
-                        newColumn.Identity = field.Identity.Convert<Generator.Common.Models.IdentityTypeConstants>();
+                        newColumn.Identity = field.Identity.Convert<Generator.Common.IdentityTypeConstants>();
                         newColumn.IsIndexed = field.IsIndexed;
                         newColumn.IsReadOnly = field.IsReadOnly;
                         newColumn.IsUnique = field.IsUnique;
@@ -397,7 +397,7 @@ namespace nHydrate.DslPackage.Objects
                                 Description = index.Summary,
                                 IsUnique = index.IsUnique,
                                 Clustered = index.Clustered,
-                                PrimaryKey = (index.IndexType == IndexTypeConstants.PrimaryKey)
+                                PrimaryKey = (index.IndexType == Dsl.IndexTypeConstants.PrimaryKey)
                             };
                             newTable.TableIndexList.Add(newIndex);
                             newIndex.ResetKey(index.Id.ToString());
@@ -426,7 +426,7 @@ namespace nHydrate.DslPackage.Objects
                     {
                         //For each row create N cells one for each column
                         var rowEntry = new nHydrate.Generator.Common.Models.RowEntry(newTable.Root);
-                        var staticDataFieldList = fieldList.Where(x => !x.DataType.IsBinaryType() && x.DataType != DataTypeConstants.Timestamp).ToList();
+                        var staticDataFieldList = fieldList.Where(x => !x.DataType.IsBinaryType() && x.DataType != Dsl.DataTypeConstants.Timestamp).ToList();
                         for (var jj = 0; jj < staticDataFieldList.Count; jj++)
                         {
                             var cellEntry = new nHydrate.Generator.Common.Models.CellEntry(newTable.Root);
@@ -487,7 +487,7 @@ namespace nHydrate.DslPackage.Objects
                                 newRelation.ParentTableRef = parentTable.CreateRef(parentTable.Key);
                                 newRelation.ChildTableRef = childTable.CreateRef(childTable.Key);
                                 newRelation.RoleName = ((EntityHasEntities)connector.ModelElement).RoleName;
-                                newRelation.DeleteAction = relation.DeleteAction.Convert<Relation.DeleteActionConstants>();
+                                newRelation.DeleteAction = relation.DeleteAction.Convert<Generator.Common.DeleteActionConstants>();
                                 newRelation.Enforce = relation.IsEnforced;
 
                                 //Create the column links

@@ -1,3 +1,6 @@
+using nHydrate.Generator.Common;
+using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -262,6 +265,13 @@ namespace nHydrate.ModelManagement
                     .ToList()
                     .ForEach(x => x.Id = Guid.NewGuid());
 
+                //Reset predefined sizes if necessary
+                foreach(var field in entity.Fields)
+                {
+                    var size = nHydrate.Generator.Common.Models.ColumnBase.GetPredefinedSize(field.Datatype.Convert<System.Data.SqlDbType>());
+                    field.Length = (size == -1) ? field.Length : size;
+                }
+
                 if (entity.Fields.Count != entity.Fields.Select(x => x.Id).Count())
                     throw new ModelException($"Entity: '{entity.Name}': All fields must have a unique ID.");
 
@@ -424,7 +434,7 @@ namespace nHydrate.ModelManagement
                     GeneratesDoubleDerived = obj.generatesdoublederived != 0,
                     Id = obj.id.ToGuid(),
                     Immutable = obj.immutable != 0,
-                    TypedTable = obj.typedentity.ToEnum<Utilities.TypedTableConstants>(),
+                    TypedTable = obj.typedentity.ToEnum<TypedTableConstants>(),
                     IsAssociative = obj.isassociative != 0,
                     IsTenant = obj.isTenant != 0,
                     Name = obj.name,
@@ -439,12 +449,12 @@ namespace nHydrate.ModelManagement
                     {
                         CodeFacade = ff.codefacade,
                         DataFormatString = ff.dataformatstring,
-                        Datatype = ff.datatype.ToEnum<Utilities.DataTypeConstants>(),
+                        Datatype = ff.datatype.ToEnum<DataTypeConstants>(),
                         Default = ff.@default,
                         DefaultIsFunc = ff.defaultisfunc != 0,
                         Formula = ff.formula,
                         Id = ff.id.ToGuid(),
-                        Identity = ff.identity.ToEnum<Utilities.IdentityTypeConstants>(),
+                        Identity = ff.identity.ToEnum<IdentityTypeConstants>(),
                         IsCalculated = ff.Iscalculated != 0,
                         IsIndexed = ff.isindexed != 0,
                         IsPrimaryKey = ff.isprimarykey != 0,
@@ -470,7 +480,7 @@ namespace nHydrate.ModelManagement
                             Clustered = ifield.clustered != 0,
                             //Id = ifield.id.ToGuid(),
                             ImportedName = ifield.importedname,
-                            IndexType = (Utilities.IndexTypeConstants)ifield.indextype,
+                            IndexType = (IndexTypeConstants)ifield.indextype,
                             IsUnique = ifield.isunique != 0,
                             Summary = ifield.summary,
                         });
@@ -523,7 +533,7 @@ namespace nHydrate.ModelManagement
                             ForeignEntityId = entity2.id.ToGuid(),
                         });
                         newRelation.IsEnforced = relation.isenforced != 0;
-                        newRelation.DeleteAction = relation.deleteaction.ToEnum<Utilities.DeleteActionConstants>();
+                        newRelation.DeleteAction = relation.deleteaction.ToEnum<DeleteActionConstants>();
                         newRelation.RoleName = relation.rolename;
                         newRelation.Summary = relation.summary;
                         foreach (var fsi in relation.relationfieldset)
@@ -569,7 +579,7 @@ namespace nHydrate.ModelManagement
                     newView.Fields.AddItem(new ViewFieldYaml
                     {
                         CodeFacade = ff.codefacade,
-                        Datatype = ff.datatype.ToEnum<Utilities.DataTypeConstants>(),
+                        Datatype = ff.datatype.ToEnum<DataTypeConstants>(),
                         Default = ff.@default,
                         Id = ff.id.ToGuid(),
                         IsPrimaryKey = ff.isprimarykey != 0,

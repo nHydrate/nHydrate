@@ -55,7 +55,7 @@ namespace nHydrate.Generator.Common.Models
                     case System.Data.SqlDbType.NChar:
                     case System.Data.SqlDbType.NVarChar:
                     case System.Data.SqlDbType.VarChar:
-                        retval += "(" + this.Length + ")"; ;
+                        retval += $"({this.Length})"; ;
                         break;
                 }
                 return retval;
@@ -126,10 +126,7 @@ namespace nHydrate.Generator.Common.Models
             if (parentViewRefNode != null)
                 ParentViewRef.XmlLoad(parentViewRefNode);
 
-            var typeString = node.Attributes["type"].Value;
-            if (!string.IsNullOrEmpty(typeString))
-                _dataType = (System.Data.SqlDbType)int.Parse(typeString);
-
+            _dataType = node.Attributes["type"].Value.ToEnum<System.Data.SqlDbType>(_dataType);
             this.AllowNull = XmlHelper.GetAttributeValue(node, "allowNull", _allowNull);
         }
 
@@ -137,10 +134,7 @@ namespace nHydrate.Generator.Common.Models
 
         #region Helpers
 
-        public override Reference CreateRef()
-        {
-            return CreateRef(Guid.NewGuid().ToString());
-        }
+        public override Reference CreateRef() => CreateRef(Guid.NewGuid().ToString());
 
         public override Reference CreateRef(string key)
         {
@@ -159,7 +153,6 @@ namespace nHydrate.Generator.Common.Models
                 retval = this.EnumType;
                 if (allowNullable && (this.AllowNull || forceNull))
                     retval += "?";
-
                 return retval;
             }
             else

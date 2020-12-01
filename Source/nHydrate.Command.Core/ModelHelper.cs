@@ -5,54 +5,62 @@ using System.IO;
 using System.Linq;
 using static nHydrate.Generator.Common.Models.Relation;
 using nHydrate.Generator.Common.Util;
+using nHydrate.Generator.Common;
 
 namespace nHydrate.Command.Core
 {
-    internal static class ModelHelper
+    public static class ModelHelper
     {
-        //Copy from Dsl
-        public enum IndexTypeConstants
-        {
-            PrimaryKey,
-            IsIndexed,
-            User,
-        }
+        //public enum DeleteActionConstants
+        //{
+        //    NoAction,
+        //    Cascade,
+        //    SetNull
+        //}
 
-        //Copy from Dsl
-        public enum DataTypeConstants
-        {
-            BigInt,
-            Binary,
-            Bit,
-            Char,
-            Date,
-            DateTime,
-            DateTime2,
-            DateTimeOffset,
-            Decimal,
-            Float,
-            Image,
-            Int,
-            Money,
-            NChar,
-            NText,
-            NVarChar,
-            Real,
-            SmallDateTime,
-            SmallInt,
-            SmallMoney,
-            Structured,
-            Text,
-            Time,
-            Timestamp,
-            TinyInt,
-            Udt,
-            UniqueIdentifier,
-            VarBinary,
-            VarChar,
-            Variant,
-            Xml,
-        }
+        ////Copy from Dsl
+        //public enum IndexTypeConstants
+        //{
+        //    PrimaryKey,
+        //    IsIndexed,
+        //    User,
+        //}
+
+        ////Copy from Dsl
+        //public enum DataTypeConstants
+        //{
+        //    BigInt,
+        //    Binary,
+        //    Bit,
+        //    Char,
+        //    Date,
+        //    DateTime,
+        //    DateTime2,
+        //    DateTimeOffset,
+        //    Decimal,
+        //    Float,
+        //    Image,
+        //    Int,
+        //    Money,
+        //    NChar,
+        //    NText,
+        //    NVarChar,
+        //    Real,
+        //    SmallDateTime,
+        //    SmallInt,
+        //    SmallMoney,
+        //    Structured,
+        //    Text,
+        //    Time,
+        //    Timestamp,
+        //    TinyInt,
+        //    Udt,
+        //    UniqueIdentifier,
+        //    VarBinary,
+        //    VarChar,
+        //    Variant,
+        //    Xml,
+        //}
 
         public static nHydrate.Generator.Common.Models.ModelRoot CreatePOCOModel(string modelFile, bool buildModel)
         {

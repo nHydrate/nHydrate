@@ -1,11 +1,10 @@
+using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using YamlDotNet.Core;
-using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
-using static nHydrate.ModelManagement.Utilities;
 
 namespace nHydrate.ModelManagement
 {
@@ -96,7 +95,7 @@ namespace nHydrate.ModelManagement
 
         public Guid Id { get; set; }
 
-        public Utilities.DataTypeConstants Datatype { get; set; } = Utilities.DataTypeConstants.VarChar;
+        public DataTypeConstants Datatype { get; set; } = DataTypeConstants.VarChar;
 
         public bool Nullable { get; set; }
 
@@ -209,7 +208,7 @@ namespace nHydrate.ModelManagement
         [DefaultValue("")]
         public string ImportedName { get; set; } = string.Empty;
 
-        public Utilities.IndexTypeConstants IndexType { get; set; } = Utilities.IndexTypeConstants.IsIndexed;
+        public IndexTypeConstants IndexType { get; set; } = IndexTypeConstants.IsIndexed;
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(false)]
@@ -278,7 +277,7 @@ namespace nHydrate.ModelManagement
 
         public Guid Id { get; set; }
 
-        public Utilities.DataTypeConstants Datatype { get; set; } = Utilities.DataTypeConstants.VarChar;
+        public DataTypeConstants Datatype { get; set; } = DataTypeConstants.VarChar;
 
         public bool Nullable { get; set; }
 
@@ -303,25 +302,5 @@ namespace nHydrate.ModelManagement
         public string Summary { get; set; } = string.Empty;
 
         public override string ToString() => this.Name;
-    }
-
-    internal class SystemTypeTypeConverter : IYamlTypeConverter
-    {
-        public bool Accepts(Type type)
-        {
-            return typeof(Type).IsAssignableFrom(type);
-        }
-
-        public object ReadYaml(IParser parser, Type type)
-        {
-            var scalar = parser.Expect<Scalar>();
-            return Type.GetType(scalar.Value);
-        }
-
-        public void WriteYaml(IEmitter emitter, object value, Type type)
-        {
-            var typeName = ((Type)value).AssemblyQualifiedName;
-            emitter.Emit(new Scalar(typeName));
-        }
     }
 }

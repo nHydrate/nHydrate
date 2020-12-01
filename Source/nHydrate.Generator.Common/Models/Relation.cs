@@ -12,13 +12,6 @@ namespace nHydrate.Generator.Common.Models
     {
         #region Member Variables
 
-        public enum DeleteActionConstants
-        {
-            NoAction,
-            Cascade,
-            SetNull
-        }
-
         protected const string _def_roleName = "";
         protected const string _def_constraintname = "";
         protected const bool _def_enforce = true;

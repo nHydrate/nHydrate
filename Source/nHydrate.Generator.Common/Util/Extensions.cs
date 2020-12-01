@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using YamlDotNet.Core;
+using YamlDotNet.Serialization;
+using YamlDotNet.Core.Events;
 
 namespace nHydrate.Generator.Common.Util
 {
@@ -373,5 +377,79 @@ namespace nHydrate.Generator.Common.Util
         }
 
         public static bool IsEmpty(this string str) => string.IsNullOrEmpty(str);
+
+        public static T ToEnum<T>(this string str)
+            where T : struct, System.Enum
+        {
+            System.Enum.TryParse<T>(str, true, out T v);
+            return (T)v;
+        }
+
+        public static T ToEnum<T>(this string str, T defaultValue)
+            where T : struct, System.Enum
+        {
+            if (System.Enum.TryParse<T>(str, true, out T v))
+                return (T)v;
+            return defaultValue;
+        }
+
+        public static T AddItem<T>(this List<T> list, T item)
+        {
+            list.Add(item);
+            return item;
+        }
+
+        public static T AddNew<T>(this List<T> list)
+            where T : new()
+        {
+            T item = new T();
+            list.Add(item);
+            return item;
+        }
+
+        public static T Convert<T>(this System.Enum type)
+            where T : struct, System.Enum
+        {
+            Enum.TryParse(type.ToString(), out T v);
+            return v;
+        }
+
+        public static string ToYaml<T>(this T obj)
+        {
+            if (obj == null) return null;
+            var serializer = new YamlDotNet.Serialization.SerializerBuilder()
+                    .WithTypeConverter(new SystemTypeTypeConverter())
+                    .Build();
+            return serializer.Serialize(obj);
+        }
+
+        public static T FromYaml<T>(this string value)
+        {
+            if (string.IsNullOrEmpty(value)) return default(T);
+            var serializer = new YamlDotNet.Serialization.DeserializerBuilder()
+                   .WithTypeConverter(new SystemTypeTypeConverter())
+                   .Build();
+            return serializer.Deserialize<T>(value);
+        }
+    }
+
+    internal class SystemTypeTypeConverter : IYamlTypeConverter
+    {
+        public bool Accepts(Type type)
+        {
+            return typeof(Type).IsAssignableFrom(type);
+        }
+
+        public object ReadYaml(IParser parser, Type type)
+        {
+            var scalar = parser.Expect<Scalar>();
+            return Type.GetType(scalar.Value);
+        }
+
+        public void WriteYaml(IEmitter emitter, object value, Type type)
+        {
+            var typeName = ((Type)value).AssemblyQualifiedName;
+            emitter.Emit(new Scalar(typeName));
+        }
     }
 }

@@ -6,13 +6,6 @@ using System.Xml;
 
 namespace nHydrate.Generator.Common.Models
 {
-    public enum IdentityTypeConstants
-    {
-        None,
-        Database,
-        Code,
-    }
-
     public class Column : ColumnBase, INamedObject
     {
         #region Member Variables

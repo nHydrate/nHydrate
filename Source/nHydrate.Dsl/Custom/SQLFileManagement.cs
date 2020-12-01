@@ -81,7 +81,7 @@ namespace nHydrate.Dsl.Custom
                 node.Schema = item.Schema;
                 node.Summary = item.Summary;
                 //node.type = "entity";
-                node.TypedTable = item.TypedEntity.Convert<Utilities.TypedTableConstants>();
+                node.TypedTable = item.TypedEntity.Convert<Generator.Common.TypedTableConstants>();
 
                 #region Fields
                 //var nodeFields = new List<ModelManagement.Entity.configurationField>();
@@ -93,12 +93,12 @@ namespace nHydrate.Dsl.Custom
                     var nodeField = node.Fields.AddNew();
                     nodeField.CodeFacade = field.CodeFacade;
                     nodeField.DataFormatString = field.DataFormatString;
-                    nodeField.Datatype = field.DataType.Convert<Utilities.DataTypeConstants>();
+                    nodeField.Datatype = field.DataType.Convert<Generator.Common.DataTypeConstants>();
                     nodeField.Default = field.Default;
                     nodeField.DefaultIsFunc = field.DefaultIsFunc;
                     nodeField.Formula = field.Formula;
                     nodeField.Id = field.Id;
-                    nodeField.Identity = field.Identity.Convert<Utilities.IdentityTypeConstants>();
+                    nodeField.Identity = field.Identity.Convert<Generator.Common.IdentityTypeConstants>();
                     nodeField.IsCalculated = field.IsCalculated;
                     nodeField.IsIndexed = field.IsIndexed;
                     nodeField.IsPrimaryKey = field.IsPrimaryKey;
@@ -140,7 +140,7 @@ namespace nHydrate.Dsl.Custom
                 nodeField.Clustered = index.Clustered;
                 //nodeField.Id = index.Id;
                 nodeField.ImportedName = index.ImportedName;
-                nodeField.IndexType = index.IndexType.Convert<Utilities.IndexTypeConstants>();
+                nodeField.IndexType = index.IndexType.Convert<Generator.Common.IndexTypeConstants>();
                 nodeField.IsUnique = index.IsUnique;
                 nodeField.Summary = index.Summary;
 
@@ -199,7 +199,7 @@ namespace nHydrate.Dsl.Custom
                 //nodeRelations.Add(nodeRelationItem);
                 var nodeRelationItem = node.Relations.AddNew();
                 nodeRelationItem.ForeignEntityId = relation.ChildEntity.Id;
-                nodeRelationItem.DeleteAction = relation.DeleteAction.Convert<Utilities.DeleteActionConstants>();
+                nodeRelationItem.DeleteAction = relation.DeleteAction.Convert<Generator.Common.DeleteActionConstants>();
                 //nodeRelationItem.Id = relation.InternalId;
                 nodeRelationItem.IsEnforced = relation.IsEnforced;
                 nodeRelationItem.RoleName = relation.RoleName;
@@ -273,7 +273,7 @@ namespace nHydrate.Dsl.Custom
                     //nodeFields.Add(nodeField);
                     var nodeField = node.Fields.AddNew();
                     nodeField.CodeFacade = field.CodeFacade;
-                    nodeField.Datatype = field.DataType.Convert<Utilities.DataTypeConstants>();
+                    nodeField.Datatype = field.DataType.Convert<Generator.Common.DataTypeConstants>();
                     nodeField.Default = field.Default;
                     nodeField.Id = field.Id;
                     nodeField.IsPrimaryKey = field.IsPrimaryKey;

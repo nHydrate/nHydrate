@@ -1,3 +1,4 @@
+using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.Models;
 using System;
 using System.Linq;

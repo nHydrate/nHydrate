@@ -9,13 +9,6 @@ using System.Xml;
 
 namespace nHydrate.Generator.Common.Models
 {
-    public enum TypedTableConstants
-    {
-        None,
-        DatabaseTable,
-        EnumOnly,
-    }
-
     public class Table : BaseModelObject, ICodeFacadeObject, INamedObject
     {
         #region Member Variables

@@ -217,11 +217,11 @@ namespace nHydrate.Generator.Common.Models
                      this.DataType == System.Data.SqlDbType.VarChar)
             {
                 if (this.DataType == System.Data.SqlDbType.Decimal)
-                    retval += " (" + this.Length + ", " + this.Scale + ")";
+                    retval += $" ({this.Length}, {this.Scale})";
                 else if (this.DataType == System.Data.SqlDbType.DateTime2)
-                    retval += " (" + this.Length + ")";
+                    retval += $" ({this.Length})";
                 else
-                    retval += " (" + this.GetLengthString() + ")";
+                    retval += $" ({this.GetLengthString()})";
             }
             return retval;
         }
@@ -241,12 +241,9 @@ namespace nHydrate.Generator.Common.Models
                 this.DataType == System.Data.SqlDbType.VarBinary ||
                 this.DataType == System.Data.SqlDbType.VarChar)
             {
-                if (this.DataType == System.Data.SqlDbType.Decimal)
-                    return this.Length + $" (scale:{this.Scale})";
-                else if (this.DataType == System.Data.SqlDbType.DateTime2)
-                    return this.Length.ToString();
-                else
-                    return this.GetLengthString();
+                if (this.DataType == System.Data.SqlDbType.Decimal) return this.Length + $" (scale:{this.Scale})";
+                else if (this.DataType == System.Data.SqlDbType.DateTime2) return this.Length.ToString();
+                else return this.GetLengthString();
             }
             return string.Empty;
         }
@@ -435,11 +432,11 @@ namespace nHydrate.Generator.Common.Models
                 case System.Data.SqlDbType.UniqueIdentifier:
                     return 16;
 
-                case System.Data.SqlDbType.Image:
-                case System.Data.SqlDbType.Text:
-                case System.Data.SqlDbType.NText:
-                case System.Data.SqlDbType.Xml:
-                    return 1;
+                //case System.Data.SqlDbType.Image:
+                //case System.Data.SqlDbType.Text:
+                //case System.Data.SqlDbType.NText:
+                //case System.Data.SqlDbType.Xml:
+                //    return 1;
 
                 default:
                     return -1;
