@@ -165,7 +165,7 @@ namespace nHydrate.ModelManagement
 
         public Guid ForeignEntityId { get; set; }
 
-        //public Guid Id { get; set; }
+        public Guid Id { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue(true)]
@@ -201,7 +201,7 @@ namespace nHydrate.ModelManagement
         [DefaultValue(false)]
         public bool Clustered { get; set; }
 
-        //public Guid Id { get; set; }
+        public Guid Id { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [DefaultValue("")]

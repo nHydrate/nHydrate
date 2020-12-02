@@ -38,45 +38,35 @@ namespace nHydrate.Generator.Common.Models
 
         #region IXMLable Members
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
-            try
-            {
-                var oDoc = node.OwnerDocument;
+            var oDoc = node.OwnerDocument;
 
-                var parentColumnRefNode = oDoc.CreateElement("pt");
-                this.ParentColumnRef.XmlAppend(parentColumnRefNode);
-                node.AppendChild(parentColumnRefNode);
+            var parentColumnRefNode = oDoc.CreateElement("pt");
+            this.ParentColumnRef.XmlAppend(parentColumnRefNode);
+            node.AppendChild(parentColumnRefNode);
 
-                var childColumnRefNode = oDoc.CreateElement("ct");
-                this.ChildColumnRef.XmlAppend(childColumnRefNode);
-                node.AppendChild(childColumnRefNode);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var childColumnRefNode = oDoc.CreateElement("ct");
+            this.ChildColumnRef.XmlAppend(childColumnRefNode);
+            node.AppendChild(childColumnRefNode);
+
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            try
-            {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                var parentColumnRefNode = node.SelectSingleNode("parentColumnRef"); //deprecated, use "pt"
-                if (parentColumnRefNode == null) parentColumnRefNode = node.SelectSingleNode("pt");
-                this.ParentColumnRef = new Reference(this.Root);
-                this.ParentColumnRef.XmlLoad(parentColumnRefNode);
+            this.Key = node.GetAttributeValue("key", string.Empty);
+            var parentColumnRefNode = node.SelectSingleNode("parentColumnRef"); //deprecated, use "pt"
+            if (parentColumnRefNode == null) parentColumnRefNode = node.SelectSingleNode("pt");
+            this.ParentColumnRef = new Reference(this.Root);
+            this.ParentColumnRef.XmlLoad(parentColumnRefNode);
 
-                var childColumnRefNode = node.SelectSingleNode("childColumnRef"); //deprecated, use "ct"
-                if (childColumnRefNode == null) childColumnRefNode = node.SelectSingleNode("ct");
-                this.ChildColumnRef = new Reference(this.Root);
-                this.ChildColumnRef.XmlLoad(childColumnRefNode);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var childColumnRefNode = node.SelectSingleNode("childColumnRef"); //deprecated, use "ct"
+            if (childColumnRefNode == null) childColumnRefNode = node.SelectSingleNode("ct");
+            this.ChildColumnRef = new Reference(this.Root);
+            this.ChildColumnRef.XmlLoad(childColumnRefNode);
+
+            return node;
         }
 
         #endregion

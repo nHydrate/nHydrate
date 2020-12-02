@@ -58,48 +58,40 @@ namespace nHydrate.Generator.Common.Models
 
         #region XML Extension Methods
 
-        public static void XmlAppend(this List<TableIndex> list, XmlNode node)
+        public static XmlNode XmlAppend(this List<TableIndex> list, XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
             foreach (var item in list)
-            {
-                var tableIndexNode = oDoc.CreateElement("ti");
-                item.XmlAppend(tableIndexNode);
-                node.AppendChild(tableIndexNode);
-            }
+                node.AppendChild(item.XmlAppend(node.OwnerDocument.CreateElement("ti")));
+            return node;
         }
 
-        public static void XmlAppend(this List<TableIndexColumn> list, XmlNode node)
+        public static XmlNode XmlAppend(this List<TableIndexColumn> list, XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
             foreach (var item in list)
-            {
-                var tableIndexColumnNode = oDoc.CreateElement("tic");
-                item.XmlAppend(tableIndexColumnNode);
-                node.AppendChild(tableIndexColumnNode);
-            }
+                node.AppendChild(item.XmlAppend(node.OwnerDocument.CreateElement("tic")));
+            return node;
         }
 
-        public static void XmlLoad(this List<TableIndex> list, XmlNode node, INHydrateModelObject root)
+        public static XmlNode XmlLoad(this List<TableIndex> list, XmlNode node, INHydrateModelObject root)
         {
-            var nodes = node.SelectNodes("ti");
-            foreach (XmlNode n in nodes)
+            foreach (XmlNode n in node.SelectNodes("ti"))
             {
                 var newItem = new TableIndex(root);
                 newItem.XmlLoad(n);
                 list.Add(newItem);
             }
+            return node;
         }
 
-        public static void XmlLoad(this List<TableIndexColumn> list, XmlNode node, INHydrateModelObject root)
+        public static XmlNode XmlLoad(this List<TableIndexColumn> list, XmlNode node, INHydrateModelObject root)
         {
-            var nodes = node.SelectNodes("tic");
-            foreach (XmlNode n in nodes)
+            foreach (XmlNode n in node.SelectNodes("tic"))
             {
                 var newItem = new TableIndexColumn(root);
                 newItem.XmlLoad(n);
                 list.Add(newItem);
             }
+            return node;
         }
 
         #endregion

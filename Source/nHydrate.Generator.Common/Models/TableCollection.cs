@@ -12,13 +12,12 @@ namespace nHydrate.Generator.Common.Models
         {
         }
 
-
         protected override string NodeOldName => "table";
         protected override string NodeName => "t";
 
         #region IXMLable Members
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
             base.XmlLoad(node);
 
@@ -66,23 +65,7 @@ namespace nHydrate.Generator.Common.Models
 
             }
 
-            var checkList = new List<string>();
-            foreach (Table t in this)
-            {
-                if (checkList.Contains(t.Id.ToString()))
-                    System.Diagnostics.Debug.Write(string.Empty);
-                else
-                    checkList.Add(t.Id.ToString());
-            }
-
-            checkList = new List<string>();
-            foreach (Table t in this)
-            {
-                if (checkList.Contains(t.Key))
-                    System.Diagnostics.Debug.Write(string.Empty);
-                else
-                    checkList.Add(t.Key);
-            }
+            return node;
         }
 
         #endregion

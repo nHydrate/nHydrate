@@ -175,22 +175,19 @@ namespace nHydrate.Generator.Common.Models
         #endregion
 
         #region IXMLable Members
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
-
-            var cellEntriesNode = oDoc.CreateElement("cl");
-            CellEntries.XmlAppend(cellEntriesNode);
-            node.AppendChild(cellEntriesNode);
-
+            node.AppendChild(CellEntries.XmlAppend(node.OwnerDocument.CreateElement("cl")));
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+            this.Key = node.GetAttributeValue("key", string.Empty);
             var cellEntriesNode = node.SelectSingleNode("cellEntries"); //deprecated, use "cl"
             if (cellEntriesNode == null) cellEntriesNode = node.SelectSingleNode("cl");
             this.CellEntries.XmlLoad(cellEntriesNode);
+            return node;
         }
         #endregion
 

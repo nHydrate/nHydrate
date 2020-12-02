@@ -168,8 +168,8 @@ namespace nHydrate.Generator.Common.Models
 
         #endregion
 
-        public abstract override void XmlAppend(XmlNode node);
-        public abstract override void XmlLoad(XmlNode node);
+        public abstract override XmlNode XmlAppend(XmlNode node);
+        public abstract override XmlNode XmlLoad(XmlNode node);
 
         #region Helpers
 

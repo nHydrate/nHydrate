@@ -9,8 +9,10 @@ namespace nHydrate.ModelManagement
 {
     public static class FileManagement
     {
-        private const string FOLDER_ET = "_entities";
-        private const string FOLDER_VW = "_views";
+        private const string FOLDER_OLD_ET = "_entities";
+        private const string FOLDER_OLD_VW = "_views";
+        private const string FOLDER_ET = "entities";
+        private const string FOLDER_VW = "views";
         public const string ModelExtension = ".nhydrate.yaml";
         public const string OldModelExtension = ".nhydrate";
 
@@ -92,8 +94,12 @@ namespace nHydrate.ModelManagement
 
         private static void LoadEntities(string rootFolder, DiskModel results)
         {
-            var folder = Path.Combine(rootFolder, FOLDER_ET);
-            if (!Directory.Exists(folder)) return;
+            var folder = Path.Combine(rootFolder, FOLDER_OLD_ET);
+            if (!Directory.Exists(folder))
+            {
+                folder = Path.Combine(rootFolder, FOLDER_ET);
+                if (!Directory.Exists(folder)) return;
+            }
 
             //Load Entities
             foreach (var f in Directory.GetFiles(folder, "*.configuration.xml"))
@@ -138,7 +144,12 @@ namespace nHydrate.ModelManagement
 
         private static void LoadViews(string rootFolder, DiskModel results)
         {
-            var folder = Path.Combine(rootFolder, FOLDER_VW);
+            var folder = Path.Combine(rootFolder, FOLDER_OLD_VW);
+            if (!Directory.Exists(folder))
+            {
+                folder = Path.Combine(rootFolder, FOLDER_VW);
+                if (!Directory.Exists(folder)) return;
+            }
 
             //Load Views
             if (Directory.Exists(folder))
@@ -220,8 +231,13 @@ namespace nHydrate.ModelManagement
 
         private static void LoadEntitiesYaml(string rootFolder, DiskModelYaml results)
         {
-            var folder = Path.Combine(rootFolder, FOLDER_ET);
-            if (!Directory.Exists(folder)) return;
+            var folder = Path.Combine(rootFolder, FOLDER_OLD_ET);
+            if (!Directory.Exists(folder))
+            {
+                folder = Path.Combine(rootFolder, FOLDER_ET);
+                if (!Directory.Exists(folder)) return;
+            }
+
             var fList = Directory.GetFiles(folder, "*.yaml");
             //Only use Yaml if there are actual files
             if (!fList.Any()) return;
@@ -338,8 +354,13 @@ namespace nHydrate.ModelManagement
 
         private static void LoadViewsYaml(string rootFolder, DiskModelYaml results)
         {
-            var folder = Path.Combine(rootFolder, FOLDER_VW);
-            if (!Directory.Exists(folder)) return;
+            var folder = Path.Combine(rootFolder, FOLDER_OLD_VW);
+            if (!Directory.Exists(folder))
+            {
+                folder = Path.Combine(rootFolder, FOLDER_VW);
+                if (!Directory.Exists(folder)) return;
+            }
+
             var fList = Directory.GetFiles(folder, "*.yaml");
             //Only use Yaml if there are actual files
             if (!fList.Any()) return;
@@ -477,7 +498,7 @@ namespace nHydrate.ModelManagement
                         var newIndex = newEntity.Indexes.AddItem(new IndexYaml
                         {
                             Clustered = ifield.clustered != 0,
-                            //Id = ifield.id.ToGuid(),
+                            Id = ifield.id.ToGuid(),
                             ImportedName = ifield.importedname,
                             IndexType = (IndexTypeConstants)ifield.indextype,
                             IsUnique = ifield.isunique != 0,
@@ -527,7 +548,7 @@ namespace nHydrate.ModelManagement
                         var entity2 = model.Entities.FirstOrDefault(x => x.id == relation.childid);
                         var newRelation = newEntity.Relations.AddItem(new RelationYaml
                         {
-                            //Id = relation.id.ToGuid(),
+                            Id = relation.id.ToGuid(),
                             ForeignEntityName = entity2.name,
                             ForeignEntityId = entity2.id.ToGuid(),
                         });

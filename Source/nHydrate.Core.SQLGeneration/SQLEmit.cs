@@ -600,7 +600,7 @@ namespace nHydrate.Core.SQLGeneration
                     if (!newColumn.AllowNull && oldColumn.AllowNull)
                     {
                         sb.AppendLine();
-                        if (string.IsNullOrEmpty(newColumn.Default))
+                        if (newColumn.Default.IsEmpty())
                         {
                             //There is no default value so just inject a warning
                             sb.AppendLine("--WARNING: IF YOU NEED TO SET NULL COLUMN VALUES TO A NON-NULL VALUE, DO SO HERE BEFORE MAKING THE COLUMN NON-NULLABLE");
@@ -893,7 +893,7 @@ namespace nHydrate.Core.SQLGeneration
                             var sqlValue = cellEntry.GetSQLData();
                             if (sqlValue == null) //Null is actually returned if the value can be null
                             {
-                                if (!string.IsNullOrEmpty(column.Default))
+                                if (!column.Default.IsEmpty())
                                 {
                                     if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                     {
@@ -1015,7 +1015,7 @@ namespace nHydrate.Core.SQLGeneration
                             var sqlValue = cellEntry.GetSQLData();
                             if (sqlValue == null) //Null is actually returned if the value can be null
                             {
-                                if (!string.IsNullOrEmpty(column.Default))
+                                if (!column.Default.IsEmpty())
                                 {
                                     if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                     {
@@ -1112,11 +1112,11 @@ namespace nHydrate.Core.SQLGeneration
             defaultName = defaultName.ToUpper();
             var defaultClause = GetDefaultValueClause(column);
 
-            if (!string.IsNullOrEmpty(column.Default))
+            if (!column.Default.IsEmpty())
             {
                 //We know a default was specified so render the SQL
                 defaultName = defaultName.ToUpper();
-                if (!string.IsNullOrEmpty(defaultClause))
+                if (!defaultClause.IsEmpty())
                 {
                     if (includeDrop)
                     {
@@ -1588,7 +1588,7 @@ namespace nHydrate.Core.SQLGeneration
             {
                 tempBuilder.Append(GetDefaultValue(defaultValue));
             }
-            else if (column.DataType.DefaultIsString() && !string.IsNullOrEmpty(defaultValue))
+            else if (column.DataType.DefaultIsString() && !defaultValue.IsEmpty())
             {
                 if (!column.DefaultIsFunc)
                     tempBuilder.Append("'");
@@ -1610,7 +1610,7 @@ namespace nHydrate.Core.SQLGeneration
         {
             var sb = new StringBuilder();
             var theValue = GetDetailSQLValue(column);
-            if (!string.IsNullOrEmpty(theValue))
+            if (!theValue.IsEmpty())
             {
                 //We know that something was typed in so create the default clause
                 var defaultName = GetDefaultValueConstraintName(column);

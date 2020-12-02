@@ -386,7 +386,7 @@ namespace nHydrate.Generator.Common.Models
 
         #region IXMLable Members
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
             var oDoc = node.OwnerDocument;
 
@@ -414,13 +414,15 @@ namespace nHydrate.Generator.Common.Models
                 node.AddAttribute("roleName", this.RoleName);
             if (this.ConstraintName != _def_constraintname)
                 node.AddAttribute("constraintName", this.ConstraintName);
+
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-            _enforce = XmlHelper.GetAttributeValue(node, "enforce", _def_enforce);
-            _description = XmlHelper.GetAttributeValue(node, "description", _def_description);
+            this.Key = node.GetAttributeValue("key", string.Empty);
+            _enforce = node.GetAttributeValue("enforce", _def_enforce);
+            _description = node.GetAttributeValue("description", _def_description);
 
             _deleteAction = (DeleteActionConstants)Enum.Parse(typeof(DeleteActionConstants), XmlHelper.GetAttributeValue(node, "deleteAction", _def_deleteAction.ToString()));
 
@@ -441,11 +443,13 @@ namespace nHydrate.Generator.Common.Models
 
             this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
-            var roleName = XmlHelper.GetAttributeValue(node, "roleName", _def_roleName);
+            var roleName = node.GetAttributeValue("roleName", _def_roleName);
             if (roleName == "fk") roleName = string.Empty; //Error correct from earlier versions
             this.RoleName = roleName;
 
-            this.ConstraintName = XmlHelper.GetAttributeValue(node, "constraintName", _def_constraintname);
+            this.ConstraintName = node.GetAttributeValue("constraintName", _def_constraintname);
+
+            return node;
         }
 
         #endregion

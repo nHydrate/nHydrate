@@ -107,6 +107,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
             retval += 1; // The actual project file it self
             return retval;
         }
+
         private int GetFileCount(IProjectGenerator projectGenerator, System.Type[] generatorTypes)
         {
             var retval = 0;

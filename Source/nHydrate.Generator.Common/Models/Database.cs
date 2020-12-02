@@ -108,11 +108,11 @@ namespace nHydrate.Generator.Common.Models
 
         #region IXMLable Members
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
             var oDoc = node.OwnerDocument;
 
-            node.AddAttribute("key", this.Key);
+            //node.AddAttribute("key", this.Key);
 
             XmlHelper.AddAttribute((XmlElement)node, "createdByColumnName", CreatedByColumnName);
             XmlHelper.AddAttribute((XmlElement)node, "createdDateColumnName", CreatedDateColumnName);
@@ -122,9 +122,7 @@ namespace nHydrate.Generator.Common.Models
             XmlHelper.AddAttribute((XmlElement)node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
             XmlHelper.AddAttribute((XmlElement)node, "grantExecUser", GrantExecUser);
 
-            var columnsNode = oDoc.CreateElement("columns");
-            Columns.XmlAppend(columnsNode);
-            node.AppendChild(columnsNode);
+            node.AppendChild(Columns.XmlAppend(oDoc.CreateElement("columns")));
 
             var customViewColumnsNode = oDoc.CreateElement("customviewcolumns");
             this.CustomViewColumns.XmlAppend(customViewColumnsNode);
@@ -143,38 +141,28 @@ namespace nHydrate.Generator.Common.Models
             var customViewsNode = oDoc.CreateElement("customviews");
             this.CustomViews.XmlAppend(customViewsNode);
             node.AppendChild(customViewsNode);
+            
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override string Key { get => "00000000-0000-0000-0000-000000000000"; }
+
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-            CreatedByColumnName = XmlHelper.GetAttributeValue(node, "createdByColumnName", CreatedByColumnName);
-            CreatedDateColumnName = XmlHelper.GetAttributeValue(node, "createdDateColumName", CreatedDateColumnName);
-            ModifiedByColumnName = XmlHelper.GetAttributeValue(node, "modifiedByColumnName", ModifiedByColumnName);
-            ModifiedDateColumnName = XmlHelper.GetAttributeValue(node, "modifiedDateColumnName", ModifiedDateColumnName);
-            ConcurrencyCheckColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", ConcurrencyCheckColumnName);
-            FullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
-            GrantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", GrantExecUser);
+            //this.Key = node.GetAttributeValue("key", string.Empty);
+            CreatedByColumnName = node.GetAttributeValue("createdByColumnName", CreatedByColumnName);
+            CreatedDateColumnName = node.GetAttributeValue("createdDateColumName", CreatedDateColumnName);
+            ModifiedByColumnName = node.GetAttributeValue("modifiedByColumnName", ModifiedByColumnName);
+            ModifiedDateColumnName = node.GetAttributeValue("modifiedDateColumnName", ModifiedDateColumnName);
+            ConcurrencyCheckColumnName = node.GetAttributeValue("timestampColumnName", ConcurrencyCheckColumnName);
+            FullIndexSearchColumnName = node.GetAttributeValue("fullIndexSearchColumnName", FullIndexSearchColumnName);
+            GrantExecUser = node.GetAttributeValue("grantExecUser", GrantExecUser);
 
-            var relationsNode = node.SelectSingleNode("relations");
-            if (relationsNode != null)
-                this.Relations.XmlLoad(relationsNode);
-
-            var tablesNode = node.SelectSingleNode("tables");
-            if (tablesNode != null)
-                this.Tables.XmlLoad(tablesNode);
-
-            var customViewsNode = node.SelectSingleNode("customviews");
-            if (customViewsNode != null)
-                this.CustomViews.XmlLoad(customViewsNode);
-
-            var columnsNode = node.SelectSingleNode("columns");
-            if (columnsNode != null)
-                this.Columns.XmlLoad(columnsNode);
-
-            var customviewcolumnsNode = node.SelectSingleNode("customviewcolumns");
-            if (customviewcolumnsNode != null)
-                this.CustomViewColumns.XmlLoad(customviewcolumnsNode);
+            this.Relations?.XmlLoad(node.SelectSingleNode("relations"));
+            this.Tables?.XmlLoad(node.SelectSingleNode("tables"));
+            this.CustomViews?.XmlLoad(node.SelectSingleNode("customviews"));
+            this.Columns?.XmlLoad(node.SelectSingleNode("columns"));
+            this.CustomViewColumns?.XmlLoad(node.SelectSingleNode("customviewcolumns"));
 
             //Clean all tables that are dead
             foreach (Table t in this.Tables)
@@ -185,15 +173,14 @@ namespace nHydrate.Generator.Common.Models
                 }
             }
 
-            this.DatabaseName = XmlHelper.GetAttributeValue(node, "databaseName", string.Empty);
-
-            this.CreatedByColumnName = XmlHelper.GetAttributeValue(node, "createdByColumnName", _def_createdByColumnName);
-            this.CreatedDateColumnName = XmlHelper.GetAttributeValue(node, "createdDateColumnName", _def_createdDateColumnName);
-            this.ModifiedByColumnName = XmlHelper.GetAttributeValue(node, "modifiedByColumnName", _def_modifiedByColumnName);
-            this.ModifiedDateColumnName = XmlHelper.GetAttributeValue(node, "modifiedDateColumnName", _def_modifiedDateColumnName);
-            this.ConcurrencyCheckColumnName = XmlHelper.GetAttributeValue(node, "timestampColumnName", _def_timestampColumnName);
-            this.FullIndexSearchColumnName = XmlHelper.GetAttributeValue(node, "fullIndexSearchColumnName", _def_fullIndexSearchColumnName);
-            this.GrantExecUser = XmlHelper.GetAttributeValue(node, "grantExecUser", string.Empty);
+            this.DatabaseName = node.GetAttributeValue("databaseName", string.Empty);
+            this.CreatedByColumnName = node.GetAttributeValue("createdByColumnName", _def_createdByColumnName);
+            this.CreatedDateColumnName = node.GetAttributeValue("createdDateColumnName", _def_createdDateColumnName);
+            this.ModifiedByColumnName = node.GetAttributeValue("modifiedByColumnName", _def_modifiedByColumnName);
+            this.ModifiedDateColumnName = node.GetAttributeValue("modifiedDateColumnName", _def_modifiedDateColumnName);
+            this.ConcurrencyCheckColumnName = node.GetAttributeValue("timestampColumnName", _def_timestampColumnName);
+            this.FullIndexSearchColumnName = node.GetAttributeValue("fullIndexSearchColumnName", _def_fullIndexSearchColumnName);
+            this.GrantExecUser = node.GetAttributeValue("grantExecUser", string.Empty);
 
             #region Are any of these columns orphans
 
@@ -210,8 +197,7 @@ namespace nHydrate.Generator.Common.Models
                 }
             }
 
-            foreach (var column in deleteColumnList)
-                this.Columns.Remove(column);
+            deleteColumnList.ForEach(x => this.Columns.Remove(x));
 
             #endregion
 
@@ -225,12 +211,10 @@ namespace nHydrate.Generator.Common.Models
                 {
                     column.ResetKey(Guid.NewGuid().ToString());
                 }
-
                 usedList.Add(column.Key.ToString());
             }
 
-            foreach (var column in removeList)
-                this.Columns.Remove(column);
+            removeList.ForEach(x => this.Columns.Remove(x));
 
             #endregion
 
@@ -257,10 +241,7 @@ namespace nHydrate.Generator.Common.Models
             }
 
             //Now do the actual deletes
-            foreach (var relation in deleteRelationList)
-            {
-                this.Relations.Remove(relation);
-            }
+            deleteRelationList.ForEach(x => this.Relations.Remove(x));
 
             #endregion
 
@@ -273,6 +254,7 @@ namespace nHydrate.Generator.Common.Models
                 }
             }
 
+            return node;
         }
 
         #endregion

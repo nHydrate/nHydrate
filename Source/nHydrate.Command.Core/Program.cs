@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace nHydrate.Command.Core
 {
@@ -17,7 +16,7 @@ namespace nHydrate.Command.Core
         private const string GeneratorsKey = "generators";
 
         /*
-            /model=C:\code\nHydrateTestAug\ConsoleApp1\Model1.nhydrate /output=C:\code\nHydrateTestAug /generators=nHydrate.Generator.EFCodeFirstNetCore.EFCodeFirstNetCoreProjectGenerator,nHydrate.Generator.PostgresInstaller.PostgresDatabaseProjectGenerator,nHydrate.Generator.SQLInstaller.Core.DatabaseProjectGenerator
+            --model=C:\code\nHydrateTestAug\ConsoleApp1\Model1.nhydrate --output=C:\code\nHydrateTestAug --generators=nHydrate.Generator.EFCodeFirstNetCore.EFCodeFirstNetCoreProjectGenerator,nHydrate.Generator.PostgresInstaller.PostgresDatabaseProjectGenerator,nHydrate.Generator.SQLInstaller.Core.DatabaseProjectGenerator
         */
 
         static int Main(string[] args)
@@ -41,15 +40,6 @@ namespace nHydrate.Command.Core
             if (allValues.ContainsKey(GeneratorsKey))
                 generators = allValues[GeneratorsKey].Split(",", StringSplitOptions.RemoveEmptyEntries);
 
-            //Command line (overrides above)
-            //allValues = Configuration.GetChildren().Select(x => new { x.Key, x.Value }).ToDictionary(x => x.Key.ToString(), x => x.Value?.ToString());
-            //if (allValues.ContainsKey(ModelKey))
-            //    modelFile = allValues[ModelKey];
-            //if (allValues.ContainsKey(OutputKey))
-            //    output = allValues[OutputKey];
-            //if (allValues.ContainsKey(GeneratorsKey))
-            //    generators = allValues[GeneratorsKey].Split(",", StringSplitOptions.RemoveEmptyEntries);
-
             if (string.IsNullOrEmpty(modelFile))
                 return ShowError("The model is required.");
             if (string.IsNullOrEmpty(output))
@@ -60,12 +50,6 @@ namespace nHydrate.Command.Core
             Console.WriteLine($"modelFile='{modelFile}'");
             Console.WriteLine($"output='{output}'");
             Console.WriteLine($"generators='{allValues[GeneratorsKey]}'");
-
-            //Console.WriteLine();
-            //Console.WriteLine("ALL KEYS");
-            //foreach(var key in allValues.Keys)
-            //    Console.WriteLine($"Key={key}, Value={allValues[key]}");
-            //Console.WriteLine();
 
             //NOTE: Yaml Model files must end with ".nhydrate.yaml"
             //Old Xml file ends with ".nhydrate"
@@ -126,13 +110,13 @@ namespace nHydrate.Command.Core
             modelFile = actualFile;
 
             var timer = System.Diagnostics.Stopwatch.StartNew();
-            var buildModel = (allValues.ContainsKey("buildmodel") && allValues["buildmodel"] == "true");
+            var formatModel = (allValues.ContainsKey("formatmodel") && allValues["formatmodel"] == "true");
 
             nHydrate.Generator.Common.Models.ModelRoot model = null;
             try
             {
                 Console.WriteLine("Loading model...");
-                model = ModelHelper.CreatePOCOModel(modelFile, buildModel);
+                model = ModelHelper.CreatePOCOModel(modelFile, formatModel);
             }
             catch (ModelException ex)
             {
@@ -146,10 +130,11 @@ namespace nHydrate.Command.Core
             }
 
             //Generate
-            if (model != null && !buildModel)
+            if (model != null && !formatModel)
             {
                 Console.WriteLine("Loading generators...");
                 var genHelper = new nHydrate.Command.Core.GeneratorHelper(output);
+                genHelper.ProjectItemGenerated += new nHydrate.Generator.Common.GeneratorFramework.ProjectItemGeneratedEventHandler(g_ProjectItemGenerated);
 
                 var genList = new List<nHydrateGeneratorProject>();
                 var genProject = new nHydrateGeneratorProject();
@@ -187,7 +172,7 @@ namespace nHydrate.Command.Core
                 if (File.Exists(genProject.FileName))
                     File.Delete(genProject.FileName);
             }
-            else if (!buildModel)
+            else if (!formatModel)
             {
                 Console.WriteLine("The model could not be loaded.");
             }
@@ -203,24 +188,9 @@ namespace nHydrate.Command.Core
             return 1;
         }
 
-        private static Dictionary<string, string> GetCommandLineParameters()
+        private static void g_ProjectItemGenerated(object sender, nHydrate.Generator.Common.EventArgs.ProjectItemGeneratedEventArgs e)
         {
-            var retVal = new Dictionary<string, string>();
-            var args = Environment.GetCommandLineArgs();
-            args = args.Skip(1).ToArray();
 
-            var loopcount = 0;
-            foreach (var arg in args)
-            {
-                var regEx = new Regex(@"\s?[/](\w+)(:(.*))?");
-                var regExMatch = regEx.Match(arg);
-                if (regExMatch.Success)
-                    retVal.Add(regExMatch.Groups[1].Value.ToLower(), regExMatch.Groups[3].Value);
-                loopcount++;
-            }
-
-            return retVal;
         }
-
     }
 }

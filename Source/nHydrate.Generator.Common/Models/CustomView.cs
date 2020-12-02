@@ -39,8 +39,6 @@ namespace nHydrate.Generator.Common.Models
         {
             Columns = new ReferenceCollection(this.Root, this, ReferenceType.CustomViewColumn);
             Columns.ResetKey(Guid.Empty.ToString());
-            Columns.ObjectPlural = "Fields";
-            Columns.ObjectSingular = "Field";
         }
 
         protected override void OnRootReset(System.EventArgs e)
@@ -90,7 +88,7 @@ namespace nHydrate.Generator.Common.Models
 
         #region IXMLable Members
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
             var oDoc = node.OwnerDocument;
 
@@ -110,27 +108,23 @@ namespace nHydrate.Generator.Common.Models
             node.AppendChild(viewSqlNode);
 
             node.AddAttribute("id", this.Id);
+
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            try
-            {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                this.Name = XmlHelper.GetAttributeValue(node, "name", string.Empty);
-                this.DBSchema = XmlHelper.GetAttributeValue(node, "dbschema", _def_dbSchema);
-                this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", _def_codefacade);
-                this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
-                this.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(node, "generatesDoubleDerived", _def_generatesDoubleDerived);
-                this.SQL = XmlHelper.GetNodeValue(node, "sql", string.Empty);
-                var columnsNode = node.SelectSingleNode("columns");
-                Columns.XmlLoad(columnsNode);
-                this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            this.Key = node.GetAttributeValue("key", string.Empty);
+            this.Name = node.GetAttributeValue("name", string.Empty);
+            this.DBSchema = node.GetAttributeValue("dbschema", _def_dbSchema);
+            this.CodeFacade = node.GetAttributeValue("codeFacade", _def_codefacade);
+            this.Description = node.GetAttributeValue("description", _def_description);
+            this.GeneratesDoubleDerived = node.GetAttributeValue("generatesDoubleDerived", _def_generatesDoubleDerived);
+            this.SQL = XmlHelper.GetNodeValue(node, "sql", string.Empty);
+            var columnsNode = node.SelectSingleNode("columns");
+            Columns.XmlLoad(columnsNode);
+            this.ResetId(node.GetAttributeValue("id", this.Id));
+            return node;
         }
 
         #endregion

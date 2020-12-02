@@ -142,7 +142,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                 //DO NOT process primary keys
                 foreach (var index in table.TableIndexList.Where(x => !x.PrimaryKey))
                 {
-                    sb.Append(SQLEmit.GetSQLCreateIndex(table, index, true));
+                    sb.Append(SQLEmit.GetSQLCreateIndex(table, index, false));
                     sb.AppendLine("--GO");
                     sb.AppendLine();
                 }

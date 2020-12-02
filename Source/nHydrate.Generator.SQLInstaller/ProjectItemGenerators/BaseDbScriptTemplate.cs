@@ -10,9 +10,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
         {
         }
 
-        public override string LocalNamespaceExtension
-        {
-            get { return "Install"; }
-        }
+        public override string LocalNamespaceExtension { get { return "Install"; } }
     }
 }

@@ -54,7 +54,7 @@ namespace nHydrate.Generator.Common.Models
 
         #region IXMLable Members
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
             var oDoc = node.OwnerDocument;
             if (ColumnRef != null)
@@ -66,11 +66,13 @@ namespace nHydrate.Generator.Common.Models
                 node.AppendChild(columnRefNode);
             }
             node.AddAttribute("value", this.Value);
+
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+            this.Key = node.GetAttributeValue("key", string.Empty);
             var columnRefNode = node.SelectSingleNode("columnRef"); //deprecated, use "f"
             if (columnRefNode == null) columnRefNode = node.SelectSingleNode("f");
             if (columnRefNode != null)
@@ -80,7 +82,8 @@ namespace nHydrate.Generator.Common.Models
                 this.ColumnRef.XmlLoad(columnRefNode);
             }
 
-            this.Value = XmlHelper.GetAttributeValue(node, "value", string.Empty);
+            this.Value = node.GetAttributeValue("value", string.Empty);
+            return node;
         }
 
         #endregion

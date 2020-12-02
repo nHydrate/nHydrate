@@ -54,12 +54,6 @@ namespace nHydrate.Generator.Common.Models
             Columns.ResetKey(Guid.Empty.ToString());
             Relationships = new ReferenceCollection(this.Root, this, ReferenceType.Relation);
             Relationships.ResetKey(Guid.Empty.ToString());
-
-            Columns.ObjectPlural = "Fields";
-            Columns.ObjectSingular = "Field";
-
-            Relationships.ObjectPlural = "Relationships";
-            Relationships.ObjectSingular = "Relationship";
         }
 
         protected override void OnRootReset(System.EventArgs e)
@@ -249,7 +243,7 @@ namespace nHydrate.Generator.Common.Models
 
         #region IXMLable Members
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
             var oDoc = node.OwnerDocument;
 
@@ -259,20 +253,11 @@ namespace nHydrate.Generator.Common.Models
             node.AddAttribute("codeFacade", this.CodeFacade, _def_codeFacade);
             node.AddAttribute("description", this.Description, _def_description);
 
-            if (this.Relationships.Count > 0)
-            {
-                var relationshipsNode = oDoc.CreateElement("r");
-                this.Relationships.XmlAppend(relationshipsNode);
-                node.AppendChild(relationshipsNode);
-            }
+            if (this.Relationships.Any())
+                node.AppendChild(this.Relationships.XmlAppend(oDoc.CreateElement("r")));
 
-            var tableIndexListNode = oDoc.CreateElement("til");
-            TableIndexList.XmlAppend(tableIndexListNode);
-            node.AppendChild(tableIndexListNode);
-
-            var columnsNode = oDoc.CreateElement("c");
-            this.Columns.XmlAppend(columnsNode);
-            node.AppendChild(columnsNode);
+            node.AppendChild(TableIndexList.XmlAppend(oDoc.CreateElement("til")));
+            node.AppendChild(this.Columns.XmlAppend(oDoc.CreateElement("c")));
 
             node.AddAttribute("isTenant", this.IsTenant, _def_isTenant);
             node.AddAttribute("immutable", this.Immutable, _def_immutable);
@@ -283,19 +268,17 @@ namespace nHydrate.Generator.Common.Models
             node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived, _def_generatesDoubleDerived);
             node.AddAttribute("id", this.Id);
 
-            if (this.StaticData.Count > 0)
-            {
-                var staticDataNode = oDoc.CreateElement("staticData");
-                this.StaticData.XmlAppend(staticDataNode);
-                node.AppendChild(staticDataNode);
-            }
+            if (this.StaticData.Any())
+                node.AppendChild(this.StaticData.XmlAppend(oDoc.CreateElement("staticData")));
 
             node.AddAttribute("associativeTable", this.AssociativeTable, _def_associativeTable);
             node.AddAttribute("hasHistory", this.HasHistory, _def_hasHistory);
             node.AddAttribute("fullIndexSearch", this.FullIndexSearch, _def_fullIndexSearch);
+
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
             var relationshipsNode = node.SelectSingleNode("relationships"); //deprecated, use "r"
             if (relationshipsNode == null) relationshipsNode = node.SelectSingleNode("r");
@@ -311,48 +294,39 @@ namespace nHydrate.Generator.Common.Models
             if (tableIndexListNode != null)
                 TableIndexList.XmlLoad(tableIndexListNode, this.Root);
 
-            this.Immutable = XmlHelper.GetAttributeValue(node, "immutable", _def_immutable);
-            this.IsTenant = XmlHelper.GetAttributeValue(node, "isTenant", _def_isTenant);
-
+            this.Immutable = node.GetAttributeValue("immutable", _def_immutable);
+            this.IsTenant = node.GetAttributeValue("isTenant", _def_isTenant);
             this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
             var staticDataNode = node.SelectSingleNode("staticData");
             if (staticDataNode != null)
                 this.StaticData.XmlLoad(staticDataNode);
 
-            this.AssociativeTable = XmlHelper.GetAttributeValue(node, "associativeTable", AssociativeTable);
-            this.HasHistory = XmlHelper.GetAttributeValue(node, "hasHistory", HasHistory);
-            this.FullIndexSearch = XmlHelper.GetAttributeValue(node, "fullIndexSearch", _def_fullIndexSearch);
+            this.AssociativeTable = node.GetAttributeValue("associativeTable", AssociativeTable);
+            this.HasHistory = node.GetAttributeValue("hasHistory", HasHistory);
+            this.FullIndexSearch = node.GetAttributeValue("fullIndexSearch", _def_fullIndexSearch);
 
-            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-            this.Name = XmlHelper.GetAttributeValue(node, "name", string.Empty);
-            this.DBSchema = XmlHelper.GetAttributeValue(node, "dbschema", _def_dbSchema);
-            this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", _def_codeFacade);
-            this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
-            this.AllowModifiedAudit = XmlHelper.GetAttributeValue(node, "modifiedAudit", AllowModifiedAudit);
-            this.AllowCreateAudit = XmlHelper.GetAttributeValue(node, "createAudit", _def_createAudit);
+            this.Key = node.GetAttributeValue("key", string.Empty);
+            this.Name = node.GetAttributeValue("name", string.Empty);
+            this.DBSchema = node.GetAttributeValue("dbschema", _def_dbSchema);
+            this.CodeFacade = node.GetAttributeValue("codeFacade", _def_codeFacade);
+            this.Description = node.GetAttributeValue("description", _def_description);
+            this.AllowModifiedAudit = node.GetAttributeValue("modifiedAudit", AllowModifiedAudit);
+            this.AllowCreateAudit = node.GetAttributeValue("createAudit", _def_createAudit);
             this.TypedTable = (TypedTableConstants)XmlHelper.GetAttributeValue(node, "typedTable", int.Parse(TypedTable.ToString("d")));
-            this.AllowConcurrencyCheck = XmlHelper.GetAttributeValue(node, "timestamp", AllowConcurrencyCheck);
-            this.GeneratesDoubleDerived = XmlHelper.GetAttributeValue(node, "generatesDoubleDerived", _def_generatesDoubleDerived);
+            this.AllowConcurrencyCheck = node.GetAttributeValue("timestamp", AllowConcurrencyCheck);
+            this.GeneratesDoubleDerived = node.GetAttributeValue("generatesDoubleDerived", _def_generatesDoubleDerived);
+
+            return node;
         }
 
         #endregion
 
         #region Helpers
 
-        public Reference CreateRef()
-        {
-            return CreateRef(Guid.NewGuid().ToString());
-        }
+        public Reference CreateRef() => CreateRef(Guid.NewGuid().ToString());
 
-        public Reference CreateRef(string key)
-        {
-            var returnVal = new Reference(this.Root);
-            returnVal.ResetKey(key);
-            returnVal.Ref = this.Id;
-            returnVal.RefType = ReferenceType.Table;
-            return returnVal;
-        }
+        public Reference CreateRef(string key) => new Reference(this.Root, key) { Ref = this.Id, RefType = ReferenceType.Table };
 
         public string CamelName => StringHelper.DatabaseNameToCamelCase(this.PascalName);
 
@@ -364,20 +338,13 @@ namespace nHydrate.Generator.Common.Models
         {
             get
             {
-                try
+                var retval = new List<Relation>();
+                foreach (Relation relation in ((ModelRoot)this.Root).Database.Relations)
                 {
-                    var retval = new List<Relation>();
-                    foreach (Relation relation in ((ModelRoot)this.Root).Database.Relations)
-                    {
-                        if ((relation.ParentTableRef.Object != null) && (relation.ParentTableRef.Ref == this.Id))
-                            retval.Add(relation);
-                    }
-                    return retval.AsReadOnly();
+                    if ((relation.ParentTableRef.Object != null) && (relation.ParentTableRef.Ref == this.Id))
+                        retval.Add(relation);
                 }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+                return retval.AsReadOnly();
             }
         }
 
@@ -395,19 +362,7 @@ namespace nHydrate.Generator.Common.Models
             }
         }
 
-        public IList<Column> PrimaryKeyColumns
-        {
-            get
-            {
-                var primaryKeyColumns = new List<Column>();
-                foreach (Reference columnRef in this.Columns)
-                {
-                    var column = (Column)columnRef.Object;
-                    if (column.PrimaryKey) primaryKeyColumns.Add(column);
-                }
-                return primaryKeyColumns.AsReadOnly();
-            }
-        }
+        public IList<Column> PrimaryKeyColumns => this.Columns.Select(x => x.Object as Column).Where(x => x.PrimaryKey).ToList().AsReadOnly();
 
         #endregion
 

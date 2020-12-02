@@ -4,7 +4,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 {
     public interface IXMLable
     {
-        void XmlAppend(XmlNode node);
-        void XmlLoad(XmlNode node);
+        XmlNode XmlAppend(XmlNode node);
+        XmlNode XmlLoad(XmlNode node);
     }
 }

@@ -19,16 +19,18 @@ namespace nHydrate.Generator.Common.Models
 
         public string Version { get; private set; }
 
-        public override void XmlAppend(System.Xml.XmlNode node)
+        public override System.Xml.XmlNode XmlAppend(System.Xml.XmlNode node)
         {
             node.AddAttribute("createdDate", this.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
             node.AddAttribute("version", this.Version);
+            return node;
         }
 
-        public override void XmlLoad(System.Xml.XmlNode node)
+        public override System.Xml.XmlNode XmlLoad(System.Xml.XmlNode node)
         {
             this.CreatedDate = DateTime.ParseExact(XmlHelper.GetAttributeValue(node, "createdDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-            this.Version = XmlHelper.GetAttributeValue(node, "version", ModelRoot._def_version);
+            this.Version = node.GetAttributeValue("version", ModelRoot._def_version);
+            return node;
         }
 
         public override string ToString() => this.Version;

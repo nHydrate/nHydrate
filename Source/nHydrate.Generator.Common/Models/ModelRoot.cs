@@ -106,67 +106,57 @@ namespace nHydrate.Generator.Common.Models
 
         #region IXMLable
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
-            try
-            {
-                var oDoc = node.OwnerDocument;
+            var oDoc = node.OwnerDocument;
 
-                node.AddAttribute("key", this.Key);
-                node.AddAttribute("projectName", this.ProjectName);
-                node.AddAttribute("supportLegacySearchObject", this.SupportLegacySearchObject);
-                node.AddAttribute("useUTCTime", this.UseUTCTime.ToString());
-                node.AddAttribute("version", this.Version);
-                node.AddAttribute("companyName", this.CompanyName);
-                node.AddAttribute("emitSafetyScripts", this.EmitSafetyScripts);
-                node.AddAttribute("tenantColumnName", this.TenantColumnName);
+            node.AddAttribute("key", this.Key);
+            node.AddAttribute("projectName", this.ProjectName);
+            node.AddAttribute("supportLegacySearchObject", this.SupportLegacySearchObject);
+            node.AddAttribute("useUTCTime", this.UseUTCTime.ToString());
+            node.AddAttribute("version", this.Version);
+            node.AddAttribute("companyName", this.CompanyName);
+            node.AddAttribute("emitSafetyScripts", this.EmitSafetyScripts);
+            node.AddAttribute("tenantColumnName", this.TenantColumnName);
 
-                node.AddAttribute("defaultNamespace", this.DefaultNamespace);
-                node.AddAttribute("storedProcedurePrefix", this.StoredProcedurePrefix);
+            node.AddAttribute("defaultNamespace", this.DefaultNamespace);
+            node.AddAttribute("storedProcedurePrefix", this.StoredProcedurePrefix);
 
-                var databaseNode = oDoc.CreateElement("database");
-                this.Database.XmlAppend(databaseNode);
-                node.AppendChild(databaseNode);
+            var databaseNode = oDoc.CreateElement("database");
+            this.Database.XmlAppend(databaseNode);
+            node.AppendChild(databaseNode);
 
-                var versionHistoryListNode = oDoc.CreateElement("versionHistoryList");
-                node.AppendChild(versionHistoryListNode);
-                _versionHistoryList.XmlAppend(versionHistoryListNode);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var versionHistoryListNode = oDoc.CreateElement("versionHistoryList");
+            node.AppendChild(versionHistoryListNode);
+            _versionHistoryList.XmlAppend(versionHistoryListNode);
+
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            try
-            {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                this.ProjectName = XmlHelper.GetAttributeValue(node, "projectName", string.Empty);
-                this.SupportLegacySearchObject = XmlHelper.GetAttributeValue(node, "supportLegacySearchObject", _def_supportLegacySearchObject);
-                _version = XmlHelper.GetAttributeValue(node, "version", _def_version);
-                this.UseUTCTime = XmlHelper.GetAttributeValue(node, "useUTCTime", this.UseUTCTime);
-                this.StoredProcedurePrefix = XmlHelper.GetAttributeValue(node, "storedProcedurePrefix", _def_storedProcedurePrefix);
-                this.TenantColumnName = XmlHelper.GetAttributeValue(node, "tenantColumnName", _def_tenantColumnName);
-                this.CompanyName = XmlHelper.GetAttributeValue(node, "companyName", this.CompanyName);
-                this.EmitSafetyScripts = XmlHelper.GetAttributeValue(node, "emitSafetyScripts", this.EmitSafetyScripts);
+            this.Key = node.GetAttributeValue("key", string.Empty);
+            this.ProjectName = node.GetAttributeValue("projectName", string.Empty);
+            this.SupportLegacySearchObject = node.GetAttributeValue("supportLegacySearchObject", _def_supportLegacySearchObject);
+            _version = node.GetAttributeValue("version", _def_version);
+            this.UseUTCTime = node.GetAttributeValue("useUTCTime", this.UseUTCTime);
+            this.StoredProcedurePrefix = node.GetAttributeValue("storedProcedurePrefix", _def_storedProcedurePrefix);
+            this.TenantColumnName = node.GetAttributeValue("tenantColumnName", _def_tenantColumnName);
+            this.CompanyName = node.GetAttributeValue("companyName", this.CompanyName);
+            this.EmitSafetyScripts = node.GetAttributeValue("emitSafetyScripts", this.EmitSafetyScripts);
 
-                //There is a message box in the property set to DO NOT use the property, use the member variable
-                DefaultNamespace = XmlHelper.GetAttributeValue(node, "defaultNamespace", _def_defaultNamespace);
+            //There is a message box in the property set to DO NOT use the property, use the member variable
+            DefaultNamespace = node.GetAttributeValue("defaultNamespace", _def_defaultNamespace);
 
-                var databaseNode = node.SelectSingleNode("database");
-                if (databaseNode != null)
-                    this.Database.XmlLoad(databaseNode);
+            var databaseNode = node.SelectSingleNode("database");
+            if (databaseNode != null)
+                this.Database.XmlLoad(databaseNode);
 
-                var versionHistoryListNode = node.SelectSingleNode("versionHistoryList");
-                if (versionHistoryListNode != null)
-                    _versionHistoryList.XmlLoad(versionHistoryListNode);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var versionHistoryListNode = node.SelectSingleNode("versionHistoryList");
+            if (versionHistoryListNode != null)
+                _versionHistoryList.XmlLoad(versionHistoryListNode);
+
+            return node;
         }
 
         #endregion

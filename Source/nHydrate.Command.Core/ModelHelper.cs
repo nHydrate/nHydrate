@@ -9,58 +9,7 @@ namespace nHydrate.Command.Core
 {
     public static class ModelHelper
     {
-        //public enum DeleteActionConstants
-        //{
-        //    NoAction,
-        //    Cascade,
-        //    SetNull
-        //}
-
-        ////Copy from Dsl
-        //public enum IndexTypeConstants
-        //{
-        //    PrimaryKey,
-        //    IsIndexed,
-        //    User,
-        //}
-
-        ////Copy from Dsl
-        //public enum DataTypeConstants
-        //{
-        //    BigInt,
-        //    Binary,
-        //    Bit,
-        //    Char,
-        //    Date,
-        //    DateTime,
-        //    DateTime2,
-        //    DateTimeOffset,
-        //    Decimal,
-        //    Float,
-        //    Image,
-        //    Int,
-        //    Money,
-        //    NChar,
-        //    NText,
-        //    NVarChar,
-        //    Real,
-        //    SmallDateTime,
-        //    SmallInt,
-        //    SmallMoney,
-        //    Structured,
-        //    Text,
-        //    Time,
-        //    Timestamp,
-        //    TinyInt,
-        //    Udt,
-        //    UniqueIdentifier,
-        //    VarBinary,
-        //    VarChar,
-        //    Variant,
-        //    Xml,
-        //}
-
-        public static nHydrate.Generator.Common.Models.ModelRoot CreatePOCOModel(string modelFile, bool buildModel)
+        public static nHydrate.Generator.Common.Models.ModelRoot CreatePOCOModel(string modelFile, bool formatModel)
         {
             var fi = new FileInfo(modelFile);
             if (!fi.Exists)
@@ -71,7 +20,7 @@ namespace nHydrate.Command.Core
                 throw new ModelException($"The model file '{fi.FullName}' does not exist.");
 
             //Build out the model only and return
-            if (buildModel)
+            if (formatModel)
             {
                 FileManagement.Save2(fi.DirectoryName, fi.Name, diskModel);
                 return null;
@@ -119,7 +68,7 @@ namespace nHydrate.Command.Core
                     #endregion
 
                     #region Load the fields for this entity
-                    var loopIndex = 0;
+                    var loopIndex = 1;
                     foreach (var field in entity.Fields)
                     {
                         var newColumn = root.Database.Columns.Add();
@@ -160,7 +109,7 @@ namespace nHydrate.Command.Core
                             PrimaryKey = (index.IndexType == (byte)IndexTypeConstants.PrimaryKey)
                         };
                         newTable.TableIndexList.Add(newIndex);
-                        //newIndex.ResetKey(index.Id.ToString());
+                        newIndex.ResetKey(index.Id.ToString());
                         newIndex.ResetId(HashString(newIndex.Key));
                         newIndex.ImportedName = index.ImportedName;
 
@@ -191,7 +140,7 @@ namespace nHydrate.Command.Core
                         {
                             //For each row create N cells one for each column
                             var rowEntry = new nHydrate.Generator.Common.Models.RowEntry(newTable.Root);
-                            var staticDataFieldList = entity.Fields.Where(x => !(GetDataType(x.Datatype.ToString()).IsBinaryType()) && GetDataType(x.Datatype.ToString()) != DataTypeConstants.Timestamp).ToList();
+                            var staticDataFieldList = entity.Fields.Where(x => !(x.Datatype.Convert<System.Data.SqlDbType>().IsBinaryType()) && x.Datatype != DataTypeConstants.Timestamp).ToList();
                             for (var jj = 0; jj < staticDataFieldList.Count; jj++)
                             {
                                 var cellEntry = new nHydrate.Generator.Common.Models.CellEntry(newTable.Root);
@@ -249,7 +198,7 @@ namespace nHydrate.Command.Core
                                 if (isValidRelation)
                                 {
                                     var newRelation = root.Database.Relations.Add();
-                                    //newRelation.ResetKey(shape.Id);
+                                    newRelation.ResetKey(shape.Id);
                                     newRelation.ResetId(HashString(newRelation.Key));
                                     newRelation.ParentTableRef = parentTable.CreateRef(parentTable.Key);
                                     newRelation.ChildTableRef = childTable.CreateRef(childTable.Key);
@@ -348,27 +297,6 @@ namespace nHydrate.Command.Core
             hash ^= (hash >> 11);
             hash += (hash << 15);
             return (int)(hash % int.MaxValue);
-        }
-
-        private static bool ToBool(this byte value) => value != 0;
-
-        private static DataTypeConstants GetDataType(string str)
-        {
-            Enum.TryParse(str, out DataTypeConstants v);
-            return v;
-        }
-
-        private static bool IsBinaryType(this DataTypeConstants dataType)
-        {
-            switch (dataType)
-            {
-                case DataTypeConstants.Binary:
-                case DataTypeConstants.Image:
-                case DataTypeConstants.VarBinary:
-                    return true;
-                default:
-                    return false;
-            }
         }
 
         public static string ToIndentedString(this System.Xml.XmlDocument doc)

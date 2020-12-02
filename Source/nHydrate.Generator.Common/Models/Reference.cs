@@ -28,6 +28,11 @@ namespace nHydrate.Generator.Common.Models
         {
         }
 
+        public Reference(INHydrateModelObject root, string key)
+            : base(root, key)
+        {
+        }
+
         public Reference()
         {
             //Only needed for BaseModelCollection<T>
@@ -82,38 +87,28 @@ namespace nHydrate.Generator.Common.Models
 
         #region IXMLable Members
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
-            try
-            {
-                var oDoc = node.OwnerDocument;
+            var oDoc = node.OwnerDocument;
 
-                node.AddAttribute("key", this.Key);
-                node.AddAttribute("ref", this.Ref);
-                node.AddAttribute("refType", (int)this.RefType);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            node.AddAttribute("key", this.Key);
+            node.AddAttribute("ref", this.Ref);
+            node.AddAttribute("refType", (int)this.RefType);
+
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            try
-            {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                this.Ref = XmlHelper.GetAttributeValue(node, "ref", this.Ref);
-                this.ResetId(this.Ref); //this was a mistake but it works now
+            this.Key = node.GetAttributeValue("key", string.Empty);
+            this.Ref = node.GetAttributeValue("ref", this.Ref);
+            this.ResetId(this.Ref); //this was a mistake but it works now
 
-                var refTypeNode = XmlHelper.GetAttributeValue(node, "refType", -1);
-                if (refTypeNode != -1)
-                    RefType = (ReferenceType)refTypeNode;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var refTypeNode = node.GetAttributeValue("refType", -1);
+            if (refTypeNode != -1)
+                RefType = (ReferenceType)refTypeNode;
+
+            return node;
         }
 
         #endregion

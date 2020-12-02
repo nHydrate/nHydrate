@@ -66,7 +66,7 @@ namespace nHydrate.Generator.Common.Models
 
         #region IXMLable Members
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
             var oDoc = node.OwnerDocument;
 
@@ -98,16 +98,17 @@ namespace nHydrate.Generator.Common.Models
 
             if (this.AllowNull != _def_allowNull)
                 node.AddAttribute("allowNull", this.AllowNull);
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-            this.Name = XmlHelper.GetAttributeValue(node, "name", string.Empty);
-            this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", _def_codefacade);
-            this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
-            this.SortOrder = XmlHelper.GetAttributeValue(node, "dataFieldSortOrder", _def_sortOrder);
-            this.IsPrimaryKey = XmlHelper.GetAttributeValue(node, "isPrimaryKey", _def_isPrimaryKey);
+            this.Key = node.GetAttributeValue("key", string.Empty);
+            this.Name = node.GetAttributeValue("name", string.Empty);
+            this.CodeFacade = node.GetAttributeValue("codeFacade", _def_codefacade);
+            this.Description = node.GetAttributeValue("description", _def_description);
+            this.SortOrder = node.GetAttributeValue("dataFieldSortOrder", _def_sortOrder);
+            this.IsPrimaryKey = node.GetAttributeValue("isPrimaryKey", _def_isPrimaryKey);
 
             var relationshipRefNode = node.SelectSingleNode("relationshipRef");
             if (relationshipRefNode != null)
@@ -116,18 +117,19 @@ namespace nHydrate.Generator.Common.Models
                 RelationshipRef.XmlLoad(relationshipRefNode);
             }
 
-            this.Default = XmlHelper.GetAttributeValue(node, "default", _def_default);
-            this.Length = XmlHelper.GetAttributeValue(node, "length", _length);
-            this.Scale = XmlHelper.GetAttributeValue(node, "scale", _scale);
+            this.Default = node.GetAttributeValue("default", _def_default);
+            this.Length = node.GetAttributeValue("length", _length);
+            this.Scale = node.GetAttributeValue("scale", _scale);
             this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
 
             var parentViewRefNode = node.SelectSingleNode("parentTableRef");
             ParentViewRef = new Reference(this.Root);
-            if (parentViewRefNode != null)
-                ParentViewRef.XmlLoad(parentViewRefNode);
+            ParentViewRef?.XmlLoad(parentViewRefNode);
 
             _dataType = node.Attributes["type"].Value.ToEnum<System.Data.SqlDbType>(_dataType);
-            this.AllowNull = XmlHelper.GetAttributeValue(node, "allowNull", _allowNull);
+            this.AllowNull = node.GetAttributeValue("allowNull", _allowNull);
+
+            return node;
         }
 
         #endregion

@@ -138,7 +138,7 @@ namespace nHydrate.Dsl.Custom
                 //nodeFields.Add(nodeField);
                 var nodeField = node.Indexes.AddNew();
                 nodeField.Clustered = index.Clustered;
-                //nodeField.Id = index.Id;
+                nodeField.Id = index.Id;
                 nodeField.ImportedName = index.ImportedName;
                 nodeField.IndexType = index.IndexType.Convert<Generator.Common.IndexTypeConstants>();
                 nodeField.IsUnique = index.IsUnique;
@@ -200,7 +200,7 @@ namespace nHydrate.Dsl.Custom
                 var nodeRelationItem = node.Relations.AddNew();
                 nodeRelationItem.ForeignEntityId = relation.ChildEntity.Id;
                 nodeRelationItem.DeleteAction = relation.DeleteAction.Convert<Generator.Common.DeleteActionConstants>();
-                //nodeRelationItem.Id = relation.InternalId;
+                nodeRelationItem.Id = relation.InternalId;
                 nodeRelationItem.IsEnforced = relation.IsEnforced;
                 nodeRelationItem.RoleName = relation.RoleName;
                 nodeRelationItem.Summary = relation.Summary;
@@ -418,7 +418,7 @@ namespace nHydrate.Dsl.Custom
             if (entityYaml == null) return;
             foreach (var indexNode in entityYaml.Indexes)
             {
-                var newId = Guid.NewGuid(); // indexNode.Id
+                var newId = indexNode.Id; //Guid.NewGuid();
                 var newIndex = entity.Indexes.FirstOrDefault(x => x.Id == newId);
                 if (newIndex == null)
                 {
@@ -460,7 +460,7 @@ namespace nHydrate.Dsl.Custom
                 {
                     entity.ChildEntities.Add(child);
                     var connection = entity.Store.CurrentContext.Partitions.First().Value.ElementDirectory.AllElements.Last() as EntityHasEntities;
-                    connection.InternalId = Guid.NewGuid(); //relationNode.Id;
+                    connection.InternalId = relationNode.Id; //Guid.NewGuid();
                     connection.IsEnforced = relationNode.IsEnforced;
                     connection.DeleteAction = relationNode.DeleteAction.Convert<DeleteActionConstants>();
                     connection.RoleName = relationNode.RoleName;

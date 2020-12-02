@@ -51,40 +51,28 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         private void AppendCreateSchema(StringBuilder sb)
         {
-            var list = new List<string>();
+            var list = _model.Database.Tables
+                .Where(x => x.TypedTable != TypedTableConstants.EnumOnly)
+                .Select(x => x.GetSQLSchema().ToLower())
+                .ToList();
 
-            //Tables
-            foreach (var item in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
-            {
-                var s = item.GetSQLSchema().ToLower();
-                if (!list.Contains(s) && s != "dbo")
-                {
-                    list.Add(s);
-                }
-            }
+            list.AddRange(_model.Database.CustomViews
+                .Select(x => x.GetSQLSchema().ToLower()));
 
-            //Views
-            foreach (var item in (from x in _model.Database.CustomViews orderby x.Name select x))
-            {
-                var s = item.GetSQLSchema().ToLower();
-                if (!list.Contains(s) && s != "dbo")
-                {
-                    list.Add(s);
-                }
-            }
+            list.RemoveAll(x => x == "dbo");
+            list = list.Distinct().ToList();
 
-            if (list.Count > 0)
+            if (list.Any())
             {
                 sb.AppendLine("--CREATE DATABASE SCHEMAS");
                 foreach (var s in list)
                 {
-                    sb.AppendLine("if not exists(select * from sys.schemas where name = '" + s + "')");
-                    sb.AppendLine("exec('CREATE SCHEMA [" + s + "]')");
+                    sb.AppendLine($"if not exists(select * from sys.schemas where name = '{s}')");
+                    sb.AppendLine($"exec('CREATE SCHEMA [{s}]')");
                     sb.AppendLine("GO");
                 }
                 sb.AppendLine();
             }
-
         }
 
         private void AppendCreateTable(StringBuilder sb)
@@ -92,7 +80,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             //Emit each create table statement
             foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
-                sb.AppendLine(nHydrate.Core.SQLGeneration.SQLEmit.GetSQLCreateTable(_model, table));
+                sb.AppendLine(SQLEmit.GetSQLCreateTable(_model, table));
                 sb.AppendLine("GO");
                 sb.AppendLine();
             }
@@ -104,9 +92,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 sb.AppendLine("--##SECTION BEGIN [FIELD CREATE]");
                 foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
                 {
-                    sb.AppendLine("--TABLE [" + table.DatabaseName + "] ADD FIELDS");
+                    sb.AppendLine($"--TABLE [{table.DatabaseName}] ADD FIELDS");
                     foreach (var column in table.GetColumns().OrderBy(x => x.SortOrder))
-                        sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlAddColumn(column, false));
+                        sb.Append(SQLEmit.GetSqlAddColumn(column, false));
                     sb.AppendLine("GO");
                 }
                 sb.AppendLine("--##SECTION END [FIELD CREATE]");
@@ -117,7 +105,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             {
                 foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
                 {
-                    sb.AppendLine("GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON [" + table.GetSQLSchema() + "].[" + table.DatabaseName + "] TO [" + _model.Database.GrantExecUser + "]");
+                    sb.AppendLine($"GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON [{table.GetSQLSchema()}].[{table.DatabaseName}] TO [{_model.Database.GrantExecUser}]");
                     sb.AppendLine("GO");
                     sb.AppendLine();
                 }
@@ -180,7 +168,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 //DO NOT process primary keys
                 foreach (var index in table.TableIndexList.Where(x => !x.PrimaryKey))
                 {
-                    sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSQLCreateIndex(table, index, true));
+                    sb.Append(SQLEmit.GetSQLCreateIndex(table, index, false));
                     sb.AppendLine("GO");
                     sb.AppendLine();
                 }
@@ -195,12 +183,11 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             //Create indexes for Tenant fields
             foreach (var table in _model.Database.Tables.Where(x => x.IsTenant).OrderBy(x => x.Name))
             {
-                sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlTenantIndex(_model, table));
+                sb.Append(SQLEmit.GetSqlTenantIndex(_model, table));
             }
 
             sb.AppendLine("--##SECTION END [TENANT INDEXES]");
             sb.AppendLine();
-
         }
 
         #endregion
@@ -247,21 +234,12 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             {
                 if (table.AllowCreateAudit || table.AllowModifiedAudit || table.AllowConcurrencyCheck | table.IsTenant)
                 {
-                    var dateTimeString = "[DateTime2]";
                     if (table.AllowCreateAudit)
-                    {
                         Globals.AppendCreateAudit(table, _model, sb);
-                    }
-
                     if (table.AllowModifiedAudit)
-                    {
                         Globals.AppendModifiedAudit(table, _model, sb);
-                    }
-
                     if (table.AllowConcurrencyCheck)
-                    {
                         Globals.AppendConcurrencyCheckAudit(table, _model, sb);
-                    }
 
                     if (table.IsTenant)
                     {
@@ -288,20 +266,11 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 if (!table.AllowCreateAudit || !table.AllowModifiedAudit || !table.AllowConcurrencyCheck)
                 {
                     if (!table.AllowCreateAudit)
-                    {
                         Globals.DropCreateAudit(table, _model, sb);
-                    }
-
                     if (!table.AllowModifiedAudit)
-                    {
                         Globals.DropModifiedAudit(table, _model, sb);
-                    }
-
                     if (!table.AllowConcurrencyCheck)
-                    {
                         Globals.DropConcurrencyAudit(table, _model, sb);
-                    }
-
                     sb.AppendLine("GO");
                     sb.AppendLine();
                 }
@@ -332,16 +301,16 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 var tempsb = new StringBuilder();
                 foreach (var column in table.GetColumns())
                 {
-                    var defaultText = nHydrate.Core.SQLGeneration.SQLEmit.GetSqlDropColumnDefault(column);
+                    var defaultText = SQLEmit.GetSqlDropColumnDefault(column);
                     if (!string.IsNullOrEmpty(defaultText)) tempsb.Append(defaultText);
                 }
 
                 if (tempsb.ToString() != string.Empty)
                 {
-                    sb.AppendLine("--BEGIN DEFAULTS FOR TABLE [" + table.DatabaseName + "]");
+                    sb.AppendLine($"--BEGIN DEFAULTS FOR TABLE [{table.DatabaseName}]");
                     sb.AppendLine("DECLARE @defaultName varchar(max)");
                     sb.Append(tempsb.ToString());
-                    sb.AppendLine("--END DEFAULTS FOR TABLE [" + table.DatabaseName + "]");
+                    sb.AppendLine($"--END DEFAULTS FOR TABLE [{table.DatabaseName}]");
                     sb.AppendLine("GO");
                     sb.AppendLine();
                 }
@@ -365,15 +334,15 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 var tempsb = new StringBuilder();
                 foreach (var column in table.GetColumns())
                 {
-                    var defaultText = nHydrate.Core.SQLGeneration.SQLEmit.AppendColumnDefaultCreateSQL(column, false);
+                    var defaultText = SQLEmit.AppendColumnDefaultCreateSQL(column, false);
                     if (!string.IsNullOrEmpty(defaultText)) tempsb.Append(defaultText);
                 }
 
                 if (tempsb.ToString() != string.Empty)
                 {
-                    sb.AppendLine("--BEGIN DEFAULTS FOR TABLE [" + table.DatabaseName + "]");
+                    sb.AppendLine($"--BEGIN DEFAULTS FOR TABLE [{table.DatabaseName}]");
                     sb.Append(tempsb.ToString());
-                    sb.AppendLine("--END DEFAULTS FOR TABLE [" + table.DatabaseName + "]");
+                    sb.AppendLine($"--END DEFAULTS FOR TABLE [{table.DatabaseName}]");
                     sb.AppendLine("GO");
                     sb.AppendLine();
                 }
@@ -406,7 +375,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
             if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))
             {
-                sb.AppendLine("GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON [__nhydrateschema] TO [" + _model.Database.GrantExecUser + "]");
+                sb.AppendLine($"GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON [__nhydrateschema] TO [{_model.Database.GrantExecUser}]");
                 sb.AppendLine("GO");
                 sb.AppendLine();
             }
@@ -462,7 +431,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
             if (!string.IsNullOrEmpty(_model.Database.GrantExecUser))
             {
-                sb.AppendLine("GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON [__nhydrateobjects] TO [" + _model.Database.GrantExecUser + "]");
+                sb.AppendLine($"GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON [__nhydrateobjects] TO [{_model.Database.GrantExecUser}]");
                 sb.AppendLine("GO");
                 sb.AppendLine();
             }
@@ -470,11 +439,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             #endregion
 
         }
-
-        #endregion
-
-        #region Methods
-
 
         #endregion
 

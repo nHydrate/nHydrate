@@ -330,6 +330,7 @@ namespace nHydrate.Generator.PostgresInstaller
                         foreach (var r1 in oldT.GetRelations().ToList())
                         {
                             var r2 = newT.Relationships.FirstOrDefault(x => x.Key == r1.Key);
+                            r2 = newT.Relationships.FirstOrDefault(x => x.Key == r1.Key);
                             if (r2 == null)
                             {
                                 sb.Append(SQLEmit.GetSqlRemoveFK(r1));
@@ -1692,15 +1693,13 @@ namespace nHydrate.Generator.PostgresInstaller
             if (oldColumn.DataType != newColumn.DataType || oldColumn.AllowNull != newColumn.AllowNull)
             {
                 //Unique Constraint
-                var indexName = "IX_" + newTable.Name.FlatGuid() + "_" + newColumn.Name.FlatGuid();
-                indexName = indexName.ToUpper();
+                var indexName = $"IX_{newTable.Name.FlatGuid()}_{newColumn.Name.FlatGuid()}".ToUpper();
                 sb.AppendLine("--DELETE UNIQUE CONTRAINT");
                 sb.AppendLine($"ALTER TABLE {newTable.GetPostgresSchema()}.\"{newTable.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{indexName}\";");
                 sb.AppendLine();
 
                 //Other Index
-                indexName = CreateIndexName(newTable, newColumn);
-                indexName = indexName.ToUpper();
+                indexName = CreateIndexName(newTable, newColumn).ToUpper();
                 sb.AppendLine("--DELETE INDEX");
                 sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\";");
                 sb.AppendLine();

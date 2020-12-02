@@ -189,7 +189,7 @@ namespace nHydrate.Generator.Common.Models
             var text = $"Field: [{(this.ParentTableRef.Object as Table).DatabaseName}].[{this.DatabaseName}], ";
 
             var length = this.GetCommentLengthString();
-            if (!string.IsNullOrEmpty(length))
+            if (!length.IsEmpty())
                 text += $"Field Length: {length}, ";
 
             text += (this.AllowNull ? "" : "Not ") + "Nullable, ";
@@ -206,9 +206,9 @@ namespace nHydrate.Generator.Common.Models
             if (this.IsIndexed)
                 text += "Indexed, ";
 
-            if (!string.IsNullOrEmpty(this.Default) && this.DataType == System.Data.SqlDbType.Bit)
+            if (!this.Default.IsEmpty() && this.DataType == System.Data.SqlDbType.Bit)
                 text += "Default Value: " + (this.Default == "0" || this.Default == "false" ? "false" : "true");
-            else if (!string.IsNullOrEmpty(this.Default))
+            else if (!this.Default.IsEmpty())
                 text += "Default Value: " + this.Default;
 
             //Strip off last comma
@@ -285,11 +285,11 @@ namespace nHydrate.Generator.Common.Models
             {
                 if ((StringHelper.Match(this.Default, "newid", true)) || (StringHelper.Match(this.Default, "newid()", true)))
                     defaultValue = "Guid.NewGuid()";
-                else if (string.IsNullOrEmpty(this.Default))
+                else if (this.Default.IsEmpty())
                     defaultValue = "System.Guid.Empty";
                 else if (this.Default.ToLower().Contains("newsequentialid"))
                     defaultValue = (_root as ModelRoot).ProjectName + "Entities.GetNextSequentialGuid(EntityMappingConstants." + ParentTable.PascalName + ", Entity." + ParentTable.PascalName + ".FieldNameConstants." + this.PascalName + ".ToString())";
-                else if (!string.IsNullOrEmpty(this.Default) && this.Default.Length == 36)
+                else if (!this.Default.IsEmpty() && this.Default.Length == 36)
                     defaultValue = "new Guid(\"" + this.Default.Replace("'", "") + "\")";
             }
             else if (this.DataType.IsIntegerType())
@@ -333,111 +333,99 @@ namespace nHydrate.Generator.Common.Models
 
         #region IXMLable Members
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
-            try
+            var oDoc = node.OwnerDocument;
+
+            node.AddAttribute("key", this.Key);
+            node.AddAttribute("primaryKey", this.PrimaryKey, _def_primaryKey);
+            node.AddAttribute("computedColumn", this.ComputedColumn, _def_computedColumn);
+            node.AddAttribute("isReadOnly", this.IsReadOnly, _def_isReadOnly);
+            node.AddAttribute("formula", this.Formula, _def_formula);
+            node.AddAttribute("identity", (int)this.Identity, (int)_def_identity);
+            node.AddAttribute("name", this.Name);
+            node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
+            node.AddAttribute("description", this.Description, _def_description);
+            node.AddAttribute("prompt", this.Prompt, _def_prompt);
+            node.AddAttribute("dataFieldSortOrder", this.SortOrder, _def_sortOrder);
+            node.AddAttribute("default", this.Default, _def_default);
+            node.AddAttribute("defaultIsFunc", this.DefaultIsFunc, _def_defaultIsFunc);
+
+            if ((this.Length != _def_length) && !this.IsDefinedSize)
+                node.AddAttribute("length", this.Length);
+
+            if (this.Scale != _def_scale && !this.IsDefinedScale)
+                node.AddAttribute("scale", this.Scale);
+
+            node.AddAttribute("isIndexed", this.IsIndexed, _def_isIndexed);
+            node.AddAttribute("isUnique", this.IsUnique, _def_isUnique);
+            node.AddAttribute("id", this.Id);
+            node.AddAttribute("type", (int)this.DataType);
+            node.AddAttribute("allowNull", this.AllowNull, _def_allowNull);
+            node.AddAttribute("obsolete", this.Obsolete, _def_obsolete);
+
+            if (RelationshipRef != null)
             {
-                var oDoc = node.OwnerDocument;
-
-                node.AddAttribute("key", this.Key);
-                node.AddAttribute("primaryKey", this.PrimaryKey, _def_primaryKey);
-                node.AddAttribute("computedColumn", this.ComputedColumn, _def_computedColumn);
-                node.AddAttribute("isReadOnly", this.IsReadOnly, _def_isReadOnly);
-                node.AddAttribute("formula", this.Formula, _def_formula);
-                node.AddAttribute("identity", (int)this.Identity, (int)_def_identity);
-                node.AddAttribute("name", this.Name);
-                node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
-                node.AddAttribute("description", this.Description, _def_description);
-                node.AddAttribute("prompt", this.Prompt, _def_prompt);
-                node.AddAttribute("dataFieldSortOrder", this.SortOrder, _def_sortOrder);
-                node.AddAttribute("default", this.Default, _def_default);
-                node.AddAttribute("defaultIsFunc", this.DefaultIsFunc, _def_defaultIsFunc);
-
-                if ((this.Length != _def_length) && !this.IsDefinedSize)
-                    node.AddAttribute("length", this.Length);
-
-                if (this.Scale != _def_scale && !this.IsDefinedScale)
-                    node.AddAttribute("scale", this.Scale);
-
-                node.AddAttribute("isIndexed", this.IsIndexed, _def_isIndexed);
-                node.AddAttribute("isUnique", this.IsUnique, _def_isUnique);
-                node.AddAttribute("id", this.Id);
-                node.AddAttribute("type", (int)this.DataType);
-                node.AddAttribute("allowNull", this.AllowNull, _def_allowNull);
-                node.AddAttribute("obsolete", this.Obsolete, _def_obsolete);
-
-                if (RelationshipRef != null)
-                {
-                    var relationshipRefNode = oDoc.CreateElement("relationshipRef");
-                    RelationshipRef.XmlAppend(relationshipRefNode);
-                    node.AppendChild(relationshipRefNode);
-                }
-
-                var parentTableRefNode = oDoc.CreateElement("pt");
-                ParentTableRef.XmlAppend(parentTableRefNode);
-                node.AppendChild(parentTableRefNode);
+                var relationshipRefNode = oDoc.CreateElement("relationshipRef");
+                RelationshipRef.XmlAppend(relationshipRefNode);
+                node.AppendChild(relationshipRefNode);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            var parentTableRefNode = oDoc.CreateElement("pt");
+            ParentTableRef.XmlAppend(parentTableRefNode);
+            node.AppendChild(parentTableRefNode);
+
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            try
+            this.Key = node.GetAttributeValue("key", string.Empty);
+            this.PrimaryKey = node.GetAttributeValue("primaryKey", _def_primaryKey);
+            this.ComputedColumn = node.GetAttributeValue("computedColumn", _def_computedColumn);
+            this.IsReadOnly = node.GetAttributeValue("isReadOnly", _def_isReadOnly);
+            this.Formula = node.GetAttributeValue("formula", _def_formula);
+            this.Identity = (IdentityTypeConstants)node.GetAttributeValue("identity", (int)_def_identity);
+            this.Name = node.GetAttributeValue("name", Name);
+            this.CodeFacade = node.GetAttributeValue("codeFacade", string.Empty);
+            this.Description = node.GetAttributeValue("description", _def_description);
+            this.Prompt = node.GetAttributeValue("prompt", _def_prompt);
+            this.SortOrder = node.GetAttributeValue("dataFieldSortOrder", _def_sortOrder);
+            this.Obsolete = node.GetAttributeValue("obsolete", _def_obsolete);
+            this.IsIndexed = node.GetAttributeValue("isIndexed", _def_isIndexed);
+            this.IsUnique = node.GetAttributeValue("isUnique", _def_isUnique);
+            var relationshipRefNode = node.SelectSingleNode("relationshipRef");
+            if (relationshipRefNode != null)
             {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                this.PrimaryKey = XmlHelper.GetAttributeValue(node, "primaryKey", _def_primaryKey);
-                this.ComputedColumn = XmlHelper.GetAttributeValue(node, "computedColumn", _def_computedColumn);
-                this.IsReadOnly = XmlHelper.GetAttributeValue(node, "isReadOnly", _def_isReadOnly);
-                this.Formula = XmlHelper.GetAttributeValue(node, "formula", _def_formula);
-                this.Identity = (IdentityTypeConstants)XmlHelper.GetAttributeValue(node, "identity", (int)_def_identity);
-                this.Name = XmlHelper.GetAttributeValue(node, "name", Name);
-                this.CodeFacade = XmlHelper.GetAttributeValue(node, "codeFacade", string.Empty);
-                this.Description = XmlHelper.GetAttributeValue(node, "description", _def_description);
-                this.Prompt = XmlHelper.GetAttributeValue(node, "prompt", _def_prompt);
-                this.SortOrder = XmlHelper.GetAttributeValue(node, "dataFieldSortOrder", _def_sortOrder);
-                this.Obsolete = XmlHelper.GetAttributeValue(node, "obsolete", _def_obsolete);
-                this.IsIndexed = XmlHelper.GetAttributeValue(node, "isIndexed", _def_isIndexed);
-                this.IsUnique = XmlHelper.GetAttributeValue(node, "isUnique", _def_isUnique);
-                var relationshipRefNode = node.SelectSingleNode("relationshipRef");
-                if (relationshipRefNode != null)
-                {
-                    RelationshipRef = new Reference(this.Root);
-                    RelationshipRef.XmlLoad(relationshipRefNode);
-                }
-
-                var defaultValue = XmlHelper.GetAttributeValue(node, "default", _def_default);
-                defaultValue = defaultValue.Replace("\n", string.Empty);
-                defaultValue = defaultValue.Replace("\r", string.Empty);
-                this.Default = defaultValue;
-
-                _defaultIsFunc = XmlHelper.GetAttributeValue(node, "defaultIsFunc", _def_defaultIsFunc);
-
-                _length = XmlHelper.GetAttributeValue(node, "length", _def_length);
-                _scale = XmlHelper.GetAttributeValue(node, "scale", _def_scale);
-                this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
-
-                var parentTableRefNode = node.SelectSingleNode("parentTableRef"); //deprecated, use "pt"
-                if (parentTableRefNode == null) parentTableRefNode = node.SelectSingleNode("pt");
-                ParentTableRef = new Reference(this.Root);
-                ParentTableRef.XmlLoad(parentTableRefNode);
-
-                var typeString = node.Attributes["type"].Value;
-                if (!string.IsNullOrEmpty(typeString))
-                {
-                    //DO NOT set the real field as there is validation on it.
-                    _dataType = (System.Data.SqlDbType)int.Parse(typeString);
-                }
-
-                this.AllowNull = XmlHelper.GetAttributeValue(node, "allowNull", _def_allowNull);
-            }
-            catch (Exception ex)
-            {
-                throw;
+                RelationshipRef = new Reference(this.Root);
+                RelationshipRef.XmlLoad(relationshipRefNode);
             }
 
+            var defaultValue = node.GetAttributeValue("default", _def_default);
+            defaultValue = defaultValue.Replace("\n", string.Empty);
+            defaultValue = defaultValue.Replace("\r", string.Empty);
+            this.Default = defaultValue;
+
+            _defaultIsFunc = node.GetAttributeValue("defaultIsFunc", _def_defaultIsFunc);
+
+            _length = node.GetAttributeValue("length", _def_length);
+            _scale = node.GetAttributeValue("scale", _def_scale);
+            this.ResetId(node.GetAttributeValue("id", this.Id));
+
+            var parentTableRefNode = node.SelectSingleNode("parentTableRef"); //deprecated, use "pt"
+            if (parentTableRefNode == null) parentTableRefNode = node.SelectSingleNode("pt");
+            ParentTableRef = new Reference(this.Root);
+            ParentTableRef.XmlLoad(parentTableRefNode);
+
+            var typeString = node.Attributes["type"].Value;
+            if (!typeString.IsEmpty())
+            {
+                //DO NOT set the real field as there is validation on it.
+                _dataType = (System.Data.SqlDbType)int.Parse(typeString);
+            }
+
+            this.AllowNull = node.GetAttributeValue("allowNull", _def_allowNull);
+            return node;
         }
 
         #endregion
@@ -446,21 +434,14 @@ namespace nHydrate.Generator.Common.Models
 
         public override Reference CreateRef() => CreateRef(Guid.NewGuid().ToString());
 
-        public override Reference CreateRef(string key)
-        {
-            var returnVal = new Reference(this.Root);
-            returnVal.ResetKey(key);
-            returnVal.Ref = this.Id;
-            returnVal.RefType = ReferenceType.Column;
-            return returnVal;
-        }
+        public override Reference CreateRef(string key) => new Reference(this.Root, key) { Ref = this.Id, RefType = ReferenceType.Column };
 
         public string EnumType { get; set; } = string.Empty;
 
         public override string GetCodeType(bool allowNullable, bool forceNull)
         {
             var retval = string.Empty;
-            if (!string.IsNullOrEmpty(this.EnumType))
+            if (!this.EnumType.IsEmpty())
             {
                 retval = this.EnumType;
                 if (allowNullable && (this.AllowNull || forceNull))

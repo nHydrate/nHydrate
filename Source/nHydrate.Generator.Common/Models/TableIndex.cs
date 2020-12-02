@@ -50,7 +50,7 @@ namespace nHydrate.Generator.Common.Models
             }
         }
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
             var oDoc = node.OwnerDocument;
 
@@ -65,9 +65,10 @@ namespace nHydrate.Generator.Common.Models
             var tableIndexColumnListNode = oDoc.CreateElement("ticl");
             this.IndexColumnList.XmlAppend(tableIndexColumnListNode);
             node.AppendChild(tableIndexColumnListNode);
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
             this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
             this.Description = XmlHelper.GetAttributeValue(node, "description", this.Description);
@@ -80,6 +81,8 @@ namespace nHydrate.Generator.Common.Models
             var tableIndexColumnListNode = node.SelectSingleNode("ticl");
             if (tableIndexColumnListNode != null)
                 this.IndexColumnList.XmlLoad(tableIndexColumnListNode, this.Root);
+
+            return node;
         }
     }
 }

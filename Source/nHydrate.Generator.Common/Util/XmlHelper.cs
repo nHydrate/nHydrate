@@ -118,7 +118,7 @@ namespace nHydrate.Generator.Common.Util
 
         #region GetAttributeValue
 
-        public static string GetAttributeValue(XmlNode element, string attributeName, string defaultValue)
+        public static string GetAttributeValue(this XmlNode element, string attributeName, string defaultValue)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        public static double GetAttributeValue(XmlNode element, string attributeName, double defaultValue)
+        public static double GetAttributeValue(this XmlNode element, string attributeName, double defaultValue)
         {
             try
             {
@@ -152,7 +152,7 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        public static Guid GetAttributeValue(XmlNode element, string attributeName, Guid defaultValue)
+        public static Guid GetAttributeValue(this XmlNode element, string attributeName, Guid defaultValue)
         {
             try
             {
@@ -172,7 +172,7 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        public static int GetAttributeValue(XmlNode element, string attributeName, int defaultValue)
+        public static int GetAttributeValue(this XmlNode element, string attributeName, int defaultValue)
         {
             try
             {
@@ -192,7 +192,7 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        public static bool GetAttributeValue(XmlNode element, string attributeName, bool defaultValue)
+        public static bool GetAttributeValue(this XmlNode element, string attributeName, bool defaultValue)
         {
             try
             {

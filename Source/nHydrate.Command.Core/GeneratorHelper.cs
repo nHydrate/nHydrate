@@ -98,6 +98,7 @@ namespace nHydrate.Command.Core
             pathsRelative.AddRange(name.Split(Path.DirectorySeparatorChar));
             var fileName = System.IO.Path.Combine(paths.ToArray());
 
+            var fileStateInfo = new Generator.Common.Util.FileStateInfo { FileName = fileName };
             if (!File.Exists(fileName) || e.Overwrite)
             {
                 var folderName = new FileInfo(fileName).DirectoryName;
@@ -113,6 +114,8 @@ namespace nHydrate.Command.Core
                     File.WriteAllText(fileName, e.ProjectItemContent);
                 }
             }
+            else
+                fileStateInfo.FileState = Generator.Common.Util.FileStateConstants.Skipped;
 
             //Embed the file in the project if need be
             if (e.Properties.ContainsKey("BuildAction") && (int)e.Properties["BuildAction"] == 3)
@@ -164,6 +167,11 @@ namespace nHydrate.Command.Core
                 }
             }
 
+            //Write Log
+            Generator.Common.Logging.nHydrateLog.LogInfo("Project Item Generated: {0}", e.ProjectItemName);
+            e.FileState = fileStateInfo.FileState;
+            e.FullName = fileStateInfo.FileName;
+            this.OnProjectItemGenerated(sender, e);
         }
 
         protected override void projectItemGenerator_ProjectItemGenerationError(object sender, ProjectItemGeneratedErrorEventArgs e)
