@@ -257,7 +257,7 @@ namespace nHydrate.Generator.Common.Util
             }
             else
             {
-                if (dataType.IsTextType() && !string.IsNullOrEmpty(defaultValue))
+                if (dataType.IsTextType() && !defaultValue.IsEmpty())
                     retval = "'" + defaultValue.Replace("'", "''") + "'";
             }
             return retval;
@@ -320,7 +320,7 @@ namespace nHydrate.Generator.Common.Util
                 //Do Nothing
                 //if ((StringHelper.Match(defaultValue, "newid", true)) || (StringHelper.Match(defaultValue, "newid()", true)))
                 //  retval = "newid";
-                //else if (string.IsNullOrEmpty(defaultValue))
+                //else if (defaultValue.IsEmpty())
                 //  retval = string.Empty;
                 //else
                 //{
@@ -348,7 +348,7 @@ namespace nHydrate.Generator.Common.Util
             }
             else
             {
-                if (dataType.IsTextType() && !string.IsNullOrEmpty(defaultValue))
+                if (dataType.IsTextType() && !defaultValue.IsEmpty())
                     retval = "'" + defaultValue.Replace("'", "''") + "'";
             }
             return retval;
@@ -370,13 +370,15 @@ namespace nHydrate.Generator.Common.Util
 
         public static Guid ToGuid(this string str)
         {
-            if (string.IsNullOrEmpty(str)) return Guid.Empty;
+            if (str.IsEmpty()) return Guid.Empty;
             if (Guid.TryParse(str, out Guid v))
                 return v;
             return Guid.Empty;
         }
 
         public static bool IsEmpty(this string str) => string.IsNullOrEmpty(str);
+
+        public static string IfEmptyDefault(this string str, string defaultValue) => string.IsNullOrEmpty(str) ? defaultValue : str;
 
         public static T ToEnum<T>(this string str)
             where T : struct, System.Enum

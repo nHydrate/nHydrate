@@ -663,9 +663,9 @@ namespace nHydrate.DataImport.SqlClient
             }
             else if (field.DataType == SqlDbType.UniqueIdentifier)
             {
-                if (!string.IsNullOrEmpty(defaultvalue) && defaultvalue.Contains("newid"))
+                if (!defaultvalue.IsEmpty() && defaultvalue.Contains("newid"))
                     field.DefaultValue = "newid";
-                if (!string.IsNullOrEmpty(defaultvalue) && defaultvalue.Contains("newsequentialid"))
+                if (!defaultvalue.IsEmpty() && defaultvalue.Contains("newsequentialid"))
                     field.DefaultValue = "newsequentialid";
                 else
                     field.DefaultValue = defaultvalue.Replace("(", string.Empty).Replace(")", string.Empty).Replace("'", string.Empty); //Format: ('000...0000')
@@ -681,7 +681,7 @@ namespace nHydrate.DataImport.SqlClient
                 field.DefaultValue = defaultvalue;
 
             //Check for NULL value. There is no need to add a NULL default for a nullable field
-            if (!string.IsNullOrEmpty(field.DefaultValue) && field.Nullable && (field.DefaultValue.ToLower() == "null"))
+            if (!field.DefaultValue.IsEmpty() && field.Nullable && (field.DefaultValue.ToLower() == "null"))
             {
                 field.DefaultValue = string.Empty;
             }

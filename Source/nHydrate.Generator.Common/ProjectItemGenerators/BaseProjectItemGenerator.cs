@@ -2,6 +2,7 @@
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Common.ProjectItemGenerators
 {
@@ -57,7 +58,7 @@ namespace nHydrate.Generator.Common.ProjectItemGenerators
 
         public virtual string GetLocalNamespace()
         {
-            if (string.IsNullOrEmpty(this.LocalNamespaceExtension))
+            if (this.LocalNamespaceExtension.IsEmpty())
                 return this.DefaultNamespace;
             else
                 return this.DefaultNamespace + "." + this.LocalNamespaceExtension;

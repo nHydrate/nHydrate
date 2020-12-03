@@ -63,10 +63,7 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        public static Object CreateInstance(Type type)
-        {
-            return Activator.CreateInstance(type);
-        }
+        public static Object CreateInstance(Type type) => Activator.CreateInstance(type);
 
         #endregion
 
@@ -111,7 +108,6 @@ namespace nHydrate.Generator.Common.Util
                 "Antlr3.Runtime.dll",
                 "Castle.Core.dll",
                 "Gravitybox.Wizard.dll",
-                //"ICSharpCode.SharpZipLib.dll",
                 "Iesi.Collections.dll",
                 "Microsoft.ServiceModel.Web.dll",
                 "Remotion.Data.Linq.dll",
@@ -198,10 +194,7 @@ namespace nHydrate.Generator.Common.Util
             return (checkType != null);
         }
 
-        public static bool IsTypeOf(System.Type checkType, System.Type baseType)
-        {
-            return IsTypeOf(checkType, baseType.ToString());
-        }
+        public static bool IsTypeOf(System.Type checkType, System.Type baseType) => IsTypeOf(checkType, baseType.ToString());
 
         #endregion
 

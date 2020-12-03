@@ -518,8 +518,7 @@ namespace nHydrate.Generator.Util
             }
             else
             {
-                var projectToAddTo = this.GetProject(projectName);
-                foreach (ProjectItem projectItem in projectToAddTo.ProjectItems)
+                foreach (ProjectItem projectItem in this.GetProject(projectName).ProjectItems)
                 {
                     if (projectItem.Kind == Constants.vsProjectItemKindPhysicalFile && StringHelper.Match(projectItem.Name, parentFileName, true))
                     {

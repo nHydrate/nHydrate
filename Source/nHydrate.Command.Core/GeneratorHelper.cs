@@ -1,6 +1,7 @@
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.ProjectItemGenerators;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -79,12 +80,12 @@ namespace nHydrate.Command.Core
 
             paths.AddRange(_outputFolder.Split(Path.DirectorySeparatorChar));
             paths.AddRange(e.ProjectName.Split(Path.DirectorySeparatorChar));
-            if (!string.IsNullOrEmpty(e.ParentItemName) && !e.ParentItemName.Contains("."))
+            if (!e.ParentItemName.IsEmpty() && !e.ParentItemName.Contains("."))
             {
                 paths.AddRange(e.ParentItemName.Split(Path.DirectorySeparatorChar));
                 pathsRelative.AddRange(e.ParentItemName.Split(Path.DirectorySeparatorChar));
             }
-            else if (!string.IsNullOrEmpty(e.ParentItemName) && e.ParentItemName.Contains("."))
+            else if (!e.ParentItemName.IsEmpty() && e.ParentItemName.Contains("."))
             {
                 var arr = e.ParentItemName.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList();
                 if (arr.Count > 1)

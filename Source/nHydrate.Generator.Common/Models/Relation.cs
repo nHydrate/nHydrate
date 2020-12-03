@@ -20,9 +20,6 @@ namespace nHydrate.Generator.Common.Models
 
         protected Reference _parentTableRef = null;
         protected Reference _childTableRef = null;
-        private bool _enforce = _def_enforce;
-        private string _description = _def_description;
-        private DeleteActionConstants _deleteAction = _def_deleteAction;
 
         #endregion
 
@@ -41,44 +38,12 @@ namespace nHydrate.Generator.Common.Models
 
         #endregion
 
-        private void Initialize()
-        {
-            ColumnRelationships = new ColumnRelationshipCollection(this.Root);
-        }
+        private void Initialize() => ColumnRelationships = new ColumnRelationshipCollection(this.Root);
 
         protected override void OnRootReset(System.EventArgs e)
         {
             this.Initialize();
         }
-
-        #region Events
-
-        public event System.EventHandler BeforeChildTableChange;
-        public event System.EventHandler BeforeParentTableChange;
-        public event System.EventHandler AfterChildTableChange;
-        public event System.EventHandler AfterParentTableChange;
-
-        protected virtual void OnBeforeChildTableChange(object sender, System.EventArgs e)
-        {
-            this.BeforeChildTableChange?.Invoke(sender, e);
-        }
-
-        protected virtual void OnBeforeParentTableChange(object sender, System.EventArgs e)
-        {
-            this.BeforeParentTableChange?.Invoke(sender, e);
-        }
-
-        protected virtual void OnAfterChildTableChange(object sender, System.EventArgs e)
-        {
-            this.AfterChildTableChange?.Invoke(sender, e);
-        }
-
-        protected virtual void OnAfterParentTableChange(object sender, System.EventArgs e)
-        {
-            this.AfterParentTableChange?.Invoke(sender, e);
-        }
-
-        #endregion
 
         #region Property Implementations
 
@@ -86,77 +51,39 @@ namespace nHydrate.Generator.Common.Models
         /// EF only supports relations where the primary table is from the PK
         /// If the parent table is from a non-PK unique field, EF will NOT render it
         /// </summary>
-        public bool IsValidEFRelation
-        {
-            get { return this.ColumnRelationships.AsEnumerable().All(cr => cr.ParentColumn.PrimaryKey); }
-        }
+        public bool IsValidEFRelation => this.ColumnRelationships.AsEnumerable().All(cr => cr.ParentColumn.PrimaryKey);
 
         public ColumnRelationshipCollection ColumnRelationships { get; protected set; } = null;
 
         public Reference ParentTableRef
         {
             get { return _parentTableRef; }
-            set
-            {
-                if (_parentTableRef != value)
-                {
-                    this.OnBeforeParentTableChange(this, new System.EventArgs());
-                    _parentTableRef = value;
-                    this.OnAfterParentTableChange(this, new System.EventArgs());
-                }
-            }
+            set { _parentTableRef = value; }
         }
 
         public Reference ChildTableRef
         {
             get { return _childTableRef; }
-            set
-            {
-                if (_childTableRef != value)
-                {
-                    this.OnBeforeChildTableChange(this, new System.EventArgs());
-                    _childTableRef = value;
-                    this.OnAfterChildTableChange(this, new System.EventArgs());
-                }
-            }
+            set { _childTableRef = value; }
         }
 
         public string RoleName { get; set; } = _def_roleName;
 
         public string ConstraintName { get; set; } = string.Empty;
 
-        public bool IsRequired
-        {
-            get
-            {
-                var retval = false;
-                foreach (var cr in this.ColumnRelationships.AsEnumerable())
-                {
-                    retval |= !cr.ChildColumn.AllowNull;
-                }
-                return retval;
-            }
-        }
+        public bool IsRequired => this.ColumnRelationships.Any(x => !x.ChildColumn.AllowNull);
 
         public bool IsManyToMany
         {
             get
             {
-                var parentTable = this.ParentTable;
-                var childTable = this.ChildTable;
-                var otherTable = parentTable;
-                if (childTable.AssociativeTable) otherTable = childTable;
-
+                var otherTable = this.ChildTable.AssociativeTable ? this.ChildTable : this.ParentTable;
                 if (otherTable.AssociativeTable)
                 {
                     //The associative table must have exactly 2 relations
                     var relationList = otherTable.GetRelationsWhereChild();
-                    if (relationList.Count() == 2)
-                    {
-                        return true;
-                    }
+                    if (relationList.Count() == 2) return true;
                 }
-
                 return false;
             }
         }
@@ -188,46 +115,13 @@ namespace nHydrate.Generator.Common.Models
             }
         }
 
-        public bool IsInherited
-        {
-            get
-            {
-                if (!this.IsOneToOne) return false;
-                var parentTable = this.ParentTable;
-                var childTable = this.ChildTable;
-                return childTable.IsInheritedFrom(parentTable);
-            }
-        }
+        public bool IsInherited => !this.IsOneToOne ? false : this.ChildTable.IsInheritedFrom(this.ParentTable);
 
-        public bool Enforce
-        {
-            get { return _enforce; }
-            set
-            {
-                if (_enforce != value)
-                {
-                    _enforce = value;
-                }
-            }
-        }
+        public bool Enforce { get; set; }
 
-        public string Description
-        {
-            get { return _description; }
-            set
-            {
-                _description = value;
-            }
-        }
+        public string Description { get; set; }
 
-        public DeleteActionConstants DeleteAction
-        {
-            get { return _deleteAction; }
-            set
-            {
-                _deleteAction = value;
-            }
-        }
+        public DeleteActionConstants DeleteAction { get; set; }
 
         #endregion
 
@@ -421,23 +315,18 @@ namespace nHydrate.Generator.Common.Models
         public override XmlNode XmlLoad(XmlNode node)
         {
             this.Key = node.GetAttributeValue("key", string.Empty);
-            _enforce = node.GetAttributeValue("enforce", _def_enforce);
-            _description = node.GetAttributeValue("description", _def_description);
+            this.Enforce = node.GetAttributeValue("enforce", _def_enforce);
+            this.Description = node.GetAttributeValue("description", _def_description);
+            this.DeleteAction = (DeleteActionConstants)Enum.Parse(typeof(DeleteActionConstants), XmlHelper.GetAttributeValue(node, "deleteAction", _def_deleteAction.ToString()));
 
-            _deleteAction = (DeleteActionConstants)Enum.Parse(typeof(DeleteActionConstants), XmlHelper.GetAttributeValue(node, "deleteAction", _def_deleteAction.ToString()));
-
-            var columnRelationshipsNode = node.SelectSingleNode("columnRelationships"); //deprecated, use "crl"
-            if (columnRelationshipsNode == null)
-                columnRelationshipsNode = node.SelectSingleNode("crl");
+            var columnRelationshipsNode = node.SelectSingleNode("crl");
             ColumnRelationships.XmlLoad(columnRelationshipsNode);
 
-            var childTableRefNode = node.SelectSingleNode("childTableRef"); //deprecated, use "ct"
-            if (childTableRefNode == null) childTableRefNode = node.SelectSingleNode("ct");
+            var childTableRefNode = node.SelectSingleNode("ct");
             if (this.ChildTableRef == null) _childTableRef = new Reference(this.Root);
             this.ChildTableRef.XmlLoad(childTableRefNode);
 
-            var parentTableRefNode = node.SelectSingleNode("parentTableRef"); //deprecated, use "pt"
-            if (parentTableRefNode == null) parentTableRefNode = node.SelectSingleNode("pt");
+            var parentTableRefNode = node.SelectSingleNode("pt");
             if (this.ParentTableRef == null) _parentTableRef = new Reference(this.Root);
             this.ParentTableRef.XmlLoad(parentTableRefNode);
 
@@ -516,7 +405,7 @@ namespace nHydrate.Generator.Common.Models
                 childList = tableCollection.GetById(this.ChildTableRef.Ref);
 
             var retval = string.Empty;
-            retval = (this.RoleName == "" ? "" : this.RoleName + " ") + "[" + ((parentList.Length == 0) ? "(Unknown)" : parentList[0].Name) + " -> " + ((childList.Length == 0) ? "(Unknown)" : childList[0].Name) + "]";
+            retval = (this.RoleName == "" ? "" : this.RoleName + " ") + "[" + ((!parentList.Any()) ? "(Unknown)" : parentList[0].Name) + " -> " + ((!childList.Any()) ? "(Unknown)" : childList[0].Name) + "]";
             return retval;
         }
 

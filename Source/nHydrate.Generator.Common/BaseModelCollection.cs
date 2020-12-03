@@ -79,7 +79,7 @@ namespace nHydrate.Generator.Common
         {
             this.Key = node.GetAttributeValue("key", Guid.Empty.ToString());
             XmlNodeList nList = null;
-            if (!string.IsNullOrEmpty(this.NodeOldName))
+            if (!this.NodeOldName.IsEmpty())
                 nList = node.SelectNodes(this.NodeOldName);
             if (nList == null || nList.Count == 0)
                 nList = node.SelectNodes(this.NodeName);

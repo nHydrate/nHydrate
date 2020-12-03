@@ -282,9 +282,7 @@ namespace nHydrate.Command.Core
 
         private static int HashString(string s)
         {
-            if (string.IsNullOrEmpty(s))
-                return 0;
-
+            if (s.IsEmpty()) return 0;
             uint hash = 0;
             foreach (var b in System.Text.Encoding.Unicode.GetBytes(s))
             {

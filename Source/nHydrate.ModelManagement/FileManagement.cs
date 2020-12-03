@@ -205,6 +205,17 @@ namespace nHydrate.ModelManagement
             }
             catch { }
 
+            //Opened the ".nhydrate" XML file
+            if (modelName.EndsWith(OldModelExtension) && File.Exists(modelFile))
+            {
+                var ff = Directory.GetFiles(Path.Combine(modelFolder)).FirstOrDefault(x => x.EndsWith("model.nhydrate.yaml"));
+                if (ff != null)
+                {
+                    modelFile = ff;
+                    modelName = (new FileInfo(ff)).Name;
+                }
+            }
+
             var results = new DiskModelYaml();
 
             //Determine if model is old XML style and convert
@@ -231,10 +242,10 @@ namespace nHydrate.ModelManagement
 
         private static void LoadEntitiesYaml(string rootFolder, DiskModelYaml results)
         {
-            var folder = Path.Combine(rootFolder, FOLDER_OLD_ET);
+            var folder = Path.Combine(rootFolder, FOLDER_ET);
             if (!Directory.Exists(folder))
             {
-                folder = Path.Combine(rootFolder, FOLDER_ET);
+                folder = Path.Combine(rootFolder, FOLDER_OLD_ET);
                 if (!Directory.Exists(folder)) return;
             }
 
@@ -354,10 +365,10 @@ namespace nHydrate.ModelManagement
 
         private static void LoadViewsYaml(string rootFolder, DiskModelYaml results)
         {
-            var folder = Path.Combine(rootFolder, FOLDER_OLD_VW);
+            var folder = Path.Combine(rootFolder, FOLDER_VW);
             if (!Directory.Exists(folder))
             {
-                folder = Path.Combine(rootFolder, FOLDER_VW);
+                folder = Path.Combine(rootFolder, FOLDER_OLD_VW);
                 if (!Directory.Exists(folder)) return;
             }
 
@@ -410,6 +421,12 @@ namespace nHydrate.ModelManagement
             generatedFileList.Add(Path.Combine(modelFolder, "diagram.xml"));
 
             RemoveOrphans(modelFolder, generatedFileList);
+
+            var folder = Path.Combine(rootFolder, FOLDER_OLD_ET);
+            if (Directory.Exists(folder)) Directory.Delete(folder);
+            folder = Path.Combine(rootFolder, FOLDER_OLD_VW);
+            if (Directory.Exists(folder)) Directory.Delete(folder);
+
         }
 
         private static void SaveEntitiesYaml(string rootFolder, DiskModelYaml model, List<string> generatedFileList)
@@ -705,8 +722,8 @@ namespace nHydrate.ModelManagement
             //Only touch the files we know about
             var files = new List<string>();
             files.AddRange(Directory.GetFiles(rootFolder, "*.*", SearchOption.TopDirectoryOnly));
-            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_entities"), "*.*", SearchOption.TopDirectoryOnly));
-            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_views"), "*.*", SearchOption.TopDirectoryOnly));
+            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "entities"), "*.*", SearchOption.TopDirectoryOnly));
+            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "views"), "*.*", SearchOption.TopDirectoryOnly));
             files.ToList().ForEach(x => x = x.ToLower());
             generatedFiles.ToList().ForEach(x => x = x.ToLower());
 

@@ -1,4 +1,5 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Linq;
 using System.Text;
@@ -156,8 +157,8 @@ namespace nHydrate.DataImport.SqlClient
             sb.AppendLine(" FROM ");
             sb.AppendLine(" 	INFORMATION_SCHEMA.COLUMNS c ");
             sb.AppendLine(" 	INNER JOIN sys.types s on s.name = c.DATA_TYPE");
-            if (!string.IsNullOrEmpty(tableName))
-                sb.AppendLine(" WHERE c.TABLE_NAME = '" + tableName + "'");
+            if (!tableName.IsEmpty())
+                sb.AppendLine($" WHERE c.TABLE_NAME = '{tableName}'");
             sb.AppendLine(" ORDER BY");
             sb.AppendLine(" 	c.TABLE_NAME,");
             sb.AppendLine(" 	c.ORDINAL_POSITION");

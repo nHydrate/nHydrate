@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace nHydrate.Generator.Common.Models
 {
     public class ColumnRelationshipCollection : BaseModelCollection<ColumnRelationship>
@@ -8,16 +10,7 @@ namespace nHydrate.Generator.Common.Models
         {
         }
 
-        public ColumnRelationship GetByParentField(Column column)
-        {
-            foreach (ColumnRelationship r in this)
-            {
-                var c = (Column)r.ChildColumnRef.Object;
-                if (c == column)
-                    return r;
-            }
-            return null;
-        }
+        public ColumnRelationship GetByParentField(Column column) => this.FirstOrDefault(x => x.ChildColumnRef.Object as Column == column);
 
         protected override string NodeOldName => "columnRelationship";
         protected override string NodeName => "cr";

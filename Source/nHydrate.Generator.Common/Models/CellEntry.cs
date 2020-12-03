@@ -73,8 +73,7 @@ namespace nHydrate.Generator.Common.Models
         public override XmlNode XmlLoad(XmlNode node)
         {
             this.Key = node.GetAttributeValue("key", string.Empty);
-            var columnRefNode = node.SelectSingleNode("columnRef"); //deprecated, use "f"
-            if (columnRefNode == null) columnRefNode = node.SelectSingleNode("f");
+            var columnRefNode = node.SelectSingleNode("f");
             if (columnRefNode != null)
             {
                 if (this.ColumnRef == null)

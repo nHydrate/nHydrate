@@ -30,7 +30,7 @@ namespace nHydrate.Generator.Common.Util
 
         public static string FirstCharToUpper(string inputString)
         {
-            if (string.IsNullOrEmpty(inputString)) return string.Empty;
+            if (inputString.IsEmpty()) return string.Empty;
             var sb = new StringBuilder();
             if (inputString.Length > 0)
             {
@@ -41,7 +41,7 @@ namespace nHydrate.Generator.Common.Util
 
         public static string FirstCharToLower(string inputString)
         {
-            if (string.IsNullOrEmpty(inputString)) return string.Empty;
+            if (inputString.IsEmpty()) return string.Empty;
             var sb = new StringBuilder();
             if (inputString.Length > 0)
             {
@@ -54,17 +54,14 @@ namespace nHydrate.Generator.Common.Util
         /// <summary>
         /// Convert the specified text to a single line text
         /// </summary>
-        public static string ConvertTextToSingleLineCodeString(string text)
-        {
-            return ConvertTextToSingleLineCodeString(text, false);
-        }
+        public static string ConvertTextToSingleLineCodeString(string text) => ConvertTextToSingleLineCodeString(text, false);
 
         /// <summary>
         /// Convert the specified text to a single line text
         /// </summary>
         public static string ConvertTextToSingleLineCodeString(string text, bool convertBreaks)
         {
-            if (string.IsNullOrEmpty(text)) return string.Empty;
+            if (text.IsEmpty()) return string.Empty;
             text = text.Replace("\r\n", "\n");
             text = text.Replace("\r", "\n");
             var arr = text.Split('\n');
@@ -129,11 +126,8 @@ namespace nHydrate.Generator.Common.Util
             return pascalCase;
         }
 
-        private static string ReplaceWithUpper(Match m)
-        {
-            var character = m.ToString().TrimStart('_');
-            return character.ToUpper();
-        }
+        private static string ReplaceWithUpper(Match m) => m.ToString().TrimStart('_').ToUpper();
+
         #endregion
 
         #region File Path Conversions

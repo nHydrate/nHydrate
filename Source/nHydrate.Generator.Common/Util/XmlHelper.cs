@@ -250,7 +250,7 @@ namespace nHydrate.Generator.Common.Util
         public static XmlNode AddElement(this XmlElement element, string name, string value)
         {
             var elemNew = element.OwnerDocument.CreateElement(name);
-            if (!string.IsNullOrEmpty(value))
+            if (!value.IsEmpty())
                 elemNew.InnerText = value;
             return element.AppendChild(elemNew);
         }

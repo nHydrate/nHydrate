@@ -150,7 +150,7 @@ namespace nHydrate.Generator.Common.Models
         public override string GetCodeType(bool allowNullable, bool forceNull)
         {
             var retval = string.Empty;
-            if (!string.IsNullOrEmpty(this.EnumType))
+            if (!this.EnumType.IsEmpty())
             {
                 retval = this.EnumType;
                 if (allowNullable && (this.AllowNull || forceNull))

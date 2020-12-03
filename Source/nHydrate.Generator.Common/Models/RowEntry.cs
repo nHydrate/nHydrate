@@ -82,10 +82,7 @@ namespace nHydrate.Generator.Common.Models
                             description = cellEntry.Value;
                     }
                 }
-
-                if (string.IsNullOrEmpty(name)) name = description;
-                return name;
-
+                return name.IfEmptyDefault(description);
             }
             catch (Exception ex)
             {
@@ -111,10 +108,7 @@ namespace nHydrate.Generator.Common.Models
                             description = cellEntry.Value;
                     }
                 }
-
-                if (string.IsNullOrEmpty(name)) name = ValidationHelper.MakeCodeIdentifer(description);
-                return name;
-
+                return name.IfEmptyDefault(ValidationHelper.MakeCodeIdentifer(description));
             }
             catch (Exception ex)
             {
@@ -126,8 +120,6 @@ namespace nHydrate.Generator.Common.Models
         public string GetCodeIdValue(Table table)
         {
             var id = string.Empty;
-            var name = string.Empty;
-            var description = string.Empty;
             foreach (CellEntry cellEntry in this.CellEntries)
             {
                 var column = (Column)cellEntry.ColumnRef.Object;
@@ -136,21 +128,14 @@ namespace nHydrate.Generator.Common.Models
                 {
                     if (column.Key == pk.Key)
                         id = cellEntry.Value;
-                    if (StringHelper.Match(column.Name, "name"))
-                        name = ValidationHelper.MakeCodeIdentifer(cellEntry.Value);
-                    if (StringHelper.Match(column.Name, "description"))
-                        description = cellEntry.Value;
                 }
             }
-
-            if (string.IsNullOrEmpty(name)) name = description;
             return id;
         }
 
         public string GetCodeDescription(Table table)
         {
             var id = string.Empty;
-            var name = string.Empty;
             var description = string.Empty;
             foreach (CellEntry cellEntry in this.CellEntries)
             {
@@ -160,16 +145,11 @@ namespace nHydrate.Generator.Common.Models
                 {
                     if (column.Key == pk.Key)
                         id = cellEntry.Value;
-                    if (StringHelper.Match(column.Name, "name"))
-                        name = ValidationHelper.MakeCodeIdentifer(cellEntry.Value);
                     if (StringHelper.Match(column.Name, "description"))
                         description = cellEntry.Value;
                 }
             }
-
-            if (string.IsNullOrEmpty(name)) name = ValidationHelper.MakeCodeIdentifer(description);
-            if (description != null) return description;
-            else return string.Empty;
+            return description.IfEmptyDefault(string.Empty);
         }
 
         #endregion
@@ -184,8 +164,7 @@ namespace nHydrate.Generator.Common.Models
         public override XmlNode XmlLoad(XmlNode node)
         {
             this.Key = node.GetAttributeValue("key", string.Empty);
-            var cellEntriesNode = node.SelectSingleNode("cellEntries"); //deprecated, use "cl"
-            if (cellEntriesNode == null) cellEntriesNode = node.SelectSingleNode("cl");
+            var cellEntriesNode = node.SelectSingleNode("cl");
             this.CellEntries.XmlLoad(cellEntriesNode);
             return node;
         }

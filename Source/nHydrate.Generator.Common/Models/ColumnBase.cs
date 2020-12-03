@@ -94,7 +94,7 @@ namespace nHydrate.Generator.Common.Models
 
         public virtual string CodeFacade { get; set; } = _def_codefacade;
 
-        public virtual string GetCodeFacade() => string.IsNullOrEmpty(this.CodeFacade) ? this.Name : this.CodeFacade;
+        public virtual string GetCodeFacade() => this.CodeFacade.IfEmptyDefault(this.Name);
 
         #endregion
 
@@ -135,13 +135,7 @@ namespace nHydrate.Generator.Common.Models
             }
         }
 
-        public virtual string GetLengthString()
-        {
-            if (this.DataType.SupportsMax() && this.Length == 0)
-                return "max";
-            else
-                return this.Length.ToString();
-        }
+        public virtual string GetLengthString() => (this.DataType.SupportsMax() && this.Length == 0) ? "max" : this.Length.ToString();
 
         /// <summary>
         /// This is the length used for annotations and meta data for class descriptions
@@ -157,11 +151,7 @@ namespace nHydrate.Generator.Common.Models
                 case System.Data.SqlDbType.Image:
                     return int.MaxValue;
             }
-
-            if (this.DataType.SupportsMax() && this.Length == 0)
-                return int.MaxValue;
-            else
-                return this.Length;
+            return (this.DataType.SupportsMax() && this.Length == 0) ? int.MaxValue : this.Length;
         }
 
         public override string ToString() => this.Name;

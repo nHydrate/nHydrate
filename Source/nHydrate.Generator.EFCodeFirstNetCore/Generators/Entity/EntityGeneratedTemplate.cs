@@ -59,7 +59,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
                 sb.AppendLine("	/// <summary>");
 
-                if (string.IsNullOrEmpty(_item.Description))
+                if (_item.Description.IsEmpty())
                     sb.AppendLine($"	/// The '{_item.PascalName}' entity");
                 else
                     StringHelper.LineBreakCode(sb, _item.Description, "	/// ");
@@ -84,12 +84,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             else
                 sb.AppendLine($"	/// The '{_item.PascalName}' entity");
 
-            if (!string.IsNullOrEmpty(_item.Description))
+            if (!_item.Description.IsEmpty())
                 sb.AppendLine("	/// " + _item.Description);
 
             sb.AppendLine("	/// </summary>");
 
-            if (!string.IsNullOrEmpty(_item.Description))
+            if (!_item.Description.IsEmpty())
                 sb.AppendLine($"	[System.ComponentModel.Description(\"{_item.Description}\")]");
 
             sb.AppendLine($"	[System.CodeDom.Compiler.GeneratedCode(\"nHydrate\", \"{_model.ModelToolVersion}\")]");
@@ -350,7 +350,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 }
 
                 sb.AppendLine("		/// <summary>");
-                if (!string.IsNullOrEmpty(column.Description))
+                if (!column.Description.IsEmpty())
                     StringHelper.LineBreakCode(sb, column.Description, "		/// ");
                 else
                     sb.AppendLine($"		/// The property that maps back to the database '{column.ParentTable.DatabaseName}.{column.DatabaseName}' field.");
@@ -373,7 +373,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 if (column.ComputedColumn || column.IsReadOnly)
                     sb.AppendLine("		[System.ComponentModel.DataAnnotations.Editable(false)]");
 
-                if (!string.IsNullOrEmpty(column.Description))
+                if (!column.Description.IsEmpty())
                     sb.AppendLine($"		[System.ComponentModel.Description(\"{StringHelper.ConvertTextToSingleLineCodeString(column.Description)}\")]");
 
                 if (column.DataType.IsTextType() && column.IsMaxLength())
@@ -421,7 +421,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     sb.AppendLine("		[Key]");
                     sb.AppendLine("		[StaticDataIdField]");
                 }
-                else if (!string.IsNullOrEmpty(typeTableAttr))
+                else if (!typeTableAttr.IsEmpty())
                 {
                     sb.AppendLine("		[StaticDataNameField]");
                 }
@@ -532,7 +532,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     if (relation.IsOneToOne)
                     {
                         sb.AppendLine("		/// <summary>");
-                        sb.AppendLine($"		/// The navigation definition for walking {_item.PascalName}->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:1)"));
+                        sb.AppendLine($"		/// The navigation definition for walking {_item.PascalName}->" + childTable.PascalName + (relation.PascalRoleName.IsEmpty() ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:1)"));
                         sb.AppendLine("		/// </summary>");
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine($"		public virtual {childTable.PascalName} {relation.PascalRoleName}{childTable.PascalName} {GetSetSuffix}");
@@ -556,7 +556,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         if ((targetTable.TypedTable != TypedTableConstants.EnumOnly))
                         {
                             sb.AppendLine("		/// <summary>");
-                            sb.AppendLine($"		/// The navigation definition for walking {_item.PascalName}->" + childTable.PascalName + (string.IsNullOrEmpty(otherRelation.PascalRoleName) ? "" : " (role: '" + otherRelation.PascalRoleName + "') (Multiplicity M:N)"));
+                            sb.AppendLine($"		/// The navigation definition for walking {_item.PascalName}->" + childTable.PascalName + (otherRelation.PascalRoleName.IsEmpty() ? "" : " (role: '" + otherRelation.PascalRoleName + "') (Multiplicity M:N)"));
                             sb.AppendLine("		/// </summary>");
                             // This was "protected internal" however there are times that a navigation property is needed
                             sb.AppendLine($"		public virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {otherRelation.PascalRoleName}{childTable.PascalName}List" + " { get; set; }");
@@ -578,7 +578,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     else if (parentTable == _item && (childTable.TypedTable != TypedTableConstants.EnumOnly) && !childTable.AssociativeTable)
                     {
                         sb.AppendLine("		/// <summary>");
-                        sb.AppendLine($"		/// The navigation definition for walking {parentTable.PascalName}->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:N)"));
+                        sb.AppendLine($"		/// The navigation definition for walking {parentTable.PascalName}->" + childTable.PascalName + (relation.PascalRoleName.IsEmpty() ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:N)"));
                         sb.AppendLine("		/// </summary>");
                         sb.AppendLine($"		public virtual ICollection<{this.GetLocalNamespace()}.Entity.{childTable.PascalName}> {relation.PascalRoleName}{childTable.PascalName}List" + " { get; set; }");
                         sb.AppendLine();
@@ -605,7 +605,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     else if (childTable == _item && !parentTable.IsInheritedFrom(_item))
                     {
                         sb.AppendLine("		/// <summary>");
-                        sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (string.IsNullOrEmpty(relation.PascalRoleName) ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:N)"));
+                        sb.AppendLine("		/// The navigation definition for walking " + parentTable.PascalName + "->" + childTable.PascalName + (relation.PascalRoleName.IsEmpty() ? "" : " (role: '" + relation.PascalRoleName + "') (Multiplicity 1:N)"));
                         sb.AppendLine("		/// </summary>");
                         //sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.NotMapped()]");
                         sb.AppendLine($"		public virtual {parentTable.PascalName} {relation.PascalRoleName}{parentTable.PascalName} {GetSetSuffix}");
@@ -771,12 +771,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             //DEFAULT PROPERTIES START
             foreach (var column in _item.GetColumns().Where(x => x.DataType != System.Data.SqlDbType.Timestamp).ToList())
             {
-                if (!string.IsNullOrEmpty(column.Default))
+                if (!column.Default.IsEmpty())
                 {
                     var defaultValue = column.GetCodeDefault();
 
                     //Write the actual code
-                    if (!string.IsNullOrEmpty(defaultValue))
+                    if (!defaultValue.IsEmpty())
                         returnVal.AppendLine($"			{propertyObjectPrefix}._{column.CamelName} = {defaultValue};");
                 }
             }
@@ -1150,7 +1150,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         private void GenerateAuditField(StringBuilder sb, string columnName, string codeType, string description, string propertyScope, string attributeType, bool isConcurrency = false)
         {
-            if (!string.IsNullOrEmpty(description))
+            if (!description.IsEmpty())
             {
                 sb.AppendLine("		/// <summary>");
                 StringHelper.LineBreakCode(sb, description, "		/// ");
@@ -1159,7 +1159,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine("		[System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]");
             sb.AppendLine("		[System.Diagnostics.DebuggerNonUserCode()]");
 
-            if (!string.IsNullOrEmpty(attributeType))
+            if (!attributeType.IsEmpty())
                 sb.AppendLine($"		[{attributeType}]");
 
             var virtualText = " virtual ";

@@ -105,20 +105,8 @@ namespace nHydrate.Generator.Common.Models
             _internalList.RemoveAll(x => x.Id == tableId);
         }
 
-        public IEnumerable<Column> GetAllColumns()
-        {
-            var retval = new List<Column>();
-            foreach (Table t in this)
-            {
-                foreach (Reference r in t.Columns)
-                {
-                    retval.Add((Column)r.Object);
-                }
-            }
-            return retval;
-        }
+        public IEnumerable<Column> GetAllColumns() => this.SelectMany(x => x.Columns).Select(x => x.Object as Column).ToList();
 
         #endregion
-
     }
 }

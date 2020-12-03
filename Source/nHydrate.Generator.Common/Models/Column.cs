@@ -412,8 +412,7 @@ namespace nHydrate.Generator.Common.Models
             _scale = node.GetAttributeValue("scale", _def_scale);
             this.ResetId(node.GetAttributeValue("id", this.Id));
 
-            var parentTableRefNode = node.SelectSingleNode("parentTableRef"); //deprecated, use "pt"
-            if (parentTableRefNode == null) parentTableRefNode = node.SelectSingleNode("pt");
+            var parentTableRefNode = node.SelectSingleNode("pt");
             ParentTableRef = new Reference(this.Root);
             ParentTableRef.XmlLoad(parentTableRefNode);
 

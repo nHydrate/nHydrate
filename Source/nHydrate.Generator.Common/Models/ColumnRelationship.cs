@@ -56,13 +56,11 @@ namespace nHydrate.Generator.Common.Models
         public override XmlNode XmlLoad(XmlNode node)
         {
             this.Key = node.GetAttributeValue("key", string.Empty);
-            var parentColumnRefNode = node.SelectSingleNode("parentColumnRef"); //deprecated, use "pt"
-            if (parentColumnRefNode == null) parentColumnRefNode = node.SelectSingleNode("pt");
+            var parentColumnRefNode = node.SelectSingleNode("pt");
             this.ParentColumnRef = new Reference(this.Root);
             this.ParentColumnRef.XmlLoad(parentColumnRefNode);
 
-            var childColumnRefNode = node.SelectSingleNode("childColumnRef"); //deprecated, use "ct"
-            if (childColumnRefNode == null) childColumnRefNode = node.SelectSingleNode("ct");
+            var childColumnRefNode = node.SelectSingleNode("ct");
             this.ChildColumnRef = new Reference(this.Root);
             this.ChildColumnRef.XmlLoad(childColumnRefNode);
 

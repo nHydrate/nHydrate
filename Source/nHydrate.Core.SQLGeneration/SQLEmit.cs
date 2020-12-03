@@ -22,7 +22,7 @@ namespace nHydrate.Core.SQLGeneration
 
                 var sb = new StringBuilder();
                 var tableName = Globals.GetTableDatabaseName(model, table);
-                if (!string.IsNullOrEmpty(tableAliasName))
+                if (!tableAliasName.IsEmpty())
                     tableName = tableAliasName;
 
                 sb.AppendLine("--CREATE TABLE [" + tableName + "]");
@@ -229,14 +229,13 @@ namespace nHydrate.Core.SQLGeneration
         public static string GetSqlCreateColumnDefault(ModelRoot model, Column column)
         {
             var sb = new StringBuilder();
-            if (!string.IsNullOrEmpty(column.GetSQLDefault()))
+            if (!column.GetSQLDefault().IsEmpty())
             {
                 var defaultName = $"DF__{column.ParentTable.DatabaseName}_{column.DatabaseName}".ToUpper();
                 sb.AppendLine($"--ADD CONSTRAINT FOR '[{column.ParentTable.DatabaseName}].[{column.DatabaseName}]'");
                 sb.AppendLine($"if exists (select * from sys.tables t inner join sys.schemas s on t.schema_id = s.schema_id where t.name = '{column.ParentTable.DatabaseName}' and s.name = '{column.ParentTable.GetSQLSchema()}') and not exists(select constid FROM sysconstraints where id=OBJECT_ID('{column.ParentTable.DatabaseName}') AND COL_NAME(id,colid)='{column.DatabaseName}' AND OBJECTPROPERTY(constid, 'IsDefaultCnst') = 1)");
                 sb.AppendLine($"ALTER TABLE [{column.ParentTable.GetSQLSchema()}].[{column.ParentTable.DatabaseName}] ADD CONSTRAINT [{defaultName}] DEFAULT {column.GetSQLDefault()} FOR [{column.DatabaseName}]");
             }
-
             return sb.ToString();
         }
 

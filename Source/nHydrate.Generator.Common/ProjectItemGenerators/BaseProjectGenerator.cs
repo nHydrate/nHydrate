@@ -1,6 +1,7 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.IO;
 
@@ -25,7 +26,7 @@ namespace nHydrate.Generator.Common.ProjectItemGenerators
 
         public virtual string GetLocalNamespace()
         {
-            if (string.IsNullOrEmpty(this.LocalNamespaceExtension))
+            if (this.LocalNamespaceExtension.IsEmpty())
                 return this.DefaultNamespace;
             else
                 return this.DefaultNamespace + "." + this.LocalNamespaceExtension;

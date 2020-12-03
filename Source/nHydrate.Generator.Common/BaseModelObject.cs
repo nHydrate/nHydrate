@@ -1,5 +1,6 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.GeneratorFramework;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 
@@ -62,7 +63,7 @@ namespace nHydrate.Generator.Common
 
         public void ResetKey(string newKey)
         {
-            if (string.IsNullOrEmpty(newKey))
+            if (newKey.IsEmpty())
                 throw new Exception("The key value must have a value!");
             this.Key = newKey;
         }

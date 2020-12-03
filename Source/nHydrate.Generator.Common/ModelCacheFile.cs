@@ -60,7 +60,7 @@ namespace nHydrate.Generator.Common
                 var fileName = _modelFileName;
 
                 //if the file has never been saved, then there is no filename
-                if (string.IsNullOrEmpty(fileName)) return string.Empty;
+                if (fileName.IsEmpty()) return string.Empty;
 
                 var fi = new System.IO.FileInfo(fileName);
                 if (fi.Exists)

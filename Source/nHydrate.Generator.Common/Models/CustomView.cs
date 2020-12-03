@@ -82,7 +82,7 @@ namespace nHydrate.Generator.Common.Models
 
         public List<CustomViewColumn> GetColumnsByType(System.Data.SqlDbType type) => this.GetColumns().Where(x => x.DataType == type).OrderBy(x => x.Name).ToList();
 
-        public string GetSQLSchema() => (string.IsNullOrEmpty(this.DBSchema)) ? "dbo" : this.DBSchema;
+        public string GetSQLSchema() => this.DBSchema.IfEmptyDefault("dbo");
 
         #endregion
 
@@ -131,49 +131,17 @@ namespace nHydrate.Generator.Common.Models
 
         #region Helpers
 
-        public Reference CreateRef()
-        {
-            return CreateRef(Guid.NewGuid().ToString());
-        }
+        public Reference CreateRef() => CreateRef(Guid.NewGuid().ToString());
 
-        public Reference CreateRef(string key)
-        {
-            var returnVal = new Reference(this.Root);
-            returnVal.ResetKey(key);
-            returnVal.Ref = this.Id;
-            returnVal.RefType = ReferenceType.CustomView;
-            return returnVal;
-        }
+        public Reference CreateRef(string key) => new Reference(this.Root, key) { Ref = this.Id, RefType = ReferenceType.CustomView };
 
-        public string CamelName
-        {
-            get { return StringHelper.DatabaseNameToCamelCase(this.PascalName); }
-        }
+        public string CamelName => StringHelper.DatabaseNameToCamelCase(this.PascalName);
 
-        public string PascalName
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(this.CodeFacade)) return this.CodeFacade;
-                else return this.Name;
-            }
-        }
+        public string PascalName => this.CodeFacade.IfEmptyDefault(this.Name);
 
         public string DatabaseName => this.Name;
 
-        public IList<CustomViewColumn> PrimaryKeyColumns
-        {
-            get
-            {
-                var primaryKeyColumns = new List<CustomViewColumn>();
-                foreach (Reference columnRef in this.Columns)
-                {
-                    var column = (CustomViewColumn)columnRef.Object;
-                    if (column.IsPrimaryKey) primaryKeyColumns.Add(column);
-                }
-                return primaryKeyColumns.AsReadOnly();
-            }
-        }
+        public IList<CustomViewColumn> PrimaryKeyColumns => this.Columns.Select(x => x.Object as CustomViewColumn).Where(x => x.IsPrimaryKey).ToList().AsReadOnly();
 
         #endregion
 
@@ -199,13 +167,7 @@ namespace nHydrate.Generator.Common.Models
 
         public string CodeFacade { get; set; } = _def_codefacade;
 
-        public string GetCodeFacade()
-        {
-            if (this.CodeFacade == "")
-                return this.Name;
-            else
-                return this.CodeFacade;
-        }
+        public string GetCodeFacade() => this.CodeFacade.IfEmptyDefault(this.Name);
 
         #endregion
 

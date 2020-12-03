@@ -14,6 +14,7 @@ namespace nHydrate.Command.Core
         private const string ModelKey = "model";
         private const string OutputKey = "output";
         private const string GeneratorsKey = "generators";
+        private static GenStats _stats = new GenStats();
 
         /*
             --model=C:\code\nHydrateTestAug\ConsoleApp1\Model1.nhydrate --output=C:\code\nHydrateTestAug --generators=nHydrate.Generator.EFCodeFirstNetCore.EFCodeFirstNetCoreProjectGenerator,nHydrate.Generator.PostgresInstaller.PostgresDatabaseProjectGenerator,nHydrate.Generator.SQLInstaller.Core.DatabaseProjectGenerator
@@ -40,9 +41,9 @@ namespace nHydrate.Command.Core
             if (allValues.ContainsKey(GeneratorsKey))
                 generators = allValues[GeneratorsKey].Split(",", StringSplitOptions.RemoveEmptyEntries);
 
-            if (string.IsNullOrEmpty(modelFile))
+            if (modelFile.IsEmpty())
                 return ShowError("The model is required.");
-            if (string.IsNullOrEmpty(output))
+            if (output.IsEmpty())
                 return ShowError("The output folder is required.");
             if (!generators.Any())
                 return ShowError("The generators are required.");
@@ -115,6 +116,7 @@ namespace nHydrate.Command.Core
             nHydrate.Generator.Common.Models.ModelRoot model = null;
             try
             {
+                Console.WriteLine();
                 Console.WriteLine("Loading model...");
                 model = ModelHelper.CreatePOCOModel(modelFile, formatModel);
             }
@@ -171,6 +173,15 @@ namespace nHydrate.Command.Core
 
                 if (File.Exists(genProject.FileName))
                     File.Delete(genProject.FileName);
+
+                //Write stats
+                Console.WriteLine();
+                Console.WriteLine("Generation Summary");
+                Console.WriteLine($"Total Files: {_stats.ProcessedFileCount}");
+                Console.WriteLine($"Files Success: {_stats.FilesSuccess}");
+                Console.WriteLine($"Files Skipped: {_stats.FilesSkipped}");
+                Console.WriteLine($"Files Failed: {_stats.FilesFailed}");
+                Console.WriteLine();
             }
             else if (!formatModel)
             {
@@ -190,7 +201,25 @@ namespace nHydrate.Command.Core
 
         private static void g_ProjectItemGenerated(object sender, nHydrate.Generator.Common.EventArgs.ProjectItemGeneratedEventArgs e)
         {
+            _stats.ProcessedFileCount++;
+            if (e.FileState == FileStateConstants.Skipped)
+                _stats.FilesSkipped++;
+            if (e.FileState == FileStateConstants.Success)
+                _stats.FilesSuccess++;
+            if (e.FileState == FileStateConstants.Failed)
+                _stats.FilesFailed++;
 
+            _stats.GeneratedFileList.Add(e);
+            Console.WriteLine($"Generated File: {e.FullName} ({e.FileState})");
+        }
+
+        private class GenStats
+        {
+            public int ProcessedFileCount { get; set; }
+            public int FilesSkipped { get; set; }
+            public int FilesSuccess { get; set; }
+            public int FilesFailed { get; set; }
+            public List<nHydrate.Generator.Common.EventArgs.ProjectItemGeneratedEventArgs> GeneratedFileList { get; private set; } = new List<Generator.Common.EventArgs.ProjectItemGeneratedEventArgs>();
         }
     }
 }

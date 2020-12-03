@@ -1,3 +1,4 @@
+using nHydrate.Generator.Common.Util;
 using System.Collections.Generic;
 
 namespace nHydrate.DataImport
@@ -21,10 +22,7 @@ namespace nHydrate.DataImport
         {
             get
             {
-                var schema = this.Schema;
-                if (string.IsNullOrEmpty(schema))
-                    schema = "dbo";
-
+                var schema = this.Schema.IfEmptyDefault("dbo");
                 var prehash =
                     this.Name + "|" +
                     schema +

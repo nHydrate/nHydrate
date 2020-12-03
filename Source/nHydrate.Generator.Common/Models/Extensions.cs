@@ -44,7 +44,7 @@ namespace nHydrate.Generator.Common.Models
         /// </summary>
         public static string ConvertToHexArrayString(this string s)
         {
-            if (string.IsNullOrEmpty(s)) return string.Empty;
+            if (s.IsEmpty()) return string.Empty;
             s = s.Replace("0x", string.Empty);
             if (s.Length % 2 != 0) return string.Empty;
 

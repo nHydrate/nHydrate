@@ -48,7 +48,7 @@ namespace nHydrate.Generator.Common.Models
         {
             get
             {
-                if (string.IsNullOrEmpty(_modeToolVersion))
+                if (_modeToolVersion.IsEmpty())
                 {
                     var thisAssem = System.Reflection.Assembly.GetExecutingAssembly();
                     var thisAssemName = thisAssem.GetName();

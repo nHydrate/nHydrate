@@ -237,7 +237,7 @@ namespace nHydrate.Generator.Common.Models
             return null;
         }
 
-        public string GetSQLSchema() => (string.IsNullOrEmpty(this.DBSchema)) ? "dbo" : this.DBSchema;
+        public string GetSQLSchema() => this.DBSchema.IfEmptyDefault("dbo");
 
         #endregion
 
@@ -280,13 +280,11 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlLoad(XmlNode node)
         {
-            var relationshipsNode = node.SelectSingleNode("relationships"); //deprecated, use "r"
-            if (relationshipsNode == null) relationshipsNode = node.SelectSingleNode("r");
+            var relationshipsNode = node.SelectSingleNode("r");
             if (relationshipsNode != null)
                 this.Relationships.XmlLoad(relationshipsNode);
 
-            var columnsNode = node.SelectSingleNode("columns"); //deprecated, use "c"
-            if (columnsNode == null) columnsNode = node.SelectSingleNode("c");
+            var columnsNode = node.SelectSingleNode("c");
             if (columnsNode != null)
                 this.Columns.XmlLoad(columnsNode);
 
@@ -370,7 +368,7 @@ namespace nHydrate.Generator.Common.Models
 
         public virtual string CodeFacade { get; set; } = _def_codeFacade;
 
-        public virtual string GetCodeFacade() => string.IsNullOrEmpty(this.CodeFacade) ? this.Name : this.CodeFacade;
+        public virtual string GetCodeFacade() => this.CodeFacade.IfEmptyDefault(this.Name);
 
         #endregion
 
