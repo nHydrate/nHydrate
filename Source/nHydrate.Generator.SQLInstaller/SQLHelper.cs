@@ -417,7 +417,7 @@ namespace nHydrate.Generator.SQLInstaller
                 {
                     #region Add Foreign Keys
 
-                    foreach (var r1 in newT.GetRelations())
+                    foreach (var r1 in newT.GetRelations().Where(x => x.Enforce))
                     {
                         var r2 = oldT.GetRelations().FirstOrDefault(x => x.Is(r1));
                         if (r2 == null)
