@@ -122,7 +122,7 @@ namespace nHydrate.Generator.Common.Models
             foreach (CellEntry cellEntry in this.CellEntries)
             {
                 var pk = (Column)table.PrimaryKeyColumns[0];
-                if (cellEntry.Column?.Key == pk.Key)
+                if (cellEntry.Column.Is(pk))
                     id = cellEntry.Value;
             }
             return id;

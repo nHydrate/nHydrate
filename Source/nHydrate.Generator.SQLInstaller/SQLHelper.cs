@@ -342,7 +342,7 @@ namespace nHydrate.Generator.SQLInstaller
 
                     foreach (var r1 in oldT.GetRelations())
                     {
-                        var r2 = newT.Relationships.FirstOrDefault(x => x.Key == r1.Key);
+                        var r2 = newT.Relationships.FirstOrDefault(x => x.Is(r1));
                         if (r2 == null)
                         {
                             sb.Append(SQLEmit.GetSqlRemoveFK(r1));
@@ -419,7 +419,7 @@ namespace nHydrate.Generator.SQLInstaller
 
                     foreach (var r1 in newT.GetRelations())
                     {
-                        var r2 = oldT.GetRelations().FirstOrDefault(x => x.Key == r1.Key);
+                        var r2 = oldT.GetRelations().FirstOrDefault(x => x.Is(r1));
                         if (r2 == null)
                         {
                             //There is no OLD relation so it is new so add it
@@ -497,7 +497,7 @@ namespace nHydrate.Generator.SQLInstaller
                     //Both exist, so if different, drop and re-create
                     foreach (var newIndex in newT.TableIndexList)
                     {
-                        var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Key == newIndex.Key);
+                        var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Is(newIndex));
                         if (oldIndex != null && oldIndex.CorePropertiesHashNoNames != newIndex.CorePropertiesHashNoNames)
                         {
                             sb.AppendLine(SQLEmit.GetSQLCreateIndex(newT, newIndex, false));
@@ -516,7 +516,7 @@ namespace nHydrate.Generator.SQLInstaller
             var removedItems = 0;
             foreach (var oldT in modelOld.Database.CustomViews.OrderBy(x => x.Name))
             {
-                var newT = modelNew.Database.CustomViews.FirstOrDefault(x => x.Key == oldT.Key);
+                var newT = modelNew.Database.CustomViews.FirstOrDefault(x => x.Is(oldT));
                 if (newT == null)
                 {
                     sb.AppendLine($"if exists (select * from sys.objects where name = '{oldT.DatabaseName}' and [type] in ('V'))");
@@ -540,7 +540,7 @@ namespace nHydrate.Generator.SQLInstaller
 
             foreach (var newT in modelNew.Database.CustomViews.OrderBy(x => x.Name))
             {
-                var oldT = modelOld.Database.CustomViews.FirstOrDefault(x => x.Key == newT.Key);
+                var oldT = modelOld.Database.CustomViews.FirstOrDefault(x => x.Is(newT));
                 if (oldT == null || (oldT.CorePropertiesHash != newT.CorePropertiesHash))
                 {
                     sb.Append(SQLEmit.GetSqlCreateView(newT, false));
@@ -559,7 +559,7 @@ namespace nHydrate.Generator.SQLInstaller
 
             foreach (var newT in modelNew.Database.Tables.OrderBy(x => x.Name))
             {
-                var oldT = modelOld.Database.Tables.FirstOrDefault(x => x.Key == newT.Key);
+                var oldT = modelOld.Database.Tables.FirstOrDefault(x => x.Is(newT));
                 if (oldT != null)
                 {
                     if (!oldT.AllowCreateAudit && newT.AllowCreateAudit)

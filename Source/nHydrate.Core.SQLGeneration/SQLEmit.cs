@@ -110,7 +110,7 @@ namespace nHydrate.Core.SQLGeneration
             //Rename all indexes for this table's fields
             foreach (var column in newTable.GetColumns())
             {
-                var oldColumn = oldTable.GetColumns().FirstOrDefault(x => x.Key == column.Key);
+                var oldColumn = oldTable.GetColumns().FirstOrDefault(x => x.Is(column));
                 if (oldColumn != null)
                 {
                     var oldIndexName = CreateIndexName(oldTable, oldColumn);
@@ -125,7 +125,7 @@ namespace nHydrate.Core.SQLGeneration
             //Rename all indexes for this table
             foreach (var index in newTable.TableIndexList)
             {
-                var oldIndex = oldTable.TableIndexList.FirstOrDefault(x => x.Key == index.Key);
+                var oldIndex = oldTable.TableIndexList.FirstOrDefault(x => x.Is(index));
                 if (oldIndex != null)
                 {
                     var oldIndexName = GetIndexName(oldTable, oldIndex);
@@ -451,7 +451,7 @@ namespace nHydrate.Core.SQLGeneration
                 //rename all indexes for this table (later we can select just for this column)
                 foreach (var index in newTable.TableIndexList.Where(x => !x.PrimaryKey))
                 {
-                    var oldIndex = oldTable.TableIndexList.FirstOrDefault(x => x.Key == index.Key);
+                    var oldIndex = oldTable.TableIndexList.FirstOrDefault(x => x.Is(index));
                     if (oldIndex != null)
                     {
                         var oldIndexName = GetIndexName(oldTable, oldIndex);

@@ -1,3 +1,4 @@
+using nHydrate.Generator.Common.Util;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,7 +81,7 @@ namespace nHydrate.Generator.Common.Models
             {
                 if (relation.ParentTable == null || relation.ChildTable == null)
                     deleteList.Add(relation);
-                else if ((relation.ParentTable.Key == table.Key) || (relation.ChildTable.Key == table.Key))
+                else if ((relation.ParentTable.Is(table)) || (relation.ChildTable.Is(table)))
                     deleteList.Add(relation);
             }
 

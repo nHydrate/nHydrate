@@ -65,7 +65,7 @@ namespace nHydrate.Generator.PostgresInstaller
                         //If old exists new does NOT, so delete index
                         foreach (var oldIndex in oldT.TableIndexList)
                         {
-                            var newIndex = newT.TableIndexList.FirstOrDefault(x => x.Key == oldIndex.Key);
+                            var newIndex = newT.TableIndexList.FirstOrDefault(x => x.Is(oldIndex));
                             if (newIndex == null)
                             {
                                 sb.AppendLine(SQLEmit.GetSQLDropIndex(newT, oldIndex));
@@ -76,7 +76,7 @@ namespace nHydrate.Generator.PostgresInstaller
                         //Both exist, so if different, drop and re-create
                         foreach (var newIndex in newT.TableIndexList)
                         {
-                            var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Key == newIndex.Key);
+                            var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Is(newIndex));
                             if (oldIndex != null && oldIndex.CorePropertiesHashNoNames != newIndex.CorePropertiesHashNoNames)
                             {
                                 sb.AppendLine(SQLEmit.GetSQLDropIndex(newT, oldIndex));
@@ -329,8 +329,8 @@ namespace nHydrate.Generator.PostgresInstaller
                         #region Drop Foreign Keys
                         foreach (var r1 in oldT.GetRelations())
                         {
-                            var r2 = newT.Relationships.FirstOrDefault(x => x.Key == r1.Key);
-                            r2 = newT.Relationships.FirstOrDefault(x => x.Key == r1.Key);
+                            var r2 = newT.Relationships.FirstOrDefault(x => x.Is(r1));
+                            r2 = newT.Relationships.FirstOrDefault(x => x.Is(r1));
                             if (r2 == null)
                             {
                                 sb.Append(SQLEmit.GetSqlRemoveFK(r1));
@@ -400,7 +400,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
                         foreach (var r1 in newT.GetRelations())
                         {
-                            var r2 = oldT.GetRelations().FirstOrDefault(x => x.Key == r1.Key);
+                            var r2 = oldT.GetRelations().FirstOrDefault(x => x.Is(r1));
                             if (r2 == null)
                             {
                                 //There is no OLD relation so it is new so add it
@@ -1314,8 +1314,8 @@ namespace nHydrate.Generator.PostgresInstaller
             foreach (var relation in newTable.GetRelationsWhereChild())
             {
                 var oldParentTable = existingRelations
-                    .FirstOrDefault(x => x.ParentTable.Key == relation.ParentTable.Key &&
-                                        x.ChildTable.Key == relation.ChildTable.Key &&
+                    .FirstOrDefault(x => x.ParentTable.Is(relation.ParentTable) &&
+                                        x.ChildTable.Is(relation.ChildTable) &&
                                         x.RoleName == relation.RoleName)
                     ?.ParentTable;
 
@@ -1333,7 +1333,7 @@ namespace nHydrate.Generator.PostgresInstaller
             //Rename all indexes for this table's fields
             foreach (var column in newTable.GetColumns())
             {
-                var oldColumn = oldTable.GetColumns().FirstOrDefault(x => x.Key == column.Key);
+                var oldColumn = oldTable.GetColumns().FirstOrDefault(x => x.Is(column));
                 if (oldColumn != null)
                 {
                     var oldIndexName = CreateIndexName(oldTable, oldColumn);
@@ -1347,7 +1347,7 @@ namespace nHydrate.Generator.PostgresInstaller
             //Rename all indexes for this table
             foreach (var index in newTable.TableIndexList)
             {
-                var oldIndex = oldTable.TableIndexList.FirstOrDefault(x => x.Key == index.Key);
+                var oldIndex = oldTable.TableIndexList.FirstOrDefault(x => x.Is(index));
                 if (oldIndex != null)
                 {
                     var oldIndexName = GetIndexName(oldTable, oldIndex);
@@ -1578,7 +1578,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 //rename all indexes for this table (later we can select just for this column)
                 foreach (var index in newTable.TableIndexList)
                 {
-                    var oldIndex = oldTable.TableIndexList.FirstOrDefault(x => x.Key == index.Key);
+                    var oldIndex = oldTable.TableIndexList.FirstOrDefault(x => x.Is(index));
                     if (oldIndex != null)
                     {
                         var oldIndexName = GetIndexName(oldTable, oldIndex);
