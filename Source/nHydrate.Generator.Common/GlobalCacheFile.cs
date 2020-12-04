@@ -10,20 +10,10 @@ namespace nHydrate.Generator.Common
     [Serializable]
     public class GlobalCacheFile
     {
-        #region Class Members
-
-        #endregion
-
-        #region Constructor
-
         public GlobalCacheFile()
         {
             this.Load();
         }
-
-        #endregion
-
-        #region Properties
 
         public List<string> ExcludeList { get; } = new List<string>();
 
@@ -39,13 +29,9 @@ namespace nHydrate.Generator.Common
                     fileName = System.IO.Path.Combine(fi.DirectoryName, "ProjectExcludes.xml");
                     return fileName;
                 }
-                else return "";
+                else return string.Empty;
             }
         }
-
-        #endregion
-
-        #region Methods
 
         public void Save()
         {
@@ -53,10 +39,10 @@ namespace nHydrate.Generator.Common
             document.LoadXml("<configuration></configuration>");
 
             //Save ExcludeList
-            var exludeListNode = XmlHelper.AddElement(document.DocumentElement, "excludeList");
+            var exludeListNode = XmlHelper.AddElement(document.DocumentElement, "excludeList") as XmlElement;
             foreach (var key in this.ExcludeList)
             {
-                XmlHelper.AddElement((XmlElement)exludeListNode, "item", key);
+                XmlHelper.AddElement(exludeListNode, "item", key);
             }
 
             document.Save(this.FileName);
@@ -79,8 +65,6 @@ namespace nHydrate.Generator.Common
                 }
             }
         }
-
-        #endregion
 
     }
 }

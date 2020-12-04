@@ -1,4 +1,5 @@
 using nHydrate.Core.SQLGeneration;
+using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.Models;
 using nHydrate.Generator.Common.Util;
 using nHydrate.Generator.SQLInstaller.ProjectItemGenerators;
@@ -60,7 +61,7 @@ namespace nHydrate.Generator.SQLInstaller
                     //If old exists new does NOT, so delete index
                     foreach (var oldIndex in oldT.TableIndexList)
                     {
-                        var newIndex = newT.TableIndexList.FirstOrDefault(x => x.Key == oldIndex.Key);
+                        var newIndex = newT.TableIndexList.FirstOrDefault(x => x.CorePropertiesHashNoNames == oldIndex.CorePropertiesHashNoNames);
                         if (newIndex == null)
                         {
                             sb.AppendLine(SQLEmit.GetSQLDropIndex(newT, oldIndex));
@@ -71,7 +72,7 @@ namespace nHydrate.Generator.SQLInstaller
                     //Both exist, so if different, drop and re-create
                     foreach (var newIndex in newT.TableIndexList)
                     {
-                        var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Key == newIndex.Key);
+                        var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.CorePropertiesHashNoNames == newIndex.CorePropertiesHashNoNames);
                         if (oldIndex != null && oldIndex.CorePropertiesHashNoNames != newIndex.CorePropertiesHashNoNames)
                         {
                             sb.AppendLine(SQLEmit.GetSQLDropIndex(newT, oldIndex));
@@ -152,9 +153,8 @@ namespace nHydrate.Generator.SQLInstaller
 
                     #region Delete Columns
 
-                    foreach (Reference oldRef in oldT.Columns)
+                    foreach (var oldC in oldT.GetColumns())
                     {
-                        var oldC = oldRef.Object as Column;
                         var newC = Globals.GetColumnByKey(newT.Columns, oldC.Key);
                         if (newC == null)
                         {
@@ -303,7 +303,7 @@ namespace nHydrate.Generator.SQLInstaller
                             sb.AppendLine();
 
                             //Before drop PK remove all FK to the table
-                            foreach (var r1 in oldT.GetRelations().ToList())
+                            foreach (var r1 in oldT.GetRelations())
                             {
                                 sb.Append(SQLEmit.GetSqlRemoveFK(r1));
                                 sb.AppendLine("GO");
@@ -340,7 +340,7 @@ namespace nHydrate.Generator.SQLInstaller
 
                     #region Drop Foreign Keys
 
-                    foreach (var r1 in oldT.GetRelations().ToList())
+                    foreach (var r1 in oldT.GetRelations())
                     {
                         var r2 = newT.Relationships.FirstOrDefault(x => x.Key == r1.Key);
                         if (r2 == null)
@@ -417,9 +417,9 @@ namespace nHydrate.Generator.SQLInstaller
                 {
                     #region Add Foreign Keys
 
-                    foreach (var r1 in newT.GetRelations().ToList())
+                    foreach (var r1 in newT.GetRelations())
                     {
-                        var r2 = oldT.GetRelations().ToList().FirstOrDefault(x => x.Key == r1.Key);
+                        var r2 = oldT.GetRelations().FirstOrDefault(x => x.Key == r1.Key);
                         if (r2 == null)
                         {
                             //There is no OLD relation so it is new so add it
@@ -485,7 +485,7 @@ namespace nHydrate.Generator.SQLInstaller
                     //If old exists and does old NOT, so create index
                     foreach (var newIndex in newT.TableIndexList)
                     {
-                        var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Key == newIndex.Key);
+                        var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.CorePropertiesHashNoNames == newIndex.CorePropertiesHashNoNames);
                         if (oldIndex == null)
                         {
                             sb.AppendLine(SQLEmit.GetSQLCreateIndex(newT, newIndex, false));

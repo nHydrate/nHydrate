@@ -1,6 +1,6 @@
 #pragma warning disable 0168
+using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.Models;
-using System;
 using System.Linq;
 using System.Text;
 

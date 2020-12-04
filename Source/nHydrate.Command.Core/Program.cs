@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Configuration;
 using nHydrate.Generator.Common;
+using nHydrate.Generator.Common.Util;
+using nHydrate.ModelManagement;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace nHydrate.Command.Core
 {
@@ -13,9 +14,10 @@ namespace nHydrate.Command.Core
         private const string ModelKey = "model";
         private const string OutputKey = "output";
         private const string GeneratorsKey = "generators";
+        private static GenStats _stats = new GenStats();
 
         /*
-            /model=C:\code\nHydrateTestAug\ConsoleApp1\Model1.nhydrate /output=C:\code\nHydrateTestAug /generators=nHydrate.Generator.EFCodeFirstNetCore.EFCodeFirstNetCoreProjectGenerator,nHydrate.Generator.PostgresInstaller.PostgresDatabaseProjectGenerator,nHydrate.Generator.SQLInstaller.Core.DatabaseProjectGenerator
+            --model=C:\code\nHydrateTestAug\ConsoleApp1\Model1.nhydrate --output=C:\code\nHydrateTestAug --generators=nHydrate.Generator.EFCodeFirstNetCore.EFCodeFirstNetCoreProjectGenerator,nHydrate.Generator.PostgresInstaller.PostgresDatabaseProjectGenerator,nHydrate.Generator.SQLInstaller.Core.DatabaseProjectGenerator
         */
 
         static int Main(string[] args)
@@ -31,7 +33,7 @@ namespace nHydrate.Command.Core
             var generators = new string[0];
 
             //AppSettings
-            var allValues = Configuration.GetSection("nHydrate").GetChildren().Select(x => new { x.Key, x.Value }).ToDictionary(x => x.Key.ToString(), x => x.Value?.ToString());
+            var allValues = Configuration.GetChildren().Select(x => new { x.Key, x.Value }).ToDictionary(x => x.Key.ToString(), x => x.Value?.ToString());
             if (allValues.ContainsKey(ModelKey))
                 modelFile = allValues[ModelKey];
             if (allValues.ContainsKey(OutputKey))
@@ -39,29 +41,84 @@ namespace nHydrate.Command.Core
             if (allValues.ContainsKey(GeneratorsKey))
                 generators = allValues[GeneratorsKey].Split(",", StringSplitOptions.RemoveEmptyEntries);
 
-            //Command line (overrides above)
-            allValues = Configuration.GetChildren().Select(x => new { x.Key, x.Value }).ToDictionary(x => x.Key.ToString(), x => x.Value?.ToString());
-            if (allValues.ContainsKey(ModelKey))
-                modelFile = allValues[ModelKey];
-            if (allValues.ContainsKey(OutputKey))
-                output = allValues[OutputKey];
-            if (allValues.ContainsKey(GeneratorsKey))
-                generators = allValues[GeneratorsKey].Split(",", StringSplitOptions.RemoveEmptyEntries);
-
-            if (string.IsNullOrEmpty(modelFile))
+            if (modelFile.IsEmpty())
                 return ShowError("The model is required.");
-            if (string.IsNullOrEmpty(output))
+            if (output.IsEmpty())
                 return ShowError("The output folder is required.");
             if (!generators.Any())
                 return ShowError("The generators are required.");
 
+            Console.WriteLine($"modelFile='{modelFile}'");
+            Console.WriteLine($"output='{output}'");
+            Console.WriteLine($"generators='{allValues[GeneratorsKey]}'");
+
+            //NOTE: Yaml Model files must end with ".nhydrate.yaml"
+            //Old Xml file ends with ".nhydrate"
+
+            //Specified a folder so look for the file
+            string actualFile = null;
+            if (Directory.Exists(modelFile))
+            {
+                var folderName = modelFile;
+
+                //Look for new Yaml file
+                var f = Directory.GetFiles(folderName, "*" + FileManagement.ModelExtension).FirstOrDefault();
+                if (File.Exists(f)) actualFile = f;
+
+                //Look for old xml file
+                if (actualFile.IsEmpty())
+                {
+                    f = Directory.GetFiles(folderName, "*" + FileManagement.OldModelExtension).FirstOrDefault();
+                    if (File.Exists(f)) actualFile = f;
+                }
+
+                if (actualFile.IsEmpty())
+                {
+                    //Back 1 folder
+                    folderName = (new DirectoryInfo(folderName)).Parent.FullName;
+
+                    f = Directory.GetFiles(folderName, "*" + FileManagement.ModelExtension).FirstOrDefault();
+                    if (File.Exists(f)) actualFile = f;
+
+                    //Look for old xml file
+                    if (actualFile.IsEmpty())
+                    {
+                        f = Directory.GetFiles(folderName, "*" + FileManagement.OldModelExtension).FirstOrDefault();
+                        if (File.Exists(f)) actualFile = f;
+                    }
+                }
+            }
+            else
+            {
+                //Is this the Yaml model?
+                if (modelFile.EndsWith(FileManagement.ModelExtension))
+                    actualFile = modelFile;
+
+                //Is this the Xml model?
+                if (modelFile.EndsWith(FileManagement.OldModelExtension))
+                    actualFile = modelFile;
+
+                //Look one folder back for Yaml
+                if (actualFile.IsEmpty())
+                {
+                    var folderName = (new FileInfo(modelFile)).Directory.Parent.FullName;
+                    var f = Directory.GetFiles(folderName, "*" + FileManagement.ModelExtension).FirstOrDefault();
+                    if (File.Exists(f)) actualFile = f;
+                }
+            }
+
+            if (actualFile.IsEmpty()) return ShowError("Model file not found.");
+            modelFile = actualFile;
+
             var timer = System.Diagnostics.Stopwatch.StartNew();
+            var formatModel = (allValues.ContainsKey("formatmodel") && allValues["formatmodel"] == "true");
 
             nHydrate.Generator.Common.Models.ModelRoot model = null;
             try
             {
+                Console.WriteLine();
                 Console.WriteLine("Loading model...");
-                model = ModelHelper.CreatePOCOModel(modelFile);
+                model = ModelHelper.CreatePOCOModel(modelFile, formatModel);
             }
             catch (ModelException ex)
             {
@@ -75,10 +132,11 @@ namespace nHydrate.Command.Core
             }
 
             //Generate
-            if (model != null)
+            if (model != null && !formatModel)
             {
                 Console.WriteLine("Loading generators...");
                 var genHelper = new nHydrate.Command.Core.GeneratorHelper(output);
+                genHelper.ProjectItemGenerated += new nHydrate.Generator.Common.GeneratorFramework.ProjectItemGeneratedEventHandler(g_ProjectItemGenerated);
 
                 var genList = new List<nHydrateGeneratorProject>();
                 var genProject = new nHydrateGeneratorProject();
@@ -86,9 +144,9 @@ namespace nHydrate.Command.Core
                 model.ResetKey(model.Key);
                 model.GeneratorProject = genProject;
                 genProject.Model = model;
-                genProject.FileName = modelFile + ".generating";
+                genProject.FileName = $"{modelFile}.generating";
                 var document = new System.Xml.XmlDocument();
-                document.LoadXml("<modelRoot guid=\"" + model.Id + "\" type=\"nHydrate.Generator.nHydrateGeneratorProject\" assembly=\"nHydrate.Generator.dll\"><ModelRoot></ModelRoot></modelRoot>");
+                document.LoadXml($"<modelRoot guid=\"{model.Key}\" type=\"nHydrate.Generator.nHydrateGeneratorProject\" assembly=\"nHydrate.Generator.dll\"><ModelRoot></ModelRoot></modelRoot>");
                 ((nHydrate.Generator.Common.GeneratorFramework.IXMLable)model).XmlAppend(document.DocumentElement.ChildNodes[0]);
                 System.IO.File.WriteAllText(genProject.FileName, document.ToIndentedString());
 
@@ -115,8 +173,17 @@ namespace nHydrate.Command.Core
 
                 if (File.Exists(genProject.FileName))
                     File.Delete(genProject.FileName);
+
+                //Write stats
+                Console.WriteLine();
+                Console.WriteLine("Generation Summary");
+                Console.WriteLine($"Total Files: {_stats.ProcessedFileCount}");
+                Console.WriteLine($"Files Success: {_stats.FilesSuccess}");
+                Console.WriteLine($"Files Skipped: {_stats.FilesSkipped}");
+                Console.WriteLine($"Files Failed: {_stats.FilesFailed}");
+                Console.WriteLine();
             }
-            else
+            else if (!formatModel)
             {
                 Console.WriteLine("The model could not be loaded.");
             }
@@ -132,24 +199,27 @@ namespace nHydrate.Command.Core
             return 1;
         }
 
-        private static Dictionary<string, string> GetCommandLineParameters()
+        private static void g_ProjectItemGenerated(object sender, nHydrate.Generator.Common.EventArgs.ProjectItemGeneratedEventArgs e)
         {
-            var retVal = new Dictionary<string, string>();
-            var args = Environment.GetCommandLineArgs();
-            args = args.Skip(1).ToArray();
+            _stats.ProcessedFileCount++;
+            if (e.FileState == FileStateConstants.Skipped)
+                _stats.FilesSkipped++;
+            if (e.FileState == FileStateConstants.Success)
+                _stats.FilesSuccess++;
+            if (e.FileState == FileStateConstants.Failed)
+                _stats.FilesFailed++;
 
-            var loopcount = 0;
-            foreach (var arg in args)
-            {
-                var regEx = new Regex(@"\s?[/](\w+)(:(.*))?");
-                var regExMatch = regEx.Match(arg);
-                if (regExMatch.Success)
-                    retVal.Add(regExMatch.Groups[1].Value.ToLower(), regExMatch.Groups[3].Value);
-                loopcount++;
-            }
-
-            return retVal;
+            _stats.GeneratedFileList.Add(e);
+            Console.WriteLine($"Generated File: {e.FullName} ({e.FileState})");
         }
 
+        private class GenStats
+        {
+            public int ProcessedFileCount { get; set; }
+            public int FilesSkipped { get; set; }
+            public int FilesSuccess { get; set; }
+            public int FilesFailed { get; set; }
+            public List<nHydrate.Generator.Common.EventArgs.ProjectItemGeneratedEventArgs> GeneratedFileList { get; private set; } = new List<Generator.Common.EventArgs.ProjectItemGeneratedEventArgs>();
+        }
     }
 }

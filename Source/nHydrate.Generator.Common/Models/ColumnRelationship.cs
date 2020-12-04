@@ -38,45 +38,21 @@ namespace nHydrate.Generator.Common.Models
 
         #region IXMLable Members
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
-            try
-            {
-                var oDoc = node.OwnerDocument;
-
-                var parentColumnRefNode = oDoc.CreateElement("pt");
-                this.ParentColumnRef.XmlAppend(parentColumnRefNode);
-                node.AppendChild(parentColumnRefNode);
-
-                var childColumnRefNode = oDoc.CreateElement("ct");
-                this.ChildColumnRef.XmlAppend(childColumnRefNode);
-                node.AppendChild(childColumnRefNode);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            node.AppendChild(this.ParentColumnRef.XmlAppend(node.OwnerDocument.CreateElement("pt")));
+            node.AppendChild(this.ChildColumnRef.XmlAppend(node.OwnerDocument.CreateElement("ct")));
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            try
-            {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                var parentColumnRefNode = node.SelectSingleNode("parentColumnRef"); //deprecated, use "pt"
-                if (parentColumnRefNode == null) parentColumnRefNode = node.SelectSingleNode("pt");
-                this.ParentColumnRef = new Reference(this.Root);
-                this.ParentColumnRef.XmlLoad(parentColumnRefNode);
-
-                var childColumnRefNode = node.SelectSingleNode("childColumnRef"); //deprecated, use "ct"
-                if (childColumnRefNode == null) childColumnRefNode = node.SelectSingleNode("ct");
-                this.ChildColumnRef = new Reference(this.Root);
-                this.ChildColumnRef.XmlLoad(childColumnRefNode);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            this.Key = Guid.Empty.ToString(); // node.GetAttributeValue("key", string.Empty);
+            this.ParentColumnRef = new Reference(this.Root);
+            this.ParentColumnRef.XmlLoad(node.SelectSingleNode("pt"));
+            this.ChildColumnRef = new Reference(this.Root);
+            this.ChildColumnRef.XmlLoad(node.SelectSingleNode("ct"));
+            return node;
         }
 
         #endregion

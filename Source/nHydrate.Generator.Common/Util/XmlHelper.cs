@@ -118,7 +118,7 @@ namespace nHydrate.Generator.Common.Util
 
         #region GetAttributeValue
 
-        public static string GetAttributeValue(XmlNode element, string attributeName, string defaultValue)
+        public static string GetAttributeValue(this XmlNode element, string attributeName, string defaultValue)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        public static double GetAttributeValue(XmlNode element, string attributeName, double defaultValue)
+        public static double GetAttributeValue(this XmlNode element, string attributeName, double defaultValue)
         {
             try
             {
@@ -152,7 +152,7 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        public static Guid GetAttributeValue(XmlNode element, string attributeName, Guid defaultValue)
+        public static Guid GetAttributeValue(this XmlNode element, string attributeName, Guid defaultValue)
         {
             try
             {
@@ -172,7 +172,7 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        public static int GetAttributeValue(XmlNode element, string attributeName, int defaultValue)
+        public static int GetAttributeValue(this XmlNode element, string attributeName, int defaultValue)
         {
             try
             {
@@ -192,7 +192,7 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
-        public static bool GetAttributeValue(XmlNode element, string attributeName, bool defaultValue)
+        public static bool GetAttributeValue(this XmlNode element, string attributeName, bool defaultValue)
         {
             try
             {
@@ -250,7 +250,7 @@ namespace nHydrate.Generator.Common.Util
         public static XmlNode AddElement(this XmlElement element, string name, string value)
         {
             var elemNew = element.OwnerDocument.CreateElement(name);
-            if (!string.IsNullOrEmpty(value))
+            if (!value.IsEmpty())
                 elemNew.InnerText = value;
             return element.AppendChild(elemNew);
         }
@@ -347,11 +347,8 @@ namespace nHydrate.Generator.Common.Util
 
         public static XmlAttribute AddAttribute(this XmlNode element, string name, bool value)
         {
-            XmlDocument docOwner = null;
-            XmlAttribute attrNew = null;
-
-            docOwner = element.OwnerDocument;
-            attrNew = docOwner.CreateAttribute(name);
+            var docOwner = element.OwnerDocument;
+            var attrNew = docOwner.CreateAttribute(name);
             if (value) attrNew.InnerText = "1";
             else attrNew.InnerText = "0";
             element.Attributes.Append(attrNew);
@@ -369,13 +366,10 @@ namespace nHydrate.Generator.Common.Util
 
         public static void RemoveElement(XmlDocument document, string XPath)
         {
-            XmlNode parentNode = null;
-            XmlNodeList nodes = null;
-
-            nodes = document.SelectNodes(XPath);
+            var nodes = document.SelectNodes(XPath);
             foreach (XmlElement node in nodes)
             {
-                parentNode = node.ParentNode;
+                var parentNode = node.ParentNode;
                 node.RemoveAll();
                 parentNode.RemoveChild(node);
             }

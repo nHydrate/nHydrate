@@ -1,6 +1,5 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.Util;
-using System;
 using System.Xml;
 
 namespace nHydrate.Generator.Common.Models
@@ -29,6 +28,8 @@ namespace nHydrate.Generator.Common.Models
 
         public Reference ColumnRef { get; set; }
 
+        public Column Column => this.ColumnRef?.Object as Column;
+
         public string Value { get; set; }
 
         #endregion
@@ -37,14 +38,12 @@ namespace nHydrate.Generator.Common.Models
 
         public string GetSQLData()
         {
-            var column = this.ColumnRef.Object as Column;
             var v = this.Value + string.Empty;
-
-            if (column.AllowNull && v == "(NULL)")
+            if (this.Column.AllowNull && v == "(NULL)")
                 return null;
-            else if (column.DataType.IsTextType() ||
-                     column.DataType.IsDateType() ||
-                     column.DataType == System.Data.SqlDbType.UniqueIdentifier
+            else if (this.Column.DataType.IsTextType() ||
+                     this.Column.DataType.IsDateType() ||
+                     this.Column.DataType == System.Data.SqlDbType.UniqueIdentifier
                 )
                 return "'" + v.Replace("'", "''") + "'";
             else
@@ -55,49 +54,35 @@ namespace nHydrate.Generator.Common.Models
 
         #region IXMLable Members
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
-            try
+            var oDoc = node.OwnerDocument;
+            if (ColumnRef != null)
             {
-                var oDoc = node.OwnerDocument;
-
-                if (ColumnRef != null)
-                {
-                    var columnRefNode = oDoc.CreateElement("f");
-                    if (this.ColumnRef == null)
-                        this.ColumnRef = new Reference(this.Root);
-                    this.ColumnRef.XmlAppend(columnRefNode);
-                    node.AppendChild(columnRefNode);
-                }
-
-                node.AddAttribute("value", this.Value);
+                var columnRefNode = oDoc.CreateElement("f");
+                if (this.ColumnRef == null)
+                    this.ColumnRef = new Reference(this.Root);
+                this.ColumnRef.XmlAppend(columnRefNode);
+                node.AppendChild(columnRefNode);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            node.AddAttribute("value", this.Value);
+
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            try
+            this.Key = node.GetAttributeValue("key", string.Empty);
+            var columnRefNode = node.SelectSingleNode("f");
+            if (columnRefNode != null)
             {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                var columnRefNode = node.SelectSingleNode("columnRef"); //deprecated, use "f"
-                if (columnRefNode == null) columnRefNode = node.SelectSingleNode("f");
-                if (columnRefNode != null)
-                {
-                    if (this.ColumnRef == null)
-                        this.ColumnRef = new Reference(this.Root);
-                    this.ColumnRef.XmlLoad(columnRefNode);
-                }
+                if (this.ColumnRef == null)
+                    this.ColumnRef = new Reference(this.Root);
+                this.ColumnRef.XmlLoad(columnRefNode);
+            }
 
-                this.Value = XmlHelper.GetAttributeValue(node, "value", string.Empty);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            this.Value = node.GetAttributeValue("value", string.Empty);
+            return node;
         }
 
         #endregion

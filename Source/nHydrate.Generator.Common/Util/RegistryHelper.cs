@@ -8,7 +8,7 @@ namespace nHydrate.Generator.Common.Util
 
         public static string GetLocalMachineRegistryValue(string path, string item)
         {
-#if NETSTANDARD
+#if NET5_0
             return string.Empty;
 #else
             Microsoft.Win32.RegistryKey key = null;

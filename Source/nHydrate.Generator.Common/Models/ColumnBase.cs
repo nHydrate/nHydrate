@@ -94,7 +94,7 @@ namespace nHydrate.Generator.Common.Models
 
         public virtual string CodeFacade { get; set; } = _def_codefacade;
 
-        public virtual string GetCodeFacade() => string.IsNullOrEmpty(this.CodeFacade) ? this.Name : this.CodeFacade;
+        public virtual string GetCodeFacade() => this.CodeFacade.IfEmptyDefault(this.Name);
 
         #endregion
 
@@ -135,13 +135,7 @@ namespace nHydrate.Generator.Common.Models
             }
         }
 
-        public virtual string GetLengthString()
-        {
-            if (this.DataType.SupportsMax() && this.Length == 0)
-                return "max";
-            else
-                return this.Length.ToString();
-        }
+        public virtual string GetLengthString() => (this.DataType.SupportsMax() && this.Length == 0) ? "max" : this.Length.ToString();
 
         /// <summary>
         /// This is the length used for annotations and meta data for class descriptions
@@ -157,23 +151,15 @@ namespace nHydrate.Generator.Common.Models
                 case System.Data.SqlDbType.Image:
                     return int.MaxValue;
             }
-
-            if (this.DataType.SupportsMax() && this.Length == 0)
-                return int.MaxValue;
-            else
-                return this.Length;
+            return (this.DataType.SupportsMax() && this.Length == 0) ? int.MaxValue : this.Length;
         }
 
-        public override string ToString()
-        {
-            var retval = this.Name;
-            return retval;
-        }
+        public override string ToString() => this.Name;
 
         #endregion
 
-        public abstract override void XmlAppend(XmlNode node);
-        public abstract override void XmlLoad(XmlNode node);
+        public abstract override XmlNode XmlAppend(XmlNode node);
+        public abstract override XmlNode XmlLoad(XmlNode node);
 
         #region Helpers
 
@@ -221,11 +207,11 @@ namespace nHydrate.Generator.Common.Models
                      this.DataType == System.Data.SqlDbType.VarChar)
             {
                 if (this.DataType == System.Data.SqlDbType.Decimal)
-                    retval += " (" + this.Length + ", " + this.Scale + ")";
+                    retval += $" ({this.Length}, {this.Scale})";
                 else if (this.DataType == System.Data.SqlDbType.DateTime2)
-                    retval += " (" + this.Length + ")";
+                    retval += $" ({this.Length})";
                 else
-                    retval += " (" + this.GetLengthString() + ")";
+                    retval += $" ({this.GetLengthString()})";
             }
             return retval;
         }
@@ -245,12 +231,9 @@ namespace nHydrate.Generator.Common.Models
                 this.DataType == System.Data.SqlDbType.VarBinary ||
                 this.DataType == System.Data.SqlDbType.VarChar)
             {
-                if (this.DataType == System.Data.SqlDbType.Decimal)
-                    return this.Length + $" (scale:{this.Scale})";
-                else if (this.DataType == System.Data.SqlDbType.DateTime2)
-                    return this.Length.ToString();
-                else
-                    return this.GetLengthString();
+                if (this.DataType == System.Data.SqlDbType.Decimal) return this.Length + $" (scale:{this.Scale})";
+                else if (this.DataType == System.Data.SqlDbType.DateTime2) return this.Length.ToString();
+                else return this.GetLengthString();
             }
             return string.Empty;
         }
@@ -261,7 +244,7 @@ namespace nHydrate.Generator.Common.Models
 
         public virtual string GetCodeType(bool allowNullable, bool forceNull)
         {
-            var retval = string.Empty;
+            string retval;
             if (StringHelper.Match(this.DataType.ToString(), "bigint", true))
                 retval = "long";
             else if (StringHelper.Match(this.DataType.ToString(), "binary", true))
@@ -439,11 +422,11 @@ namespace nHydrate.Generator.Common.Models
                 case System.Data.SqlDbType.UniqueIdentifier:
                     return 16;
 
-                case System.Data.SqlDbType.Image:
-                case System.Data.SqlDbType.Text:
-                case System.Data.SqlDbType.NText:
-                case System.Data.SqlDbType.Xml:
-                    return 1;
+                //case System.Data.SqlDbType.Image:
+                //case System.Data.SqlDbType.Text:
+                //case System.Data.SqlDbType.NText:
+                //case System.Data.SqlDbType.Xml:
+                //    return 1;
 
                 default:
                     return -1;

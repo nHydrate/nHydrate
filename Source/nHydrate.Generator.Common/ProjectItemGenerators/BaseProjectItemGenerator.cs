@@ -1,8 +1,8 @@
 #pragma warning disable 0168
-using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common.Util;
 
 namespace nHydrate.Generator.Common.ProjectItemGenerators
 {
@@ -56,13 +56,7 @@ namespace nHydrate.Generator.Common.ProjectItemGenerators
 
         public virtual string DefaultNamespace => nHydrateGeneratorProject.DomainProjectName(_model);
 
-        public virtual string GetLocalNamespace()
-        {
-            if (string.IsNullOrEmpty(this.LocalNamespaceExtension))
-                return this.DefaultNamespace;
-            else
-                return this.DefaultNamespace + "." + this.LocalNamespaceExtension;
-        }
+        public virtual string GetLocalNamespace() => this.LocalNamespaceExtension.IsEmpty() ? this.DefaultNamespace : $"{this.DefaultNamespace}.{this.LocalNamespaceExtension}";
 
         public virtual string ProjectName => this.GetLocalNamespace();
 

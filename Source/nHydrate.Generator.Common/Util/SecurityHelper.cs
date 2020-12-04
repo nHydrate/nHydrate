@@ -1,6 +1,7 @@
 #pragma warning disable 0168
-using System;
 
+
+using System;
 
 namespace nHydrate.Generator.Common.Util
 {
@@ -12,7 +13,7 @@ namespace nHydrate.Generator.Common.Util
         /// <returns>The unique machine key</returns>
         public static string GetMachineID()
         {
-#if NETSTANDARD
+#if NET5_0
             return "";
 #else
             try

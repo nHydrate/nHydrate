@@ -30,5 +30,6 @@ namespace nHydrate.Core.SQLGeneration
             return string.Join(", ", keyList);
         }
 
+        public static string GetDbClustered(this TableIndex obj) => obj.Clustered ? "CLUSTERED" : "NONCLUSTERED";
     }
 }

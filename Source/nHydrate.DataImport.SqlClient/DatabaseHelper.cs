@@ -85,11 +85,13 @@ namespace nHydrate.DataImport.SqlClient
             var retVal = new DataSet();
             using (var connection = new SqlConnection(connectionString))
             {
-                var command = new SqlCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sql;
-                command.Connection = connection;
-                command.CommandTimeout = 300;
+                var command = new SqlCommand
+                {
+                    CommandType = CommandType.Text,
+                    CommandText = sql,
+                    Connection = connection,
+                    CommandTimeout = 300
+                };
                 var da = new SqlDataAdapter();
                 da.SelectCommand = (SqlCommand)command;
 
@@ -121,12 +123,9 @@ namespace nHydrate.DataImport.SqlClient
 
         internal static IDbConnection GetConnection(string connectionString)
         {
-            //if (sqlConnection == null)
-            //{
             SqlConnection.ClearAllPools(); //If we do NOT do this, sometimes we get pool errors
             var sqlConnection = new SqlConnection();
             sqlConnection.ConnectionString = connectionString;
-            //}
             return sqlConnection;
         }
 
@@ -158,12 +157,7 @@ namespace nHydrate.DataImport.SqlClient
             }
         }
 
-        internal static IDbCommand GetCommand()
-        {
-            var cmd = new SqlCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
-            return cmd;
-        }
+        internal static IDbCommand GetCommand() => new SqlCommand { CommandType = CommandType.StoredProcedure };
 
         internal static void Fill(IDbDataAdapter da, DataTable dt)
         {

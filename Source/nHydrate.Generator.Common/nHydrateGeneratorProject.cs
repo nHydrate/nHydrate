@@ -1,5 +1,6 @@
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common.Util;
 using System.Xml;
 
 namespace nHydrate.Generator.Common
@@ -14,35 +15,31 @@ namespace nHydrate.Generator.Common
             this.Model = root;
         }
 
-        public void XmlAppend(XmlNode node)
+        public XmlNode XmlAppend(XmlNode node)
         {
             var oDoc = node.OwnerDocument;
             var ModelRootNode = oDoc.CreateElement("ModelRoot");
             this.Model.XmlAppend(ModelRootNode);
             node.AppendChild(ModelRootNode);
+            return node;
         }
 
-        public void XmlLoad(XmlNode node)
+        public XmlNode XmlLoad(XmlNode node)
         {
             var ModelRootNode = node.SelectSingleNode("ModelRoot");
             this.Model.XmlLoad(ModelRootNode);
             ((ModelRoot)this.Model).CleanUp();
+            return node;
         }
 
         public static string DomainProjectName(ModelRoot model)
         {
-            var retval = model.CompanyName + "." + model.ProjectName;
-
-            if (string.IsNullOrEmpty(model.DefaultNamespace))
-                return retval;
-            else
-                return model.DefaultNamespace;
+            var retval = $"{model.CompanyName}.{model.ProjectName}";
+            return model.DefaultNamespace.IsEmpty() ? retval : model.DefaultNamespace;
         }
 
         public IModelObject Model { get; set; }
 
         public string FileName { get; set; } = string.Empty;
-
     }
-
 }

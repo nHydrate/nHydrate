@@ -1,21 +1,25 @@
+using nHydrate.Generator.Common;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace nHydrate.ModelManagement
 {
     public static class FileManagement
     {
-        private const string FOLDER_ET = "_Entities";
-        private const string FOLDER_VW = "_Views";
+        private const string FOLDER_OLD_ET = "_entities";
+        private const string FOLDER_OLD_VW = "_views";
+        private const string FOLDER_ET = "entities";
+        private const string FOLDER_VW = "views";
+        public const string ModelExtension = ".nhydrate.yaml";
+        public const string OldModelExtension = ".nhydrate";
 
         public static DiskModel Load(string rootFolder, string modelName, out bool wasLoaded)
         {
             wasLoaded = false;
+            if (modelName.EndsWith(".yaml")) return null;
             var modelFile = Path.Combine(rootFolder, modelName);
             var fi = new FileInfo(modelFile);
             var showError = (fi.Length > 10); //New file is small so show no error if creating new
@@ -55,34 +59,14 @@ namespace nHydrate.ModelManagement
 
             #region Clean up
             //Ensure all arrays are not null
-            foreach (var obj in results.Entities)
-            {
-                if (obj.fieldset == null) obj.fieldset = new Entity.configurationField[0];
-            }
-            foreach (var obj in results.Indexes)
-            {
-                if (obj.index == null) obj.index = new Index.configurationIndex[0];
-                foreach (var obj2 in obj.index)
-                {
-                    if (obj2.indexcolumnset == null) obj2.indexcolumnset = new Index.configurationIndexColumn[0];
-                }
-            }
-            foreach (var obj in results.Relations)
-            {
-                if (obj.relation == null) obj.relation = new Relation.configurationRelation[0];
-                foreach (var obj2 in obj.relation)
-                {
-                    if (obj2.relationfieldset == null) obj2.relationfieldset = new Relation.configurationRelationField[0];
-                }
-            }
-            foreach (var obj in results.StaticData)
-            {
-                if (obj.data == null) obj.data = new StaticData.configurationData[0];
-            }
-            foreach (var obj in results.Views)
-            {
-                if (obj.fieldset == null) obj.fieldset = new View.configurationField[0];
-            }
+            results.Entities.ForEach(x => x.fieldset = x.fieldset.OrDefault());
+            results.Entities.Where(x => x.fieldset == null).ToList().ForEach(x => x.fieldset = x.fieldset.OrDefault());
+            results.Indexes.Where(x => x.index == null).ToList().ForEach(x => x.index = x.index.OrDefault());
+            results.Indexes.SelectMany(x => x.index).Where(x => x.indexcolumnset == null).ToList().ForEach(x => x.indexcolumnset = x.indexcolumnset.OrDefault());
+            results.Relations.Where(x => x.relation == null).ToList().ForEach(x => x.relation = x.relation.OrDefault());
+            results.Relations.SelectMany(x => x.relation).Where(x => x.relationfieldset == null).ToList().ForEach(x => x.relationfieldset = x.relationfieldset.OrDefault());
+            results.StaticData.Where(x => x.data == null).ToList().ForEach(x => x.data = x.data.OrDefault());
+            results.Views.Where(x => x.fieldset == null).ToList().ForEach(x => x.fieldset = x.fieldset.OrDefault());
             #endregion
 
             return results;
@@ -90,8 +74,12 @@ namespace nHydrate.ModelManagement
 
         private static void LoadEntities(string rootFolder, DiskModel results)
         {
-            var folder = Path.Combine(rootFolder, FOLDER_ET);
-            if (!Directory.Exists(folder)) return;
+            var folder = Path.Combine(rootFolder, FOLDER_OLD_ET);
+            if (!Directory.Exists(folder))
+            {
+                folder = Path.Combine(rootFolder, FOLDER_ET);
+                if (!Directory.Exists(folder)) return;
+            }
 
             //Load Entities
             foreach (var f in Directory.GetFiles(folder, "*.configuration.xml"))
@@ -103,6 +91,22 @@ namespace nHydrate.ModelManagement
             foreach (var f in Directory.GetFiles(folder, "*.indexes.xml"))
             {
                 results.Indexes.Add(GetObject<nHydrate.ModelManagement.Index.configuration>(f));
+            }
+
+            //Clean up indexes
+            var indexIdList = new List<string>();
+            foreach (var i1 in results.Indexes)
+            {
+                var newList = new List<Index.configurationIndex>();
+                foreach (var i2 in i1.index)
+                {
+                    if (!indexIdList.Contains(i2.id))
+                    {
+                        indexIdList.Add(i2.id);
+                        newList.Add(i2);
+                    }
+                }
+                i1.index = newList.ToArray();
             }
 
             //Load Relations
@@ -120,7 +124,12 @@ namespace nHydrate.ModelManagement
 
         private static void LoadViews(string rootFolder, DiskModel results)
         {
-            var folder = Path.Combine(rootFolder, FOLDER_VW);
+            var folder = Path.Combine(rootFolder, FOLDER_OLD_VW);
+            if (!Directory.Exists(folder))
+            {
+                folder = Path.Combine(rootFolder, FOLDER_VW);
+                if (!Directory.Exists(folder)) return;
+            }
 
             //Load Views
             if (Directory.Exists(folder))
@@ -148,11 +157,17 @@ namespace nHydrate.ModelManagement
             var fi = new FileInfo(modelFile);
             var showError = (fi.Length > 10); //New file is small so show no error if creating new
 
-            var folderName = modelName.Replace(".nhydrate", ".model");
-            var modelFolder = GetModelFolder(rootFolder, folderName);
+            var modelFolder = GetModelFolder(rootFolder, modelName.Replace(".nhydrate", ".model"));
+            if (modelName.EndsWith(".yaml"))
+                modelFolder = rootFolder;
 
-            //If the model folder does NOT exist
-            if (!Directory.Exists(modelFolder))
+            //If the model file is empty and folder has 1 file
+            if (fi.Length == 0 && Directory.EnumerateFileSystemEntries(modelFolder).Count() == 1)
+            {
+                //The model file is 0 bytes and there is no folder, so this is a new model
+                wasLoaded = true;
+            }
+            else if (!Directory.Exists(modelFolder))
             {
                 if (showError)
                 {
@@ -170,11 +185,22 @@ namespace nHydrate.ModelManagement
             }
             catch { }
 
+            //Opened the ".nhydrate" XML file
+            if (modelName.EndsWith(OldModelExtension) && File.Exists(modelFile))
+            {
+                var ff = Directory.GetFiles(Path.Combine(modelFolder)).FirstOrDefault(x => x.EndsWith("model.nhydrate.yaml"));
+                if (ff != null)
+                {
+                    modelFile = ff;
+                    modelName = (new FileInfo(ff)).Name;
+                }
+            }
+
             var results = new DiskModelYaml();
 
             //Determine if model is old XML style and convert
             var oldModel = Load(rootFolder, modelName, out bool wasOldLoaded);
-            if (wasOldLoaded && !string.IsNullOrEmpty(oldModel.ModelProperties.Id))
+            if (wasOldLoaded && oldModel.ModelProperties.Id != Guid.Empty)
             {
                 ConvertEntitiesOld2Yaml(rootFolder, oldModel, results);
                 ConvertViewsOld2Yaml(rootFolder, oldModel, results);
@@ -186,9 +212,9 @@ namespace nHydrate.ModelManagement
                 LoadViewsYaml(modelFolder, results);
 
                 //Save the global model properties
-                var globalFile = Path.Combine(modelFolder, "model.yaml");
+                var globalFile = Path.Combine(modelFolder, modelName);
                 if (File.Exists(globalFile))
-                    results.ModelProperties = GetYamlObject<ModelProperties>(globalFile);
+                    results.ModelProperties = GetYamlObject<ModelProperties>(globalFile) ?? new ModelProperties { Id = Guid.NewGuid() };
             }
 
             return results;
@@ -197,20 +223,46 @@ namespace nHydrate.ModelManagement
         private static void LoadEntitiesYaml(string rootFolder, DiskModelYaml results)
         {
             var folder = Path.Combine(rootFolder, FOLDER_ET);
-            if (!Directory.Exists(folder)) return;
+            if (!Directory.Exists(folder))
+            {
+                folder = Path.Combine(rootFolder, FOLDER_OLD_ET);
+                if (!Directory.Exists(folder)) return;
+            }
+
             var fList = Directory.GetFiles(folder, "*.yaml");
             //Only use Yaml if there are actual files
             if (!fList.Any()) return;
 
             results.Entities.Clear();
             foreach (var f in fList)
-                results.Entities.Add(GetYamlObject<EntityYaml>(f));
+            {
+                //Try single object
+                var wasError = false;
+                try
+                {
+                    results.Entities.Add(GetYamlObject<EntityYaml>(f));
+                }
+                catch (Exception ex) { wasError = true; }
+
+                if (wasError)
+                {
+                    //If fails try multiple objects. If error then really throw
+                    results.Entities.AddRange(GetYamlObject<EntityYaml[]>(f));
+                }
+
+            }
+
         }
 
         private static void LoadViewsYaml(string rootFolder, DiskModelYaml results)
         {
             var folder = Path.Combine(rootFolder, FOLDER_VW);
-            if (!Directory.Exists(folder)) return;
+            if (!Directory.Exists(folder))
+            {
+                folder = Path.Combine(rootFolder, FOLDER_OLD_VW);
+                if (!Directory.Exists(folder)) return;
+            }
+
             var fList = Directory.GetFiles(folder, "*.yaml");
             //Only use Yaml if there are actual files
             if (!fList.Any()) return;
@@ -227,6 +279,100 @@ namespace nHydrate.ModelManagement
                 if (item != null)
                     item.Sql = File.ReadAllText(f);
             }
+
+            FixupModel(results);
+        }
+
+        private static void FixupModel(DiskModelYaml results)
+        {
+            //Fill in field IDs if need be
+            results.Entities
+                .Where(x => x.Id == Guid.Empty)
+                .ToList()
+                .ForEach(x => x.Id = Guid.NewGuid());
+
+            //Validate model. Ensure all Guids match up, etc
+            var allEntities = results.Entities.Select(x => x.Id).ToList();
+            if (allEntities.Count != allEntities.Distinct().Count())
+                throw new ModelException("Entities must have unique ID values.");
+
+            foreach (var entity in results.Entities)
+            {
+                //Fill in field IDs if need be
+                entity.Fields
+                    .Where(x => x.Id == Guid.Empty)
+                    .ToList()
+                    .ForEach(x => x.Id = Guid.NewGuid());
+
+                //Reset predefined sizes if necessary
+                foreach (var field in entity.Fields)
+                {
+                    var size = nHydrate.Generator.Common.Models.ColumnBase.GetPredefinedSize(field.Datatype.Convert<System.Data.SqlDbType>());
+                    field.Length = (size == -1) ? field.Length : size;
+                }
+
+                if (entity.Fields.Count != entity.Fields.Select(x => x.Id).Count())
+                    throw new ModelException($"Entity: '{entity.Name}': All fields must have a unique ID.");
+
+                //Indexes
+                if (entity.Indexes.Count(x => x.Clustered) > 1)
+                    throw new ModelException($"Entity: '{entity.Name}': An entity can have only one clustered index.");
+
+                foreach (var index in entity.Indexes)
+                {
+                    foreach (var field in index.Fields)
+                    {
+                        var targetField = entity.Fields.FirstOrDefault(x => x.Id == field.FieldId);
+                        if (field.FieldId == Guid.Empty)
+                            targetField = entity.Fields.FirstOrDefault(x => x.Name?.ToLower() == field.FieldName?.ToLower());
+
+                        if (targetField == null)
+                            throw new ModelException($"Entity: '{entity.Name}': The index must map to an existing field.");
+
+                        field.FieldId = targetField.Id;
+                        field.FieldName = targetField.Name;
+                    }
+                }
+
+                //Relations
+                foreach (var relation in entity.Relations)
+                {
+                    if (!relation.Fields.Any())
+                        throw new ModelException($"Entity: '{entity.Name}': The relation must have at least one field.");
+
+                    var foreignEntity = results.Entities.FirstOrDefault(x => x.Id == relation.ForeignEntityId);
+                    if (relation.ForeignEntityId == Guid.Empty)
+                        foreignEntity = results.Entities.FirstOrDefault(x => x.Name?.ToLower() == relation.ForeignEntityName?.ToLower());
+
+                    if (foreignEntity == null)
+                        throw new ModelException($"Entity: '{entity.Name}': The relation must map to an existing entity.");
+
+                    relation.ForeignEntityName = foreignEntity.Name;
+                    relation.ForeignEntityId = foreignEntity.Id;
+                    foreach (var field in relation.Fields)
+                    {
+                        var primaryField = entity.Fields.FirstOrDefault(x => x.Id == field.PrimaryFieldId);
+                        if (field.PrimaryFieldId == Guid.Empty)
+                            primaryField = entity.Fields.FirstOrDefault(x => x.Name?.ToLower() == field.PrimaryFieldName?.ToLower());
+
+                        var foreignField = foreignEntity.Fields.FirstOrDefault(x => x.Id == field.ForeignFieldId);
+                        if (field.ForeignFieldId == Guid.Empty)
+                            foreignField = foreignEntity.Fields.FirstOrDefault(x => x.Name?.ToLower() == field.ForeignFieldName?.ToLower());
+
+                        if (primaryField == null)
+                            throw new ModelException($"Entity: '{entity.Name}': The relation primary field must map to an existing field.");
+
+                        if (foreignField == null)
+                            throw new ModelException($"Entity: '{entity.Name}': The relation foreign field must map to an existing field.");
+
+                        field.PrimaryFieldId = primaryField.Id;
+                        field.PrimaryFieldName = primaryField.Name;
+
+                        field.ForeignFieldId = foreignField.Id;
+                        field.ForeignFieldName = foreignField.Name;
+                    }
+                }
+            }
         }
 
         private static T GetObject<T>(string fileName)
@@ -240,105 +386,34 @@ namespace nHydrate.ModelManagement
 
         private static T GetYamlObject<T>(string fileName)
         {
-            var serializer = new YamlDotNet.Serialization.DeserializerBuilder()
-                   .WithTypeConverter(new SystemTypeTypeConverter())
-                   .Build();
-            var yaml = File.ReadAllText(fileName);
-            return serializer.Deserialize<T>(yaml);
-        }
-
-        public static void Save(string rootFolder, string modelName, DiskModel model)
-        {
-            var folderName = modelName.Replace(".nhydrate", ".model");
-            var modelFolder = GetModelFolder(rootFolder, folderName);
-
-            var generatedFileList = new List<string>();
-            SaveViews(modelFolder, model, generatedFileList); //must come before entities
-            SaveEntities(modelFolder, model, generatedFileList);
-
-            //Save the global model properties
-            RemoveNullStrings(model.ModelProperties);
-            SaveObject(model.ModelProperties, Path.Combine(modelFolder, "model.xml"), generatedFileList);
-
-            //Do not remove diagram file
-            generatedFileList.Add(Path.Combine(modelFolder, "diagram.xml"));
-
-            RemoveOrphans(modelFolder, generatedFileList);
-        }
-
-        private static void SaveEntities(string rootFolder, DiskModel model, List<string> generatedFileList)
-        {
-            var folder = Path.Combine(rootFolder, FOLDER_ET);
-            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-            //Save Entities
-            foreach (var obj in model.Entities)
-            {
-                var f = Path.Combine(folder, obj.name + ".configuration.xml");
-                SaveObject(obj, f, generatedFileList);
-            }
-
-            //Save Indexes
-            foreach (var obj in model.Indexes)
-            {
-                var entity = model.Entities.FirstOrDefault(x => x.id == obj.id);
-                var f = Path.Combine(folder, entity.name + ".indexes.xml");
-                SaveObject(obj, f, generatedFileList);
-            }
-
-            //Save Relations
-            foreach (var obj in model.Relations)
-            {
-                var entity = model.Entities.FirstOrDefault(x => x.id == obj.id);
-                var f = Path.Combine(folder, entity.name + ".relations.xml");
-                SaveObject(obj, f, generatedFileList);
-            }
-
-            //Save Static Data
-            foreach (var obj in model.StaticData)
-            {
-                var entity = model.Entities.FirstOrDefault(x => x.id == obj.id);
-                var f = Path.Combine(folder, entity.name + ".staticdata.xml");
-                SaveObject(obj, f, generatedFileList);
-            }
-
-            WriteReadMeFile(folder, generatedFileList);
-        }
-
-        private static void SaveViews(string rootFolder, DiskModel model, List<string> generatedFileList)
-        {
-            var folder = Path.Combine(rootFolder, FOLDER_VW);
-            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-            //Save Views
-            foreach (var obj in model.Views)
-            {
-                var f = Path.Combine(folder, obj.name + ".configuration.xml");
-                SaveObject(obj, f, generatedFileList);
-
-                var f1 = Path.Combine(folder, obj.name + ".sql");
-                WriteFileIfNeedBe(f1, obj.sql, new List<string>());
-            }
-
-            WriteReadMeFile(folder, generatedFileList);
+            return File.ReadAllText(fileName).FromYaml<T>();
         }
 
         public static void Save2(string rootFolder, string modelName, DiskModelYaml model)
         {
-            var folderName = modelName.Replace(".nhydrate", ".model");
-            var modelFolder = GetModelFolder(rootFolder, folderName);
+            FixupModel(model);
+
+            var modelFolder = GetModelFolder(rootFolder, modelName.Replace(".nhydrate", ".model"));
+            if (modelName.EndsWith(ModelExtension))
+                modelFolder = rootFolder;
 
             var generatedFileList = new List<string>();
             SaveViewsYaml(modelFolder, model, generatedFileList); //must come before entities
             SaveEntitiesYaml(modelFolder, model, generatedFileList);
 
             //Save the global model properties
-            SaveYamlObject(model.ModelProperties, Path.Combine(modelFolder, "model.yaml"), generatedFileList);
+            SaveYamlObject(model.ModelProperties, Path.Combine(modelFolder, "model" + ModelExtension), generatedFileList);
 
             //Do not remove diagram file
             generatedFileList.Add(Path.Combine(modelFolder, "diagram.xml"));
 
             RemoveOrphans(modelFolder, generatedFileList);
+
+            var folder = Path.Combine(modelFolder, FOLDER_OLD_ET);
+            if (Directory.Exists(folder)) Directory.Delete(folder, true);
+            folder = Path.Combine(modelFolder, FOLDER_OLD_VW);
+            if (Directory.Exists(folder)) Directory.Delete(folder, true);
+
         }
 
         private static void SaveEntitiesYaml(string rootFolder, DiskModelYaml model, List<string> generatedFileList)
@@ -349,7 +424,7 @@ namespace nHydrate.ModelManagement
             //Save Entities
             foreach (var obj in model.Entities)
             {
-                var f = Path.Combine(folder, obj.Name + ".yaml");
+                var f = Path.Combine(folder, $"{obj.Name}.yaml".ToLower());
                 SaveYamlObject(obj, f, generatedFileList);
             }
         }
@@ -362,7 +437,7 @@ namespace nHydrate.ModelManagement
             //Save Views
             foreach (var obj in model.Views)
             {
-                var f = Path.Combine(folder, obj.Name + ".yaml");
+                var f = Path.Combine(folder, $"{obj.Name}.yaml".ToLower());
                 SaveYamlObject(obj, f, generatedFileList);
             }
         }
@@ -381,9 +456,9 @@ namespace nHydrate.ModelManagement
                     AllowTimestamp = obj.allowtimestamp != 0,
                     CodeFacade = obj.codefacade,
                     GeneratesDoubleDerived = obj.generatesdoublederived != 0,
-                    Id = obj.id,
+                    Id = obj.id.ToGuid(),
                     Immutable = obj.immutable != 0,
-                    TypedTable = obj.typedentity.ToEnum<Utilities.TypedTableConstants>(),
+                    TypedTable = obj.typedentity.ToEnum<TypedTableConstants>(),
                     IsAssociative = obj.isassociative != 0,
                     IsTenant = obj.isTenant != 0,
                     Name = obj.name,
@@ -398,12 +473,12 @@ namespace nHydrate.ModelManagement
                     {
                         CodeFacade = ff.codefacade,
                         DataFormatString = ff.dataformatstring,
-                        Datatype = ff.datatype.ToEnum<Utilities.DataTypeConstants>(),
+                        Datatype = ff.datatype.ToEnum<DataTypeConstants>(),
                         Default = ff.@default,
                         DefaultIsFunc = ff.defaultisfunc != 0,
                         Formula = ff.formula,
-                        Id = ff.id,
-                        Identity = ff.identity.ToEnum<Utilities.IdentityTypeConstants>(),
+                        Id = ff.id.ToGuid(),
+                        Identity = ff.identity.ToEnum<IdentityTypeConstants>(),
                         IsCalculated = ff.Iscalculated != 0,
                         IsIndexed = ff.isindexed != 0,
                         IsPrimaryKey = ff.isprimarykey != 0,
@@ -427,9 +502,9 @@ namespace nHydrate.ModelManagement
                         var newIndex = newEntity.Indexes.AddItem(new IndexYaml
                         {
                             Clustered = ifield.clustered != 0,
-                            Id = ifield.id,
+                            Id = ifield.id.ToGuid(),
                             ImportedName = ifield.importedname,
-                            IndexType = (Utilities.IndexTypeConstants)ifield.indextype,
+                            IndexType = (IndexTypeConstants)ifield.indextype,
                             IsUnique = ifield.isunique != 0,
                             Summary = ifield.summary,
                         });
@@ -439,8 +514,9 @@ namespace nHydrate.ModelManagement
                             newIndex.Fields.AddItem(new IndexFieldYaml
                             {
                                 Ascending = i2.ascending != 0,
-                                FieldId = i2.fieldid,
-                                Id = i2.id,
+                                FieldId = i2.fieldid.ToGuid(),
+                                FieldName = newEntity.Fields.FirstOrDefault(x => x.Id == i2.fieldid.ToGuid())?.Name,
+                                //Id = i2.id.ToGuid(),
                             });
                         }
                     }
@@ -454,9 +530,9 @@ namespace nHydrate.ModelManagement
                     {
                         newEntity.StaticData.AddItem(new StaticDataYaml
                         {
-                            ColumnKey = dd.columnkey,
+                            ColumnId = dd.columnkey.ToGuid(),
                             Value = dd.value,
-                            OrderKey = dd.orderkey,
+                            SortOrder = dd.orderkey,
                         });
                     }
                 }
@@ -465,10 +541,9 @@ namespace nHydrate.ModelManagement
 
             #region Relations (After all entities are loaded)
 
-            var qq = model.Relations.Where(x => model.Entities.Select(x => x.id).Contains(x.id)).ToList();
             foreach (var obj in model.Entities)
             {
-                var newEntity = model2.Entities.First(x => x.Id == obj.id);
+                var newEntity = model2.Entities.First(x => x.Id == new Guid(obj.id));
                 foreach (var rr in model.Relations.Where(x => x.id == obj.id))
                 {
                     foreach (var relation in rr.relation)
@@ -477,23 +552,23 @@ namespace nHydrate.ModelManagement
                         var entity2 = model.Entities.FirstOrDefault(x => x.id == relation.childid);
                         var newRelation = newEntity.Relations.AddItem(new RelationYaml
                         {
-                            Id = relation.id,
-                            ChildEntity = entity2.name,
-                            ChildId = entity2.id,
+                            Id = relation.id.ToGuid(),
+                            ForeignEntityName = entity2.name,
+                            ForeignEntityId = entity2.id.ToGuid(),
                         });
                         newRelation.IsEnforced = relation.isenforced != 0;
-                        newRelation.DeleteAction = relation.deleteaction;
+                        newRelation.DeleteAction = relation.deleteaction.ToEnum<DeleteActionConstants>();
                         newRelation.RoleName = relation.rolename;
                         newRelation.Summary = relation.summary;
                         foreach (var fsi in relation.relationfieldset)
                         {
                             var newRelationField = new RelationFieldYaml
                             {
-                                Id = fsi.id,
-                                SourceFieldId = fsi.sourcefieldid,
-                                SourceFieldName = entity.fieldset.FirstOrDefault(x => x.id == fsi.sourcefieldid)?.name,
-                                TargetFieldId = fsi.targetfieldid,
-                                TargetFieldName = entity2.fieldset.FirstOrDefault(x => x.id == fsi.targetfieldid)?.name,
+                                //Id = fsi.id.ToGuid(),
+                                PrimaryFieldId = fsi.sourcefieldid.ToGuid(),
+                                PrimaryFieldName = entity.fieldset.FirstOrDefault(x => x.id == fsi.sourcefieldid)?.name,
+                                ForeignFieldId = fsi.targetfieldid.ToGuid(),
+                                ForeignFieldName = entity2.fieldset.FirstOrDefault(x => x.id == fsi.targetfieldid)?.name,
                             };
                             newRelation.Fields.AddItem(newRelationField);
                         }
@@ -515,7 +590,7 @@ namespace nHydrate.ModelManagement
                 {
                     CodeFacade = obj.codefacade,
                     GeneratesDoubleDerived = obj.generatesdoublederived != 0,
-                    Id = obj.id,
+                    Id = obj.id.ToGuid(),
                     Sql = obj.sql,
                     Name = obj.name,
                     Schema = obj.schema,
@@ -528,9 +603,9 @@ namespace nHydrate.ModelManagement
                     newView.Fields.AddItem(new ViewFieldYaml
                     {
                         CodeFacade = ff.codefacade,
-                        Datatype = ff.datatype.ToEnum<Utilities.DataTypeConstants>(),
+                        Datatype = ff.datatype.ToEnum<DataTypeConstants>(),
                         Default = ff.@default,
-                        Id = ff.id,
+                        Id = ff.id.ToGuid(),
                         IsPrimaryKey = ff.isprimarykey != 0,
                         Length = ff.length,
                         Name = ff.name,
@@ -542,26 +617,21 @@ namespace nHydrate.ModelManagement
             }
         }
 
-        private static void SaveObject<T>(T obj, string fileName, List<string> generatedFileList)
-        {
-            var ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
-            var writer = new System.Xml.Serialization.XmlSerializer(typeof(T));
-            using (var wfile = new System.IO.StreamWriter(fileName))
-            {
-                writer.Serialize(wfile, obj, ns);
-            }
-            generatedFileList.Add(fileName);
-        }
+        //private static void SaveObject<T>(T obj, string fileName, List<string> generatedFileList)
+        //{
+        //    var ns = new XmlSerializerNamespaces();
+        //    ns.Add("", "");
+        //    var writer = new System.Xml.Serialization.XmlSerializer(typeof(T));
+        //    using (var wfile = new System.IO.StreamWriter(fileName))
+        //    {
+        //        writer.Serialize(wfile, obj, ns);
+        //    }
+        //    generatedFileList.Add(fileName);
+        //}
 
         private static void SaveYamlObject<T>(T obj, string fileName, List<string> generatedFileList)
         {
-            var serializer = new YamlDotNet.Serialization.SerializerBuilder()
-                    .WithTypeConverter(new SystemTypeTypeConverter())
-                    .Build();
-
-            var yaml = serializer.Serialize(obj);
-            generatedFileList.Add(fileName);
+            var yaml = obj.ToYaml();
             File.WriteAllText(fileName, yaml);
             generatedFileList.Add(fileName);
         }
@@ -573,65 +643,65 @@ namespace nHydrate.ModelManagement
             return Path.Combine(rootFolder, "_" + modelName);
         }
 
-        private static void WriteFileIfNeedBe(string fileName, string contents, List<string> generatedFileList)
-        {
-            if (fileName.ToLower().EndsWith(".xml"))
-            {
-                generatedFileList.Add(fileName);
-                try
-                {
-                    //Load formatted original XML
-                    var origXML = string.Empty;
-                    if (File.Exists(fileName))
-                    {
-                        var xmlText = File.ReadAllText(fileName);
-                        if (!string.IsNullOrEmpty(xmlText))
-                        {
-                            var documentCheck = new XmlDocument();
-                            documentCheck.LoadXml(xmlText);
-                            origXML = documentCheck.ToIndentedString();
-                        }
-                    }
+        //private static void WriteFileIfNeedBe(string fileName, string contents, List<string> generatedFileList)
+        //{
+        //    if (fileName.ToLower().EndsWith(".xml"))
+        //    {
+        //        generatedFileList.Add(fileName);
+        //        try
+        //        {
+        //            //Load formatted original XML
+        //            var origXML = string.Empty;
+        //            if (File.Exists(fileName))
+        //            {
+        //                var xmlText = File.ReadAllText(fileName);
+        //                if (!string.IsNullOrEmpty(xmlText))
+        //                {
+        //                    var documentCheck = new XmlDocument();
+        //                    documentCheck.LoadXml(xmlText);
+        //                    origXML = documentCheck.ToIndentedString();
+        //                }
+        //            }
 
-                    //Load formatted new XML
-                    var newXML = string.Empty;
-                    {
-                        var documentCheck = new XmlDocument();
-                        documentCheck.LoadXml(contents);
-                        newXML = documentCheck.ToIndentedString();
-                    }
+        //            //Load formatted new XML
+        //            var newXML = string.Empty;
+        //            {
+        //                var documentCheck = new XmlDocument();
+        //                documentCheck.LoadXml(contents);
+        //                newXML = documentCheck.ToIndentedString();
+        //            }
 
-                    if (origXML == newXML)
-                        return;
-                    else
-                        contents = newXML;
-                }
-                catch (Exception ex)
-                {
-                    //If there is an error then process like a non-XML file
-                    //Do Nothing
-                }
-            }
-            else
-            {
-                //Check if this is the same content and if so do nothing
-                generatedFileList.Add(fileName);
-                if (File.Exists(fileName))
-                {
-                    var t = File.ReadAllText(fileName);
-                    if (t == contents)
-                        return;
-                }
-            }
+        //            if (origXML == newXML)
+        //                return;
+        //            else
+        //                contents = newXML;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            //If there is an error then process like a non-XML file
+        //            //Do Nothing
+        //        }
+        //    }
+        //    else
+        //    {
+        //        //Check if this is the same content and if so do nothing
+        //        generatedFileList.Add(fileName);
+        //        if (File.Exists(fileName))
+        //        {
+        //            var t = File.ReadAllText(fileName);
+        //            if (t == contents)
+        //                return;
+        //        }
+        //    }
 
-            File.WriteAllText(fileName, contents);
-        }
+        //    File.WriteAllText(fileName, contents);
+        //}
 
-        private static void WriteReadMeFile(string folder, List<string> generatedFileList)
-        {
-            var f = Path.Combine(folder, "ReadMe.nHydrate.txt");
-            WriteFileIfNeedBe(f, "This is a managed folder of a nHydrate model. You may change '*.configuration.xml' and '*.sql' files in any text editor if desired but do not add or remove files from this folder. This is a distributed model and making changes can break the model load.", generatedFileList);
-        }
+        //private static void WriteReadMeFile(string folder, List<string> generatedFileList)
+        //{
+        //    var f = Path.Combine(folder, "ReadMe.nHydrate.txt");
+        //    WriteFileIfNeedBe(f, "This is a managed folder of a nHydrate model. You may change '*.configuration.xml' and '*.sql' files in any text editor if desired but do not add or remove files from this folder. This is a distributed model and making changes can break the model load.", generatedFileList);
+        //}
 
         private static void RemoveOrphans(string rootFolder, List<string> generatedFiles)
         {
@@ -639,19 +709,21 @@ namespace nHydrate.ModelManagement
             //Only touch the files we know about
             var files = new List<string>();
             files.AddRange(Directory.GetFiles(rootFolder, "*.*", SearchOption.TopDirectoryOnly));
-            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_Entities"), "*.*", SearchOption.TopDirectoryOnly));
-            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_Views"), "*.*", SearchOption.TopDirectoryOnly));
+            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "entities"), "*.*", SearchOption.TopDirectoryOnly));
+            files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "views"), "*.*", SearchOption.TopDirectoryOnly));
+
+            if (Directory.Exists(Path.Combine(rootFolder, "_Entities")))
+                files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_Entities"), "*.*", SearchOption.TopDirectoryOnly));
+            if (Directory.Exists(Path.Combine(rootFolder, "_Views")))
+                files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_Views"), "*.*", SearchOption.TopDirectoryOnly));
+
             files.ToList().ForEach(x => x = x.ToLower());
             generatedFiles.ToList().ForEach(x => x = x.ToLower());
 
             foreach (var f in files)
             {
                 var fi = new FileInfo(f);
-                if (fi.Name.ToLower().Contains("readme.nhydrate.txt"))
-                {
-                    //Skip
-                }
-                else if (generatedFiles.Contains(f))
+                if (generatedFiles.Contains(f))
                 {
                     //Skip
                 }
@@ -662,19 +734,19 @@ namespace nHydrate.ModelManagement
             }
         }
 
-        private static string ToIndentedString(this XmlDocument doc)
-        {
-            var stringWriter = new StringWriter(new StringBuilder());
-            var xmlTextWriter = new XmlTextWriter(stringWriter)
-            {
-                Formatting = Formatting.Indented,
-                IndentChar = '\t'
-            };
-            doc.Save(xmlTextWriter);
-            var t = stringWriter.ToString();
-            t = t.Replace(@" encoding=""utf-16""", string.Empty);
-            return t;
-        }
+        //private static string ToIndentedString(this XmlDocument doc)
+        //{
+        //    var stringWriter = new StringWriter(new StringBuilder());
+        //    var xmlTextWriter = new XmlTextWriter(stringWriter)
+        //    {
+        //        Formatting = Formatting.Indented,
+        //        IndentChar = '\t'
+        //    };
+        //    doc.Save(xmlTextWriter);
+        //    var t = stringWriter.ToString();
+        //    t = t.Replace(@" encoding=""utf-16""", string.Empty);
+        //    return t;
+        //}
 
         private static void RemoveNullStrings(object obj)
         {

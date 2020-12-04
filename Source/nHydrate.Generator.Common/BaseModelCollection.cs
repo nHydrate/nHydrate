@@ -57,45 +57,35 @@ namespace nHydrate.Generator.Common
         protected readonly List<T> _internalList = new List<T>();
         #endregion
 
-        protected virtual string NodeOldName { get; } = "";
         protected abstract string NodeName { get; }
 
         #region IXMLable Members
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
             var oDoc = node.OwnerDocument;
-            node.AddAttribute("key", this.Key);
+            node.AddAttribute("key", this.Key, Guid.Empty.ToString());
             foreach (var item in _internalList)
             {
                 var newNode = oDoc.CreateElement(this.NodeName);
                 item.XmlAppend(newNode);
                 node.AppendChild(newNode);
             }
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            try
+            this.Key = node.GetAttributeValue("key", Guid.Empty.ToString());
+            var nList = node.SelectNodes(this.NodeName);
+            foreach (XmlNode n in nList)
             {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                XmlNodeList nList = null;
-                if (!string.IsNullOrEmpty(this.NodeOldName))
-                    nList = node.SelectNodes(this.NodeOldName);
-                if (nList == null || nList.Count == 0)
-                    nList = node.SelectNodes(this.NodeName);
-                foreach (XmlNode n in nList)
-                {
-                    var newNode = new T();
-                    newNode.Root = this.Root;
-                    newNode.XmlLoad(n);
-                    this.Add(newNode);
-                }
+                var newNode = new T();
+                newNode.Root = this.Root;
+                newNode.XmlLoad(n);
+                this.Add(newNode);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return node;
         }
 
         #endregion
@@ -113,48 +103,25 @@ namespace nHydrate.Generator.Common
             get { return (T)_internalList.FirstOrDefault(x => x.Name == name); }
         }
 
-        public virtual void Insert(int index, T value)
-        {
-            _internalList.Insert(index, value);
-        }
+        public virtual void Insert(int index, T value) => _internalList.Insert(index, value);
 
-        public virtual void Remove(T value)
-        {
-            _internalList.Remove(value);
-        }
+        public virtual void Remove(T value) => _internalList.Remove(value);
 
-        public virtual bool Contains(T value)
-        {
-            return _internalList.Contains(value);
-        }
+        public virtual bool Contains(T value) => _internalList.Contains(value);
 
-        public virtual bool Contains(int id)
-        {
-            return this.Any(x => x.Id == id);
-        }
+        public virtual bool Contains(int id) => this.Any(x => x.Id == id);
 
-        public override void Clear()
-        {
-            _internalList.Clear();
-        }
+        public override void Clear() => _internalList.Clear();
 
-        public override void AddRange(ICollection list)
-        {
-            _internalList.AddRange(list.AsEnumerable<T>());
-        }
+        public override void AddRange(ICollection list) => _internalList.AddRange(list.AsEnumerable<T>());
 
-        public virtual T Add(T value)
-        {
-            _internalList.Add(value);
-            return value;
-        }
+        public virtual T Add(T value) => _internalList.AddItem(value);
 
         #endregion
 
         public virtual T Add()
         {
-            var newItem = this.Add(new T());
-            newItem.Root = this.Root;
+            var newItem = this.Add(new T() { Root = this.Root });
             newItem.ResetId(NextIndex());
             return newItem;
         }
@@ -167,24 +134,15 @@ namespace nHydrate.Generator.Common
 
         public override int Count => _internalList.Count;
 
-        public override void CopyTo(Array array, int index)
-        {
-            _internalList.CopyTo((T[])array, index);
-        }
+        public override void CopyTo(Array array, int index) => _internalList.CopyTo((T[])array, index);
 
         public override object SyncRoot => _internalList;
 
         #endregion
 
-        public virtual T[] GetByKey(string key)
-        {
-            return this.Where(x => x.Key == key).ToArray();
-        }
+        public virtual T[] GetByKey(string key) => this.Where(x => x.Key == key).ToArray();
 
-        public virtual T[] GetById(int id)
-        {
-            return this.Where(x => x.Id == id).ToArray();
-        }
+        public virtual T[] GetById(int id) => this.Where(x => x.Id == id).ToArray();
 
         private readonly Random _rnd = new Random();
         internal virtual int NextIndex()

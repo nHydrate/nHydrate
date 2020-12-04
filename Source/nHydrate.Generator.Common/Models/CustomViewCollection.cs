@@ -7,7 +7,6 @@ namespace nHydrate.Generator.Common.Models
         {
         }
 
-        protected override string NodeOldName => "";
         protected override string NodeName => "customview";
     }
 }

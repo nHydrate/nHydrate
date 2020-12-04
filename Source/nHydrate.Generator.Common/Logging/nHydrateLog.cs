@@ -268,7 +268,7 @@ namespace nHydrate.Generator.Common.Logging
         #region Log Log Failure
         public static void LogLogFailure(string message)
         {
-#if !NETSTANDARD
+#if !NET5_0
             try
             {
                 var logName = "Application";
@@ -290,9 +290,9 @@ namespace nHydrate.Generator.Common.Logging
             }
 #endif
         }
-#endregion
+        #endregion
 
-#region File System Watcher
+        #region File System Watcher
 
         private void AddListener(string listenerName, string typeString, string initializationData)
         {
@@ -314,7 +314,7 @@ namespace nHydrate.Generator.Common.Logging
                 }
                 else if (typeString == ("System.Diagnostics.EventLogTraceListener"))
                 {
-#if !NETSTANDARD
+#if !NET5_0
                     retVal = new EventLogTraceListener(initializationData);
 #endif
                 }
@@ -342,7 +342,7 @@ namespace nHydrate.Generator.Common.Logging
 
         }
 
-#endregion
+        #endregion
 
     }
 

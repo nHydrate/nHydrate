@@ -1,3 +1,4 @@
+using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Models;
@@ -24,25 +25,21 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         public override void Generate()
         {
-            foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != Common.Models.TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.Name))
             {
                 var template = new EntityExtenderTemplate(_model, table);
                 var fullFileName = RELATIVE_OUTPUT_LOCATION + template.FileName;
-                var eventArgs = new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false);
-                OnProjectItemGenerated(this, eventArgs);
+                OnProjectItemGenerated(this, new ProjectItemGeneratedEventArgs(fullFileName, template.FileContent, ProjectName, this, false));
             }
 
             //Process deleted items
             foreach (var name in _model.RemovedTables)
             {
                 var fullFileName = RELATIVE_OUTPUT_LOCATION + $"{name}.cs";
-                var eventArgs = new ProjectItemDeletedEventArgs(fullFileName, ProjectName, this);
-                OnProjectItemDeleted(this, eventArgs);
+                OnProjectItemDeleted(this, new ProjectItemDeletedEventArgs(fullFileName, ProjectName, this));
             }
 
-            var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
-            OnGenerationComplete(this, gcEventArgs);
+            OnGenerationComplete(this, new ProjectItemGenerationCompleteEventArgs(this));
         }
-
     }
 }

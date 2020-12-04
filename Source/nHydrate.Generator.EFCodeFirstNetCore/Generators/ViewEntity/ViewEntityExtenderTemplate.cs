@@ -5,7 +5,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ViewEntity
 {
     public class ViewEntityExtenderTemplate : EFCodeFirstNetCoreBaseTemplate
     {
-        private CustomView _currentView = null;
+        private readonly CustomView _currentView = null;
 
         public ViewEntityExtenderTemplate(ModelRoot model, CustomView table)
             : base(model)

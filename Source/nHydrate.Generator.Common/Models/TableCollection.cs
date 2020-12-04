@@ -12,13 +12,11 @@ namespace nHydrate.Generator.Common.Models
         {
         }
 
-
-        protected override string NodeOldName => "table";
         protected override string NodeName => "t";
 
         #region IXMLable Members
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
             base.XmlLoad(node);
 
@@ -29,7 +27,7 @@ namespace nHydrate.Generator.Common.Models
                 foreach (Reference r in t.Relationships)
                 {
                     if (r.Object == null) delRefList.Add(r);
-                    else if (((Relation)r.Object).ParentTableRef.Object != t)
+                    else if (((Relation)r.Object).ParentTable != t)
                         delRefList.Add(r);
                     else System.Diagnostics.Debug.Write("");
                 }
@@ -50,9 +48,9 @@ namespace nHydrate.Generator.Common.Models
                 {
                     if (r.Object == null)
                         delRefList.Add(r);
-                    else if (((Relation)r.Object).ParentTableRef.Object == t)
+                    else if (((Relation)r.Object).ParentTable == t)
                         System.Diagnostics.Debug.Write("");
-                    else if (((Relation)r.Object).ChildTableRef.Object == t)
+                    else if (((Relation)r.Object).ChildTable == t)
                         System.Diagnostics.Debug.Write("");
                     else
                         delRefList.Add(r);
@@ -66,23 +64,7 @@ namespace nHydrate.Generator.Common.Models
 
             }
 
-            var checkList = new List<string>();
-            foreach (Table t in this)
-            {
-                if (checkList.Contains(t.Id.ToString()))
-                    System.Diagnostics.Debug.Write(string.Empty);
-                else
-                    checkList.Add(t.Id.ToString());
-            }
-
-            checkList = new List<string>();
-            foreach (Table t in this)
-            {
-                if (checkList.Contains(t.Key))
-                    System.Diagnostics.Debug.Write(string.Empty);
-                else
-                    checkList.Add(t.Key);
-            }
+            return node;
         }
 
         #endregion
@@ -96,11 +78,9 @@ namespace nHydrate.Generator.Common.Models
             var deleteList = new ArrayList();
             foreach (Relation relation in ((ModelRoot)this.Root).Database.Relations)
             {
-                if (relation.ParentTableRef.Object == null)
+                if (relation.ParentTable == null || relation.ChildTable == null)
                     deleteList.Add(relation);
-                else if (relation.ChildTableRef.Object == null)
-                    deleteList.Add(relation);
-                else if ((relation.ParentTableRef.Object.Key == table.Key) || (relation.ChildTableRef.Object.Key == table.Key))
+                else if ((relation.ParentTable.Key == table.Key) || (relation.ChildTable.Key == table.Key))
                     deleteList.Add(relation);
             }
 
@@ -122,20 +102,8 @@ namespace nHydrate.Generator.Common.Models
             _internalList.RemoveAll(x => x.Id == tableId);
         }
 
-        public IEnumerable<Column> GetAllColumns()
-        {
-            var retval = new List<Column>();
-            foreach (Table t in this)
-            {
-                foreach (Reference r in t.Columns)
-                {
-                    retval.Add((Column)r.Object);
-                }
-            }
-            return retval;
-        }
+        public IEnumerable<Column> GetAllColumns() => this.SelectMany(x => x.Columns).Select(x => x.Object as Column).ToList();
 
         #endregion
-
     }
 }

@@ -33,13 +33,8 @@ namespace nHydrate.Generator.Common.Models
 
         public INHydrateModelObject Parent { get; } = null;
 
-        public string ObjectSingular { get; set; } = "Reference";
-
-        public string ObjectPlural { get; set; } = "References";
-
         #endregion
 
-        protected override string NodeOldName => "Reference";
         protected override string NodeName => "f";
     }
 }

@@ -6,4 +6,3 @@ namespace nHydrate.Generator.Common.Util
         public string Dependent { get; set; }
     }
 }
-

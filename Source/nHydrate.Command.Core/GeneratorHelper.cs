@@ -1,6 +1,7 @@
 using nHydrate.Generator.Common.EventArgs;
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.ProjectItemGenerators;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +12,7 @@ namespace nHydrate.Command.Core
 {
     internal class GeneratorHelper : nHydrate.Generator.Common.GeneratorFramework.GeneratorHelper
     {
-        private string _outputFolder;
+        private readonly string _outputFolder;
 
         public GeneratorHelper(string outputFolder)
         {
@@ -79,12 +80,12 @@ namespace nHydrate.Command.Core
 
             paths.AddRange(_outputFolder.Split(Path.DirectorySeparatorChar));
             paths.AddRange(e.ProjectName.Split(Path.DirectorySeparatorChar));
-            if (!string.IsNullOrEmpty(e.ParentItemName) && !e.ParentItemName.Contains("."))
+            if (!e.ParentItemName.IsEmpty() && !e.ParentItemName.Contains("."))
             {
                 paths.AddRange(e.ParentItemName.Split(Path.DirectorySeparatorChar));
                 pathsRelative.AddRange(e.ParentItemName.Split(Path.DirectorySeparatorChar));
             }
-            else if (!string.IsNullOrEmpty(e.ParentItemName) && e.ParentItemName.Contains("."))
+            else if (!e.ParentItemName.IsEmpty() && e.ParentItemName.Contains("."))
             {
                 var arr = e.ParentItemName.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList();
                 if (arr.Count > 1)
@@ -98,6 +99,7 @@ namespace nHydrate.Command.Core
             pathsRelative.AddRange(name.Split(Path.DirectorySeparatorChar));
             var fileName = System.IO.Path.Combine(paths.ToArray());
 
+            var fileStateInfo = new Generator.Common.Util.FileStateInfo { FileName = fileName };
             if (!File.Exists(fileName) || e.Overwrite)
             {
                 var folderName = new FileInfo(fileName).DirectoryName;
@@ -113,6 +115,8 @@ namespace nHydrate.Command.Core
                     File.WriteAllText(fileName, e.ProjectItemContent);
                 }
             }
+            else
+                fileStateInfo.FileState = Generator.Common.Util.FileStateConstants.Skipped;
 
             //Embed the file in the project if need be
             if (e.Properties.ContainsKey("BuildAction") && (int)e.Properties["BuildAction"] == 3)
@@ -164,6 +168,11 @@ namespace nHydrate.Command.Core
                 }
             }
 
+            //Write Log
+            Generator.Common.Logging.nHydrateLog.LogInfo("Project Item Generated: {0}", e.ProjectItemName);
+            e.FileState = fileStateInfo.FileState;
+            e.FullName = fileStateInfo.FileName;
+            this.OnProjectItemGenerated(sender, e);
         }
 
         protected override void projectItemGenerator_ProjectItemGenerationError(object sender, ProjectItemGeneratedErrorEventArgs e)

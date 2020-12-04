@@ -42,8 +42,10 @@ namespace nHydrate.DataImport.SqlClient
                 {
                     while (tableReader.Read())
                     {
-                        var newEntity = new Entity();
-                        newEntity.Name = tableReader["name"].ToString();
+                        var newEntity = new Entity
+                        {
+                            Name = tableReader["name"].ToString()
+                        };
                         database.EntityList.Add(newEntity);
                         newEntity.Schema = tableReader["schema"].ToString();
                     }
@@ -179,7 +181,7 @@ namespace nHydrate.DataImport.SqlClient
                     {
                         Relationship newRelation = null;
                         var isAdd = false;
-                        if (database.RelationshipList.Count(x => x.ConstraintName == constraintName) == 0)
+                        if (!database.RelationshipList.Any(x => x.ConstraintName == constraintName))
                         {
                             newRelation = new Relationship();
                             if (rowRelationship["object_id"] != System.DBNull.Value)
@@ -316,10 +318,12 @@ namespace nHydrate.DataImport.SqlClient
                     var view = database.ViewList.FirstOrDefault(x => x.Name == name);
                     if (view == null)
                     {
-                        view = new View();
-                        view.Name = name;
-                        view.SQL = sql;
-                        view.Schema = schema;
+                        view = new View
+                        {
+                            Name = name,
+                            SQL = sql,
+                            Schema = schema
+                        };
                         database.ViewList.Add(view);
                     }
                 }
@@ -348,12 +352,14 @@ namespace nHydrate.DataImport.SqlClient
 
                     if (view != null)
                     {
-                        var field = new Field();
-                        field.Name = columnName;
-                        field.DataType = dataType;
-                        field.Length = length;
-                        field.Scale = int.Parse(rowView["scale"].ToString());
-                        field.Nullable = (bool)rowView["is_nullable"];
+                        var field = new Field
+                        {
+                            Name = columnName,
+                            DataType = dataType,
+                            Length = length,
+                            Scale = int.Parse(rowView["scale"].ToString()),
+                            Nullable = (bool)rowView["is_nullable"]
+                        };
                         view.FieldList.Add(field);
                     }
                 }
@@ -459,8 +465,10 @@ namespace nHydrate.DataImport.SqlClient
             {
                 while (tableReader.Read())
                 {
-                    var newEntity = new Entity();
-                    newEntity.Name = tableReader["name"].ToString();
+                    var newEntity = new Entity
+                    {
+                        Name = tableReader["name"].ToString()
+                    };
                     retval.Add(newEntity.Name);
                     newEntity.Schema = tableReader["schema"].ToString();
                 }
@@ -479,8 +487,10 @@ namespace nHydrate.DataImport.SqlClient
             {
                 while (tableReader.Read())
                 {
-                    var newEntity = new View();
-                    newEntity.Name = tableReader["name"].ToString();
+                    var newEntity = new View
+                    {
+                        Name = tableReader["name"].ToString()
+                    };
                     retval.Add(newEntity.Name);
                     //newEntity.Schema = tableReader["schema"].ToString();
                 }
@@ -501,8 +511,10 @@ namespace nHydrate.DataImport.SqlClient
             {
                 while (tableReader.Read())
                 {
-                    var newEntity = new Entity();
-                    newEntity.Name = tableReader["name"].ToString();
+                    var newEntity = new Entity
+                    {
+                        Name = tableReader["name"].ToString()
+                    };
                     if (newEntity.Name.Match(name)) //Only the specified item
                         database.EntityList.Add(newEntity);
                     newEntity.Schema = tableReader["schema"].ToString();
@@ -651,9 +663,9 @@ namespace nHydrate.DataImport.SqlClient
             }
             else if (field.DataType == SqlDbType.UniqueIdentifier)
             {
-                if (!string.IsNullOrEmpty(defaultvalue) && defaultvalue.Contains("newid"))
+                if (!defaultvalue.IsEmpty() && defaultvalue.Contains("newid"))
                     field.DefaultValue = "newid";
-                if (!string.IsNullOrEmpty(defaultvalue) && defaultvalue.Contains("newsequentialid"))
+                if (!defaultvalue.IsEmpty() && defaultvalue.Contains("newsequentialid"))
                     field.DefaultValue = "newsequentialid";
                 else
                     field.DefaultValue = defaultvalue.Replace("(", string.Empty).Replace(")", string.Empty).Replace("'", string.Empty); //Format: ('000...0000')
@@ -669,7 +681,7 @@ namespace nHydrate.DataImport.SqlClient
                 field.DefaultValue = defaultvalue;
 
             //Check for NULL value. There is no need to add a NULL default for a nullable field
-            if (!string.IsNullOrEmpty(field.DefaultValue) && field.Nullable && (field.DefaultValue.ToLower() == "null"))
+            if (!field.DefaultValue.IsEmpty() && field.Nullable && (field.DefaultValue.ToLower() == "null"))
             {
                 field.DefaultValue = string.Empty;
             }

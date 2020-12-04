@@ -23,6 +23,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("}");
             return sb.ToString();
         }
- 
+
     }
 }

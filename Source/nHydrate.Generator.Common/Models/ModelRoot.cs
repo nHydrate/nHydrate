@@ -21,7 +21,6 @@ namespace nHydrate.Generator.Common.Models
         protected const string _def_tenantColumnName = "__tenant_user";
 
         protected string _version = _def_version;
-        private readonly VersionHistoryCollection _versionHistoryList = null;
         private string _modeToolVersion = string.Empty;
 
         #endregion
@@ -29,11 +28,8 @@ namespace nHydrate.Generator.Common.Models
         public ModelRoot(INHydrateModelObject root)
             : base(root)
         {
-            _versionHistoryList = new VersionHistoryCollection(this);
-            Database = new Database(this);
-
-            this.RemovedTables = new List<string>();
-            this.RemovedViews = new List<string>();
+            this.VersionHistoryList = new VersionHistoryCollection(this);
+            this.Database = new Database(this);
         }
 
         #region Property Implementations
@@ -48,7 +44,7 @@ namespace nHydrate.Generator.Common.Models
         {
             get
             {
-                if (string.IsNullOrEmpty(_modeToolVersion))
+                if (_modeToolVersion.IsEmpty())
                 {
                     var thisAssem = System.Reflection.Assembly.GetExecutingAssembly();
                     var thisAssemName = thisAssem.GetName();
@@ -90,7 +86,7 @@ namespace nHydrate.Generator.Common.Models
 
         public Database Database { get; set; } = null;
 
-        public VersionHistoryCollection VersionHistoryList => _versionHistoryList;
+        public VersionHistoryCollection VersionHistoryList { get; set; }
 
         public virtual string GetSQLDefaultDate()
         {
@@ -98,75 +94,60 @@ namespace nHydrate.Generator.Common.Models
             else return "sysdatetime()";
         }
 
-        public List<string> RemovedTables { get; }
+        public List<string> RemovedTables { get; } = new List<string>();
 
-        public List<string> RemovedViews { get; }
+        public List<string> RemovedViews { get; } = new List<string>();
 
         #endregion
 
         #region IXMLable
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
-            try
-            {
-                var oDoc = node.OwnerDocument;
+            node.AddAttribute("key", this.Key);
+            node.AddAttribute("projectName", this.ProjectName);
+            node.AddAttribute("supportLegacySearchObject", this.SupportLegacySearchObject);
+            node.AddAttribute("useUTCTime", this.UseUTCTime.ToString());
+            node.AddAttribute("version", this.Version);
+            node.AddAttribute("companyName", this.CompanyName);
+            node.AddAttribute("emitSafetyScripts", this.EmitSafetyScripts);
+            node.AddAttribute("tenantColumnName", this.TenantColumnName);
 
-                node.AddAttribute("key", this.Key);
-                node.AddAttribute("projectName", this.ProjectName);
-                node.AddAttribute("supportLegacySearchObject", this.SupportLegacySearchObject);
-                node.AddAttribute("useUTCTime", this.UseUTCTime.ToString());
-                node.AddAttribute("version", this.Version);
-                node.AddAttribute("companyName", this.CompanyName);
-                node.AddAttribute("emitSafetyScripts", this.EmitSafetyScripts);
-                node.AddAttribute("tenantColumnName", this.TenantColumnName);
+            node.AddAttribute("defaultNamespace", this.DefaultNamespace);
+            node.AddAttribute("storedProcedurePrefix", this.StoredProcedurePrefix);
 
-                node.AddAttribute("defaultNamespace", this.DefaultNamespace);
-                node.AddAttribute("storedProcedurePrefix", this.StoredProcedurePrefix);
+            node.AppendChild(this.Database.XmlAppend(node.OwnerDocument.CreateElement("database")));
 
-                var databaseNode = oDoc.CreateElement("database");
-                this.Database.XmlAppend(databaseNode);
-                node.AppendChild(databaseNode);
+            this.VersionHistoryList.ResetKey(Guid.Empty, true); //no need to save this key
+            this.VersionHistoryList.XmlAppend(node.AppendChild(node.OwnerDocument.CreateElement("versionHistoryList")));
 
-                var versionHistoryListNode = oDoc.CreateElement("versionHistoryList");
-                node.AppendChild(versionHistoryListNode);
-                _versionHistoryList.XmlAppend(versionHistoryListNode);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            try
-            {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                this.ProjectName = XmlHelper.GetAttributeValue(node, "projectName", string.Empty);
-                this.SupportLegacySearchObject = XmlHelper.GetAttributeValue(node, "supportLegacySearchObject", _def_supportLegacySearchObject);
-                _version = XmlHelper.GetAttributeValue(node, "version", _def_version);
-                this.UseUTCTime = XmlHelper.GetAttributeValue(node, "useUTCTime", this.UseUTCTime);
-                this.StoredProcedurePrefix = XmlHelper.GetAttributeValue(node, "storedProcedurePrefix", _def_storedProcedurePrefix);
-                this.TenantColumnName = XmlHelper.GetAttributeValue(node, "tenantColumnName", _def_tenantColumnName);
-                this.CompanyName = XmlHelper.GetAttributeValue(node, "companyName", this.CompanyName);
-                this.EmitSafetyScripts = XmlHelper.GetAttributeValue(node, "emitSafetyScripts", this.EmitSafetyScripts);
+            this.Key = node.GetAttributeValue("key", string.Empty);
+            this.ProjectName = node.GetAttributeValue("projectName", string.Empty);
+            this.SupportLegacySearchObject = node.GetAttributeValue("supportLegacySearchObject", _def_supportLegacySearchObject);
+            _version = node.GetAttributeValue("version", _def_version);
+            this.UseUTCTime = node.GetAttributeValue("useUTCTime", this.UseUTCTime);
+            this.StoredProcedurePrefix = node.GetAttributeValue("storedProcedurePrefix", _def_storedProcedurePrefix);
+            this.TenantColumnName = node.GetAttributeValue("tenantColumnName", _def_tenantColumnName);
+            this.CompanyName = node.GetAttributeValue("companyName", this.CompanyName);
+            this.EmitSafetyScripts = node.GetAttributeValue("emitSafetyScripts", this.EmitSafetyScripts);
 
-                //There is a message box in the property set to DO NOT use the property, use the member variable
-                DefaultNamespace = XmlHelper.GetAttributeValue(node, "defaultNamespace", _def_defaultNamespace);
+            //There is a message box in the property set to DO NOT use the property, use the member variable
+            DefaultNamespace = node.GetAttributeValue("defaultNamespace", _def_defaultNamespace);
 
-                var databaseNode = node.SelectSingleNode("database");
-                if (databaseNode != null)
-                    this.Database.XmlLoad(databaseNode);
+            var databaseNode = node.SelectSingleNode("database");
+            if (databaseNode != null)
+                this.Database.XmlLoad(databaseNode);
 
-                var versionHistoryListNode = node.SelectSingleNode("versionHistoryList");
-                if (versionHistoryListNode != null)
-                    _versionHistoryList.XmlLoad(versionHistoryListNode);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var versionHistoryListNode = node.SelectSingleNode("versionHistoryList");
+            if (versionHistoryListNode != null)
+                this.VersionHistoryList.XmlLoad(versionHistoryListNode);
+
+            return node;
         }
 
         #endregion
@@ -182,13 +163,8 @@ namespace nHydrate.Generator.Common.Models
                 //Remove orphaned columns
                 foreach (Column column in this.Database.Columns)
                 {
-                    if ((column.ParentTableRef == null) ||
-                        (column.ParentTableRef.Object == null) ||
-                        (column.ParentTableRef == null) ||
-                        (column.ParentTableRef.Object == null))
-                    {
+                    if (column.ParentTable == null)
                         delList.Add(column);
-                    }
                 }
 
                 foreach (Column column in delList)
@@ -198,10 +174,7 @@ namespace nHydrate.Generator.Common.Models
                 delList = new ArrayList();
                 foreach (Relation relation in this.Database.Relations)
                 {
-                    if ((relation.ParentTableRef == null) ||
-                        (relation.ParentTableRef.Object == null) ||
-                        (relation.ParentTableRef == null) ||
-                        (relation.ParentTableRef.Object == null))
+                    if (relation.ParentTable == null)
                     {
                         delList.Add(relation);
                     }

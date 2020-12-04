@@ -6,5 +6,4 @@ namespace nHydrate.Generator.Common.Util
         Skipped,
         Failed,
     }
-
 }

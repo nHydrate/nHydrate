@@ -7,10 +7,6 @@ namespace nHydrate.Generator.Common.Models
 {
     public class TableIndexColumn : BaseModelObject
     {
-        #region Member Variables
-
-        #endregion
-
         #region Constructor
 
         public TableIndexColumn(INHydrateModelObject root)
@@ -71,20 +67,22 @@ namespace nHydrate.Generator.Common.Models
 
         #region IXMLable Members
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
+            //node.AddAttribute("key", this.Key);
             node.AddAttribute("ascending", this.Ascending);
             node.AddAttribute("fieldID", this.FieldID);
             node.AddAttribute("id", this.Id);
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-            this.FieldID = XmlHelper.GetAttributeValue(node, "fieldID", this.FieldID);
-            this.Ascending = XmlHelper.GetAttributeValue(node, "ascending", this.Ascending);
-            this.Id = XmlHelper.GetAttributeValue(node, "id", this.Id);
+            //this.Key = node.GetAttributeValue("key", string.Empty);
+            this.Ascending = node.GetAttributeValue("ascending", this.Ascending);
+            this.FieldID = node.GetAttributeValue("fieldID", this.FieldID);
+            this.Id = node.GetAttributeValue("id", this.Id);
+            return node;
         }
 
         #endregion

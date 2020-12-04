@@ -15,10 +15,7 @@ namespace nHydrate.Generator.Common.GeneratorFramework
 
         public string ModelName { get; } = string.Empty;
 
-        public override string ToString()
-        {
-            return this.ModelName;
-        }
+        public override string ToString() => this.ModelName;
 
     }
 }

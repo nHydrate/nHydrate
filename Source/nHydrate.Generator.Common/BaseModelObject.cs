@@ -1,5 +1,6 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.GeneratorFramework;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Collections.Generic;
 
@@ -20,6 +21,12 @@ namespace nHydrate.Generator.Common
             _root = root;
         }
 
+        public BaseModelObject(INHydrateModelObject root, string key)
+            : this(root)
+        {
+            ResetKey(key);
+        }
+
         protected BaseModelObject()
         {
             //This should only be used for BaseModelCollection<T>
@@ -32,11 +39,7 @@ namespace nHydrate.Generator.Common
         public virtual Dictionary<string, IModelConfiguration> ModelConfigurations { get; set; } = new Dictionary<string, IModelConfiguration>();
 
         protected event EventHandler RootReset;
-        protected virtual void OnRootReset(System.EventArgs e)
-        {
-            if (this.RootReset != null)
-                this.RootReset(this, System.EventArgs.Empty);
-        }
+        protected virtual void OnRootReset(System.EventArgs e) => this.RootReset?.Invoke(this, System.EventArgs.Empty);
 
         public virtual INHydrateModelObject Root
         {
@@ -52,10 +55,7 @@ namespace nHydrate.Generator.Common
 
         public int Id { get; protected set; }
 
-        public void ResetId(int newId)
-        {
-            this.Id = newId;
-        }
+        public void ResetId(int newId) => this.Id = newId;
 
         public string Name { get; set; } = string.Empty;
 
@@ -63,17 +63,24 @@ namespace nHydrate.Generator.Common
 
         public void ResetKey(string newKey)
         {
-            if (string.IsNullOrEmpty(newKey))
+            if (newKey.IsEmpty())
                 throw new Exception("The key value must have a value!");
             this.Key = newKey;
+        }
+
+        public void ResetKey(Guid newKey, bool skipValidation = false)
+        {
+            if (newKey == Guid.Empty && !skipValidation)
+                throw new Exception("The key value must have a value!");
+            ResetKey(newKey.ToString());
         }
 
         #endregion
 
         #region IXMLable Members
 
-        public abstract void XmlAppend(System.Xml.XmlNode node);
-        public abstract void XmlLoad(System.Xml.XmlNode node);
+        public abstract System.Xml.XmlNode XmlAppend(System.Xml.XmlNode node);
+        public abstract System.Xml.XmlNode XmlLoad(System.Xml.XmlNode node);
 
         #endregion
 

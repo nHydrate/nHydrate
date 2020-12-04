@@ -1,6 +1,5 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -92,58 +91,34 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators
 
         public static void AppendCreateAudit(Table table, ModelRoot model, StringBuilder sb)
         {
-            try
-            {
-                sb.AppendLine("--APPEND AUDIT TRAIL CREATE FOR TABLE [" + table.DatabaseName + "]");
-                sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{model.Database.CreatedByColumnName}\" Varchar (50) NULL;");
-                var dfName = $"DF__{table.DatabaseName}_{model.Database.CreatedDateColumnName}";
-                dfName = dfName.ToUpper();
-                sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{model.Database.CreatedDateColumnName}\" timestamp CONSTRAINT \"" + dfName + "\" DEFAULT current_timestamp NULL;");
-                sb.AppendLine("--GO");
-                sb.AppendLine();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            sb.AppendLine("--APPEND AUDIT TRAIL CREATE FOR TABLE [" + table.DatabaseName + "]");
+            sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{model.Database.CreatedByColumnName}\" Varchar (50) NULL;");
+            var dfName = $"DF__{table.DatabaseName}_{model.Database.CreatedDateColumnName}".ToUpper();
+            sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{model.Database.CreatedDateColumnName}\" timestamp CONSTRAINT \"" + dfName + "\" DEFAULT current_timestamp NULL;");
+            sb.AppendLine("--GO");
+            sb.AppendLine();
         }
 
         public static void AppendModifiedAudit(Table table, ModelRoot model, StringBuilder sb)
         {
-            try
-            {
-                sb.AppendLine("--APPEND AUDIT TRAIL MODIFY FOR TABLE [" + table.DatabaseName + "]");
-                sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{model.Database.ModifiedByColumnName}\" Varchar (50) NULL;");
-                var dfName = $"DF__{table.DatabaseName}_{model.Database.ModifiedDateColumnName}";
-                dfName = dfName.ToUpper();
-                sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{model.Database.ModifiedDateColumnName}\" timestamp CONSTRAINT \"" + dfName + "\" DEFAULT current_timestamp NULL;");
-                sb.AppendLine("--GO");
-                sb.AppendLine();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            sb.AppendLine("--APPEND AUDIT TRAIL MODIFY FOR TABLE [" + table.DatabaseName + "]");
+            sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{model.Database.ModifiedByColumnName}\" Varchar (50) NULL;");
+            var dfName = $"DF__{table.DatabaseName}_{model.Database.ModifiedDateColumnName}".ToUpper();
+            sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{model.Database.ModifiedDateColumnName}\" timestamp CONSTRAINT \"" + dfName + "\" DEFAULT current_timestamp NULL;");
+            sb.AppendLine("--GO");
+            sb.AppendLine();
         }
 
         public static void AppendConcurrencyAudit(Table table, ModelRoot model, StringBuilder sb)
         {
-            try
-            {
-                sb.AppendLine("--APPEND AUDIT TRAIL CONCURRENCY FOR TABLE [" + table.DatabaseName + "]");
-                sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"" + model.Database.ConcurrencyCheckColumnName + "\" int NOT NULL;");
-                sb.AppendLine("--GO");
-                sb.AppendLine();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            sb.AppendLine($"--APPEND AUDIT TRAIL CONCURRENCY FOR TABLE [{table.DatabaseName}]");
+            sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"" + model.Database.ConcurrencyCheckColumnName + "\" int NOT NULL;");
+            sb.AppendLine("--GO");
+            sb.AppendLine();
         }
-
         public static void DropCreateAudit(Table table, ModelRoot model, StringBuilder sb)
         {
-            sb.AppendLine("--REMOVE AUDIT TRAIL CREATE FOR TABLE [" + table.DatabaseName + "]");
+            sb.AppendLine($"--REMOVE AUDIT TRAIL CREATE FOR TABLE [{table.DatabaseName}]");
             sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" DROP COLUMN IF EXISTS \"{model.Database.CreatedByColumnName}\";");
             var dfName = $"DF__{table.DatabaseName}_{model.Database.CreatedDateColumnName}".ToUpper();
             sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{dfName}\";");

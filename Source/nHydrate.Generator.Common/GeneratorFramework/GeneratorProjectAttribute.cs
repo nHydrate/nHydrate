@@ -22,11 +22,8 @@ namespace nHydrate.Generator.Common.GeneratorFramework
         }
 
         public Type CurrentType { get; }
-
         public string[] DependencyList { get; } = new string[0];
-
         public string[] ExclusionList { get; } = new string[0];
-
         public string Description { get; set; }
         public string GeneratorGuid { get; set; }
         public bool IsMain { get; set; }

@@ -1,6 +1,5 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.Util;
-using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
@@ -51,52 +50,34 @@ namespace nHydrate.Generator.Common.Models
             }
         }
 
-        public override void XmlAppend(XmlNode node)
+        public override XmlNode XmlAppend(XmlNode node)
         {
-            try
-            {
-                var oDoc = node.OwnerDocument;
-
-                node.AddAttribute("key", this.Key);
-                node.AddAttribute("isUnique", this.IsUnique);
-                node.AddAttribute("primaryKey", this.PrimaryKey);
-                node.AddAttribute("clustered", this.Clustered);
-                node.AddAttribute("description", this.Description);
-                node.AddAttribute("importedName", this.ImportedName);
-                node.AddAttribute("id", this.Id);
-
-                var tableIndexColumnListNode = oDoc.CreateElement("ticl");
-                this.IndexColumnList.XmlAppend(tableIndexColumnListNode);
-                node.AppendChild(tableIndexColumnListNode);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
+            node.AddAttribute("key", this.Key);
+            node.AddAttribute("isUnique", this.IsUnique);
+            node.AddAttribute("primaryKey", this.PrimaryKey);
+            node.AddAttribute("clustered", this.Clustered);
+            node.AddAttribute("description", this.Description);
+            node.AddAttribute("importedName", this.ImportedName);
+            node.AddAttribute("id", this.Id);
+            node.AppendChild(this.IndexColumnList.XmlAppend(node.OwnerDocument.CreateElement("ticl")));
+            return node;
         }
 
-        public override void XmlLoad(XmlNode node)
+        public override XmlNode XmlLoad(XmlNode node)
         {
-            try
-            {
-                this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
-                this.Description = XmlHelper.GetAttributeValue(node, "description", this.Description);
-                this.ImportedName = XmlHelper.GetAttributeValue(node, "importedName", this.ImportedName);
-                this.IsUnique = XmlHelper.GetAttributeValue(node, "isUnique", this.IsUnique);
-                this.PrimaryKey = XmlHelper.GetAttributeValue(node, "primaryKey", this.PrimaryKey);
-                this.Clustered = XmlHelper.GetAttributeValue(node, "clustered", this.Clustered);
-                this.Id = XmlHelper.GetAttributeValue(node, "id", this.Id);
+            this.Key = XmlHelper.GetAttributeValue(node, "key", string.Empty);
+            this.Description = XmlHelper.GetAttributeValue(node, "description", this.Description);
+            this.ImportedName = XmlHelper.GetAttributeValue(node, "importedName", this.ImportedName);
+            this.IsUnique = XmlHelper.GetAttributeValue(node, "isUnique", this.IsUnique);
+            this.PrimaryKey = XmlHelper.GetAttributeValue(node, "primaryKey", this.PrimaryKey);
+            this.Clustered = XmlHelper.GetAttributeValue(node, "clustered", this.Clustered);
+            this.Id = XmlHelper.GetAttributeValue(node, "id", this.Id);
 
-                var tableIndexColumnListNode = node.SelectSingleNode("ticl");
-                if (tableIndexColumnListNode != null)
-                    this.IndexColumnList.XmlLoad(tableIndexColumnListNode, this.Root);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var tableIndexColumnListNode = node.SelectSingleNode("ticl");
+            if (tableIndexColumnListNode != null)
+                this.IndexColumnList.XmlLoad(tableIndexColumnListNode, this.Root);
+
+            return node;
         }
-
     }
 }

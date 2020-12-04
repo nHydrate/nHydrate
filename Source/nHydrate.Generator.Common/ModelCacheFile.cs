@@ -12,7 +12,6 @@ namespace nHydrate.Generator.Common
     {
         #region Class Members
 
-        private int _generatedVersion = 0;
         private string _modelFileName = string.Empty;
 
         #endregion
@@ -50,11 +49,7 @@ namespace nHydrate.Generator.Common
 
         public List<string> ExcludeList { get; } = new List<string>();
 
-        public int GeneratedVersion
-        {
-            get { return _generatedVersion; }
-            set { _generatedVersion = value; }
-        }
+        public int GeneratedVersion { get; set; }
 
         public Version ModelerVersion { get; set; }
 
@@ -65,7 +60,7 @@ namespace nHydrate.Generator.Common
                 var fileName = _modelFileName;
 
                 //if the file has never been saved, then there is no filename
-                if (string.IsNullOrEmpty(fileName)) return string.Empty;
+                if (fileName.IsEmpty()) return string.Empty;
 
                 var fi = new System.IO.FileInfo(fileName);
                 if (fi.Exists)
@@ -86,10 +81,7 @@ namespace nHydrate.Generator.Common
 
         #region Methods
 
-        public bool FileExists()
-        {
-            return File.Exists(this.FileName);
-        }
+        public bool FileExists() => File.Exists(this.FileName);
 
         public void Save()
         {
@@ -136,11 +128,10 @@ namespace nHydrate.Generator.Common
             }
 
             //Get GeneratedVersion
-            _generatedVersion = int.Parse(XmlHelper.GetAttributeValue(document.DocumentElement, "GeneratedVersion", _generatedVersion.ToString()));
+            this.GeneratedVersion = XmlHelper.GetAttributeValue(document.DocumentElement, "GeneratedVersion", this.GeneratedVersion);
 
             if (Version.TryParse(XmlHelper.GetAttributeValue(document.DocumentElement, "ModelerVersion", this.ModelerVersion.ToString()), out var v))
                 this.ModelerVersion = v;
-
 
             //Get ExcludeList
             this.ExcludeList.Clear();

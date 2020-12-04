@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using YamlDotNet.Core;
+using YamlDotNet.Core.Events;
+using YamlDotNet.Serialization;
+
 namespace nHydrate.Generator.Common.Util
 {
     public static class Extensions
@@ -234,14 +240,12 @@ namespace nHydrate.Generator.Common.Util
             }
             else if (dataType.IsIntegerType())
             {
-                int i;
-                if (int.TryParse(defaultValue, out i))
+                if (int.TryParse(defaultValue, out _))
                     retval = defaultValue;
             }
             else if (dataType.IsNumericType())
             {
-                double d;
-                if (double.TryParse(defaultValue, out d))
+                if (double.TryParse(defaultValue, out _))
                 {
                     retval = defaultValue;
                 }
@@ -253,7 +257,7 @@ namespace nHydrate.Generator.Common.Util
             }
             else
             {
-                if (dataType.IsTextType() && !string.IsNullOrEmpty(defaultValue))
+                if (dataType.IsTextType() && !defaultValue.IsEmpty())
                     retval = "'" + defaultValue.Replace("'", "''") + "'";
             }
             return retval;
@@ -316,7 +320,7 @@ namespace nHydrate.Generator.Common.Util
                 //Do Nothing
                 //if ((StringHelper.Match(defaultValue, "newid", true)) || (StringHelper.Match(defaultValue, "newid()", true)))
                 //  retval = "newid";
-                //else if (string.IsNullOrEmpty(defaultValue))
+                //else if (defaultValue.IsEmpty())
                 //  retval = string.Empty;
                 //else
                 //{
@@ -327,14 +331,12 @@ namespace nHydrate.Generator.Common.Util
             }
             else if (dataType.IsIntegerType())
             {
-                int i;
-                if (int.TryParse(defaultValue, out i))
+                if (int.TryParse(defaultValue, out _))
                     retval = defaultValue;
             }
             else if (dataType.IsNumericType())
             {
-                double d;
-                if (double.TryParse(defaultValue, out d))
+                if (double.TryParse(defaultValue, out _))
                 {
                     retval = defaultValue;
                 }
@@ -346,7 +348,7 @@ namespace nHydrate.Generator.Common.Util
             }
             else
             {
-                if (dataType.IsTextType() && !string.IsNullOrEmpty(defaultValue))
+                if (dataType.IsTextType() && !defaultValue.IsEmpty())
                     retval = "'" + defaultValue.Replace("'", "''") + "'";
             }
             return retval;
@@ -366,5 +368,105 @@ namespace nHydrate.Generator.Common.Util
             return g.ToString().FlatGuid();
         }
 
+        public static Guid ToGuid(this string str)
+        {
+            if (str.IsEmpty()) return Guid.Empty;
+            if (Guid.TryParse(str, out Guid v))
+                return v;
+            return Guid.Empty;
+        }
+
+        public static bool IsEmpty(this string str) => string.IsNullOrEmpty(str);
+
+        public static string IfEmptyDefault(this string str, string defaultValue) => string.IsNullOrEmpty(str) ? defaultValue : str;
+
+        public static string IfExistsReturn(this string str, string value) => !string.IsNullOrEmpty(str) ? value : string.Empty;
+
+        public static T ToEnum<T>(this string str)
+            where T : struct, System.Enum
+        {
+            System.Enum.TryParse<T>(str, true, out T v);
+            return (T)v;
+        }
+
+        public static T ToEnum<T>(this string str, T defaultValue)
+            where T : struct, System.Enum
+        {
+            if (System.Enum.TryParse<T>(str, true, out T v))
+                return (T)v;
+            return defaultValue;
+        }
+
+        public static T AddItem<T>(this List<T> list, T item)
+        {
+            list.Add(item);
+            return item;
+        }
+
+        public static T AddNew<T>(this List<T> list)
+            where T : new()
+        {
+            T item = new T();
+            list.Add(item);
+            return item;
+        }
+
+        public static T Convert<T>(this System.Enum type)
+            where T : struct, System.Enum
+        {
+            Enum.TryParse(type.ToString(), out T v);
+            return v;
+        }
+
+        public static string ToYaml<T>(this T obj)
+        {
+            if (obj == null) return null;
+            var serializer = new YamlDotNet.Serialization.SerializerBuilder()
+                    .WithTypeConverter(new SystemTypeTypeConverter())
+                    .Build();
+            return serializer.Serialize(obj);
+        }
+
+        public static T FromYaml<T>(this string value)
+        {
+            if (string.IsNullOrEmpty(value)) return default(T);
+            var serializer = new YamlDotNet.Serialization.DeserializerBuilder()
+                   .WithTypeConverter(new SystemTypeTypeConverter())
+                   .Build();
+            return serializer.Deserialize<T>(value);
+        }
+
+        /// <summary>
+        /// If null returns new object of type
+        /// </summary>
+        public static T OrDefault<T>(this T obj) where T : new() => (obj == null) ? new T() : obj;
+
+        public static T[] OrDefault<T>(this T[] obj) where T : new() => (obj == null) ? new T[0] : obj;
+
+        public static bool Is(this BaseModelObject obj, BaseModelObject other)
+        {
+            if (obj == null || other == null) return false;
+            return obj.Key == other.Key;
+        }
+    }
+
+    internal class SystemTypeTypeConverter : IYamlTypeConverter
+    {
+        public bool Accepts(Type type)
+        {
+            return typeof(Type).IsAssignableFrom(type);
+        }
+
+        public object ReadYaml(IParser parser, Type type)
+        {
+            var scalar = parser.Expect<Scalar>();
+            return Type.GetType(scalar.Value);
+        }
+
+        public void WriteYaml(IEmitter emitter, object value, Type type)
+        {
+            var typeName = ((Type)value).AssemblyQualifiedName;
+            emitter.Emit(new Scalar(typeName));
+        }
     }
 }

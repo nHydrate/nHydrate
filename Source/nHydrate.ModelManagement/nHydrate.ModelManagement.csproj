@@ -65,7 +65,7 @@
   <ItemGroup>
     <Compile Include="DiskModel.cs" />
     <Compile Include="FileManagement.cs" />
-    <Compile Include="Utilities.cs" />
+    <Compile Include="ModelException.cs" />
     <Compile Include="XmlMapModels.cs" />
     <Compile Include="YamlObjects.cs" />
   </ItemGroup>
@@ -76,6 +76,12 @@
     <None Include="app.config" />
     <None Include="Key.snk" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\nHydrate.Generator.Common\nHydrate.Generator.Common.csproj">
+      <Project>{97136026-3d75-4830-aecb-8e364aff0b01}</Project>
+      <Name>nHydrate.Generator.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

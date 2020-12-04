@@ -37,7 +37,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseUpgrade
         public override string Generate()
         {
             var sb = new StringBuilder();
-            sb = new StringBuilder();
             sb.AppendLine("--Generated Upgrade For Version " + _model.Version + "." + _model.GeneratedVersion);
             sb.AppendLine("--Generated on " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             sb.AppendLine();
@@ -52,8 +51,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseUpgrade
             var fileName = this._model.GeneratorProject.FileName;
             var prevFileName = fileName + ".sql.lastgen";
             var fiPrev = new System.IO.FileInfo(prevFileName);
-            var fi = new System.IO.FileInfo(fileName);
-
             if (fiPrev.Exists)
             {
                 var newFileName = string.Format(fileName, "sql.");
@@ -65,8 +62,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseUpgrade
                 }
 
                 fileName = newFileName;
-
-                fi = new System.IO.FileInfo(fileName);
+                var fi = new System.IO.FileInfo(fileName);
                 if (fi.Exists)
                 {
                     var newFile = fileName + ".converting";
