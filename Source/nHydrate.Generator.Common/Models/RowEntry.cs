@@ -46,74 +46,51 @@ namespace nHydrate.Generator.Common.Models
 
         public string GetDataSort(Table table)
         {
-            try
+            foreach (CellEntry cellEntry in this.CellEntries)
             {
-                foreach (CellEntry cellEntry in this.CellEntries)
+                if (cellEntry.Column != null && cellEntry.Column.DataType.IsIntegerType())
                 {
-                    if (cellEntry.Column != null && cellEntry.Column.DataType.IsIntegerType())
-                    {
-                        if (cellEntry.Column.Name.ToLower().Contains("order") || cellEntry.Column.Name.ToLower().Contains("sort"))
-                            return cellEntry.Value;
-                    }
+                    if (cellEntry.Column.Name.ToLower().Contains("order") || cellEntry.Column.Name.ToLower().Contains("sort"))
+                        return cellEntry.Value;
                 }
-                return null;
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return null;
         }
 
         public string GetDataRaw(Table table)
         {
-            try
+            var name = string.Empty;
+            var description = string.Empty;
+            foreach (CellEntry cellEntry in this.CellEntries)
             {
-                var name = string.Empty;
-                var description = string.Empty;
-                foreach (CellEntry cellEntry in this.CellEntries)
+                var column = cellEntry.Column;
+                if (column != null)
                 {
-                    var column = cellEntry.Column;
-                    if (column != null)
-                    {
-                        if (StringHelper.Match(column.Name, "name"))
-                            name = cellEntry.Value;
-                        if (StringHelper.Match(column.Name, "description"))
-                            description = cellEntry.Value;
-                    }
+                    if (StringHelper.Match(column.Name, "name"))
+                        name = cellEntry.Value;
+                    if (StringHelper.Match(column.Name, "description"))
+                        description = cellEntry.Value;
                 }
-                return name.IfEmptyDefault(description);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
+            return name.IfEmptyDefault(description);
         }
 
         public string GetCodeIdentifier(Table table)
         {
-            try
+            var name = string.Empty;
+            var description = string.Empty;
+            foreach (CellEntry cellEntry in this.CellEntries)
             {
-                var name = string.Empty;
-                var description = string.Empty;
-                foreach (CellEntry cellEntry in this.CellEntries)
+                var column = cellEntry.Column;
+                if (column != null)
                 {
-                    var column = cellEntry.Column;
-                    if (column != null)
-                    {
-                        if (StringHelper.Match(column.Name, "name"))
-                            name = ValidationHelper.MakeCodeIdentifer(cellEntry.Value);
-                        if (StringHelper.Match(column.Name, "description"))
-                            description = cellEntry.Value;
-                    }
+                    if (StringHelper.Match(column.Name, "name"))
+                        name = ValidationHelper.MakeCodeIdentifer(cellEntry.Value);
+                    if (StringHelper.Match(column.Name, "description"))
+                        description = cellEntry.Value;
                 }
-                return name.IfEmptyDefault(ValidationHelper.MakeCodeIdentifer(description));
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
+            return name.IfEmptyDefault(ValidationHelper.MakeCodeIdentifer(description));
         }
 
         public string GetCodeIdValue(Table table)
@@ -138,7 +115,7 @@ namespace nHydrate.Generator.Common.Models
                 var pk = (Column)table.PrimaryKeyColumns[0];
                 if (column != null)
                 {
-                    if (column.Key == pk.Key)
+                    if (column.Is(pk))
                         id = cellEntry.Value;
                     if (StringHelper.Match(column.Name, "description"))
                         description = cellEntry.Value;

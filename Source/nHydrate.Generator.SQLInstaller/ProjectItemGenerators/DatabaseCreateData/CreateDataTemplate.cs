@@ -1,5 +1,6 @@
 using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common.Util;
 using System.Linq;
 using System.Text;
 
@@ -32,7 +33,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateDa
 
             #region Add Static Data
 
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
                 sb.Append(nHydrate.Core.SQLGeneration.SQLEmit.GetSqlInsertStaticData(table));
             }

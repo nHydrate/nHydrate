@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -54,6 +55,21 @@ namespace nHydrate.Generator.Common.Util
                 case System.Data.SqlDbType.Text:
                 case System.Data.SqlDbType.VarChar:
                 case System.Data.SqlDbType.Xml:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsNString(this Models.Column column) => column?.DataType.IsNString() == true;
+
+        public static bool IsNString(this System.Data.SqlDbType type)
+        {
+            switch (type)
+            {
+                case System.Data.SqlDbType.NChar:
+                case System.Data.SqlDbType.NText:
+                case System.Data.SqlDbType.NVarChar:
                     return true;
                 default:
                     return false;
@@ -206,7 +222,7 @@ namespace nHydrate.Generator.Common.Util
             {
                 retval = "' '";
                 if (defaultValue.Length == 1)
-                    retval = "'" + defaultValue[0].ToString().Replace("'", "''") + "'";
+                    retval = "'" + defaultValue[0].ToString().DoubleTicks() + "'";
             }
             else if (dataType.IsBinaryType())
             {
@@ -258,7 +274,7 @@ namespace nHydrate.Generator.Common.Util
             else
             {
                 if (dataType.IsTextType() && !defaultValue.IsEmpty())
-                    retval = "'" + defaultValue.Replace("'", "''") + "'";
+                    retval = "'" + defaultValue.DoubleTicks() + "'";
             }
             return retval;
         }
@@ -297,7 +313,7 @@ namespace nHydrate.Generator.Common.Util
             {
                 retval = "' '";
                 if (defaultValue.Length == 1)
-                    retval = "'" + defaultValue[0].ToString().Replace("'", "''") + "'";
+                    retval = "'" + defaultValue[0].ToString().DoubleTicks() + "'";
             }
             else if (dataType.IsBinaryType())
             {
@@ -349,7 +365,7 @@ namespace nHydrate.Generator.Common.Util
             else
             {
                 if (dataType.IsTextType() && !defaultValue.IsEmpty())
-                    retval = "'" + defaultValue.Replace("'", "''") + "'";
+                    retval = "'" + defaultValue.DoubleTicks() + "'";
             }
             return retval;
         }
@@ -443,11 +459,23 @@ namespace nHydrate.Generator.Common.Util
 
         public static T[] OrDefault<T>(this T[] obj) where T : new() => (obj == null) ? new T[0] : obj;
 
-        public static bool Is(this BaseModelObject obj, BaseModelObject other)
-        {
-            if (obj == null || other == null) return false;
-            return obj.Key == other.Key;
-        }
+        public static bool Is(this BaseModelObject obj, BaseModelObject other) => (obj == null || other == null) ? false : obj.Key == other.Key;
+
+        public static bool IsEnumOnly(this Models.Table obj) => obj?.TypedTable == TypedTableConstants.EnumOnly;
+
+        public static bool IsTypedTable(this Models.Table obj) => obj?.TypedTable != TypedTableConstants.None;
+
+        public static bool IdentityDatabase(this Models.Column obj) => obj?.Identity == IdentityTypeConstants.Database;
+        
+        public static bool IdentityNone(this Models.Column obj) => obj?.Identity == IdentityTypeConstants.None;
+
+        public static string RemoveParens(this string str) => str?.Replace("(", string.Empty).Replace(")", string.Empty);
+
+        public static string DoubleTicks(this string str) => str?.Replace("'", "''");
+
+        public static string NormalizeLineEndings(this string str) => str?.Replace("\r\n", "\n").Replace("\r", "\n");
+
+        public static List<string> BreakLines(this string text) => text.NormalizeLineEndings().Split(new char[] { '\n' }, StringSplitOptions.None).ToList() ?? new List<string>();
     }
 
     internal class SystemTypeTypeConverter : IYamlTypeConverter

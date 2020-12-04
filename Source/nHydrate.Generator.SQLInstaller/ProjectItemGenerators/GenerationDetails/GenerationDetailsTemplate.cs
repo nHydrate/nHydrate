@@ -1,6 +1,7 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common.Util;
 using System.Linq;
 using System.Text;
 
@@ -31,12 +32,12 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.GenerationDetail
             sb.AppendLine();
 
             sb.AppendLine($"Version {_model.Version}");
-            sb.AppendLine($"Table Count: {_model.Database.Tables.Count(x => x.TypedTable != TypedTableConstants.EnumOnly)}");
+            sb.AppendLine($"Table Count: {_model.Database.Tables.Count(x => !x.IsEnumOnly())}");
             sb.AppendLine($"Tenant Table Count: {_model.Database.Tables.Count(x => x.IsTenant)}");
             sb.AppendLine($"View Count: {_model.Database.CustomViews.Count()}");
             sb.AppendLine();
             sb.AppendLine($"TABLE LIST");
-            foreach (var item in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.DatabaseName))
+            foreach (var item in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.DatabaseName))
             {
                 sb.AppendLine($"{item.DatabaseName}, ColumnCount={item.GetColumns().Count()}, IsTenant={item.IsTenant}");
                 foreach (var column in item.GetColumns().OrderBy(x => x.DatabaseName))

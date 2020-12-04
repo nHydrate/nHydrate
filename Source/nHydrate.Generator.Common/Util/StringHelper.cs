@@ -62,18 +62,11 @@ namespace nHydrate.Generator.Common.Util
         public static string ConvertTextToSingleLineCodeString(string text, bool convertBreaks)
         {
             if (text.IsEmpty()) return string.Empty;
-            text = text.Replace("\r\n", "\n");
-            text = text.Replace("\r", "\n");
-            var arr = text.Split('\n');
-
-            string retval;
-            if (convertBreaks)
-                retval = string.Join(@"\n", arr);
-            else
-                retval = string.Join(" ", arr);
-
             //Replace quotes with escaped chars
-            return retval.Trim().Replace("\"", "\\\"");
+            if (convertBreaks)
+                return string.Join(@"\n", text.BreakLines()).Trim().Replace("\"", "\\\"");
+            else
+                return string.Join(" ", text.BreakLines()).Trim().Replace("\"", "\\\"");
         }
 
         /// <summary>
@@ -84,11 +77,7 @@ namespace nHydrate.Generator.Common.Util
         /// <param name="prepend">The text to prepend each line</param>
         public static void LineBreakCode(StringBuilder sb, string text, string prepend)
         {
-            (text + string.Empty)
-                .Replace("\r", string.Empty)
-                .Split('\n')
-                .ToList()
-                .ForEach(x => sb.AppendLine(prepend + x));
+            (text + string.Empty).BreakLines().ForEach(x => sb.AppendLine(prepend + x));
         }
 
         public static bool Match(this string s1, string s2, bool ignoreCase = true)

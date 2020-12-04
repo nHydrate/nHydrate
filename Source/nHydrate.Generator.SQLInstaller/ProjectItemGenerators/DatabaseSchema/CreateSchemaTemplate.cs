@@ -52,7 +52,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
         private void AppendCreateSchema(StringBuilder sb)
         {
             var list = _model.Database.Tables
-                .Where(x => x.TypedTable != TypedTableConstants.EnumOnly)
+                .Where(x => !x.IsEnumOnly())
                 .Select(x => x.GetSQLSchema().ToLower())
                 .ToList();
 
@@ -78,7 +78,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
         private void AppendCreateTable(StringBuilder sb)
         {
             //Emit each create table statement
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
                 sb.AppendLine(SQLEmit.GetSQLCreateTable(_model, table));
                 sb.AppendLine("GO");
@@ -90,7 +90,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             {
                 //Now emit all field individually
                 sb.AppendLine("--##SECTION BEGIN [FIELD CREATE]");
-                foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+                foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
                 {
                     sb.AppendLine($"--TABLE [{table.DatabaseName}] ADD FIELDS");
                     foreach (var column in table.GetColumns().OrderBy(x => x.SortOrder))
@@ -103,7 +103,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
             if (_model.Database.GrantExecUser != string.Empty)
             {
-                foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+                foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
                 {
                     sb.AppendLine($"GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON [{table.GetSQLSchema()}].[{table.DatabaseName}] TO [{_model.Database.GrantExecUser}]");
                     sb.AppendLine("GO");
@@ -125,7 +125,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
                 //Rename existing PK if they exist
                 sb.AppendLine("--RENAME EXISTING PRIMARY KEYS IF NECESSARY");
-                foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+                foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
                 {
                     sb.AppendLine("DECLARE @pkfix" + table.PascalName + " varchar(500)");
                     sb.AppendLine("SET @pkfix" + table.PascalName + " = (SELECT top 1 i.name AS IndexName FROM sys.indexes AS i WHERE i.is_primary_key = 1 AND OBJECT_NAME(i.OBJECT_ID) = '" + table.DatabaseName + "')");
@@ -141,7 +141,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                 sb.AppendLine();
 
                 //Create PK
-                foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+                foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
                 {
                     sb.Append(SQLEmit.GetSqlCreatePK(table));
                     sb.AppendLine("GO");
@@ -163,7 +163,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             sb.AppendLine();
 
             //The index list holds all NON-PK indexes
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
                 //DO NOT process primary keys
                 foreach (var index in table.TableIndexList.Where(x => !x.PrimaryKey))
@@ -196,7 +196,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
         private void AppendCreateUniqueKey(StringBuilder sb)
         {
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
                 var tableName = Globals.GetTableDatabaseName(_model, table);
                 foreach (var column in table.GetColumns())
@@ -229,7 +229,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             #region Audit Trial Create
             sb.AppendLine("--##SECTION BEGIN [AUDIT TRAIL CREATE]");
             sb.AppendLine();
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
                 if (table.AllowCreateAudit || table.AllowModifiedAudit || table.AllowConcurrencyCheck | table.IsTenant)
                 {
@@ -260,7 +260,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             #region Audit Trial Remove
             sb.AppendLine("--##SECTION BEGIN [AUDIT TRAIL REMOVE]");
             sb.AppendLine();
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
                 if (!table.AllowCreateAudit || !table.AllowModifiedAudit || !table.AllowConcurrencyCheck)
                 {
@@ -294,7 +294,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
             sb.AppendLine("--##SECTION BEGIN [REMOVE DEFAULTS]");
             sb.AppendLine();
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
                 //Add Defaults
                 var tempsb = new StringBuilder();
@@ -327,7 +327,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
 
             sb.AppendLine("--##SECTION BEGIN [CREATE DEFAULTS]");
             sb.AppendLine();
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
                 //Add Defaults
                 var tempsb = new StringBuilder();

@@ -197,7 +197,7 @@ namespace nHydrate.Generator.Common.Models
             if (this.PrimaryKey)
                 text += "Primary Key, ";
 
-            if (this.Identity == IdentityTypeConstants.Database)
+            if (this.IdentityDatabase())
                 text += "AutoNumber, ";
 
             if (this.IsUnique)
@@ -223,7 +223,7 @@ namespace nHydrate.Generator.Common.Models
             var defaultValue = string.Empty;
             if (this.DataType.IsDateType())
             {
-                var scrubbed = this.Default.Replace("(", string.Empty).Replace(")", string.Empty);
+                var scrubbed = this.Default.RemoveParens();
                 if (scrubbed == "getdate")
                 {
                     defaultValue = String.Format("DateTime.Now", this.PascalName);

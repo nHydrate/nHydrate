@@ -97,7 +97,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             sb.AppendLine($"	[FieldNameConstants(typeof({this.GetLocalNamespace()}.Entity.{_item.PascalName}.FieldNameConstants))]");
 
             //For type tables add special attribute
-            if (_item.TypedTable != TypedTableConstants.None)
+            if (_item.IsTypedTable())
             {
                 sb.AppendLine($"	[StaticData(typeof({this.GetLocalNamespace()}.{_item.PascalName}Constants))]");
             }
@@ -323,7 +323,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             foreach (var column in _item.GetColumns().OrderBy(x => x.Name))
             {
                 Table typeTable = null;
-                if (_item.IsColumnRelatedToTypeTable(column, out var pascalRoleName) || (column.PrimaryKey && _item.TypedTable != TypedTableConstants.None))
+                if (_item.IsColumnRelatedToTypeTable(column, out var pascalRoleName) || (column.PrimaryKey && _item.IsTypedTable()))
                 {
                     typeTable = _item.GetRelatedTypeTableByColumn(column, out pascalRoleName);
                     if (typeTable == null) typeTable = _item;
@@ -360,7 +360,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 {
                     sb.AppendLine($"		/// This property has an additional enumeration wrapper property {pascalRoleName}{typeTable.PascalName}Value. Use it as a strongly-typed property.");
                 }
-                else if (column.PrimaryKey && _item.TypedTable != TypedTableConstants.None)
+                else if (column.PrimaryKey && _item.IsTypedTable())
                 {
                     sb.AppendLine($"		/// This property has an additional enumeration wrapper property {pascalRoleName}{typeTable.PascalName}Value. Use it as a strongly-typed property.");
                 }
@@ -386,7 +386,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 if (column.Obsolete)
                     sb.AppendLine("		[System.Obsolete()]");
 
-                //if (column.Identity == IdentityTypeConstants.Database)
+                //if (column.IdentityDatabase())
                 //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]");
 
                 //if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml && column.Length > 0)
@@ -401,14 +401,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 var propertySetterScope = string.Empty;
                 if (column.ComputedColumn)
                     propertySetterScope = "protected internal ";
-                else if (_item.Immutable && _item.TypedTable == TypedTableConstants.None)
+                else if (_item.Immutable && !_item.IsTypedTable())
                     propertySetterScope = "protected internal ";
-                else if (_item.TypedTable != TypedTableConstants.None && StringHelper.Match(_item.GetTypeTableCodeDescription(), column.CamelName, true))
+                else if (_item.IsTypedTable() && StringHelper.Match(_item.GetTypeTableCodeDescription(), column.CamelName, true))
                 {
                     propertySetterScope = "protected internal ";
                     typeTableAttr = "[StaticDataNameField]";
                 }
-                else if (column.Identity == IdentityTypeConstants.Database)
+                else if (column.IdentityDatabase())
                     propertySetterScope = "protected internal ";
                 else if (column.IsReadOnly)
                     propertySetterScope = "protected internal ";
@@ -416,7 +416,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 var codeType = column.GetCodeType();
 
                 //For type tables add attributes to the PK
-                if (_item.TypedTable != TypedTableConstants.None && column.PrimaryKey)
+                if (_item.IsTypedTable() && column.PrimaryKey)
                 {
                     sb.AppendLine("		[Key]");
                     sb.AppendLine("		[StaticDataIdField]");
@@ -553,7 +553,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         else otherRelation = relation2;
                         var targetTable = targetRelation.ParentTable;
 
-                        if ((targetTable.TypedTable != TypedTableConstants.EnumOnly))
+                        if (!targetTable.IsEnumOnly())
                         {
                             sb.AppendLine("		/// <summary>");
                             sb.AppendLine($"		/// The navigation definition for walking {_item.PascalName}->{childTable.PascalName}" + otherRelation.PascalRoleName.IfExistsReturn($" (role: '{otherRelation.PascalRoleName}') (Multiplicity M:N)"));
@@ -575,7 +575,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     }
 
                     //Process relations where Current Table is the parent
-                    else if (parentTable == _item && (childTable.TypedTable != TypedTableConstants.EnumOnly) && !childTable.AssociativeTable)
+                    else if (parentTable == _item && !childTable.IsEnumOnly() && !childTable.AssociativeTable)
                     {
                         sb.AppendLine("		/// <summary>");
                         sb.AppendLine($"		/// The navigation definition for walking {parentTable.PascalName}->{childTable.PascalName}" + relation.PascalRoleName.IfExistsReturn($" (role: '{relation.PascalRoleName}') (Multiplicity 1:N)"));
@@ -596,7 +596,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     var childTable = relation.ChildTable;
 
                     //Do not walk to associative
-                    if ((parentTable.TypedTable == TypedTableConstants.EnumOnly) || (childTable.TypedTable == TypedTableConstants.EnumOnly))
+                    if ((parentTable.IsEnumOnly()) || (childTable.IsEnumOnly()))
                     {
                         //Do Nothing
                     }
@@ -951,7 +951,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                         {
                             var relation = list.First();
                             var pTable = relation.ParentTable;
-                            if (pTable.TypedTable != TypedTableConstants.EnumOnly)
+                            if (!pTable.IsEnumOnly())
                             {
                                 var cTable = relation.ChildTable;
                                 var s = pTable.PascalName;

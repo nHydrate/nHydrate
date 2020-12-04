@@ -1,6 +1,7 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common.Util;
 using System;
 using System.Linq;
 using System.Text;
@@ -76,7 +77,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Unversioned
             //If the indexes have a name on import then rename it
             sb.AppendLine("--RENAME OLD INDEXES FROM THE IMPORT DATABASE IF NEEDED");
             sb.AppendLine();
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
                 foreach (var index in table.TableIndexList)
                 {

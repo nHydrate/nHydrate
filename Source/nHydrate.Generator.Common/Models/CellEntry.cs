@@ -45,7 +45,7 @@ namespace nHydrate.Generator.Common.Models
                      this.Column.DataType.IsDateType() ||
                      this.Column.DataType == System.Data.SqlDbType.UniqueIdentifier
                 )
-                return "'" + v.Replace("'", "''") + "'";
+                return $"'{v.DoubleTicks()}'";
             else
                 return v;
         }
@@ -59,14 +59,10 @@ namespace nHydrate.Generator.Common.Models
             var oDoc = node.OwnerDocument;
             if (ColumnRef != null)
             {
-                var columnRefNode = oDoc.CreateElement("f");
-                if (this.ColumnRef == null)
-                    this.ColumnRef = new Reference(this.Root);
-                this.ColumnRef.XmlAppend(columnRefNode);
-                node.AppendChild(columnRefNode);
+                this.ColumnRef = new Reference(this.Root);
+                node.AppendChild(this.ColumnRef.XmlAppend(oDoc.CreateElement("f")));
             }
             node.AddAttribute("value", this.Value);
-
             return node;
         }
 
@@ -80,7 +76,6 @@ namespace nHydrate.Generator.Common.Models
                     this.ColumnRef = new Reference(this.Root);
                 this.ColumnRef.XmlLoad(columnRefNode);
             }
-
             this.Value = node.GetAttributeValue("value", string.Empty);
             return node;
         }

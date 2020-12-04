@@ -15,54 +15,47 @@ namespace nHydrate.Core.SQLGeneration
         public static string GetSQLCreateTable(ModelRoot model, Table table, string tableAliasName = null,
             bool emitPK = true)
         {
-            try
+            if (table.IsEnumOnly())
+                return string.Empty;
+
+            var sb = new StringBuilder();
+            var tableName = Globals.GetTableDatabaseName(model, table);
+            if (!tableAliasName.IsEmpty())
+                tableName = tableAliasName;
+
+            sb.AppendLine($"--CREATE TABLE [{tableName}]");
+            sb.AppendLine($"if not exists(select * from sys.tables t inner join sys.schemas s on t.schema_id = s.schema_id where t.name = '{tableName}' and s.name = '{table.GetSQLSchema()}')");
+            sb.AppendLine($"CREATE TABLE [{table.GetSQLSchema()}].[{tableName}] (");
+
+            var firstLoop = true;
+            foreach (var column in table.GetColumns().OrderBy(x => x.SortOrder))
             {
-                if (table.TypedTable == TypedTableConstants.EnumOnly)
-                    return string.Empty;
-
-                var sb = new StringBuilder();
-                var tableName = Globals.GetTableDatabaseName(model, table);
-                if (!tableAliasName.IsEmpty())
-                    tableName = tableAliasName;
-
-                sb.AppendLine($"--CREATE TABLE [{tableName}]");
-                sb.AppendLine($"if not exists(select * from sys.tables t inner join sys.schemas s on t.schema_id = s.schema_id where t.name = '{tableName}' and s.name = '{table.GetSQLSchema()}')");
-                sb.AppendLine($"CREATE TABLE [{table.GetSQLSchema()}].[{tableName}] (");
-
-                var firstLoop = true;
-                foreach (var column in table.GetColumns().OrderBy(x => x.SortOrder))
-                {
-                    if (!firstLoop) sb.AppendLine(",");
-                    else firstLoop = false;
-                    sb.Append("\t" + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true));
-                }
-
-                AppendModifiedAudit(model, table, sb);
-                AppendCreateAudit(model, table, sb);
-                AppendTimestamp(model, table, sb);
-                AppendTenantField(model, table, sb);
-
-                //Emit PK
-                var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
-                if (tableIndex != null && tableIndex.IndexColumnList.Any() && emitPK)
-                {
-                    var indexName = $"PK_{table.DatabaseName}".ToUpper();
-                    sb.AppendLine(",");
-                    sb.AppendLine($"\tCONSTRAINT [{indexName}] PRIMARY KEY {tableIndex.GetDbClustered()}");
-                    sb.AppendLine("\t" + "(");
-                    sb.AppendLine("\t\t" + Globals.GetSQLIndexField(table, tableIndex));
-                    sb.AppendLine("\t" + ")");
-                }
-                else
-                    sb.AppendLine();
-
-                sb.AppendLine(")");
-                return sb.ToString();
+                if (!firstLoop) sb.AppendLine(",");
+                else firstLoop = false;
+                sb.Append("\t" + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true));
             }
-            catch (Exception ex)
+
+            AppendModifiedAudit(model, table, sb);
+            AppendCreateAudit(model, table, sb);
+            AppendTimestamp(model, table, sb);
+            AppendTenantField(model, table, sb);
+
+            //Emit PK
+            var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
+            if (tableIndex != null && tableIndex.IndexColumnList.Any() && emitPK)
             {
-                throw;
+                var indexName = $"PK_{table.DatabaseName}".ToUpper();
+                sb.AppendLine(",");
+                sb.AppendLine($"\tCONSTRAINT [{indexName}] PRIMARY KEY {tableIndex.GetDbClustered()}");
+                sb.AppendLine("\t" + "(");
+                sb.AppendLine("\t\t" + Globals.GetSQLIndexField(table, tableIndex));
+                sb.AppendLine("\t" + ")");
             }
+            else
+                sb.AppendLine();
+
+            sb.AppendLine(")");
+            return sb.ToString();
         }
 
         public static string GetSqlRenameTable(Table oldTable, Table newTable)
@@ -182,7 +175,7 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetSqlAddColumn(Column column, bool useComment)
         {
-            if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (column.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -254,7 +247,7 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetSqlDropColumn(ModelRoot model, Column column)
         {
-            if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (column.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -439,7 +432,7 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetSqlModifyColumn(Column oldColumn, Column newColumn)
         {
-            if (newColumn.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (newColumn.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -617,7 +610,7 @@ namespace nHydrate.Core.SQLGeneration
 
                             var dValue = newColumn.Default;
                             if (newColumn.DataType.IsTextType() || newColumn.DataType.IsDateType())
-                                dValue = "'" + dValue.Replace("'", "''") + "'";
+                                dValue = "'" + dValue.DoubleTicks() + "'";
 
                             sb.AppendLine($"--UPDATE [{newTable.GetSQLSchema()}].[{newTable.DatabaseName}] SET [{newColumn.DatabaseName}] = {dValue} WHERE [{newColumn.DatabaseName}] IS NULL");
                         }
@@ -638,8 +631,7 @@ namespace nHydrate.Core.SQLGeneration
             #region Change Identity
 
             //If old column was Identity and it has been removed then remove it
-            if (newColumn.Identity == IdentityTypeConstants.None &&
-                oldColumn.Identity == IdentityTypeConstants.Database)
+            if (newColumn.IdentityNone() && oldColumn.IdentityDatabase())
             {
                 //Check PK
                 if (oldColumn.PrimaryKey)
@@ -679,13 +671,12 @@ namespace nHydrate.Core.SQLGeneration
                     sb.AppendLine();
                 }
             }
-            else if (newColumn.Identity == IdentityTypeConstants.Database &&
-                     oldColumn.Identity == IdentityTypeConstants.None)
+            else if (newColumn.IdentityDatabase() && oldColumn.IdentityNone())
             {
                 //sb.AppendLine("--ADD SCRIPT HERE TO CONVERT [" + newTable.DatabaseName + "].[" + newColumn.DatabaseName + "] TO IDENTITY COLUMN");                //Check PK
 
                 var tableName = Globals.GetTableDatabaseName(model, newTable);
-                var tempTableName = "__" + tableName;
+                var tempTableName = $"__{tableName}";
                 sb.AppendLine($"--YOU WILL NEED TO REMOVE ANY RELATIONSHIPS HERE FOR TABLE [{tableName}]");
                 sb.AppendLine();
 
@@ -754,7 +745,7 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetSqlDropTable(ModelRoot model, Table t)
         {
-            if (t.TypedTable == TypedTableConstants.EnumOnly)
+            if (t.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -870,244 +861,221 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetSqlInsertStaticData(Table table)
         {
-            try
+            var sb = new StringBuilder();
+            var model = (ModelRoot)table.Root;
+
+            //Generate static data
+            if (table.StaticData.Count > 0)
             {
-                var sb = new StringBuilder();
-                var model = (ModelRoot)table.Root;
+                var isIdentity = false;
+                foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
+                    isIdentity |= (column.IdentityDatabase());
 
-                //Generate static data
-                if (table.StaticData.Count > 0)
+                sb.AppendLine($"--INSERT STATIC DATA FOR TABLE [{Globals.GetTableDatabaseName(model, table)}]");
+                if (isIdentity)
+                    sb.AppendLine($"SET identity_insert [{table.GetSQLSchema()}].[{Globals.GetTableDatabaseName(model, table)}] on");
+
+                foreach (var rowEntry in table.StaticData.AsEnumerable<RowEntry>())
                 {
-                    var isIdentity = false;
-                    foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
-                        isIdentity |= (column.Identity == IdentityTypeConstants.Database);
 
-                    sb.AppendLine("--INSERT STATIC DATA FOR TABLE [" + Globals.GetTableDatabaseName(model, table) +
-                                  "]");
-                    if (isIdentity)
-                        sb.AppendLine("SET identity_insert [" + table.GetSQLSchema() + "].[" +
-                                      Globals.GetTableDatabaseName(model, table) + "] on");
-
-                    foreach (var rowEntry in table.StaticData.AsEnumerable<RowEntry>())
+                    var fieldValues = new Dictionary<string, string>();
+                    foreach (var cellEntry in rowEntry.CellEntries.ToList())
                     {
-
-                        var fieldValues = new Dictionary<string, string>();
-                        foreach (var cellEntry in rowEntry.CellEntries.ToList())
+                        var column = cellEntry.Column;
+                        var sqlValue = cellEntry.GetSQLData();
+                        if (sqlValue == null) //Null is actually returned if the value can be null
                         {
-                            var column = cellEntry.Column;
-                            var sqlValue = cellEntry.GetSQLData();
-                            if (sqlValue == null) //Null is actually returned if the value can be null
+                            if (!column.Default.IsEmpty())
                             {
-                                if (!column.Default.IsEmpty())
+                                if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                 {
-                                    if (column.DataType.IsTextType() || column.DataType.IsDateType())
-                                    {
-                                        if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText ||
-                                            column.DataType == SqlDbType.NVarChar)
-                                            fieldValues.Add(column.Name,
-                                                "N'" + column.Default.Replace("'", "''") + "'");
-                                        else
-                                            fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
-                                    }
+                                    if (column.IsNString())
+                                        fieldValues.Add(column.Name,
+                                            "N'" + column.Default.DoubleTicks() + "'");
                                     else
-                                    {
-                                        fieldValues.Add(column.Name, column.Default);
-                                    }
+                                        fieldValues.Add(column.Name, "'" + column.Default.DoubleTicks() + "'");
                                 }
                                 else
                                 {
-                                    fieldValues.Add(column.Name, "NULL");
+                                    fieldValues.Add(column.Name, column.Default);
                                 }
                             }
                             else
                             {
-                                if (column.DataType == SqlDbType.Bit)
-                                {
-                                    sqlValue = sqlValue.ToLower().Trim();
-                                    if (sqlValue == "true") sqlValue = "1";
-                                    else if (sqlValue == "false") sqlValue = "0";
-                                    else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
-                                }
-
-                                if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText ||
-                                    column.DataType == SqlDbType.NVarChar)
-                                    fieldValues.Add(column.Name, "N" + sqlValue);
-                                else
-                                    fieldValues.Add(column.Name, sqlValue);
-
+                                fieldValues.Add(column.Name, "NULL");
                             }
                         }
-
-                        // this could probably be done smarter
-                        // but I am concerned about the order of the keys and values coming out right
-                        var fieldList = new List<string>();
-                        var valueList = new List<string>();
-                        var updateSetList = new List<string>();
-                        var primaryKeyColumnNames = table.PrimaryKeyColumns.Select(x => x.Name);
-                        foreach (var kvp in fieldValues)
+                        else
                         {
-                            fieldList.Add($"[{kvp.Key}]");
-                            valueList.Add(kvp.Value);
-
-                            if (!primaryKeyColumnNames.Contains(kvp.Key))
+                            if (column.DataType == SqlDbType.Bit)
                             {
-                                updateSetList.Add($"{kvp.Key} = {kvp.Value}");
+                                sqlValue = sqlValue.ToLower().Trim();
+                                if (sqlValue == "true") sqlValue = "1";
+                                else if (sqlValue == "false") sqlValue = "0";
+                                else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
                             }
+
+                            if (column.IsNString())
+                                fieldValues.Add(column.Name, "N" + sqlValue);
+                            else
+                                fieldValues.Add(column.Name, sqlValue);
+
                         }
-
-                        var fieldListString = string.Join(",", fieldList);
-                        var valueListString = string.Join(",", valueList);
-                        var updateSetString = string.Join(",", updateSetList);
-
-                        sb.Append("if not exists(select * from [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] where ");
-
-                        var ii = 0;
-                        var pkWhereSb = new StringBuilder();
-                        foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
-                        {
-                            var pkData = rowEntry.CellEntries[column.Name].GetSQLData();
-                            pkWhereSb.Append($"([{column.DatabaseName}] = {pkData})");
-                            if (ii < table.PrimaryKeyColumns.Count - 1)
-                                pkWhereSb.Append(" AND ");
-                            ii++;
-                        }
-
-                        sb.Append(pkWhereSb);
-                        sb.AppendLine(") ");
-                        sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] (" + fieldListString + ") values (" + valueListString + ");");
-
-                        // TODO: We should not do this as it overwrites existing database data
-                        //sb.AppendLine("else ");
-                        //sb.AppendLine("UPDATE [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] SET " + updateSetString + " WHERE " + pkWhereSb.ToString() + ";");
-
                     }
 
-                    if (isIdentity)
-                        sb.AppendLine("SET identity_insert [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] off");
+                    // this could probably be done smarter
+                    // but I am concerned about the order of the keys and values coming out right
+                    var fieldList = new List<string>();
+                    var valueList = new List<string>();
+                    var updateSetList = new List<string>();
+                    var primaryKeyColumnNames = table.PrimaryKeyColumns.Select(x => x.Name);
+                    foreach (var kvp in fieldValues)
+                    {
+                        fieldList.Add($"[{kvp.Key}]");
+                        valueList.Add(kvp.Value);
 
-                    sb.AppendLine();
-                    sb.AppendLine("GO");
-                    sb.AppendLine();
+                        if (!primaryKeyColumnNames.Contains(kvp.Key))
+                        {
+                            updateSetList.Add($"{kvp.Key} = {kvp.Value}");
+                        }
+                    }
+
+                    var fieldListString = string.Join(",", fieldList);
+                    var valueListString = string.Join(",", valueList);
+                    var updateSetString = string.Join(",", updateSetList);
+
+                    sb.Append($"if not exists(select * from [{table.GetSQLSchema()}].[{Globals.GetTableDatabaseName(model, table)}] where ");
+
+                    var ii = 0;
+                    var pkWhereSb = new StringBuilder();
+                    foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
+                    {
+                        var pkData = rowEntry.CellEntries[column.Name].GetSQLData();
+                        pkWhereSb.Append($"([{column.DatabaseName}] = {pkData})");
+                        if (ii < table.PrimaryKeyColumns.Count - 1)
+                            pkWhereSb.Append(" AND ");
+                        ii++;
+                    }
+
+                    sb.Append(pkWhereSb);
+                    sb.AppendLine(") ");
+                    sb.AppendLine($"INSERT INTO [{table.GetSQLSchema()}].[{Globals.GetTableDatabaseName(model, table)}] ({fieldListString}) values ({valueListString});");
+
+                    // TODO: We should not do this as it overwrites existing database data
+                    //sb.AppendLine("else ");
+                    //sb.AppendLine("UPDATE [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] SET " + updateSetString + " WHERE " + pkWhereSb.ToString() + ";");
                 }
 
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                throw;
+                if (isIdentity)
+                    sb.AppendLine($"SET identity_insert [{table.GetSQLSchema()}].[{Globals.GetTableDatabaseName(model, table)}] off");
+
+                sb.AppendLine();
+                sb.AppendLine("GO");
+                sb.AppendLine();
             }
 
+            return sb.ToString();
         }
 
         public static string GetSqlUpdateStaticData(Table oldT, Table newT)
         {
-            try
-            {
-                var sb = new StringBuilder();
-                var model = newT.Root as ModelRoot;
+            var sb = new StringBuilder();
+            var model = newT.Root as ModelRoot;
 
-                //Generate static data
-                if (newT.StaticData.Count > 0)
+            //Generate static data
+            if (newT.StaticData.Count > 0)
+            {
+                sb.AppendLine($"--UPDATE STATIC DATA FOR TABLE [{Globals.GetTableDatabaseName(model, newT)}]");
+                sb.AppendLine("--IF YOU WISH TO UPDATE THIS STATIC DATA UNCOMMENT THIS SQL");
+                foreach (var rowEntry in newT.StaticData.AsEnumerable<RowEntry>())
                 {
-                    sb.AppendLine("--UPDATE STATIC DATA FOR TABLE [" + Globals.GetTableDatabaseName(model, newT) + "]");
-                    sb.AppendLine("--IF YOU WISH TO UPDATE THIS STATIC DATA UNCOMMENT THIS SQL");
-                    foreach (var rowEntry in newT.StaticData.AsEnumerable<RowEntry>())
+                    var fieldValues = new Dictionary<string, string>();
+                    foreach (var cellEntry in rowEntry.CellEntries.ToList())
                     {
-                        var fieldValues = new Dictionary<string, string>();
-                        foreach (var cellEntry in rowEntry.CellEntries.ToList())
+                        var column = cellEntry.Column;
+                        var sqlValue = cellEntry.GetSQLData();
+                        if (sqlValue == null) //Null is actually returned if the value can be null
                         {
-                            var column = cellEntry.Column;
-                            var sqlValue = cellEntry.GetSQLData();
-                            if (sqlValue == null) //Null is actually returned if the value can be null
+                            if (!column.Default.IsEmpty())
                             {
-                                if (!column.Default.IsEmpty())
+                                if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                 {
-                                    if (column.DataType.IsTextType() || column.DataType.IsDateType())
-                                    {
-                                        if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText ||
-                                            column.DataType == SqlDbType.NVarChar)
-                                            fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
-                                        else
-                                            fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
-                                    }
+                                    if (column.IsNString())
+                                        fieldValues.Add(column.Name, "N'" + column.Default.DoubleTicks() + "'");
                                     else
-                                    {
-                                        fieldValues.Add(column.Name, column.Default);
-                                    }
+                                        fieldValues.Add(column.Name, "'" + column.Default.DoubleTicks() + "'");
                                 }
                                 else
                                 {
-                                    fieldValues.Add(column.Name, "NULL");
+                                    fieldValues.Add(column.Name, column.Default);
                                 }
                             }
                             else
                             {
-                                if (column.DataType == SqlDbType.Bit)
-                                {
-                                    sqlValue = sqlValue.ToLower().Trim();
-                                    if (sqlValue == "true") sqlValue = "1";
-                                    else if (sqlValue == "false") sqlValue = "0";
-                                    else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
-                                }
-
-                                if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText ||
-                                    column.DataType == SqlDbType.NVarChar)
-                                    fieldValues.Add(column.Name, "N" + sqlValue);
-                                else
-                                    fieldValues.Add(column.Name, sqlValue);
-
+                                fieldValues.Add(column.Name, "NULL");
                             }
                         }
-
-                        // this could probably be done smarter
-                        // but I am concerned about the order of the keys and values coming out right
-                        var fieldList = new List<string>();
-                        var valueList = new List<string>();
-                        var updateSetList = new List<string>();
-                        var primaryKeyColumnNames = newT.PrimaryKeyColumns.Select(x => x.Name);
-                        foreach (var kvp in fieldValues)
+                        else
                         {
-                            fieldList.Add("[" + kvp.Key + "]");
-                            valueList.Add(kvp.Value);
-
-                            if (!primaryKeyColumnNames.Contains(kvp.Key))
+                            if (column.DataType == SqlDbType.Bit)
                             {
-                                updateSetList.Add($"{kvp.Key} = {kvp.Value}");
+                                sqlValue = sqlValue.ToLower().Trim();
+                                if (sqlValue == "true") sqlValue = "1";
+                                else if (sqlValue == "false") sqlValue = "0";
+                                else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
                             }
+
+                            if (column.IsNString())
+                                fieldValues.Add(column.Name, "N" + sqlValue);
+                            else
+                                fieldValues.Add(column.Name, sqlValue);
+
                         }
-
-                        var updateSetString = string.Join(",", updateSetList);
-
-                        var ii = 0;
-                        var pkWhereSb = new StringBuilder();
-                        foreach (var column in newT.PrimaryKeyColumns.OrderBy(x => x.Name))
-                        {
-                            var pkData = rowEntry.CellEntries[column.Name].GetSQLData();
-                            pkWhereSb.Append("([" + column.DatabaseName + "] = " + pkData + ")");
-                            if (ii < newT.PrimaryKeyColumns.Count - 1)
-                                pkWhereSb.Append(" AND ");
-                            ii++;
-                        }
-
-                        sb.AppendLine($"--UPDATE [{newT.GetSQLSchema()}].[{Globals.GetTableDatabaseName(model, newT)}] SET {updateSetString} WHERE {pkWhereSb.ToString()};");
-
                     }
 
-                    sb.AppendLine();
+                    // this could probably be done smarter
+                    // but I am concerned about the order of the keys and values coming out right
+                    var fieldList = new List<string>();
+                    var valueList = new List<string>();
+                    var updateSetList = new List<string>();
+                    var primaryKeyColumnNames = newT.PrimaryKeyColumns.Select(x => x.Name);
+                    foreach (var kvp in fieldValues)
+                    {
+                        fieldList.Add("[" + kvp.Key + "]");
+                        valueList.Add(kvp.Value);
+
+                        if (!primaryKeyColumnNames.Contains(kvp.Key))
+                        {
+                            updateSetList.Add($"{kvp.Key} = {kvp.Value}");
+                        }
+                    }
+
+                    var updateSetString = string.Join(",", updateSetList);
+
+                    var ii = 0;
+                    var pkWhereSb = new StringBuilder();
+                    foreach (var column in newT.PrimaryKeyColumns.OrderBy(x => x.Name))
+                    {
+                        var pkData = rowEntry.CellEntries[column.Name].GetSQLData();
+                        pkWhereSb.Append("([" + column.DatabaseName + "] = " + pkData + ")");
+                        if (ii < newT.PrimaryKeyColumns.Count - 1)
+                            pkWhereSb.Append(" AND ");
+                        ii++;
+                    }
+
+                    sb.AppendLine($"--UPDATE [{newT.GetSQLSchema()}].[{Globals.GetTableDatabaseName(model, newT)}] SET {updateSetString} WHERE {pkWhereSb.ToString()};");
+
                 }
 
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                throw;
+                sb.AppendLine();
             }
 
+            return sb.ToString();
         }
 
         public static string AppendColumnDefaultCreateSQL(Column column, bool includeDrop = true)
         {
-            if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (column.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -1140,7 +1108,7 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string AppendColumnDefaultRemoveSql(Column column)
         {
-            if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (column.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -1196,7 +1164,6 @@ namespace nHydrate.Core.SQLGeneration
                 if (column != null)
                     columnList.Add(indexColumn, column);
             }
-
             return columnList;
         }
 
@@ -1207,8 +1174,7 @@ namespace nHydrate.Core.SQLGeneration
             //Make sure that the index name is the same each time
             var columnList = GetIndexColumns(table, index);
             var prefix = (index.PrimaryKey ? "PK" : "IDX");
-            var indexName = prefix + "_" + table.Name.FlatGuid() + "_" +
-                            string.Join("_", columnList.Select(x => x.Value.Name));
+            var indexName = $"{prefix}_{table.Name.FlatGuid()}_{string.Join("_", columnList.Select(x => x.Value.Name))}";
             indexName = indexName.ToUpper();
             return indexName;
         }
@@ -1312,28 +1278,21 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetSqlCreatePK(Table table)
         {
-            try
+            var sb = new StringBuilder();
+            var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
+            if (tableIndex != null)
             {
-                var sb = new StringBuilder();
-                var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
-                if (tableIndex != null)
-                {
-                    var indexName = $"PK_{table.DatabaseName.ToUpper()}";
-                    sb.AppendLine($"--PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
-                    sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'PK')");
-                    sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] WITH NOCHECK ADD ");
-                    sb.AppendLine($"CONSTRAINT [{indexName}] PRIMARY KEY {tableIndex.GetDbClustered()}");
-                    sb.AppendLine("(");
-                    sb.AppendLine("\t" + Globals.GetSQLIndexField(table, tableIndex));
-                    sb.Append(")");
-                    sb.AppendLine();
-                }
-                return sb.ToString();
+                var indexName = $"PK_{table.DatabaseName.ToUpper()}";
+                sb.AppendLine($"--PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
+                sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'PK')");
+                sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] WITH NOCHECK ADD ");
+                sb.AppendLine($"CONSTRAINT [{indexName}] PRIMARY KEY {tableIndex.GetDbClustered()}");
+                sb.AppendLine("(");
+                sb.AppendLine("\t" + Globals.GetSQLIndexField(table, tableIndex));
+                sb.Append(")");
+                sb.AppendLine();
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return sb.ToString();
         }
 
         public static string GetSqlDropPK(Table table)
@@ -1352,26 +1311,21 @@ namespace nHydrate.Core.SQLGeneration
         {
             var indexName = nHydrate.Core.SQLGeneration.SQLEmit.CreateFkName(relation).ToUpper();
             var targetTable = relation.ChildTable;
-
             var sb = new StringBuilder();
-            sb.AppendLine(
-                $"--REMOVE FOREIGN KEY [{relation.ParentTable.DatabaseName}->{relation.ChildTable.DatabaseName}]");
+            sb.AppendLine($"--REMOVE FOREIGN KEY [{relation.ParentTable.DatabaseName}->{relation.ChildTable.DatabaseName}]");
             sb.AppendLine($"if exists(select * from sys.objects where name = '{indexName}' and type = 'F')");
-            sb.AppendLine(
-                $"ALTER TABLE [{targetTable.GetSQLSchema()}].[{targetTable.DatabaseName}] DROP CONSTRAINT [{indexName}]");
+            sb.AppendLine($"ALTER TABLE [{targetTable.GetSQLSchema()}].[{targetTable.DatabaseName}] DROP CONSTRAINT [{indexName}]");
             return sb.ToString();
         }
 
         public static string GetSqlAddFK(Relation relation)
         {
-            var indexName = nHydrate.Core.SQLGeneration.SQLEmit.CreateFkName(relation);
-            indexName = indexName.ToUpper();
+            var indexName = nHydrate.Core.SQLGeneration.SQLEmit.CreateFkName(relation).ToUpper();
             var childTable = relation.ChildTable;
             var parentTable = relation.ParentTable;
 
             var sb = new StringBuilder();
-            if ((parentTable.TypedTable != TypedTableConstants.EnumOnly) &&
-                (childTable.TypedTable != TypedTableConstants.EnumOnly))
+            if (!parentTable.IsEnumOnly() && !childTable.IsEnumOnly())
             {
                 sb.AppendLine($"--FOREIGN KEY RELATIONSHIP [{parentTable.DatabaseName}] -> [{childTable.DatabaseName}] ({GetFieldNames(relation)})");
                 sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'F')");
@@ -1412,40 +1366,26 @@ namespace nHydrate.Core.SQLGeneration
 
         private static string AppendChildTableColumns(Relation relation)
         {
-            try
-            {
-                //Sort the columns by PK/Unique first and then by name
-                var crList = relation.ColumnRelationships.ToList();
-                if (crList.Count == 0) return string.Empty;
+            //Sort the columns by PK/Unique first and then by name
+            var crList = relation.ColumnRelationships.ToList();
+            if (crList.Count == 0) return string.Empty;
 
-                //Loop through the ordered columns of the parent table's primary key index
-                //var columnList = crList.OrderBy(x => x.ParentColumn.Name).Select(cr => cr.ChildColumn).ToList();
-                var columnList = crList.Select(cr => cr.ChildColumn).ToList();
-                return string.Join(",", columnList.Select(x => $"	[{x.Name}]\r\n"));
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            //Loop through the ordered columns of the parent table's primary key index
+            //var columnList = crList.OrderBy(x => x.ParentColumn.Name).Select(cr => cr.ChildColumn).ToList();
+            var columnList = crList.Select(cr => cr.ChildColumn).ToList();
+            return string.Join(",", columnList.Select(x => $"	[{x.Name}]\r\n"));
         }
 
         private static string AppendParentTableColumns(Relation relation, Table table)
         {
-            try
-            {
-                //Sort the columns by PK/Unique first and then by name
-                var crList = relation.ColumnRelationships.ToList();
-                if (crList.Count == 0) return string.Empty;
+            //Sort the columns by PK/Unique first and then by name
+            var crList = relation.ColumnRelationships.ToList();
+            if (crList.Count == 0) return string.Empty;
 
-                //Loop through the ordered columns of the parent table's primary key index
-                //var columnList = crList.OrderBy(x => x.ParentColumn.Name).Select(cr => cr.ParentColumn).ToList();
-                var columnList = crList.Select(cr => cr.ParentColumn).ToList();
-                return string.Join(",", columnList.Select(x => $"	[{x.Name}]\r\n"));
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            //Loop through the ordered columns of the parent table's primary key index
+            //var columnList = crList.OrderBy(x => x.ParentColumn.Name).Select(cr => cr.ParentColumn).ToList();
+            var columnList = crList.Select(cr => cr.ParentColumn).ToList();
+            return string.Join(",", columnList.Select(x => $"	[{x.Name}]\r\n"));
         }
 
         private static string AppendColumnDefinition(Column column, bool allowDefault, bool allowIdentity)
@@ -1482,7 +1422,7 @@ namespace nHydrate.Core.SQLGeneration
                 //}
 
                 //Add Identity
-                if (allowIdentity && (column.Identity == IdentityTypeConstants.Database))
+                if (allowIdentity && column.IdentityDatabase())
                 {
                     if (column.DataType == SqlDbType.UniqueIdentifier)
                         sb.Append(" DEFAULT newid()");
@@ -1551,7 +1491,7 @@ namespace nHydrate.Core.SQLGeneration
                     defaultValue.ToLower() == "newid()" ||
                     defaultValue.ToLower() == "newsequentialid" ||
                     defaultValue.ToLower() == "newsequentialid()" ||
-                    column.Identity == IdentityTypeConstants.Database)
+                    column.IdentityDatabase())
                 {
                     tempBuilder.Append(GetDefaultValue(defaultValue));
                 }
@@ -1629,7 +1569,7 @@ namespace nHydrate.Core.SQLGeneration
             if (table.IsTenant)
             {
                 sb.AppendLine(",");
-                sb.Append("\t[" + model.TenantColumnName + "] [nvarchar] (50) NOT NULL");
+                sb.Append($"\t[{model.TenantColumnName}] [nvarchar] (50) NOT NULL");
             }
         }
 

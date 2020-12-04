@@ -19,419 +19,412 @@ namespace nHydrate.Generator.PostgresInstaller
         #region TODO
         public static string GetModelDifferenceSql(ModelRoot modelOld, ModelRoot modelNew)
         {
-            try
+            var sb = new StringBuilder();
+
+            #region Loop and Add tables
+
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList())
             {
-                var sb = new StringBuilder();
-
-                #region Loop and Add tables
-
-                foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
+                if (oldT == null)
                 {
-                    var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
-                    if (oldT == null)
+                    //Add table, indexes
+                    sb.AppendLine(SQLEmit.GetSQLCreateTable(modelNew, newT));
+                    sb.AppendLine("--GO");
+                    sb.AppendLine(SQLEmit.GetSqlCreatePK(newT));
+                    sb.AppendLine("--GO");
+
+                    //DO NOT process primary keys
+                    foreach (var index in newT.TableIndexList.Where(x => !x.PrimaryKey))
                     {
-                        //Add table, indexes
-                        sb.AppendLine(SQLEmit.GetSQLCreateTable(modelNew, newT));
+                        sb.Append(SQLEmit.GetSQLCreateIndex(newT, index, false));
                         sb.AppendLine("--GO");
-                        sb.AppendLine(SQLEmit.GetSqlCreatePK(newT));
-                        sb.AppendLine("--GO");
-
-                        //DO NOT process primary keys
-                        foreach (var index in newT.TableIndexList.Where(x => !x.PrimaryKey))
-                        {
-                            sb.Append(SQLEmit.GetSQLCreateIndex(newT, index, false));
-                            sb.AppendLine("--GO");
-                            sb.AppendLine();
-                        }
-
-                        if (newT.StaticData.Count > 0)
-                        {
-                            sb.Append(SQLEmit.GetSqlInsertStaticData(newT));
-                            sb.AppendLine("--GO");
-                            sb.AppendLine();
-                        }
-
-                    }
-                }
-
-                #endregion
-
-                #region Delete Indexes
-                foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
-                {
-                    var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
-                    if (oldT != null)
-                    {
-                        //If old exists new does NOT, so delete index
-                        foreach (var oldIndex in oldT.TableIndexList)
-                        {
-                            var newIndex = newT.TableIndexList.FirstOrDefault(x => x.Is(oldIndex));
-                            if (newIndex == null)
-                            {
-                                sb.AppendLine(SQLEmit.GetSQLDropIndex(newT, oldIndex));
-                                sb.AppendLine("--GO");
-                            }
-                        }
-
-                        //Both exist, so if different, drop and re-create
-                        foreach (var newIndex in newT.TableIndexList)
-                        {
-                            var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Is(newIndex));
-                            if (oldIndex != null && oldIndex.CorePropertiesHashNoNames != newIndex.CorePropertiesHashNoNames)
-                            {
-                                sb.AppendLine(SQLEmit.GetSQLDropIndex(newT, oldIndex));
-                                sb.AppendLine("--GO");
-                            }
-                        }
-                    }
-                }
-                #endregion
-
-                #region Loop and DELETE tables
-
-                foreach (var oldT in modelOld.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly))
-                {
-                    var newT = modelNew.Database.Tables.FirstOrDefault(x => (x.TypedTable != TypedTableConstants.EnumOnly) && x.Key.ToLower() == oldT.Key.ToLower());
-                    if (newT == null)
-                    {
-                        //DELETE TABLE
-                        sb.Append(SQLEmit.GetSqlDropTable(modelOld, oldT));
-                        sb.AppendLine("--GO");
-                        //TODO - Delete Tenant View
                         sb.AppendLine();
                     }
-                    else if (newT.DatabaseName != oldT.DatabaseName)
+
+                    if (newT.StaticData.Count > 0)
                     {
-                        //RENAME TABLE
+                        sb.Append(SQLEmit.GetSqlInsertStaticData(newT));
+                        sb.AppendLine("--GO");
+                        sb.AppendLine();
                     }
+
                 }
+            }
 
-                #endregion
+            #endregion
 
-                #region Loop and Modify tables
-                foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+            #region Delete Indexes
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList())
+            {
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
+                if (oldT != null)
                 {
-                    var schemaChanged = false;
-                    var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
-                    if (oldT != null)
+                    //If old exists new does NOT, so delete index
+                    foreach (var oldIndex in oldT.TableIndexList)
                     {
-                        var querylist = new List<string>();
-
-                        #region Rename table if need be
-                        if (oldT.DatabaseName != newT.DatabaseName)
+                        var newIndex = newT.TableIndexList.FirstOrDefault(x => x.Is(oldIndex));
+                        if (newIndex == null)
                         {
-                            sb.AppendLine(SQLEmit.GetSqlRenameTable(oldT, newT));
+                            sb.AppendLine(SQLEmit.GetSQLDropIndex(newT, oldIndex));
                             sb.AppendLine("--GO");
                         }
-                        #endregion
+                    }
 
-                        #region Add columns
-                        foreach (var newC in newT.GetColumns())
+                    //Both exist, so if different, drop and re-create
+                    foreach (var newIndex in newT.TableIndexList)
+                    {
+                        var oldIndex = oldT.TableIndexList.FirstOrDefault(x => x.Is(newIndex));
+                        if (oldIndex != null && oldIndex.CorePropertiesHashNoNames != newIndex.CorePropertiesHashNoNames)
                         {
-                            var oldC = Globals.GetColumnByKey(oldT.Columns, newC.Key);
-                            if (oldC == null)
-                            {
-                                //ADD COLUMN
-                                sb.AppendLine(SQLEmit.GetSqlAddColumn(newC));
-                                sb.AppendLine("--GO");
-                                sb.AppendLine();
-                                schemaChanged = true;
-                            }
-                            //else if (newC.DatabaseName != oldC.DatabaseName)
+                            sb.AppendLine(SQLEmit.GetSQLDropIndex(newT, oldIndex));
+                            sb.AppendLine("--GO");
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Loop and DELETE tables
+
+            foreach (var oldT in modelOld.Database.Tables.Where(x => !x.IsEnumOnly()))
+            {
+                var newT = modelNew.Database.Tables.FirstOrDefault(x => !x.IsEnumOnly() && x.Key.ToLower() == oldT.Key.ToLower());
+                if (newT == null)
+                {
+                    //DELETE TABLE
+                    sb.Append(SQLEmit.GetSqlDropTable(modelOld, oldT));
+                    sb.AppendLine("--GO");
+                    //TODO - Delete Tenant View
+                    sb.AppendLine();
+                }
+                else if (newT.DatabaseName != oldT.DatabaseName)
+                {
+                    //RENAME TABLE
+                }
+            }
+
+            #endregion
+
+            #region Loop and Modify tables
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList())
+            {
+                var schemaChanged = false;
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
+                if (oldT != null)
+                {
+                    var querylist = new List<string>();
+
+                    #region Rename table if need be
+                    if (oldT.DatabaseName != newT.DatabaseName)
+                    {
+                        sb.AppendLine(SQLEmit.GetSqlRenameTable(oldT, newT));
+                        sb.AppendLine("--GO");
+                    }
+                    #endregion
+
+                    #region Add columns
+                    foreach (var newC in newT.GetColumns())
+                    {
+                        var oldC = Globals.GetColumnByKey(oldT.Columns, newC.Key);
+                        if (oldC == null)
+                        {
+                            //ADD COLUMN
+                            sb.AppendLine(SQLEmit.GetSqlAddColumn(newC));
+                            sb.AppendLine("--GO");
+                            sb.AppendLine();
+                            schemaChanged = true;
+                        }
+                        //else if (newC.DatabaseName != oldC.DatabaseName)
+                        //{
+                        //  //RENAME COLUMN
+                        //  sb.AppendLine(SQLEmit.GetSQLRenameColumn(oldC, newC));
+                        //  sb.AppendLine("--GO");
+                        //  sb.AppendLine();
+                        //}
+
+                    }
+                    #endregion
+
+                    #region Delete Columns
+                    foreach (Reference oldRef in oldT.Columns)
+                    {
+                        var oldC = oldRef.Object as Column;
+                        var newC = Globals.GetColumnByKey(newT.Columns, oldC.Key);
+                        if (newC == null)
+                        {
+                            //DELETE COLUMN
+                            sb.AppendLine(SQLEmit.GetSqlDropColumn(modelNew, oldC));
+                            sb.AppendLine("--GO");
+                            sb.AppendLine();
+                            schemaChanged = true;
+                        }
+                        else if (newC.DatabaseName != oldC.DatabaseName)
+                        {
+                            ////RENAME COLUMN
+                            //string sql = "if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + oldC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" +
+                            //             "AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + newC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" + Environment.NewLine +
+                            //             "EXEC sp_rename @objname = '" + newT.DatabaseName + "." + oldC.DatabaseName + "', @newname = '" + newC.DatabaseName + "', @objtype = 'COLUMN'";
+                            //if (!querylist.Contains(sql))
                             //{
-                            //  //RENAME COLUMN
-                            //  sb.AppendLine(SQLEmit.GetSQLRenameColumn(oldC, newC));
+                            //  querylist.Add(sql);
+                            //  sb.AppendLine(sql);
                             //  sb.AppendLine("--GO");
                             //  sb.AppendLine();
                             //}
-
                         }
-                        #endregion
 
-                        #region Delete Columns
-                        foreach (Reference oldRef in oldT.Columns)
+                    }
+                    #endregion
+
+                    #region Modify Columns
+                    foreach (var newC in newT.GetColumns())
+                    {
+                        var oldC = Globals.GetColumnByKey(oldT.Columns, newC.Key);
+                        if (oldC != null)
                         {
-                            var oldC = oldRef.Object as Column;
-                            var newC = Globals.GetColumnByKey(newT.Columns, oldC.Key);
-                            if (newC == null)
+                            var document = new XmlDocument();
+                            document.LoadXml("<a></a>");
+                            var n1 = XmlHelper.AddElement(document.DocumentElement, "q");
+                            var n2 = XmlHelper.AddElement(document.DocumentElement, "q");
+                            oldC.XmlAppend(n1);
+                            newC.XmlAppend(n2);
+
+                            //Check column, ignore defaults
+                            if (newC.CorePropertiesHashNoPK != oldC.CorePropertiesHashNoPK)
                             {
-                                //DELETE COLUMN
-                                sb.AppendLine(SQLEmit.GetSqlDropColumn(modelNew, oldC));
+                                //MODIFY COLUMN
+                                sb.AppendLine(SQLEmit.GetSqlModifyColumn(oldC, newC));
                                 sb.AppendLine("--GO");
                                 sb.AppendLine();
                                 schemaChanged = true;
                             }
-                            else if (newC.DatabaseName != oldC.DatabaseName)
+
+                            //Drop add defaults if column
+                            //if ((newC.CorePropertiesHashNoPK != oldC.CorePropertiesHashNoPK) || (oldC.Default != newC.Default))
+                            //{
+                            //		if (!string.IsNullOrEmpty(oldC.Default))
+                            //		{
+                            //			//Old default was something so drop it
+                            //			sb.AppendLine(SQLEmit.GetSqlDropColumnDefault(newC));
+                            //			sb.AppendLine("--GO");
+                            //			sb.AppendLine();
+                            //		}
+
+                            //	if (!string.IsNullOrEmpty(newC.Default))
+                            //	{
+                            //		//New default is something so add it
+                            //		sb.AppendLine(SQLEmit.GetSqlCreateColumnDefault(modelNew, newC));
+                            //		sb.AppendLine("--GO");
+                            //		sb.AppendLine();
+                            //	}
+                            //}
+
+                            if (!string.IsNullOrEmpty(newC.Default) && ((oldC.Default != newC.Default) || (oldC.DataType != newC.DataType) || (oldC.DatabaseName != newC.DatabaseName)))
                             {
-                                ////RENAME COLUMN
-                                //string sql = "if exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + oldC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" +
-                                //             "AND not exists (select * from sys.columns c inner join sys.objects o on c.object_id = o.object_id where c.name = '" + newC.DatabaseName + "' and o.name = '" + newT.DatabaseName + "')" + Environment.NewLine +
-                                //             "EXEC sp_rename @objname = '" + newT.DatabaseName + "." + oldC.DatabaseName + "', @newname = '" + newC.DatabaseName + "', @objtype = 'COLUMN'";
-                                //if (!querylist.Contains(sql))
-                                //{
-                                //  querylist.Add(sql);
-                                //  sb.AppendLine(sql);
-                                //  sb.AppendLine("--GO");
-                                //  sb.AppendLine();
-                                //}
+                                //New default is something so add it
+                                sb.AppendLine(SQLEmit.GetSqlCreateColumnDefault(modelNew, newC));
+                                sb.AppendLine("--GO");
+                                sb.AppendLine();
                             }
 
                         }
-                        #endregion
+                    }
+                    #endregion
 
-                        #region Modify Columns
-                        foreach (var newC in newT.GetColumns())
+                    #region Tenant
+                    if (oldT.IsTenant && !newT.IsTenant)
+                    {
+                        //Drop default
+                        var defaultName = $"DF__{newT.DatabaseName}_{modelNew.TenantColumnName}".ToUpper();
+                        sb.AppendLine("--DELETE TENANT DEFAULT FOR [" + newT.DatabaseName + "]");
+                        sb.AppendLine($"ALTER TABLE IF EXISTS {newT.GetPostgresSchema()}.\"{newT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{defaultName}\";");
+                        sb.AppendLine();
+
+                        if (newT.PascalName != newT.DatabaseName)
                         {
-                            var oldC = Globals.GetColumnByKey(oldT.Columns, newC.Key);
-                            if (oldC != null)
-                            {
-                                var document = new XmlDocument();
-                                document.LoadXml("<a></a>");
-                                var n1 = XmlHelper.AddElement(document.DocumentElement, "q");
-                                var n2 = XmlHelper.AddElement(document.DocumentElement, "q");
-                                oldC.XmlAppend(n1);
-                                newC.XmlAppend(n2);
-
-                                //Check column, ignore defaults
-                                if (newC.CorePropertiesHashNoPK != oldC.CorePropertiesHashNoPK)
-                                {
-                                    //MODIFY COLUMN
-                                    sb.AppendLine(SQLEmit.GetSqlModifyColumn(oldC, newC));
-                                    sb.AppendLine("--GO");
-                                    sb.AppendLine();
-                                    schemaChanged = true;
-                                }
-
-                                //Drop add defaults if column
-                                //if ((newC.CorePropertiesHashNoPK != oldC.CorePropertiesHashNoPK) || (oldC.Default != newC.Default))
-                                //{
-                                //		if (!string.IsNullOrEmpty(oldC.Default))
-                                //		{
-                                //			//Old default was something so drop it
-                                //			sb.AppendLine(SQLEmit.GetSqlDropColumnDefault(newC));
-                                //			sb.AppendLine("--GO");
-                                //			sb.AppendLine();
-                                //		}
-
-                                //	if (!string.IsNullOrEmpty(newC.Default))
-                                //	{
-                                //		//New default is something so add it
-                                //		sb.AppendLine(SQLEmit.GetSqlCreateColumnDefault(modelNew, newC));
-                                //		sb.AppendLine("--GO");
-                                //		sb.AppendLine();
-                                //	}
-                                //}
-
-                                if (!string.IsNullOrEmpty(newC.Default) && ((oldC.Default != newC.Default) || (oldC.DataType != newC.DataType) || (oldC.DatabaseName != newC.DatabaseName)))
-                                {
-                                    //New default is something so add it
-                                    sb.AppendLine(SQLEmit.GetSqlCreateColumnDefault(modelNew, newC));
-                                    sb.AppendLine("--GO");
-                                    sb.AppendLine();
-                                }
-
-                            }
-                        }
-                        #endregion
-
-                        #region Tenant
-                        if (oldT.IsTenant && !newT.IsTenant)
-                        {
-                            //Drop default
-                            var defaultName = $"DF__{newT.DatabaseName}_{modelNew.TenantColumnName}".ToUpper();
-                            sb.AppendLine("--DELETE TENANT DEFAULT FOR [" + newT.DatabaseName + "]");
+                            //This is for the mistake in name when released. Remove this default June 2013
+                            defaultName = $"DF__{newT.PascalName}_{modelNew.TenantColumnName}".ToUpper();
+                            sb.AppendLine($"--DELETE TENANT DEFAULT FOR [{newT.DatabaseName}]");
                             sb.AppendLine($"ALTER TABLE IF EXISTS {newT.GetPostgresSchema()}.\"{newT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{defaultName}\";");
                             sb.AppendLine();
+                        }
 
-                            if (newT.PascalName != newT.DatabaseName)
-                            {
-                                //This is for the mistake in name when released. Remove this default June 2013
-                                defaultName = $"DF__{newT.PascalName}_{modelNew.TenantColumnName}".ToUpper();
-                                sb.AppendLine($"--DELETE TENANT DEFAULT FOR [{newT.DatabaseName}]");
-                                sb.AppendLine($"ALTER TABLE IF EXISTS {newT.GetPostgresSchema()}.\"{newT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{defaultName}\";");
-                                sb.AppendLine();
-                            }
+                        //Drop Index
+                        var indexName = $"IDX_{newT.DatabaseName.FlatGuid()}_{modelNew.TenantColumnName}".ToUpper();
+                        sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\";");
+                        sb.AppendLine();
 
-                            //Drop Index
-                            var indexName = $"IDX_{newT.DatabaseName.FlatGuid()}_{modelNew.TenantColumnName}".ToUpper();
-                            sb.AppendLine($"DROP INDEX IF EXISTS \"{indexName}\";");
+                        //Drop the tenant field
+                        sb.AppendLine($"ALTER TABLE IF EXISTS {newT.GetPostgresSchema()}.\"{newT.DatabaseName}\" DROP COLUMN IF EXISTS \"{modelNew.TenantColumnName}\";");
+                        sb.AppendLine();
+                    }
+                    else if (!oldT.IsTenant && newT.IsTenant)
+                    {
+                        //Add the tenant field
+                        sb.AppendLine(SQLEmit.GetSqlCreateTenantColumn(modelNew, newT));
+                    }
+                    else if (oldT.IsTenant && newT.IsTenant && oldT.DatabaseName != newT.DatabaseName)
+                    {
+                        //If rename tenant table then delete old view and create new view
+                    }
+                    #endregion
+
+                    #region Primary Key Changed
+
+                    //If the primary key changed, then generate a commented script that marks where the user can manually intervene
+                    var newPKINdex = newT.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
+                    var oldPKINdex = oldT.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
+                    if (newPKINdex != null && oldPKINdex != null)
+                    {
+                        var newPKHash = newPKINdex.CorePropertiesHash;
+                        var oldPKHash = oldPKINdex.CorePropertiesHash;
+                        if (newPKHash != oldPKHash)
+                        {
+                            sb.AppendLine();
+                            sb.AppendLine("--GENERATION NOTE **");
+                            sb.AppendLine("--THE PRIMARY KEY HAS CHANGED, THIS MAY REQUIRE MANUAL INTERVENTION");
+                            sb.AppendLine("--THE FOLLOWING SCRIPT WILL DROP AND RE-ADD THE PRIMARY KEY HOWEVER IF THERE ARE RELATIONSHIPS");
+                            sb.AppendLine("--BASED ON THIS IT, THE SCRIPT WILL FAIL. YOU MUST DROP ALL FOREIGN KEYS FIRST.");
                             sb.AppendLine();
 
-                            //Drop the tenant field
-                            sb.AppendLine($"ALTER TABLE IF EXISTS {newT.GetPostgresSchema()}.\"{newT.DatabaseName}\" DROP COLUMN IF EXISTS \"{modelNew.TenantColumnName}\";");
-                            sb.AppendLine();
-                        }
-                        else if (!oldT.IsTenant && newT.IsTenant)
-                        {
-                            //Add the tenant field
-                            sb.AppendLine(SQLEmit.GetSqlCreateTenantColumn(modelNew, newT));
-                        }
-                        else if (oldT.IsTenant && newT.IsTenant && oldT.DatabaseName != newT.DatabaseName)
-                        {
-                            //If rename tenant table then delete old view and create new view
-                        }
-                        #endregion
-
-                        #region Primary Key Changed
-
-                        //If the primary key changed, then generate a commented script that marks where the user can manually intervene
-                        var newPKINdex = newT.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
-                        var oldPKINdex = oldT.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
-                        if (newPKINdex != null && oldPKINdex != null)
-                        {
-                            var newPKHash = newPKINdex.CorePropertiesHash;
-                            var oldPKHash = oldPKINdex.CorePropertiesHash;
-                            if (newPKHash != oldPKHash)
-                            {
-                                sb.AppendLine();
-                                sb.AppendLine("--GENERATION NOTE **");
-                                sb.AppendLine("--THE PRIMARY KEY HAS CHANGED, THIS MAY REQUIRE MANUAL INTERVENTION");
-                                sb.AppendLine("--THE FOLLOWING SCRIPT WILL DROP AND RE-ADD THE PRIMARY KEY HOWEVER IF THERE ARE RELATIONSHIPS");
-                                sb.AppendLine("--BASED ON THIS IT, THE SCRIPT WILL FAIL. YOU MUST DROP ALL FOREIGN KEYS FIRST.");
-                                sb.AppendLine();
-
-                                //Before drop PK remove all FK to the table
-                                foreach (var r1 in oldT.GetRelations())
-                                {
-                                    sb.Append(SQLEmit.GetSqlRemoveFK(r1));
-                                    sb.AppendLine("--GO");
-                                    sb.AppendLine();
-                                }
-
-                                var tableName = Globals.GetTableDatabaseName(modelNew, newT);
-                                var pkName = $"PK_{tableName}";
-                                pkName = pkName.ToUpper();
-                                sb.AppendLine($"----DROP PRIMARY KEY FOR TABLE [{tableName}]");
-                                sb.AppendLine($"--if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
-                                sb.AppendLine($"--ALTER TABLE {newT.GetPostgresSchema()}.\"{tableName}\" DROP CONSTRAINT IF EXISTS [{pkName}];");
-                                sb.AppendLine("--GO");
-
-                                var sql = SQLEmit.GetSqlCreatePK(newT) + "GO\r\n";
-                                var lines = sql.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
-                                //Comment the whole SQL block
-                                var index = 0;
-                                foreach (var s in lines)
-                                {
-                                    var l = s;
-                                    l = "--" + l;
-                                    lines[index] = l;
-                                    index++;
-                                }
-
-                                sb.AppendLine(string.Join("\r\n", lines));
-                                sb.AppendLine();
-                            }
-                        }
-
-                        #endregion
-
-                        #region Drop Foreign Keys
-                        foreach (var r1 in oldT.GetRelations())
-                        {
-                            var r2 = newT.Relationships.FirstOrDefault(x => x.Is(r1));
-                            r2 = newT.Relationships.FirstOrDefault(x => x.Is(r1));
-                            if (r2 == null)
+                            //Before drop PK remove all FK to the table
+                            foreach (var r1 in oldT.GetRelations())
                             {
                                 sb.Append(SQLEmit.GetSqlRemoveFK(r1));
                                 sb.AppendLine("--GO");
                                 sb.AppendLine();
                             }
-                        }
-                        #endregion
 
-                        #region Rename audit columns if necessary
-                        if (modelOld.Database.CreatedByColumnName != modelNew.Database.CreatedByColumnName)
-                        {
-                            sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.CreatedByColumnName, modelNew.Database.CreatedByColumnName));
+                            var tableName = Globals.GetTableDatabaseName(modelNew, newT);
+                            var pkName = $"PK_{tableName}";
+                            pkName = pkName.ToUpper();
+                            sb.AppendLine($"----DROP PRIMARY KEY FOR TABLE [{tableName}]");
+                            sb.AppendLine($"--if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
+                            sb.AppendLine($"--ALTER TABLE {newT.GetPostgresSchema()}.\"{tableName}\" DROP CONSTRAINT IF EXISTS [{pkName}];");
                             sb.AppendLine("--GO");
-                        }
-                        if (modelOld.Database.CreatedDateColumnName != modelNew.Database.CreatedDateColumnName)
-                        {
-                            sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.CreatedDateColumnName, modelNew.Database.CreatedDateColumnName));
-                            sb.AppendLine("--GO");
-                        }
-                        if (modelOld.Database.ModifiedByColumnName != modelNew.Database.ModifiedByColumnName)
-                        {
-                            sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ModifiedByColumnName, modelNew.Database.ModifiedByColumnName));
-                            sb.AppendLine("--GO");
-                        }
-                        if (modelOld.Database.ModifiedDateColumnName != modelNew.Database.ModifiedDateColumnName)
-                        {
-                            sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ModifiedDateColumnName, modelNew.Database.ModifiedDateColumnName));
-                            sb.AppendLine("--GO");
-                        }
-                        if (modelOld.Database.ConcurrencyCheckColumnName != modelNew.Database.ConcurrencyCheckColumnName)
-                        {
-                            sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ConcurrencyCheckColumnName, modelNew.Database.ConcurrencyCheckColumnName));
-                            sb.AppendLine("--GO");
-                        }
-                        #endregion
 
-                        #region Static Data
+                            var sql = SQLEmit.GetSqlCreatePK(newT) + "GO\r\n";
+                            var lines = sql.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        //For right now just emit NEW if different.
-                        //TODO: Generate difference scripts for delete and change too.
-                        var oldStaticScript = SQLEmit.GetSqlInsertStaticData(oldT);
-                        var newStaticScript = SQLEmit.GetSqlInsertStaticData(newT);
-                        if (oldStaticScript != newStaticScript)
+                            //Comment the whole SQL block
+                            var index = 0;
+                            foreach (var s in lines)
+                            {
+                                var l = s;
+                                l = "--" + l;
+                                lines[index] = l;
+                                index++;
+                            }
+
+                            sb.AppendLine(string.Join("\r\n", lines));
+                            sb.AppendLine();
+                        }
+                    }
+
+                    #endregion
+
+                    #region Drop Foreign Keys
+                    foreach (var r1 in oldT.GetRelations())
+                    {
+                        var r2 = newT.Relationships.FirstOrDefault(x => x.Is(r1));
+                        r2 = newT.Relationships.FirstOrDefault(x => x.Is(r1));
+                        if (r2 == null)
                         {
-                            sb.AppendLine(newStaticScript);
-                            sb.AppendLine(SQLEmit.GetSqlUpdateStaticData(oldT, newT));
+                            sb.Append(SQLEmit.GetSqlRemoveFK(r1));
                             sb.AppendLine("--GO");
                             sb.AppendLine();
                         }
-
-                        #endregion
-
-                        //TODO - Check hash properties and if changed recompile tenant view
-
                     }
-                }
+                    #endregion
 
-                //Do another look for second pass at changes.
-                //These things can only be done after the above loop
-                foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
-                {
-                    var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
-                    if (oldT != null)
+                    #region Rename audit columns if necessary
+                    if (modelOld.Database.CreatedByColumnName != modelNew.Database.CreatedByColumnName)
                     {
-                        #region Add Foreign Keys
-
-                        foreach (var r1 in newT.GetRelations())
-                        {
-                            var r2 = oldT.GetRelations().FirstOrDefault(x => x.Is(r1));
-                            if (r2 == null)
-                            {
-                                //There is no OLD relation so it is new so add it
-                                sb.Append(SQLEmit.GetSqlAddFK(r1));
-                                sb.AppendLine("--GO");
-                                sb.AppendLine();
-                            }
-                            else if (r1.CorePropertiesHash != r2.CorePropertiesHash)
-                            {
-                                //The relation already exists and it has changed, so drop and re-add
-                                sb.Append(SQLEmit.GetSqlRemoveFK(r2));
-                                sb.AppendLine("--GO");
-                                sb.AppendLine();
-                                sb.Append(SQLEmit.GetSqlAddFK(r1));
-                                sb.AppendLine("--GO");
-                                sb.AppendLine();
-                            }
-                        }
-
-                        #endregion
+                        sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.CreatedByColumnName, modelNew.Database.CreatedByColumnName));
+                        sb.AppendLine("--GO");
                     }
+                    if (modelOld.Database.CreatedDateColumnName != modelNew.Database.CreatedDateColumnName)
+                    {
+                        sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.CreatedDateColumnName, modelNew.Database.CreatedDateColumnName));
+                        sb.AppendLine("--GO");
+                    }
+                    if (modelOld.Database.ModifiedByColumnName != modelNew.Database.ModifiedByColumnName)
+                    {
+                        sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ModifiedByColumnName, modelNew.Database.ModifiedByColumnName));
+                        sb.AppendLine("--GO");
+                    }
+                    if (modelOld.Database.ModifiedDateColumnName != modelNew.Database.ModifiedDateColumnName)
+                    {
+                        sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ModifiedDateColumnName, modelNew.Database.ModifiedDateColumnName));
+                        sb.AppendLine("--GO");
+                    }
+                    if (modelOld.Database.ConcurrencyCheckColumnName != modelNew.Database.ConcurrencyCheckColumnName)
+                    {
+                        sb.AppendLine(SQLEmit.GetSqlRenameColumn(newT, modelOld.Database.ConcurrencyCheckColumnName, modelNew.Database.ConcurrencyCheckColumnName));
+                        sb.AppendLine("--GO");
+                    }
+                    #endregion
+
+                    #region Static Data
+
+                    //For right now just emit NEW if different.
+                    //TODO: Generate difference scripts for delete and change too.
+                    var oldStaticScript = SQLEmit.GetSqlInsertStaticData(oldT);
+                    var newStaticScript = SQLEmit.GetSqlInsertStaticData(newT);
+                    if (oldStaticScript != newStaticScript)
+                    {
+                        sb.AppendLine(newStaticScript);
+                        sb.AppendLine(SQLEmit.GetSqlUpdateStaticData(oldT, newT));
+                        sb.AppendLine("--GO");
+                        sb.AppendLine();
+                    }
+
+                    #endregion
+
+                    //TODO - Check hash properties and if changed recompile tenant view
+
                 }
-
-                #endregion
-
-                return sb.ToString();
             }
-            catch (Exception ex)
+
+            //Do another look for second pass at changes.
+            //These things can only be done after the above loop
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList())
             {
-                throw;
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
+                if (oldT != null)
+                {
+                    #region Add Foreign Keys
+
+                    foreach (var r1 in newT.GetRelations())
+                    {
+                        var r2 = oldT.GetRelations().FirstOrDefault(x => x.Is(r1));
+                        if (r2 == null)
+                        {
+                            //There is no OLD relation so it is new so add it
+                            sb.Append(SQLEmit.GetSqlAddFK(r1));
+                            sb.AppendLine("--GO");
+                            sb.AppendLine();
+                        }
+                        else if (r1.CorePropertiesHash != r2.CorePropertiesHash)
+                        {
+                            //The relation already exists and it has changed, so drop and re-add
+                            sb.Append(SQLEmit.GetSqlRemoveFK(r2));
+                            sb.AppendLine("--GO");
+                            sb.AppendLine();
+                            sb.Append(SQLEmit.GetSqlAddFK(r1));
+                            sb.AppendLine("--GO");
+                            sb.AppendLine();
+                        }
+                    }
+
+                    #endregion
+                }
             }
+
+            #endregion
+
+            return sb.ToString();
         }
         #endregion
 
@@ -459,55 +452,48 @@ namespace nHydrate.Generator.PostgresInstaller
     {
         public static string GetSQLCreateTable(ModelRoot model, Table table, string tableAliasName = null, bool emitPK = true)
         {
-            try
+            if (table.IsEnumOnly())
+                return string.Empty;
+
+            var sb = new StringBuilder();
+            var tableName = Globals.GetTableDatabaseName(model, table);
+            if (!string.IsNullOrEmpty(tableAliasName))
+                tableName = tableAliasName;
+
+            sb.AppendLine($"--CREATE TABLE [{tableName}]");
+            sb.AppendLine($"CREATE TABLE IF NOT EXISTS {table.GetPostgresSchema()}.\"{tableName}\" (");
+
+            var firstLoop = true;
+            foreach (var column in table.GetColumns().OrderBy(x => x.SortOrder))
             {
-                if (table.TypedTable == TypedTableConstants.EnumOnly)
-                    return string.Empty;
-
-                var sb = new StringBuilder();
-                var tableName = Globals.GetTableDatabaseName(model, table);
-                if (!string.IsNullOrEmpty(tableAliasName))
-                    tableName = tableAliasName;
-
-                sb.AppendLine($"--CREATE TABLE [{tableName}]");
-                sb.AppendLine($"CREATE TABLE IF NOT EXISTS {table.GetPostgresSchema()}.\"{tableName}\" (");
-
-                var firstLoop = true;
-                foreach (var column in table.GetColumns().OrderBy(x => x.SortOrder))
-                {
-                    if (!firstLoop) sb.AppendLine(",");
-                    else firstLoop = false;
-                    sb.Append("\t" + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true));
-                }
-
-                AppendModifiedAudit(model, table, sb);
-                AppendCreateAudit(model, table, sb);
-                AppendConcurrency(model, table, sb);
-                AppendTenantField(model, table, sb);
-
-                //Emit PK
-                var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
-                if (tableIndex != null && emitPK)
-                {
-                    var indexName = "PK_" + table.DatabaseName.ToUpper();
-                    sb.AppendLine(",");
-                    //var clustered = tableIndex.Clustered ? "CLUSTERED" : "NONCLUSTERED";
-                    var clustered = string.Empty; //TEMP until figure out clustered
-                    sb.AppendLine($"\tCONSTRAINT \"{indexName}\" PRIMARY KEY {clustered}");
-                    sb.AppendLine("\t" + "(");
-                    sb.AppendLine("\t\t" + GetSQLIndexField(table, tableIndex));
-                    sb.AppendLine("\t" + ")");
-                }
-                else
-                    sb.AppendLine();
-
-                sb.AppendLine(");");
-                return sb.ToString();
+                if (!firstLoop) sb.AppendLine(",");
+                else firstLoop = false;
+                sb.Append("\t" + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true));
             }
-            catch (Exception ex)
+
+            AppendModifiedAudit(model, table, sb);
+            AppendCreateAudit(model, table, sb);
+            AppendConcurrency(model, table, sb);
+            AppendTenantField(model, table, sb);
+
+            //Emit PK
+            var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
+            if (tableIndex != null && emitPK)
             {
-                throw;
+                var indexName = "PK_" + table.DatabaseName.ToUpper();
+                sb.AppendLine(",");
+                //var clustered = tableIndex.Clustered ? "CLUSTERED" : "NONCLUSTERED";
+                var clustered = string.Empty; //TEMP until figure out clustered
+                sb.AppendLine($"\tCONSTRAINT \"{indexName}\" PRIMARY KEY {clustered}");
+                sb.AppendLine("\t" + "(");
+                sb.AppendLine("\t\t" + GetSQLIndexField(table, tableIndex));
+                sb.AppendLine("\t" + ")");
             }
+            else
+                sb.AppendLine();
+
+            sb.AppendLine(");");
+            return sb.ToString();
         }
 
         public static string GetSqlAddColumn(Column column)
@@ -517,7 +503,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlAddColumn(Column column, bool useComment)
         {
-            if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (column.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -565,7 +551,7 @@ namespace nHydrate.Generator.PostgresInstaller
                     sb.Append(" COLLATE case_insensitive");
 
                 //Add Identity
-                if (allowIdentity && (column.Identity == IdentityTypeConstants.Database))
+                if (allowIdentity && (column.IdentityDatabase()))
                 {
                     if (column.DataType == SqlDbType.UniqueIdentifier)
                         sb.Append(" DEFAULT uuid_generate_v4()");
@@ -608,9 +594,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 case SqlDbType.Money: return "MONEY";
                 case SqlDbType.NChar: return "CHAR";
                 case SqlDbType.NText: return "TEXT";
-                case SqlDbType.NVarChar:
-                    if (column.Length == 0) return "TEXT";
-                    else return "VARCHAR";
+                case SqlDbType.NVarChar: return (column.Length == 0) ? "TEXT" : "VARCHAR";
                 case SqlDbType.Real: return "DOUBLE PRECISION";
                 case SqlDbType.UniqueIdentifier: return "UUID";
                 case SqlDbType.SmallDateTime: return "TIMESTAMP"; //precision 0
@@ -620,9 +604,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 case SqlDbType.Timestamp: return "INTEGER";
                 case SqlDbType.TinyInt: return "SMALLINT";
                 case SqlDbType.VarBinary: return "BYTEA";
-                case SqlDbType.VarChar:
-                    if (column.Length == 0) return "TEXT";
-                    else return "VARCHAR";
+                case SqlDbType.VarChar: return (column.Length == 0) ? "TEXT" : "VARCHAR";
                 case SqlDbType.Variant: return "BYTEA";
                 case SqlDbType.Xml: return "TEXT";
                 case SqlDbType.Udt: throw new Exception("Udt not implemented");
@@ -634,7 +616,6 @@ namespace nHydrate.Generator.PostgresInstaller
                 default:
                     throw new Exception("Unknown data type");
             }
-
         }
 
         public static string GetDetailSQLValue(Column column)
@@ -661,7 +642,7 @@ namespace nHydrate.Generator.PostgresInstaller
                     defaultValue.ToLower() == "newid()" ||
                     defaultValue.ToLower() == "newsequentialid" ||
                     defaultValue.ToLower() == "newsequentialid()" ||
-                    column.Identity == IdentityTypeConstants.Database)
+                    column.IdentityDatabase())
                 {
                     tempBuilder.Append(GetDefaultValue(defaultValue));
                 }
@@ -748,7 +729,7 @@ namespace nHydrate.Generator.PostgresInstaller
             //Make sure that the index name is the same each time
             var columnList = GetIndexColumns(table, index);
             var prefix = (index.PrimaryKey ? "PK" : "IDX");
-            var indexName = prefix + "_" + table.Name.FlatGuid() + "_" + string.Join("_", columnList.Select(x => x.Value.Name));
+            var indexName = $"{prefix}_{table.Name.FlatGuid()}_{string.Join("_", columnList.Select(x => x.Value.Name))}";
             indexName = indexName.ToUpper();
             return indexName;
         }
@@ -803,26 +784,19 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSQLIndexField(Table table, TableIndex tableIndex)
         {
-            try
-            {
-                var model = table.Root as ModelRoot;
-                var keyList = new List<string>();
+            var model = table.Root as ModelRoot;
+            var keyList = new List<string>();
 
-                //If tenant table then the tenant id should be first field
-                //if (table.IsTenant)
-                //    keyList.Add($"\"{model.TenantColumnName}\"");
+            //If tenant table then the tenant id should be first field
+            //if (table.IsTenant)
+            //    keyList.Add($"\"{model.TenantColumnName}\"");
 
-                foreach (var indexColumn in tableIndex.IndexColumnList)
-                {
-                    var column = table.GetColumns().FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
-                    keyList.Add($"\"{column.DatabaseName}\"");
-                }
-                return string.Join(", ", keyList);
-            }
-            catch (Exception ex)
+            foreach (var indexColumn in tableIndex.IndexColumnList)
             {
-                throw;
+                var column = table.GetColumns().FirstOrDefault(x => new Guid(x.Key) == indexColumn.FieldID);
+                keyList.Add($"\"{column.DatabaseName}\"");
             }
+            return string.Join(", ", keyList);
         }
 
         public static Dictionary<TableIndexColumn, Column> GetIndexColumns(Table table, TableIndex index)
@@ -881,36 +855,29 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlCreatePK(Table table)
         {
-            try
+            var sb = new StringBuilder();
+            var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
+            if (tableIndex != null)
             {
-                var sb = new StringBuilder();
-                var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
-                if (tableIndex != null)
-                {
-                    var indexName = $"PK_{table.DatabaseName}".ToUpper();
+                var indexName = $"PK_{table.DatabaseName}".ToUpper();
 
-                    sb.AppendLine($"--PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
-                    sb.AppendLine("DO");
-                    sb.AppendLine("$$ BEGIN");
-                    sb.AppendLine($"IF NOT EXISTS(SELECT 1 FROM pg_constraint WHERE conname = '{indexName}')");
-                    sb.AppendLine("THEN");
-                    sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD ");
-                    //TODO: handle tableIndex.Clustered
-                    sb.AppendLine($"CONSTRAINT \"{indexName}\" PRIMARY KEY ");
-                    sb.AppendLine("(");
-                    sb.AppendLine("\t" + GetSQLIndexField(table, tableIndex));
-                    sb.AppendLine(");");
-                    sb.AppendLine("END IF;");
-                    sb.AppendLine("END");
-                    sb.AppendLine("$$");
-                    sb.AppendLine();
-                }
-                return sb.ToString();
+                sb.AppendLine($"--PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
+                sb.AppendLine("DO");
+                sb.AppendLine("$$ BEGIN");
+                sb.AppendLine($"IF NOT EXISTS(SELECT 1 FROM pg_constraint WHERE conname = '{indexName}')");
+                sb.AppendLine("THEN");
+                sb.AppendLine($"ALTER TABLE IF EXISTS {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD ");
+                //TODO: handle tableIndex.Clustered
+                sb.AppendLine($"CONSTRAINT \"{indexName}\" PRIMARY KEY ");
+                sb.AppendLine("(");
+                sb.AppendLine("\t" + GetSQLIndexField(table, tableIndex));
+                sb.AppendLine(");");
+                sb.AppendLine("END IF;");
+                sb.AppendLine("END");
+                sb.AppendLine("$$");
+                sb.AppendLine();
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return sb.ToString();
         }
 
         public static string GetSqlTenantIndex(ModelRoot model, Table table)
@@ -937,7 +904,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string AppendColumnDefaultCreateSQL(Column column, bool includeDrop = true)
         {
-            if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (column.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -960,97 +927,89 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlInsertStaticData(Table table)
         {
-            try
+            var sb = new StringBuilder();
+            var model = (ModelRoot)table.Root;
+
+            //Generate static data
+            if (table.StaticData.Count > 0)
             {
-                var sb = new StringBuilder();
-                var model = (ModelRoot)table.Root;
+                var isIdentity = false;
+                foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
+                    isIdentity |= (column.IdentityDatabase());
 
-                //Generate static data
-                if (table.StaticData.Count > 0)
+                sb.AppendLine($"--INSERT STATIC DATA FOR TABLE [{Globals.GetTableDatabaseName(model, table)}]");
+
+                foreach (var rowEntry in table.StaticData.AsEnumerable<RowEntry>())
                 {
-                    var isIdentity = false;
-                    foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
-                        isIdentity |= (column.Identity == IdentityTypeConstants.Database);
 
-                    sb.AppendLine($"--INSERT STATIC DATA FOR TABLE [{Globals.GetTableDatabaseName(model, table)}]");
-
-                    foreach (var rowEntry in table.StaticData.AsEnumerable<RowEntry>())
+                    var fieldValues = new Dictionary<string, string>();
+                    foreach (var cellEntry in rowEntry.CellEntries.ToList())
                     {
-
-                        var fieldValues = new Dictionary<string, string>();
-                        foreach (var cellEntry in rowEntry.CellEntries.ToList())
+                        var column = cellEntry.Column;
+                        var sqlValue = cellEntry.GetSQLData();
+                        if (sqlValue == null) //Null is actually returned if the value can be null
                         {
-                            var column = cellEntry.Column;
-                            var sqlValue = cellEntry.GetSQLData();
-                            if (sqlValue == null) //Null is actually returned if the value can be null
+                            if (!string.IsNullOrEmpty(column.Default))
                             {
-                                if (!string.IsNullOrEmpty(column.Default))
+                                if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                 {
-                                    if (column.DataType.IsTextType() || column.DataType.IsDateType())
-                                    {
-                                        if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
-                                            fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
-                                        else
-                                            fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
-                                    }
+                                    if (column.IsNString())
+                                        fieldValues.Add(column.Name, "N'" + column.Default.DoubleTicks() + "'");
                                     else
-                                    {
-                                        fieldValues.Add(column.Name, column.Default);
-                                    }
+                                        fieldValues.Add(column.Name, "'" + column.Default.DoubleTicks() + "'");
                                 }
                                 else
                                 {
-                                    fieldValues.Add(column.Name, "NULL");
+                                    fieldValues.Add(column.Name, column.Default);
                                 }
                             }
                             else
                             {
-                                if (column.DataType == SqlDbType.Bit)
-                                {
-                                    sqlValue = sqlValue.ToLower().Trim();
-                                    if (sqlValue == "true" || sqlValue == "1") sqlValue = "true";
-                                    else if (sqlValue == "false" || sqlValue == "0") sqlValue = "false";
-                                    else if (sqlValue != "1") sqlValue = "false"; //catch all, must be true/false
-                                }
-
-                                if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
-                                    fieldValues.Add(column.Name, sqlValue);
-                                else
-                                    fieldValues.Add(column.Name, sqlValue);
-
+                                fieldValues.Add(column.Name, "NULL");
                             }
                         }
-
-                        // this could probably be done smarter
-                        // but I am concerned about the order of the keys and values coming out right
-                        var fieldList = new List<string>();
-
-                        var valueList = new List<string>();
-                        var primaryKeyColumnNames = table.PrimaryKeyColumns.Select(x => x.Name);
-                        foreach (var kvp in fieldValues)
+                        else
                         {
-                            fieldList.Add($"\"{kvp.Key}\"");
-                            valueList.Add(kvp.Value);
+                            if (column.DataType == SqlDbType.Bit)
+                            {
+                                sqlValue = sqlValue.ToLower().Trim();
+                                if (sqlValue == "true" || sqlValue == "1") sqlValue = "true";
+                                else if (sqlValue == "false" || sqlValue == "0") sqlValue = "false";
+                                else if (sqlValue != "1") sqlValue = "false"; //catch all, must be true/false
+                            }
+
+                            if (column.IsNString())
+                                fieldValues.Add(column.Name, sqlValue);
+                            else
+                                fieldValues.Add(column.Name, sqlValue);
+
                         }
-
-                        var fieldListString = string.Join(",", fieldList);
-                        var valueListString = string.Join(",", valueList);
-
-                        sb.AppendLine($"INSERT INTO {table.GetPostgresSchema()}.\"{Globals.GetTableDatabaseName(model, table)}\" ({fieldListString}) OVERRIDING SYSTEM VALUE values ({valueListString}) ON CONFLICT DO NOTHING;");
                     }
 
-                    sb.AppendLine();
-                    sb.AppendLine("--GO");
-                    sb.AppendLine();
+                    // this could probably be done smarter
+                    // but I am concerned about the order of the keys and values coming out right
+                    var fieldList = new List<string>();
+
+                    var valueList = new List<string>();
+                    var primaryKeyColumnNames = table.PrimaryKeyColumns.Select(x => x.Name);
+                    foreach (var kvp in fieldValues)
+                    {
+                        fieldList.Add($"\"{kvp.Key}\"");
+                        valueList.Add(kvp.Value);
+                    }
+
+                    var fieldListString = string.Join(",", fieldList);
+                    var valueListString = string.Join(",", valueList);
+
+                    sb.AppendLine($"INSERT INTO {table.GetPostgresSchema()}.\"{Globals.GetTableDatabaseName(model, table)}\" ({fieldListString}) OVERRIDING SYSTEM VALUE values ({valueListString}) ON CONFLICT DO NOTHING;");
                 }
 
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                throw;
+                sb.AppendLine();
+                sb.AppendLine("--GO");
+                sb.AppendLine();
             }
 
+            return sb.ToString();
         }
 
         public static string CreateFkName(Relation relation)
@@ -1090,40 +1049,26 @@ namespace nHydrate.Generator.PostgresInstaller
 
         private static string AppendChildTableColumns(Relation relation)
         {
-            try
-            {
-                //Sort the columns by PK/Unique first and then by name
-                var crList = relation.ColumnRelationships.ToList();
-                if (crList.Count == 0) return string.Empty;
+            //Sort the columns by PK/Unique first and then by name
+            var crList = relation.ColumnRelationships.ToList();
+            if (crList.Count == 0) return string.Empty;
 
-                //Loop through the ordered columns of the parent table's primary key index
-                //var columnList = crList.OrderBy(x => x.ParentColumn.Name).Select(cr => cr.ChildColumn).ToList();
-                var columnList = crList.Select(cr => cr.ChildColumn).ToList();
-                return string.Join(",", columnList.Select(x => "	\"" + x.Name + "\"\r\n"));
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            //Loop through the ordered columns of the parent table's primary key index
+            //var columnList = crList.OrderBy(x => x.ParentColumn.Name).Select(cr => cr.ChildColumn).ToList();
+            var columnList = crList.Select(cr => cr.ChildColumn).ToList();
+            return string.Join(",", columnList.Select(x => "	\"" + x.Name + "\"\r\n"));
         }
 
         private static string AppendParentTableColumns(Relation relation, Table table)
         {
-            try
-            {
-                //Sort the columns by PK/Unique first and then by name
-                var crList = relation.ColumnRelationships.ToList();
-                if (crList.Count == 0) return string.Empty;
+            //Sort the columns by PK/Unique first and then by name
+            var crList = relation.ColumnRelationships.ToList();
+            if (crList.Count == 0) return string.Empty;
 
-                //Loop through the ordered columns of the parent table's primary key index
-                //var columnList = crList.OrderBy(x => x.ParentColumn.Name).Select(cr => cr.ParentColumn).ToList();
-                var columnList = crList.Select(cr => cr.ParentColumn).ToList();
-                return string.Join(",", columnList.Select(x => "	\"" + x.Name + "\"\r\n"));
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            //Loop through the ordered columns of the parent table's primary key index
+            //var columnList = crList.OrderBy(x => x.ParentColumn.Name).Select(cr => cr.ParentColumn).ToList();
+            var columnList = crList.Select(cr => cr.ParentColumn).ToList();
+            return string.Join(",", columnList.Select(x => "	\"" + x.Name + "\"\r\n"));
         }
 
         public static string GetSqlAddFK(Relation relation)
@@ -1134,8 +1079,7 @@ namespace nHydrate.Generator.PostgresInstaller
             var parentTable = relation.ParentTable;
 
             var sb = new StringBuilder();
-            if ((parentTable.TypedTable != TypedTableConstants.EnumOnly) &&
-                (childTable.TypedTable != TypedTableConstants.EnumOnly))
+            if (!parentTable.IsEnumOnly() && !childTable.IsEnumOnly())
             {
                 sb.AppendLine($"--FOREIGN KEY RELATIONSHIP [{parentTable.DatabaseName}] -> [{childTable.DatabaseName}] ({GetFieldNames(relation)})");
                 sb.AppendLine("DO $$");
@@ -1172,7 +1116,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlDropTable(ModelRoot model, Table t)
         {
-            if (t.TypedTable == TypedTableConstants.EnumOnly)
+            if (t.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -1433,7 +1377,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlDropColumn(ModelRoot model, Column column)
         {
-            if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (column.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -1566,7 +1510,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlModifyColumn(Column oldColumn, Column newColumn)
         {
-            if (newColumn.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (newColumn.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -1711,7 +1655,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
             #region Delete Defaults
 
-            if (oldColumn.Identity == IdentityTypeConstants.None)
+            if (oldColumn.IdentityNone())
                 sb.AppendLine(GetSqlDropColumnDefault(oldColumn, true));
             sb.Append(AppendColumnDefaultRemoveSql(newColumn));
 
@@ -1751,7 +1695,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
                             var dValue = newColumn.Default;
                             if (newColumn.DataType.IsTextType() || newColumn.DataType.IsDateType())
-                                dValue = "'" + dValue.Replace("'", "''") + "'";
+                                dValue = "'" + dValue.DoubleTicks() + "'";
 
                             sb.AppendLine($"--UPDATE {newTable.GetPostgresSchema()}.\"{newTable.DatabaseName}\" SET \"{newColumn.DatabaseName}\" = {dValue} WHERE \"{newColumn.DatabaseName}\" IS NULL");
                         }
@@ -1786,7 +1730,7 @@ namespace nHydrate.Generator.PostgresInstaller
             #region Change Identity
 
             //If old column was Identity and it has been removed then remove it
-            //if (newColumn.Identity == IdentityTypeConstants.None && oldColumn.Identity == IdentityTypeConstants.Database)
+            //if (newColumn.IdentityNone() && oldColumn.IdentityDatabase())
             //{
             //    //Check PK
             //    if (oldColumn.PrimaryKey)
@@ -1824,7 +1768,7 @@ namespace nHydrate.Generator.PostgresInstaller
             //        sb.AppendLine();
             //    }
             //}
-            //else if (newColumn.Identity == IdentityTypeConstants.Database && oldColumn.Identity == IdentityTypeConstants.None)
+            //else if (newColumn.IdentityDatabase() && oldColumn.IdentityNone())
             //{
             //    //sb.AppendLine("--ADD SCRIPT HERE TO CONVERT [" + newTable.DatabaseName + "].[" + newColumn.DatabaseName + "] TO IDENTITY COLUMN");                //Check PK
 
@@ -1888,16 +1832,14 @@ namespace nHydrate.Generator.PostgresInstaller
             #endregion
 
             if (newColumn.ComputedColumn)
-            {
                 sb.Append(GetSqlAddColumn(newColumn));
-            }
 
             return sb.ToString();
         }
 
         public static string AppendColumnDefaultRemoveSql(Column column)
         {
-            if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (column.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -1930,107 +1872,99 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlUpdateStaticData(Table oldT, Table newT)
         {
-            try
-            {
-                var sb = new StringBuilder();
-                var model = newT.Root as ModelRoot;
+            var sb = new StringBuilder();
+            var model = newT.Root as ModelRoot;
 
-                //Generate static data
-                if (newT.StaticData.Count > 0)
+            //Generate static data
+            if (newT.StaticData.Count > 0)
+            {
+                sb.AppendLine($"--UPDATE STATIC DATA FOR TABLE [{Globals.GetTableDatabaseName(model, newT)}]");
+                sb.AppendLine("--IF YOU WISH TO UPDATE THIS STATIC DATA UNCOMMENT THIS SQL");
+                foreach (var rowEntry in newT.StaticData.AsEnumerable<RowEntry>())
                 {
-                    sb.AppendLine($"--UPDATE STATIC DATA FOR TABLE [{Globals.GetTableDatabaseName(model, newT)}]");
-                    sb.AppendLine("--IF YOU WISH TO UPDATE THIS STATIC DATA UNCOMMENT THIS SQL");
-                    foreach (var rowEntry in newT.StaticData.AsEnumerable<RowEntry>())
+                    var fieldValues = new Dictionary<string, string>();
+                    foreach (var cellEntry in rowEntry.CellEntries.ToList())
                     {
-                        var fieldValues = new Dictionary<string, string>();
-                        foreach (var cellEntry in rowEntry.CellEntries.ToList())
+                        var column = cellEntry.Column;
+                        var sqlValue = cellEntry.GetSQLData();
+                        if (sqlValue == null) //Null is actually returned if the value can be null
                         {
-                            var column = cellEntry.Column;
-                            var sqlValue = cellEntry.GetSQLData();
-                            if (sqlValue == null) //Null is actually returned if the value can be null
+                            if (!string.IsNullOrEmpty(column.Default))
                             {
-                                if (!string.IsNullOrEmpty(column.Default))
+                                if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                 {
-                                    if (column.DataType.IsTextType() || column.DataType.IsDateType())
-                                    {
-                                        if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
-                                            fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
-                                        else
-                                            fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
-                                    }
+                                    if (column.IsNString())
+                                        fieldValues.Add(column.Name, "N'" + column.Default.DoubleTicks() + "'");
                                     else
-                                    {
-                                        fieldValues.Add(column.Name, column.Default);
-                                    }
+                                        fieldValues.Add(column.Name, "'" + column.Default.DoubleTicks() + "'");
                                 }
                                 else
                                 {
-                                    fieldValues.Add(column.Name, "NULL");
+                                    fieldValues.Add(column.Name, column.Default);
                                 }
                             }
                             else
                             {
-                                if (column.DataType == SqlDbType.Bit)
-                                {
-                                    sqlValue = sqlValue.ToLower().Trim();
-                                    if (sqlValue == "true") sqlValue = "true";
-                                    else if (sqlValue == "false") sqlValue = "false";
-                                    else if (sqlValue != "1") sqlValue = "false"; //catch all, must be true/false
-                                }
-
-                                if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
-                                    fieldValues.Add(column.Name, sqlValue);
-                                else
-                                    fieldValues.Add(column.Name, sqlValue);
-
+                                fieldValues.Add(column.Name, "NULL");
                             }
                         }
-
-                        // this could probably be done smarter
-                        // but I am concerned about the order of the keys and values coming out right
-                        var fieldList = new List<string>();
-                        var valueList = new List<string>();
-                        var updateSetList = new List<string>();
-                        var primaryKeyColumnNames = newT.PrimaryKeyColumns.Select(x => x.Name);
-                        foreach (var kvp in fieldValues)
+                        else
                         {
-                            fieldList.Add("\"" + kvp.Key + "\"");
-                            valueList.Add(kvp.Value);
-
-                            if (!primaryKeyColumnNames.Contains(kvp.Key))
+                            if (column.DataType == SqlDbType.Bit)
                             {
-                                updateSetList.Add(kvp.Key + " = " + kvp.Value);
+                                sqlValue = sqlValue.ToLower().Trim();
+                                if (sqlValue == "true") sqlValue = "true";
+                                else if (sqlValue == "false") sqlValue = "false";
+                                else if (sqlValue != "1") sqlValue = "false"; //catch all, must be true/false
                             }
+
+                            if (column.IsNString())
+                                fieldValues.Add(column.Name, sqlValue);
+                            else
+                                fieldValues.Add(column.Name, sqlValue);
+
                         }
-
-                        var fieldListString = string.Join(",", fieldList);
-                        var valueListString = string.Join(",", valueList);
-                        var updateSetString = string.Join(",", updateSetList);
-
-                        var ii = 0;
-                        var pkWhereSb = new StringBuilder();
-                        foreach (var column in newT.PrimaryKeyColumns.OrderBy(x => x.Name))
-                        {
-                            var pkData = rowEntry.CellEntries[column.Name].GetSQLData();
-                            pkWhereSb.Append("(\"" + column.DatabaseName + "\" = " + pkData + ")");
-                            if (ii < newT.PrimaryKeyColumns.Count - 1)
-                                pkWhereSb.Append(" AND ");
-                            ii++;
-                        }
-
-                        sb.AppendLine($"--UPDATE \"{newT.GetPostgresSchema()}\".\"{Globals.GetTableDatabaseName(model, newT)}\" SET {updateSetString} WHERE {pkWhereSb.ToString()};");
-
                     }
 
-                    sb.AppendLine();
+                    // this could probably be done smarter
+                    // but I am concerned about the order of the keys and values coming out right
+                    var fieldList = new List<string>();
+                    var valueList = new List<string>();
+                    var updateSetList = new List<string>();
+                    var primaryKeyColumnNames = newT.PrimaryKeyColumns.Select(x => x.Name);
+                    foreach (var kvp in fieldValues)
+                    {
+                        fieldList.Add("\"" + kvp.Key + "\"");
+                        valueList.Add(kvp.Value);
+
+                        if (!primaryKeyColumnNames.Contains(kvp.Key))
+                        {
+                            updateSetList.Add(kvp.Key + " = " + kvp.Value);
+                        }
+                    }
+
+                    var fieldListString = string.Join(",", fieldList);
+                    var valueListString = string.Join(",", valueList);
+                    var updateSetString = string.Join(",", updateSetList);
+
+                    var ii = 0;
+                    var pkWhereSb = new StringBuilder();
+                    foreach (var column in newT.PrimaryKeyColumns.OrderBy(x => x.Name))
+                    {
+                        var pkData = rowEntry.CellEntries[column.Name].GetSQLData();
+                        pkWhereSb.Append("(\"" + column.DatabaseName + "\" = " + pkData + ")");
+                        if (ii < newT.PrimaryKeyColumns.Count - 1)
+                            pkWhereSb.Append(" AND ");
+                        ii++;
+                    }
+
+                    sb.AppendLine($"--UPDATE \"{newT.GetPostgresSchema()}\".\"{Globals.GetTableDatabaseName(model, newT)}\" SET {updateSetString} WHERE {pkWhereSb.ToString()};");
+
                 }
 
-                return sb.ToString();
+                sb.AppendLine();
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return sb.ToString();
         }
 
         private static void AppendTenantField(ModelRoot model, Table table, StringBuilder sb)
