@@ -2,7 +2,6 @@
 using nHydrate.Generator.Common.GeneratorFramework;
 using nHydrate.Generator.Common.Util;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -112,15 +111,11 @@ namespace nHydrate.Generator.Common.Models
             node.AddAttribute("companyName", this.CompanyName);
             node.AddAttribute("emitSafetyScripts", this.EmitSafetyScripts);
             node.AddAttribute("tenantColumnName", this.TenantColumnName);
-
             node.AddAttribute("defaultNamespace", this.DefaultNamespace);
             node.AddAttribute("storedProcedurePrefix", this.StoredProcedurePrefix);
-
             node.AppendChild(this.Database.XmlAppend(node.OwnerDocument.CreateElement("database")));
-
             this.VersionHistoryList.ResetKey(Guid.Empty, true); //no need to save this key
             this.VersionHistoryList.XmlAppend(node.AppendChild(node.OwnerDocument.CreateElement("versionHistoryList")));
-
             return node;
         }
 
@@ -156,49 +151,20 @@ namespace nHydrate.Generator.Common.Models
 
         internal void CleanUp()
         {
-            try
-            {
-                var delList = new ArrayList();
+            this.Database.Columns
+                .Where(x => x.ParentTable == null)
+                .ToList()
+                .ForEach(x => this.Database.Columns.Remove(x));
 
-                //Remove orphaned columns
-                foreach (Column column in this.Database.Columns)
-                {
-                    if (column.ParentTable == null)
-                        delList.Add(column);
-                }
-
-                foreach (Column column in delList)
-                    this.Database.Columns.Remove(column);
-
-                //Remove orphaned relations
-                delList = new ArrayList();
-                foreach (Relation relation in this.Database.Relations)
-                {
-                    if (relation.ParentTable == null)
-                    {
-                        delList.Add(relation);
-                    }
-                    else if (!relation.FkColumns.Any())
-                    {
-                        delList.Add(relation);
-                    }
-
-                }
-
-                foreach (Relation relation in delList)
-                    this.Database.Relations.Remove(relation);
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            //Remove orphaned relations
+            this.Database.Relations
+                .Where(x => x.ParentTable == null || !x.FkColumns.Any())
+                .ToList()
+                .ForEach(x => this.Database.Relations.Remove(x));
         }
 
         #endregion
 
         public override INHydrateModelObject Root => this;
-
     }
-
 }

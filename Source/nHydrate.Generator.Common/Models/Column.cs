@@ -335,8 +335,6 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
-
             node.AddAttribute("key", this.Key);
             node.AddAttribute("primaryKey", this.PrimaryKey, _def_primaryKey);
             node.AddAttribute("computedColumn", this.ComputedColumn, _def_computedColumn);
@@ -366,12 +364,12 @@ namespace nHydrate.Generator.Common.Models
 
             if (RelationshipRef != null)
             {
-                var relationshipRefNode = oDoc.CreateElement("relationshipRef");
+                var relationshipRefNode = node.CreateElement("relationshipRef");
                 RelationshipRef.XmlAppend(relationshipRefNode);
                 node.AppendChild(relationshipRefNode);
             }
 
-            var parentTableRefNode = oDoc.CreateElement("pt");
+            var parentTableRefNode = node.CreateElement("pt");
             ParentTableRef.XmlAppend(parentTableRefNode);
             node.AppendChild(parentTableRefNode);
 

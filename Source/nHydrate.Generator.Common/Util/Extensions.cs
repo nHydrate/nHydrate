@@ -466,7 +466,7 @@ namespace nHydrate.Generator.Common.Util
         public static bool IsTypedTable(this Models.Table obj) => obj?.TypedTable != TypedTableConstants.None;
 
         public static bool IdentityDatabase(this Models.Column obj) => obj?.Identity == IdentityTypeConstants.Database;
-        
+
         public static bool IdentityNone(this Models.Column obj) => obj?.Identity == IdentityTypeConstants.None;
 
         public static string RemoveParens(this string str) => str?.Replace("(", string.Empty).Replace(")", string.Empty);
@@ -476,6 +476,21 @@ namespace nHydrate.Generator.Common.Util
         public static string NormalizeLineEndings(this string str) => str?.Replace("\r\n", "\n").Replace("\r", "\n");
 
         public static List<string> BreakLines(this string text) => text.NormalizeLineEndings().Split(new char[] { '\n' }, StringSplitOptions.None).ToList() ?? new List<string>();
+
+        public static bool Match(this string str, string compare)
+        {
+            if (str == null && compare == null) return true;
+            if (str == string.Empty && compare == string.Empty) return true;
+            return str?.ToLower() == compare?.ToLower();
+        }
+
+        public static void Repeat(int count, Action action)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                action();
+            }
+        }
     }
 
     internal class SystemTypeTypeConverter : IYamlTypeConverter

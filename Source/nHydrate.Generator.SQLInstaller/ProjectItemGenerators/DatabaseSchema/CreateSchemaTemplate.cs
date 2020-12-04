@@ -198,7 +198,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
         {
             foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
-                var tableName = Globals.GetTableDatabaseName(_model, table);
                 foreach (var column in table.GetColumns())
                 {
                     //If this is a non-key column that is unqiue then create the SQL KEY
@@ -206,9 +205,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
                     {
                         //Make sure that the index name is the same each time
                         var indexName = $"IX_{table.Name.FlatGuid()}_{column.Name.FlatGuid()}".ToUpper();
-                        sb.AppendLine($"--UNIQUE COLUMN TABLE [{tableName}].[{column.DatabaseName}] (NON-PRIMARY KEY)");
+                        sb.AppendLine($"--UNIQUE COLUMN TABLE [{table.DatabaseName}].[{column.DatabaseName}] (NON-PRIMARY KEY)");
                         sb.AppendLine($"if not exists(select * from sys.indexes where name = '{indexName}')");
-                        sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{tableName}] ADD CONSTRAINT [{indexName}] UNIQUE ([{column.DatabaseName}]) ");
+                        sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] ADD CONSTRAINT [{indexName}] UNIQUE ([{column.DatabaseName}]) ");
                         sb.AppendLine("GO");
                         sb.AppendLine();
                     }

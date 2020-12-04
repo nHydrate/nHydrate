@@ -102,10 +102,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine($"	[StaticData(typeof({this.GetLocalNamespace()}.{_item.PascalName}Constants))]");
             }
 
-            //Add known types for all descendants
-            foreach (var table in _item.GetTablesInheritedFromHierarchy().OrderBy(x => x.PascalName))
-                sb.AppendLine($"	[KnownType(typeof({this.GetLocalNamespace()}.Entity.{table.PascalName}))]");
-
             if (_item.Immutable) // && _item.TypedTable == TypedTableConstants.None
                 sb.AppendLine("	[System.ComponentModel.ImmutableObject(true)]");
 

@@ -56,8 +56,8 @@ namespace nHydrate.Generator.Common.Models
             node.AddAttribute("isUnique", this.IsUnique);
             node.AddAttribute("primaryKey", this.PrimaryKey);
             node.AddAttribute("clustered", this.Clustered);
-            node.AddAttribute("description", this.Description);
-            node.AddAttribute("importedName", this.ImportedName);
+            node.AddAttribute("description", this.Description, string.Empty);
+            node.AddAttribute("importedName", this.ImportedName, string.Empty);
             node.AddAttribute("id", this.Id);
             node.AppendChild(this.IndexColumnList.XmlAppend(node.OwnerDocument.CreateElement("ticl")));
             return node;

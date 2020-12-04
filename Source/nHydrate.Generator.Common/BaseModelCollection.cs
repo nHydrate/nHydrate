@@ -9,43 +9,7 @@ using System.Xml;
 
 namespace nHydrate.Generator.Common
 {
-    public abstract class BaseModelCollection : BaseModelObject, ICollection
-    {
-        protected BaseModelCollection(INHydrateModelObject root)
-            : base(root)
-        {
-        }
-
-        public virtual Array Find(string key)
-        {
-            try
-            {
-                var retval = new ArrayList();
-                foreach (INHydrateModelObject element in this)
-                {
-                    if (string.Compare(element.Key, key, true) == 0)
-                        retval.Add(element);
-                }
-                return retval.ToArray();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public abstract void Clear();
-        public abstract void AddRange(ICollection list);
-
-        public abstract IEnumerator GetEnumerator();
-
-        public abstract int Count { get; }
-        public abstract void CopyTo(Array array, int index);
-        public abstract object SyncRoot { get; }
-        public abstract bool IsSynchronized { get; }
-    }
-
-    public abstract class BaseModelCollection<T> : BaseModelCollection, IEnumerable<T>
+    public abstract class BaseModelCollection<T> : BaseModelObject, IEnumerable<T> //BaseModelCollection, 
         where T : BaseModelObject, new()
     {
         public BaseModelCollection(INHydrateModelObject root)
@@ -63,11 +27,10 @@ namespace nHydrate.Generator.Common
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
             node.AddAttribute("key", this.Key, Guid.Empty.ToString());
             foreach (var item in _internalList)
             {
-                var newNode = oDoc.CreateElement(this.NodeName);
+                var newNode = node.CreateElement(this.NodeName);
                 item.XmlAppend(newNode);
                 node.AppendChild(newNode);
             }
@@ -76,6 +39,7 @@ namespace nHydrate.Generator.Common
 
         public override XmlNode XmlLoad(XmlNode node)
         {
+            if (node == null) return node;
             this.Key = node.GetAttributeValue("key", Guid.Empty.ToString());
             var nList = node.SelectNodes(this.NodeName);
             foreach (XmlNode n in nList)
@@ -111,9 +75,9 @@ namespace nHydrate.Generator.Common
 
         public virtual bool Contains(int id) => this.Any(x => x.Id == id);
 
-        public override void Clear() => _internalList.Clear();
+        public virtual void Clear() => _internalList.Clear();
 
-        public override void AddRange(ICollection list) => _internalList.AddRange(list.AsEnumerable<T>());
+        public virtual void AddRange(ICollection list) => _internalList.AddRange(list.AsEnumerable<T>());
 
         public virtual T Add(T value) => _internalList.AddItem(value);
 
@@ -128,17 +92,9 @@ namespace nHydrate.Generator.Common
 
         public virtual bool Contains(string name) => this.Any(x => x.Name.Match(name));
 
-        #region ICollection Members
+        public virtual int Count => _internalList.Count;
 
-        public override bool IsSynchronized => false;
-
-        public override int Count => _internalList.Count;
-
-        public override void CopyTo(Array array, int index) => _internalList.CopyTo((T[])array, index);
-
-        public override object SyncRoot => _internalList;
-
-        #endregion
+        public void CopyTo(Array array, int index) => _internalList.CopyTo((T[])array, index);
 
         public virtual T[] GetByKey(string key) => this.Where(x => x.Key == key).ToArray();
 
@@ -155,7 +111,7 @@ namespace nHydrate.Generator.Common
             return retval;
         }
 
-        public override IEnumerator GetEnumerator() => _internalList.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _internalList.GetEnumerator();
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => _internalList.GetEnumerator();
     }
 

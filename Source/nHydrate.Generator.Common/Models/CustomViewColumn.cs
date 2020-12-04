@@ -68,8 +68,6 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
-
             node.AddAttribute("key", this.Key);
             node.AddAttribute("name", this.Name);
             node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
@@ -81,23 +79,17 @@ namespace nHydrate.Generator.Common.Models
             node.AddAttribute("scale", this.Scale, _def_scale);
             node.AddAttribute("id", this.Id);
             node.AddAttribute("sortOrder", this.SortOrder, _def_sortOrder);
-
+            node.AddAttribute("type", (int)this.DataType);
+            node.AddAttribute("allowNull", this.AllowNull, _def_allowNull);
 
             if (RelationshipRef != null)
             {
-                var relationshipRefNode = oDoc.CreateElement("relationshipRef");
+                var relationshipRefNode = node.CreateElement("relationshipRef");
                 RelationshipRef.XmlAppend(relationshipRefNode);
                 node.AppendChild(relationshipRefNode);
             }
 
-            var parentViewRefNode = oDoc.CreateElement("parentTableRef");
-            ParentViewRef.XmlAppend(parentViewRefNode);
-            node.AppendChild(parentViewRefNode);
-
-            node.AddAttribute("type", (int)this.DataType);
-
-            if (this.AllowNull != _def_allowNull)
-                node.AddAttribute("allowNull", this.AllowNull);
+            node.AppendChild(ParentViewRef.XmlAppend(node.CreateElement("parentTableRef")));
             return node;
         }
 

@@ -10,7 +10,7 @@ namespace nHydrate.Generator.Common.Models
         {
         }
 
-        public override string Key { get => "00000000-0000-0000-0000-000000000000"; }
+        public override string Key { get => System.Guid.Empty.ToString(); }
 
         protected override string NodeName => "c";
     }

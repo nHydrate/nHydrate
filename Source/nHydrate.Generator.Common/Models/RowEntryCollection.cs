@@ -8,5 +8,7 @@ namespace nHydrate.Generator.Common.Models
         }
 
         protected override string NodeName => "r";
+
+        public override string Key { get => System.Guid.Empty.ToString(); }
     }
 }

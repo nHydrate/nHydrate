@@ -59,7 +59,7 @@ namespace nHydrate.Generator.Common.Models
 
         public string RoleName { get; set; } = _def_roleName;
 
-        public string ConstraintName { get; set; } = string.Empty;
+        public string ConstraintName { get; set; } = _def_constraintname;
 
         public bool IsRequired => this.ColumnRelationships.Any(x => !x.ChildColumn.AllowNull);
 
@@ -85,7 +85,7 @@ namespace nHydrate.Generator.Common.Models
                 //If any of the columns are not unique then the relationship is NOT unique
                 var retval = true;
                 var childPKCount = 0; //Determine if any of the child columns are in the PK
-                foreach (ColumnRelationship columnRelationship in this.ColumnRelationships)
+                foreach (var columnRelationship in this.ColumnRelationships)
                 {
                     var column1 = columnRelationship.ParentColumn;
                     var column2 = columnRelationship.ChildColumn;
@@ -107,11 +107,11 @@ namespace nHydrate.Generator.Common.Models
 
         public bool IsInherited => !this.IsOneToOne ? false : this.ChildTable.IsInheritedFrom(this.ParentTable);
 
-        public bool Enforce { get; set; }
+        public bool Enforce { get; set; } = _def_enforce;
 
-        public string Description { get; set; }
+        public string Description { get; set; } = _def_description;
 
-        public DeleteActionConstants DeleteAction { get; set; }
+        public DeleteActionConstants DeleteAction { get; set; } = _def_deleteAction;
 
         #endregion
 
@@ -134,7 +134,7 @@ namespace nHydrate.Generator.Common.Models
                 var parentTableName2 = relationOther.ParentTable.Name;
 
                 var list1 = new SortedDictionary<string, ColumnRelationship>();
-                foreach (ColumnRelationship cr in this.ColumnRelationships)
+                foreach (var cr in this.ColumnRelationships)
                 {
                     if (cr.ChildColumn != null)
                     {
@@ -145,7 +145,7 @@ namespace nHydrate.Generator.Common.Models
                 }
 
                 var list2 = new SortedDictionary<string, ColumnRelationship>();
-                foreach (ColumnRelationship cr in relationOther.ColumnRelationships)
+                foreach (var cr in relationOther.ColumnRelationships)
                 {
                     if (cr.ChildColumn != null)
                     {
@@ -173,7 +173,7 @@ namespace nHydrate.Generator.Common.Models
                 var childTableName2 = relationOther.ChildTable.Name;
 
                 var list3 = new SortedDictionary<string, ColumnRelationship>();
-                foreach (ColumnRelationship cr in this.ColumnRelationships)
+                foreach (var cr in this.ColumnRelationships)
                 {
                     if (cr.ParentColumn != null)
                     {
@@ -184,7 +184,7 @@ namespace nHydrate.Generator.Common.Models
                 }
 
                 var list4 = new SortedDictionary<string, ColumnRelationship>();
-                foreach (ColumnRelationship cr in relationOther.ColumnRelationships)
+                foreach (var cr in relationOther.ColumnRelationships)
                 {
                     if (cr.ParentColumn != null)
                     {
@@ -242,28 +242,25 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
-
             node.AddAttribute("key", this.Key);
             node.AddAttribute("enforce", this.Enforce);
             node.AddAttribute("description", this.Description, _def_description);
             node.AddAttribute("deleteAction", this.DeleteAction.ToString());
-            ColumnRelationships.ResetKey(Guid.Empty, true); //no need to save this key
-            node.AppendChild(ColumnRelationships.XmlAppend(oDoc.CreateElement("crl")));
+            this.ColumnRelationships.ResetKey(Guid.Empty, true); //no need to save this key
+            node.AppendChild(ColumnRelationships.XmlAppend(node.CreateElement("crl")));
+            node.AddAttribute("id", this.Id);
+            node.AddAttribute("roleName", this.RoleName, _def_roleName);
+            node.AddAttribute("constraintName", this.ConstraintName, _def_constraintname);
 
-            var childTableRefNode = oDoc.CreateElement("ct");
+            var childTableRefNode = node.CreateElement("ct");
             if (this.ChildTableRef != null)
                 this.ChildTableRef.XmlAppend(childTableRefNode);
             node.AppendChild(childTableRefNode);
 
-            var parentTableRefNode = oDoc.CreateElement("pt");
+            var parentTableRefNode = node.CreateElement("pt");
             if (this.ParentTableRef != null)
                 this.ParentTableRef.XmlAppend(parentTableRefNode);
             node.AppendChild(parentTableRefNode);
-
-            node.AddAttribute("id", this.Id);
-            node.AddAttribute("roleName", this.RoleName, _def_roleName);
-            node.AddAttribute("constraintName", this.ConstraintName, _def_constraintname);
 
             return node;
         }
@@ -316,7 +313,7 @@ namespace nHydrate.Generator.Common.Models
                 try
                 {
                     var sorted = new SortedDictionary<string, Column>();
-                    foreach (ColumnRelationship columnRel in this.ColumnRelationships)
+                    foreach (var columnRel in this.ColumnRelationships)
                     {
                         sorted.Add($"{columnRel.ParentColumn.Name}|{columnRel.ChildColumn.Name}|{this.RoleName}|{columnRel.Key}", columnRel.ChildColumn);
                     }
@@ -331,7 +328,7 @@ namespace nHydrate.Generator.Common.Models
 
         public override string ToString()
         {
-            var tableCollection = ((ModelRoot)this.Root).Database.Tables;
+            var tableCollection = this.GetRoot().Database.Tables;
             Table[] parentList = { };
             Table[] childList = { };
             if (this.ParentTableRef != null)

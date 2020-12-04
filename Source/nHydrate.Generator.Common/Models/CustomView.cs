@@ -87,24 +87,18 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
-
             node.AddAttribute("key", this.Key);
             node.AddAttribute("name", this.Name);
             node.AddAttribute("dbschema", this.DBSchema, _def_dbSchema);
             node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
             node.AddAttribute("description", this.Description, _def_description);
             node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived, _def_generatesDoubleDerived);
-
-            var columnsNode = oDoc.CreateElement("columns");
-            this.Columns.XmlAppend(columnsNode);
-            node.AppendChild(columnsNode);
-
-            var viewSqlNode = oDoc.CreateElement("sql");
-            viewSqlNode.AppendChild(oDoc.CreateCDataSection(this.SQL));
-            node.AppendChild(viewSqlNode);
-
             node.AddAttribute("id", this.Id);
+            node.AppendChild(this.Columns.XmlAppend(node.CreateElement("columns")));
+
+            var viewSqlNode = node.CreateElement("sql");
+            viewSqlNode.AppendChild(node.CreateCDataSection(this.SQL));
+            node.AppendChild(viewSqlNode);
 
             return node;
         }

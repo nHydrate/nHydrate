@@ -74,6 +74,7 @@ namespace nHydrate.Generator.Common.Models
 
         public static XmlNode XmlLoad(this List<TableIndex> list, XmlNode node, INHydrateModelObject root)
         {
+            if (node == null) return node;
             foreach (XmlNode n in node.SelectNodes("ti"))
             {
                 var newItem = new TableIndex(root);
