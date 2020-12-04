@@ -101,7 +101,7 @@ namespace nHydrate.Generator.Common.Models
             try
             {
                 if (table == null) return string.Empty;
-                if (table.TypedTable == TypedTableConstants.None) return string.Empty;
+                if (!table.IsTypedTable()) return string.Empty;
 
                 var column = table.GetColumns().FirstOrDefault(x => StringHelper.Match(x.Name, "name", true));
                 if (column != null)

@@ -261,7 +261,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
                     {
                         Table typeTable = null;
-                        if (table.IsColumnRelatedToTypeTable(column, out string pascalRoleName) || (column.PrimaryKey && table.TypedTable != TypedTableConstants.None))
+                        if (table.IsColumnRelatedToTypeTable(column, out string pascalRoleName) || (column.PrimaryKey && table.IsTypedTable()))
                         {
                             typeTable = table.GetRelatedTypeTableByColumn(column, out pascalRoleName);
                             if (typeTable == null) typeTable = table;
@@ -284,7 +284,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             sb.Append(".IsRequired(true)");
 
                         //Add the auto-gen value UNLESS it is a type table
-                        if ((table.TypedTable == TypedTableConstants.None) && column.Identity == IdentityTypeConstants.Database && column.DataType.IsIntegerType())
+                        if (!table.IsTypedTable() && column.Identity == IdentityTypeConstants.Database && column.DataType.IsIntegerType())
                             sb.Append(".ValueGeneratedOnAdd()");
 
                         if (column.DataType.IsTextType() && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml)
@@ -353,7 +353,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             {
                 foreach (var column in table.GetColumns().OrderBy(x => x.Name))
                 {
-                    if (table.IsColumnRelatedToTypeTable(column, out var pascalRoleName) || (column.PrimaryKey && table.TypedTable != TypedTableConstants.None))
+                    if (table.IsColumnRelatedToTypeTable(column, out var pascalRoleName) || (column.PrimaryKey && table.IsTypedTable()))
                     {
                         var typeTable = table.GetRelatedTypeTableByColumn(column, out pascalRoleName);
                         if (typeTable == null) typeTable = table;
@@ -1113,7 +1113,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
         private void AppendTypeTableEnums(StringBuilder sb)
         {
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.None).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables.Where(x => x.IsTypedTable()).OrderBy(x => x.PascalName))
             {
                 if (table.PrimaryKeyColumns.Count == 1)
                 {

@@ -77,7 +77,7 @@ namespace nHydrate.Generator.Common.Models
 
         public virtual bool Immutable
         {
-            get { return _immutable || this.TypedTable != TypedTableConstants.None; }
+            get { return _immutable || this.IsTypedTable(); }
             set { _immutable = value; }
         }
 
@@ -213,7 +213,7 @@ namespace nHydrate.Generator.Common.Models
                 {
                     var parentColumn = relation.ColumnRelationships[0].ParentColumn;
                     var childColumn = relation.ColumnRelationships[0].ChildColumn;
-                    if ((column == childColumn) && parentTable.TypedTable != TypedTableConstants.None)
+                    if ((column == childColumn) && parentTable.IsTypedTable())
                     {
                         roleName = relation.PascalRoleName;
                         return parentTable;

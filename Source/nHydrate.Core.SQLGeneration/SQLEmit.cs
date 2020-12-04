@@ -1334,7 +1334,7 @@ namespace nHydrate.Core.SQLGeneration
             var parentTable = relation.ParentTable;
 
             var sb = new StringBuilder();
-            if (parentTable.TypedTable != TypedTableConstants.EnumOnly && childTable.TypedTable != TypedTableConstants.EnumOnly)
+            if (!parentTable.IsEnumOnly() && !childTable.IsEnumOnly())
             {
                 sb.AppendLine($"--FOREIGN KEY RELATIONSHIP [{parentTable.DatabaseName}] -> [{childTable.DatabaseName}] ({GetFieldNames(relation)})");
                 sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'F')");
