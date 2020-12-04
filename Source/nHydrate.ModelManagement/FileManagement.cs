@@ -59,34 +59,14 @@ namespace nHydrate.ModelManagement
 
             #region Clean up
             //Ensure all arrays are not null
-            foreach (var obj in results.Entities)
-            {
-                if (obj.fieldset == null) obj.fieldset = new Entity.configurationField[0];
-            }
-            foreach (var obj in results.Indexes)
-            {
-                if (obj.index == null) obj.index = new Index.configurationIndex[0];
-                foreach (var obj2 in obj.index)
-                {
-                    if (obj2.indexcolumnset == null) obj2.indexcolumnset = new Index.configurationIndexColumn[0];
-                }
-            }
-            foreach (var obj in results.Relations)
-            {
-                if (obj.relation == null) obj.relation = new Relation.configurationRelation[0];
-                foreach (var obj2 in obj.relation)
-                {
-                    if (obj2.relationfieldset == null) obj2.relationfieldset = new Relation.configurationRelationField[0];
-                }
-            }
-            foreach (var obj in results.StaticData)
-            {
-                if (obj.data == null) obj.data = new StaticData.configurationData[0];
-            }
-            foreach (var obj in results.Views)
-            {
-                if (obj.fieldset == null) obj.fieldset = new View.configurationField[0];
-            }
+            results.Entities.ForEach(x => x.fieldset = x.fieldset.OrDefault());
+            results.Entities.Where(x => x.fieldset == null).ToList().ForEach(x => x.fieldset = x.fieldset.OrDefault());
+            results.Indexes.Where(x => x.index == null).ToList().ForEach(x => x.index = x.index.OrDefault());
+            results.Indexes.SelectMany(x => x.index).Where(x => x.indexcolumnset == null).ToList().ForEach(x => x.indexcolumnset = x.indexcolumnset.OrDefault());
+            results.Relations.Where(x => x.relation == null).ToList().ForEach(x => x.relation = x.relation.OrDefault());
+            results.Relations.SelectMany(x => x.relation).Where(x => x.relationfieldset == null).ToList().ForEach(x => x.relationfieldset = x.relationfieldset.OrDefault());
+            results.StaticData.Where(x => x.data == null).ToList().ForEach(x => x.data = x.data.OrDefault());
+            results.Views.Where(x => x.fieldset == null).ToList().ForEach(x => x.fieldset = x.fieldset.OrDefault());
             #endregion
 
             return results;
@@ -272,6 +252,39 @@ namespace nHydrate.ModelManagement
 
             }
 
+        }
+
+        private static void LoadViewsYaml(string rootFolder, DiskModelYaml results)
+        {
+            var folder = Path.Combine(rootFolder, FOLDER_VW);
+            if (!Directory.Exists(folder))
+            {
+                folder = Path.Combine(rootFolder, FOLDER_OLD_VW);
+                if (!Directory.Exists(folder)) return;
+            }
+
+            var fList = Directory.GetFiles(folder, "*.yaml");
+            //Only use Yaml if there are actual files
+            if (!fList.Any()) return;
+
+            results.Views.Clear();
+            foreach (var f in fList)
+                results.Views.Add(GetYamlObject<ViewYaml>(f));
+
+            foreach (var f in Directory.GetFiles(folder, "*.sql"))
+            {
+                var fi = new FileInfo(f);
+                var name = fi.Name.Substring(0, fi.Name.Length - fi.Extension.Length).ToLower();
+                var item = results.Views.FirstOrDefault(x => x.Name.ToLower() == name);
+                if (item != null)
+                    item.Sql = File.ReadAllText(f);
+            }
+
+            FixupModel(results);
+        }
+
+        private static void FixupModel(DiskModelYaml results)
+        {
             //Fill in field IDs if need be
             results.Entities
                 .Where(x => x.Id == Guid.Empty)
@@ -360,34 +373,6 @@ namespace nHydrate.ModelManagement
                     }
                 }
             }
-
-        }
-
-        private static void LoadViewsYaml(string rootFolder, DiskModelYaml results)
-        {
-            var folder = Path.Combine(rootFolder, FOLDER_VW);
-            if (!Directory.Exists(folder))
-            {
-                folder = Path.Combine(rootFolder, FOLDER_OLD_VW);
-                if (!Directory.Exists(folder)) return;
-            }
-
-            var fList = Directory.GetFiles(folder, "*.yaml");
-            //Only use Yaml if there are actual files
-            if (!fList.Any()) return;
-
-            results.Views.Clear();
-            foreach (var f in fList)
-                results.Views.Add(GetYamlObject<ViewYaml>(f));
-
-            foreach (var f in Directory.GetFiles(folder, "*.sql"))
-            {
-                var fi = new FileInfo(f);
-                var name = fi.Name.Substring(0, fi.Name.Length - fi.Extension.Length).ToLower();
-                var item = results.Views.FirstOrDefault(x => x.Name.ToLower() == name);
-                if (item != null)
-                    item.Sql = File.ReadAllText(f);
-            }
         }
 
         private static T GetObject<T>(string fileName)
@@ -406,6 +391,8 @@ namespace nHydrate.ModelManagement
 
         public static void Save2(string rootFolder, string modelName, DiskModelYaml model)
         {
+            FixupModel(model);
+
             var modelFolder = GetModelFolder(rootFolder, modelName.Replace(".nhydrate", ".model"));
             if (modelName.EndsWith(ModelExtension))
                 modelFolder = rootFolder;
@@ -422,10 +409,10 @@ namespace nHydrate.ModelManagement
 
             RemoveOrphans(modelFolder, generatedFileList);
 
-            var folder = Path.Combine(rootFolder, FOLDER_OLD_ET);
-            if (Directory.Exists(folder)) Directory.Delete(folder);
-            folder = Path.Combine(rootFolder, FOLDER_OLD_VW);
-            if (Directory.Exists(folder)) Directory.Delete(folder);
+            var folder = Path.Combine(modelFolder, FOLDER_OLD_ET);
+            if (Directory.Exists(folder)) Directory.Delete(folder, true);
+            folder = Path.Combine(modelFolder, FOLDER_OLD_VW);
+            if (Directory.Exists(folder)) Directory.Delete(folder, true);
 
         }
 
@@ -724,6 +711,12 @@ namespace nHydrate.ModelManagement
             files.AddRange(Directory.GetFiles(rootFolder, "*.*", SearchOption.TopDirectoryOnly));
             files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "entities"), "*.*", SearchOption.TopDirectoryOnly));
             files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "views"), "*.*", SearchOption.TopDirectoryOnly));
+
+            if (Directory.Exists(Path.Combine(rootFolder, "_Entities")))
+                files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_Entities"), "*.*", SearchOption.TopDirectoryOnly));
+            if (Directory.Exists(Path.Combine(rootFolder, "_Views")))
+                files.AddRange(Directory.GetFiles(Path.Combine(rootFolder, "_Views"), "*.*", SearchOption.TopDirectoryOnly));
+
             files.ToList().ForEach(x => x = x.ToLower());
             generatedFiles.ToList().ForEach(x => x = x.ToLower());
 

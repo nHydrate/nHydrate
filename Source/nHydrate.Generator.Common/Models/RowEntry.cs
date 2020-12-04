@@ -50,10 +50,9 @@ namespace nHydrate.Generator.Common.Models
             {
                 foreach (CellEntry cellEntry in this.CellEntries)
                 {
-                    var column = cellEntry.ColumnRef.Object as Column;
-                    if (column != null && column.DataType.IsIntegerType())
+                    if (cellEntry.Column != null && cellEntry.Column.DataType.IsIntegerType())
                     {
-                        if (column.Name.ToLower().Contains("order") || column.Name.ToLower().Contains("sort"))
+                        if (cellEntry.Column.Name.ToLower().Contains("order") || cellEntry.Column.Name.ToLower().Contains("sort"))
                             return cellEntry.Value;
                     }
                 }
@@ -73,7 +72,7 @@ namespace nHydrate.Generator.Common.Models
                 var description = string.Empty;
                 foreach (CellEntry cellEntry in this.CellEntries)
                 {
-                    var column = cellEntry.ColumnRef.Object as Column;
+                    var column = cellEntry.Column;
                     if (column != null)
                     {
                         if (StringHelper.Match(column.Name, "name"))
@@ -99,7 +98,7 @@ namespace nHydrate.Generator.Common.Models
                 var description = string.Empty;
                 foreach (CellEntry cellEntry in this.CellEntries)
                 {
-                    var column = cellEntry.ColumnRef.Object as Column;
+                    var column = cellEntry.Column;
                     if (column != null)
                     {
                         if (StringHelper.Match(column.Name, "name"))
@@ -122,13 +121,9 @@ namespace nHydrate.Generator.Common.Models
             var id = string.Empty;
             foreach (CellEntry cellEntry in this.CellEntries)
             {
-                var column = (Column)cellEntry.ColumnRef.Object;
                 var pk = (Column)table.PrimaryKeyColumns[0];
-                if (column != null)
-                {
-                    if (column.Key == pk.Key)
-                        id = cellEntry.Value;
-                }
+                if (cellEntry.Column?.Key == pk.Key)
+                    id = cellEntry.Value;
             }
             return id;
         }
@@ -139,7 +134,7 @@ namespace nHydrate.Generator.Common.Models
             var description = string.Empty;
             foreach (CellEntry cellEntry in this.CellEntries)
             {
-                var column = (Column)cellEntry.ColumnRef.Object;
+                var column = cellEntry.Column;
                 var pk = (Column)table.PrimaryKeyColumns[0];
                 if (column != null)
                 {
@@ -157,13 +152,14 @@ namespace nHydrate.Generator.Common.Models
         #region IXMLable Members
         public override XmlNode XmlAppend(XmlNode node)
         {
+            CellEntries.ResetKey(Guid.Empty, true); //no need to save this key
             node.AppendChild(CellEntries.XmlAppend(node.OwnerDocument.CreateElement("cl")));
             return node;
         }
 
         public override XmlNode XmlLoad(XmlNode node)
         {
-            this.Key = node.GetAttributeValue("key", string.Empty);
+            this.Key = Guid.Empty.ToString(); // node.GetAttributeValue("key", string.Empty);
             var cellEntriesNode = node.SelectSingleNode("cl");
             this.CellEntries.XmlLoad(cellEntriesNode);
             return node;

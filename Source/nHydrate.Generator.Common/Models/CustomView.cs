@@ -70,11 +70,8 @@ namespace nHydrate.Generator.Common.Models
         {
             var retval = new System.Data.DataSet();
             var t = retval.Tables.Add(this.Name);
-            foreach (Reference reference in this.Columns)
-            {
-                var column = (CustomViewColumn)reference.Object;
+            foreach (var column in this.GetColumns())
                 t.Columns.Add(column.Name, typeof(string));
-            }
             return retval.Tables[0];
         }
 

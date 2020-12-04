@@ -35,7 +35,6 @@ namespace nHydrate.Generator.Common.Models
 
         #endregion
 
-        protected override string NodeOldName => "Reference";
         protected override string NodeName => "f";
     }
 }

@@ -12,7 +12,6 @@ namespace nHydrate.Generator.Common.Models
         {
         }
 
-        protected override string NodeOldName => "relation";
         protected override string NodeName => "r";
 
         public override void Remove(Relation element)

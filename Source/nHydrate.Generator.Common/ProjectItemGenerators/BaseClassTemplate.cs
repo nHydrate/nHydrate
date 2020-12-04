@@ -18,13 +18,7 @@ namespace nHydrate.Generator.Common.ProjectItemGenerators
             get { return nHydrateGeneratorProject.DomainProjectName(_model); }
         }
 
-        public virtual string GetLocalNamespace()
-        {
-            if (this.LocalNamespaceExtension.IsEmpty())
-                return this.DefaultNamespace;
-            else
-                return $"{this.DefaultNamespace}.{this.LocalNamespaceExtension}";
-        }
+        public virtual string GetLocalNamespace() => this.LocalNamespaceExtension.IsEmpty() ? this.DefaultNamespace : $"{this.DefaultNamespace}.{this.LocalNamespaceExtension}";
 
         public abstract string FileContent { get; }
         public abstract string FileName { get; }

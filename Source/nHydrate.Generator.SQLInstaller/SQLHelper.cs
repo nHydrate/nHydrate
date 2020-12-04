@@ -153,9 +153,8 @@ namespace nHydrate.Generator.SQLInstaller
 
                     #region Delete Columns
 
-                    foreach (Reference oldRef in oldT.Columns)
+                    foreach (var oldC in oldT.GetColumns())
                     {
-                        var oldC = oldRef.Object as Column;
                         var newC = Globals.GetColumnByKey(newT.Columns, oldC.Key);
                         if (newC == null)
                         {
@@ -304,7 +303,7 @@ namespace nHydrate.Generator.SQLInstaller
                             sb.AppendLine();
 
                             //Before drop PK remove all FK to the table
-                            foreach (var r1 in oldT.GetRelations().ToList())
+                            foreach (var r1 in oldT.GetRelations())
                             {
                                 sb.Append(SQLEmit.GetSqlRemoveFK(r1));
                                 sb.AppendLine("GO");
@@ -341,7 +340,7 @@ namespace nHydrate.Generator.SQLInstaller
 
                     #region Drop Foreign Keys
 
-                    foreach (var r1 in oldT.GetRelations().ToList())
+                    foreach (var r1 in oldT.GetRelations())
                     {
                         var r2 = newT.Relationships.FirstOrDefault(x => x.Key == r1.Key);
                         if (r2 == null)
@@ -418,9 +417,9 @@ namespace nHydrate.Generator.SQLInstaller
                 {
                     #region Add Foreign Keys
 
-                    foreach (var r1 in newT.GetRelations().ToList())
+                    foreach (var r1 in newT.GetRelations())
                     {
-                        var r2 = oldT.GetRelations().ToList().FirstOrDefault(x => x.Key == r1.Key);
+                        var r2 = oldT.GetRelations().FirstOrDefault(x => x.Key == r1.Key);
                         if (r2 == null)
                         {
                             //There is no OLD relation so it is new so add it

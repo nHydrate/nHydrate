@@ -85,7 +85,6 @@ namespace nHydrate.Dsl.Custom
 
                 #region Fields
                 //var nodeFields = new List<ModelManagement.Entity.configurationField>();
-                var loopIndex = 0;
                 foreach (var field in item.Fields.OrderBy(x => x.SortOrder))
                 {
                     //var nodeField = new ModelManagement.Entity.configurationField();

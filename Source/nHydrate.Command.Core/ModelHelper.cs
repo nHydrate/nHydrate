@@ -68,7 +68,7 @@ namespace nHydrate.Command.Core
                     #endregion
 
                     #region Load the fields for this entity
-                    var loopIndex = 1;
+                    var loopIndex = 0;
                     foreach (var field in entity.Fields)
                     {
                         var newColumn = root.Database.Columns.Add();

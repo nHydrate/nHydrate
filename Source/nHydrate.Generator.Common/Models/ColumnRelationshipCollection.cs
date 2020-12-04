@@ -10,9 +10,8 @@ namespace nHydrate.Generator.Common.Models
         {
         }
 
-        public ColumnRelationship GetByParentField(Column column) => this.FirstOrDefault(x => x.ChildColumnRef.Object as Column == column);
+        public ColumnRelationship GetByParentField(Column column) => this.FirstOrDefault(x => x.ChildColumn == column);
 
-        protected override string NodeOldName => "columnRelationship";
         protected override string NodeName => "cr";
     }
 

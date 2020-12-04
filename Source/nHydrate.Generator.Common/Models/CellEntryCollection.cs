@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace nHydrate.Generator.Common.Models
 {
     public class CellEntryCollection : BaseModelCollection<CellEntry>
@@ -7,7 +10,6 @@ namespace nHydrate.Generator.Common.Models
         {
         }
 
-        protected override string NodeOldName => "cellEntry";
         protected override string NodeName => "ce";
 
         public override CellEntry this[string columnName]
@@ -16,13 +18,13 @@ namespace nHydrate.Generator.Common.Models
             {
                 foreach (var item in _internalList)
                 {
-                    var c = item.ColumnRef.Object as Column;
-                    if (string.Compare(c.Name, columnName, 0) == 0)
+                    if (string.Compare(item.Column.Name, columnName, 0) == 0)
                         return item;
                 }
                 return null;
             }
         }
 
+        public List<Column> GetColumns() => _internalList.Select(x => x.Column).Where(x => x != null).ToList();
     }
 }

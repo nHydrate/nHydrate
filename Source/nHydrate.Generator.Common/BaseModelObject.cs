@@ -68,11 +68,11 @@ namespace nHydrate.Generator.Common
             this.Key = newKey;
         }
 
-        public void ResetKey(Guid newKey)
+        public void ResetKey(Guid newKey, bool skipValidation = false)
         {
-            if (newKey == Guid.Empty)
+            if (newKey == Guid.Empty && !skipValidation)
                 throw new Exception("The key value must have a value!");
-            this.Key = newKey.ToString();
+            ResetKey(newKey.ToString());
         }
 
         #endregion

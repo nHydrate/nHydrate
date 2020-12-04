@@ -380,6 +380,8 @@ namespace nHydrate.Generator.Common.Util
 
         public static string IfEmptyDefault(this string str, string defaultValue) => string.IsNullOrEmpty(str) ? defaultValue : str;
 
+        public static string IfExistsReturn(this string str, string value) => !string.IsNullOrEmpty(str) ? value : string.Empty;
+
         public static T ToEnum<T>(this string str)
             where T : struct, System.Enum
         {
@@ -432,6 +434,19 @@ namespace nHydrate.Generator.Common.Util
                    .WithTypeConverter(new SystemTypeTypeConverter())
                    .Build();
             return serializer.Deserialize<T>(value);
+        }
+
+        /// <summary>
+        /// If null returns new object of type
+        /// </summary>
+        public static T OrDefault<T>(this T obj) where T : new() => (obj == null) ? new T() : obj;
+
+        public static T[] OrDefault<T>(this T[] obj) where T : new() => (obj == null) ? new T[0] : obj;
+
+        public static bool Is(this BaseModelObject obj, BaseModelObject other)
+        {
+            if (obj == null || other == null) return false;
+            return obj.Key == other.Key;
         }
     }
 

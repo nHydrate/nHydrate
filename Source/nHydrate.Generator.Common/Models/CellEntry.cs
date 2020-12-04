@@ -28,6 +28,8 @@ namespace nHydrate.Generator.Common.Models
 
         public Reference ColumnRef { get; set; }
 
+        public Column Column => this.ColumnRef?.Object as Column;
+
         public string Value { get; set; }
 
         #endregion
@@ -36,14 +38,12 @@ namespace nHydrate.Generator.Common.Models
 
         public string GetSQLData()
         {
-            var column = this.ColumnRef.Object as Column;
             var v = this.Value + string.Empty;
-
-            if (column.AllowNull && v == "(NULL)")
+            if (this.Column.AllowNull && v == "(NULL)")
                 return null;
-            else if (column.DataType.IsTextType() ||
-                     column.DataType.IsDateType() ||
-                     column.DataType == System.Data.SqlDbType.UniqueIdentifier
+            else if (this.Column.DataType.IsTextType() ||
+                     this.Column.DataType.IsDateType() ||
+                     this.Column.DataType == System.Data.SqlDbType.UniqueIdentifier
                 )
                 return "'" + v.Replace("'", "''") + "'";
             else

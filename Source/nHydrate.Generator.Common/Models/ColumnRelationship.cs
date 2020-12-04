@@ -40,30 +40,18 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
-
-            var parentColumnRefNode = oDoc.CreateElement("pt");
-            this.ParentColumnRef.XmlAppend(parentColumnRefNode);
-            node.AppendChild(parentColumnRefNode);
-
-            var childColumnRefNode = oDoc.CreateElement("ct");
-            this.ChildColumnRef.XmlAppend(childColumnRefNode);
-            node.AppendChild(childColumnRefNode);
-
+            node.AppendChild(this.ParentColumnRef.XmlAppend(node.OwnerDocument.CreateElement("pt")));
+            node.AppendChild(this.ChildColumnRef.XmlAppend(node.OwnerDocument.CreateElement("ct")));
             return node;
         }
 
         public override XmlNode XmlLoad(XmlNode node)
         {
-            this.Key = node.GetAttributeValue("key", string.Empty);
-            var parentColumnRefNode = node.SelectSingleNode("pt");
+            this.Key = Guid.Empty.ToString(); // node.GetAttributeValue("key", string.Empty);
             this.ParentColumnRef = new Reference(this.Root);
-            this.ParentColumnRef.XmlLoad(parentColumnRefNode);
-
-            var childColumnRefNode = node.SelectSingleNode("ct");
+            this.ParentColumnRef.XmlLoad(node.SelectSingleNode("pt"));
             this.ChildColumnRef = new Reference(this.Root);
-            this.ChildColumnRef.XmlLoad(childColumnRefNode);
-
+            this.ChildColumnRef.XmlLoad(node.SelectSingleNode("ct"));
             return node;
         }
 

@@ -199,10 +199,9 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseSchema
             foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
             {
                 var tableName = Globals.GetTableDatabaseName(_model, table);
-                foreach (Reference reference in table.Columns)
+                foreach (var column in table.GetColumns())
                 {
                     //If this is a non-key column that is unqiue then create the SQL KEY
-                    var column = (Column)reference.Object;
                     if (column.IsUnique && !table.PrimaryKeyColumns.Contains(column))
                     {
                         //Make sure that the index name is the same each time

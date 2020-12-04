@@ -417,9 +417,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
             {
-                foreach (Relation relation in table.GetRelations())
+                foreach (var relation in table.GetRelations())
                 {
-                    var childTable = relation.ChildTableRef.Object as Table;
+                    var childTable = relation.ChildTable;
                     if (!childTable.IsInheritedFrom(table) && !childTable.AssociativeTable)
                     {
                         if (relation.IsOneToOne)
@@ -467,7 +467,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
                             var index = 0;
                             foreach (var columnPacket in relation.ColumnRelationships
-                                .Select(x => new { Child = x.ChildColumnRef.Object as Column, Parent = x.ParentColumnRef.Object as Column })
+                                .Select(x => new { Child = x.ChildColumn, Parent = x.ParentColumn })
                                 .Where(x => x.Child != null && x.Parent != null)
                                 .OrderBy(x => x.Parent.PascalName)
                                 .ToList())
@@ -703,7 +703,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("				//Only set the TenantID on create. It never changes.");
             sb.AppendLine("				if (item.Entity is ITenantEntity)");
             sb.AppendLine("				{");
-            sb.AppendLine("					Util.SetPropertyByName(item.Entity, \"" + _model.TenantColumnName + "\", tenantId);");
+            sb.AppendLine($"					Util.SetPropertyByName(item.Entity, \"{_model.TenantColumnName}\", tenantId);");
             sb.AppendLine("				}");
             sb.AppendLine();
             sb.AppendLine("			}");
@@ -772,7 +772,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 //    scope = "protected";
 
                 sb.AppendLine("		/// <summary>");
-                sb.AppendLine("		/// Entity set for " + item.PascalName);
+                sb.AppendLine($"		/// Entity set for {item.PascalName}");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine($"		{scope} virtual DbSet<{this.GetLocalNamespace()}.Entity.{item.PascalName}> {name} {GetSetSuffix}");
                 sb.AppendLine();

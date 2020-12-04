@@ -15,11 +15,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
         {
             var template = new ContextExtensionsGeneratedTemplate(_model);
             var fullParentName = RELATIVE_OUTPUT_LOCATION + template.ParentItemName;
-            var eventArgs = new ProjectItemGeneratedEventArgs(template.FileName, template.FileContent, ProjectName, fullParentName, this, true);
-            OnProjectItemGenerated(this, eventArgs);
-            var gcEventArgs = new ProjectItemGenerationCompleteEventArgs(this);
-            OnGenerationComplete(this, gcEventArgs);
+            OnProjectItemGenerated(this, new ProjectItemGeneratedEventArgs(template.FileName, template.FileContent, ProjectName, fullParentName, this, true));
+            OnGenerationComplete(this, new ProjectItemGenerationCompleteEventArgs(this));
         }
-
     }
 }

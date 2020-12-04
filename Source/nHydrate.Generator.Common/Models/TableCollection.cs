@@ -12,7 +12,6 @@ namespace nHydrate.Generator.Common.Models
         {
         }
 
-        protected override string NodeOldName => "table";
         protected override string NodeName => "t";
 
         #region IXMLable Members
@@ -28,7 +27,7 @@ namespace nHydrate.Generator.Common.Models
                 foreach (Reference r in t.Relationships)
                 {
                     if (r.Object == null) delRefList.Add(r);
-                    else if (((Relation)r.Object).ParentTableRef.Object != t)
+                    else if (((Relation)r.Object).ParentTable != t)
                         delRefList.Add(r);
                     else System.Diagnostics.Debug.Write("");
                 }
@@ -49,9 +48,9 @@ namespace nHydrate.Generator.Common.Models
                 {
                     if (r.Object == null)
                         delRefList.Add(r);
-                    else if (((Relation)r.Object).ParentTableRef.Object == t)
+                    else if (((Relation)r.Object).ParentTable == t)
                         System.Diagnostics.Debug.Write("");
-                    else if (((Relation)r.Object).ChildTableRef.Object == t)
+                    else if (((Relation)r.Object).ChildTable == t)
                         System.Diagnostics.Debug.Write("");
                     else
                         delRefList.Add(r);
@@ -79,11 +78,9 @@ namespace nHydrate.Generator.Common.Models
             var deleteList = new ArrayList();
             foreach (Relation relation in ((ModelRoot)this.Root).Database.Relations)
             {
-                if (relation.ParentTableRef.Object == null)
+                if (relation.ParentTable == null || relation.ChildTable == null)
                     deleteList.Add(relation);
-                else if (relation.ChildTableRef.Object == null)
-                    deleteList.Add(relation);
-                else if ((relation.ParentTableRef.Object.Key == table.Key) || (relation.ChildTableRef.Object.Key == table.Key))
+                else if ((relation.ParentTable.Key == table.Key) || (relation.ChildTable.Key == table.Key))
                     deleteList.Add(relation);
             }
 

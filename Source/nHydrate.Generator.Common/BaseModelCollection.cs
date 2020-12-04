@@ -57,7 +57,6 @@ namespace nHydrate.Generator.Common
         protected readonly List<T> _internalList = new List<T>();
         #endregion
 
-        protected virtual string NodeOldName { get; } = "";
         protected abstract string NodeName { get; }
 
         #region IXMLable Members
@@ -78,11 +77,7 @@ namespace nHydrate.Generator.Common
         public override XmlNode XmlLoad(XmlNode node)
         {
             this.Key = node.GetAttributeValue("key", Guid.Empty.ToString());
-            XmlNodeList nList = null;
-            if (!this.NodeOldName.IsEmpty())
-                nList = node.SelectNodes(this.NodeOldName);
-            if (nList == null || nList.Count == 0)
-                nList = node.SelectNodes(this.NodeName);
+            var nList = node.SelectNodes(this.NodeName);
             foreach (XmlNode n in nList)
             {
                 var newNode = new T();

@@ -291,7 +291,7 @@ namespace nHydrate.Generator.PostgresInstaller
                                 sb.AppendLine();
 
                                 //Before drop PK remove all FK to the table
-                                foreach (var r1 in oldT.GetRelations().ToList())
+                                foreach (var r1 in oldT.GetRelations())
                                 {
                                     sb.Append(SQLEmit.GetSqlRemoveFK(r1));
                                     sb.AppendLine("--GO");
@@ -327,7 +327,7 @@ namespace nHydrate.Generator.PostgresInstaller
                         #endregion
 
                         #region Drop Foreign Keys
-                        foreach (var r1 in oldT.GetRelations().ToList())
+                        foreach (var r1 in oldT.GetRelations())
                         {
                             var r2 = newT.Relationships.FirstOrDefault(x => x.Key == r1.Key);
                             r2 = newT.Relationships.FirstOrDefault(x => x.Key == r1.Key);
@@ -398,9 +398,9 @@ namespace nHydrate.Generator.PostgresInstaller
                     {
                         #region Add Foreign Keys
 
-                        foreach (var r1 in newT.GetRelations().ToList())
+                        foreach (var r1 in newT.GetRelations())
                         {
-                            var r2 = oldT.GetRelations().ToList().FirstOrDefault(x => x.Key == r1.Key);
+                            var r2 = oldT.GetRelations().FirstOrDefault(x => x.Key == r1.Key);
                             if (r2 == null)
                             {
                                 //There is no OLD relation so it is new so add it
@@ -956,13 +956,7 @@ namespace nHydrate.Generator.PostgresInstaller
             return sb.ToString();
         }
 
-        public static string GetDefaultValueConstraintName(Column column)
-        {
-            var table = column.ParentTableRef.Object as Table;
-            var defaultName = "DF__" + table.DatabaseName + "_" + column.DatabaseName;
-            defaultName = defaultName.ToUpper();
-            return defaultName;
-        }
+        public static string GetDefaultValueConstraintName(Column column) => $"DF__{column.ParentTable.DatabaseName}_{column.DatabaseName}".ToUpper();
 
         public static string GetSqlInsertStaticData(Table table)
         {
@@ -986,7 +980,7 @@ namespace nHydrate.Generator.PostgresInstaller
                         var fieldValues = new Dictionary<string, string>();
                         foreach (var cellEntry in rowEntry.CellEntries.ToList())
                         {
-                            var column = cellEntry.ColumnRef.Object as Column;
+                            var column = cellEntry.Column;
                             var sqlValue = cellEntry.GetSQLData();
                             if (sqlValue == null) //Null is actually returned if the value can be null
                             {
@@ -1188,12 +1182,12 @@ namespace nHydrate.Generator.PostgresInstaller
             for (var ii = t.ParentRoleRelations.Count - 1; ii >= 0; ii--)
             {
                 var parentR = (Relation)t.ParentRoleRelations[ii];
-                var parentT = (Table)parentR.ParentTableRef.Object;
-                var childT = (Table)parentR.ChildTableRef.Object;
+                var parentT = parentR.ParentTable;
+                var childT = parentR.ChildTable;
                 for (var jj = parentT.ParentRoleRelations.Count - 1; jj >= 0; jj--)
                 {
                     //Relation chlidR = (Relation)parentT.ParentRoleRelations[jj];
-                    if (parentR.ParentTableRef.Object == t)
+                    if (parentR.ParentTable == t)
                     {
                         var objectNameFK = "FK_" +
                                      parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, childT) +
@@ -1214,12 +1208,12 @@ namespace nHydrate.Generator.PostgresInstaller
             for (var ii = t.ChildRoleRelations.Count - 1; ii >= 0; ii--)
             {
                 var childR = (Relation)t.ChildRoleRelations[ii];
-                var parentT = (Table)childR.ParentTableRef.Object;
-                var childT = (Table)childR.ChildTableRef.Object;
+                var parentT = childR.ParentTable;
+                var childT = childR.ChildTable;
                 for (var jj = parentT.ParentRoleRelations.Count - 1; jj >= 0; jj--)
                 {
                     var parentR = (Relation)parentT.ParentRoleRelations[jj];
-                    if (parentR.ChildTableRef.Object == t)
+                    if (parentR.ChildTable == t)
                     {
                         var objectNameFK = "FK_" +
                                      parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, childT) +
@@ -1446,12 +1440,12 @@ namespace nHydrate.Generator.PostgresInstaller
                 var parentR = t.ParentRoleRelations[ii] as Relation;
                 var parentT = parentR.ParentTable;
                 var childT = parentR.ChildTable;
-                if (parentR.ParentTableRef.Object == t)
+                if (parentR.ParentTable == t)
                 {
                     var removeRelationship = false;
                     foreach (var cr in parentR.ColumnRelationships.AsEnumerable())
                     {
-                        if (cr.ParentColumnRef.Object == column)
+                        if (cr.ParentColumn == column)
                             removeRelationship = true;
                     }
 
@@ -1481,12 +1475,12 @@ namespace nHydrate.Generator.PostgresInstaller
                 for (var jj = parentT.ParentRoleRelations.Count - 1; jj >= 0; jj--)
                 {
                     var parentR = parentT.ParentRoleRelations[jj] as Relation;
-                    if (parentR.ChildTableRef.Object == t)
+                    if (parentR.ChildTable == t)
                     {
                         var removeRelationship = false;
                         foreach (var cr in childR.ColumnRelationships.AsEnumerable())
                         {
-                            if ((cr.ChildColumnRef.Object == column) || (cr.ParentColumnRef.Object == column))
+                            if ((cr.ChildColumn == column) || (cr.ParentColumn == column))
                                 removeRelationship = true;
                         }
 
@@ -1610,12 +1604,12 @@ namespace nHydrate.Generator.PostgresInstaller
                 var parentT = parentR.ParentTable;
                 var childT = parentR.ChildTable;
                 //var childT = newColumn.ParentTable;
-                if (parentR.ParentTableRef.Object == oldTable)
+                if (parentR.ParentTable == oldTable)
                 {
                     var removeRelationship = false;
                     foreach (var cr in parentR.ColumnRelationships.AsEnumerable())
                     {
-                        if (cr.ParentColumnRef.Object == oldColumn)
+                        if (cr.ParentColumn == oldColumn)
                             removeRelationship = true;
                     }
 
@@ -1646,12 +1640,12 @@ namespace nHydrate.Generator.PostgresInstaller
                 for (var jj = parentT.ParentRoleRelations.Count - 1; jj >= 0; jj--)
                 {
                     var parentR = parentT.ParentRoleRelations[jj] as Relation;
-                    if (parentR.ChildTableRef.Object == oldTable)
+                    if (parentR.ChildTable == oldTable)
                     {
                         var removeRelationship = false;
                         foreach (var cr in childR.ColumnRelationships.AsEnumerable())
                         {
-                            if ((cr.ChildColumnRef.Object == oldColumn) || (cr.ParentColumnRef.Object == oldColumn))
+                            if ((cr.ChildColumn == oldColumn) || (cr.ParentColumn == oldColumn))
                                 removeRelationship = true;
                         }
 
@@ -1943,7 +1937,7 @@ namespace nHydrate.Generator.PostgresInstaller
                         var fieldValues = new Dictionary<string, string>();
                         foreach (var cellEntry in rowEntry.CellEntries.ToList())
                         {
-                            var column = cellEntry.ColumnRef.Object as Column;
+                            var column = cellEntry.Column;
                             var sqlValue = cellEntry.GetSQLData();
                             if (sqlValue == null) //Null is actually returned if the value can be null
                             {

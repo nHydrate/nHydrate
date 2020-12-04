@@ -7,7 +7,6 @@ namespace nHydrate.Generator.Common.Models
         {
         }
 
-        protected override string NodeOldName => "rowEntry";
         protected override string NodeName => "r";
     }
 }

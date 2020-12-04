@@ -95,7 +95,7 @@ namespace nHydrate.Generator.Common.Models
             var retval = new List<Relation>();
             foreach (Relation relation in this.Relations)
             {
-                var childTable = relation.ChildTableRef.Object as Table;
+                var childTable = relation.ChildTable;
                 if (childTable == table)
                     retval.Add(relation);
                 else if (fullHierarchy && table.IsInheritedFrom(childTable))
@@ -247,11 +247,8 @@ namespace nHydrate.Generator.Common.Models
 
             foreach (Table table in this.Tables)
             {
-                foreach (var column in table.GetColumns())
-                {
-                    if (column.ParentTableRef.Object != table)
-                        column.ParentTableRef = table.CreateRef();
-                }
+                foreach (var column in table.GetColumns().Where(x => x.ParentTable != table))
+                    column.ParentTableRef = table.CreateRef();
             }
 
             return node;

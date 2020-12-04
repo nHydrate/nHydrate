@@ -69,7 +69,7 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            node.AddAttribute("key", this.Key);
+            //node.AddAttribute("key", this.Key);
             node.AddAttribute("ascending", this.Ascending);
             node.AddAttribute("fieldID", this.FieldID);
             node.AddAttribute("id", this.Id);
@@ -78,7 +78,7 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlLoad(XmlNode node)
         {
-            this.Key = node.GetAttributeValue("key", string.Empty);
+            //this.Key = node.GetAttributeValue("key", string.Empty);
             this.Ascending = node.GetAttributeValue("ascending", this.Ascending);
             this.FieldID = node.GetAttributeValue("fieldID", this.FieldID);
             this.Id = node.GetAttributeValue("id", this.Id);

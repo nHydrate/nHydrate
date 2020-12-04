@@ -52,8 +52,6 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
-
             node.AddAttribute("key", this.Key);
             node.AddAttribute("isUnique", this.IsUnique);
             node.AddAttribute("primaryKey", this.PrimaryKey);
@@ -61,10 +59,7 @@ namespace nHydrate.Generator.Common.Models
             node.AddAttribute("description", this.Description);
             node.AddAttribute("importedName", this.ImportedName);
             node.AddAttribute("id", this.Id);
-
-            var tableIndexColumnListNode = oDoc.CreateElement("ticl");
-            this.IndexColumnList.XmlAppend(tableIndexColumnListNode);
-            node.AppendChild(tableIndexColumnListNode);
+            node.AppendChild(this.IndexColumnList.XmlAppend(node.OwnerDocument.CreateElement("ticl")));
             return node;
         }
 

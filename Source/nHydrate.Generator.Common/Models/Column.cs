@@ -186,7 +186,7 @@ namespace nHydrate.Generator.Common.Models
 
         public string GetIntellisenseRemarks()
         {
-            var text = $"Field: [{(this.ParentTableRef.Object as Table).DatabaseName}].[{this.DatabaseName}], ";
+            var text = $"Field: [{this.ParentTable.DatabaseName}].[{this.DatabaseName}], ";
 
             var length = this.GetCommentLengthString();
             if (!length.IsEmpty())
@@ -347,7 +347,7 @@ namespace nHydrate.Generator.Common.Models
             node.AddAttribute("codeFacade", this.CodeFacade, _def_codefacade);
             node.AddAttribute("description", this.Description, _def_description);
             node.AddAttribute("prompt", this.Prompt, _def_prompt);
-            node.AddAttribute("dataFieldSortOrder", this.SortOrder, _def_sortOrder);
+            node.AddAttribute("dataFieldSortOrder", this.SortOrder); //no default, always write
             node.AddAttribute("default", this.Default, _def_default);
             node.AddAttribute("defaultIsFunc", this.DefaultIsFunc, _def_defaultIsFunc);
 

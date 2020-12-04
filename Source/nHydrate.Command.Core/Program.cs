@@ -144,9 +144,9 @@ namespace nHydrate.Command.Core
                 model.ResetKey(model.Key);
                 model.GeneratorProject = genProject;
                 genProject.Model = model;
-                genProject.FileName = modelFile + ".generating";
+                genProject.FileName = $"{modelFile}.generating";
                 var document = new System.Xml.XmlDocument();
-                document.LoadXml("<modelRoot guid=\"" + model.Id + "\" type=\"nHydrate.Generator.nHydrateGeneratorProject\" assembly=\"nHydrate.Generator.dll\"><ModelRoot></ModelRoot></modelRoot>");
+                document.LoadXml($"<modelRoot guid=\"{model.Key}\" type=\"nHydrate.Generator.nHydrateGeneratorProject\" assembly=\"nHydrate.Generator.dll\"><ModelRoot></ModelRoot></modelRoot>");
                 ((nHydrate.Generator.Common.GeneratorFramework.IXMLable)model).XmlAppend(document.DocumentElement.ChildNodes[0]);
                 System.IO.File.WriteAllText(genProject.FileName, document.ToIndentedString());
 

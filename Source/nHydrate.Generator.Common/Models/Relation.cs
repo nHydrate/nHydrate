@@ -18,9 +18,6 @@ namespace nHydrate.Generator.Common.Models
         protected const string _def_description = "";
         protected const DeleteActionConstants _def_deleteAction = DeleteActionConstants.NoAction;
 
-        protected Reference _parentTableRef = null;
-        protected Reference _childTableRef = null;
-
         #endregion
 
         #region Constructor
@@ -40,10 +37,7 @@ namespace nHydrate.Generator.Common.Models
 
         private void Initialize() => ColumnRelationships = new ColumnRelationshipCollection(this.Root);
 
-        protected override void OnRootReset(System.EventArgs e)
-        {
-            this.Initialize();
-        }
+        protected override void OnRootReset(System.EventArgs e) => this.Initialize();
 
         #region Property Implementations
 
@@ -55,17 +49,13 @@ namespace nHydrate.Generator.Common.Models
 
         public ColumnRelationshipCollection ColumnRelationships { get; protected set; } = null;
 
-        public Reference ParentTableRef
-        {
-            get { return _parentTableRef; }
-            set { _parentTableRef = value; }
-        }
+        public Reference ParentTableRef { get; set; }
 
-        public Reference ChildTableRef
-        {
-            get { return _childTableRef; }
-            set { _childTableRef = value; }
-        }
+        public Reference ChildTableRef { get; set; }
+
+        public Table ParentTable => this.ParentTableRef.Object as Table;
+
+        public Table ChildTable => this.ChildTableRef.Object as Table;
 
         public string RoleName { get; set; } = _def_roleName;
 
@@ -127,14 +117,7 @@ namespace nHydrate.Generator.Common.Models
 
         #region Methods
 
-        public bool IsInvalidRelation()
-        {
-            if (this.ChildTableRef == null) return true;
-            if (this.ChildTableRef.Object == null) return true;
-            if (this.ParentTableRef == null) return true;
-            if (this.ParentTableRef.Object == null) return true;
-            return false;
-        }
+        public bool IsInvalidRelation() => (this.ChildTable == null || this.ParentTable == null) ? true : false;
 
         public override bool Equals(object obj)
         {
@@ -147,15 +130,15 @@ namespace nHydrate.Generator.Common.Models
                 if (relationOther.IsInvalidRelation()) return false;
 
                 #region Check Parents
-                var parentTableName1 = ((Table)this.ParentTableRef.Object).Name;
-                var parentTableName2 = ((Table)relationOther.ParentTableRef.Object).Name;
+                var parentTableName1 = this.ParentTable.Name;
+                var parentTableName2 = relationOther.ParentTable.Name;
 
                 var list1 = new SortedDictionary<string, ColumnRelationship>();
                 foreach (ColumnRelationship cr in this.ColumnRelationships)
                 {
-                    if (cr.ChildColumnRef.Object != null)
+                    if (cr.ChildColumn != null)
                     {
-                        var column = (Column)cr.ChildColumnRef.Object;
+                        var column = cr.ChildColumn;
                         if (!list1.ContainsKey(column.Name))
                             list1.Add(column.Name, cr);
                     }
@@ -164,11 +147,11 @@ namespace nHydrate.Generator.Common.Models
                 var list2 = new SortedDictionary<string, ColumnRelationship>();
                 foreach (ColumnRelationship cr in relationOther.ColumnRelationships)
                 {
-                    if (cr.ChildColumnRef.Object != null)
+                    if (cr.ChildColumn != null)
                     {
-                        var column = (Column)cr.ChildColumnRef.Object;
+                        var column = cr.ChildColumn;
                         if (!list2.ContainsKey(column.Name))
-                            list2.Add(((Column)cr.ChildColumnRef.Object).Name, cr);
+                            list2.Add(cr.ChildColumn.Name, cr);
                     }
                 }
 
@@ -186,15 +169,15 @@ namespace nHydrate.Generator.Common.Models
                 #endregion
 
                 #region Check Children
-                var childTableName1 = ((Table)this.ChildTableRef.Object).Name;
-                var childTableName2 = ((Table)relationOther.ChildTableRef.Object).Name;
+                var childTableName1 = this.ChildTable.Name;
+                var childTableName2 = relationOther.ChildTable.Name;
 
                 var list3 = new SortedDictionary<string, ColumnRelationship>();
                 foreach (ColumnRelationship cr in this.ColumnRelationships)
                 {
-                    if (cr.ParentColumnRef.Object != null)
+                    if (cr.ParentColumn != null)
                     {
-                        var column = (Column)cr.ParentColumnRef.Object;
+                        var column = cr.ParentColumn;
                         if (!list3.ContainsKey(column.Name))
                             list3.Add(column.Name, cr);
                     }
@@ -203,9 +186,9 @@ namespace nHydrate.Generator.Common.Models
                 var list4 = new SortedDictionary<string, ColumnRelationship>();
                 foreach (ColumnRelationship cr in relationOther.ColumnRelationships)
                 {
-                    if (cr.ParentColumnRef.Object != null)
+                    if (cr.ParentColumn != null)
                     {
-                        var column = (Column)cr.ParentColumnRef.Object;
+                        var column = cr.ParentColumn;
                         if (!list4.ContainsKey(column.Name))
                             list4.Add(column.Name, cr);
                     }
@@ -237,30 +220,7 @@ namespace nHydrate.Generator.Common.Models
 
         }
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public Table ParentTable
-        {
-            get
-            {
-                if (this.ParentTableRef == null) return null;
-                if (this.ParentTableRef.Object == null) return null;
-                return this.ParentTableRef.Object as Table;
-            }
-        }
-
-        public Table ChildTable
-        {
-            get
-            {
-                if (this.ChildTableRef == null) return null;
-                if (this.ChildTableRef.Object == null) return null;
-                return this.ChildTableRef.Object as Table;
-            }
-        }
+        public override int GetHashCode() => base.GetHashCode();
 
         #endregion
 
@@ -288,10 +248,8 @@ namespace nHydrate.Generator.Common.Models
             node.AddAttribute("enforce", this.Enforce);
             node.AddAttribute("description", this.Description, _def_description);
             node.AddAttribute("deleteAction", this.DeleteAction.ToString());
-
-            var columnRelationshipsNode = oDoc.CreateElement("crl");
-            ColumnRelationships.XmlAppend(columnRelationshipsNode);
-            node.AppendChild(columnRelationshipsNode);
+            ColumnRelationships.ResetKey(Guid.Empty, true); //no need to save this key
+            node.AppendChild(ColumnRelationships.XmlAppend(oDoc.CreateElement("crl")));
 
             var childTableRefNode = oDoc.CreateElement("ct");
             if (this.ChildTableRef != null)
@@ -304,10 +262,8 @@ namespace nHydrate.Generator.Common.Models
             node.AppendChild(parentTableRefNode);
 
             node.AddAttribute("id", this.Id);
-            if (this.RoleName != _def_roleName)
-                node.AddAttribute("roleName", this.RoleName);
-            if (this.ConstraintName != _def_constraintname)
-                node.AddAttribute("constraintName", this.ConstraintName);
+            node.AddAttribute("roleName", this.RoleName, _def_roleName);
+            node.AddAttribute("constraintName", this.ConstraintName, _def_constraintname);
 
             return node;
         }
@@ -323,11 +279,11 @@ namespace nHydrate.Generator.Common.Models
             ColumnRelationships.XmlLoad(columnRelationshipsNode);
 
             var childTableRefNode = node.SelectSingleNode("ct");
-            if (this.ChildTableRef == null) _childTableRef = new Reference(this.Root);
+            if (this.ChildTableRef == null) this.ChildTableRef = new Reference(this.Root);
             this.ChildTableRef.XmlLoad(childTableRefNode);
 
             var parentTableRefNode = node.SelectSingleNode("pt");
-            if (this.ParentTableRef == null) _parentTableRef = new Reference(this.Root);
+            if (this.ParentTableRef == null) this.ParentTableRef = new Reference(this.Root);
             this.ParentTableRef.XmlLoad(parentTableRefNode);
 
             this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
@@ -345,26 +301,13 @@ namespace nHydrate.Generator.Common.Models
 
         #region Helpers
 
-        public Reference CreateRef()
-        {
-            return CreateRef(Guid.NewGuid().ToString());
-        }
+        public Reference CreateRef() => CreateRef(Guid.NewGuid().ToString());
 
-        public Reference CreateRef(string key)
-        {
-            var returnVal = new Reference(this.Root);
-            returnVal.ResetKey(key);
-            returnVal.Ref = this.Id;
-            returnVal.RefType = ReferenceType.Relation;
-            return returnVal;
-        }
+        public Reference CreateRef(string key) => new Reference(this.Root, key) { Ref = this.Id, RefType = ReferenceType.Relation };
 
         public string PascalRoleName => StringHelper.FirstCharToUpper(this.RoleName);
 
-        public string DatabaseRoleName
-        {
-            get { return this.RoleName; }
-        }
+        public string DatabaseRoleName => this.RoleName;
 
         public IEnumerable<Column> FkColumns
         {
@@ -375,17 +318,9 @@ namespace nHydrate.Generator.Common.Models
                     var sorted = new SortedDictionary<string, Column>();
                     foreach (ColumnRelationship columnRel in this.ColumnRelationships)
                     {
-                        var parentColumn = columnRel.ParentColumn;
-                        var childColumn = columnRel.ChildColumn;
-                        sorted.Add(parentColumn.Name + "|" + childColumn.Name + "|" + this.RoleName + "|" + columnRel.Key, childColumn);
+                        sorted.Add($"{columnRel.ParentColumn.Name}|{columnRel.ChildColumn.Name}|{this.RoleName}|{columnRel.Key}", columnRel.ChildColumn);
                     }
-
-                    var fkColumns = new List<Column>();
-                    foreach (var kvp in sorted)
-                    {
-                        fkColumns.Add(kvp.Value);
-                    }
-                    return fkColumns;
+                    return sorted.Select(x => x.Value).ToList();
                 }
                 catch (Exception ex)
                 {

@@ -148,9 +148,8 @@ namespace nHydrate.Generator.Common.Models
                 var t = this;
                 while (t != null)
                 {
-                    foreach (var r in t.Columns.ToList())
+                    foreach (var c in t.GetColumns().ToList())
                     {
-                        var c = r.Object as Column;
                         if (!nameList.Contains(c.Name.ToLower()))
                         {
                             nameList.Add(c.Name.ToLower());
@@ -175,9 +174,9 @@ namespace nHydrate.Generator.Common.Models
             var curTable = this;
             foreach (var r in curTable.AllRelationships.Where(x => x.IsInherited).ToList())
             {
-                if (r.ChildTableRef.Object == curTable)
+                if (r.ChildTable == curTable)
                 {
-                    var parentTable = (Table)r.ParentTableRef.Object;
+                    var parentTable = r.ParentTable;
                     retval.Add(parentTable);
                     retval.AddRange(parentTable.GetParentTablesFullHierarchy());
                 }
@@ -189,20 +188,7 @@ namespace nHydrate.Generator.Common.Models
 
         public IEnumerable<Column> GetColumnsByType(System.Data.SqlDbType type) => this.GetColumnsFullHierarchy().Where(x => x.DataType == type).ToList();
 
-        public RelationCollection GetRelations()
-        {
-            var retval = new RelationCollection(this.Root);
-            foreach (var r in this.Relationships.AsEnumerable())
-            {
-                var relation = r.Object as Relation;
-                if (relation != null)
-                {
-                    retval.Add(relation);
-                }
-            }
-
-            return retval;
-        }
+        public List<Relation> GetRelations() => this.Relationships.Select(x => x.Object as Relation).Where(x => x != null).ToList();
 
         public IEnumerable<Relation> GetRelationsWhereChild(bool fullHierarchy = false) => ((ModelRoot)_root).Database.GetRelationsWhereChild(this, fullHierarchy);
 
@@ -221,12 +207,12 @@ namespace nHydrate.Generator.Common.Models
             roleName = string.Empty;
             foreach (var relation in this.GetRelationsWhereChild(fullHierarchy))
             {
-                var parentTable = relation.ParentTableRef.Object as Table;
+                var parentTable = relation.ParentTable;
                 //Type tables have 1 PK
                 if (relation.ColumnRelationships.Count == 1)
                 {
-                    var parentColumn = relation.ColumnRelationships[0].ParentColumnRef.Object as Column;
-                    var childColumn = relation.ColumnRelationships[0].ChildColumnRef.Object as Column;
+                    var parentColumn = relation.ColumnRelationships[0].ParentColumn;
+                    var childColumn = relation.ColumnRelationships[0].ChildColumn;
                     if ((column == childColumn) && parentTable.TypedTable != TypedTableConstants.None)
                     {
                         roleName = relation.PascalRoleName;
@@ -268,6 +254,7 @@ namespace nHydrate.Generator.Common.Models
             node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived, _def_generatesDoubleDerived);
             node.AddAttribute("id", this.Id);
 
+            this.StaticData.ResetKey(Guid.Empty, true); //no need to save this key
             if (this.StaticData.Any())
                 node.AppendChild(this.StaticData.XmlAppend(oDoc.CreateElement("staticData")));
 
@@ -339,7 +326,7 @@ namespace nHydrate.Generator.Common.Models
                 var retval = new List<Relation>();
                 foreach (Relation relation in ((ModelRoot)this.Root).Database.Relations)
                 {
-                    if ((relation.ParentTableRef.Object != null) && (relation.ParentTableRef.Ref == this.Id))
+                    if ((relation.ParentTable != null) && (relation.ParentTableRef.Ref == this.Id))
                         retval.Add(relation);
                 }
                 return retval.AsReadOnly();
@@ -353,7 +340,7 @@ namespace nHydrate.Generator.Common.Models
                 var retval = new List<Relation>();
                 foreach (Relation relation in ((ModelRoot)this.Root).Database.Relations)
                 {
-                    if ((relation.ChildTableRef.Object != null) && (relation.ChildTableRef.Ref == this.Id))
+                    if ((relation.ChildTable != null) && (relation.ChildTableRef.Ref == this.Id))
                         retval.Add(relation);
                 }
                 return retval.AsReadOnly();

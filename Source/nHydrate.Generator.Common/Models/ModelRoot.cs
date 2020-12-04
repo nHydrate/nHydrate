@@ -21,7 +21,6 @@ namespace nHydrate.Generator.Common.Models
         protected const string _def_tenantColumnName = "__tenant_user";
 
         protected string _version = _def_version;
-        private readonly VersionHistoryCollection _versionHistoryList = null;
         private string _modeToolVersion = string.Empty;
 
         #endregion
@@ -29,11 +28,8 @@ namespace nHydrate.Generator.Common.Models
         public ModelRoot(INHydrateModelObject root)
             : base(root)
         {
-            _versionHistoryList = new VersionHistoryCollection(this);
-            Database = new Database(this);
-
-            this.RemovedTables = new List<string>();
-            this.RemovedViews = new List<string>();
+            this.VersionHistoryList = new VersionHistoryCollection(this);
+            this.Database = new Database(this);
         }
 
         #region Property Implementations
@@ -90,7 +86,7 @@ namespace nHydrate.Generator.Common.Models
 
         public Database Database { get; set; } = null;
 
-        public VersionHistoryCollection VersionHistoryList => _versionHistoryList;
+        public VersionHistoryCollection VersionHistoryList { get; set; }
 
         public virtual string GetSQLDefaultDate()
         {
@@ -98,9 +94,9 @@ namespace nHydrate.Generator.Common.Models
             else return "sysdatetime()";
         }
 
-        public List<string> RemovedTables { get; }
+        public List<string> RemovedTables { get; } = new List<string>();
 
-        public List<string> RemovedViews { get; }
+        public List<string> RemovedViews { get; } = new List<string>();
 
         #endregion
 
@@ -108,8 +104,6 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
-
             node.AddAttribute("key", this.Key);
             node.AddAttribute("projectName", this.ProjectName);
             node.AddAttribute("supportLegacySearchObject", this.SupportLegacySearchObject);
@@ -122,13 +116,10 @@ namespace nHydrate.Generator.Common.Models
             node.AddAttribute("defaultNamespace", this.DefaultNamespace);
             node.AddAttribute("storedProcedurePrefix", this.StoredProcedurePrefix);
 
-            var databaseNode = oDoc.CreateElement("database");
-            this.Database.XmlAppend(databaseNode);
-            node.AppendChild(databaseNode);
+            node.AppendChild(this.Database.XmlAppend(node.OwnerDocument.CreateElement("database")));
 
-            var versionHistoryListNode = oDoc.CreateElement("versionHistoryList");
-            node.AppendChild(versionHistoryListNode);
-            _versionHistoryList.XmlAppend(versionHistoryListNode);
+            this.VersionHistoryList.ResetKey(Guid.Empty, true); //no need to save this key
+            this.VersionHistoryList.XmlAppend(node.AppendChild(node.OwnerDocument.CreateElement("versionHistoryList")));
 
             return node;
         }
@@ -154,7 +145,7 @@ namespace nHydrate.Generator.Common.Models
 
             var versionHistoryListNode = node.SelectSingleNode("versionHistoryList");
             if (versionHistoryListNode != null)
-                _versionHistoryList.XmlLoad(versionHistoryListNode);
+                this.VersionHistoryList.XmlLoad(versionHistoryListNode);
 
             return node;
         }
@@ -172,13 +163,8 @@ namespace nHydrate.Generator.Common.Models
                 //Remove orphaned columns
                 foreach (Column column in this.Database.Columns)
                 {
-                    if ((column.ParentTableRef == null) ||
-                        (column.ParentTableRef.Object == null) ||
-                        (column.ParentTableRef == null) ||
-                        (column.ParentTableRef.Object == null))
-                    {
+                    if (column.ParentTable == null)
                         delList.Add(column);
-                    }
                 }
 
                 foreach (Column column in delList)
@@ -188,10 +174,7 @@ namespace nHydrate.Generator.Common.Models
                 delList = new ArrayList();
                 foreach (Relation relation in this.Database.Relations)
                 {
-                    if ((relation.ParentTableRef == null) ||
-                        (relation.ParentTableRef.Object == null) ||
-                        (relation.ParentTableRef == null) ||
-                        (relation.ParentTableRef.Object == null))
+                    if (relation.ParentTable == null)
                     {
                         delList.Add(relation);
                     }
