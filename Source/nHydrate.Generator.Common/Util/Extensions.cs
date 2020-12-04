@@ -448,6 +448,8 @@ namespace nHydrate.Generator.Common.Util
             if (obj == null || other == null) return false;
             return obj.Key == other.Key;
         }
+
+        public static bool IsEnumOnly(this Models.Table obj) => obj?.TypedTable == TypedTableConstants.EnumOnly;
     }
 
     internal class SystemTypeTypeConverter : IYamlTypeConverter

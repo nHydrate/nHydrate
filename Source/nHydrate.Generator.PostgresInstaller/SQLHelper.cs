@@ -452,7 +452,7 @@ namespace nHydrate.Generator.PostgresInstaller
     {
         public static string GetSQLCreateTable(ModelRoot model, Table table, string tableAliasName = null, bool emitPK = true)
         {
-            if (table.TypedTable == TypedTableConstants.EnumOnly)
+            if (table.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -503,7 +503,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlAddColumn(Column column, bool useComment)
         {
-            if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (column.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -904,7 +904,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string AppendColumnDefaultCreateSQL(Column column, bool includeDrop = true)
         {
-            if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (column.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -1116,7 +1116,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlDropTable(ModelRoot model, Table t)
         {
-            if (t.TypedTable == TypedTableConstants.EnumOnly)
+            if (t.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -1377,7 +1377,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlDropColumn(ModelRoot model, Column column)
         {
-            if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (column.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -1510,7 +1510,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlModifyColumn(Column oldColumn, Column newColumn)
         {
-            if (newColumn.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (newColumn.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();
@@ -1841,7 +1841,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string AppendColumnDefaultRemoveSql(Column column)
         {
-            if (column.ParentTable.TypedTable == TypedTableConstants.EnumOnly)
+            if (column.ParentTable.IsEnumOnly())
                 return string.Empty;
 
             var sb = new StringBuilder();

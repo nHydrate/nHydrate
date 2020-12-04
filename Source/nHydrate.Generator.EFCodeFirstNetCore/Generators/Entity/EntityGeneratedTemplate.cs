@@ -596,7 +596,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     var childTable = relation.ChildTable;
 
                     //Do not walk to associative
-                    if ((parentTable.TypedTable == TypedTableConstants.EnumOnly) || (childTable.TypedTable == TypedTableConstants.EnumOnly))
+                    if ((parentTable.IsEnumOnly()) || (childTable.IsEnumOnly()))
                     {
                         //Do Nothing
                     }
