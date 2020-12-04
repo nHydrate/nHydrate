@@ -659,7 +659,7 @@ namespace nHydrate.DataImport.SqlClient
 
             if (field.DataType.IsNumericType() || field.DataType == SqlDbType.Bit || field.DataType.IsDateType() || field.DataType.IsBinaryType())
             {
-                field.DefaultValue = defaultvalue.Replace("(", string.Empty).Replace(")", string.Empty); //remove any parens
+                field.DefaultValue = defaultvalue.RemoveParens(); //remove any parens
             }
             else if (field.DataType == SqlDbType.UniqueIdentifier)
             {
@@ -668,7 +668,7 @@ namespace nHydrate.DataImport.SqlClient
                 if (!defaultvalue.IsEmpty() && defaultvalue.Contains("newsequentialid"))
                     field.DefaultValue = "newsequentialid";
                 else
-                    field.DefaultValue = defaultvalue.Replace("(", string.Empty).Replace(")", string.Empty).Replace("'", string.Empty); //Format: ('000...0000')
+                    field.DefaultValue = defaultvalue.RemoveParens().Replace("'", string.Empty); //Format: ('000...0000')
             }
             else if (field.DataType.IsTextType())
             {

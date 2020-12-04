@@ -631,7 +631,7 @@ namespace nHydrate.Core.SQLGeneration
             #region Change Identity
 
             //If old column was Identity and it has been removed then remove it
-            if (newColumn.Identity == IdentityTypeConstants.None &&
+            if (newColumn.IdentityNone() &&
                 oldColumn.IdentityDatabase())
             {
                 //Check PK
@@ -672,13 +672,12 @@ namespace nHydrate.Core.SQLGeneration
                     sb.AppendLine();
                 }
             }
-            else if (newColumn.IdentityDatabase() &&
-                     oldColumn.Identity == IdentityTypeConstants.None)
+            else if (newColumn.IdentityDatabase() && oldColumn.IdentityNone())
             {
                 //sb.AppendLine("--ADD SCRIPT HERE TO CONVERT [" + newTable.DatabaseName + "].[" + newColumn.DatabaseName + "] TO IDENTITY COLUMN");                //Check PK
 
                 var tableName = Globals.GetTableDatabaseName(model, newTable);
-                var tempTableName = "__" + tableName;
+                var tempTableName = $"__{tableName}";
                 sb.AppendLine($"--YOU WILL NEED TO REMOVE ANY RELATIONSHIPS HERE FOR TABLE [{tableName}]");
                 sb.AppendLine();
 
@@ -873,11 +872,9 @@ namespace nHydrate.Core.SQLGeneration
                 foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
                     isIdentity |= (column.IdentityDatabase());
 
-                sb.AppendLine("--INSERT STATIC DATA FOR TABLE [" + Globals.GetTableDatabaseName(model, table) +
-                              "]");
+                sb.AppendLine($"--INSERT STATIC DATA FOR TABLE [{Globals.GetTableDatabaseName(model, table)}]");
                 if (isIdentity)
-                    sb.AppendLine("SET identity_insert [" + table.GetSQLSchema() + "].[" +
-                                  Globals.GetTableDatabaseName(model, table) + "] on");
+                    sb.AppendLine($"SET identity_insert [{table.GetSQLSchema()}].[{Globals.GetTableDatabaseName(model, table)}] on");
 
                 foreach (var rowEntry in table.StaticData.AsEnumerable<RowEntry>())
                 {
@@ -893,8 +890,7 @@ namespace nHydrate.Core.SQLGeneration
                             {
                                 if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                 {
-                                    if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText ||
-                                        column.DataType == SqlDbType.NVarChar)
+                                    if (column.IsNString())
                                         fieldValues.Add(column.Name,
                                             "N'" + column.Default.Replace("'", "''") + "'");
                                     else
@@ -920,8 +916,7 @@ namespace nHydrate.Core.SQLGeneration
                                 else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
                             }
 
-                            if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText ||
-                                column.DataType == SqlDbType.NVarChar)
+                            if (column.IsNString())
                                 fieldValues.Add(column.Name, "N" + sqlValue);
                             else
                                 fieldValues.Add(column.Name, sqlValue);
@@ -950,7 +945,7 @@ namespace nHydrate.Core.SQLGeneration
                     var valueListString = string.Join(",", valueList);
                     var updateSetString = string.Join(",", updateSetList);
 
-                    sb.Append("if not exists(select * from [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] where ");
+                    sb.Append($"if not exists(select * from [{table.GetSQLSchema()}].[{Globals.GetTableDatabaseName(model, table)}] where ");
 
                     var ii = 0;
                     var pkWhereSb = new StringBuilder();
@@ -965,16 +960,15 @@ namespace nHydrate.Core.SQLGeneration
 
                     sb.Append(pkWhereSb);
                     sb.AppendLine(") ");
-                    sb.AppendLine("INSERT INTO [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] (" + fieldListString + ") values (" + valueListString + ");");
+                    sb.AppendLine($"INSERT INTO [{table.GetSQLSchema()}].[{Globals.GetTableDatabaseName(model, table)}] ({fieldListString}) values ({valueListString});");
 
                     // TODO: We should not do this as it overwrites existing database data
                     //sb.AppendLine("else ");
                     //sb.AppendLine("UPDATE [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] SET " + updateSetString + " WHERE " + pkWhereSb.ToString() + ";");
-
                 }
 
                 if (isIdentity)
-                    sb.AppendLine("SET identity_insert [" + table.GetSQLSchema() + "].[" + Globals.GetTableDatabaseName(model, table) + "] off");
+                    sb.AppendLine($"SET identity_insert [{table.GetSQLSchema()}].[{Globals.GetTableDatabaseName(model, table)}] off");
 
                 sb.AppendLine();
                 sb.AppendLine("GO");
@@ -992,7 +986,7 @@ namespace nHydrate.Core.SQLGeneration
             //Generate static data
             if (newT.StaticData.Count > 0)
             {
-                sb.AppendLine("--UPDATE STATIC DATA FOR TABLE [" + Globals.GetTableDatabaseName(model, newT) + "]");
+                sb.AppendLine($"--UPDATE STATIC DATA FOR TABLE [{Globals.GetTableDatabaseName(model, newT)}]");
                 sb.AppendLine("--IF YOU WISH TO UPDATE THIS STATIC DATA UNCOMMENT THIS SQL");
                 foreach (var rowEntry in newT.StaticData.AsEnumerable<RowEntry>())
                 {
@@ -1007,8 +1001,7 @@ namespace nHydrate.Core.SQLGeneration
                             {
                                 if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                 {
-                                    if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText ||
-                                        column.DataType == SqlDbType.NVarChar)
+                                    if (column.IsNString())
                                         fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
                                     else
                                         fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
@@ -1033,8 +1026,7 @@ namespace nHydrate.Core.SQLGeneration
                                 else if (sqlValue != "1") sqlValue = "0"; //catch all, must be true/false
                             }
 
-                            if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText ||
-                                column.DataType == SqlDbType.NVarChar)
+                            if (column.IsNString())
                                 fieldValues.Add(column.Name, "N" + sqlValue);
                             else
                                 fieldValues.Add(column.Name, sqlValue);
@@ -1578,7 +1570,7 @@ namespace nHydrate.Core.SQLGeneration
             if (table.IsTenant)
             {
                 sb.AppendLine(",");
-                sb.Append("\t[" + model.TenantColumnName + "] [nvarchar] (50) NOT NULL");
+                sb.Append($"\t[{model.TenantColumnName}] [nvarchar] (50) NOT NULL");
             }
         }
 

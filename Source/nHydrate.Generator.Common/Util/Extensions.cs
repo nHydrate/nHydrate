@@ -60,6 +60,21 @@ namespace nHydrate.Generator.Common.Util
             }
         }
 
+        public static bool IsNString(this Models.Column column) => column?.DataType.IsNString() == true;
+
+        public static bool IsNString(this System.Data.SqlDbType type)
+        {
+            switch (type)
+            {
+                case System.Data.SqlDbType.NChar:
+                case System.Data.SqlDbType.NText:
+                case System.Data.SqlDbType.NVarChar:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         /// <summary>
         /// Determines if the data type is a database character type of DateTime,DateTime2,DateTimeOffset,SmallDateTime
         /// </summary>
@@ -206,7 +221,7 @@ namespace nHydrate.Generator.Common.Util
             {
                 retval = "' '";
                 if (defaultValue.Length == 1)
-                    retval = "'" + defaultValue[0].ToString().Replace("'", "''") + "'";
+                    retval = "'" + defaultValue[0].ToString().DoubleTicks() + "'";
             }
             else if (dataType.IsBinaryType())
             {
@@ -258,7 +273,7 @@ namespace nHydrate.Generator.Common.Util
             else
             {
                 if (dataType.IsTextType() && !defaultValue.IsEmpty())
-                    retval = "'" + defaultValue.Replace("'", "''") + "'";
+                    retval = "'" + defaultValue.DoubleTicks() + "'";
             }
             return retval;
         }
@@ -297,7 +312,7 @@ namespace nHydrate.Generator.Common.Util
             {
                 retval = "' '";
                 if (defaultValue.Length == 1)
-                    retval = "'" + defaultValue[0].ToString().Replace("'", "''") + "'";
+                    retval = "'" + defaultValue[0].ToString().DoubleTicks() + "'";
             }
             else if (dataType.IsBinaryType())
             {
@@ -349,7 +364,7 @@ namespace nHydrate.Generator.Common.Util
             else
             {
                 if (dataType.IsTextType() && !defaultValue.IsEmpty())
-                    retval = "'" + defaultValue.Replace("'", "''") + "'";
+                    retval = "'" + defaultValue.DoubleTicks() + "'";
             }
             return retval;
         }
@@ -454,6 +469,13 @@ namespace nHydrate.Generator.Common.Util
         public static bool IsTypedTable(this Models.Table obj) => obj?.TypedTable != TypedTableConstants.None;
 
         public static bool IdentityDatabase(this Models.Column obj) => obj?.Identity == IdentityTypeConstants.Database;
+        
+        public static bool IdentityNone(this Models.Column obj) => obj?.Identity == IdentityTypeConstants.None;
+
+        public static string RemoveParens(this string str) => str?.Replace("(", string.Empty).Replace(")", string.Empty);
+
+        public static string DoubleTicks(this string str) => str?.Replace("'", "''");
+        
     }
 
     internal class SystemTypeTypeConverter : IYamlTypeConverter

@@ -293,7 +293,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
             {
                 //Add Defaults
                 var tempsb = new StringBuilder();
-                foreach (var column in table.GetColumns().Where(x => !x.PrimaryKey && x.Identity == IdentityTypeConstants.None))
+                foreach (var column in table.GetColumns().Where(x => !x.PrimaryKey && x.IdentityNone()))
                 {
                     var defaultText = SQLEmit.GetSqlDropColumnDefault(column);
                     if (!string.IsNullOrEmpty(defaultText)) tempsb.Append(defaultText);
@@ -325,7 +325,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
             {
                 //Add Defaults
                 var tempsb = new StringBuilder();
-                foreach (var column in table.GetColumns().Where(x => !x.PrimaryKey && x.Identity == IdentityTypeConstants.None))
+                foreach (var column in table.GetColumns().Where(x => !x.PrimaryKey && x.IdentityNone()))
                 {
                     var defaultText = SQLEmit.AppendColumnDefaultCreateSQL(column, false);
                     if (!string.IsNullOrEmpty(defaultText)) tempsb.Append(defaultText);

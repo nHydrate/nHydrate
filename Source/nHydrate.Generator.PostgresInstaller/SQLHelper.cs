@@ -953,10 +953,10 @@ namespace nHydrate.Generator.PostgresInstaller
                             {
                                 if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                 {
-                                    if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
-                                        fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
+                                    if (column.IsNString())
+                                        fieldValues.Add(column.Name, "N'" + column.Default.DoubleTicks() + "'");
                                     else
-                                        fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
+                                        fieldValues.Add(column.Name, "'" + column.Default.DoubleTicks() + "'");
                                 }
                                 else
                                 {
@@ -978,7 +978,7 @@ namespace nHydrate.Generator.PostgresInstaller
                                 else if (sqlValue != "1") sqlValue = "false"; //catch all, must be true/false
                             }
 
-                            if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
+                            if (column.IsNString())
                                 fieldValues.Add(column.Name, sqlValue);
                             else
                                 fieldValues.Add(column.Name, sqlValue);
@@ -1655,7 +1655,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
             #region Delete Defaults
 
-            if (oldColumn.Identity == IdentityTypeConstants.None)
+            if (oldColumn.IdentityNone())
                 sb.AppendLine(GetSqlDropColumnDefault(oldColumn, true));
             sb.Append(AppendColumnDefaultRemoveSql(newColumn));
 
@@ -1695,7 +1695,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
                             var dValue = newColumn.Default;
                             if (newColumn.DataType.IsTextType() || newColumn.DataType.IsDateType())
-                                dValue = "'" + dValue.Replace("'", "''") + "'";
+                                dValue = "'" + dValue.DoubleTicks() + "'";
 
                             sb.AppendLine($"--UPDATE {newTable.GetPostgresSchema()}.\"{newTable.DatabaseName}\" SET \"{newColumn.DatabaseName}\" = {dValue} WHERE \"{newColumn.DatabaseName}\" IS NULL");
                         }
@@ -1730,7 +1730,7 @@ namespace nHydrate.Generator.PostgresInstaller
             #region Change Identity
 
             //If old column was Identity and it has been removed then remove it
-            //if (newColumn.Identity == IdentityTypeConstants.None && oldColumn.IdentityDatabase())
+            //if (newColumn.IdentityNone() && oldColumn.IdentityDatabase())
             //{
             //    //Check PK
             //    if (oldColumn.PrimaryKey)
@@ -1768,7 +1768,7 @@ namespace nHydrate.Generator.PostgresInstaller
             //        sb.AppendLine();
             //    }
             //}
-            //else if (newColumn.IdentityDatabase() && oldColumn.Identity == IdentityTypeConstants.None)
+            //else if (newColumn.IdentityDatabase() && oldColumn.IdentityNone())
             //{
             //    //sb.AppendLine("--ADD SCRIPT HERE TO CONVERT [" + newTable.DatabaseName + "].[" + newColumn.DatabaseName + "] TO IDENTITY COLUMN");                //Check PK
 
@@ -1832,9 +1832,7 @@ namespace nHydrate.Generator.PostgresInstaller
             #endregion
 
             if (newColumn.ComputedColumn)
-            {
                 sb.Append(GetSqlAddColumn(newColumn));
-            }
 
             return sb.ToString();
         }
@@ -1895,10 +1893,10 @@ namespace nHydrate.Generator.PostgresInstaller
                             {
                                 if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                 {
-                                    if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
-                                        fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
+                                    if (column.IsNString())
+                                        fieldValues.Add(column.Name, "N'" + column.Default.DoubleTicks() + "'");
                                     else
-                                        fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
+                                        fieldValues.Add(column.Name, "'" + column.Default.DoubleTicks() + "'");
                                 }
                                 else
                                 {
@@ -1920,7 +1918,7 @@ namespace nHydrate.Generator.PostgresInstaller
                                 else if (sqlValue != "1") sqlValue = "false"; //catch all, must be true/false
                             }
 
-                            if (column.DataType == SqlDbType.NChar || column.DataType == SqlDbType.NText || column.DataType == SqlDbType.NVarChar)
+                            if (column.IsNString())
                                 fieldValues.Add(column.Name, sqlValue);
                             else
                                 fieldValues.Add(column.Name, sqlValue);
