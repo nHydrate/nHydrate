@@ -23,9 +23,9 @@ namespace nHydrate.Generator.PostgresInstaller
 
             #region Loop and Add tables
 
-            foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList())
             {
-                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
                 if (oldT == null)
                 {
                     //Add table, indexes
@@ -55,9 +55,9 @@ namespace nHydrate.Generator.PostgresInstaller
             #endregion
 
             #region Delete Indexes
-            foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList())
             {
-                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
                 if (oldT != null)
                 {
                     //If old exists new does NOT, so delete index
@@ -87,9 +87,9 @@ namespace nHydrate.Generator.PostgresInstaller
 
             #region Loop and DELETE tables
 
-            foreach (var oldT in modelOld.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly))
+            foreach (var oldT in modelOld.Database.Tables.Where(x => !x.IsEnumOnly()))
             {
-                var newT = modelNew.Database.Tables.FirstOrDefault(x => (x.TypedTable != TypedTableConstants.EnumOnly) && x.Key.ToLower() == oldT.Key.ToLower());
+                var newT = modelNew.Database.Tables.FirstOrDefault(x => (!x.IsEnumOnly()) && x.Key.ToLower() == oldT.Key.ToLower());
                 if (newT == null)
                 {
                     //DELETE TABLE
@@ -107,10 +107,10 @@ namespace nHydrate.Generator.PostgresInstaller
             #endregion
 
             #region Loop and Modify tables
-            foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList())
             {
                 var schemaChanged = false;
-                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
                 if (oldT != null)
                 {
                     var querylist = new List<string>();
@@ -389,9 +389,9 @@ namespace nHydrate.Generator.PostgresInstaller
 
             //Do another look for second pass at changes.
             //These things can only be done after the above loop
-            foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList())
             {
-                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
                 if (oldT != null)
                 {
                     #region Add Foreign Keys

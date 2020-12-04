@@ -1,6 +1,7 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common.Util;
 using System.Linq;
 using System.Text;
 
@@ -65,7 +66,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		{");
             sb.AppendLine("			switch (entityType)");
             sb.AppendLine("			{");
-            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (x.TypedTable != TypedTableConstants.EnumOnly)).OrderBy(x => x.PascalName))
+            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (!x.IsEnumOnly())).OrderBy(x => x.PascalName))
                 sb.AppendLine("				case EntityMappingConstants." + table.PascalName + ": return typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ");");
             sb.AppendLine("			}");
             sb.AppendLine("			throw new Exception(\"Unknown entity type!\");");

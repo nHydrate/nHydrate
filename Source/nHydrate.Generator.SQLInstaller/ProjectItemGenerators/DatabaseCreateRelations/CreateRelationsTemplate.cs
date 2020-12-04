@@ -1,6 +1,7 @@
 using nHydrate.Core.SQLGeneration;
 using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common.Util;
 using System.Linq;
 using System.Text;
 
@@ -32,7 +33,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateRe
             sb.AppendLine("--##SECTION BEGIN [RELATIONS]");
             sb.AppendLine();
 
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
                 var tableName = Globals.GetTableDatabaseName(_model, table);
                 var childRoleRelations = table.ChildRoleRelations;

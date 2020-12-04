@@ -1,6 +1,7 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common;
 using nHydrate.Generator.Common.Models;
+using nHydrate.Generator.Common.Util;
 using System.Linq;
 using System.Text;
 
@@ -38,7 +39,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
             //sb.AppendLine();
 
             #region Add Static Data
-            foreach (var table in _model.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
                 sb.Append(SQLEmit.GetSqlInsertStaticData(table));
             }

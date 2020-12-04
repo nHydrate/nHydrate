@@ -20,9 +20,9 @@ namespace nHydrate.Generator.SQLInstaller
 
             #region Loop and Add tables
 
-            foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList())
             {
-                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
                 if (oldT == null)
                 {
                     //Add table, indexes
@@ -53,9 +53,9 @@ namespace nHydrate.Generator.SQLInstaller
 
             #region Delete Indexes
 
-            foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList())
             {
-                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
                 if (oldT != null)
                 {
                     //If old exists new does NOT, so delete index
@@ -86,9 +86,9 @@ namespace nHydrate.Generator.SQLInstaller
 
             #region Loop and DELETE tables
 
-            foreach (var oldT in modelOld.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly))
+            foreach (var oldT in modelOld.Database.Tables.Where(x => !x.IsEnumOnly()))
             {
-                var newT = modelNew.Database.Tables.FirstOrDefault(x => (x.TypedTable != TypedTableConstants.EnumOnly) && x.Key.ToLower() == oldT.Key.ToLower());
+                var newT = modelNew.Database.Tables.FirstOrDefault(x => (!x.IsEnumOnly()) && x.Key.ToLower() == oldT.Key.ToLower());
                 if (newT == null)
                 {
                     //DELETE TABLE
@@ -110,10 +110,10 @@ namespace nHydrate.Generator.SQLInstaller
 
             #region Loop and Modify tables
 
-            foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList())
             {
                 var schemaChanged = false;
-                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
                 if (oldT != null)
                 {
                     #region Rename table if need be
@@ -410,9 +410,9 @@ namespace nHydrate.Generator.SQLInstaller
 
             //Do another look for second pass at changes.
             //These things can only be done after the above loop
-            foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList())
             {
-                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
                 if (oldT != null)
                 {
                     #region Add Foreign Keys
@@ -448,9 +448,9 @@ namespace nHydrate.Generator.SQLInstaller
             #region Move tables between schemas
 
             var reschema = 0;
-            foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly))
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()))
             {
-                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
                 if (oldT != null)
                 {
                     if (string.Compare(oldT.GetSQLSchema(), newT.GetSQLSchema(), true) != 0)
@@ -477,9 +477,9 @@ namespace nHydrate.Generator.SQLInstaller
 
             #region Add Indexes
 
-            foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name))
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
-                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
                 if (oldT != null)
                 {
                     //If old exists and does old NOT, so create index
@@ -582,10 +582,10 @@ namespace nHydrate.Generator.SQLInstaller
 
             #region Loop and change computed fields
 
-            foreach (var newT in modelNew.Database.Tables.Where(x => x.TypedTable != TypedTableConstants.EnumOnly).OrderBy(x => x.Name).ToList())
+            foreach (var newT in modelNew.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList())
             {
                 //If the table exists...
-                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => x.TypedTable != TypedTableConstants.EnumOnly);
+                var oldT = modelOld.Database.Tables.GetByKey(newT.Key).FirstOrDefault(x => !x.IsEnumOnly());
                 if (oldT != null)
                 {
                     var tChanged = false;
