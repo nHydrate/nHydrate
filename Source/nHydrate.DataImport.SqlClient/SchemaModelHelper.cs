@@ -226,12 +226,9 @@ namespace nHydrate.DataImport.SqlClient
                 sql = match.Groups[1].Value;
             else
             {
-                sql = sql.Replace("\r", string.Empty);
-                var arr = sql.Split('\n').ToList();
                 var sb = new StringBuilder();
-
                 var inBody = false;
-                foreach (var lineText in arr)
+                foreach (var lineText in sql.BreakLines())
                 {
                     //This is FAR from perfect. It assumes the creation line ends with the "AS" keyword for a stored proc
                     if (inBody)

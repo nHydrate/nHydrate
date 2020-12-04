@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -475,7 +476,10 @@ namespace nHydrate.Generator.Common.Util
         public static string RemoveParens(this string str) => str?.Replace("(", string.Empty).Replace(")", string.Empty);
 
         public static string DoubleTicks(this string str) => str?.Replace("'", "''");
-        
+
+        public static string NormalizeLineEndings(this string str) => str?.Replace("\r\n", "\n").Replace("\r", "\n");
+
+        public static List<string> BreakLines(this string text) => text.NormalizeLineEndings().Split('\n', StringSplitOptions.None).ToList() ?? new List<string>();
     }
 
     internal class SystemTypeTypeConverter : IYamlTypeConverter

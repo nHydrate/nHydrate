@@ -610,7 +610,7 @@ namespace nHydrate.Core.SQLGeneration
 
                             var dValue = newColumn.Default;
                             if (newColumn.DataType.IsTextType() || newColumn.DataType.IsDateType())
-                                dValue = "'" + dValue.Replace("'", "''") + "'";
+                                dValue = "'" + dValue.DoubleTicks() + "'";
 
                             sb.AppendLine($"--UPDATE [{newTable.GetSQLSchema()}].[{newTable.DatabaseName}] SET [{newColumn.DatabaseName}] = {dValue} WHERE [{newColumn.DatabaseName}] IS NULL");
                         }
@@ -892,9 +892,9 @@ namespace nHydrate.Core.SQLGeneration
                                 {
                                     if (column.IsNString())
                                         fieldValues.Add(column.Name,
-                                            "N'" + column.Default.Replace("'", "''") + "'");
+                                            "N'" + column.Default.DoubleTicks() + "'");
                                     else
-                                        fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
+                                        fieldValues.Add(column.Name, "'" + column.Default.DoubleTicks() + "'");
                                 }
                                 else
                                 {
@@ -1002,9 +1002,9 @@ namespace nHydrate.Core.SQLGeneration
                                 if (column.DataType.IsTextType() || column.DataType.IsDateType())
                                 {
                                     if (column.IsNString())
-                                        fieldValues.Add(column.Name, "N'" + column.Default.Replace("'", "''") + "'");
+                                        fieldValues.Add(column.Name, "N'" + column.Default.DoubleTicks() + "'");
                                     else
-                                        fieldValues.Add(column.Name, "'" + column.Default.Replace("'", "''") + "'");
+                                        fieldValues.Add(column.Name, "'" + column.Default.DoubleTicks() + "'");
                                 }
                                 else
                                 {

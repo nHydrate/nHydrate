@@ -89,12 +89,9 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
-
             node.AddAttribute("key", this.Key);
             node.AddAttribute("ref", this.Ref);
             node.AddAttribute("refType", (int)this.RefType);
-
             return node;
         }
 
