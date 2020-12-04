@@ -89,7 +89,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
             foreach (var oldT in modelOld.Database.Tables.Where(x => !x.IsEnumOnly()))
             {
-                var newT = modelNew.Database.Tables.FirstOrDefault(x => (!x.IsEnumOnly()) && x.Key.ToLower() == oldT.Key.ToLower());
+                var newT = modelNew.Database.Tables.FirstOrDefault(x => !x.IsEnumOnly() && x.Key.ToLower() == oldT.Key.ToLower());
                 if (newT == null)
                 {
                     //DELETE TABLE

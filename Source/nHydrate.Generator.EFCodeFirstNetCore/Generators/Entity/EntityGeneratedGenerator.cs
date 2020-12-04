@@ -16,17 +16,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
         public override int FileCount => GetList().Count;
 
-        private List<Table> GetList()
-        {
-            return _model.Database.Tables
-                .Where(x => (!x.IsEnumOnly()))
-                .OrderBy(x => x.Name)
-                .ToList();
-        }
+        private List<Table> GetList() => _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name).ToList();
 
         public override void Generate()
         {
-            foreach (var table in _model.Database.Tables.Where(x => (!x.IsEnumOnly())).OrderBy(x => x.Name))
+            foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
                 var template = new EntityGeneratedTemplate(_model, table);
                 var fullParentName = $"{RELATIVE_OUTPUT_LOCATION}{template.ParentItemName}";

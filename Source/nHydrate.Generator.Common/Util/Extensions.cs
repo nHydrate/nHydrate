@@ -459,11 +459,7 @@ namespace nHydrate.Generator.Common.Util
 
         public static T[] OrDefault<T>(this T[] obj) where T : new() => (obj == null) ? new T[0] : obj;
 
-        public static bool Is(this BaseModelObject obj, BaseModelObject other)
-        {
-            if (obj == null || other == null) return false;
-            return obj.Key == other.Key;
-        }
+        public static bool Is(this BaseModelObject obj, BaseModelObject other) => (obj == null || other == null) ? false : obj.Key == other.Key;
 
         public static bool IsEnumOnly(this Models.Table obj) => obj?.TypedTable == TypedTableConstants.EnumOnly;
 

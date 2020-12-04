@@ -88,7 +88,7 @@ namespace nHydrate.Generator.SQLInstaller
 
             foreach (var oldT in modelOld.Database.Tables.Where(x => !x.IsEnumOnly()))
             {
-                var newT = modelNew.Database.Tables.FirstOrDefault(x => (!x.IsEnumOnly()) && x.Key.ToLower() == oldT.Key.ToLower());
+                var newT = modelNew.Database.Tables.FirstOrDefault(x => !x.IsEnumOnly() && x.Is(oldT));
                 if (newT == null)
                 {
                     //DELETE TABLE

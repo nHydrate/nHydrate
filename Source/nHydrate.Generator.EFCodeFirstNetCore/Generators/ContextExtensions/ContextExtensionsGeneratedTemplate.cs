@@ -66,8 +66,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
             sb.AppendLine("		{");
             sb.AppendLine("			switch (entityType)");
             sb.AppendLine("			{");
-            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && (!x.IsEnumOnly())).OrderBy(x => x.PascalName))
-                sb.AppendLine("				case EntityMappingConstants." + table.PascalName + ": return typeof(" + this.GetLocalNamespace() + ".Entity." + table.PascalName + ");");
+            foreach (var table in _model.Database.Tables.Where(x => !x.AssociativeTable && !x.IsEnumOnly()).OrderBy(x => x.PascalName))
+                sb.AppendLine($"				case EntityMappingConstants.{table.PascalName}: return typeof({this.GetLocalNamespace()}.Entity.{table.PascalName});");
             sb.AppendLine("			}");
             sb.AppendLine("			throw new Exception(\"Unknown entity type!\");");
             sb.AppendLine("		}");
