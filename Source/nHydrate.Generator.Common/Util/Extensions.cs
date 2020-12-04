@@ -466,7 +466,7 @@ namespace nHydrate.Generator.Common.Util
         public static bool IsTypedTable(this Models.Table obj) => obj?.TypedTable != TypedTableConstants.None;
 
         public static bool IdentityDatabase(this Models.Column obj) => obj?.Identity == IdentityTypeConstants.Database;
-        
+
         public static bool IdentityNone(this Models.Column obj) => obj?.Identity == IdentityTypeConstants.None;
 
         public static string RemoveParens(this string str) => str?.Replace("(", string.Empty).Replace(")", string.Empty);

@@ -1,5 +1,4 @@
 using nHydrate.Generator.Common.Util;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -22,7 +21,7 @@ namespace nHydrate.Generator.Common.Models
             base.XmlLoad(node);
 
             //Remove relationships in error
-            foreach (Table t in this)
+            foreach (var t in this)
             {
                 var delRefList = new List<Reference>();
                 foreach (Reference r in t.Relationships)
@@ -38,7 +37,7 @@ namespace nHydrate.Generator.Common.Models
             }
 
             //Remove relationships from tables that do not belong there
-            foreach (Table t in this)
+            foreach (var t in this)
             {
                 var delRefList = new List<Reference>();
                 foreach (Reference r in t.Relationships)

@@ -85,7 +85,7 @@ namespace nHydrate.Generator.Common.Models
                 //If any of the columns are not unique then the relationship is NOT unique
                 var retval = true;
                 var childPKCount = 0; //Determine if any of the child columns are in the PK
-                foreach (ColumnRelationship columnRelationship in this.ColumnRelationships)
+                foreach (var columnRelationship in this.ColumnRelationships)
                 {
                     var column1 = columnRelationship.ParentColumn;
                     var column2 = columnRelationship.ChildColumn;
@@ -134,7 +134,7 @@ namespace nHydrate.Generator.Common.Models
                 var parentTableName2 = relationOther.ParentTable.Name;
 
                 var list1 = new SortedDictionary<string, ColumnRelationship>();
-                foreach (ColumnRelationship cr in this.ColumnRelationships)
+                foreach (var cr in this.ColumnRelationships)
                 {
                     if (cr.ChildColumn != null)
                     {
@@ -145,7 +145,7 @@ namespace nHydrate.Generator.Common.Models
                 }
 
                 var list2 = new SortedDictionary<string, ColumnRelationship>();
-                foreach (ColumnRelationship cr in relationOther.ColumnRelationships)
+                foreach (var cr in relationOther.ColumnRelationships)
                 {
                     if (cr.ChildColumn != null)
                     {
@@ -173,7 +173,7 @@ namespace nHydrate.Generator.Common.Models
                 var childTableName2 = relationOther.ChildTable.Name;
 
                 var list3 = new SortedDictionary<string, ColumnRelationship>();
-                foreach (ColumnRelationship cr in this.ColumnRelationships)
+                foreach (var cr in this.ColumnRelationships)
                 {
                     if (cr.ParentColumn != null)
                     {
@@ -184,7 +184,7 @@ namespace nHydrate.Generator.Common.Models
                 }
 
                 var list4 = new SortedDictionary<string, ColumnRelationship>();
-                foreach (ColumnRelationship cr in relationOther.ColumnRelationships)
+                foreach (var cr in relationOther.ColumnRelationships)
                 {
                     if (cr.ParentColumn != null)
                     {
@@ -313,7 +313,7 @@ namespace nHydrate.Generator.Common.Models
                 try
                 {
                     var sorted = new SortedDictionary<string, Column>();
-                    foreach (ColumnRelationship columnRel in this.ColumnRelationships)
+                    foreach (var columnRel in this.ColumnRelationships)
                     {
                         sorted.Add($"{columnRel.ParentColumn.Name}|{columnRel.ChildColumn.Name}|{this.RoleName}|{columnRel.Key}", columnRel.ChildColumn);
                     }

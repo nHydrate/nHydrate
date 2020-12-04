@@ -47,7 +47,7 @@ namespace nHydrate.Generator.Common.Models
 
         public string GetDataSort(Table table)
         {
-            foreach (CellEntry cellEntry in this.CellEntries)
+            foreach (var cellEntry in this.CellEntries)
             {
                 if (cellEntry.Column?.DataType.IsIntegerType() == true)
                 {
@@ -62,7 +62,7 @@ namespace nHydrate.Generator.Common.Models
         {
             var name = string.Empty;
             var description = string.Empty;
-            foreach (CellEntry cellEntry in this.CellEntries.Where(x => x.Column != null))
+            foreach (var cellEntry in this.CellEntries.Where(x => x.Column != null))
             {
                 if (StringHelper.Match(cellEntry.Column.Name, "name"))
                     name = cellEntry.Value;
@@ -76,7 +76,7 @@ namespace nHydrate.Generator.Common.Models
         {
             var name = string.Empty;
             var description = string.Empty;
-            foreach (CellEntry cellEntry in this.CellEntries.Where(x => x.Column != null))
+            foreach (var cellEntry in this.CellEntries.Where(x => x.Column != null))
             {
                 if (StringHelper.Match(cellEntry.Column.Name, "name"))
                     name = ValidationHelper.MakeCodeIdentifer(cellEntry.Value);
@@ -89,7 +89,7 @@ namespace nHydrate.Generator.Common.Models
         public string GetCodeIdValue(Table table)
         {
             var id = string.Empty;
-            foreach (CellEntry cellEntry in this.CellEntries)
+            foreach (var cellEntry in this.CellEntries)
             {
                 if (cellEntry.Column.Is(table.PrimaryKeyColumns.FirstOrDefault()))
                     id = cellEntry.Value;
@@ -100,7 +100,7 @@ namespace nHydrate.Generator.Common.Models
         public string GetCodeDescription(Table table)
         {
             var description = string.Empty;
-            foreach (CellEntry cellEntry in this.CellEntries)
+            foreach (var cellEntry in this.CellEntries)
             {
                 if (cellEntry.Column != null)
                 {

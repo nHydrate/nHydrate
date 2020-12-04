@@ -1110,7 +1110,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
 
                     sb.AppendLine();
                     sb.AppendLine("	{");
-                    foreach (RowEntry rowEntry in table.StaticData)
+                    foreach (var rowEntry in table.StaticData)
                     {
                         var idValue = rowEntry.GetCodeIdValue(table);
                         var identifier = rowEntry.GetCodeIdentifier(table);

@@ -93,7 +93,7 @@ namespace nHydrate.Generator.Common.Models
         public IEnumerable<Relation> GetRelationsWhereChild(Table table, bool fullHierarchy)
         {
             var retval = new List<Relation>();
-            foreach (Relation relation in this.Relations)
+            foreach (var relation in this.Relations)
             {
                 var childTable = relation.ChildTable;
                 if (childTable == table)
@@ -125,7 +125,7 @@ namespace nHydrate.Generator.Common.Models
             node.AppendChild(this.Relations.XmlAppend(node.CreateElement("relations")));
             node.AppendChild(this.Tables.XmlAppend(node.CreateElement("tables")));
             node.AppendChild(this.CustomViews.XmlAppend(node.CreateElement("customviews")));
-            
+
             return node;
         }
 
@@ -149,7 +149,7 @@ namespace nHydrate.Generator.Common.Models
             this.CustomViewColumns?.XmlLoad(node.SelectSingleNode("customviewcolumns"));
 
             //Clean all tables that are dead
-            foreach (Table t in this.Tables)
+            foreach (var t in this.Tables)
             {
                 foreach (var c in t.Columns.Where(x => x.Object == null).ToList())
                     t.Columns.Remove(c);
@@ -176,7 +176,7 @@ namespace nHydrate.Generator.Common.Models
 
             #region Error Check for columns with duplicate Keys (if someone manually edits XML file)
             var usedList = new List<string>();
-            foreach (Column column in this.Columns)
+            foreach (var column in this.Columns)
             {
                 if (usedList.Contains(column.Key.ToString()))
                     column.ResetKey(Guid.NewGuid().ToString());
@@ -208,7 +208,7 @@ namespace nHydrate.Generator.Common.Models
             deleteRelationList.ForEach(x => this.Relations.Remove(x));
             #endregion
 
-            foreach (Table table in this.Tables)
+            foreach (var table in this.Tables)
             {
                 foreach (var column in table.GetColumns().Where(x => x.ParentTable != table))
                     column.ParentTableRef = table.CreateRef();

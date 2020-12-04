@@ -876,7 +876,7 @@ namespace nHydrate.Core.SQLGeneration
                 {
 
                     var fieldValues = new Dictionary<string, string>();
-                    foreach (var cellEntry in rowEntry.CellEntries.ToList())
+                    foreach (var cellEntry in rowEntry.CellEntries)
                     {
                         var column = cellEntry.Column;
                         var sqlValue = cellEntry.GetSQLData();
