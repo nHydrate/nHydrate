@@ -8,11 +8,6 @@ namespace nHydrate.Core.SQLGeneration
 {
     internal static class Globals
     {
-        public static string GetTableDatabaseName(ModelRoot model, Table table)
-        {
-            return table.DatabaseName;
-        }
-
         public static string GetSQLIndexField(Table table, TableIndex tableIndex)
         {
             var model = table.Root as ModelRoot;

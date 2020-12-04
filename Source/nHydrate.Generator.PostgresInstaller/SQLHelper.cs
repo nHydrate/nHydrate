@@ -296,12 +296,10 @@ namespace nHydrate.Generator.PostgresInstaller
                                 sb.AppendLine();
                             }
 
-                            var tableName = Globals.GetTableDatabaseName(modelNew, newT);
-                            var pkName = $"PK_{tableName}";
-                            pkName = pkName.ToUpper();
-                            sb.AppendLine($"----DROP PRIMARY KEY FOR TABLE [{tableName}]");
+                            var pkName = $"PK_{newT.DatabaseName}".ToUpper();
+                            sb.AppendLine($"----DROP PRIMARY KEY FOR TABLE [{newT.DatabaseName}]");
                             sb.AppendLine($"--if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
-                            sb.AppendLine($"--ALTER TABLE {newT.GetPostgresSchema()}.\"{tableName}\" DROP CONSTRAINT IF EXISTS [{pkName}];");
+                            sb.AppendLine($"--ALTER TABLE {newT.GetPostgresSchema()}.\"{newT.DatabaseName}\" DROP CONSTRAINT IF EXISTS [{pkName}];");
                             sb.AppendLine("--GO");
 
                             var sql = SQLEmit.GetSqlCreatePK(newT) + "GO\r\n";
@@ -456,7 +454,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 return string.Empty;
 
             var sb = new StringBuilder();
-            var tableName = Globals.GetTableDatabaseName(model, table);
+            var tableName = table.DatabaseName;
             if (!string.IsNullOrEmpty(tableAliasName))
                 tableName = tableAliasName;
 
@@ -738,7 +736,7 @@ namespace nHydrate.Generator.PostgresInstaller
         {
             var sb = new StringBuilder();
             var model = table.Root as ModelRoot;
-            var tableName = Globals.GetTableDatabaseName(model, table);
+            var tableName = table.DatabaseName;
             var columnList = GetIndexColumns(table, index);
             var indexName = GetIndexName(table, index);
 
@@ -937,7 +935,7 @@ namespace nHydrate.Generator.PostgresInstaller
                 foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
                     isIdentity |= (column.IdentityDatabase());
 
-                sb.AppendLine($"--INSERT STATIC DATA FOR TABLE [{Globals.GetTableDatabaseName(model, table)}]");
+                sb.AppendLine($"--INSERT STATIC DATA FOR TABLE [{table.DatabaseName}]");
 
                 foreach (var rowEntry in table.StaticData.AsEnumerable<RowEntry>())
                 {
@@ -1001,7 +999,7 @@ namespace nHydrate.Generator.PostgresInstaller
                     var fieldListString = string.Join(",", fieldList);
                     var valueListString = string.Join(",", valueList);
 
-                    sb.AppendLine($"INSERT INTO {table.GetPostgresSchema()}.\"{Globals.GetTableDatabaseName(model, table)}\" ({fieldListString}) OVERRIDING SYSTEM VALUE values ({valueListString}) ON CONFLICT DO NOTHING;");
+                    sb.AppendLine($"INSERT INTO {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ({fieldListString}) OVERRIDING SYSTEM VALUE values ({valueListString}) ON CONFLICT DO NOTHING;");
                 }
 
                 sb.AppendLine();
@@ -1014,10 +1012,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string CreateFkName(Relation relation)
         {
-            var childTable = relation.ChildTable;
-            var parentTable = relation.ParentTable;
-            var model = relation.Root as ModelRoot;
-            var indexName = $"FK_{relation.DatabaseRoleName}_{Globals.GetTableDatabaseName(model, childTable)}_{Globals.GetTableDatabaseName(model, parentTable)}".ToUpper();
+            var indexName = $"FK_{relation.DatabaseRoleName}_{relation.ChildTable.DatabaseName}_{relation.ParentTable.DatabaseName}".ToUpper();
             var sb = new StringBuilder();
             foreach (var c in indexName)
             {
@@ -1101,11 +1096,8 @@ namespace nHydrate.Generator.PostgresInstaller
         public static string GetSQLDropIndex(Table table, TableIndex index)
         {
             var sb = new StringBuilder();
-            var model = table.Root as ModelRoot;
-            var tableName = Globals.GetTableDatabaseName(model, table);
             var columnList = GetIndexColumns(table, index);
             var indexName = GetIndexName(table, index).ToUpper();
-
             if (columnList.Count > 0)
             {
                 sb.AppendLine("--DELETE INDEX");
@@ -1133,11 +1125,7 @@ namespace nHydrate.Generator.PostgresInstaller
                     //Relation chlidR = (Relation)parentT.ParentRoleRelations[jj];
                     if (parentR.ParentTable == t)
                     {
-                        var objectNameFK = "FK_" +
-                                     parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, childT) +
-                                     "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, parentT);
-                        objectNameFK = objectNameFK.ToUpper();
-
+                        var objectNameFK = $"FK_{parentR.DatabaseRoleName}_{childT.DatabaseName}_{parentT.DatabaseName}".ToUpper();
                         sb.AppendLine("--REMOVE FOREIGN KEY");
                         sb.AppendLine($"ALTER TABLE IF EXISTS {childT.GetPostgresSchema()}.\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectNameFK}\";");
                         sb.AppendLine();
@@ -1159,11 +1147,7 @@ namespace nHydrate.Generator.PostgresInstaller
                     var parentR = (Relation)parentT.ParentRoleRelations[jj];
                     if (parentR.ChildTable == t)
                     {
-                        var objectNameFK = "FK_" +
-                                     parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, childT) +
-                                     "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, parentT);
-                        objectNameFK = objectNameFK.ToUpper();
-
+                        var objectNameFK = $"FK_{parentR.DatabaseRoleName}_{childT.DatabaseName}_{parentT.DatabaseName}".ToUpper();
                         sb.AppendLine("--REMOVE FOREIGN KEY");
                         sb.AppendLine($"ALTER TABLE IF EXISTS {childT.GetPostgresSchema()}.\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectNameFK}\";");
                         sb.AppendLine();
@@ -1176,7 +1160,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
             #region Delete Primary Key
 
-            var objectNamePK = "PK_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, t);
+            var objectNamePK = $"PK_{t.DatabaseName}".ToUpper();
             sb.AppendLine($"--DELETE PRIMARY KEY FOR TABLE [{t.DatabaseName}]");
             sb.AppendLine($"ALTER TABLE {t.GetPostgresSchema()}.\"{t.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectNamePK}\";");
             sb.AppendLine();
@@ -1403,11 +1387,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
                     if (removeRelationship)
                     {
-                        var objectName = "FK_" +
-                                         parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, childT) +
-                                         "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, parentT);
-                        objectName = objectName.ToUpper();
-
+                        var objectName = $"FK_{parentR.DatabaseRoleName}_{childT.DatabaseName}_{parentT.DatabaseName}".ToUpper();
                         sb.AppendLine("--REMOVE FOREIGN KEY");
                         sb.AppendLine($"ALTER TABLE IF EXISTS {childT.GetPostgresSchema()}.\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
                         sb.AppendLine();
@@ -1438,11 +1418,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
                         if (removeRelationship)
                         {
-                            var objectName = "FK_" +
-                                             parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, childT) +
-                                             "_" + Globals.GetTableDatabaseName((ModelRoot)t.Root, parentT);
-                            objectName = objectName.ToUpper();
-
+                            var objectName = $"FK_{parentR.DatabaseRoleName}_{childT.DatabaseName}_{parentT.DatabaseName}".ToUpper();
                             sb.AppendLine("--REMOVE FOREIGN KEY");
                             sb.AppendLine($"ALTER TABLE IF EXISTS {childT.GetPostgresSchema()}.\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
                             sb.AppendLine();
@@ -1463,11 +1439,10 @@ namespace nHydrate.Generator.PostgresInstaller
                     removePrimaryKey = true;
             }
 
+            //Delete Primary Key
             if (removePrimaryKey)
             {
-                var objectName = $"PK_{Globals.GetTableDatabaseName((ModelRoot)t.Root, t).ToUpper()}";
-
-                //Delete Primary Key
+                var objectName = $"PK_{t.DatabaseName}".ToUpper();
                 sb.AppendLine($"--DELETE PRIMARY KEY FOR TABLE [{t.DatabaseName}]");
                 sb.AppendLine($"ALTER TABLE {t.GetPostgresSchema()}.\"{t.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
                 sb.AppendLine();
@@ -1567,11 +1542,7 @@ namespace nHydrate.Generator.PostgresInstaller
 
                     if (removeRelationship)
                     {
-                        var objectName = "FK_" +
-                                         parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot)oldTable.Root, childT) +
-                                                         "_" + Globals.GetTableDatabaseName((ModelRoot)oldTable.Root, parentT);
-                        objectName = objectName.ToUpper();
-
+                        var objectName = $"FK_{parentR.DatabaseRoleName}_{childT.DatabaseName}_{parentT.DatabaseName}".ToUpper();
                         sb.AppendLine("--REMOVE FOREIGN KEY");
                         sb.AppendLine($"ALTER TABLE IF EXISTS {childT.GetPostgresSchema()}.\"{childT.DatabaseName}\" DROP CONSTRAINT IF EXISTS \"{objectName}\";");
                         sb.AppendLine();
@@ -1604,8 +1575,8 @@ namespace nHydrate.Generator.PostgresInstaller
                         if (removeRelationship)
                         {
                             var objectName = "FK_" +
-                                             parentR.DatabaseRoleName + "_" + Globals.GetTableDatabaseName((ModelRoot)oldTable.Root, childT) +
-                                             "_" + Globals.GetTableDatabaseName((ModelRoot)oldTable.Root, parentT);
+                                             parentR.DatabaseRoleName + "_" + childT.DatabaseName +
+                                             "_" + parentT.DatabaseName;
                             objectName = objectName.ToUpper();
 
                             sb.AppendLine("--REMOVE FOREIGN KEY");
@@ -1878,7 +1849,7 @@ namespace nHydrate.Generator.PostgresInstaller
             //Generate static data
             if (newT.StaticData.Count > 0)
             {
-                sb.AppendLine($"--UPDATE STATIC DATA FOR TABLE [{Globals.GetTableDatabaseName(model, newT)}]");
+                sb.AppendLine($"--UPDATE STATIC DATA FOR TABLE [{newT.DatabaseName}]");
                 sb.AppendLine("--IF YOU WISH TO UPDATE THIS STATIC DATA UNCOMMENT THIS SQL");
                 foreach (var rowEntry in newT.StaticData.AsEnumerable<RowEntry>())
                 {
@@ -1958,7 +1929,7 @@ namespace nHydrate.Generator.PostgresInstaller
                         ii++;
                     }
 
-                    sb.AppendLine($"--UPDATE \"{newT.GetPostgresSchema()}\".\"{Globals.GetTableDatabaseName(model, newT)}\" SET {updateSetString} WHERE {pkWhereSb.ToString()};");
+                    sb.AppendLine($"--UPDATE \"{newT.GetPostgresSchema()}\".\"{newT.DatabaseName}\" SET {updateSetString} WHERE {pkWhereSb.ToString()};");
 
                 }
 

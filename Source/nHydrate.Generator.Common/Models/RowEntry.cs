@@ -1,6 +1,7 @@
 #pragma warning disable 0168
 using nHydrate.Generator.Common.Util;
 using System;
+using System.Linq;
 using System.Xml;
 
 namespace nHydrate.Generator.Common.Models
@@ -48,7 +49,7 @@ namespace nHydrate.Generator.Common.Models
         {
             foreach (CellEntry cellEntry in this.CellEntries)
             {
-                if (cellEntry.Column != null && cellEntry.Column.DataType.IsIntegerType())
+                if (cellEntry.Column?.DataType.IsIntegerType() == true)
                 {
                     if (cellEntry.Column.Name.ToLower().Contains("order") || cellEntry.Column.Name.ToLower().Contains("sort"))
                         return cellEntry.Value;
@@ -61,16 +62,12 @@ namespace nHydrate.Generator.Common.Models
         {
             var name = string.Empty;
             var description = string.Empty;
-            foreach (CellEntry cellEntry in this.CellEntries)
+            foreach (CellEntry cellEntry in this.CellEntries.Where(x => x.Column != null))
             {
-                var column = cellEntry.Column;
-                if (column != null)
-                {
-                    if (StringHelper.Match(column.Name, "name"))
-                        name = cellEntry.Value;
-                    if (StringHelper.Match(column.Name, "description"))
-                        description = cellEntry.Value;
-                }
+                if (StringHelper.Match(cellEntry.Column.Name, "name"))
+                    name = cellEntry.Value;
+                if (StringHelper.Match(cellEntry.Column.Name, "description"))
+                    description = cellEntry.Value;
             }
             return name.IfEmptyDefault(description);
         }
@@ -79,16 +76,12 @@ namespace nHydrate.Generator.Common.Models
         {
             var name = string.Empty;
             var description = string.Empty;
-            foreach (CellEntry cellEntry in this.CellEntries)
+            foreach (CellEntry cellEntry in this.CellEntries.Where(x => x.Column != null))
             {
-                var column = cellEntry.Column;
-                if (column != null)
-                {
-                    if (StringHelper.Match(column.Name, "name"))
-                        name = ValidationHelper.MakeCodeIdentifer(cellEntry.Value);
-                    if (StringHelper.Match(column.Name, "description"))
-                        description = cellEntry.Value;
-                }
+                if (StringHelper.Match(cellEntry.Column.Name, "name"))
+                    name = ValidationHelper.MakeCodeIdentifer(cellEntry.Value);
+                if (StringHelper.Match(cellEntry.Column.Name, "description"))
+                    description = cellEntry.Value;
             }
             return name.IfEmptyDefault(ValidationHelper.MakeCodeIdentifer(description));
         }
@@ -98,8 +91,7 @@ namespace nHydrate.Generator.Common.Models
             var id = string.Empty;
             foreach (CellEntry cellEntry in this.CellEntries)
             {
-                var pk = (Column)table.PrimaryKeyColumns[0];
-                if (cellEntry.Column.Is(pk))
+                if (cellEntry.Column.Is(table.PrimaryKeyColumns.FirstOrDefault()))
                     id = cellEntry.Value;
             }
             return id;
@@ -107,17 +99,12 @@ namespace nHydrate.Generator.Common.Models
 
         public string GetCodeDescription(Table table)
         {
-            var id = string.Empty;
             var description = string.Empty;
             foreach (CellEntry cellEntry in this.CellEntries)
             {
-                var column = cellEntry.Column;
-                var pk = (Column)table.PrimaryKeyColumns[0];
-                if (column != null)
+                if (cellEntry.Column != null)
                 {
-                    if (column.Is(pk))
-                        id = cellEntry.Value;
-                    if (StringHelper.Match(column.Name, "description"))
+                    if (StringHelper.Match(cellEntry.Column.Name, "description") && !cellEntry.Column.Is(table.PrimaryKeyColumns.FirstOrDefault()))
                         description = cellEntry.Value;
                 }
             }

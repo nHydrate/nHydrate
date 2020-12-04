@@ -284,7 +284,7 @@ namespace nHydrate.Generator.Common.Util
 
         public static XmlAttribute AddAttribute(this XmlNode node, string name, string value, string defaultValue)
         {
-            if (value == defaultValue) return null;
+            if (value == defaultValue || value == null) return null;
             return node.AddAttribute(name, value);
         }
 
@@ -402,5 +402,9 @@ namespace nHydrate.Generator.Common.Util
         }
 
         #endregion
+
+        public static XmlNode CreateElement(this XmlNode node, string name) => node.OwnerDocument.CreateElement(name);
+
+        public static XmlNode CreateCDataSection(this XmlNode node, string name) => node.OwnerDocument.CreateCDataSection(name);
     }
 }

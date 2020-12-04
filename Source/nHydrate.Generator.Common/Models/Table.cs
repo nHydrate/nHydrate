@@ -27,7 +27,6 @@ namespace nHydrate.Generator.Common.Models
         protected const bool _def_generatesDoubleDerived = false;
         protected const bool _def_isTenant = false;
 
-        protected RowEntryCollection _staticData = null;
         private bool _immutable = _def_immutable;
 
         #endregion
@@ -49,7 +48,7 @@ namespace nHydrate.Generator.Common.Models
 
         private void Initialize()
         {
-            _staticData = new RowEntryCollection(this.Root);
+            this.StaticData = new RowEntryCollection(this.Root);
             this.Columns = new ReferenceCollection(this.Root, this, ReferenceType.Column);
             Columns.ResetKey(Guid.Empty.ToString());
             Relationships = new ReferenceCollection(this.Root, this, ReferenceType.Relation);
@@ -88,7 +87,7 @@ namespace nHydrate.Generator.Common.Models
             get
             {
                 var retval = new RelationCollection(this.Root);
-                var relationCollection = ((ModelRoot)this.Root).Database.Relations;
+                var relationCollection = this.GetRoot().Database.Relations;
                 foreach (var r in relationCollection.AsEnumerable())
                 {
                     if ((r.ParentTableRef != null) && (r.ChildTableRef != null))
@@ -113,7 +112,7 @@ namespace nHydrate.Generator.Common.Models
 
         public bool FullIndexSearch { get; set; } = _def_fullIndexSearch;
 
-        public RowEntryCollection StaticData => _staticData;
+        public RowEntryCollection StaticData { get; private set; }
 
         public bool AssociativeTable { get; set; } = _def_associativeTable;
 
@@ -130,42 +129,28 @@ namespace nHydrate.Generator.Common.Models
             return false;
         }
 
-        public IEnumerable<Table> GetTablesInheritedFromHierarchy()
-        {
-            var retval = new List<Table>();
-            return retval;
-        }
-
         public Table GetAbsoluteBaseTable() => this;
 
         public ColumnCollection GetColumnsFullHierarchy()
         {
-            try
-            {
-                var nameList = new List<string>();
-                var retval = new ColumnCollection(this.Root);
+            var nameList = new List<string>();
+            var retval = new ColumnCollection(this.Root);
 
-                var t = this;
-                while (t != null)
+            var t = this;
+            while (t != null)
+            {
+                foreach (var c in t.GetColumns().ToList())
                 {
-                    foreach (var c in t.GetColumns().ToList())
+                    if (!nameList.Contains(c.Name.ToLower()))
                     {
-                        if (!nameList.Contains(c.Name.ToLower()))
-                        {
-                            nameList.Add(c.Name.ToLower());
-                            retval.Add(c);
-                        }
+                        nameList.Add(c.Name.ToLower());
+                        retval.Add(c);
                     }
-                    //t = t.ParentTable;
-                    t = null;
                 }
-                return retval;
-
+                //t = t.ParentTable;
+                t = null;
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return retval;
         }
 
         public IEnumerable<Table> GetParentTablesFullHierarchy()
@@ -207,16 +192,15 @@ namespace nHydrate.Generator.Common.Models
             roleName = string.Empty;
             foreach (var relation in this.GetRelationsWhereChild(fullHierarchy))
             {
-                var parentTable = relation.ParentTable;
-                //Type tables have 1 PK
+                //Type tables have a single field PK
                 if (relation.ColumnRelationships.Count == 1)
                 {
                     var parentColumn = relation.ColumnRelationships[0].ParentColumn;
                     var childColumn = relation.ColumnRelationships[0].ChildColumn;
-                    if ((column == childColumn) && parentTable.IsTypedTable())
+                    if ((column == childColumn) && relation.ParentTable.IsTypedTable())
                     {
                         roleName = relation.PascalRoleName;
-                        return parentTable;
+                        return relation.ParentTable;
                     }
                 }
             }
@@ -231,20 +215,11 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
-
             node.AddAttribute("key", this.Key);
             node.AddAttribute("name", this.Name);
             node.AddAttribute("dbschema", this.DBSchema, _def_dbSchema);
             node.AddAttribute("codeFacade", this.CodeFacade, _def_codeFacade);
             node.AddAttribute("description", this.Description, _def_description);
-
-            if (this.Relationships.Any())
-                node.AppendChild(this.Relationships.XmlAppend(oDoc.CreateElement("r")));
-
-            node.AppendChild(TableIndexList.XmlAppend(oDoc.CreateElement("til")));
-            node.AppendChild(this.Columns.XmlAppend(oDoc.CreateElement("c")));
-
             node.AddAttribute("isTenant", this.IsTenant, _def_isTenant);
             node.AddAttribute("immutable", this.Immutable, _def_immutable);
             node.AddAttribute("modifiedAudit", this.AllowModifiedAudit, _def_modifiedAudit);
@@ -253,44 +228,25 @@ namespace nHydrate.Generator.Common.Models
             node.AddAttribute("timestamp", this.AllowConcurrencyCheck, _def_concurrency);
             node.AddAttribute("generatesDoubleDerived", this.GeneratesDoubleDerived, _def_generatesDoubleDerived);
             node.AddAttribute("id", this.Id);
-
-            this.StaticData.ResetKey(Guid.Empty, true); //no need to save this key
-            if (this.StaticData.Any())
-                node.AppendChild(this.StaticData.XmlAppend(oDoc.CreateElement("staticData")));
-
             node.AddAttribute("associativeTable", this.AssociativeTable, _def_associativeTable);
             node.AddAttribute("hasHistory", this.HasHistory, _def_hasHistory);
             node.AddAttribute("fullIndexSearch", this.FullIndexSearch, _def_fullIndexSearch);
-
+            node.AppendChild(this.Relationships.XmlAppend(node.CreateElement("r")));
+            node.AppendChild(this.TableIndexList.XmlAppend(node.CreateElement("til")));
+            node.AppendChild(this.Columns.XmlAppend(node.CreateElement("c")));
+            node.AppendChild(this.StaticData.XmlAppend(node.CreateElement("staticData")));
             return node;
         }
 
         public override XmlNode XmlLoad(XmlNode node)
         {
-            var relationshipsNode = node.SelectSingleNode("r");
-            if (relationshipsNode != null)
-                this.Relationships.XmlLoad(relationshipsNode);
-
-            var columnsNode = node.SelectSingleNode("c");
-            if (columnsNode != null)
-                this.Columns.XmlLoad(columnsNode);
-
-            var tableIndexListNode = node.SelectSingleNode("til");
-            if (tableIndexListNode != null)
-                TableIndexList.XmlLoad(tableIndexListNode, this.Root);
 
             this.Immutable = node.GetAttributeValue("immutable", _def_immutable);
             this.IsTenant = node.GetAttributeValue("isTenant", _def_isTenant);
             this.ResetId(XmlHelper.GetAttributeValue(node, "id", this.Id));
-
-            var staticDataNode = node.SelectSingleNode("staticData");
-            if (staticDataNode != null)
-                this.StaticData.XmlLoad(staticDataNode);
-
             this.AssociativeTable = node.GetAttributeValue("associativeTable", AssociativeTable);
             this.HasHistory = node.GetAttributeValue("hasHistory", HasHistory);
             this.FullIndexSearch = node.GetAttributeValue("fullIndexSearch", _def_fullIndexSearch);
-
             this.Key = node.GetAttributeValue("key", string.Empty);
             this.Name = node.GetAttributeValue("name", string.Empty);
             this.DBSchema = node.GetAttributeValue("dbschema", _def_dbSchema);
@@ -301,7 +257,10 @@ namespace nHydrate.Generator.Common.Models
             this.TypedTable = (TypedTableConstants)XmlHelper.GetAttributeValue(node, "typedTable", int.Parse(TypedTable.ToString("d")));
             this.AllowConcurrencyCheck = node.GetAttributeValue("timestamp", AllowConcurrencyCheck);
             this.GeneratesDoubleDerived = node.GetAttributeValue("generatesDoubleDerived", _def_generatesDoubleDerived);
-
+            this.Relationships.XmlLoad(node.SelectSingleNode("r"));
+            this.Columns.XmlLoad(node.SelectSingleNode("c"));
+            this.TableIndexList.XmlLoad(node.SelectSingleNode("til"), this.Root);
+            this.StaticData.XmlLoad(node.SelectSingleNode("staticData"));
             return node;
         }
 
@@ -324,7 +283,7 @@ namespace nHydrate.Generator.Common.Models
             get
             {
                 var retval = new List<Relation>();
-                foreach (Relation relation in ((ModelRoot)this.Root).Database.Relations)
+                foreach (Relation relation in this.GetRoot().Database.Relations)
                 {
                     if ((relation.ParentTable != null) && (relation.ParentTableRef.Ref == this.Id))
                         retval.Add(relation);
@@ -338,7 +297,7 @@ namespace nHydrate.Generator.Common.Models
             get
             {
                 var retval = new List<Relation>();
-                foreach (Relation relation in ((ModelRoot)this.Root).Database.Relations)
+                foreach (Relation relation in this.GetRoot().Database.Relations)
                 {
                     if ((relation.ChildTable != null) && (relation.ChildTableRef.Ref == this.Id))
                         retval.Add(relation);

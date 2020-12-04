@@ -53,14 +53,9 @@ namespace nHydrate.Command.Core
         {
             var name = e.ProjectItemName;
             if (name.StartsWith(Path.DirectorySeparatorChar)) name = name.Substring(1, name.Length - 1);
-            var fileName = System.IO.Path.Combine(_outputFolder, e.ProjectName, name);
-            if (File.Exists(fileName))
-            {
-                File.Delete(fileName);
-            }
-
+            e.FullName = System.IO.Path.Combine(_outputFolder, e.ProjectName, name);
+            if (File.Exists(e.FullName)) File.Delete(e.FullName);
             e.FileState = Generator.Common.Util.FileStateConstants.Success;
-            e.FullName = fileName;
         }
 
         protected override void projectItemGenerator_ProjectItemExists(object sender, ProjectItemExistsEventArgs e)
@@ -219,7 +214,6 @@ namespace nHydrate.Command.Core
 
         private string GetResource(string name)
         {
-
             var retVal = string.Empty;
             var asm = System.Reflection.Assembly.GetExecutingAssembly();
             var manifestStream = asm.GetManifestResourceStream(name);

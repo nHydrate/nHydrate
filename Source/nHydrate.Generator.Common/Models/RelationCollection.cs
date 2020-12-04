@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace nHydrate.Generator.Common.Models
 {
@@ -16,67 +17,42 @@ namespace nHydrate.Generator.Common.Models
 
         public override void Remove(Relation element)
         {
-            try
+            foreach (Table t in this.GetRoot().Database.Tables)
             {
-                var delCount = 0;
-                foreach (Table t in ((ModelRoot)this.Root).Database.Tables)
+                //Remove the references
+                t.Relationships.Where(x => x.Object == null)
+                    .ToList()
+                    .ForEach(r => t.Relationships.Remove(r));
+
+                if (element != null)
                 {
-                    var delRefList = new List<Reference>();
-                    foreach (Reference r in t.Relationships)
+                    var delRelationList = new List<int>();
+                    for (var ii = _internalList.Count - 1; ii >= 0; ii--)
                     {
-                        if (r.Object == null)
-                        {
-                            delCount++;
-                            delRefList.Add(r);
-                        }
+                        if (_internalList[ii].Key == element.Key)
+                            delRelationList.Add(ii);
                     }
 
                     //Remove the references
-                    foreach (var r in delRefList)
+                    foreach (var index in delRelationList)
                     {
-                        t.Relationships.Remove(r);
+                        _internalList.RemoveAt(index);
                     }
-
-                    if (element != null)
-                    {
-                        var delRelationList = new List<int>();
-                        for (var ii = _internalList.Count - 1; ii >= 0; ii--)
-                        {
-                            if (_internalList[ii].Key == element.Key)
-                                delRelationList.Add(ii);
-                        }
-
-                        //Remove the references
-                        foreach (var index in delRelationList)
-                        {
-                            _internalList.RemoveAt(index);
-                        }
-                    }
-
                 }
-
-                _internalList.Remove(element);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            _internalList.Remove(element);
         }
 
         public override void Clear()
         {
             for (var ii = this.Count - 1; ii > 0; ii--)
-            {
                 this.Remove(this[0]);
-            }
         }
 
         public override Relation Add(Relation value)
         {
             if (this.Contains(value.Id))
-            {
                 value.ResetId(NextIndex());
-            }
             _internalList.Add(value);
             return value;
         }

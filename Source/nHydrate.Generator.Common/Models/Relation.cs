@@ -59,7 +59,7 @@ namespace nHydrate.Generator.Common.Models
 
         public string RoleName { get; set; } = _def_roleName;
 
-        public string ConstraintName { get; set; } = string.Empty;
+        public string ConstraintName { get; set; } = _def_constraintname;
 
         public bool IsRequired => this.ColumnRelationships.Any(x => !x.ChildColumn.AllowNull);
 
@@ -107,11 +107,11 @@ namespace nHydrate.Generator.Common.Models
 
         public bool IsInherited => !this.IsOneToOne ? false : this.ChildTable.IsInheritedFrom(this.ParentTable);
 
-        public bool Enforce { get; set; }
+        public bool Enforce { get; set; } = _def_enforce;
 
-        public string Description { get; set; }
+        public string Description { get; set; } = _def_description;
 
-        public DeleteActionConstants DeleteAction { get; set; }
+        public DeleteActionConstants DeleteAction { get; set; } = _def_deleteAction;
 
         #endregion
 
@@ -242,28 +242,25 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
-
             node.AddAttribute("key", this.Key);
             node.AddAttribute("enforce", this.Enforce);
             node.AddAttribute("description", this.Description, _def_description);
             node.AddAttribute("deleteAction", this.DeleteAction.ToString());
-            ColumnRelationships.ResetKey(Guid.Empty, true); //no need to save this key
-            node.AppendChild(ColumnRelationships.XmlAppend(oDoc.CreateElement("crl")));
+            this.ColumnRelationships.ResetKey(Guid.Empty, true); //no need to save this key
+            node.AppendChild(ColumnRelationships.XmlAppend(node.CreateElement("crl")));
+            node.AddAttribute("id", this.Id);
+            node.AddAttribute("roleName", this.RoleName, _def_roleName);
+            node.AddAttribute("constraintName", this.ConstraintName, _def_constraintname);
 
-            var childTableRefNode = oDoc.CreateElement("ct");
+            var childTableRefNode = node.CreateElement("ct");
             if (this.ChildTableRef != null)
                 this.ChildTableRef.XmlAppend(childTableRefNode);
             node.AppendChild(childTableRefNode);
 
-            var parentTableRefNode = oDoc.CreateElement("pt");
+            var parentTableRefNode = node.CreateElement("pt");
             if (this.ParentTableRef != null)
                 this.ParentTableRef.XmlAppend(parentTableRefNode);
             node.AppendChild(parentTableRefNode);
-
-            node.AddAttribute("id", this.Id);
-            node.AddAttribute("roleName", this.RoleName, _def_roleName);
-            node.AddAttribute("constraintName", this.ConstraintName, _def_constraintname);
 
             return node;
         }
@@ -331,7 +328,7 @@ namespace nHydrate.Generator.Common.Models
 
         public override string ToString()
         {
-            var tableCollection = ((ModelRoot)this.Root).Database.Tables;
+            var tableCollection = this.GetRoot().Database.Tables;
             Table[] parentList = { };
             Table[] childList = { };
             if (this.ParentTableRef != null)

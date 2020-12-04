@@ -7,8 +7,6 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators
 {
     internal static class Globals
     {
-        public static string GetTableDatabaseName(ModelRoot model, Table table) => table.DatabaseName;
-
         public static Column GetColumnByKey(ReferenceCollection referenceCollection, string columnKey)
         {
             foreach (var column in referenceCollection.Where(x => x.Object is Column).Select(x => x.Object as Column))

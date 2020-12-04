@@ -56,12 +56,8 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
             if (ColumnRef != null)
-            {
-                this.ColumnRef = new Reference(this.Root);
-                node.AppendChild(this.ColumnRef.XmlAppend(oDoc.CreateElement("f")));
-            }
+                node.AppendChild(this.ColumnRef.XmlAppend(node.CreateElement("f")));
             node.AddAttribute("value", this.Value);
             return node;
         }
@@ -75,6 +71,7 @@ namespace nHydrate.Generator.Common.Models
                 if (this.ColumnRef == null)
                     this.ColumnRef = new Reference(this.Root);
                 this.ColumnRef.XmlLoad(columnRefNode);
+                var q = this.ColumnRef.Object;
             }
             this.Value = node.GetAttributeValue("value", string.Empty);
             return node;

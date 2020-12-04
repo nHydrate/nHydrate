@@ -173,20 +173,16 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
         {
             foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
-                var tableName = Globals.GetTableDatabaseName(_model, table);
-                foreach (Reference reference in table.Columns)
+                foreach (var column in table.GetColumns())
                 {
                     //If this is a non-key column that is unqiue then create the SQL KEY
-                    var column = (Column)reference.Object;
                     if (column.IsUnique && !table.PrimaryKeyColumns.Contains(column))
                     {
                         //Make sure that the index name is the same each time
-                        var indexName = "IX_" + table.Name.FlatGuid() + "_" + column.Name.FlatGuid();
-                        indexName = indexName.ToUpper();
-
-                        sb.AppendLine("--UNIQUE COLUMN TABLE [" + tableName + "].[" + column.DatabaseName + "] (NON-PRIMARY KEY)");
-                        sb.AppendLine("if not exists(select * from sys.indexes where name = '" + indexName + "')");
-                        sb.AppendLine($"ALTER TABLE [{table.GetPostgresSchema()}].[{tableName}] ADD CONSTRAINT [" + indexName + "] UNIQUE ([" + column.DatabaseName + "]) ");
+                        var indexName = $"IX_{table.Name.FlatGuid()}_{column.Name.FlatGuid()}".ToUpper();
+                        sb.AppendLine($"--UNIQUE COLUMN TABLE [{table.DatabaseName}].[{column.DatabaseName}] (NON-PRIMARY KEY)");
+                        sb.AppendLine($"if not exists(select * from sys.indexes where name = '{indexName}')");
+                        sb.AppendLine($"ALTER TABLE [{table.GetPostgresSchema()}].[{table.DatabaseName}] ADD CONSTRAINT [{indexName}] UNIQUE ([{column.DatabaseName}]) ");
                         sb.AppendLine("--GO");
                         sb.AppendLine();
                     }
@@ -212,20 +208,11 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                 if (table.AllowCreateAudit || table.AllowModifiedAudit || table.AllowConcurrencyCheck | table.IsTenant)
                 {
                     if (table.AllowCreateAudit)
-                    {
                         Globals.AppendCreateAudit(table, _model, sb);
-                    }
-
                     if (table.AllowModifiedAudit)
-                    {
                         Globals.AppendModifiedAudit(table, _model, sb);
-                    }
-
                     if (table.AllowConcurrencyCheck)
-                    {
                         Globals.AppendConcurrencyAudit(table, _model, sb);
-                    }
-
                     if (table.IsTenant)
                     {
                         sb.AppendLine($"--APPEND TENANT FIELD FOR TABLE [{table.DatabaseName}]");
@@ -233,12 +220,10 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                         sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" ADD COLUMN IF NOT EXISTS \"{_model.TenantColumnName}\" varchar (128) NOT NULL;");
                         sb.AppendLine();
                     }
-
                     sb.AppendLine("--GO");
                     sb.AppendLine();
                 }
             }
-
             sb.AppendLine("--##SECTION END [AUDIT TRAIL CREATE]");
             sb.AppendLine();
             #endregion
@@ -251,26 +236,15 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
                 if (!table.AllowCreateAudit || !table.AllowModifiedAudit || !table.AllowConcurrencyCheck)
                 {
                     if (!table.AllowCreateAudit)
-                    {
                         Globals.DropCreateAudit(table, _model, sb);
-                    }
-
                     if (!table.AllowModifiedAudit)
-                    {
                         Globals.DropModifiedAudit(table, _model, sb);
-                    }
-
                     if (!table.AllowConcurrencyCheck)
-                    {
                         Globals.DropTimestampAudit(table, _model, sb);
-                    }
-
                     sb.AppendLine("--GO");
                     sb.AppendLine();
                 }
-
             }
-
             sb.AppendLine("--##SECTION END [AUDIT TRAIL REMOVE]");
             sb.AppendLine();
             #endregion

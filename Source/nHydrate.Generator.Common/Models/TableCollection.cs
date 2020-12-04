@@ -34,11 +34,7 @@ namespace nHydrate.Generator.Common.Models
                 }
 
                 //Perform actual remove
-                foreach (var r in delRefList)
-                {
-                    ((ModelRoot)this.Root).Database.Relations.Remove((Relation)r.Object);
-                }
-
+                delRefList.ForEach(r => this.GetRoot().Database.Relations.Remove((Relation)r.Object));
             }
 
             //Remove relationships from tables that do not belong there
@@ -58,11 +54,7 @@ namespace nHydrate.Generator.Common.Models
                 }
 
                 //Perform actual remove
-                foreach (var r in delRefList)
-                {
-                    ((ModelRoot)this.Root).Database.Relations.Remove((Relation)r.Object);
-                }
-
+                delRefList.ForEach(r => this.GetRoot().Database.Relations.Remove((Relation)r.Object));
             }
 
             return node;
@@ -74,10 +66,10 @@ namespace nHydrate.Generator.Common.Models
 
         public void Remove(int tableId)
         {
-            var table = this.GetById(tableId)[0];
+            var table = this.GetById(tableId).FirstOrDefault();
 
-            var deleteList = new ArrayList();
-            foreach (Relation relation in ((ModelRoot)this.Root).Database.Relations)
+            var deleteList = new List<Relation>();
+            foreach (Relation relation in this.GetRoot().Database.Relations)
             {
                 if (relation.ParentTable == null || relation.ChildTable == null)
                     deleteList.Add(relation);
@@ -85,16 +77,16 @@ namespace nHydrate.Generator.Common.Models
                     deleteList.Add(relation);
             }
 
-            foreach (Relation relation in deleteList)
-                ((ModelRoot)this.Root).Database.Relations.Remove(relation);
+            foreach (var relation in deleteList)
+                this.GetRoot().Database.Relations.Remove(relation);
 
             //Remove actual columns
             for (var ii = table.Columns.Count - 1; ii >= 0; ii--)
             {
                 var id = ((Column)table.Columns[0].Object).Id;
-                var c = ((ModelRoot)this.Root).Database.Columns.FirstOrDefault(x => x.Id == id);
+                var c = this.GetRoot().Database.Columns.FirstOrDefault(x => x.Id == id);
                 if (c != null)
-                    ((ModelRoot)this.Root).Database.Columns.Remove(c);
+                    this.GetRoot().Database.Columns.Remove(c);
             }
 
             //Remove column references

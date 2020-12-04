@@ -310,12 +310,10 @@ namespace nHydrate.Generator.SQLInstaller
                                 sb.AppendLine();
                             }
 
-                            var tableName = Globals.GetTableDatabaseName(modelNew, newT);
-                            var pkName = "PK_" + tableName;
-                            pkName = pkName.ToUpper();
-                            sb.AppendLine($"----DROP PRIMARY KEY FOR TABLE [{tableName}]");
+                            var pkName = $"PK_{newT.DatabaseName}".ToUpper();
+                            sb.AppendLine($"----DROP PRIMARY KEY FOR TABLE [{newT.DatabaseName}]");
                             sb.AppendLine($"--if exists(select * from sys.objects where name = '{pkName}' and type = 'PK' and type_desc = 'PRIMARY_KEY_CONSTRAINT')");
-                            sb.AppendLine($"--ALTER TABLE [{newT.GetSQLSchema()}].[{tableName}] DROP CONSTRAINT [{pkName}]");
+                            sb.AppendLine($"--ALTER TABLE [{newT.GetSQLSchema()}].[{newT.DatabaseName}] DROP CONSTRAINT [{pkName}]");
                             sb.AppendLine("--GO");
 
                             var sql = SQLEmit.GetSqlCreatePK(newT) + "GO\r\n";

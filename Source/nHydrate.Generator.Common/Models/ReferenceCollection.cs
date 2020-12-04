@@ -5,19 +5,12 @@ namespace nHydrate.Generator.Common.Models
 {
     public class ReferenceCollection : BaseModelCollection<Reference>
     {
-        #region Member Variables
-
-        protected List<Reference> _references = null;
+        protected List<Reference> _references = new List<Reference>();
         protected ReferenceType _refType = ReferenceType.Table;
-
-        #endregion
-
-        #region Constructor
 
         public ReferenceCollection(INHydrateModelObject root)
             : base(root)
         {
-            _references = new List<Reference>();
         }
 
         public ReferenceCollection(INHydrateModelObject root, INHydrateModelObject parent, ReferenceType refType)
@@ -27,13 +20,7 @@ namespace nHydrate.Generator.Common.Models
             _refType = refType;
         }
 
-        #endregion
-
-        #region Property Implementations
-
         public INHydrateModelObject Parent { get; } = null;
-
-        #endregion
 
         protected override string NodeName => "f";
     }

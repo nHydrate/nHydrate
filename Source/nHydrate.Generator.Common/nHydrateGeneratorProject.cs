@@ -17,17 +17,13 @@ namespace nHydrate.Generator.Common
 
         public XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
-            var ModelRootNode = oDoc.CreateElement("ModelRoot");
-            this.Model.XmlAppend(ModelRootNode);
-            node.AppendChild(ModelRootNode);
+            node.AppendChild(this.Model.XmlAppend(node.CreateElement("ModelRoot")));
             return node;
         }
 
         public XmlNode XmlLoad(XmlNode node)
         {
-            var ModelRootNode = node.SelectSingleNode("ModelRoot");
-            this.Model.XmlLoad(ModelRootNode);
+            this.Model.XmlLoad(node.SelectSingleNode("ModelRoot"));
             ((ModelRoot)this.Model).CleanUp();
             return node;
         }

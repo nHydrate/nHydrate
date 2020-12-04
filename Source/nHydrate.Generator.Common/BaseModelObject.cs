@@ -53,6 +53,9 @@ namespace nHydrate.Generator.Common
             }
         }
 
+        //Shortcut for casting above
+        public virtual Models.ModelRoot GetRoot() => (Models.ModelRoot)this.Root;
+
         public int Id { get; protected set; }
 
         public void ResetId(int newId) => this.Id = newId;

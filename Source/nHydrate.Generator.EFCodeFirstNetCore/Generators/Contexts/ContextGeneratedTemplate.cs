@@ -222,23 +222,19 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             //Tables
             foreach (var item in _model.Database.Tables.Where(x => !x.AssociativeTable && !x.IsEnumOnly()).OrderBy(x => x.PascalName))
             {
-                string schema = null;
-                if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
-                if (string.IsNullOrEmpty(schema))
+                if (item.DBSchema.IsEmpty())
                     sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{item.PascalName}>().ToTable(\"{item.DatabaseName}\");");
                 else
-                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{item.PascalName}>().ToTable(\"{item.DatabaseName}\", \"{schema}\");");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{item.PascalName}>().ToTable(\"{item.DatabaseName}\", \"{item.DBSchema}\");");
             }
 
             //Views
             foreach (var item in _model.Database.CustomViews.OrderBy(x => x.DatabaseName))
             {
-                string schema = null;
-                if (!string.IsNullOrEmpty(item.DBSchema)) schema = item.DBSchema;
-                if (string.IsNullOrEmpty(schema))
+                if (item.DBSchema.IsEmpty())
                     sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{item.PascalName}>().ToTable(\"{item.DatabaseName}\");");
                 else
-                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{item.PascalName}>().ToTable(\"{item.DatabaseName}\", \"{schema}\");");
+                    sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{item.PascalName}>().ToTable(\"{item.DatabaseName}\", \"{item.DBSchema}\");");
             }
 
             sb.AppendLine("			#endregion");
@@ -258,18 +254,14 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 foreach (var column in table.GetColumns().OrderBy(x => x.Name))
                 {
                     #region Determine if this is a type table Value field and if so ignore
-
                     {
-                        Table typeTable = null;
                         if (table.IsColumnRelatedToTypeTable(column, out string pascalRoleName) || (column.PrimaryKey && table.IsTypedTable()))
                         {
-                            typeTable = table.GetRelatedTypeTableByColumn(column, out pascalRoleName);
-                            if (typeTable == null) typeTable = table;
+                            var typeTable = table.GetRelatedTypeTableByColumn(column, out pascalRoleName) ?? table;
                             if (typeTable != null)
                                 sb.AppendLine($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>().Ignore(d => d.{pascalRoleName}{typeTable.PascalName}Value);");
                         }
                     }
-
                     #endregion
 
                     //If the column is not a PK then process it
@@ -278,10 +270,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                         sb.Append($"			modelBuilder.Entity<{this.GetLocalNamespace()}.Entity.{table.PascalName}>()");
                         sb.Append($".Property(d => d.{column.PascalName})");
 
-                        if (column.AllowNull)
-                            sb.Append(".IsRequired(false)");
-                        else
-                            sb.Append(".IsRequired(true)");
+                        if (column.AllowNull) sb.Append(".IsRequired(false)");
+                        else sb.Append(".IsRequired(true)");
 
                         //Add the auto-gen value UNLESS it is a type table
                         if (!table.IsTypedTable() && column.IdentityDatabase() && column.DataType.IsIntegerType())

@@ -63,11 +63,10 @@ namespace nHydrate.Generator.Common
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
             node.AddAttribute("key", this.Key, Guid.Empty.ToString());
             foreach (var item in _internalList)
             {
-                var newNode = oDoc.CreateElement(this.NodeName);
+                var newNode = node.CreateElement(this.NodeName);
                 item.XmlAppend(newNode);
                 node.AppendChild(newNode);
             }
@@ -76,6 +75,7 @@ namespace nHydrate.Generator.Common
 
         public override XmlNode XmlLoad(XmlNode node)
         {
+            if (node == null) return node;
             this.Key = node.GetAttributeValue("key", Guid.Empty.ToString());
             var nList = node.SelectNodes(this.NodeName);
             foreach (XmlNode n in nList)

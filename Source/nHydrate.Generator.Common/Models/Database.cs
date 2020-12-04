@@ -110,42 +110,26 @@ namespace nHydrate.Generator.Common.Models
 
         public override XmlNode XmlAppend(XmlNode node)
         {
-            var oDoc = node.OwnerDocument;
-
             //node.AddAttribute("key", this.Key);
-
-            XmlHelper.AddAttribute((XmlElement)node, "createdByColumnName", CreatedByColumnName);
-            XmlHelper.AddAttribute((XmlElement)node, "createdDateColumnName", CreatedDateColumnName);
-            XmlHelper.AddAttribute((XmlElement)node, "modifiedByColumnName", ModifiedByColumnName);
-            XmlHelper.AddAttribute((XmlElement)node, "modifiedDateColumnName", ModifiedDateColumnName);
-            XmlHelper.AddAttribute((XmlElement)node, "timestampColumnName", ConcurrencyCheckColumnName);
-            XmlHelper.AddAttribute((XmlElement)node, "fullIndexSearchColumnName", FullIndexSearchColumnName);
-            XmlHelper.AddAttribute((XmlElement)node, "grantExecUser", GrantExecUser);
-
-            node.AppendChild(Columns.XmlAppend(oDoc.CreateElement("columns")));
-
-            var customViewColumnsNode = oDoc.CreateElement("customviewcolumns");
-            this.CustomViewColumns.XmlAppend(customViewColumnsNode);
-            node.AppendChild(customViewColumnsNode);
-
-            var relationsNode = oDoc.CreateElement("relations");
-            this.Relations.XmlAppend(relationsNode);
-            node.AppendChild(relationsNode);
-
+            node.AddAttribute("createdByColumnName", CreatedByColumnName);
+            node.AddAttribute("createdDateColumnName", CreatedDateColumnName);
+            node.AddAttribute("modifiedByColumnName", ModifiedByColumnName);
+            node.AddAttribute("modifiedDateColumnName", ModifiedDateColumnName);
+            node.AddAttribute("timestampColumnName", ConcurrencyCheckColumnName);
+            node.AddAttribute("fullIndexSearchColumnName", FullIndexSearchColumnName);
+            node.AddAttribute("grantExecUser", GrantExecUser);
             node.AddAttribute("databaseName", this.DatabaseName);
 
-            var tablesNode = oDoc.CreateElement("tables");
-            this.Tables.XmlAppend(tablesNode);
-            node.AppendChild(tablesNode);
-
-            var customViewsNode = oDoc.CreateElement("customviews");
-            this.CustomViews.XmlAppend(customViewsNode);
-            node.AppendChild(customViewsNode);
+            node.AppendChild(this.Columns.XmlAppend(node.CreateElement("columns")));
+            node.AppendChild(this.CustomViewColumns.XmlAppend(node.CreateElement("customviewcolumns")));
+            node.AppendChild(this.Relations.XmlAppend(node.CreateElement("relations")));
+            node.AppendChild(this.Tables.XmlAppend(node.CreateElement("tables")));
+            node.AppendChild(this.CustomViews.XmlAppend(node.CreateElement("customviews")));
             
             return node;
         }
 
-        public override string Key { get => "00000000-0000-0000-0000-000000000000"; }
+        public override string Key { get => System.Guid.Empty.ToString(); }
 
         public override XmlNode XmlLoad(XmlNode node)
         {
@@ -168,9 +152,7 @@ namespace nHydrate.Generator.Common.Models
             foreach (Table t in this.Tables)
             {
                 foreach (var c in t.Columns.Where(x => x.Object == null).ToList())
-                {
                     t.Columns.Remove(c);
-                }
             }
 
             this.DatabaseName = node.GetAttributeValue("databaseName", string.Empty);
@@ -184,42 +166,25 @@ namespace nHydrate.Generator.Common.Models
 
             #region Are any of these columns orphans
 
-            var deleteColumnList = new List<Column>();
-            var index = 0;
             var allColumns = this.Tables.GetAllColumns();
-            foreach (Column column in this.Columns)
-            {
-                if (!allColumns.Contains(column))
-                {
-                    index++;
-                    deleteColumnList.Add(column);
-                    System.Diagnostics.Debug.Write("");
-                }
-            }
-
-            deleteColumnList.ForEach(x => this.Columns.Remove(x));
+            this.Columns
+                .Where(x => !allColumns.Contains(x))
+                .ToList()
+                .ForEach(x => this.Columns.Remove(x));
 
             #endregion
 
             #region Error Check for columns with duplicate Keys (if someone manually edits XML file)
-
             var usedList = new List<string>();
-            var removeList = new List<Column>();
             foreach (Column column in this.Columns)
             {
                 if (usedList.Contains(column.Key.ToString()))
-                {
                     column.ResetKey(Guid.NewGuid().ToString());
-                }
                 usedList.Add(column.Key.ToString());
             }
-
-            removeList.ForEach(x => this.Columns.Remove(x));
-
             #endregion
 
             #region Clean relations in case there are dead ones
-
             var deleteRelationList = new List<Relation>();
             foreach (var relation in this.Relations.AsEnumerable())
             {
@@ -239,10 +204,8 @@ namespace nHydrate.Generator.Common.Models
                     }
                 }
             }
-
             //Now do the actual deletes
             deleteRelationList.ForEach(x => this.Relations.Remove(x));
-
             #endregion
 
             foreach (Table table in this.Tables)
