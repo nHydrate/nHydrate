@@ -1400,15 +1400,23 @@ namespace nHydrate.Generator.PostgresInstaller
 
         public static string GetSqlRenameColumn(Column oldColumn, Column newColumn)
         {
-            return GetSqlRenameColumn(newColumn.ParentTable, oldColumn.DatabaseName, newColumn.DatabaseName);
+            return GetSqlRenameColumn(newColumn.ParentTable, oldColumn.DatabaseName, newColumn.DatabaseName, oldColumn.ComputedColumn);
         }
 
-        public static string GetSqlRenameColumn(Table table, string oldColumn, string newColumn)
+        public static string GetSqlRenameColumn(Table table, string oldColumn, string newColumn, bool isComputed = false)
         {
-            //RENAME COLUMN
             var sb = new StringBuilder();
-            sb.AppendLine($"--RENAME COLUMN '{table.DatabaseName}.{oldColumn}'");
-            sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" RENAME \"{oldColumn}\" TO \"{newColumn}\";");
+            if (isComputed)
+            {
+                sb.AppendLine($"--RENAME COLUMN '{table.DatabaseName}.{oldColumn}'");
+                sb.AppendLine($"--NOTE: The column '{table.DatabaseName}.{oldColumn}' needs to be renamed to '{table.DatabaseName}.{newColumn}' manually.");
+            }
+            else
+            {
+                //RENAME COLUMN
+                sb.AppendLine($"--RENAME COLUMN '{table.DatabaseName}.{oldColumn}'");
+                sb.AppendLine($"ALTER TABLE {table.GetPostgresSchema()}.\"{table.DatabaseName}\" RENAME \"{oldColumn}\" TO \"{newColumn}\";");
+            }
             return sb.ToString();
         }
 
