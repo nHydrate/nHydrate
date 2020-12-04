@@ -161,6 +161,13 @@ namespace nHydrate.ModelManagement
             if (modelName.EndsWith(".yaml"))
                 modelFolder = rootFolder;
 
+            //If this is a new visual modeler file then create the folder to hold all files
+            if (modelFolder.EndsWith(".model") && !Directory.Exists(modelFolder))
+            {
+                Directory.CreateDirectory(modelFolder);
+                System.Threading.Thread.Sleep(500);
+            }
+
             //If the model file is empty and folder has 1 file
             if (fi.Length == 0 && Directory.EnumerateFileSystemEntries(modelFolder).Count() == 1)
             {

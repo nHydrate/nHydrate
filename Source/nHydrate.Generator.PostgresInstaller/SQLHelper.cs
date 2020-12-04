@@ -748,7 +748,7 @@ namespace nHydrate.Generator.PostgresInstaller
             //Make sure that the index name is the same each time
             var columnList = GetIndexColumns(table, index);
             var prefix = (index.PrimaryKey ? "PK" : "IDX");
-            var indexName = prefix + "_" + table.Name.FlatGuid() + "_" + string.Join("_", columnList.Select(x => x.Value.Name));
+            var indexName = $"{prefix}_{table.Name.FlatGuid()}_{string.Join("_", columnList.Select(x => x.Value.Name))}";
             indexName = indexName.ToUpper();
             return indexName;
         }

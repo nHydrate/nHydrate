@@ -1207,8 +1207,7 @@ namespace nHydrate.Core.SQLGeneration
             //Make sure that the index name is the same each time
             var columnList = GetIndexColumns(table, index);
             var prefix = (index.PrimaryKey ? "PK" : "IDX");
-            var indexName = prefix + "_" + table.Name.FlatGuid() + "_" +
-                            string.Join("_", columnList.Select(x => x.Value.Name));
+            var indexName = $"{prefix}_{table.Name.FlatGuid()}_{string.Join("_", columnList.Select(x => x.Value.Name))}";
             indexName = indexName.ToUpper();
             return indexName;
         }
@@ -1312,28 +1311,21 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetSqlCreatePK(Table table)
         {
-            try
+            var sb = new StringBuilder();
+            var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
+            if (tableIndex != null)
             {
-                var sb = new StringBuilder();
-                var tableIndex = table.TableIndexList.FirstOrDefault(x => x.PrimaryKey);
-                if (tableIndex != null)
-                {
-                    var indexName = $"PK_{table.DatabaseName.ToUpper()}";
-                    sb.AppendLine($"--PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
-                    sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'PK')");
-                    sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] WITH NOCHECK ADD ");
-                    sb.AppendLine($"CONSTRAINT [{indexName}] PRIMARY KEY {tableIndex.GetDbClustered()}");
-                    sb.AppendLine("(");
-                    sb.AppendLine("\t" + Globals.GetSQLIndexField(table, tableIndex));
-                    sb.Append(")");
-                    sb.AppendLine();
-                }
-                return sb.ToString();
+                var indexName = $"PK_{table.DatabaseName.ToUpper()}";
+                sb.AppendLine($"--PRIMARY KEY FOR TABLE [{table.DatabaseName}]");
+                sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'PK')");
+                sb.AppendLine($"ALTER TABLE [{table.GetSQLSchema()}].[{table.DatabaseName}] WITH NOCHECK ADD ");
+                sb.AppendLine($"CONSTRAINT [{indexName}] PRIMARY KEY {tableIndex.GetDbClustered()}");
+                sb.AppendLine("(");
+                sb.AppendLine("\t" + Globals.GetSQLIndexField(table, tableIndex));
+                sb.Append(")");
+                sb.AppendLine();
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return sb.ToString();
         }
 
         public static string GetSqlDropPK(Table table)
@@ -1352,26 +1344,21 @@ namespace nHydrate.Core.SQLGeneration
         {
             var indexName = nHydrate.Core.SQLGeneration.SQLEmit.CreateFkName(relation).ToUpper();
             var targetTable = relation.ChildTable;
-
             var sb = new StringBuilder();
-            sb.AppendLine(
-                $"--REMOVE FOREIGN KEY [{relation.ParentTable.DatabaseName}->{relation.ChildTable.DatabaseName}]");
+            sb.AppendLine($"--REMOVE FOREIGN KEY [{relation.ParentTable.DatabaseName}->{relation.ChildTable.DatabaseName}]");
             sb.AppendLine($"if exists(select * from sys.objects where name = '{indexName}' and type = 'F')");
-            sb.AppendLine(
-                $"ALTER TABLE [{targetTable.GetSQLSchema()}].[{targetTable.DatabaseName}] DROP CONSTRAINT [{indexName}]");
+            sb.AppendLine($"ALTER TABLE [{targetTable.GetSQLSchema()}].[{targetTable.DatabaseName}] DROP CONSTRAINT [{indexName}]");
             return sb.ToString();
         }
 
         public static string GetSqlAddFK(Relation relation)
         {
-            var indexName = nHydrate.Core.SQLGeneration.SQLEmit.CreateFkName(relation);
-            indexName = indexName.ToUpper();
+            var indexName = nHydrate.Core.SQLGeneration.SQLEmit.CreateFkName(relation).ToUpper();
             var childTable = relation.ChildTable;
             var parentTable = relation.ParentTable;
 
             var sb = new StringBuilder();
-            if ((parentTable.TypedTable != TypedTableConstants.EnumOnly) &&
-                (childTable.TypedTable != TypedTableConstants.EnumOnly))
+            if (parentTable.TypedTable != TypedTableConstants.EnumOnly && childTable.TypedTable != TypedTableConstants.EnumOnly)
             {
                 sb.AppendLine($"--FOREIGN KEY RELATIONSHIP [{parentTable.DatabaseName}] -> [{childTable.DatabaseName}] ({GetFieldNames(relation)})");
                 sb.AppendLine($"if not exists(select * from sys.objects where name = '{indexName}' and type = 'F')");
