@@ -411,21 +411,29 @@ namespace nHydrate.Core.SQLGeneration
 
         public static string GetSqlRenameColumn(Column oldColumn, Column newColumn)
         {
-            return GetSqlRenameColumn(newColumn.ParentTable, oldColumn.DatabaseName, newColumn.DatabaseName);
+            return GetSqlRenameColumn(newColumn.ParentTable, oldColumn.DatabaseName, newColumn.DatabaseName, oldColumn.ComputedColumn);
         }
 
-        public static string GetSqlRenameColumn(Table table, string oldColumn, string newColumn)
+        public static string GetSqlRenameColumn(Table table, string oldColumn, string newColumn, bool isComputed = false)
         {
-            //RENAME COLUMN
             var sb = new StringBuilder();
-            sb.AppendLine($"--RENAME COLUMN '{table.DatabaseName}.{oldColumn}'");
-            sb.AppendLine($"if exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where c.name = '{oldColumn}' and t.name = '{table.DatabaseName}' and s.name = '{table.GetSQLSchema()}')");
-            if (!StringHelper.Match(oldColumn, newColumn, true))
+            if (isComputed)
             {
-                sb.AppendLine($"\t\tAND not exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where c.name = '{newColumn}' and t.name = '{table.DatabaseName}' and s.name = '{table.GetSQLSchema()}')");
+                sb.AppendLine($"--RENAME COLUMN '{table.DatabaseName}.{oldColumn}'");
+                sb.AppendLine($"--NOTE: The column '{table.DatabaseName}.{oldColumn}' needs to be renamed to '{table.DatabaseName}.{newColumn}' manually.");
             }
+            else
+            {
+                //RENAME COLUMN
+                sb.AppendLine($"--RENAME COLUMN '{table.DatabaseName}.{oldColumn}'");
+                sb.AppendLine($"if exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where c.name = '{oldColumn}' and t.name = '{table.DatabaseName}' and s.name = '{table.GetSQLSchema()}')");
+                if (!StringHelper.Match(oldColumn, newColumn, true))
+                {
+                    sb.AppendLine($"\t\tAND not exists (select * from sys.columns c inner join sys.tables t on c.object_id = t.object_id inner join sys.schemas s on t.schema_id = s.schema_id where c.name = '{newColumn}' and t.name = '{table.DatabaseName}' and s.name = '{table.GetSQLSchema()}')");
+                }
 
-            sb.AppendLine($"EXEC sp_rename @objname = '[{table.GetSQLSchema()}].[{table.DatabaseName}].[{oldColumn}]', @newname = '{newColumn}', @objtype = 'COLUMN';");
+                sb.AppendLine($"EXEC sp_rename @objname = '[{table.GetSQLSchema()}].[{table.DatabaseName}].[{oldColumn}]', @newname = '{newColumn}', @objtype = 'COLUMN';");
+            }
             return sb.ToString();
         }
 
