@@ -632,7 +632,7 @@ namespace nHydrate.Core.SQLGeneration
 
             //If old column was Identity and it has been removed then remove it
             if (newColumn.Identity == IdentityTypeConstants.None &&
-                oldColumn.Identity == IdentityTypeConstants.Database)
+                oldColumn.IdentityDatabase())
             {
                 //Check PK
                 if (oldColumn.PrimaryKey)
@@ -672,7 +672,7 @@ namespace nHydrate.Core.SQLGeneration
                     sb.AppendLine();
                 }
             }
-            else if (newColumn.Identity == IdentityTypeConstants.Database &&
+            else if (newColumn.IdentityDatabase() &&
                      oldColumn.Identity == IdentityTypeConstants.None)
             {
                 //sb.AppendLine("--ADD SCRIPT HERE TO CONVERT [" + newTable.DatabaseName + "].[" + newColumn.DatabaseName + "] TO IDENTITY COLUMN");                //Check PK
@@ -871,7 +871,7 @@ namespace nHydrate.Core.SQLGeneration
             {
                 var isIdentity = false;
                 foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
-                    isIdentity |= (column.Identity == IdentityTypeConstants.Database);
+                    isIdentity |= (column.IdentityDatabase());
 
                 sb.AppendLine("--INSERT STATIC DATA FOR TABLE [" + Globals.GetTableDatabaseName(model, table) +
                               "]");
@@ -1431,7 +1431,7 @@ namespace nHydrate.Core.SQLGeneration
                 //}
 
                 //Add Identity
-                if (allowIdentity && (column.Identity == IdentityTypeConstants.Database))
+                if (allowIdentity && column.IdentityDatabase())
                 {
                     if (column.DataType == SqlDbType.UniqueIdentifier)
                         sb.Append(" DEFAULT newid()");
@@ -1500,7 +1500,7 @@ namespace nHydrate.Core.SQLGeneration
                     defaultValue.ToLower() == "newid()" ||
                     defaultValue.ToLower() == "newsequentialid" ||
                     defaultValue.ToLower() == "newsequentialid()" ||
-                    column.Identity == IdentityTypeConstants.Database)
+                    column.IdentityDatabase())
                 {
                     tempBuilder.Append(GetDefaultValue(defaultValue));
                 }

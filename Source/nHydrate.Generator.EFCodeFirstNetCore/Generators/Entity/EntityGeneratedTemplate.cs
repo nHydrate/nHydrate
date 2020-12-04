@@ -386,7 +386,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 if (column.Obsolete)
                     sb.AppendLine("		[System.Obsolete()]");
 
-                //if (column.Identity == IdentityTypeConstants.Database)
+                //if (column.IdentityDatabase())
                 //    sb.AppendLine("		[System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]");
 
                 //if (column.IsTextType && column.DataType != System.Data.SqlDbType.Xml && column.Length > 0)
@@ -408,7 +408,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                     propertySetterScope = "protected internal ";
                     typeTableAttr = "[StaticDataNameField]";
                 }
-                else if (column.Identity == IdentityTypeConstants.Database)
+                else if (column.IdentityDatabase())
                     propertySetterScope = "protected internal ";
                 else if (column.IsReadOnly)
                     propertySetterScope = "protected internal ";

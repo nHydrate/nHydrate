@@ -551,7 +551,7 @@ namespace nHydrate.Generator.PostgresInstaller
                     sb.Append(" COLLATE case_insensitive");
 
                 //Add Identity
-                if (allowIdentity && (column.Identity == IdentityTypeConstants.Database))
+                if (allowIdentity && (column.IdentityDatabase()))
                 {
                     if (column.DataType == SqlDbType.UniqueIdentifier)
                         sb.Append(" DEFAULT uuid_generate_v4()");
@@ -642,7 +642,7 @@ namespace nHydrate.Generator.PostgresInstaller
                     defaultValue.ToLower() == "newid()" ||
                     defaultValue.ToLower() == "newsequentialid" ||
                     defaultValue.ToLower() == "newsequentialid()" ||
-                    column.Identity == IdentityTypeConstants.Database)
+                    column.IdentityDatabase())
                 {
                     tempBuilder.Append(GetDefaultValue(defaultValue));
                 }
@@ -935,7 +935,7 @@ namespace nHydrate.Generator.PostgresInstaller
             {
                 var isIdentity = false;
                 foreach (var column in table.PrimaryKeyColumns.OrderBy(x => x.Name))
-                    isIdentity |= (column.Identity == IdentityTypeConstants.Database);
+                    isIdentity |= (column.IdentityDatabase());
 
                 sb.AppendLine($"--INSERT STATIC DATA FOR TABLE [{Globals.GetTableDatabaseName(model, table)}]");
 
@@ -1730,7 +1730,7 @@ namespace nHydrate.Generator.PostgresInstaller
             #region Change Identity
 
             //If old column was Identity and it has been removed then remove it
-            //if (newColumn.Identity == IdentityTypeConstants.None && oldColumn.Identity == IdentityTypeConstants.Database)
+            //if (newColumn.Identity == IdentityTypeConstants.None && oldColumn.IdentityDatabase())
             //{
             //    //Check PK
             //    if (oldColumn.PrimaryKey)
@@ -1768,7 +1768,7 @@ namespace nHydrate.Generator.PostgresInstaller
             //        sb.AppendLine();
             //    }
             //}
-            //else if (newColumn.Identity == IdentityTypeConstants.Database && oldColumn.Identity == IdentityTypeConstants.None)
+            //else if (newColumn.IdentityDatabase() && oldColumn.Identity == IdentityTypeConstants.None)
             //{
             //    //sb.AppendLine("--ADD SCRIPT HERE TO CONVERT [" + newTable.DatabaseName + "].[" + newColumn.DatabaseName + "] TO IDENTITY COLUMN");                //Check PK
 

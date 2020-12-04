@@ -284,7 +284,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                             sb.Append(".IsRequired(true)");
 
                         //Add the auto-gen value UNLESS it is a type table
-                        if (!table.IsTypedTable() && column.Identity == IdentityTypeConstants.Database && column.DataType.IsIntegerType())
+                        if (!table.IsTypedTable() && column.IdentityDatabase() && column.DataType.IsIntegerType())
                             sb.Append(".ValueGeneratedOnAdd()");
 
                         if (column.DataType.IsTextType() && column.Length > 0 && column.DataType != System.Data.SqlDbType.Xml)
