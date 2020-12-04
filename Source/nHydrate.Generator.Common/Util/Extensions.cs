@@ -475,7 +475,7 @@ namespace nHydrate.Generator.Common.Util
 
         public static string NormalizeLineEndings(this string str) => str?.Replace("\r\n", "\n").Replace("\r", "\n");
 
-        public static List<string> BreakLines(this string text) => text.NormalizeLineEndings().Split('\n', StringSplitOptions.None).ToList() ?? new List<string>();
+        public static List<string> BreakLines(this string text) => text.NormalizeLineEndings().Split(new char[] { '\n' }, StringSplitOptions.None).ToList() ?? new List<string>();
     }
 
     internal class SystemTypeTypeConverter : IYamlTypeConverter

@@ -631,8 +631,7 @@ namespace nHydrate.Core.SQLGeneration
             #region Change Identity
 
             //If old column was Identity and it has been removed then remove it
-            if (newColumn.IdentityNone() &&
-                oldColumn.IdentityDatabase())
+            if (newColumn.IdentityNone() && oldColumn.IdentityDatabase())
             {
                 //Check PK
                 if (oldColumn.PrimaryKey)
