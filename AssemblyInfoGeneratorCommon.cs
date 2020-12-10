@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyTrademark("Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted under the maximum extent possible under law.")]
 [assembly: NeutralResourcesLanguage("en-US")]
 
-[assembly: AssemblyVersion("7.0.1.240")]
-[assembly: AssemblyFileVersion("7.0.1.240")]
+[assembly: AssemblyVersion("7.1.1.250")]
+[assembly: AssemblyFileVersion("7.1.1.250")]
 
 #endif
