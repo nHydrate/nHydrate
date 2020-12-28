@@ -510,12 +510,7 @@ namespace nHydrate.Generator.PostgresInstaller
             if (useComment)
                 sb.AppendLine($"--ADD COLUMN [{tName}].[{column.DatabaseName}]");
 
-            //Text types need case-insensitive collation
-            var collation = string.Empty;
-            if (column.DataType.IsTextType())
-                collation = " COLLATE case_insensitive";
-
-            sb.AppendLine($"ALTER TABLE {column.ParentTable.GetPostgresSchema()}.\"{tName}\" ADD COLUMN IF NOT EXISTS " + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true) + $"{collation};");
+            sb.AppendLine($"ALTER TABLE {column.ParentTable.GetPostgresSchema()}.\"{tName}\" ADD COLUMN IF NOT EXISTS " + AppendColumnDefinition(column, allowDefault: true, allowIdentity: true) + ";");
 
             return sb.ToString();
         }
@@ -544,10 +539,6 @@ namespace nHydrate.Generator.PostgresInstaller
                 //Add column
                 sb.Append($"\"{column.DatabaseName}\" {column.PostgresDatabaseType()}");
 
-                //Text types need case-insensitive collation
-                if (column.DataType.IsTextType())
-                    sb.Append(" COLLATE case_insensitive");
-
                 //Add Identity
                 if (allowIdentity && (column.IdentityDatabase()))
                 {
@@ -560,6 +551,10 @@ namespace nHydrate.Generator.PostgresInstaller
                 //Add NULLable
                 if (!forceNull && !column.AllowNull) sb.Append(" NOT");
                 sb.Append(" NULL");
+
+                //Text types need case-insensitive collation
+                if (column.DataType.IsTextType())
+                    sb.Append(" COLLATE case_insensitive");
 
                 //Add default value
                 var defaultValue = GetDefaultValueClause(column);
