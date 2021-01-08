@@ -37,7 +37,7 @@ namespace nHydrate.Generator.Common.Logging
         private void SetDefaults()
         {
             _currentSwitch.Level = TraceLevel.Error;
-            var logFileFullPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "nHydrate\\" + _exeName + "nHydrate.log");
+            var logFileFullPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "nHydrate" + Path.DirectorySeparatorChar + _exeName + "nHydrate.log");
             var logFile = new FileInfo(logFileFullPath);
             AddListener("ExeDefaultListener", "System.Diagnostics.DefaultTraceListener", logFile.FullName);
         }

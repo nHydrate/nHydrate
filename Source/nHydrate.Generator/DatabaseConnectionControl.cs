@@ -80,7 +80,7 @@ namespace nHydrate.Generator
 
         private string FileName
         {
-            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"nHydrate\nHydrate.ConnectionDialog.config.xml"); }
+            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"nHydrate{Path.DirectorySeparatorChar}nHydrate.ConnectionDialog.config.xml"); }
         }
 
         public void LoadSettings()

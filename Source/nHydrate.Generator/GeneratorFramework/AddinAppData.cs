@@ -56,7 +56,7 @@ namespace nHydrate.Generator.GeneratorFramework
             }
             catch (Exception ex)
             {
-                throw new Exception("Filename: " + fullFileName, ex);
+                throw new Exception($"Filename: {fullFileName}", ex);
             }
         }
 

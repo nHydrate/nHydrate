@@ -86,7 +86,7 @@ namespace nHydrate.Generator.Util
                 FileInfo newFile = null;
 
                 var fullName = relativePathAndName;
-                fullName = fullName.Replace(@"\\", @"\");
+                fullName = fullName.Replace($"{Path.DirectorySeparatorChar}{Path.DirectorySeparatorChar}", $"{Path.DirectorySeparatorChar}");
                 fileStateInfo.FileName = fullName;
                 newFile = new FileInfo(fullName);
                 if (newFile.Exists && !overwrite)
@@ -143,7 +143,7 @@ namespace nHydrate.Generator.Util
                 {
                     var currentProjectFile = new FileInfo(project.FileName);
                     var fullName = StringHelper.EnsureDirectorySeparatorAtEnd(currentProjectFile.Directory.FullName) + relativePathAndName;
-                    fullName = fullName.Replace(@"\\", @"\");
+                    fullName = fullName.Replace($"{Path.DirectorySeparatorChar}{Path.DirectorySeparatorChar}", $"{Path.DirectorySeparatorChar}");
                     fileStateInfo.FileName = fullName;
                     newFile = new FileInfo(fullName);
 
@@ -386,7 +386,7 @@ namespace nHydrate.Generator.Util
                 {
                     var currentProjectFile = new FileInfo(project.FileName);
                     var fullName = StringHelper.EnsureDirectorySeparatorAtEnd(currentProjectFile.Directory.FullName) + relativePathAndName;
-                    fullName = fullName.Replace(@"\\", @"\");
+                    fullName = fullName.Replace($"{Path.DirectorySeparatorChar}{Path.DirectorySeparatorChar}", $"{Path.DirectorySeparatorChar}");
                     fileStateInfo.FileName = fullName;
                     newFile = new FileInfo(fullName);
                     if (newFile.Exists && !overwrite)
@@ -427,9 +427,9 @@ namespace nHydrate.Generator.Util
             fileStateInfo = new FileStateInfo();
             fileStateInfo.FileState = FileStateConstants.Failed;
             var currentProjectFile = new FileInfo(project.FileName);
-            relativePathAndName = relativePathAndName.TrimStart(new char[] { '\\' });
+            relativePathAndName = relativePathAndName.TrimStart(new char[] { Path.DirectorySeparatorChar });
             var fullName = Path.Combine(currentProjectFile.Directory.FullName, relativePathAndName);
-            fullName = fullName.Replace(@"\\", @"\");
+            fullName = fullName.Replace($"{Path.DirectorySeparatorChar}{Path.DirectorySeparatorChar}", $"{Path.DirectorySeparatorChar}");
             fileStateInfo.FileName = fullName;
             var newFile = new FileInfo(fullName);
             fileStateInfo.FileState = FileStateConstants.Failed;
@@ -475,7 +475,7 @@ namespace nHydrate.Generator.Util
             fileStateInfo = new FileStateInfo();
             var fi = new FileInfo(this.GetFileName(parent));
             var fullName = Path.Combine(fi.DirectoryName, fileName);
-            fullName = fullName.Replace(@"\\", @"\");
+            fullName = fullName.Replace($"{Path.DirectorySeparatorChar}{Path.DirectorySeparatorChar}", $"{Path.DirectorySeparatorChar}");
             fileStateInfo.FileName = fullName;
             var p = parent.ProjectItems.Item(0);
             //var newItem = parent.ProjectItems.AddFromFile(fullName);
@@ -488,10 +488,10 @@ namespace nHydrate.Generator.Util
             var parentFileName = string.Empty;
             if (parentItemType == ProjectItemType.File)
             {
-                var folders = parentRelativeName.Split(new char[] { '\\' });
+                var folders = parentRelativeName.Split(new char[] { Path.DirectorySeparatorChar });
                 for (var ii = 0; ii < folders.Length - 1; ii++)
                 {
-                    relativeFolder = relativeFolder + @"\" + folders[ii];
+                    relativeFolder = relativeFolder + Path.DirectorySeparatorChar + folders[ii];
                 }
                 parentFileName = folders[folders.Length - 1];
             }
@@ -500,7 +500,7 @@ namespace nHydrate.Generator.Util
                 relativeFolder = parentRelativeName;
             }
 
-            if (relativeFolder != string.Empty && relativeFolder != "\\")
+            if (relativeFolder != string.Empty && relativeFolder != $"{Path.DirectorySeparatorChar}")
             {
                 var folder = this.GetProjectItem(GetProject(projectName), relativeFolder);
                 if (parentItemType == ProjectItemType.File)
@@ -695,7 +695,7 @@ namespace nHydrate.Generator.Util
         {
             if (string.IsNullOrEmpty(relativePath)) return null;
 
-            var arr = relativePath.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+            var arr = relativePath.Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
             if (parentFolder == null)
             {
                 var folders = CurrentSolution.GetFolders();
@@ -706,7 +706,7 @@ namespace nHydrate.Generator.Util
                 if (arr.Length == 1)
                     return selected;
                 else
-                    return CreateSolutionFolder(string.Join(@"\", arr.Skip(1).Take(arr.Length - 1)), selected);
+                    return CreateSolutionFolder(string.Join($"{Path.DirectorySeparatorChar}", arr.Skip(1).Take(arr.Length - 1)), selected);
             }
             else
             {
@@ -718,7 +718,7 @@ namespace nHydrate.Generator.Util
                 if (arr.Length == 1)
                     return selected;
                 else
-                    return CreateSolutionFolder(string.Join(@"\", arr.Skip(1).Take(arr.Length - 1)), selected);
+                    return CreateSolutionFolder(string.Join($"{Path.DirectorySeparatorChar}", arr.Skip(1).Take(arr.Length - 1)), selected);
             }
         }
 
@@ -854,8 +854,8 @@ namespace nHydrate.Generator.Util
             {
                 ProjectItem currentProjectItem = null;
                 var currentFolder = string.Empty;
-                projectItemString = projectItemString.TrimStart(new char[] { '\\' });
-                var folders = projectItemString.Split(new char[] { '\\' });
+                projectItemString = projectItemString.TrimStart(new char[] { Path.DirectorySeparatorChar });
+                var folders = projectItemString.Split(new char[] { Path.DirectorySeparatorChar });
                 var folder = folders.FirstOrDefault();
                 if (folder != null)
                 {
@@ -894,10 +894,10 @@ namespace nHydrate.Generator.Util
             var parentFileName = string.Empty;
             if (parentItemType == ProjectItemType.File)
             {
-                var folders = parentRelativeName.Split(new char[] { '\\' });
+                var folders = parentRelativeName.Split(new char[] { Path.DirectorySeparatorChar });
                 for (var ii = 0; ii < folders.Length - 1; ii++)
                 {
-                    relativeFolder = relativeFolder + @"\" + folders[ii];
+                    relativeFolder = relativeFolder + $"{Path.DirectorySeparatorChar}" + folders[ii];
                 }
                 parentFileName = folders[folders.Length - 1];
             }
@@ -905,7 +905,7 @@ namespace nHydrate.Generator.Util
             {
                 relativeFolder = parentRelativeName;
             }
-            if (relativeFolder != string.Empty && relativeFolder != "\\")
+            if (relativeFolder != string.Empty && relativeFolder != $"{Path.DirectorySeparatorChar}")
             {
                 var folder = this.GetProjectItem(GetProject(projectName), relativeFolder, false);
                 if (parentItemType == ProjectItemType.File)

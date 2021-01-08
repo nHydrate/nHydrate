@@ -24,8 +24,8 @@ namespace nHydrate.DslPackage.Forms.Objects
             {
                 var retval = System.Windows.Forms.Application.ExecutablePath;
                 retval = new System.IO.DirectoryInfo(retval).Parent.FullName;
-                if (!retval.EndsWith(@"\"))
-                    retval += @"\";
+                if (!retval.EndsWith($"{System.IO.Path.DirectorySeparatorChar}"))
+                    retval += $"{System.IO.Path.DirectorySeparatorChar}";
                 retval += "options.xml";
                 return retval;
             }
