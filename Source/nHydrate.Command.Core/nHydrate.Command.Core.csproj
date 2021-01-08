@@ -6,6 +6,8 @@
     <AssemblyVersion>7.0.1.240</AssemblyVersion>
     <FileVersion>7.0.1.240</FileVersion>
     <RuntimeIdentifiers>win10-x64;osx.10.12-x64;debian.8-x64</RuntimeIdentifiers>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <ItemGroup>

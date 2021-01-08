@@ -66,9 +66,11 @@ namespace PROJECTNAMESPACE
             //base.Install(stateSaver);
             var commandParams = stateSaver as Dictionary<string, string>;
 
-            foreach (var tt in GetDatabaseActions())
+            foreach (var action in GetDatabaseActions()
+                .Select(x => Activator.CreateInstance(x) as IDatabaseAction)
+                .OrderBy(x => x.SortOrder)
+                .ToList())
             {
-                var action = Activator.CreateInstance(tt) as IDatabaseAction;
                 action.Execute(commandParams);
             }
 
@@ -449,6 +451,7 @@ namespace PROJECTNAMESPACE
     public interface IDatabaseAction
     {
         void Execute(Dictionary<string, string> input);
+        int SortOrder { get; }
     }
 
 }

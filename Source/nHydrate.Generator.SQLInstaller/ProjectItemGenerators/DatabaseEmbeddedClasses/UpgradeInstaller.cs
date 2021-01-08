@@ -57,20 +57,21 @@ namespace PROJECTNAMESPACE
         {
             #region Verify that the database can be opened
 
-            //Try this 10 times and then fail
-            var isError = true;
-            while (isError)
+            //Try this up to 3 times and then fail on bad connection
+            var errorCount = 0;
+            while (errorCount < 3)
             {
                 try
                 {
                     var settings = new nHydrateSetting();
                     settings.Load(setup.ConnectionString);
-                    isError = false;
+                    errorCount = int.MaxValue;
                 }
                 catch (Exception ex)
                 {
+                    //Wait briefly as this might be a network/connection issue
                     System.Threading.Thread.Sleep(500);
-                    isError = true;
+                    errorCount++;
                 }
             }
 
