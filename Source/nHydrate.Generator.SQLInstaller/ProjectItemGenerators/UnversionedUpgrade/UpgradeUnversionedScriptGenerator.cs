@@ -8,7 +8,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.UnversionedUpgra
     {
         #region Class Members
 
-        private const string PARENT_ITEM_NAME = @"1_UserDefinedInitialization\UnVersioned";
+        private readonly string PARENT_ITEM_NAME = $"1_UserDefinedInitialization{System.IO.Path.DirectorySeparatorChar}UnVersioned";
 
         #endregion
 
