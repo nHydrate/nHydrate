@@ -91,8 +91,16 @@ namespace nHydrate.Command.Core
                 }
             }
             paths.AddRange(name.Split(Path.DirectorySeparatorChar));
+
             pathsRelative.AddRange(name.Split(Path.DirectorySeparatorChar));
             var fileName = System.IO.Path.Combine(paths.ToArray());
+
+            //On linux the pasrsing of an absolute path will leave the first element of "paths" as empty string
+            //Prepend file with path separator to signify absolute path
+            if (paths.Any() && paths.FirstOrDefault() == string.Empty && !fileName.StartsWith(Path.DirectorySeparatorChar))
+            {
+                fileName = Path.DirectorySeparatorChar + fileName;
+            }
 
             var fileStateInfo = new Generator.Common.Util.FileStateInfo { FileName = fileName };
             if (!File.Exists(fileName) || e.Overwrite)
