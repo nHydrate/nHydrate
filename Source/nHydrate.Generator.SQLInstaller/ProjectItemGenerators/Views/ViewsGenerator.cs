@@ -8,7 +8,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Views
     [GeneratorItem("SQLStoredProcedureAllViewGenerator", typeof(SqlDatabaseProjectGenerator))]
     public class ViewsGenerator : BaseDbScriptGenerator
     {
-        private string ParentItemPath => @"5_Programmability\Views\Model";
+        private string PARENT_ITEM_NAME => $"5_Programmability{System.IO.Path.DirectorySeparatorChar}Views{System.IO.Path.DirectorySeparatorChar}Model";
 
         public override int FileCount => 1;
 
@@ -23,7 +23,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.Views
             var template = new ViewsTemplate(_model);
             sb.Append(template.FileContent);
 
-            var eventArgs = new ProjectItemGeneratedEventArgs("Views.sql", sb.ToString(), ProjectName, this.ParentItemPath, ProjectItemType.Folder, this, true);
+            var eventArgs = new ProjectItemGeneratedEventArgs("Views.sql", sb.ToString(), ProjectName, this.PARENT_ITEM_NAME, ProjectItemType.Folder, this, true);
             eventArgs.Properties.Add("BuildAction", 3);
             OnProjectItemGenerated(this, eventArgs);
 

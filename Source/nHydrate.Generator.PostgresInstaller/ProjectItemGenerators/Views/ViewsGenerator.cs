@@ -9,7 +9,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Views
     [GeneratorItem("SQLStoredProcedureAllViewGenerator", typeof(PostgresDatabaseProjectGenerator))]
     public class SQLStoredProcedureAllViewGenerator : BaseDbScriptGenerator
     {
-        private string ParentItemPath => @"5_Programmability\Views\Model";
+        private string PARENT_ITEM_NAME => $"5_Programmability{System.IO.Path.DirectorySeparatorChar}Views{System.IO.Path.DirectorySeparatorChar}Model";
 
         public override int FileCount => 1;
 
@@ -27,7 +27,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Views
                 sb.Append(template.FileContent);
             }
 
-            var eventArgs = new ProjectItemGeneratedEventArgs("Views.pgsql", sb.ToString(), ProjectName, this.ParentItemPath, ProjectItemType.Folder, this, true);
+            var eventArgs = new ProjectItemGeneratedEventArgs("Views.pgsql", sb.ToString(), ProjectName, this.PARENT_ITEM_NAME, ProjectItemType.Folder, this, true);
             eventArgs.Properties.Add("BuildAction", 3);
             OnProjectItemGenerated(this, eventArgs);
 
