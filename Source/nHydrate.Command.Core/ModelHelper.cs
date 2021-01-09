@@ -53,7 +53,13 @@ namespace nHydrate.Command.Core
                 
                 if (string.IsNullOrEmpty(version)) root.Version = diskModel.ModelProperties.Version;
                 else root.Version = version;
-                root.ModelToolVersion = modelToolVersion;
+
+                if (!string.IsNullOrEmpty(modelToolVersion))
+                {
+                    var v = new Version(modelToolVersion);
+                    root.ModelToolVersion = new Version(v.Major, v.Minor, v.Build).ToString();
+                }
+
                 root.ResetKey(diskModel.ModelProperties.Id);
                 root.OutputTarget = string.Empty;
                 root.TenantColumnName = diskModel.ModelProperties.TenantColumnName;
