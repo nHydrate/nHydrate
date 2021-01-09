@@ -34,7 +34,7 @@ namespace nHydrate.Generator.SQLInstaller.ProjectItemGenerators.DatabaseCreateRe
             sb.AppendLine();
             foreach (var table in _model.Database.Tables.Where(x => !x.IsEnumOnly()).OrderBy(x => x.Name))
             {
-                foreach (var relation in table.ChildRoleRelations.Where(x => x.Enforce))
+                foreach (var relation in table.ChildRoleRelations.Where(x => x.Enforce).OrderBy(x => x.ParentTable.Name).ThenBy(x => x.ChildTable.Name))
                 {
                     sb.Append(SQLEmit.GetSqlAddFK(relation));
                     sb.AppendLine("GO");

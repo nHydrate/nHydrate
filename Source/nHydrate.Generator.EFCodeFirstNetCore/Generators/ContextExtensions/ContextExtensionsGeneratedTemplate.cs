@@ -251,7 +251,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.ContextExtensions
 
             sb.AppendLine("        #region Many-to-Many Convenience Extensions");
 
-            foreach (var table in _model.Database.Tables.Where(x => x.AssociativeTable))
+            foreach (var table in _model.Database.Tables.Where(x => x.AssociativeTable).OrderBy(x => x.Name))
             {
                 var relations = table.GetRelationsWhereChild().ToList();
                 if (relations.Count == 2)
