@@ -135,7 +135,8 @@ namespace nHydrate.Command.Core
                     var groups = document.DocumentElement.SelectNodes("ItemGroup");
 
                     //Ensure file is not already embedded
-                    if (document.DocumentElement.SelectSingleNode($"ItemGroup/EmbeddedResource[@Include='{includeFile}']") == null)
+                    var checkFile = includeFile.Replace("/", @"\"); //in case linux
+                    if (document.DocumentElement.SelectSingleNode($"ItemGroup/EmbeddedResource[@Include='{checkFile}']") == null)
                     {
                         var whiteSpace = "  ";
                         XmlNode targetGroup = null;
@@ -163,7 +164,7 @@ namespace nHydrate.Command.Core
                         targetGroup.AppendChild(document.CreateSignificantWhitespace(whiteSpace));
                         var node = targetGroup.AppendChild(document.CreateElement("EmbeddedResource"));
                         var attr = node.Attributes.Append(document.CreateAttribute("Include"));
-                        attr.Value = includeFile;
+                        attr.Value = checkFile;
                         targetGroup.AppendChild(document.CreateSignificantWhitespace("\r\n" + whiteSpace));
 
                         document.Save(projectFileName);
