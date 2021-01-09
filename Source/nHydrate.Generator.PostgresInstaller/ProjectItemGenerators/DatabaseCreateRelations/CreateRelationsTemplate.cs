@@ -41,7 +41,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseCre
                 var childRoleRelations = table.ChildRoleRelations;
                 if (childRoleRelations.Count > 0)
                 {
-                    foreach (var relation in childRoleRelations.Where(x => x.Enforce))
+                    foreach (var relation in childRoleRelations.Where(x => x.Enforce).OrderBy(x => x.ParentTable.Name).ThenBy(x => x.ChildTable.Name).ThenBy(x => x.RoleName))
                     {
                         sb.Append(SQLEmit.GetSqlAddFK(relation));
                         sb.AppendLine("--GO");
