@@ -52,6 +52,7 @@ namespace nHydrate.Generator.Common.Models
                 }
                 return _modeToolVersion;
             }
+            set { _modeToolVersion = value; }
         }
 
         public string DefaultNamespace { get; set; } = _def_defaultNamespace;

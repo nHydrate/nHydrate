@@ -28,6 +28,7 @@ namespace nHydrate.Command.Core
 
             //If the nhydrate file has a version then use it.
             var version = string.Empty;
+            var modelToolVersion = string.Empty;
             if (modelFile.EndsWith(".nhydrate"))
             {
                 try
@@ -35,6 +36,7 @@ namespace nHydrate.Command.Core
                     var xmlDoc = new System.Xml.XmlDocument();
                     xmlDoc.Load(modelFile);
                     version = XmlHelper.GetAttributeValue(xmlDoc.DocumentElement, "modelVersion", string.Empty);
+                    modelToolVersion = XmlHelper.GetAttributeValue(xmlDoc.DocumentElement, "dslVersion", string.Empty);
                 }
                 catch { }
             }
@@ -48,8 +50,10 @@ namespace nHydrate.Command.Core
                 root.ProjectName = diskModel.ModelProperties.ProjectName;
                 root.SupportLegacySearchObject = false;
                 root.UseUTCTime = diskModel.ModelProperties.UseUTCTime;
+                
                 if (string.IsNullOrEmpty(version)) root.Version = diskModel.ModelProperties.Version;
                 else root.Version = version;
+                root.ModelToolVersion = modelToolVersion;
                 root.ResetKey(diskModel.ModelProperties.Id);
                 root.OutputTarget = string.Empty;
                 root.TenantColumnName = diskModel.ModelProperties.TenantColumnName;
