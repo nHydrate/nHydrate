@@ -518,8 +518,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             #region Parent Relations
             {
-                var relationList = _item.GetRelations().Where(x => x.IsValidEFRelation);
-                foreach (var relation in relationList)
+                var relationList = _item.GetRelations().Where(x => x.IsValidEFRelation).OrderBy(x => x.ParentTable.Name).ThenBy(x => x.ChildTable.Name);
+                foreach (var relation in relationList.OrderBy(x => x.ParentTable.Name).ThenBy(x => x.ChildTable.Name))
                 {
                     var parentTable = relation.ParentTable;
                     var childTable = relation.ChildTable;
@@ -586,7 +586,7 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
             #region Child Relations
             {
                 var relationList = _item.GetRelationsWhereChild().Where(x => x.IsValidEFRelation).AsEnumerable();
-                foreach (var relation in relationList)
+                foreach (var relation in relationList.OrderBy(x => x.ParentTable.Name).ThenBy(x => x.ChildTable.Name))
                 {
                     var parentTable = relation.ParentTable;
                     var childTable = relation.ChildTable;
