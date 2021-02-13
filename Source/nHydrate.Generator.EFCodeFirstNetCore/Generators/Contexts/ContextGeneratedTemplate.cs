@@ -751,8 +751,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
                 //if (item.AssociativeTable)
                 //    scope = "protected";
 
+                var tenantInfo = item.IsTenant ? " (Tenant Table)" : string.Empty;
                 sb.AppendLine("		/// <summary>");
-                sb.AppendLine($"		/// Entity set for {item.PascalName}");
+                sb.AppendLine($"		/// Entity set for {item.PascalName}{tenantInfo}");
                 sb.AppendLine("		/// </summary>");
                 sb.AppendLine($"		{scope} virtual DbSet<{this.GetLocalNamespace()}.Entity.{item.PascalName}> {name} {GetSetSuffix}");
                 sb.AppendLine();

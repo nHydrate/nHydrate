@@ -553,8 +553,8 @@ namespace nHydrate.Generator.PostgresInstaller
                 sb.Append(" NULL");
 
                 //Text types need case-insensitive collation
-                if (column.DataType.IsTextType())
-                    sb.Append(" COLLATE case_insensitive");
+                //if (column.DataType.IsTextType())
+                //    sb.Append(" COLLATE case_insensitive");
 
                 //Add default value
                 var defaultValue = GetDefaultValueClause(column);
@@ -810,7 +810,8 @@ namespace nHydrate.Generator.PostgresInstaller
             {
                 var defaultName = $"DF__{table.DatabaseName}_{model.Database.CreatedDateColumnName}".ToUpper();
                 sb.AppendLine(",");
-                sb.AppendLine($"\t\"{model.Database.CreatedByColumnName}\" Varchar (50) COLLATE case_insensitive NULL,");
+                //sb.AppendLine($"\t\"{model.Database.CreatedByColumnName}\" Varchar (50) COLLATE case_insensitive NULL,");
+                sb.AppendLine($"\t\"{model.Database.CreatedByColumnName}\" Varchar (50) NULL,");
                 sb.Append($"\t\"{model.Database.CreatedDateColumnName}\" timestamp CONSTRAINT {defaultName} NOT NULL DEFAULT current_timestamp");
             }
         }
@@ -821,7 +822,8 @@ namespace nHydrate.Generator.PostgresInstaller
             {
                 var defaultName = $"DF__{table.DatabaseName}_{model.Database.ModifiedDateColumnName}".ToUpper();
                 sb.AppendLine(",");
-                sb.AppendLine($"\t\"{model.Database.ModifiedByColumnName}\" Varchar (50) COLLATE case_insensitive NULL,");
+                //sb.AppendLine($"\t\"{model.Database.ModifiedByColumnName}\" Varchar (50) COLLATE case_insensitive NULL,");
+                sb.AppendLine($"\t\"{model.Database.ModifiedByColumnName}\" Varchar (50) NULL,");
                 sb.Append($"\t\"{model.Database.ModifiedDateColumnName}\" timestamp CONSTRAINT {defaultName} NOT NULL DEFAULT current_timestamp");
             }
         }

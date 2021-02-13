@@ -78,11 +78,12 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
                 sb.AppendLine();
             }
 
+            var tenantInfo = _item.IsTenant ? " (Tenant Table)" : string.Empty;
             sb.AppendLine("	/// <summary>");
             if (_item.GeneratesDoubleDerived)
                 sb.AppendLine($"	/// The base for the double derived '{_item.PascalName}' entity");
             else
-                sb.AppendLine($"	/// The '{_item.PascalName}' entity");
+                sb.AppendLine($"	/// The '{_item.PascalName}' entity{tenantInfo}");
 
             if (!_item.Description.IsEmpty())
                 sb.AppendLine("	/// " + _item.Description);

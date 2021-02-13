@@ -44,13 +44,13 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.Unversioned
             sb.AppendLine("--Generated on " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             sb.AppendLine();
 
-            sb.AppendLine("--NEEDED FOR CASE-INSENSITIVE COLLATION");
-            sb.AppendLine("CREATE COLLATION case_insensitive(");
-            sb.AppendLine("      provider = icu,");
-            sb.AppendLine("      locale = 'und-u-ks-level2',");
-            sb.AppendLine("      deterministic = false");
-            sb.AppendLine("    );");
-            sb.AppendLine();
+            //sb.AppendLine("--NEEDED FOR CASE-INSENSITIVE COLLATION");
+            //sb.AppendLine("CREATE COLLATION case_insensitive(");
+            //sb.AppendLine("      provider = icu,");
+            //sb.AppendLine("      locale = 'und-u-ks-level2',");
+            //sb.AppendLine("      deterministic = false");
+            //sb.AppendLine("    );");
+            //sb.AppendLine();
 
             sb.AppendLine("--UNCOMMENT TO DROP ALL DEFAULTS IF NEEDED. IF THIS MODEL WAS IMPORTED FROM AN EXISTING DATABASE THE MODEL WILL RECREATE ALL DEFAULTS WITH A GENERATED NAME.");
             sb.AppendLine("--DROP ALL DEFAULTS");

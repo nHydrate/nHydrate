@@ -13,7 +13,6 @@ using System.Linq;
 using System.Collections;
 using System.Data;
 using System.Text;
-using System.Runtime.InteropServices;
 using System.Reflection;
 using System.IO;
 using System.Collections.Generic;
@@ -34,24 +33,6 @@ namespace PROJECTNAMESPACE
         #endregion
 
         #region database discovery
-        [DllImport("odbc32.dll")]
-        private static extern short SQLAllocHandle(short hType, IntPtr inputHandle, out IntPtr outputHandle);
-        [DllImport("odbc32.dll")]
-        private static extern short SQLSetEnvAttr(IntPtr henv, int attribute, IntPtr valuePtr, int strLength);
-        [DllImport("odbc32.dll")]
-        private static extern short SQLFreeHandle(short hType, IntPtr handle);
-        [DllImport("odbc32.dll", CharSet = CharSet.Ansi)]
-        private static extern short SQLBrowseConnect(IntPtr hconn, StringBuilder inString, short inStringLength, StringBuilder outString, short outStringLength, out short outLengthNeeded);
-
-        private const short SQL_HANDLE_ENV = 1;
-        private const short SQL_HANDLE_DBC = 2;
-        private const int SQL_ATTR_ODBC_VERSION = 200;
-        private const int SQL_OV_ODBC3 = 3;
-        private const short SQL_SUCCESS = 0;
-
-        private const short SQL_NEED_DATA = 99;
-        private const short DEFAULT_RESULT_SIZE = 1024;
-        private const string SQL_DRIVER_STR = "DRIVER=SQL SERVER";
 
         private SqlServers()
         {
