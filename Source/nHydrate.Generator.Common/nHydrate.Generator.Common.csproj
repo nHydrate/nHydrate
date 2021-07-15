@@ -298,8 +298,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>mkdir $(SolutionDir)bin
-"%25SystemRoot%25\Microsoft.NET\Framework\v3.5\msbuild" "$(ProjectDir)Build\prebuild.targets.xml" /property:TargetPath=$(TargetExt);TargetPath=$(TargetPath);TargetDir=$(TargetDir);TargetFileName=$(TargetFileName);TargetName=$(TargetName)</PreBuildEvent>
-    <PostBuildEvent>"%25SystemRoot%25\Microsoft.NET\Framework\v3.5\msbuild" "$(ProjectDir)Build\postbuild.targets.xml" /property:TargetPath=$(TargetExt);TargetPath=$(TargetPath);TargetDir=$(TargetDir);TargetFileName=$(TargetFileName);TargetName=$(TargetName)</PostBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)bin</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -624,7 +624,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetPath) $(SolutionDir)bin
-rem copy "$(SolutionDir)bin\*.*" "%25USERPROFILE%25\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\nHydrate.org\nHydrate ORM Modeler\5.3.0.128"
+
 </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>

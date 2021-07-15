@@ -15,7 +15,7 @@ namespace nHydrate.Generator.Common.Models
             this.Version = version;
         }
 
-        public DateTime CreatedDate { get; private set; }
+        public DateTime CreatedDate { get; private set; } = DateTime.UtcNow;
 
         public string Version { get; private set; }
 

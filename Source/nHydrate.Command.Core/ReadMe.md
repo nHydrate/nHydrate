@@ -7,7 +7,7 @@ Open the "tasks.json" file in your workspace ".vscode" folder. Add this snippets
       "label": "BuildModel",
       "type": "shell",
       "detail" :"BuildModel",
-      "command": "FOLDER\\nHydrate.Command.Core.exe",
+      "command": "FOLDER/nHydrate.Command.Core.exe",
       "args": ["--formatmodel=\"true\"", "--model=\"${file}\"", "--output=\"${fileDirname}\""]
     }
 

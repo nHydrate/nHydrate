@@ -34,6 +34,7 @@ namespace nHydrate.Generator.PostgresInstaller.ProjectItemGenerators.DatabaseSch
             sb.AppendLine("--Data Schema");
             sb.AppendLine();
             sb.AppendLine("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";");
+            sb.AppendLine("CREATE EXTENSION IF NOT EXISTS citext;");
             sb.AppendLine("--GO");
             sb.AppendLine();
 

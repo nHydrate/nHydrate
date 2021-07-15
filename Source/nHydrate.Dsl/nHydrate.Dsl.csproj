@@ -418,8 +418,7 @@
     <StartArguments>/rootsuffix Exp "..\..\..\Debugging\Debugging.sln"</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)bin
-rem copy $(ProjectDir)bin\Debug\GeneratedCode\nHydrateSchema.xsd $(SolutionDir)build</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)bin</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\entity.png" />
