@@ -1906,12 +1906,12 @@ namespace nHydrate.Generator.PostgresInstaller
                     var primaryKeyColumnNames = newT.PrimaryKeyColumns.Select(x => x.Name);
                     foreach (var kvp in fieldValues)
                     {
-                        fieldList.Add("\"" + kvp.Key + "\"");
+                        fieldList.Add($"\"{kvp.Key}\"");
                         valueList.Add(kvp.Value);
 
                         if (!primaryKeyColumnNames.Contains(kvp.Key))
                         {
-                            updateSetList.Add(kvp.Key + " = " + kvp.Value);
+                            updateSetList.Add($"\"{kvp.Key}\" = {kvp.Value}");
                         }
                     }
 
@@ -1924,13 +1924,13 @@ namespace nHydrate.Generator.PostgresInstaller
                     foreach (var column in newT.PrimaryKeyColumns.OrderBy(x => x.Name))
                     {
                         var pkData = rowEntry.CellEntries[column.Name].GetSQLData();
-                        pkWhereSb.Append("(\"" + column.DatabaseName + "\" = " + pkData + ")");
+                        pkWhereSb.Append($"(\"{column.DatabaseName}\" = {pkData})");
                         if (ii < newT.PrimaryKeyColumns.Count - 1)
                             pkWhereSb.Append(" AND ");
                         ii++;
                     }
 
-                    sb.AppendLine($"--UPDATE \"{newT.GetPostgresSchema()}\".\"{newT.DatabaseName}\" SET {updateSetString} WHERE {pkWhereSb.ToString()};");
+                    sb.AppendLine($"--UPDATE \"{newT.GetPostgresSchema()}\".\"{newT.DatabaseName}\" SET {updateSetString} WHERE {pkWhereSb};");
 
                 }
 
