@@ -587,19 +587,23 @@ namespace nHydrate.Generator.PostgresInstaller
                 case SqlDbType.Money: return "MONEY";
                 case SqlDbType.NChar: return "CHAR";
                 case SqlDbType.NText: return "TEXT";
-                case SqlDbType.NVarChar: return (column.Length == 0) ? "TEXT" : "VARCHAR";
+                //case SqlDbType.NVarChar: return (column.Length == 0) ? "TEXT" : "VARCHAR";
+                case SqlDbType.NVarChar: return "citext";
                 case SqlDbType.Real: return "DOUBLE PRECISION";
                 case SqlDbType.UniqueIdentifier: return "UUID";
                 case SqlDbType.SmallDateTime: return "TIMESTAMP"; //precision 0
                 case SqlDbType.SmallInt: return "SMALLINT";
                 case SqlDbType.SmallMoney: return "MONEY";
-                case SqlDbType.Text: return "TEXT";
+                //case SqlDbType.Text: return "TEXT";
+                case SqlDbType.Text: return "citext";
                 case SqlDbType.Timestamp: return "INTEGER";
                 case SqlDbType.TinyInt: return "SMALLINT";
                 case SqlDbType.VarBinary: return "BYTEA";
-                case SqlDbType.VarChar: return (column.Length == 0) ? "TEXT" : "VARCHAR";
+                //case SqlDbType.VarChar: return (column.Length == 0) ? "TEXT" : "VARCHAR";
+                case SqlDbType.VarChar: return "citext";
                 case SqlDbType.Variant: return "BYTEA";
-                case SqlDbType.Xml: return "TEXT";
+                //case SqlDbType.Xml: return "TEXT";
+                case SqlDbType.Xml: return "citext";
                 case SqlDbType.Udt: throw new Exception("Udt not implemented");
                 case SqlDbType.Structured: throw new Exception("Structured not implemented");
                 case SqlDbType.Date: return "DATE";

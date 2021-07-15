@@ -413,6 +413,7 @@ namespace nHydrate.ModelManagement
 
             //Do not remove diagram file
             generatedFileList.Add(Path.Combine(modelFolder, "diagram.xml"));
+            generatedFileList.Add(Path.Combine(modelFolder, "nhydrate.generators"));
 
             RemoveOrphans(modelFolder, generatedFileList);
 

@@ -45,12 +45,21 @@ namespace nHydrate.Command.Core
                 return ShowError("The model is required.");
             if (output.IsEmpty())
                 return ShowError("The output folder is required.");
+
+            //If there are no generators specified on the command line then check for the file "nhydrate.generators"
             if (!generators.Any())
-                return ShowError("The generators are required.");
+            {
+                var folderName = (new FileInfo(modelFile)).DirectoryName;
+                var genDefFile = Path.Combine(folderName, "nhydrate.generators");
+                if (File.Exists(genDefFile))
+                    generators = File.ReadAllLines(genDefFile).Where(x => x.Trim() != string.Empty).ToArray();
+                if (!generators.Any())
+                    return ShowError("The generators are required.");
+            }
 
             Console.WriteLine($"modelFile='{modelFile}'");
             Console.WriteLine($"output='{output}'");
-            Console.WriteLine($"generators='{allValues[GeneratorsKey]}'");
+            Console.WriteLine($"generators='{string.Join(",", generators)}'");
 
             //NOTE: Yaml Model files must end with ".nhydrate.yaml"
             //Old Xml file ends with ".nhydrate"

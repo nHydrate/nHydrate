@@ -80,10 +80,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"%25SystemRoot%25\Microsoft.NET\Framework\v3.5\msbuild" "$(ProjectDir)Build\prebuild.targets.xml" /property:TargetPath=$(TargetExt);TargetPath=$(TargetPath);TargetDir=$(TargetDir);TargetFileName=$(TargetFileName);TargetName=$(TargetName)</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>"%25SystemRoot%25\Microsoft.NET\Framework\v3.5\msbuild" "$(ProjectDir)Build\postbuild.targets.xml" /property:TargetPath=$(TargetExt);TargetPath=$(TargetPath);TargetDir=$(TargetDir);TargetFileName=$(TargetFileName);TargetName=$(TargetName)</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)bin</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.Designer.embed" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.cs" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseInstaller.Designer.embed" />
     <EmbeddedResource Include="ProjectItemGenerators\DatabaseEmbeddedClasses\DatabaseServer.cs" />
