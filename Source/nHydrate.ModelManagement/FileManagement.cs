@@ -393,7 +393,14 @@ namespace nHydrate.ModelManagement
 
         private static T GetYamlObject<T>(string fileName)
         {
-            return File.ReadAllText(fileName).FromYaml<T>();
+            try
+            {
+                return File.ReadAllText(fileName).FromYaml<T>();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public static void Save2(string rootFolder, string modelName, DiskModelYaml model)

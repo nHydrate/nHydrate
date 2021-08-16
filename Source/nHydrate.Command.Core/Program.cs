@@ -122,6 +122,9 @@ namespace nHydrate.Command.Core
             var timer = System.Diagnostics.Stopwatch.StartNew();
             var formatModel = (allValues.ContainsKey("formatmodel") && allValues["formatmodel"] == "true");
 
+            //TODO: Validate all YAML files so no random failure during load
+            //TODO: when model files missing ID, it generates all fields as first one
+           
             nHydrate.Generator.Common.Models.ModelRoot model = null;
             try
             {
