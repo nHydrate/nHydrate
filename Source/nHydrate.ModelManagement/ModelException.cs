@@ -7,4 +7,12 @@ namespace nHydrate.ModelManagement
         {
         }
     }
+
+    public class ModelFileLoadException : ModelException
+    {
+        public ModelFileLoadException(string message)
+            : base(message)
+        {
+        }
+    }
 }

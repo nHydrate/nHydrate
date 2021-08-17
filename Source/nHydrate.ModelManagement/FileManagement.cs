@@ -244,17 +244,29 @@ namespace nHydrate.ModelManagement
             foreach (var f in fList)
             {
                 //Try single object
-                var wasError = false;
+                Exception lastException = null;
                 try
                 {
                     results.Entities.Add(GetYamlObject<EntityYaml>(f));
                 }
-                catch (Exception ex) { wasError = true; }
+                catch (Exception ex) { lastException = ex; }
 
-                if (wasError)
+                if (lastException != null)
                 {
-                    //If fails try multiple objects. If error then really throw
-                    results.Entities.AddRange(GetYamlObject<EntityYaml[]>(f));
+                    //If fails try multiple objects per file. If error then really throw
+                    try
+                    {
+                        results.Entities.AddRange(GetYamlObject<EntityYaml[]>(f));
+                    }
+                    catch (Exception ex)
+                    {
+                        //This is a bogus error because the file does NOT contain multiple objects
+                        //The first error was correct as the single object YAML was incorrect format
+                        if (ex.Message.Contains("Line: 1, Col: 1, Idx: 0"))
+                            throw lastException;
+                        else
+                            throw;
+                    }
                 }
 
             }
@@ -321,7 +333,7 @@ namespace nHydrate.ModelManagement
                 if (entity.Fields.Count != entity.Fields.Select(x => x.Id).Count())
                     throw new ModelException($"Entity: '{entity.Name}': All fields must have a unique ID.");
 
-                //Indexes
+                #region Indexes
                 if (entity.Indexes.Count(x => x.Clustered) > 1)
                     throw new ModelException($"Entity: '{entity.Name}': An entity can have only one clustered index.");
 
@@ -340,19 +352,60 @@ namespace nHydrate.ModelManagement
                         field.FieldName = targetField.Name;
                     }
                 }
+                #endregion
 
-                //Relations
+                #region Indexes (Ensure if on fields marked then on index exists)
+                foreach (var field in entity.Fields.Where(x => x.IsIndexed))
+                {
+                    if (!entity.Indexes.Any(x => x.Fields.Any(z => z.FieldId == field.Id)))
+                    {
+                        entity.Indexes.Add(new IndexYaml
+                        {
+                            Clustered = false,
+                            Id = Guid.NewGuid(),
+                            IndexType = field.IsPrimaryKey ? IndexTypeConstants.PrimaryKey : IndexTypeConstants.IsIndexed,
+                            IsUnique = false,
+                            Fields = new List<IndexFieldYaml>(new[] { new IndexFieldYaml { FieldId = field.Id, FieldName = field.Name, } }),
+                        });
+                    }
+                }
+                #endregion
+
+                #region Relations
                 foreach (var relation in entity.Relations)
                 {
-                    if (!relation.Fields.Any())
-                        throw new ModelException($"Entity: '{entity.Name}': The relation must have at least one field.");
-
                     var foreignEntity = results.Entities.FirstOrDefault(x => x.Id == relation.ForeignEntityId);
                     if (relation.ForeignEntityId == Guid.Empty)
                         foreignEntity = results.Entities.FirstOrDefault(x => x.Name?.ToLower() == relation.ForeignEntityName?.ToLower());
 
                     if (foreignEntity == null)
                         throw new ModelException($"Entity: '{entity.Name}': The relation must map to an existing entity.");
+
+                    if (!relation.Fields.Any())
+                    {
+                        //If there are 0 fields and the foreign table has the same field name as primary table
+                        //then add a relation based on that field as this is a short cut for Table1.FieldName->Table2.FieldName
+                        //This is the format of most PK-FK anyway.
+                        if (entity.Fields.Count(x => x.IsPrimaryKey) == 1)
+                        {
+                            var pk = entity.Fields.FirstOrDefault(x => x.IsPrimaryKey);
+                            var fk = foreignEntity.Fields.FirstOrDefault(x => x.Name == pk.Name);
+                            if (fk != null)
+                            {
+                                relation.Id = Guid.NewGuid();
+                                relation.Fields.Add(new RelationFieldYaml
+                                {
+                                    ForeignFieldId = fk.Id,
+                                    ForeignFieldName = fk.Name,
+                                    PrimaryFieldId = pk.Id,
+                                    PrimaryFieldName = pk.Name,
+                                });
+                            }
+                        }
+
+                        if (!relation.Fields.Any())
+                            throw new ModelException($"Entity: '{entity.Name}': The relation must have at least one field.");
+                    }
 
                     relation.ForeignEntityName = foreignEntity.Name;
                     relation.ForeignEntityId = foreignEntity.Id;
@@ -379,6 +432,7 @@ namespace nHydrate.ModelManagement
                         field.ForeignFieldName = foreignField.Name;
                     }
                 }
+                #endregion
             }
         }
 
@@ -396,6 +450,10 @@ namespace nHydrate.ModelManagement
             try
             {
                 return File.ReadAllText(fileName).FromYaml<T>();
+            }
+            catch (YamlDotNet.Core.YamlException ex)
+            {
+                throw new ModelFileLoadException($"Yaml load error '{fileName}': " + ex.Message);
             }
             catch (Exception ex)
             {

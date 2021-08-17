@@ -218,6 +218,8 @@ namespace nHydrate.ModelManagement
         public string Summary { get; set; } = string.Empty;
 
         public List<IndexFieldYaml> Fields { get; set; } = new List<IndexFieldYaml>();
+
+        public override string ToString() => string.Join(",", this.Fields?.Select(x => x.FieldName));
     }
 
     public class IndexFieldYaml
@@ -231,6 +233,7 @@ namespace nHydrate.ModelManagement
         public string FieldName { get; set; } = string.Empty;
 
         //public Guid Id { get; set; }
+        public override string ToString() => this.FieldName;
     }
 
     public class StaticDataYaml
