@@ -656,12 +656,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("    public partial class AuditCreatedDateAttribute : System.Attribute");
             sb.AppendLine("    {");
             sb.AppendLine("        public AuditCreatedDateAttribute() : base() { }");
-            sb.AppendLine("        public AuditCreatedDateAttribute(bool utc) : this()");
-            sb.AppendLine("        {");
-            sb.AppendLine("            this.IsUTC = utc;");
-            sb.AppendLine("        }");
-            sb.AppendLine();
-            sb.AppendLine("        public bool IsUTC { get; }");
             sb.AppendLine("    }");
             sb.AppendLine();
 
@@ -672,12 +666,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Helpers
             sb.AppendLine("    public partial class AuditModifiedDateAttribute : System.Attribute");
             sb.AppendLine("    {");
             sb.AppendLine("        public AuditModifiedDateAttribute() : base() { }");
-            sb.AppendLine("        public AuditModifiedDateAttribute(bool utc) : this()");
-            sb.AppendLine("        {");
-            sb.AppendLine("            this.IsUTC = utc;");
-            sb.AppendLine("        }");
-            sb.AppendLine();
-            sb.AppendLine("        public bool IsUTC { get; }");
             sb.AppendLine("    }");
             sb.AppendLine();
             sb.AppendLine("	#endregion");

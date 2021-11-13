@@ -103,9 +103,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine($"	public partial class {_model.ProjectName}Entities : Microsoft.EntityFrameworkCore.DbContext, IContext");
             sb.AppendLine("	{");
 
-            sb.AppendLine("		private static Dictionary<string, bool> _mapAuditDateFields = new Dictionary<string, bool>();");
-            sb.AppendLine();
-
             sb.AppendLine("		/// <summary />");
             sb.AppendLine($"		public static Action<string> QueryLogger {GetSetSuffix}");
             sb.AppendLine();
@@ -525,20 +522,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("                    #region Audit Fields");
             sb.AppendLine("                    foreach (var prop in tableType.Props(false).Where(x => x.GetCustomAttributes(true).Any(z => z.GetType() != typeof(System.ComponentModel.DataAnnotations.Schema.NotMappedAttribute))))");
             sb.AppendLine("                    {");
-            sb.AppendLine("                        //Created Date");
-            sb.AppendLine("                        var attr2 = prop.GetAttr<AuditCreatedDateAttribute>();");
-            sb.AppendLine("                        if (attr2 != null)");
-            sb.AppendLine("                        {");
-            sb.AppendLine("                            _mapAuditDateFields.Add($\"{tableType.FullName}:{typeof(AuditCreatedDateAttribute).Name}\", attr2.IsUTC);");
-            sb.AppendLine("                        }");
-            sb.AppendLine();
-            sb.AppendLine("                        //Modified Date");
-            sb.AppendLine("                        var attr4 = prop.GetAttr<AuditModifiedDateAttribute>();");
-            sb.AppendLine("                        if (attr4 != null)");
-            sb.AppendLine("                        {");
-            sb.AppendLine("                            _mapAuditDateFields.Add($\"{tableType.FullName}:{typeof(AuditModifiedDateAttribute).Name}\", attr4.IsUTC);");
-            sb.AppendLine("                        }");
-            sb.AppendLine();
             sb.AppendLine("                        //Timestamp (default .NET attribute)");
             sb.AppendLine("                        var attr6 = prop.GetAttr<System.ComponentModel.DataAnnotations.TimestampAttribute>();");
             sb.AppendLine("                        if (attr6 != null)");
@@ -648,7 +631,6 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("		protected virtual void SetupSave()");
             sb.AppendLine("		{");
 
-            sb.AppendLine("            var markedTime = System.DateTime.Now;");
             sb.AppendLine("            var markedTimeUtc = System.DateTime.UtcNow;");
 
             //sb.AppendLine("			var cancel = false;");
@@ -664,21 +646,11 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			//Process added list");
             sb.AppendLine("			foreach (var item in addedList)");
             sb.AppendLine("			{");
-
-            sb.AppendLine("                var isCreatedUtc = false;");
-            sb.AppendLine("                if (_mapAuditDateFields.ContainsKey($\"{item.Entity}:{typeof(AuditCreatedDateAttribute).Name}\"))");
-            sb.AppendLine("                    isCreatedUtc = _mapAuditDateFields[$\"{item.Entity}:{typeof(AuditCreatedDateAttribute).Name}\"];");
-            sb.AppendLine();
-            sb.AppendLine("                var isModifiedUtc = false;");
-            sb.AppendLine("                if (_mapAuditDateFields.ContainsKey($\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"))");
-            sb.AppendLine("                    isModifiedUtc = _mapAuditDateFields[$\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"];");
-
             sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditCreatedByAttribute), this.ContextStartup.Modifier);");
-            sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditCreatedDateAttribute), isCreatedUtc ? markedTimeUtc : markedTime);");
+            sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditCreatedDateAttribute), markedTimeUtc);");
             sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedByAttribute), this.ContextStartup.Modifier);");
-            sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedDateAttribute), isModifiedUtc ? markedTimeUtc : markedTime);");
+            sb.AppendLine("                ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedDateAttribute), markedTimeUtc);");
             sb.AppendLine("                ReflectionHelpers.SetPropertyConcurrency(item, typeof(System.ComponentModel.DataAnnotations.ConcurrencyCheckAttribute));");
-
             sb.AppendLine();
             sb.AppendLine("				//Only set the TenantID on create. It never changes.");
             sb.AppendLine("				if (item.Entity is ITenantEntity)");
@@ -697,13 +669,8 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Contexts
             sb.AppendLine("			var modifiedList = this.ChangeTracker.Entries().Where(x => x.State == EntityState.Modified);");
             sb.AppendLine("			foreach (var item in modifiedList)");
             sb.AppendLine("			{");
-
-            sb.AppendLine("              var isModifiedUtc = false;");
-            sb.AppendLine("              if (_mapAuditDateFields.ContainsKey($\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"))");
-            sb.AppendLine("                  isModifiedUtc = _mapAuditDateFields[$\"{item.Entity}:{typeof(AuditModifiedDateAttribute).Name}\"];");
-
             sb.AppendLine("				ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedByAttribute), this.ContextStartup.Modifier);");
-            sb.AppendLine("				ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedDateAttribute), isModifiedUtc ? markedTimeUtc : markedTime);");
+            sb.AppendLine("				ReflectionHelpers.SetPropertyByAttribute(item.Entity, typeof(AuditModifiedDateAttribute), markedTimeUtc);");
             sb.AppendLine("				ReflectionHelpers.SetPropertyConcurrency(item, typeof(System.ComponentModel.DataAnnotations.ConcurrencyCheckAttribute));");
             sb.AppendLine("			}");
             sb.AppendLine();

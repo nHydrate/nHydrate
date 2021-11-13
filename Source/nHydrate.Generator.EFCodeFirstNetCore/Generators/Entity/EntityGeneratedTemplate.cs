@@ -503,9 +503,9 @@ namespace nHydrate.Generator.EFCodeFirstNetCore.Generators.Entity
 
             //Audit Fields
             if (_item.AllowCreateAudit) GenerateAuditField(sb, _model.Database.CreatedByPascalName, "string", "The audit field for the 'Created By' parameter.", "public", "AuditCreatedBy");
-            if (_item.AllowCreateAudit) GenerateAuditField(sb, _model.Database.CreatedDatePascalName, "DateTime", "The audit field for the 'Created Date' parameter.", "public", "AuditCreatedDate(utc: " + (_model.UseUTCTime ? "true" : "false") + ")");
+            if (_item.AllowCreateAudit) GenerateAuditField(sb, _model.Database.CreatedDatePascalName, "DateTime", "The audit field for the 'Created Date' parameter.", "public", "AuditCreatedDate()");
             if (_item.AllowModifiedAudit) GenerateAuditField(sb, _model.Database.ModifiedByPascalName, "string", "The audit field for the 'Modified By' parameter.", "public", "AuditModifiedBy");
-            if (_item.AllowModifiedAudit) GenerateAuditField(sb, _model.Database.ModifiedDatePascalName, "DateTime", "The audit field for the 'Modified Date' parameter.", "public", "AuditModifiedDate(utc: " + (_model.UseUTCTime ? "true" : "false") + ")");
+            if (_item.AllowModifiedAudit) GenerateAuditField(sb, _model.Database.ModifiedDatePascalName, "DateTime", "The audit field for the 'Modified Date' parameter.", "public", "AuditModifiedDate()");
             if (_item.AllowConcurrencyCheck) GenerateAuditField(sb, _model.Database.ConcurrencyCheckPascalName, "int", "The audit field for the 'Timestamp' parameter.", "protected internal", "AuditTimestamp", true);
 
             sb.AppendLine("		#endregion");
